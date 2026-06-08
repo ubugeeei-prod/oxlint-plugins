@@ -1,0 +1,35 @@
+name: Track upstream releases
+
+# Opens a follow-up issue whenever a port-target plugin (tools/port-targets.json)
+# publishes a version newer than the baseline we pinned, so the vendored
+# submodule and the port can be kept in sync. Issue-only; it does not bump
+# anything automatically.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: track-upstream-releases
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check upstream releases
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - run: node tools/tasks/check-upstream-releases.ts --apply
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
