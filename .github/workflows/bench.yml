@@ -33,7 +33,7 @@ jobs:
         with:
           components: clippy,rustfmt
 
-      - uses: Swatinem/rust-cache@v3
+      - uses: Swatinem/rust-cache@v2
 
       - run: vp install --frozen-lockfile
       - run: vp build
