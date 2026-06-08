@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: '24'
 
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
 
       - uses: voidzero-dev/setup-vp@v1
         with:
