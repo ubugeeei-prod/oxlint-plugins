@@ -36,7 +36,21 @@ vp run release patch
 - `tools/tasks/*`: Node type-stripped TypeScript task scripts.
 - `tools/vite/*`: Vite/Vite+ build helper files.
 - `tools/license-exceptions.json`: audited license policy exceptions.
+- `tools/port-targets.json`: manifest of the ESLint plugins we intend to port (single source of truth for rule enumeration and release tracking).
+- `upstream/*`: upstream port-target sources vendored as shallow git submodules, pinned to each plugin's baseline version. For behavioral reference only; never copy upstream code without honoring its license.
+- `docs/port-targets`: generated, per-plugin rule inventories. Run `pnpm run port:rules` to regenerate from the submodules.
 - `.github/workflows`: Blacksmith CI and trusted publishing release workflow.
+
+## Port Targets
+
+`tools/port-targets.json` lists the ESLint plugins used by flyle-nexus that Oxlint does not yet support natively (`eslint-plugin-svelte` is excluded; it is handled by [rsvelte](https://github.com/baseballyama/rsvelte)). Their sources are vendored under `upstream/` as submodules.
+
+```sh
+git submodule update --init --depth 1   # fetch upstream sources
+pnpm run port:rules                      # regenerate docs/port-targets/*
+```
+
+`pnpm run port:rules` enumerates every rule of each target straight from its submodule and fails if a plugin's rule count drifts from the manifest, so the porting backlog stays complete. See `docs/port-targets/README.md` for the generated inventory.
 
 ## Sample Plugin
 

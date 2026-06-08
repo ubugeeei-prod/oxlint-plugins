@@ -1,0 +1,48 @@
+[submodule "upstream/eslint-plugin-simple-import-sort"]
+	path = upstream/eslint-plugin-simple-import-sort
+	url = https://github.com/lydell/eslint-plugin-simple-import-sort
+	shallow = true
+[submodule "upstream/eslint-plugin-eslint-comments"]
+	path = upstream/eslint-plugin-eslint-comments
+	url = https://github.com/eslint-community/eslint-plugin-eslint-comments
+	shallow = true
+[submodule "upstream/eslint-plugin-functional"]
+	path = upstream/eslint-plugin-functional
+	url = https://github.com/eslint-functional/eslint-plugin-functional
+	shallow = true
+[submodule "upstream/eslint-plugin-regexp"]
+	path = upstream/eslint-plugin-regexp
+	url = https://github.com/ota-meshi/eslint-plugin-regexp
+	shallow = true
+[submodule "upstream/eslint-plugin-security"]
+	path = upstream/eslint-plugin-security
+	url = https://github.com/eslint-community/eslint-plugin-security
+	shallow = true
+[submodule "upstream/eslint-plugin-postgresql"]
+	path = upstream/eslint-plugin-postgresql
+	url = https://github.com/baseballyama/eslint-plugin-postgresql
+	shallow = true
+[submodule "upstream/postgresql-eslint-parser"]
+	path = upstream/postgresql-eslint-parser
+	url = https://github.com/baseballyama/postgresql-eslint-parser
+	shallow = true
+[submodule "upstream/eslint-json"]
+	path = upstream/eslint-json
+	url = https://github.com/eslint/json
+	shallow = true
+[submodule "upstream/eslint-markdown"]
+	path = upstream/eslint-markdown
+	url = https://github.com/eslint/markdown
+	shallow = true
+[submodule "upstream/storybook"]
+	path = upstream/storybook
+	url = https://github.com/storybookjs/storybook
+	shallow = true
+[submodule "upstream/unocss"]
+	path = upstream/unocss
+	url = https://github.com/unocss/unocss
+	shallow = true
+[submodule "upstream/SonarJS"]
+	path = upstream/SonarJS
+	url = https://github.com/SonarSource/SonarJS
+	shallow = true

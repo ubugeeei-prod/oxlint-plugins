@@ -1,0 +1,3041 @@
+{
+  "generatedFrom": "tools/port-targets.json",
+  "plugins": [
+    {
+      "id": "eslint-plugin-eslint-comments",
+      "npm": "@eslint-community/eslint-plugin-eslint-comments",
+      "repo": "https://github.com/eslint-community/eslint-plugin-eslint-comments",
+      "baselineVersion": "4.7.2",
+      "license": "MIT",
+      "ruleCount": 9,
+      "rules": [
+        {
+          "name": "disable-enable-pair",
+          "description": "require a `eslint-enable` comment for every `eslint-disable` comment",
+          "docsUrl": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/disable-enable-pair.html"
+        },
+        {
+          "name": "no-aggregating-enable",
+          "description": "disallow a `eslint-enable` comment for multiple `eslint-disable` comments",
+          "docsUrl": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-aggregating-enable.html"
+        },
+        {
+          "name": "no-duplicate-disable",
+          "description": "disallow duplicate `eslint-disable` comments",
+          "docsUrl": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-duplicate-disable.html"
+        },
+        {
+          "name": "no-restricted-disable",
+          "description": "disallow `eslint-disable` comments about specific rules",
+          "docsUrl": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-restricted-disable.html"
+        },
+        {
+          "name": "no-unlimited-disable",
+          "description": "disallow `eslint-disable` comments without rule names",
+          "docsUrl": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-unlimited-disable.html"
+        },
+        {
+          "name": "no-unused-disable",
+          "description": "disallow unused `eslint-disable` comments",
+          "docsUrl": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-unused-disable.html"
+        },
+        {
+          "name": "no-unused-enable",
+          "description": "disallow unused `eslint-enable` comments",
+          "docsUrl": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-unused-enable.html"
+        },
+        {
+          "name": "no-use",
+          "description": "disallow ESLint directive-comments",
+          "docsUrl": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-use.html"
+        },
+        {
+          "name": "require-description",
+          "description": "require include descriptions in ESLint directive-comments",
+          "docsUrl": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/require-description.html"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-functional",
+      "npm": "eslint-plugin-functional",
+      "repo": "https://github.com/eslint-functional/eslint-plugin-functional",
+      "baselineVersion": "9.0.5",
+      "license": "MIT",
+      "ruleCount": 20,
+      "rules": [
+        {
+          "name": "functional-parameters",
+          "description": "Enforce functional parameters.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/functional-parameters.md"
+        },
+        {
+          "name": "immutable-data",
+          "description": "Enforce treating data as immutable.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/immutable-data.md"
+        },
+        {
+          "name": "no-class-inheritance",
+          "description": "Disallow inheritance in classes.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-class-inheritance.md"
+        },
+        {
+          "name": "no-classes",
+          "description": "Disallow classes.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-classes.md"
+        },
+        {
+          "name": "no-conditional-statements",
+          "description": "Disallow conditional statements.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-conditional-statements.md"
+        },
+        {
+          "name": "no-expression-statements",
+          "description": "Disallow expression statements.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-expression-statements.md"
+        },
+        {
+          "name": "no-let",
+          "description": "Disallow mutable variables.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-let.md"
+        },
+        {
+          "name": "no-loop-statements",
+          "description": "Disallow imperative loops.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-loop-statements.md"
+        },
+        {
+          "name": "no-mixed-types",
+          "description": "Restrict types so that only members of the same kind are allowed in them.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-mixed-types.md"
+        },
+        {
+          "name": "no-promise-reject",
+          "description": "Disallow rejecting promises.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-promise-reject.md"
+        },
+        {
+          "name": "no-return-void",
+          "description": "Disallow functions that don't return anything.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-return-void.md"
+        },
+        {
+          "name": "no-this-expressions",
+          "description": "Disallow this access.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-this-expressions.md"
+        },
+        {
+          "name": "no-throw-statements",
+          "description": "Disallow throwing exceptions.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-throw-statements.md"
+        },
+        {
+          "name": "no-try-statements",
+          "description": "Disallow try-catch[-finally] and try-finally patterns.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/no-try-statements.md"
+        },
+        {
+          "name": "prefer-immutable-types",
+          "description": "Require function parameters to be typed as certain immutability",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/prefer-immutable-types.md"
+        },
+        {
+          "name": "prefer-property-signatures",
+          "description": "Prefer property signatures over method signatures.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/prefer-property-signatures.md"
+        },
+        {
+          "name": "prefer-readonly-type",
+          "description": "Prefer readonly types over mutable types.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/prefer-readonly-type.md"
+        },
+        {
+          "name": "prefer-tacit",
+          "description": "Replaces `x => f(x)` with just `f`.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/prefer-tacit.md"
+        },
+        {
+          "name": "readonly-type",
+          "description": "Require consistently using either `readonly` keywords or `Readonly<T>`",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/readonly-type.md"
+        },
+        {
+          "name": "type-declaration-immutability",
+          "description": "Enforce the immutability of types based on patterns.",
+          "docsUrl": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/type-declaration-immutability.md"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-regexp",
+      "npm": "eslint-plugin-regexp",
+      "repo": "https://github.com/ota-meshi/eslint-plugin-regexp",
+      "baselineVersion": "3.1.0",
+      "license": "MIT",
+      "ruleCount": 82,
+      "rules": [
+        {
+          "name": "confusing-quantifier",
+          "description": "disallow confusing quantifiers",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/confusing-quantifier.html"
+        },
+        {
+          "name": "control-character-escape",
+          "description": "enforce consistent escaping of control characters",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/control-character-escape.html"
+        },
+        {
+          "name": "grapheme-string-literal",
+          "description": "enforce single grapheme in string literal",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/grapheme-string-literal.html"
+        },
+        {
+          "name": "hexadecimal-escape",
+          "description": "enforce consistent usage of hexadecimal escape",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/hexadecimal-escape.html"
+        },
+        {
+          "name": "letter-case",
+          "description": "enforce into your favorite case",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/letter-case.html"
+        },
+        {
+          "name": "match-any",
+          "description": "enforce match any character style",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/match-any.html"
+        },
+        {
+          "name": "negation",
+          "description": "enforce use of escapes on negation",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/negation.html"
+        },
+        {
+          "name": "no-contradiction-with-assertion",
+          "description": "disallow elements that contradict assertions",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-contradiction-with-assertion.html"
+        },
+        {
+          "name": "no-control-character",
+          "description": "disallow control characters",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-control-character.html"
+        },
+        {
+          "name": "no-dupe-characters-character-class",
+          "description": "disallow duplicate characters in the RegExp character class",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-dupe-characters-character-class.html"
+        },
+        {
+          "name": "no-dupe-disjunctions",
+          "description": "disallow duplicate disjunctions",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-dupe-disjunctions.html"
+        },
+        {
+          "name": "no-empty-alternative",
+          "description": "disallow alternatives without elements",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-empty-alternative.html"
+        },
+        {
+          "name": "no-empty-capturing-group",
+          "description": "disallow capturing group that captures empty.",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-empty-capturing-group.html"
+        },
+        {
+          "name": "no-empty-character-class",
+          "description": "disallow character classes that match no characters",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-empty-character-class.html"
+        },
+        {
+          "name": "no-empty-group",
+          "description": "disallow empty group",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-empty-group.html"
+        },
+        {
+          "name": "no-empty-lookarounds-assertion",
+          "description": "disallow empty lookahead assertion or empty lookbehind assertion",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-empty-lookarounds-assertion.html"
+        },
+        {
+          "name": "no-empty-string-literal",
+          "description": "disallow empty string literals in character classes",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-empty-string-literal.html"
+        },
+        {
+          "name": "no-escape-backspace",
+          "description": "disallow escape backspace (`[\\\\b]`)",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-escape-backspace.html"
+        },
+        {
+          "name": "no-extra-lookaround-assertions",
+          "description": "disallow unnecessary nested lookaround assertions",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-extra-lookaround-assertions.html"
+        },
+        {
+          "name": "no-invalid-regexp",
+          "description": "disallow invalid regular expression strings in `RegExp` constructors",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-invalid-regexp.html"
+        },
+        {
+          "name": "no-invisible-character",
+          "description": "disallow invisible raw character",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-invisible-character.html"
+        },
+        {
+          "name": "no-lazy-ends",
+          "description": "disallow lazy quantifiers at the end of an expression",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-lazy-ends.html"
+        },
+        {
+          "name": "no-legacy-features",
+          "description": "disallow legacy RegExp features",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-legacy-features.html"
+        },
+        {
+          "name": "no-misleading-capturing-group",
+          "description": "disallow capturing groups that do not behave as one would expect",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-misleading-capturing-group.html"
+        },
+        {
+          "name": "no-misleading-unicode-character",
+          "description": "disallow multi-code-point characters in character classes and quantifiers",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-misleading-unicode-character.html"
+        },
+        {
+          "name": "no-missing-g-flag",
+          "description": "disallow missing `g` flag in patterns used in `String#matchAll` and `String#replaceAll`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-missing-g-flag.html"
+        },
+        {
+          "name": "no-non-standard-flag",
+          "description": "disallow non-standard flags",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-non-standard-flag.html"
+        },
+        {
+          "name": "no-obscure-range",
+          "description": "disallow obscure character ranges",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-obscure-range.html"
+        },
+        {
+          "name": "no-octal",
+          "description": "disallow octal escape sequence",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-octal.html"
+        },
+        {
+          "name": "no-optional-assertion",
+          "description": "disallow optional assertions",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-optional-assertion.html"
+        },
+        {
+          "name": "no-potentially-useless-backreference",
+          "description": "disallow backreferences that reference a group that might not be matched",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-potentially-useless-backreference.html"
+        },
+        {
+          "name": "no-standalone-backslash",
+          "description": "disallow standalone backslashes (`\\\\`)",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-standalone-backslash.html"
+        },
+        {
+          "name": "no-super-linear-backtracking",
+          "description": "disallow exponential and polynomial backtracking",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-super-linear-backtracking.html"
+        },
+        {
+          "name": "no-super-linear-move",
+          "description": "disallow quantifiers that cause quadratic moves",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-super-linear-move.html"
+        },
+        {
+          "name": "no-trivially-nested-assertion",
+          "description": "disallow trivially nested assertions",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-trivially-nested-assertion.html"
+        },
+        {
+          "name": "no-trivially-nested-quantifier",
+          "description": "disallow nested quantifiers that can be rewritten as one quantifier",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-trivially-nested-quantifier.html"
+        },
+        {
+          "name": "no-unused-capturing-group",
+          "description": "disallow unused capturing group",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-unused-capturing-group.html"
+        },
+        {
+          "name": "no-useless-assertions",
+          "description": "disallow assertions that are known to always accept (or reject)",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-assertions.html"
+        },
+        {
+          "name": "no-useless-backreference",
+          "description": "disallow useless backreferences in regular expressions",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-backreference.html"
+        },
+        {
+          "name": "no-useless-character-class",
+          "description": "disallow character class with one character",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-character-class.html"
+        },
+        {
+          "name": "no-useless-dollar-replacements",
+          "description": "disallow useless `$` replacements in replacement string",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-dollar-replacements.html"
+        },
+        {
+          "name": "no-useless-escape",
+          "description": "disallow unnecessary escape characters in RegExp",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-escape.html"
+        },
+        {
+          "name": "no-useless-flag",
+          "description": "disallow unnecessary regex flags",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-flag.html"
+        },
+        {
+          "name": "no-useless-lazy",
+          "description": "disallow unnecessarily non-greedy quantifiers",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-lazy.html"
+        },
+        {
+          "name": "no-useless-non-capturing-group",
+          "description": "disallow unnecessary non-capturing group",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-non-capturing-group.html"
+        },
+        {
+          "name": "no-useless-quantifier",
+          "description": "disallow quantifiers that can be removed",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-quantifier.html"
+        },
+        {
+          "name": "no-useless-range",
+          "description": "disallow unnecessary character ranges",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-range.html"
+        },
+        {
+          "name": "no-useless-set-operand",
+          "description": "disallow unnecessary elements in expression character classes",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-set-operand.html"
+        },
+        {
+          "name": "no-useless-string-literal",
+          "description": "disallow string disjunction of single characters in `\\\\q{...}`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-string-literal.html"
+        },
+        {
+          "name": "no-useless-two-nums-quantifier",
+          "description": "disallow unnecessary `{n,m}` quantifier",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-two-nums-quantifier.html"
+        },
+        {
+          "name": "no-zero-quantifier",
+          "description": "disallow quantifiers with a maximum of zero",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-zero-quantifier.html"
+        },
+        {
+          "name": "optimal-lookaround-quantifier",
+          "description": "disallow the alternatives of lookarounds that end with a non-constant quantifier",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/optimal-lookaround-quantifier.html"
+        },
+        {
+          "name": "optimal-quantifier-concatenation",
+          "description": "require optimal quantifiers for concatenated quantifiers",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/optimal-quantifier-concatenation.html"
+        },
+        {
+          "name": "prefer-character-class",
+          "description": "enforce using character class",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-character-class.html"
+        },
+        {
+          "name": "prefer-d",
+          "description": "enforce using `\\\\d`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-d.html"
+        },
+        {
+          "name": "prefer-escape-replacement-dollar-char",
+          "description": "enforces escape of replacement `$` character (`$$`).",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-escape-replacement-dollar-char.html"
+        },
+        {
+          "name": "prefer-lookaround",
+          "description": "prefer lookarounds over capturing group that do not replace",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-lookaround.html"
+        },
+        {
+          "name": "prefer-named-backreference",
+          "description": "enforce using named backreferences",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-named-backreference.html"
+        },
+        {
+          "name": "prefer-named-capture-group",
+          "description": "enforce using named capture groups",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-named-capture-group.html"
+        },
+        {
+          "name": "prefer-named-replacement",
+          "description": "enforce using named replacement",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-named-replacement.html"
+        },
+        {
+          "name": "prefer-plus-quantifier",
+          "description": "enforce using `+` quantifier",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-plus-quantifier.html"
+        },
+        {
+          "name": "prefer-predefined-assertion",
+          "description": "prefer predefined assertion over equivalent lookarounds",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-predefined-assertion.html"
+        },
+        {
+          "name": "prefer-quantifier",
+          "description": "enforce using quantifier",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-quantifier.html"
+        },
+        {
+          "name": "prefer-question-quantifier",
+          "description": "enforce using `?` quantifier",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-question-quantifier.html"
+        },
+        {
+          "name": "prefer-range",
+          "description": "enforce using character class range",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-range.html"
+        },
+        {
+          "name": "prefer-regexp-exec",
+          "description": "enforce that `RegExp#exec` is used instead of `String#match` if no global flag is provided",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-regexp-exec.html"
+        },
+        {
+          "name": "prefer-regexp-test",
+          "description": "enforce that `RegExp#test` is used instead of `String#match` and `RegExp#exec`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-regexp-test.html"
+        },
+        {
+          "name": "prefer-result-array-groups",
+          "description": "enforce using result array `groups`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-result-array-groups.html"
+        },
+        {
+          "name": "prefer-set-operation",
+          "description": "prefer character class set operations instead of lookarounds",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-set-operation.html"
+        },
+        {
+          "name": "prefer-star-quantifier",
+          "description": "enforce using `*` quantifier",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-star-quantifier.html"
+        },
+        {
+          "name": "prefer-unicode-codepoint-escapes",
+          "description": "enforce use of unicode codepoint escapes",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-unicode-codepoint-escapes.html"
+        },
+        {
+          "name": "prefer-w",
+          "description": "enforce using `\\\\w`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-w.html"
+        },
+        {
+          "name": "require-unicode-regexp",
+          "description": "enforce the use of the `u` flag",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/require-unicode-regexp.html"
+        },
+        {
+          "name": "require-unicode-sets-regexp",
+          "description": "enforce the use of the `v` flag",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/require-unicode-sets-regexp.html"
+        },
+        {
+          "name": "simplify-set-operations",
+          "description": "require simplify set operations",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/simplify-set-operations.html"
+        },
+        {
+          "name": "sort-alternatives",
+          "description": "sort alternatives if order doesn't matter",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/sort-alternatives.html"
+        },
+        {
+          "name": "sort-character-class-elements",
+          "description": "enforces elements order in character class",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/sort-character-class-elements.html"
+        },
+        {
+          "name": "sort-flags",
+          "description": "require regex flags to be sorted",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/sort-flags.html"
+        },
+        {
+          "name": "strict",
+          "description": "disallow not strictly valid regular expressions",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/strict.html"
+        },
+        {
+          "name": "unicode-escape",
+          "description": "enforce consistent usage of unicode escape or unicode codepoint escape",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/unicode-escape.html"
+        },
+        {
+          "name": "unicode-property",
+          "description": "enforce consistent naming of unicode properties",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/unicode-property.html"
+        },
+        {
+          "name": "use-ignore-case",
+          "description": "use the `i` flag if it simplifies the pattern",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/use-ignore-case.html"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-security",
+      "npm": "eslint-plugin-security",
+      "repo": "https://github.com/eslint-community/eslint-plugin-security",
+      "baselineVersion": "4.0.0",
+      "license": "Apache-2.0",
+      "ruleCount": 14,
+      "rules": [
+        {
+          "name": "detect-bidi-characters",
+          "description": "Detects trojan source attacks that employ unicode bidi attacks to inject malicious code.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-bidi-characters.md"
+        },
+        {
+          "name": "detect-buffer-noassert",
+          "description": "Detects calls to \"buffer\" with \"noAssert\" flag set.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-buffer-noassert.md"
+        },
+        {
+          "name": "detect-child-process",
+          "description": "Detects instances of \"child_process\" & non-literal \"exec()\" calls.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-child-process.md"
+        },
+        {
+          "name": "detect-disable-mustache-escape",
+          "description": "Detects \"object.escapeMarkup = false\", which can be used with some template engines to disable escaping of HTML entities.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-disable-mustache-escape.md"
+        },
+        {
+          "name": "detect-eval-with-expression",
+          "description": "Detects \"eval(variable)\" which can allow an attacker to run arbitrary code inside your process.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-eval-with-expression.md"
+        },
+        {
+          "name": "detect-new-buffer",
+          "description": "Detects instances of new Buffer(argument) where argument is any non-literal value.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-new-buffer.md"
+        },
+        {
+          "name": "detect-no-csrf-before-method-override",
+          "description": "Detects Express \"csrf\" middleware setup before \"method-override\" middleware.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-no-csrf-before-method-override.md"
+        },
+        {
+          "name": "detect-non-literal-fs-filename",
+          "description": "Detects variable in filename argument of \"fs\" calls, which might allow an attacker to access anything on your system.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-non-literal-fs-filename.md"
+        },
+        {
+          "name": "detect-non-literal-regexp",
+          "description": "Detects \"RegExp(variable)\", which might allow an attacker to DOS your server with a long-running regular expression.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-non-literal-regexp.md"
+        },
+        {
+          "name": "detect-non-literal-require",
+          "description": "Detects \"require(variable)\", which might allow an attacker to load and run arbitrary code, or access arbitrary files on disk.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-non-literal-require.md"
+        },
+        {
+          "name": "detect-object-injection",
+          "description": "Detects \"variable[key]\" as a left- or right-hand assignment operand.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-object-injection.md"
+        },
+        {
+          "name": "detect-possible-timing-attacks",
+          "description": "Detects insecure comparisons (`==`, `!=`, `!==` and `===`), which check input sequentially.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-possible-timing-attacks.md"
+        },
+        {
+          "name": "detect-pseudoRandomBytes",
+          "description": "Detects if \"pseudoRandomBytes()\" is in use, which might not give you the randomness you need and expect.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-pseudoRandomBytes.md"
+        },
+        {
+          "name": "detect-unsafe-regex",
+          "description": "Detects potentially unsafe regular expressions, which may take a very long time to run, blocking the event loop.",
+          "docsUrl": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/detect-unsafe-regex.md"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-simple-import-sort",
+      "npm": "eslint-plugin-simple-import-sort",
+      "repo": "https://github.com/lydell/eslint-plugin-simple-import-sort",
+      "baselineVersion": "13.0.0",
+      "license": "MIT",
+      "ruleCount": 2,
+      "rules": [
+        {
+          "name": "exports",
+          "description": "Automatically sort exports."
+        },
+        {
+          "name": "imports",
+          "description": "Automatically sort imports."
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-sonarjs",
+      "npm": "eslint-plugin-sonarjs",
+      "repo": "https://github.com/SonarSource/SonarJS",
+      "baselineVersion": "4.0.3",
+      "license": "LGPL-3.0-only",
+      "ruleCount": 269,
+      "rules": [
+        {
+          "name": "anchor-precedence",
+          "description": "",
+          "sonarKey": "S5850",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5850/javascript"
+        },
+        {
+          "name": "argument-type",
+          "description": "",
+          "sonarKey": "S3782",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3782/javascript"
+        },
+        {
+          "name": "arguments-order",
+          "description": "",
+          "sonarKey": "S2234",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2234/javascript"
+        },
+        {
+          "name": "arguments-usage",
+          "description": "",
+          "sonarKey": "S3513",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3513/javascript"
+        },
+        {
+          "name": "array-callback-without-return",
+          "description": "",
+          "sonarKey": "S3796",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3796/javascript"
+        },
+        {
+          "name": "array-constructor",
+          "description": "",
+          "sonarKey": "S1528",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1528/javascript"
+        },
+        {
+          "name": "arrow-function-convention",
+          "description": "",
+          "sonarKey": "S3524",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3524/javascript"
+        },
+        {
+          "name": "assertions-in-tests",
+          "description": "",
+          "sonarKey": "S2699",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2699/javascript"
+        },
+        {
+          "name": "aws-apigateway-public-api",
+          "description": "",
+          "sonarKey": "S6333",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6333/javascript"
+        },
+        {
+          "name": "aws-ec2-rds-dms-public",
+          "description": "",
+          "sonarKey": "S6329",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6329/javascript"
+        },
+        {
+          "name": "aws-ec2-unencrypted-ebs-volume",
+          "description": "",
+          "sonarKey": "S6275",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6275/javascript"
+        },
+        {
+          "name": "aws-efs-unencrypted",
+          "description": "",
+          "sonarKey": "S6332",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6332/javascript"
+        },
+        {
+          "name": "aws-iam-all-privileges",
+          "description": "",
+          "sonarKey": "S6302",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6302/javascript"
+        },
+        {
+          "name": "aws-iam-all-resources-accessible",
+          "description": "",
+          "sonarKey": "S6304",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6304/javascript"
+        },
+        {
+          "name": "aws-iam-privilege-escalation",
+          "description": "",
+          "sonarKey": "S6317",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6317/javascript"
+        },
+        {
+          "name": "aws-iam-public-access",
+          "description": "",
+          "sonarKey": "S6270",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6270/javascript"
+        },
+        {
+          "name": "aws-opensearchservice-domain",
+          "description": "",
+          "sonarKey": "S6308",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6308/javascript"
+        },
+        {
+          "name": "aws-rds-unencrypted-databases",
+          "description": "",
+          "sonarKey": "S6303",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6303/javascript"
+        },
+        {
+          "name": "aws-restricted-ip-admin-access",
+          "description": "",
+          "sonarKey": "S6321",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6321/javascript"
+        },
+        {
+          "name": "aws-s3-bucket-granted-access",
+          "description": "",
+          "sonarKey": "S6265",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6265/javascript"
+        },
+        {
+          "name": "aws-s3-bucket-insecure-http",
+          "description": "",
+          "sonarKey": "S6249",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6249/javascript"
+        },
+        {
+          "name": "aws-s3-bucket-public-access",
+          "description": "",
+          "sonarKey": "S6281",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6281/javascript"
+        },
+        {
+          "name": "aws-s3-bucket-server-encryption",
+          "description": "",
+          "sonarKey": "S6245",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6245/javascript"
+        },
+        {
+          "name": "aws-s3-bucket-versioning",
+          "description": "",
+          "sonarKey": "S6252",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6252/javascript"
+        },
+        {
+          "name": "aws-sagemaker-unencrypted-notebook",
+          "description": "",
+          "sonarKey": "S6319",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6319/javascript"
+        },
+        {
+          "name": "aws-sns-unencrypted-topics",
+          "description": "",
+          "sonarKey": "S6327",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6327/javascript"
+        },
+        {
+          "name": "aws-sqs-unencrypted-queue",
+          "description": "",
+          "sonarKey": "S6330",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6330/javascript"
+        },
+        {
+          "name": "bitwise-operators",
+          "description": "",
+          "sonarKey": "S1529",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1529/javascript"
+        },
+        {
+          "name": "block-scoped-var",
+          "description": "",
+          "sonarKey": "S2392",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2392/javascript"
+        },
+        {
+          "name": "bool-param-default",
+          "description": "",
+          "sonarKey": "S4798",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4798/javascript"
+        },
+        {
+          "name": "call-argument-line",
+          "description": "",
+          "sonarKey": "S1472",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1472/javascript"
+        },
+        {
+          "name": "certificate-transparency",
+          "description": "",
+          "sonarKey": "S5742",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5742/javascript"
+        },
+        {
+          "name": "chai-determinate-assertion",
+          "description": "",
+          "sonarKey": "S6092",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6092/javascript"
+        },
+        {
+          "name": "class-name",
+          "description": "",
+          "sonarKey": "S101",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S101/javascript"
+        },
+        {
+          "name": "class-prototype",
+          "description": "",
+          "sonarKey": "S3525",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3525/javascript"
+        },
+        {
+          "name": "code-eval",
+          "description": "",
+          "sonarKey": "S1523",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1523/javascript"
+        },
+        {
+          "name": "cognitive-complexity",
+          "description": "",
+          "sonarKey": "S3776",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3776/javascript"
+        },
+        {
+          "name": "comma-or-logical-or-case",
+          "description": "",
+          "sonarKey": "S3616",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3616/javascript"
+        },
+        {
+          "name": "comment-regex",
+          "description": "",
+          "sonarKey": "S124",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S124/javascript"
+        },
+        {
+          "name": "concise-regex",
+          "description": "",
+          "sonarKey": "S6353",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6353/javascript"
+        },
+        {
+          "name": "conditional-indentation",
+          "description": "",
+          "sonarKey": "S3973",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3973/javascript"
+        },
+        {
+          "name": "confidential-information-logging",
+          "description": "",
+          "sonarKey": "S5757",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5757/javascript"
+        },
+        {
+          "name": "constructor-for-side-effects",
+          "description": "",
+          "sonarKey": "S1848",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1848/javascript"
+        },
+        {
+          "name": "content-length",
+          "description": "",
+          "sonarKey": "S5693",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5693/javascript"
+        },
+        {
+          "name": "content-security-policy",
+          "description": "",
+          "sonarKey": "S5728",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5728/javascript"
+        },
+        {
+          "name": "cookie-no-httponly",
+          "description": "",
+          "sonarKey": "S3330",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3330/javascript"
+        },
+        {
+          "name": "cookies",
+          "description": "",
+          "sonarKey": "S2255",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2255/javascript"
+        },
+        {
+          "name": "cors",
+          "description": "",
+          "sonarKey": "S5122",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5122/javascript"
+        },
+        {
+          "name": "csrf",
+          "description": "",
+          "sonarKey": "S4502",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4502/javascript"
+        },
+        {
+          "name": "cyclomatic-complexity",
+          "description": "",
+          "sonarKey": "S1541",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1541/javascript"
+        },
+        {
+          "name": "declarations-in-global-scope",
+          "description": "",
+          "sonarKey": "S3798",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3798/javascript"
+        },
+        {
+          "name": "deprecation",
+          "description": "",
+          "sonarKey": "S1874",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1874/javascript"
+        },
+        {
+          "name": "destructuring-assignment-syntax",
+          "description": "",
+          "sonarKey": "S3514",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3514/javascript"
+        },
+        {
+          "name": "different-types-comparison",
+          "description": "",
+          "sonarKey": "S3403",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3403/javascript"
+        },
+        {
+          "name": "disabled-auto-escaping",
+          "description": "",
+          "sonarKey": "S5247",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5247/javascript"
+        },
+        {
+          "name": "disabled-resource-integrity",
+          "description": "",
+          "sonarKey": "S5725",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5725/javascript"
+        },
+        {
+          "name": "disabled-timeout",
+          "description": "",
+          "sonarKey": "S6080",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6080/javascript"
+        },
+        {
+          "name": "dns-prefetching",
+          "description": "",
+          "sonarKey": "S5743",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5743/javascript"
+        },
+        {
+          "name": "dompurify-unsafe-config",
+          "description": "",
+          "sonarKey": "S8479",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S8479/javascript"
+        },
+        {
+          "name": "duplicates-in-character-class",
+          "description": "",
+          "sonarKey": "S5869",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5869/javascript"
+        },
+        {
+          "name": "dynamically-constructed-templates",
+          "description": "",
+          "sonarKey": "S7790",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S7790/javascript"
+        },
+        {
+          "name": "elseif-without-else",
+          "description": "",
+          "sonarKey": "S126",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S126/javascript"
+        },
+        {
+          "name": "empty-string-repetition",
+          "description": "",
+          "sonarKey": "S5842",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5842/javascript"
+        },
+        {
+          "name": "encryption",
+          "description": "",
+          "sonarKey": "S4787",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4787/javascript"
+        },
+        {
+          "name": "encryption-secure-mode",
+          "description": "",
+          "sonarKey": "S5542",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5542/javascript"
+        },
+        {
+          "name": "existing-groups",
+          "description": "",
+          "sonarKey": "S6328",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6328/javascript"
+        },
+        {
+          "name": "expression-complexity",
+          "description": "",
+          "sonarKey": "S1067",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1067/javascript"
+        },
+        {
+          "name": "file-header",
+          "description": "",
+          "sonarKey": "S1451",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1451/javascript"
+        },
+        {
+          "name": "file-name-differ-from-class",
+          "description": "",
+          "sonarKey": "S3317",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3317/javascript"
+        },
+        {
+          "name": "file-permissions",
+          "description": "",
+          "sonarKey": "S2612",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2612/javascript"
+        },
+        {
+          "name": "file-uploads",
+          "description": "",
+          "sonarKey": "S2598",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2598/javascript"
+        },
+        {
+          "name": "fixme-tag",
+          "description": "",
+          "sonarKey": "S1134",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1134/javascript"
+        },
+        {
+          "name": "for-in",
+          "description": "",
+          "sonarKey": "S1535",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1535/javascript"
+        },
+        {
+          "name": "for-loop-increment-sign",
+          "description": "",
+          "sonarKey": "S2251",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2251/javascript"
+        },
+        {
+          "name": "frame-ancestors",
+          "description": "",
+          "sonarKey": "S5732",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5732/javascript"
+        },
+        {
+          "name": "function-inside-loop",
+          "description": "",
+          "sonarKey": "S1515",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1515/javascript"
+        },
+        {
+          "name": "function-name",
+          "description": "",
+          "sonarKey": "S100",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S100/javascript"
+        },
+        {
+          "name": "function-return-type",
+          "description": "",
+          "sonarKey": "S3800",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3800/javascript"
+        },
+        {
+          "name": "future-reserved-words",
+          "description": "",
+          "sonarKey": "S1527",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1527/javascript"
+        },
+        {
+          "name": "generator-without-yield",
+          "description": "",
+          "sonarKey": "S3531",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3531/javascript"
+        },
+        {
+          "name": "hardcoded-secret-signatures",
+          "description": "",
+          "sonarKey": "S6437",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6437/javascript"
+        },
+        {
+          "name": "hashing",
+          "description": "",
+          "sonarKey": "S4790",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4790/javascript"
+        },
+        {
+          "name": "hidden-files",
+          "description": "",
+          "sonarKey": "S5691",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5691/javascript"
+        },
+        {
+          "name": "in-operator-type-error",
+          "description": "",
+          "sonarKey": "S3785",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3785/javascript"
+        },
+        {
+          "name": "inconsistent-function-call",
+          "description": "",
+          "sonarKey": "S3686",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3686/javascript"
+        },
+        {
+          "name": "index-of-compare-to-positive-number",
+          "description": "",
+          "sonarKey": "S2692",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2692/javascript"
+        },
+        {
+          "name": "insecure-cookie",
+          "description": "",
+          "sonarKey": "S2092",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2092/javascript"
+        },
+        {
+          "name": "insecure-jwt-token",
+          "description": "",
+          "sonarKey": "S5659",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5659/javascript"
+        },
+        {
+          "name": "inverted-assertion-arguments",
+          "description": "",
+          "sonarKey": "S3415",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3415/javascript"
+        },
+        {
+          "name": "jsx-no-leaked-render",
+          "description": "",
+          "sonarKey": "S6439",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6439/javascript"
+        },
+        {
+          "name": "label-position",
+          "description": "",
+          "sonarKey": "S1439",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1439/javascript"
+        },
+        {
+          "name": "link-with-target-blank",
+          "description": "",
+          "sonarKey": "S5148",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5148/javascript"
+        },
+        {
+          "name": "max-lines",
+          "description": "",
+          "sonarKey": "S104",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S104/javascript"
+        },
+        {
+          "name": "max-lines-per-function",
+          "description": "",
+          "sonarKey": "S138",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S138/javascript"
+        },
+        {
+          "name": "max-switch-cases",
+          "description": "",
+          "sonarKey": "S1479",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1479/javascript"
+        },
+        {
+          "name": "max-union-size",
+          "description": "",
+          "sonarKey": "S4622",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4622/javascript"
+        },
+        {
+          "name": "misplaced-loop-counter",
+          "description": "",
+          "sonarKey": "S1994",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1994/javascript"
+        },
+        {
+          "name": "nested-control-flow",
+          "description": "",
+          "sonarKey": "S134",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S134/javascript"
+        },
+        {
+          "name": "new-operator-misuse",
+          "description": "",
+          "sonarKey": "S2999",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2999/javascript"
+        },
+        {
+          "name": "no-all-duplicated-branches",
+          "description": "",
+          "sonarKey": "S3923",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3923/javascript"
+        },
+        {
+          "name": "no-alphabetical-sort",
+          "description": "",
+          "sonarKey": "S2871",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2871/javascript"
+        },
+        {
+          "name": "no-angular-bypass-sanitization",
+          "description": "",
+          "sonarKey": "S6268",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6268/javascript"
+        },
+        {
+          "name": "no-array-delete",
+          "description": "",
+          "sonarKey": "S2870",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2870/javascript"
+        },
+        {
+          "name": "no-associative-arrays",
+          "description": "",
+          "sonarKey": "S3579",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3579/javascript"
+        },
+        {
+          "name": "no-async-constructor",
+          "description": "",
+          "sonarKey": "S7059",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S7059/javascript"
+        },
+        {
+          "name": "no-built-in-override",
+          "description": "",
+          "sonarKey": "S2424",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2424/javascript"
+        },
+        {
+          "name": "no-case-label-in-switch",
+          "description": "",
+          "sonarKey": "S1219",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1219/javascript"
+        },
+        {
+          "name": "no-clear-text-protocols",
+          "description": "",
+          "sonarKey": "S5332",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5332/javascript"
+        },
+        {
+          "name": "no-code-after-done",
+          "description": "",
+          "sonarKey": "S6079",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6079/javascript"
+        },
+        {
+          "name": "no-collapsible-if",
+          "description": "",
+          "sonarKey": "S1066",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1066/javascript"
+        },
+        {
+          "name": "no-collection-size-mischeck",
+          "description": "",
+          "sonarKey": "S3981",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3981/javascript"
+        },
+        {
+          "name": "no-commented-code",
+          "description": "",
+          "sonarKey": "S125",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S125/javascript"
+        },
+        {
+          "name": "no-control-regex",
+          "description": "",
+          "sonarKey": "S6324",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6324/javascript"
+        },
+        {
+          "name": "no-dead-store",
+          "description": "",
+          "sonarKey": "S1854",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1854/javascript"
+        },
+        {
+          "name": "no-delete-var",
+          "description": "",
+          "sonarKey": "S3001",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3001/javascript"
+        },
+        {
+          "name": "no-duplicate-in-composite",
+          "description": "",
+          "sonarKey": "S4621",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4621/javascript"
+        },
+        {
+          "name": "no-duplicate-string",
+          "description": "",
+          "sonarKey": "S1192",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1192/javascript"
+        },
+        {
+          "name": "no-duplicated-branches",
+          "description": "",
+          "sonarKey": "S1871",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1871/javascript"
+        },
+        {
+          "name": "no-element-overwrite",
+          "description": "",
+          "sonarKey": "S4143",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4143/javascript"
+        },
+        {
+          "name": "no-empty-after-reluctant",
+          "description": "",
+          "sonarKey": "S6019",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6019/javascript"
+        },
+        {
+          "name": "no-empty-alternatives",
+          "description": "",
+          "sonarKey": "S6323",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6323/javascript"
+        },
+        {
+          "name": "no-empty-character-class",
+          "description": "",
+          "sonarKey": "S2639",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2639/javascript"
+        },
+        {
+          "name": "no-empty-collection",
+          "description": "",
+          "sonarKey": "S4158",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4158/javascript"
+        },
+        {
+          "name": "no-empty-group",
+          "description": "",
+          "sonarKey": "S6331",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6331/javascript"
+        },
+        {
+          "name": "no-empty-test-file",
+          "description": "",
+          "sonarKey": "S2187",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2187/javascript"
+        },
+        {
+          "name": "no-equals-in-for-termination",
+          "description": "",
+          "sonarKey": "S888",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S888/javascript"
+        },
+        {
+          "name": "no-exclusive-tests",
+          "description": "",
+          "sonarKey": "S6426",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6426/javascript"
+        },
+        {
+          "name": "no-extra-arguments",
+          "description": "",
+          "sonarKey": "S930",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S930/javascript"
+        },
+        {
+          "name": "no-fallthrough",
+          "description": "",
+          "sonarKey": "S128",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S128/javascript"
+        },
+        {
+          "name": "no-for-in-iterable",
+          "description": "",
+          "sonarKey": "S4139",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4139/javascript"
+        },
+        {
+          "name": "no-function-declaration-in-block",
+          "description": "",
+          "sonarKey": "S1530",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1530/javascript"
+        },
+        {
+          "name": "no-global-this",
+          "description": "",
+          "sonarKey": "S2990",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2990/javascript"
+        },
+        {
+          "name": "no-globals-shadowing",
+          "description": "",
+          "sonarKey": "S2137",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2137/javascript"
+        },
+        {
+          "name": "no-gratuitous-expressions",
+          "description": "",
+          "sonarKey": "S2589",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2589/javascript"
+        },
+        {
+          "name": "no-hardcoded-ip",
+          "description": "",
+          "sonarKey": "S1313",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1313/javascript"
+        },
+        {
+          "name": "no-hardcoded-passwords",
+          "description": "",
+          "sonarKey": "S2068",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2068/javascript"
+        },
+        {
+          "name": "no-hardcoded-secrets",
+          "description": "",
+          "sonarKey": "S6418",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6418/javascript"
+        },
+        {
+          "name": "no-hook-setter-in-body",
+          "description": "",
+          "sonarKey": "S6442",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6442/javascript"
+        },
+        {
+          "name": "no-identical-conditions",
+          "description": "",
+          "sonarKey": "S1862",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1862/javascript"
+        },
+        {
+          "name": "no-identical-expressions",
+          "description": "",
+          "sonarKey": "S1764",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1764/javascript"
+        },
+        {
+          "name": "no-identical-functions",
+          "description": "",
+          "sonarKey": "S4144",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4144/javascript"
+        },
+        {
+          "name": "no-ignored-exceptions",
+          "description": "",
+          "sonarKey": "S2486",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2486/javascript"
+        },
+        {
+          "name": "no-ignored-return",
+          "description": "",
+          "sonarKey": "S2201",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2201/javascript"
+        },
+        {
+          "name": "no-implicit-dependencies",
+          "description": "",
+          "sonarKey": "S4328",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4328/javascript"
+        },
+        {
+          "name": "no-implicit-global",
+          "description": "",
+          "sonarKey": "S2703",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2703/javascript"
+        },
+        {
+          "name": "no-in-misuse",
+          "description": "",
+          "sonarKey": "S4619",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4619/javascript"
+        },
+        {
+          "name": "no-incomplete-assertions",
+          "description": "",
+          "sonarKey": "S2970",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2970/javascript"
+        },
+        {
+          "name": "no-inconsistent-returns",
+          "description": "",
+          "sonarKey": "S3801",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3801/javascript"
+        },
+        {
+          "name": "no-incorrect-string-concat",
+          "description": "",
+          "sonarKey": "S3402",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3402/javascript"
+        },
+        {
+          "name": "no-internal-api-use",
+          "description": "",
+          "sonarKey": "S6627",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6627/javascript"
+        },
+        {
+          "name": "no-intrusive-permissions",
+          "description": "",
+          "sonarKey": "S5604",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5604/javascript"
+        },
+        {
+          "name": "no-invalid-regexp",
+          "description": "",
+          "sonarKey": "S5856",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5856/javascript"
+        },
+        {
+          "name": "no-invariant-returns",
+          "description": "",
+          "sonarKey": "S3516",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3516/javascript"
+        },
+        {
+          "name": "no-inverted-boolean-check",
+          "description": "",
+          "sonarKey": "S1940",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1940/javascript"
+        },
+        {
+          "name": "no-ip-forward",
+          "description": "",
+          "sonarKey": "S5759",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5759/javascript"
+        },
+        {
+          "name": "no-labels",
+          "description": "",
+          "sonarKey": "S1119",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1119/javascript"
+        },
+        {
+          "name": "no-literal-call",
+          "description": "",
+          "sonarKey": "S6958",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6958/javascript"
+        },
+        {
+          "name": "no-mime-sniff",
+          "description": "",
+          "sonarKey": "S5734",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5734/javascript"
+        },
+        {
+          "name": "no-misleading-array-reverse",
+          "description": "",
+          "sonarKey": "S4043",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4043/javascript"
+        },
+        {
+          "name": "no-misleading-character-class",
+          "description": "",
+          "sonarKey": "S5868",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5868/javascript"
+        },
+        {
+          "name": "no-mixed-content",
+          "description": "",
+          "sonarKey": "S5730",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5730/javascript"
+        },
+        {
+          "name": "no-nested-assignment",
+          "description": "",
+          "sonarKey": "S1121",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1121/javascript"
+        },
+        {
+          "name": "no-nested-conditional",
+          "description": "",
+          "sonarKey": "S3358",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3358/javascript"
+        },
+        {
+          "name": "no-nested-functions",
+          "description": "",
+          "sonarKey": "S2004",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2004/javascript"
+        },
+        {
+          "name": "no-nested-incdec",
+          "description": "",
+          "sonarKey": "S881",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S881/javascript"
+        },
+        {
+          "name": "no-nested-switch",
+          "description": "",
+          "sonarKey": "S1821",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1821/javascript"
+        },
+        {
+          "name": "no-nested-template-literals",
+          "description": "",
+          "sonarKey": "S4624",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4624/javascript"
+        },
+        {
+          "name": "no-os-command-from-path",
+          "description": "",
+          "sonarKey": "S4036",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4036/javascript"
+        },
+        {
+          "name": "no-parameter-reassignment",
+          "description": "",
+          "sonarKey": "S1226",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1226/javascript"
+        },
+        {
+          "name": "no-primitive-wrappers",
+          "description": "",
+          "sonarKey": "S1533",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1533/javascript"
+        },
+        {
+          "name": "no-redundant-assignments",
+          "description": "",
+          "sonarKey": "S4165",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4165/javascript"
+        },
+        {
+          "name": "no-redundant-boolean",
+          "description": "",
+          "sonarKey": "S1125",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1125/javascript"
+        },
+        {
+          "name": "no-redundant-jump",
+          "description": "",
+          "sonarKey": "S3626",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3626/javascript"
+        },
+        {
+          "name": "no-redundant-optional",
+          "description": "",
+          "sonarKey": "S4782",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4782/javascript"
+        },
+        {
+          "name": "no-redundant-parentheses",
+          "description": "",
+          "sonarKey": "S1110",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1110/javascript"
+        },
+        {
+          "name": "no-reference-error",
+          "description": "",
+          "sonarKey": "S3827",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3827/javascript"
+        },
+        {
+          "name": "no-referrer-policy",
+          "description": "",
+          "sonarKey": "S5736",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5736/javascript"
+        },
+        {
+          "name": "no-regex-spaces",
+          "description": "",
+          "sonarKey": "S6326",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6326/javascript"
+        },
+        {
+          "name": "no-require-or-define",
+          "description": "",
+          "sonarKey": "S3533",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3533/javascript"
+        },
+        {
+          "name": "no-return-type-any",
+          "description": "",
+          "sonarKey": "S4324",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4324/javascript"
+        },
+        {
+          "name": "no-same-argument-assert",
+          "description": "",
+          "sonarKey": "S5863",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5863/javascript"
+        },
+        {
+          "name": "no-same-line-conditional",
+          "description": "",
+          "sonarKey": "S3972",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3972/javascript"
+        },
+        {
+          "name": "no-selector-parameter",
+          "description": "",
+          "sonarKey": "S2301",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2301/javascript"
+        },
+        {
+          "name": "no-session-cookies-on-static-assets",
+          "description": "",
+          "sonarKey": "S8441",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S8441/javascript"
+        },
+        {
+          "name": "no-skipped-tests",
+          "description": "",
+          "sonarKey": "S1607",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1607/javascript"
+        },
+        {
+          "name": "no-small-switch",
+          "description": "",
+          "sonarKey": "S1301",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1301/javascript"
+        },
+        {
+          "name": "no-sonar-comments",
+          "description": "",
+          "sonarKey": "S1291",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1291/javascript"
+        },
+        {
+          "name": "no-tab",
+          "description": "",
+          "sonarKey": "S105",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S105/javascript"
+        },
+        {
+          "name": "no-table-as-layout",
+          "description": "",
+          "sonarKey": "S5257",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5257/javascript"
+        },
+        {
+          "name": "no-try-promise",
+          "description": "",
+          "sonarKey": "S4822",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4822/javascript"
+        },
+        {
+          "name": "no-undefined-argument",
+          "description": "",
+          "sonarKey": "S4623",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4623/javascript"
+        },
+        {
+          "name": "no-undefined-assignment",
+          "description": "",
+          "sonarKey": "S2138",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2138/javascript"
+        },
+        {
+          "name": "no-unenclosed-multiline-block",
+          "description": "",
+          "sonarKey": "S2681",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2681/javascript"
+        },
+        {
+          "name": "no-uniq-key",
+          "description": "",
+          "sonarKey": "S6486",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6486/javascript"
+        },
+        {
+          "name": "no-unsafe-unzip",
+          "description": "",
+          "sonarKey": "S5042",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5042/javascript"
+        },
+        {
+          "name": "no-unthrown-error",
+          "description": "",
+          "sonarKey": "S3984",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3984/javascript"
+        },
+        {
+          "name": "no-unused-collection",
+          "description": "",
+          "sonarKey": "S4030",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4030/javascript"
+        },
+        {
+          "name": "no-unused-function-argument",
+          "description": "",
+          "sonarKey": "S1172",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1172/javascript"
+        },
+        {
+          "name": "no-unused-vars",
+          "description": "",
+          "sonarKey": "S1481",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1481/javascript"
+        },
+        {
+          "name": "no-use-of-empty-return-value",
+          "description": "",
+          "sonarKey": "S3699",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3699/javascript"
+        },
+        {
+          "name": "no-useless-catch",
+          "description": "",
+          "sonarKey": "S2737",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2737/javascript"
+        },
+        {
+          "name": "no-useless-increment",
+          "description": "",
+          "sonarKey": "S2123",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2123/javascript"
+        },
+        {
+          "name": "no-useless-intersection",
+          "description": "",
+          "sonarKey": "S4335",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4335/javascript"
+        },
+        {
+          "name": "no-useless-react-setstate",
+          "description": "",
+          "sonarKey": "S6443",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6443/javascript"
+        },
+        {
+          "name": "no-variable-usage-before-declaration",
+          "description": "",
+          "sonarKey": "S1526",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1526/javascript"
+        },
+        {
+          "name": "no-vue-bypass-sanitization",
+          "description": "",
+          "sonarKey": "S6299",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6299/javascript"
+        },
+        {
+          "name": "no-weak-cipher",
+          "description": "",
+          "sonarKey": "S5547",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5547/javascript"
+        },
+        {
+          "name": "no-weak-keys",
+          "description": "",
+          "sonarKey": "S4426",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4426/javascript"
+        },
+        {
+          "name": "no-wildcard-import",
+          "description": "",
+          "sonarKey": "S2208",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2208/javascript"
+        },
+        {
+          "name": "non-existent-operator",
+          "description": "",
+          "sonarKey": "S2757",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2757/javascript"
+        },
+        {
+          "name": "non-number-in-arithmetic-expression",
+          "description": "",
+          "sonarKey": "S3760",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3760/javascript"
+        },
+        {
+          "name": "null-dereference",
+          "description": "",
+          "sonarKey": "S2259",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2259/javascript"
+        },
+        {
+          "name": "object-alt-content",
+          "description": "",
+          "sonarKey": "S5264",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5264/javascript"
+        },
+        {
+          "name": "operation-returning-nan",
+          "description": "",
+          "sonarKey": "S3757",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3757/javascript"
+        },
+        {
+          "name": "os-command",
+          "description": "",
+          "sonarKey": "S4721",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4721/javascript"
+        },
+        {
+          "name": "post-message",
+          "description": "",
+          "sonarKey": "S2819",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2819/javascript"
+        },
+        {
+          "name": "prefer-default-last",
+          "description": "",
+          "sonarKey": "S4524",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4524/javascript"
+        },
+        {
+          "name": "prefer-immediate-return",
+          "description": "",
+          "sonarKey": "S1488",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1488/javascript"
+        },
+        {
+          "name": "prefer-object-literal",
+          "description": "",
+          "sonarKey": "S2428",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2428/javascript"
+        },
+        {
+          "name": "prefer-promise-shorthand",
+          "description": "",
+          "sonarKey": "S4634",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4634/javascript"
+        },
+        {
+          "name": "prefer-read-only-props",
+          "description": "",
+          "sonarKey": "S6759",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6759/javascript"
+        },
+        {
+          "name": "prefer-regexp-exec",
+          "description": "",
+          "sonarKey": "S6594",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6594/javascript"
+        },
+        {
+          "name": "prefer-single-boolean-return",
+          "description": "",
+          "sonarKey": "S1126",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1126/javascript"
+        },
+        {
+          "name": "prefer-type-guard",
+          "description": "",
+          "sonarKey": "S4322",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4322/javascript"
+        },
+        {
+          "name": "prefer-while",
+          "description": "",
+          "sonarKey": "S1264",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1264/javascript"
+        },
+        {
+          "name": "process-argv",
+          "description": "",
+          "sonarKey": "S4823",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4823/javascript"
+        },
+        {
+          "name": "production-debug",
+          "description": "",
+          "sonarKey": "S4507",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4507/javascript"
+        },
+        {
+          "name": "pseudo-random",
+          "description": "",
+          "sonarKey": "S2245",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2245/javascript"
+        },
+        {
+          "name": "public-static-readonly",
+          "description": "",
+          "sonarKey": "S1444",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1444/javascript"
+        },
+        {
+          "name": "publicly-writable-directories",
+          "description": "",
+          "sonarKey": "S5443",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5443/javascript"
+        },
+        {
+          "name": "reduce-initial-value",
+          "description": "",
+          "sonarKey": "S6959",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6959/javascript"
+        },
+        {
+          "name": "redundant-type-aliases",
+          "description": "",
+          "sonarKey": "S6564",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6564/javascript"
+        },
+        {
+          "name": "regex-complexity",
+          "description": "",
+          "sonarKey": "S5843",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5843/javascript"
+        },
+        {
+          "name": "regular-expr",
+          "description": "",
+          "sonarKey": "S4784",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4784/javascript"
+        },
+        {
+          "name": "review-blockchain-mnemonic",
+          "description": "",
+          "sonarKey": "S7639",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S7639/javascript"
+        },
+        {
+          "name": "session-regeneration",
+          "description": "",
+          "sonarKey": "S5876",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5876/javascript"
+        },
+        {
+          "name": "shorthand-property-grouping",
+          "description": "",
+          "sonarKey": "S3499",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3499/javascript"
+        },
+        {
+          "name": "single-char-in-character-classes",
+          "description": "",
+          "sonarKey": "S6397",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6397/javascript"
+        },
+        {
+          "name": "single-character-alternation",
+          "description": "",
+          "sonarKey": "S6035",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6035/javascript"
+        },
+        {
+          "name": "slow-regex",
+          "description": "",
+          "sonarKey": "S5852",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5852/javascript"
+        },
+        {
+          "name": "sockets",
+          "description": "",
+          "sonarKey": "S4818",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4818/javascript"
+        },
+        {
+          "name": "sql-queries",
+          "description": "",
+          "sonarKey": "S2077",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2077/javascript"
+        },
+        {
+          "name": "stable-tests",
+          "description": "",
+          "sonarKey": "S5973",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5973/javascript"
+        },
+        {
+          "name": "standard-input",
+          "description": "",
+          "sonarKey": "S4829",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4829/javascript"
+        },
+        {
+          "name": "stateful-regex",
+          "description": "",
+          "sonarKey": "S6351",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6351/javascript"
+        },
+        {
+          "name": "strict-transport-security",
+          "description": "",
+          "sonarKey": "S5739",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5739/javascript"
+        },
+        {
+          "name": "strings-comparison",
+          "description": "",
+          "sonarKey": "S3003",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3003/javascript"
+        },
+        {
+          "name": "table-header",
+          "description": "",
+          "sonarKey": "S5256",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5256/javascript"
+        },
+        {
+          "name": "table-header-reference",
+          "description": "",
+          "sonarKey": "S5260",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5260/javascript"
+        },
+        {
+          "name": "test-check-exception",
+          "description": "",
+          "sonarKey": "S5958",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5958/javascript"
+        },
+        {
+          "name": "todo-tag",
+          "description": "",
+          "sonarKey": "S1135",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1135/javascript"
+        },
+        {
+          "name": "too-many-break-or-continue-in-loop",
+          "description": "",
+          "sonarKey": "S135",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S135/javascript"
+        },
+        {
+          "name": "unicode-aware-regex",
+          "description": "",
+          "sonarKey": "S5867",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5867/javascript"
+        },
+        {
+          "name": "unused-import",
+          "description": "",
+          "sonarKey": "S1128",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1128/javascript"
+        },
+        {
+          "name": "unused-named-groups",
+          "description": "",
+          "sonarKey": "S5860",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5860/javascript"
+        },
+        {
+          "name": "unverified-certificate",
+          "description": "",
+          "sonarKey": "S4830",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4830/javascript"
+        },
+        {
+          "name": "unverified-hostname",
+          "description": "",
+          "sonarKey": "S5527",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5527/javascript"
+        },
+        {
+          "name": "updated-const-var",
+          "description": "",
+          "sonarKey": "S3500",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3500/javascript"
+        },
+        {
+          "name": "updated-loop-counter",
+          "description": "",
+          "sonarKey": "S2310",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2310/javascript"
+        },
+        {
+          "name": "use-type-alias",
+          "description": "",
+          "sonarKey": "S4323",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4323/javascript"
+        },
+        {
+          "name": "useless-string-operation",
+          "description": "",
+          "sonarKey": "S1154",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1154/javascript"
+        },
+        {
+          "name": "values-not-convertible-to-numbers",
+          "description": "",
+          "sonarKey": "S3758",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3758/javascript"
+        },
+        {
+          "name": "variable-name",
+          "description": "",
+          "sonarKey": "S117",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S117/javascript"
+        },
+        {
+          "name": "void-use",
+          "description": "",
+          "sonarKey": "S3735",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3735/javascript"
+        },
+        {
+          "name": "weak-ssl",
+          "description": "",
+          "sonarKey": "S4423",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4423/javascript"
+        },
+        {
+          "name": "web-sql-database",
+          "description": "",
+          "sonarKey": "S2817",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2817/javascript"
+        },
+        {
+          "name": "x-powered-by",
+          "description": "",
+          "sonarKey": "S5689",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5689/javascript"
+        },
+        {
+          "name": "xml-parser-xxe",
+          "description": "",
+          "sonarKey": "S2755",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2755/javascript"
+        },
+        {
+          "name": "xpath",
+          "description": "",
+          "sonarKey": "S4817",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4817/javascript"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-storybook",
+      "npm": "eslint-plugin-storybook",
+      "repo": "https://github.com/storybookjs/storybook",
+      "baselineVersion": "10.3.6",
+      "license": "MIT",
+      "ruleCount": 16,
+      "rules": [
+        {
+          "name": "await-interactions",
+          "description": "Interactions should be awaited",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/await-interactions.md"
+        },
+        {
+          "name": "context-in-play-function",
+          "description": "Pass a context when invoking play function of another story",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/context-in-play-function.md"
+        },
+        {
+          "name": "csf-component",
+          "description": "The component property should be set",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/csf-component.md"
+        },
+        {
+          "name": "default-exports",
+          "description": "Story files should have a default export",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/default-exports.md"
+        },
+        {
+          "name": "hierarchy-separator",
+          "description": "Deprecated hierarchy separator in title property",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/hierarchy-separator.md"
+        },
+        {
+          "name": "meta-inline-properties",
+          "description": "Meta should only have inline properties",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/meta-inline-properties.md"
+        },
+        {
+          "name": "meta-satisfies-type",
+          "description": "Meta should use `satisfies Meta`",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/meta-satisfies-type.md"
+        },
+        {
+          "name": "no-redundant-story-name",
+          "description": "A story should not have a redundant name property",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/no-redundant-story-name.md"
+        },
+        {
+          "name": "no-renderer-packages",
+          "description": "Do not import renderer packages directly in stories",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/no-renderer-packages.md"
+        },
+        {
+          "name": "no-stories-of",
+          "description": "storiesOf is deprecated and should not be used",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/no-stories-of.md"
+        },
+        {
+          "name": "no-title-property-in-meta",
+          "description": "Do not define a title in meta",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/no-title-property-in-meta.md"
+        },
+        {
+          "name": "no-uninstalled-addons",
+          "description": "This rule identifies storybook addons that are invalid because they are either not installed or contain a typo in their name.",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/no-uninstalled-addons.md"
+        },
+        {
+          "name": "prefer-pascal-case",
+          "description": "Stories should use PascalCase",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/prefer-pascal-case.md"
+        },
+        {
+          "name": "story-exports",
+          "description": "A story file must contain at least one story export",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/story-exports.md"
+        },
+        {
+          "name": "use-storybook-expect",
+          "description": "Use expect from `@storybook/test`, `storybook/test` or `@storybook/jest`",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/use-storybook-expect.md"
+        },
+        {
+          "name": "use-storybook-testing-library",
+          "description": "Do not use testing-library directly on stories",
+          "docsUrl": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/use-storybook-testing-library.md"
+        }
+      ]
+    },
+    {
+      "id": "unocss-eslint-plugin",
+      "npm": "@unocss/eslint-plugin",
+      "repo": "https://github.com/unocss/unocss",
+      "baselineVersion": "66.6.8",
+      "license": "MIT",
+      "ruleCount": 4,
+      "rules": [
+        {
+          "name": "blocklist",
+          "description": "Utilities in UnoCSS blocklist"
+        },
+        {
+          "name": "enforce-class-compile",
+          "description": "Enforce class compilation"
+        },
+        {
+          "name": "order",
+          "description": "Order of UnoCSS utilities in class attribute"
+        },
+        {
+          "name": "order-attributify",
+          "description": "Order of UnoCSS attributes"
+        }
+      ]
+    },
+    {
+      "id": "eslint-json",
+      "npm": "@eslint/json",
+      "repo": "https://github.com/eslint/json",
+      "baselineVersion": "1.2.0",
+      "license": "Apache-2.0",
+      "ruleCount": 6,
+      "rules": [
+        {
+          "name": "no-duplicate-keys",
+          "description": "Disallow duplicate keys in JSON objects"
+        },
+        {
+          "name": "no-empty-keys",
+          "description": "Disallow empty keys in JSON objects"
+        },
+        {
+          "name": "no-unnormalized-keys",
+          "description": "Disallow JSON keys that are not normalized"
+        },
+        {
+          "name": "no-unsafe-values",
+          "description": "Disallow JSON values that are unsafe for interchange"
+        },
+        {
+          "name": "sort-keys",
+          "description": "Require JSON object keys to be sorted"
+        },
+        {
+          "name": "top-level-interop",
+          "description": "Require the JSON top-level value to be an array or object"
+        }
+      ]
+    },
+    {
+      "id": "eslint-markdown",
+      "npm": "@eslint/markdown",
+      "repo": "https://github.com/eslint/markdown",
+      "baselineVersion": "8.0.2",
+      "license": "MIT",
+      "ruleCount": 21,
+      "rules": [
+        {
+          "name": "fenced-code-language",
+          "description": "Require languages for fenced code blocks",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/fenced-code-language.md"
+        },
+        {
+          "name": "fenced-code-meta",
+          "description": "Require or disallow metadata for fenced code blocks",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/fenced-code-meta.md"
+        },
+        {
+          "name": "heading-increment",
+          "description": "Enforce heading levels increment by one",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/heading-increment.md"
+        },
+        {
+          "name": "no-bare-urls",
+          "description": "Disallow bare URLs",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-bare-urls.md"
+        },
+        {
+          "name": "no-duplicate-definitions",
+          "description": "Disallow duplicate definitions",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-duplicate-definitions.md"
+        },
+        {
+          "name": "no-duplicate-headings",
+          "description": "Disallow duplicate headings in the same document",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-duplicate-headings.md"
+        },
+        {
+          "name": "no-empty-definitions",
+          "description": "Disallow empty definitions",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-empty-definitions.md"
+        },
+        {
+          "name": "no-empty-images",
+          "description": "Disallow empty images",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-empty-images.md"
+        },
+        {
+          "name": "no-empty-links",
+          "description": "Disallow empty links",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-empty-links.md"
+        },
+        {
+          "name": "no-html",
+          "description": "Disallow HTML tags",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-html.md"
+        },
+        {
+          "name": "no-invalid-label-refs",
+          "description": "Disallow invalid label references",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-invalid-label-refs.md"
+        },
+        {
+          "name": "no-missing-atx-heading-space",
+          "description": "Disallow headings without a space after the hash characters",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-atx-heading-space.md"
+        },
+        {
+          "name": "no-missing-label-refs",
+          "description": "Disallow missing label references",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-label-refs.md"
+        },
+        {
+          "name": "no-missing-link-fragments",
+          "description": "Disallow link fragments that do not reference valid headings",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-missing-link-fragments.md"
+        },
+        {
+          "name": "no-multiple-h1",
+          "description": "Disallow multiple H1 headings in the same document",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-multiple-h1.md"
+        },
+        {
+          "name": "no-reference-like-urls",
+          "description": "Disallow URLs that match defined reference identifiers",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-reference-like-urls.md"
+        },
+        {
+          "name": "no-reversed-media-syntax",
+          "description": "Disallow reversed link and image syntax",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-reversed-media-syntax.md"
+        },
+        {
+          "name": "no-space-in-emphasis",
+          "description": "Disallow spaces around emphasis markers",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-space-in-emphasis.md"
+        },
+        {
+          "name": "no-unused-definitions",
+          "description": "Disallow unused definitions",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/no-unused-definitions.md"
+        },
+        {
+          "name": "require-alt-text",
+          "description": "Require alternative text for images",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/require-alt-text.md"
+        },
+        {
+          "name": "table-column-count",
+          "description": "Disallow data rows in a GitHub Flavored Markdown table from having more cells than the header row",
+          "docsUrl": "https://github.com/eslint/markdown/blob/main/docs/rules/table-column-count.md"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-postgresql",
+      "npm": "eslint-plugin-postgresql",
+      "repo": "https://github.com/baseballyama/eslint-plugin-postgresql",
+      "baselineVersion": "0.22.1",
+      "license": "MIT",
+      "ruleCount": 89,
+      "rules": [
+        {
+          "name": "align-column-definitions",
+          "description": "Align column definitions vertically inside `CREATE TABLE` so that name, type, and constraints share consistent column offsets",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/align-column-definitions.md"
+        },
+        {
+          "name": "align-values",
+          "description": "Align column values vertically inside multi-row `INSERT ... VALUES (...)` so that each tuple position shares a consistent width across rows",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/align-values.md"
+        },
+        {
+          "name": "consistent-as-for-column-alias",
+          "description": "Enforce a consistent stance on the `AS` keyword before column aliases in `SELECT` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-as-for-column-alias.md"
+        },
+        {
+          "name": "consistent-as-for-table-alias",
+          "description": "Enforce a consistent stance on the `AS` keyword before table aliases (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-as-for-table-alias.md"
+        },
+        {
+          "name": "consistent-between-over-and",
+          "description": "Enforce a consistent stance on `x BETWEEN a AND b` vs `x >= a AND x <= b` for closed-interval range checks",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-between-over-and.md"
+        },
+        {
+          "name": "consistent-create-index-concurrently",
+          "description": "Enforce a consistent stance on `CONCURRENTLY` for `CREATE INDEX` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-create-index-concurrently.md"
+        },
+        {
+          "name": "consistent-create-or-replace",
+          "description": "Enforce a consistent stance on `CREATE OR REPLACE` for `FUNCTION` / `PROCEDURE` / `VIEW` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-create-or-replace.md"
+        },
+        {
+          "name": "consistent-drop-index-concurrently",
+          "description": "Enforce a consistent stance on `CONCURRENTLY` for `DROP INDEX` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-drop-index-concurrently.md"
+        },
+        {
+          "name": "consistent-explicit-inner-join",
+          "description": "Enforce a consistent stance on the explicit `INNER` keyword in `INNER JOIN` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-explicit-inner-join.md"
+        },
+        {
+          "name": "consistent-explicit-outer-join",
+          "description": "Enforce a consistent stance on the explicit `OUTER` keyword in `LEFT/RIGHT/FULL OUTER JOIN` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-explicit-outer-join.md"
+        },
+        {
+          "name": "consistent-fk-not-valid",
+          "description": "Enforce a consistent stance on `NOT VALID` for `ALTER TABLE ... ADD FOREIGN KEY` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-fk-not-valid.md"
+        },
+        {
+          "name": "consistent-identity-over-serial",
+          "description": "Enforce a consistent stance on `GENERATED ... AS IDENTITY` vs `SERIAL` / `BIGSERIAL` / `SMALLSERIAL`",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-identity-over-serial.md"
+        },
+        {
+          "name": "consistent-jsonb-over-json",
+          "description": "Enforce a consistent stance on `jsonb` vs `json` for column types",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-jsonb-over-json.md"
+        },
+        {
+          "name": "consistent-reindex-concurrently",
+          "description": "Enforce a consistent stance on `CONCURRENTLY` for `REINDEX` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-reindex-concurrently.md"
+        },
+        {
+          "name": "consistent-text-over-varchar",
+          "description": "Enforce a consistent stance on `text` vs `varchar(n)` for string columns",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-text-over-varchar.md"
+        },
+        {
+          "name": "consistent-timestamptz",
+          "description": "Enforce a consistent stance on `timestamptz` vs `timestamp` (without time zone)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/consistent-timestamptz.md"
+        },
+        {
+          "name": "no-add-check-constraint-without-not-valid",
+          "description": "Disallow `ALTER TABLE ... ADD CONSTRAINT ... CHECK (...)` without `NOT VALID`; the synchronous form holds `ACCESS EXCLUSIVE` on the table for the entire validating scan",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-add-check-constraint-without-not-valid.md"
+        },
+        {
+          "name": "no-add-column-not-null-without-default",
+          "description": "Disallow `ALTER TABLE ADD COLUMN ... NOT NULL` without a `DEFAULT` because the migration fails outright on any non-empty table",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-add-column-not-null-without-default.md"
+        },
+        {
+          "name": "no-add-unique-constraint-directly",
+          "description": "Disallow `ALTER TABLE ... ADD CONSTRAINT ... UNIQUE (...)` written inline; build the index with `CREATE UNIQUE INDEX CONCURRENTLY` first, then promote it via `ADD CONSTRAINT ... UNIQUE USING INDEX <name>`",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-add-unique-constraint-directly.md"
+        },
+        {
+          "name": "no-alter-column-type",
+          "description": "Disallow `ALTER TABLE ... ALTER COLUMN ... TYPE ...` because it can rewrite the table under an ACCESS EXCLUSIVE lock",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-alter-column-type.md"
+        },
+        {
+          "name": "no-char-type",
+          "description": "Disallow the blank-padded `char(n)` / `bpchar` column type",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-char-type.md"
+        },
+        {
+          "name": "no-cluster",
+          "description": "Disallow the `CLUSTER` statement: it takes ACCESS EXCLUSIVE, rewrites the table, and is not maintained afterwards",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-cluster.md"
+        },
+        {
+          "name": "no-composite-primary-key",
+          "description": "Disallow composite (multi-column) PRIMARY KEY constraints; use a single surrogate key and a UNIQUE constraint on the natural columns instead",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-composite-primary-key.md"
+        },
+        {
+          "name": "no-create-role",
+          "description": "Disallow `CREATE ROLE` / `CREATE USER` in application migrations; manage roles in a separate operator workflow",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-create-role.md"
+        },
+        {
+          "name": "no-cross-join",
+          "description": "Disallow `CROSS JOIN` (unqualified cartesian product)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-cross-join.md"
+        },
+        {
+          "name": "no-distinct-on-without-order-by",
+          "description": "Disallow `SELECT DISTINCT ON (...)` without an `ORDER BY`; the surviving row in each group is otherwise non-deterministic",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-distinct-on-without-order-by.md"
+        },
+        {
+          "name": "no-drop-column",
+          "description": "Disallow `ALTER TABLE ... DROP COLUMN` — every reader of the dropped column breaks at deploy time",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-drop-column.md"
+        },
+        {
+          "name": "no-drop-database",
+          "description": "Disallow `DROP DATABASE`; it is catastrophic if run by accident and should not live in versioned SQL",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-drop-database.md"
+        },
+        {
+          "name": "no-drop-not-null",
+          "description": "Disallow `ALTER COLUMN ... DROP NOT NULL` — relaxing a NOT NULL constraint surprises every consumer that already assumes the column is non-null",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-drop-not-null.md"
+        },
+        {
+          "name": "no-drop-schema-cascade",
+          "description": "Disallow `DROP SCHEMA ... CASCADE`; it silently removes every object in the schema",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-drop-schema-cascade.md"
+        },
+        {
+          "name": "no-drop-table-cascade",
+          "description": "Disallow `DROP TABLE ... CASCADE` because it silently removes dependent objects",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-drop-table-cascade.md"
+        },
+        {
+          "name": "no-equality-with-null",
+          "description": "Disallow `x = NULL` / `x <> NULL`; PostgreSQL's three-valued logic makes both expressions evaluate to NULL (i.e. neither true nor false), which silently filters away rows the author probably wanted",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-equality-with-null.md"
+        },
+        {
+          "name": "no-grant-all",
+          "description": "Disallow `GRANT ALL` / `GRANT ALL PRIVILEGES`; enumerate the privileges actually needed so the grant is auditable and a future PG release adding a new privilege does not silently extend it",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-grant-all.md"
+        },
+        {
+          "name": "no-grant-to-public",
+          "description": "Disallow GRANT statements that target the `PUBLIC` pseudo-role",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-grant-to-public.md"
+        },
+        {
+          "name": "no-group-by-ordinal",
+          "description": "Disallow `GROUP BY <position>` (positional/ordinal references); use the column name or expression instead",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-group-by-ordinal.md"
+        },
+        {
+          "name": "no-having-without-group-by",
+          "description": "Disallow `HAVING` without `GROUP BY` — the query aggregates the entire result set, which is almost never the intended shape",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-having-without-group-by.md"
+        },
+        {
+          "name": "no-identifier-too-long",
+          "description": "Disallow identifiers longer than PostgreSQL's `NAMEDATALEN - 1` limit (default 63 bytes)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-identifier-too-long.md"
+        },
+        {
+          "name": "no-implicit-join",
+          "description": "Disallow comma-separated FROM clauses (implicit cross joins); use explicit JOIN syntax",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-implicit-join.md"
+        },
+        {
+          "name": "no-leading-wildcard-like",
+          "description": "Disallow `LIKE`/`ILIKE` patterns that begin with `%` because they cannot use a B-tree index and force a full scan",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-leading-wildcard-like.md"
+        },
+        {
+          "name": "no-money-type",
+          "description": "Disallow the `money` column type",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-money-type.md"
+        },
+        {
+          "name": "no-natural-join",
+          "description": "Disallow `NATURAL JOIN`",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-natural-join.md"
+        },
+        {
+          "name": "no-not-in-subquery",
+          "description": "Disallow `NOT IN (subquery)` because NULL values in the subquery silently return zero rows",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-not-in-subquery.md"
+        },
+        {
+          "name": "no-numeric-without-precision",
+          "description": "Require an explicit precision (and scale) on `NUMERIC` / `DECIMAL` columns",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-numeric-without-precision.md"
+        },
+        {
+          "name": "no-on-delete-cascade",
+          "description": "Disallow `ON DELETE CASCADE` on foreign keys; cascading deletes are easy to write but can wipe out far more rows than the author intended",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-on-delete-cascade.md"
+        },
+        {
+          "name": "no-order-by-ordinal",
+          "description": "Disallow `ORDER BY <position>` (positional/ordinal references); use the column name or alias instead",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-order-by-ordinal.md"
+        },
+        {
+          "name": "no-rename-column",
+          "description": "Disallow `ALTER TABLE ... RENAME COLUMN` — every deployed reader of the old name breaks at deploy time",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-rename-column.md"
+        },
+        {
+          "name": "no-rename-table",
+          "description": "Disallow `ALTER TABLE ... RENAME TO` — every deployed reader of the old name breaks at deploy time",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-rename-table.md"
+        },
+        {
+          "name": "no-rule",
+          "description": "Disallow `CREATE RULE`; PostgreSQL's rule system is a known foot-gun and is effectively deprecated in favor of triggers and views",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-rule.md"
+        },
+        {
+          "name": "no-security-definer-without-search-path",
+          "description": "Disallow `SECURITY DEFINER` functions that do not pin `search_path`; an attacker who controls a schema in the caller's `search_path` can shadow built-in objects and escalate privileges",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-security-definer-without-search-path.md"
+        },
+        {
+          "name": "no-select-into",
+          "description": "Disallow `SELECT ... INTO target FROM ...` (creates a new table); use `CREATE TABLE AS SELECT ...` instead",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-select-into.md"
+        },
+        {
+          "name": "no-select-star",
+          "description": "Disallow `SELECT *` in queries to keep result schemas stable when the underlying table changes",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-select-star.md"
+        },
+        {
+          "name": "no-set-not-null",
+          "description": "Disallow `ALTER COLUMN ... SET NOT NULL` because it scans the whole table under ACCESS EXCLUSIVE",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-set-not-null.md"
+        },
+        {
+          "name": "no-set-search-path",
+          "description": "Disallow `SET search_path = ...` in versioned SQL; qualify identifiers with their schema instead",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-set-search-path.md"
+        },
+        {
+          "name": "no-syntax-error",
+          "description": "Disallow PostgreSQL syntax errors",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-syntax-error.md"
+        },
+        {
+          "name": "no-temporary-table",
+          "description": "Disallow `CREATE TEMPORARY TABLE` in versioned SQL — temp tables exist for the session only and rarely belong in migration files",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-temporary-table.md"
+        },
+        {
+          "name": "no-time-type",
+          "description": "Disallow `TIME` / `TIME WITH TIME ZONE` columns; they rarely model a real-world value correctly",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-time-type.md"
+        },
+        {
+          "name": "no-truncate-cascade",
+          "description": "Disallow `TRUNCATE ... CASCADE` because it transitively empties referencing tables",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-truncate-cascade.md"
+        },
+        {
+          "name": "no-unlogged-table",
+          "description": "Disallow `CREATE UNLOGGED TABLE` because unlogged tables are truncated on crash and not replicated",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-unlogged-table.md"
+        },
+        {
+          "name": "no-unnecessary-quoted-identifier",
+          "description": "Disallow unnecessary double-quoting of identifiers (e.g. `\"users\"` when `users` would mean the same thing)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-unnecessary-quoted-identifier.md"
+        },
+        {
+          "name": "no-update-primary-key",
+          "description": "Disallow `UPDATE ... SET <pk> = ...` for columns the rule treats as primary keys",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-update-primary-key.md"
+        },
+        {
+          "name": "no-update-without-from-binding",
+          "description": "Disallow `UPDATE ... FROM other_table` without a `WHERE` clause; without a join condition the FROM table forms a Cartesian product with the target table and updates every row of the target as many times as `other_table` has rows",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-update-without-from-binding.md"
+        },
+        {
+          "name": "no-vacuum-full",
+          "description": "Disallow `VACUUM FULL` because it takes ACCESS EXCLUSIVE and rewrites the entire table",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-vacuum-full.md"
+        },
+        {
+          "name": "no-volatile-default-on-add-column",
+          "description": "Disallow `ALTER TABLE ... ADD COLUMN ... DEFAULT <volatile>()`; volatile defaults force a full table rewrite under `ACCESS EXCLUSIVE` because the stable-default short-cut cannot be used",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-volatile-default-on-add-column.md"
+        },
+        {
+          "name": "no-with-recursive-without-limit",
+          "description": "Disallow `WITH RECURSIVE` queries that have no `LIMIT` on the outer SELECT, which can run unboundedly if the recursion's termination condition is wrong",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/no-with-recursive-without-limit.md"
+        },
+        {
+          "name": "plpgsql-keyword-case",
+          "description": "Enforce a consistent case (upper or lower) for SQL and PL/pgSQL keywords inside PL/pgSQL function bodies",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/plpgsql-keyword-case.md"
+        },
+        {
+          "name": "prefer-add-constraint-not-valid",
+          "description": "Prefer `ADD CONSTRAINT ... NOT VALID` followed by a separate `VALIDATE CONSTRAINT` to avoid an `ACCESS EXCLUSIVE` lock on the full table while it is being scanned",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-add-constraint-not-valid.md"
+        },
+        {
+          "name": "prefer-bigint-id",
+          "description": "Prefer `bigint` for primary-key `id` columns; `int` / `smallint` primary keys risk silent overflow on growing tables",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-bigint-id.md"
+        },
+        {
+          "name": "prefer-cast-operator",
+          "description": "Enforce a single style for type casts (`x::int` operator form vs `CAST(x AS int)` function form)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-cast-operator.md"
+        },
+        {
+          "name": "prefer-coalesce-over-case",
+          "description": "Prefer `COALESCE(x, y)` over `CASE WHEN x IS NULL THEN y ELSE x END` (and its IS NOT NULL mirror)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-coalesce-over-case.md"
+        },
+        {
+          "name": "prefer-current-timestamp-over-now",
+          "description": "Prefer SQL-standard `CURRENT_TIMESTAMP` / `CURRENT_TIME` over PostgreSQL's `now()` and the timezone-naive `LOCALTIMESTAMP` / `LOCALTIME`",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-current-timestamp-over-now.md"
+        },
+        {
+          "name": "prefer-exists-over-in-subquery",
+          "description": "Prefer `EXISTS (...)` over `... IN (subquery)` so NULL handling is unambiguous and the planner can use a semi-join",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-exists-over-in-subquery.md"
+        },
+        {
+          "name": "prefer-explicit-null-ordering",
+          "description": "When `ORDER BY` specifies an explicit direction, require an explicit `NULLS FIRST` / `NULLS LAST` so null ordering is not implicit",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-explicit-null-ordering.md"
+        },
+        {
+          "name": "prefer-in-list-over-or",
+          "description": "Prefer `x IN (a, b, c)` over a chain of `x = a OR x = b OR x = c`",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-in-list-over-or.md"
+        },
+        {
+          "name": "prefer-keyword-case",
+          "description": "Enforce a consistent case (upper or lower) for SQL keywords",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-keyword-case.md"
+        },
+        {
+          "name": "prefer-not-equals-operator",
+          "description": "Enforce a single style for the not-equal operator (`<>` or `!=`)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/prefer-not-equals-operator.md"
+        },
+        {
+          "name": "require-fk-include-columns",
+          "description": "Require every foreign-key constraint to include a configured set of columns (e.g. `tenant_id` in a multi-tenant database)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-fk-include-columns.md"
+        },
+        {
+          "name": "require-if-exists",
+          "description": "Require `IF EXISTS` on every `DROP` statement so re-running a migration on a database that already lost the object does not error",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-if-exists.md"
+        },
+        {
+          "name": "require-index-on-fk-column",
+          "description": "Require an index on every foreign-key column; without it a `DELETE` or `UPDATE` on the referenced table sequentially scans the referencing table to enforce the constraint",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-index-on-fk-column.md"
+        },
+        {
+          "name": "require-limit",
+          "description": "Require LIMIT clause in SELECT statements",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-limit.md"
+        },
+        {
+          "name": "require-named-constraint",
+          "description": "Require an explicit name on table-level CHECK, UNIQUE, FOREIGN KEY, and EXCLUSION constraints",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-named-constraint.md"
+        },
+        {
+          "name": "require-on-delete-action",
+          "description": "Require an explicit `ON DELETE` clause on every foreign-key constraint",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-on-delete-action.md"
+        },
+        {
+          "name": "require-primary-key",
+          "description": "Require every `CREATE TABLE` to declare a primary key",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-primary-key.md"
+        },
+        {
+          "name": "require-schema-qualified-table",
+          "description": "Require `CREATE TABLE` to use a schema-qualified name (e.g. `audit.events`) so the target schema is explicit",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-schema-qualified-table.md"
+        },
+        {
+          "name": "require-table-columns",
+          "description": "Require every `CREATE TABLE` to include a configured set of columns (e.g. multi-tenant / audit columns like `tenant_id`, `created_at`, `updated_by`)",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-table-columns.md"
+        },
+        {
+          "name": "require-trailing-semicolon",
+          "description": "Require a trailing `;` at the end of the SQL file",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-trailing-semicolon.md"
+        },
+        {
+          "name": "require-where-in-delete",
+          "description": "Require a WHERE clause in DELETE statements",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-where-in-delete.md"
+        },
+        {
+          "name": "require-where-in-update",
+          "description": "Require a WHERE clause in UPDATE statements",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/require-where-in-update.md"
+        },
+        {
+          "name": "snake-case-column-name",
+          "description": "Require column names to be snake_case",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/snake-case-column-name.md"
+        },
+        {
+          "name": "snake-case-table-name",
+          "description": "Require table names to be snake_case",
+          "docsUrl": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/snake-case-table-name.md"
+        }
+      ]
+    },
+    {
+      "id": "postgresql-eslint-parser",
+      "npm": "postgresql-eslint-parser",
+      "repo": "https://github.com/baseballyama/postgresql-eslint-parser",
+      "baselineVersion": "0.5.4",
+      "license": "MIT",
+      "ruleCount": 0,
+      "rules": []
+    }
+  ]
+}
