@@ -47,6 +47,7 @@
     "lint:rust": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
     "lint:rust:layout": "node tools/tasks/check-rust-layout.ts",
     "new": "node tools/tasks/new-port-prompt.ts",
+    "port:releases": "node tools/tasks/check-upstream-releases.ts",
     "port:rules": "node tools/tasks/enumerate-port-rules.ts",
     "profile": "node tools/tasks/profile.ts",
     "release": "node tools/tasks/release.ts",
