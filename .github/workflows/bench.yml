@@ -29,6 +29,8 @@ jobs:
           node-version: '24'
           cache: true
 
+      - run: corepack enable
+
       - uses: dtolnay/rust-toolchain@1.96.0
         with:
           components: clippy,rustfmt
