@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "erasableSyntaxOnly": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2024",
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "docs/site/**/*.ts",
+    "npm/**/*.ts",
+    "npm/**/*.js",
+    "npm/**/*.mjs",
+    "test/**/*.mjs",
+    "tools/**/*.ts",
+    "vite.config.ts"
+  ]
+}

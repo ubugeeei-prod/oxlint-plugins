@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: '1'
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: blacksmith-32vcpu-ubuntu-2404
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '24'
+          cache: true
+
+      - uses: dtolnay/rust-toolchain@1.96.0
+        with:
+          components: clippy,rustfmt
+
+      - uses: Swatinem/rust-cache@v3
+
+      - run: vp install --frozen-lockfile
+      - run: pnpm run verify

@@ -1,0 +1,53 @@
+[workspace]
+members = ["crates/_carton", "crates/stylistic", "npm/no-forbidden-identifiers"]
+resolver = "3"
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/ubugeeei-prod/oxlint-plugins"
+rust-version = "1.96"
+version = "0.0.0"
+
+[workspace.dependencies]
+bumpalo = { version = "3.19.0", features = ["boxed", "collections"] }
+compact_str = "0.9.1"
+divan = "0.1.21"
+ghost-cell = "0.2.6"
+insta = "1.47.2"
+napi = { version = "3.9.0", default-features = false, features = ["napi9"] }
+napi-build = "2.3.2"
+napi-derive = "3.5.6"
+oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_carton", version = "0.0.0" }
+oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
+phf = { version = "0.13.1", features = ["macros"] }
+rustc-hash = "2.1.1"
+smallvec = "1.15.1"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+unused_must_use = "deny"
+
+[workspace.lints.clippy]
+dbg_macro = "deny"
+disallowed_types = "warn"
+todo = "deny"
+unwrap_used = "deny"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+panic = "abort"
+strip = "symbols"
+
+[profile.bench]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+
+[profile.profiling]
+inherits = "release"
+debug = true
+split-debuginfo = "packed"
+strip = "none"

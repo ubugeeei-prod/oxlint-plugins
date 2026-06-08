@@ -1,0 +1,10 @@
+---
+source: crates/stylistic/src/lib.rs
+assertion_line: 90
+expression: "scan_source_for_rule(source, [])"
+---
+[
+    "event",
+    "error",
+    "data",
+]

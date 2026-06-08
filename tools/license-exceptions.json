@@ -1,0 +1,32 @@
+[
+  {
+    "package": "@better-fetch/fetch",
+    "license": "UNKNOWN",
+    "scope": "transitive dependency of Void SDK docs tooling",
+    "reason": "The package currently ships without npm license metadata. It is not part of any published oxlint plugin package; re-check before publishing or deploying docs artifacts that bundle it."
+  },
+  {
+    "package": "void",
+    "license": "UNKNOWN",
+    "scope": "private docs application",
+    "reason": "Required by the requested Void SDK docs scaffold. The package currently ships without npm license metadata; keep this exception visible until upstream metadata is available."
+  },
+  {
+    "package": "@img/sharp-libvips-*",
+    "license": "LGPL-3.0-or-later",
+    "scope": "optional binary dependency of docs image tooling",
+    "reason": "Optional prebuilt libvips packages pulled by the private documentation toolchain. They are not included in the published plugin npm packages."
+  },
+  {
+    "package": "@img/sharp-wasm32",
+    "license": "Apache-2.0 AND LGPL-3.0-or-later AND MIT",
+    "scope": "optional binary dependency of docs image tooling",
+    "reason": "Optional sharp binary package pulled by the private documentation toolchain. Not included in published plugin npm packages."
+  },
+  {
+    "package": "@img/sharp-win32-*",
+    "license": "Apache-2.0 AND LGPL-3.0-or-later",
+    "scope": "optional binary dependency of docs image tooling",
+    "reason": "Optional sharp binary package pulled by the private documentation toolchain. Not included in published plugin npm packages."
+  }
+]

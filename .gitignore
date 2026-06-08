@@ -1,0 +1,23 @@
+target/
+dist/
+node_modules/
+.vite/
+.vite-task/
+docs/site/.void/
+docs/site/.wrangler/
+docs/site/dist/
+npm/*/dist/
+profiles/
+coverage/
+*.tsbuildinfo
+*.log
+bench-output.txt
+bench-comment.md
+
+# NAPI build outputs are generated during build and release.
+*.node
+npm/**/native.js
+npm/**/native.d.ts
+
+# Generated prompts are scratch artifacts for AI handoff.
+prompts/generated/

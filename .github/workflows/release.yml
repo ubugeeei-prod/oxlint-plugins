@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: '1'
+
+jobs:
+  verify:
+    name: Verify release
+    runs-on: blacksmith-32vcpu-ubuntu-2404
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '24'
+          cache: true
+
+      - uses: dtolnay/rust-toolchain@1.96.0
+        with:
+          components: clippy,rustfmt
+
+      - uses: Swatinem/rust-cache@v3
+
+      - run: vp install --frozen-lockfile
+      - run: node tools/tasks/verify-release-tag.ts
+      - run: pnpm run verify
+
+  publish:
+    name: Publish to npm
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '24'
+          cache: false
+
+      - uses: dtolnay/rust-toolchain@1.96.0
+        with:
+          components: clippy,rustfmt
+
+      - uses: Swatinem/rust-cache@v3
+
+      - run: vp install --frozen-lockfile
+      - run: node tools/tasks/verify-release-tag.ts
+      - run: vp build
+      - run: pnpm run status:check
+      - run: node tools/tasks/verify-package-publish-ready.ts
+      - run: pnpm publish --recursive --access public --provenance --no-git-checks

@@ -1,0 +1,15 @@
+disallowed-types = [
+  { path = "std::collections::HashMap", reason = "Use oxlint_plugins_carton::FastHashMap for hot paths." },
+  { path = "std::collections::HashSet", reason = "Use oxlint_plugins_carton::FastHashSet for hot paths." },
+  { path = "std::collections::BTreeMap", reason = "Avoid tree maps in rule hot paths unless ordering is required and documented." },
+  { path = "std::collections::BTreeSet", reason = "Avoid tree sets in rule hot paths unless ordering is required and documented." },
+  { path = "std::string::String", reason = "Use oxlint_plugins_carton::CompactString in rule state. Allow only at explicit public ABI boundaries." },
+  { path = "alloc::string::String", reason = "Use oxlint_plugins_carton::CompactString in rule state. Allow only at explicit public ABI boundaries." },
+  { path = "std::vec::Vec", reason = "Use oxlint_plugins_carton::SmallVec for small bounded rule state. Allow only at explicit public ABI boundaries." },
+  { path = "alloc::vec::Vec", reason = "Use oxlint_plugins_carton::SmallVec for small bounded rule state. Allow only at explicit public ABI boundaries." },
+]
+
+disallowed-methods = [
+  { path = "alloc::string::ToString::to_string", reason = "Avoid implicit owned String allocation. Use CompactString::from, str::to_owned at explicit ABI boundaries, or write the allocation reason near the call." },
+  { path = "std::string::ToString::to_string", reason = "Avoid implicit owned String allocation. Use CompactString::from, str::to_owned at explicit ABI boundaries, or write the allocation reason near the call." },
+]

@@ -1,0 +1,11 @@
+{
+  "jsPlugins": [
+    {
+      "name": "forbidden",
+      "specifier": "@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers",
+    },
+  ],
+  "rules": {
+    "forbidden/no-forbidden-identifiers": ["error", { "names": ["ctx"] }],
+  },
+}

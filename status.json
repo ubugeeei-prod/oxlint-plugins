@@ -1,0 +1,30 @@
+[
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers",
+    "directory": "npm/no-forbidden-identifiers",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": null,
+    "status": "sample",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "no-forbidden-identifiers",
+        "status": "sample",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Scaffold rule used to prove the Rust/NAPI/Oxlint plugin shape."
+      }
+    ]
+  }
+]

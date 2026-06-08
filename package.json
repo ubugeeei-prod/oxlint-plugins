@@ -1,0 +1,74 @@
+{
+  "name": "oxlint-plugins-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rust-backed oxlint plugin workspace for porting ESLint plugins through NAPI-RS.",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git"
+  },
+  "workspaces": [
+    "docs/site",
+    "npm/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "bench": "cargo bench --workspace",
+    "bench:check": "cargo bench --workspace --no-run",
+    "bench:comment": "node tools/tasks/format-bench-comment.ts bench-output.txt > bench-comment.md",
+    "build:rust": "cargo build --workspace --all-features",
+    "build:workspace": "pnpm --recursive --if-present build",
+    "docs:build": "pnpm --filter @oxlint-plugins/docs build",
+    "docs:dev": "pnpm --filter @oxlint-plugins/docs dev",
+    "fmt:rust": "cargo fmt --all",
+    "fmt:rust:check": "cargo fmt --all --check",
+    "license": "pnpm run license:node && pnpm run license:rust",
+    "license:node": "node tools/tasks/check-license-policy.ts",
+    "license:rust": "node tools/tasks/run-cargo-deny.ts",
+    "lint:rust": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+    "lint:rust:layout": "node tools/tasks/check-rust-layout.ts",
+    "new": "node tools/tasks/new-port-prompt.ts",
+    "profile": "node tools/tasks/profile.ts",
+    "release": "node tools/tasks/release.ts",
+    "security:audit": "node tools/tasks/security-audit.ts",
+    "status:check": "node tools/tasks/verify-status.ts",
+    "status:sync": "node tools/tasks/update-publish-status.ts",
+    "test": "pnpm run test:rust && pnpm run test:js",
+    "test:js": "vp test",
+    "test:rust": "cargo test --workspace --all-features",
+    "trusted-publishing": "node tools/tasks/print-trusted-publishing.ts",
+    "typecheck": "tsgo -p tsconfig.json",
+    "verify": "pnpm run fmt:rust:check && vp fmt --check && pnpm run typecheck && vp lint && pnpm run lint:rust && pnpm run lint:rust:layout && vp build && vp test && pnpm run test:rust && pnpm run bench:check && pnpm run security:audit && pnpm run license && pnpm run status:check && node tools/tasks/verify-package-publish-ready.ts"
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "catalog:",
+    "@types/node": "catalog:",
+    "@typescript/native-preview": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.0.0"
+  },
+  "packageManager": "pnpm@11.5.2"
+}

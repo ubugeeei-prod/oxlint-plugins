@@ -1,0 +1,51 @@
+{
+  "name": "@oxlint-plugins/oxlint-plugin-type-aware",
+  "version": "0.0.0",
+  "description": "Shared Corsa-backed type-aware helpers for Rust-backed oxlint plugins.",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
+    "directory": "npm/type-aware"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "vp pack src/index.ts --dts --format esm --out-dir dist"
+  },
+  "dependencies": {
+    "@corsa-bind/napi": "catalog:"
+  }
+}

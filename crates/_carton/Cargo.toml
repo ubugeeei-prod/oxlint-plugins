@@ -1,0 +1,21 @@
+[package]
+name = "oxlint-plugins-_carton"
+description = "Shared performance primitives for oxlint plugin ports."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[lib]
+name = "oxlint_plugins_carton"
+
+[dependencies]
+bumpalo.workspace = true
+compact_str.workspace = true
+ghost-cell.workspace = true
+rustc-hash.workspace = true
+smallvec.workspace = true
+
+[lints]
+workspace = true
