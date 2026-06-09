@@ -16,6 +16,7 @@ function parseOptions(testCase) {
 
   return {
     comment: true,
+    tokens: true,
     loc: true,
     range: true,
     ecmaVersion: languageOptions.ecmaVersion ?? parserOptions.ecmaVersion ?? 'latest',

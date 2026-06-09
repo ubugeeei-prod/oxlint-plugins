@@ -110,12 +110,176 @@ const noUnlimitedDisable = commentScanRule(
   (comments) => native.scanNoUnlimitedDisable(comments),
 );
 
+const DIRECTIVE_KINDS = [
+  'eslint',
+  'eslint-disable',
+  'eslint-disable-line',
+  'eslint-disable-next-line',
+  'eslint-enable',
+  'eslint-env',
+  'exported',
+  'global',
+  'globals',
+];
+
+const noUse = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'disallow ESLint directive-comments',
+      recommended: false,
+      url: `${DOCS_BASE}#no-use`,
+    },
+    fixable: null,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allow: {
+            type: 'array',
+            items: { enum: DIRECTIVE_KINDS },
+            additionalItems: false,
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      disallow: 'Unexpected ESLint directive comment.',
+    },
+  },
+  (comments, context) => {
+    const allow = (context.options[0] && context.options[0].allow) || [];
+    return native.scanNoUse(comments, allow);
+  },
+);
+
+const requireDescription = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'require include descriptions in ESLint directive-comments',
+      recommended: false,
+      url: `${DOCS_BASE}#require-description`,
+    },
+    fixable: null,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          ignore: {
+            type: 'array',
+            items: { enum: DIRECTIVE_KINDS },
+            additionalItems: false,
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingDescription:
+        'Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.',
+    },
+  },
+  (comments, context) => {
+    const ignore = (context.options[0] && context.options[0].ignore) || [];
+    return native.scanRequireDescription(comments, ignore);
+  },
+);
+
+function firstTokenStart(context) {
+  const tokens = context.sourceCode.ast && context.sourceCode.ast.tokens;
+  if (!tokens || tokens.length === 0) {
+    return null;
+  }
+  const first = tokens[0];
+  return { line: first.loc.start.line, column: first.loc.start.column };
+}
+
+const disableEnablePair = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'require a `eslint-enable` comment for every `eslint-disable` comment',
+      recommended: true,
+      url: `${DOCS_BASE}#disable-enable-pair`,
+    },
+    fixable: null,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allowWholeFile: { type: 'boolean' },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingPair: "Requires 'eslint-enable' directive.",
+      missingRulePair: "Requires 'eslint-enable' directive for '{{ruleId}}'.",
+    },
+  },
+  (comments, context) => {
+    const allowWholeFile = !!(context.options[0] && context.options[0].allowWholeFile);
+    return native.scanDisableEnablePair(comments, allowWholeFile, firstTokenStart(context));
+  },
+);
+
+const noAggregatingEnable = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'disallow a `eslint-enable` comment for multiple `eslint-disable` comments',
+      recommended: true,
+      url: `${DOCS_BASE}#no-aggregating-enable`,
+    },
+    fixable: null,
+    schema: [],
+    messages: {
+      aggregatingEnable:
+        'This `eslint-enable` comment affects {{count}} `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment.',
+    },
+  },
+  (comments) => native.scanNoAggregatingEnable(comments),
+);
+
+const noDuplicateDisable = commentScanRule(
+  {
+    type: 'problem',
+    docs: {
+      description: 'disallow duplicate `eslint-disable` comments',
+      recommended: true,
+      url: `${DOCS_BASE}#no-duplicate-disable`,
+    },
+    fixable: null,
+    schema: [],
+    messages: {
+      duplicate: 'ESLint rules have been disabled already.',
+      duplicateRule: "'{{ruleId}}' rule has been disabled already.",
+    },
+  },
+  (comments) => native.scanNoDuplicateDisable(comments),
+);
+
 const rules = {
+  'disable-enable-pair': disableEnablePair,
+  'no-aggregating-enable': noAggregatingEnable,
+  'no-duplicate-disable': noDuplicateDisable,
   'no-unlimited-disable': noUnlimitedDisable,
+  'no-use': noUse,
+  'require-description': requireDescription,
 };
 
 // Mirror of upstream's `recommended` config, limited to the rules ported so far.
-const recommendedRuleNames = ['no-unlimited-disable'];
+// (no-use and require-description are not part of upstream's recommended set.)
+const recommendedRuleNames = [
+  'disable-enable-pair',
+  'no-aggregating-enable',
+  'no-duplicate-disable',
+  'no-unlimited-disable',
+];
 
 const plugin = eslintCompatPlugin({
   meta: {
