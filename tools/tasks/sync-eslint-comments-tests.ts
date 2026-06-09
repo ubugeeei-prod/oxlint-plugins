@@ -247,14 +247,24 @@ function isPresent<T>(value: T | null): value is T {
   return value != null;
 }
 
+// Rules whose upstream RuleTester suite cannot be replayed by the espree
+// harness because it depends on the ESLint runtime (lint problems), not just
+// parsed comments. These are covered by dedicated mechanism tests instead.
+const RUNTIME_ONLY_RULES = new Set(['no-unused-disable']);
+
 function getPortedRules(): string[] {
   const pkgRequire = createRequire(join(ROOT, 'npm', 'eslint-comments', 'index.js'));
   const loaded = pkgRequire(resolve(ROOT, 'npm', 'eslint-comments', 'index.js')) as {
     rules?: Record<string, unknown>;
   };
-  const rules = loaded.rules ? Object.keys(loaded.rules) : [];
+  const rules = (loaded.rules ? Object.keys(loaded.rules) : []).filter(
+    (rule) => !RUNTIME_ONLY_RULES.has(rule),
+  );
   if (rules.length === 0) {
     throw new Error('No rules found on the eslint-comments plugin; build it first (vp build).');
+  }
+  for (const rule of RUNTIME_ONLY_RULES) {
+    console.log(`- ${rule}: skipped (needs ESLint runtime problems; covered by a mechanism test)`);
   }
   return rules.sort();
 }
