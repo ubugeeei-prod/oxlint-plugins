@@ -263,11 +263,30 @@ const noDuplicateDisable = commentScanRule(
   (comments) => native.scanNoDuplicateDisable(comments),
 );
 
+const noUnusedEnable = commentScanRule(
+  {
+    type: 'problem',
+    docs: {
+      description: 'disallow unused `eslint-enable` comments',
+      recommended: true,
+      url: `${DOCS_BASE}#no-unused-enable`,
+    },
+    fixable: null,
+    schema: [],
+    messages: {
+      unused: 'ESLint rules are re-enabled but those have not been disabled.',
+      unusedRule: "'{{ruleId}}' rule is re-enabled but it has not been disabled.",
+    },
+  },
+  (comments) => native.scanNoUnusedEnable(comments),
+);
+
 const rules = {
   'disable-enable-pair': disableEnablePair,
   'no-aggregating-enable': noAggregatingEnable,
   'no-duplicate-disable': noDuplicateDisable,
   'no-unlimited-disable': noUnlimitedDisable,
+  'no-unused-enable': noUnusedEnable,
   'no-use': noUse,
   'require-description': requireDescription,
 };
@@ -279,6 +298,7 @@ const recommendedRuleNames = [
   'no-aggregating-enable',
   'no-duplicate-disable',
   'no-unlimited-disable',
+  'no-unused-enable',
 ];
 
 const plugin = eslintCompatPlugin({
