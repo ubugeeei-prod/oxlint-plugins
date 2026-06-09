@@ -282,26 +282,35 @@ mod tests {
     #[test]
     fn scans_default_names() {
         let source = "const event = data.error;";
-        insta::assert_debug_snapshot!(scan_source_for_rule(source, []));
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(scan_source_for_rule(source, []));
+        }
     }
 
     #[test]
     fn supports_custom_names_without_losing_defaults() {
         let source = "function run(ctx) { return payload + event; }";
-        insta::assert_debug_snapshot!(scan_source_for_rule(source, ["ctx", "payload"]));
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(scan_source_for_rule(source, ["ctx", "payload"]));
+        }
     }
 
     #[test]
     fn respects_identifier_boundaries() {
-        insta::assert_debug_snapshot!(
-            "identifier_boundaries",
-            vec![
-                contains_identifier("const event = 1", "event"),
-                contains_identifier("const eventBus = 1", "event"),
-                contains_identifier("const my_event = 1", "event"),
-                contains_identifier("const $event = 1", "event"),
-                contains_identifier("call(event)", "event"),
-            ]
-        );
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(
+                "identifier_boundaries",
+                [
+                    contains_identifier("const event = 1", "event"),
+                    contains_identifier("const eventBus = 1", "event"),
+                    contains_identifier("const my_event = 1", "event"),
+                    contains_identifier("const $event = 1", "event"),
+                    contains_identifier("call(event)", "event"),
+                ]
+            );
+        }
     }
 }

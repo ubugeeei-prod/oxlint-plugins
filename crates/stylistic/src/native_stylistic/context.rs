@@ -322,7 +322,7 @@ impl<'a> Scan<'a> {
 /// Builds the bracket partner map. Only plain `(`/`)`/`[`/`]`/`{`/`}`
 /// punctuator tokens participate; template delimiters carry their own braces.
 fn match_brackets(source: &str, tokens: &[Token]) -> Vec<usize> {
-    let mut partner = vec![NO_PARTNER; tokens.len()];
+    let mut partner = std::iter::repeat_n(NO_PARTNER, tokens.len()).collect::<Vec<_>>();
     let mut stack: Vec<usize> = Vec::new();
     for (index, token) in tokens.iter().enumerate() {
         if token.kind != TokenKind::Punctuator {
@@ -422,11 +422,12 @@ pub(crate) fn push(
         message_id: message_id.to_owned(),
         message: message.to_owned(),
         range: TextRange::new(start, end),
-        suggestions: vec![LintSuggestion {
+        suggestions: std::iter::once(LintSuggestion {
             message_id: suggestion_id.to_owned(),
             message: suggestion_message.to_owned(),
-            fixes: vec![fix],
-        }],
+            fixes: std::iter::once(fix).collect(),
+        })
+        .collect(),
     });
 }
 
@@ -517,28 +518,25 @@ mod tests {
     fn classifies_object_vs_block_braces() {
         assert_eq!(
             open_brace_kinds("const o = { a: 1 };"),
-            vec![BraceKind::ObjectLike]
+            [BraceKind::ObjectLike]
         );
         assert_eq!(
             open_brace_kinds("function f() { return 1; }"),
-            vec![BraceKind::Block]
+            [BraceKind::Block]
         );
-        assert_eq!(open_brace_kinds("if (x) { y(); }"), vec![BraceKind::Block]);
+        assert_eq!(open_brace_kinds("if (x) { y(); }"), [BraceKind::Block]);
         assert_eq!(
             open_brace_kinds("const f = () => { g(); };"),
-            vec![BraceKind::Block]
+            [BraceKind::Block]
         );
         assert_eq!(
             open_brace_kinds("class C { m() {} }"),
-            vec![BraceKind::Block, BraceKind::Block]
+            [BraceKind::Block, BraceKind::Block]
         );
-        assert_eq!(
-            open_brace_kinds("f({ a: 1 });"),
-            vec![BraceKind::ObjectLike]
-        );
+        assert_eq!(open_brace_kinds("f({ a: 1 });"), [BraceKind::ObjectLike]);
         assert_eq!(
             open_brace_kinds("return { a: 1 };"),
-            vec![BraceKind::ObjectLike]
+            [BraceKind::ObjectLike]
         );
     }
 
@@ -552,7 +550,7 @@ mod tests {
             .filter(|(_, t)| punct_is(t, scan.source(), "["))
             .map(|(i, _)| scan.bracket_kind(i))
             .collect();
-        assert_eq!(kinds, vec![BracketKind::Array, BracketKind::Member]);
+        assert_eq!(kinds, [BracketKind::Array, BracketKind::Member]);
     }
 
     #[test]
@@ -567,7 +565,7 @@ mod tests {
             .collect();
         assert_eq!(
             uses,
-            vec![
+            [
                 ParenUse::Control,
                 ParenUse::Call,
                 ParenUse::FuncDef,

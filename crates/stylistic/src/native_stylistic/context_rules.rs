@@ -881,7 +881,7 @@ pub(crate) fn check_space_infix_ops(
 /// fire.
 fn for_header_semis(scan: &Scan) -> Vec<bool> {
     let tokens = scan.tokens();
-    let mut marks = vec![false; tokens.len()];
+    let mut marks = std::iter::repeat_n(false, tokens.len()).collect::<Vec<_>>();
     // Stack of "is this open paren a for-header paren?".
     let mut paren_stack: Vec<bool> = Vec::new();
     for index in 0..tokens.len() {
@@ -1693,7 +1693,7 @@ mod tests {
     }
 
     fn always(value: &str) -> Value {
-        Value::Array(vec![Value::String(value.into())])
+        Value::Array(std::iter::once(Value::String(value.into())).collect())
     }
 
     #[test]
@@ -2020,7 +2020,7 @@ mod tests {
 
     #[test]
     fn comma_dangle_always_multiline() {
-        let opt = Value::Array(vec![Value::String("always-multiline".into())]);
+        let opt = Value::Array(std::iter::once(Value::String("always-multiline".into())).collect());
         assert_eq!(
             run(
                 check_comma_dangle,
@@ -2256,7 +2256,7 @@ mod tests {
             .len(),
             0
         );
-        let below = Value::Array(vec![Value::String("below".into())]);
+        let below = Value::Array(std::iter::once(Value::String("below".into())).collect());
         assert_eq!(
             run(check_implicit_arrow_linebreak, "const f = (a) => a;", below).len(),
             1
@@ -2287,7 +2287,7 @@ mod tests {
             .len(),
             1
         );
-        let before = Value::Array(vec![Value::String("before".into())]);
+        let before = Value::Array(std::iter::once(Value::String("before".into())).collect());
         assert_eq!(
             run(check_operator_linebreak, "const x = 1 +\n  2;", before).len(),
             1

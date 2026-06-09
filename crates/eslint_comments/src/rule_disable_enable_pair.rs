@@ -79,7 +79,10 @@ mod tests {
             block("eslint-disable", 2, 19),
             block("eslint-disable no-undef", 4, 27),
         ];
-        insta::assert_debug_snapshot!(disable_enable_pair(&comments, false, None));
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(disable_enable_pair(&comments, false, None));
+        }
     }
 
     #[test]

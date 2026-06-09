@@ -60,7 +60,10 @@ mod tests {
             comment(CommentKind::Block, "eslint-disable eqeqeq -- because"),
             comment(CommentKind::Line, "eslint-disable-line eqeqeq"),
         ];
-        insta::assert_debug_snapshot!(require_description(&comments, &[]));
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(require_description(&comments, &[]));
+        }
     }
 
     #[test]

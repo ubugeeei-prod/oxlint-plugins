@@ -13,3 +13,8 @@ disallowed-methods = [
   { path = "alloc::string::ToString::to_string", reason = "Avoid implicit owned String allocation. Use CompactString::from, str::to_owned at explicit ABI boundaries, or write the allocation reason near the call." },
   { path = "std::string::ToString::to_string", reason = "Avoid implicit owned String allocation. Use CompactString::from, str::to_owned at explicit ABI boundaries, or write the allocation reason near the call." },
 ]
+
+disallowed-macros = [
+  { path = "std::format", reason = "Avoid implicit owned String allocation. Use CompactString formatting helpers or explicit ABI-boundary allocation with a local allow." },
+  { path = "std::vec", reason = "Use oxlint_plugins_carton::SmallVec for small bounded rule state. Allow only at explicit public ABI boundaries." },
+]

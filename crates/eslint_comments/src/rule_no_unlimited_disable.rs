@@ -69,7 +69,10 @@ mod tests {
             comment(CommentKind::Line, "eslint-disable-line"),
             comment(CommentKind::Line, "eslint-disable-next-line"),
         ];
-        insta::assert_debug_snapshot!(no_unlimited_disable(&comments));
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(no_unlimited_disable(&comments));
+        }
     }
 
     #[test]
