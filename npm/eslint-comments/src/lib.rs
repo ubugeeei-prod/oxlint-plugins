@@ -7,7 +7,8 @@
 pub use napi_abi::{
     CommentInput, Diagnostic, DiagnosticData, DiagnosticLoc, PositionInput,
     scan_disable_enable_pair, scan_no_aggregating_enable, scan_no_duplicate_disable,
-    scan_no_unlimited_disable, scan_no_unused_enable, scan_no_use, scan_require_description,
+    scan_no_restricted_disable, scan_no_unlimited_disable, scan_no_unused_enable, scan_no_use,
+    scan_require_description,
 };
 
 #[allow(
@@ -20,8 +21,8 @@ mod napi_abi {
     use oxlint_plugins_eslint_comments::directive::CommentKind;
     use oxlint_plugins_eslint_comments::{
         Comment, Diagnostic as CoreDiagnostic, Location, Position, disable_enable_pair,
-        no_aggregating_enable, no_duplicate_disable, no_unlimited_disable, no_unused_enable,
-        no_use, require_description,
+        no_aggregating_enable, no_duplicate_disable, no_restricted_disable, no_unlimited_disable,
+        no_unused_enable, no_use, require_description,
     };
 
     /// A comment token, as collected from `sourceCode.getAllComments()`.
@@ -134,6 +135,20 @@ mod napi_abi {
     pub fn scan_no_unused_enable(comments: Vec<CommentInput>) -> Vec<Diagnostic> {
         let core = to_core_comments(&comments);
         no_unused_enable(&core)
+            .into_iter()
+            .map(diagnostic_from_core)
+            .collect()
+    }
+
+    /// `no-restricted-disable`: report disables of rules matching the patterns.
+    #[napi]
+    pub fn scan_no_restricted_disable(
+        comments: Vec<CommentInput>,
+        patterns: Vec<String>,
+    ) -> Vec<Diagnostic> {
+        let core = to_core_comments(&comments);
+        let pattern_refs: Vec<&str> = patterns.iter().map(String::as_str).collect();
+        no_restricted_disable(&core, &pattern_refs)
             .into_iter()
             .map(diagnostic_from_core)
             .collect()
