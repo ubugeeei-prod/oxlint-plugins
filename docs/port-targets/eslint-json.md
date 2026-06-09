@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/eslint/json |
-| Submodule | `upstream/eslint-json` @ `json-v1.2.0` |
-| Baseline npm version | `1.2.0` |
+| Submodule | `upstream/eslint-json` @ `json-v2.0.0` |
+| Baseline npm version | `2.0.0` |
 | License | Apache-2.0 |
 | Oxlint native support | none — port target |
 | Rules to port | 6 |

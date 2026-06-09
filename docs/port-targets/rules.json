@@ -60,7 +60,7 @@
       "id": "eslint-plugin-functional",
       "npm": "eslint-plugin-functional",
       "repo": "https://github.com/eslint-functional/eslint-plugin-functional",
-      "baselineVersion": "9.0.5",
+      "baselineVersion": "10.0.0",
       "license": "MIT",
       "ruleCount": 20,
       "rules": [
@@ -2312,7 +2312,7 @@
       "id": "eslint-plugin-storybook",
       "npm": "eslint-plugin-storybook",
       "repo": "https://github.com/storybookjs/storybook",
-      "baselineVersion": "10.3.6",
+      "baselineVersion": "10.4.2",
       "license": "MIT",
       "ruleCount": 16,
       "rules": [
@@ -2402,7 +2402,7 @@
       "id": "unocss-eslint-plugin",
       "npm": "@unocss/eslint-plugin",
       "repo": "https://github.com/unocss/unocss",
-      "baselineVersion": "66.6.8",
+      "baselineVersion": "66.7.0",
       "license": "MIT",
       "ruleCount": 4,
       "rules": [
@@ -2428,7 +2428,7 @@
       "id": "eslint-json",
       "npm": "@eslint/json",
       "repo": "https://github.com/eslint/json",
-      "baselineVersion": "1.2.0",
+      "baselineVersion": "2.0.0",
       "license": "Apache-2.0",
       "ruleCount": 6,
       "rules": [
