@@ -16,6 +16,10 @@ const nativePackages = [
     name: '@oxlint-plugins/oxlint-plugin-eslint-comments',
     binding: 'npm/eslint-comments/native.js',
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-stylistic',
+    binding: 'npm/stylistic/native.js',
+  },
 ];
 
 for (const pkg of nativePackages) {
