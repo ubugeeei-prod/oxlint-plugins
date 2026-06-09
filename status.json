@@ -45,6 +45,22 @@
           "oxlintIntegration": false
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-use; supports the allow option; upstream RuleTester cases replayed via test/fixtures."
+      },
+      {
+        "name": "require-description",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/require-description; supports the ignore option; upstream RuleTester cases replayed via test/fixtures."
       }
     ]
   },
