@@ -22,18 +22,21 @@ This is unofficial community work and is not an official Oxlint or eslint-commun
 
 ## Rules
 
-| Rule                    | Description                                                | Status |
-| ----------------------- | ---------------------------------------------------------- | ------ |
-| `disable-enable-pair`   | require an `eslint-enable` for every `eslint-disable`      | ported |
-| `no-aggregating-enable` | disallow one `eslint-enable` for multiple `eslint-disable` | ported |
-| `no-duplicate-disable`  | disallow duplicate `eslint-disable` comments               | ported |
-| `no-restricted-disable` | disallow `eslint-disable` comments about specific rules    | ported |
-| `no-unlimited-disable`  | disallow `eslint-disable` comments without rule names      | ported |
-| `no-unused-enable`      | disallow unused `eslint-enable` comments                   | ported |
-| `no-use`                | disallow ESLint directive-comments                         | ported |
-| `require-description`   | require descriptions in ESLint directive-comments          | ported |
+| Rule                    | Description                                                | Status        |
+| ----------------------- | ---------------------------------------------------------- | ------------- |
+| `disable-enable-pair`   | require an `eslint-enable` for every `eslint-disable`      | ported        |
+| `no-aggregating-enable` | disallow one `eslint-enable` for multiple `eslint-disable` | ported        |
+| `no-duplicate-disable`  | disallow duplicate `eslint-disable` comments               | ported        |
+| `no-restricted-disable` | disallow `eslint-disable` comments about specific rules    | ported        |
+| `no-unlimited-disable`  | disallow `eslint-disable` comments without rule names      | ported        |
+| `no-unused-disable`     | disallow unused `eslint-disable` comments                  | approximation |
+| `no-unused-enable`      | disallow unused `eslint-enable` comments                   | ported        |
+| `no-use`                | disallow ESLint directive-comments                         | ported        |
+| `require-description`   | require descriptions in ESLint directive-comments          | ported        |
 
-The remaining upstream rule (`no-unused-disable`) is tracked in [issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4) and lands one rule per pull request.
+All nine upstream rules of [`@eslint-community/eslint-plugin-eslint-comments`](https://github.com/eslint-community/eslint-plugin-eslint-comments) are now ported ([issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4)).
+
+> `no-unused-disable` is deprecated upstream (use Oxlint's / ESLint's built-in unused-directive reporting). It is implemented here as an approximation over `sourceCode.getDisableDirectives().problems`; because its upstream test suite needs the lint runtime, it is covered by a synthetic-problem mechanism test rather than the espree replay harness.
 
 ## Performance Shape
 

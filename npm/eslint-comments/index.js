@@ -302,12 +302,59 @@ const noRestrictedDisable = commentScanRule(
   (comments, context) => native.scanNoRestrictedDisable(comments, context.options || []),
 );
 
+// `no-unused-disable` needs the file's lint problems, which only exist at run
+// time via `sourceCode.getDisableDirectives()`. It is an approximation of
+// upstream's deprecated Linter-patch behavior and is skipped when the runtime
+// does not expose disable directives.
+const noUnusedDisable = {
+  meta: {
+    type: 'problem',
+    docs: {
+      description: 'disallow unused `eslint-disable` comments',
+      recommended: false,
+      url: `${DOCS_BASE}#no-unused-disable`,
+    },
+    deprecated: true,
+    fixable: null,
+    schema: [],
+    messages: {
+      unused: 'Unused eslint-disable directive (no problems were reported).',
+      unusedRule: "Unused eslint-disable directive (no problems were reported from '{{ruleId}}').",
+    },
+  },
+  createOnce(context) {
+    return {
+      Program() {
+        const sourceCode = context.sourceCode;
+        if (typeof sourceCode.getDisableDirectives !== 'function') {
+          return;
+        }
+
+        const comments = collectComments(sourceCode);
+        if (comments.length === 0) {
+          return;
+        }
+
+        const { problems } = sourceCode.getDisableDirectives();
+        const problemInputs = (problems || []).map((problem) => ({
+          ruleId: problem.ruleId == null ? null : problem.ruleId,
+          line: problem.loc.start.line,
+          column: problem.loc.start.column,
+        }));
+
+        reportDiagnostics(context, native.scanNoUnusedDisable(comments, problemInputs));
+      },
+    };
+  },
+};
+
 const rules = {
   'disable-enable-pair': disableEnablePair,
   'no-aggregating-enable': noAggregatingEnable,
   'no-duplicate-disable': noDuplicateDisable,
   'no-restricted-disable': noRestrictedDisable,
   'no-unlimited-disable': noUnlimitedDisable,
+  'no-unused-disable': noUnusedDisable,
   'no-unused-enable': noUnusedEnable,
   'no-use': noUse,
   'require-description': requireDescription,
