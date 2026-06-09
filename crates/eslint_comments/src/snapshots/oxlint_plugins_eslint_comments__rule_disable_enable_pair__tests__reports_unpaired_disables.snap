@@ -1,0 +1,44 @@
+---
+source: crates/eslint_comments/src/rule_disable_enable_pair.rs
+expression: "disable_enable_pair(&comments, false, None)"
+---
+[
+    Diagnostic {
+        message_id: "missingPair",
+        data: DiagnosticData {
+            kind: None,
+            rule_id: None,
+            count: None,
+        },
+        loc: Location {
+            start: Position {
+                line: 2,
+                column: -1,
+            },
+            end: Position {
+                line: 2,
+                column: 19,
+            },
+        },
+    },
+    Diagnostic {
+        message_id: "missingRulePair",
+        data: DiagnosticData {
+            kind: None,
+            rule_id: Some(
+                "no-undef",
+            ),
+            count: None,
+        },
+        loc: Location {
+            start: Position {
+                line: 4,
+                column: 17,
+            },
+            end: Position {
+                line: 4,
+                column: 25,
+            },
+        },
+    },
+]

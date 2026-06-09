@@ -1,0 +1,52 @@
+{
+  "__generated": {
+    "source": "@eslint-community/eslint-plugin-eslint-comments",
+    "version": "4.7.2",
+    "sourceFile": "tests/lib/rules/no-aggregating-enable.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-comments-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n            /*eslint-disable no-redeclare*/\n            /*eslint-enable no-redeclare*/\n        "
+    },
+    {
+      "code": "\n            /*eslint-disable no-redeclare*/\n            /*eslint-enable no-shadow*/\n        "
+    },
+    {
+      "code": "\n            /*eslint-disable no-redeclare, no-shadow*/\n            /*eslint-enable*/\n        "
+    },
+    {
+      "code": "\n            /*eslint-disable no-redeclare, no-shadow*/\n            /*eslint-enable no-redeclare, no-shadow*/\n        "
+    },
+    {
+      "code": "\n            /*eslint-disable no-redeclare, no-shadow*/\n            /*eslint-enable no-redeclare*/\n            /*eslint-enable no-shadow*/\n        "
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n                /*eslint-disable no-redeclare*/\n                /*eslint-disable no-shadow*/\n                /*eslint-enable*/\n            ",
+      "errors": [
+        "This `eslint-enable` comment affects 2 `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment."
+      ]
+    },
+    {
+      "code": "\n                /*eslint-disable no-redeclare*/\n                /*eslint-disable no-shadow*/\n                /*eslint-disable no-undef*/\n                /*eslint-enable*/\n            ",
+      "errors": [
+        "This `eslint-enable` comment affects 3 `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment."
+      ]
+    },
+    {
+      "code": "\n                /*eslint-disable no-redeclare*/\n                /*eslint-disable no-shadow*/\n                /*eslint-enable no-redeclare, no-shadow*/\n            ",
+      "errors": [
+        "This `eslint-enable` comment affects 2 `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment."
+      ]
+    },
+    {
+      "code": "\n                /*eslint-disable no-redeclare*/\n                /*eslint-disable no-shadow*/\n                /*eslint-enable -- description*/\n            ",
+      "errors": [
+        "This `eslint-enable` comment affects 2 `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment."
+      ]
+    }
+  ]
+}

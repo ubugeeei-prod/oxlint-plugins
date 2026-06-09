@@ -1,0 +1,42 @@
+---
+source: crates/eslint_comments/src/rule_require_description.rs
+expression: "require_description(&comments, &[])"
+---
+[
+    Diagnostic {
+        message_id: "missingDescription",
+        data: DiagnosticData {
+            kind: None,
+            rule_id: None,
+            count: None,
+        },
+        loc: Location {
+            start: Position {
+                line: 1,
+                column: -1,
+            },
+            end: Position {
+                line: 1,
+                column: 25,
+            },
+        },
+    },
+    Diagnostic {
+        message_id: "missingDescription",
+        data: DiagnosticData {
+            kind: None,
+            rule_id: None,
+            count: None,
+        },
+        loc: Location {
+            start: Position {
+                line: 1,
+                column: -1,
+            },
+            end: Position {
+                line: 1,
+                column: 30,
+            },
+        },
+    },
+]

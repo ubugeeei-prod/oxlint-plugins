@@ -1,0 +1,297 @@
+{
+  "__generated": {
+    "source": "@eslint-community/eslint-plugin-eslint-comments",
+    "version": "4.7.2",
+    "sourceFile": "tests/lib/rules/require-description.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-comments-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/* eslint eqeqeq: \"off\", curly: \"error\" -- Here's a description about why this configuration is necessary. */"
+    },
+    {
+      "code": "/* eslint-disable -- description */"
+    },
+    {
+      "code": "/* eslint-enable -- description */"
+    },
+    {
+      "code": "/* exported -- description */"
+    },
+    {
+      "code": "/* global -- description */"
+    },
+    {
+      "code": "/* globals -- description */"
+    },
+    {
+      "code": "/* eslint-env -- description */"
+    },
+    {
+      "code": "/* just eslint in a normal comment */"
+    },
+    {
+      "code": "// eslint-disable-line -- description"
+    },
+    {
+      "code": "// eslint-disable-next-line -- description"
+    },
+    {
+      "code": "/* eslint-disable-line -- description */"
+    },
+    {
+      "code": "/* eslint-disable-next-line -- description */"
+    },
+    {
+      "code": "// eslint-disable-line eqeqeq -- description"
+    },
+    {
+      "code": "// eslint-disable-next-line eqeqeq -- description"
+    },
+    {
+      "code": "/* eslint */",
+      "options": [
+        {
+          "ignore": [
+            "eslint"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "/* eslint-env */",
+      "options": [
+        {
+          "ignore": [
+            "eslint-env"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "/* eslint-enable */",
+      "options": [
+        {
+          "ignore": [
+            "eslint-enable"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "/* eslint-disable */",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "// eslint-disable-line",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable-line"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "// eslint-disable-next-line",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable-next-line"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "/* eslint-disable-line */",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable-line"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "/* eslint-disable-next-line */",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable-next-line"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "/* exported */",
+      "options": [
+        {
+          "ignore": [
+            "exported"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "/* global */",
+      "options": [
+        {
+          "ignore": [
+            "global"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "/* globals */",
+      "options": [
+        {
+          "ignore": [
+            "globals"
+          ]
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/* eslint */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint eqeqeq: \"off\", curly: \"error\" */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-env */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-env node */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-enable */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-enable eqeqeq */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-disable */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-disable eqeqeq */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "// eslint-disable-line",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "// eslint-disable-line eqeqeq",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "// eslint-disable-next-line",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "// eslint-disable-next-line eqeqeq",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-disable-line */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-disable-line eqeqeq */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-disable-next-line */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-disable-next-line eqeqeq */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* exported */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* global */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* global _ */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* globals */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* globals _ */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    },
+    {
+      "code": "/* eslint-disable-next-line eqeqeq -- */",
+      "errors": [
+        "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+      ]
+    }
+  ]
+}
