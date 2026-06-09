@@ -6,7 +6,7 @@
 // run. Re-run with `pnpm run port:rules` (or `node tools/tasks/enumerate-port-rules.ts`).
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 
 type GlobRules = {
   type: 'glob';
@@ -26,8 +26,18 @@ type SonarRules = {
   implementation: string;
   excludeEslintIds: string[];
 };
+type IndexedRules = {
+  type: 'indexed';
+  index: string;
+};
+type ReactHooksRules = {
+  type: 'react-hooks';
+  compilerErrorFile: string;
+  exhaustiveDepsFile: string;
+  rulesOfHooksFile: string;
+};
 type NoneRules = { type: 'none' };
-type RulesConfig = GlobRules | FixedRules | SonarRules | NoneRules;
+type RulesConfig = GlobRules | FixedRules | SonarRules | IndexedRules | ReactHooksRules | NoneRules;
 
 type Plugin = {
   id: string;
@@ -148,6 +158,14 @@ function enumerate(plugin: Plugin): Rule[] {
     return out;
   }
 
+  if (config.type === 'indexed') {
+    return enumerateIndexed(plugin, config.index);
+  }
+
+  if (config.type === 'react-hooks') {
+    return enumerateReactHooks(plugin, config);
+  }
+
   // glob
   const dir = join(base, config.dir);
   if (!existsSync(dir)) {
@@ -162,6 +180,101 @@ function enumerate(plugin: Plugin): Rule[] {
     out.push(makeRule(plugin, name, readDescription(join(dir, file))));
   }
   return out;
+}
+
+function enumerateIndexed(plugin: Plugin, indexPath: string): Rule[] {
+  const indexFile = join(ROOT, plugin.submodule, indexPath);
+  if (!existsSync(indexFile)) {
+    errors.push(`${plugin.npm}: index file not found: ${plugin.submodule}/${indexPath}`);
+    return [];
+  }
+
+  const src = readFileSync(indexFile, 'utf8');
+  const imports = new Map<string, string>();
+  const importRe = /import\s+([A-Za-z_$][\w$]*)\s+from\s+['"]([^'"]+)['"]/g;
+  for (const match of src.matchAll(importRe)) {
+    imports.set(match[1], match[2]);
+  }
+
+  const out: Rule[] = [];
+  const seen = new Set<string>();
+  const entryRe = /['"]([^'"]+)['"]:\s*([A-Za-z_$][\w$]*)/g;
+  for (const match of src.matchAll(entryRe)) {
+    const [, name, local] = match;
+    if (seen.has(name)) continue;
+    seen.add(name);
+
+    const importPath = imports.get(local);
+    if (!importPath) {
+      errors.push(
+        `${plugin.npm}: could not resolve indexed rule '${name}' in ${plugin.submodule}/${indexPath}`,
+      );
+      continue;
+    }
+    const file = resolveImportedFile(dirname(indexFile), importPath);
+    out.push(makeRule(plugin, name, file ? readDescription(file) : ''));
+  }
+
+  return out;
+}
+
+function enumerateReactHooks(plugin: Plugin, config: ReactHooksRules): Rule[] {
+  const base = join(ROOT, plugin.submodule);
+  const out = [
+    makeRule(plugin, 'exhaustive-deps', readDescription(join(base, config.exhaustiveDepsFile))),
+    makeRule(plugin, 'rules-of-hooks', readDescription(join(base, config.rulesOfHooksFile))),
+  ];
+
+  const compilerErrorFile = join(base, config.compilerErrorFile);
+  if (!existsSync(compilerErrorFile)) {
+    errors.push(
+      `${plugin.npm}: compiler error file not found: ${plugin.submodule}/${config.compilerErrorFile}`,
+    );
+  } else {
+    const src = readFileSync(compilerErrorFile, 'utf8');
+    const start = src.indexOf('function getRuleForCategoryImpl');
+    const end = src.indexOf('export const LintRules');
+    const haystack = start >= 0 && end > start ? src.slice(start, end) : src;
+    const returnRe = /return\s*{([\s\S]*?)\n\s*};/g;
+    for (const match of haystack.matchAll(returnRe)) {
+      const block = match[1];
+      const name = block.match(/name:\s*'([^']+)'/)?.[1];
+      if (!name) continue;
+      out.push(makeRule(plugin, name, readObjectDescription(block)));
+    }
+  }
+
+  out.push(
+    makeRule(
+      plugin,
+      'component-hook-factories',
+      'Deprecated: this rule has been removed in 7.1.0.',
+    ),
+  );
+  return out;
+}
+
+function resolveImportedFile(baseDir: string, importPath: string): string | undefined {
+  const file = join(baseDir, importPath);
+  const candidates = [
+    file,
+    `${file}.ts`,
+    `${file}.js`,
+    join(file, 'index.ts'),
+    join(file, 'index.js'),
+  ];
+  return candidates.find((candidate) => existsSync(candidate));
+}
+
+function readObjectDescription(block: string): string {
+  const withoutComments = block.replace(/\/\*[\s\S]*?\*\//g, '');
+  const match = withoutComments.match(/description:\s*([\s\S]*?),\n\s*preset:/);
+  if (!match) return '';
+  return [...match[1].matchAll(/(['"`])((?:\\.|(?!\1)[\s\S])*?)\1/g)]
+    .map((part) => part[2])
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function makeRule(plugin: Plugin, name: string, description: string, sonarKey?: string): Rule {
@@ -261,9 +374,9 @@ function renderIndex(
   lines.push('# Port targets');
   lines.push('');
   lines.push(
-    'ESLint plugins used by [flyle-nexus] that Oxlint does not support natively, collected here as port targets. ' +
+    'ESLint plugins and adjacent packages used by [flyle-nexus], collected here as port targets or upstream references. ' +
       '`eslint-plugin-svelte` is intentionally excluded — it is handled by [rsvelte](https://github.com/baseballyama/rsvelte). ' +
-      'Oxlint-supported plugins (`typescript-eslint`, `eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-unicorn`) are used directly via Oxlint and are not listed here.',
+      'Oxlint-supported plugins (`eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-unicorn`) are used directly via Oxlint and are not listed here.',
   );
   lines.push('');
   lines.push(
