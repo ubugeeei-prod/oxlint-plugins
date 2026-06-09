@@ -125,6 +125,22 @@
           "oxlintIntegration": false
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-unused-enable; reuses the shared disabled-area algorithm; upstream RuleTester cases replayed via test/fixtures."
+      },
+      {
+        "name": "no-restricted-disable",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-restricted-disable; gitignore-style pattern matching in Rust; upstream RuleTester cases replayed via test/fixtures."
       }
     ]
   },

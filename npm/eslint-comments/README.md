@@ -27,12 +27,13 @@ This is unofficial community work and is not an official Oxlint or eslint-commun
 | `disable-enable-pair`   | require an `eslint-enable` for every `eslint-disable`      | ported |
 | `no-aggregating-enable` | disallow one `eslint-enable` for multiple `eslint-disable` | ported |
 | `no-duplicate-disable`  | disallow duplicate `eslint-disable` comments               | ported |
+| `no-restricted-disable` | disallow `eslint-disable` comments about specific rules    | ported |
 | `no-unlimited-disable`  | disallow `eslint-disable` comments without rule names      | ported |
 | `no-unused-enable`      | disallow unused `eslint-enable` comments                   | ported |
 | `no-use`                | disallow ESLint directive-comments                         | ported |
 | `require-description`   | require descriptions in ESLint directive-comments          | ported |
 
-Remaining upstream rules (`no-restricted-disable`, `no-unused-disable`) are tracked in [issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4) and land one rule per pull request.
+The remaining upstream rule (`no-unused-disable`) is tracked in [issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4) and lands one rule per pull request.
 
 ## Performance Shape
 

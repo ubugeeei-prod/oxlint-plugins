@@ -281,10 +281,32 @@ const noUnusedEnable = commentScanRule(
   (comments) => native.scanNoUnusedEnable(comments),
 );
 
+const noRestrictedDisable = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'disallow `eslint-disable` comments about specific rules',
+      recommended: false,
+      url: `${DOCS_BASE}#no-restricted-disable`,
+    },
+    fixable: null,
+    schema: {
+      type: 'array',
+      items: { type: 'string' },
+      uniqueItems: true,
+    },
+    messages: {
+      disallow: "Disabling '{{ruleId}}' is not allowed.",
+    },
+  },
+  (comments, context) => native.scanNoRestrictedDisable(comments, context.options || []),
+);
+
 const rules = {
   'disable-enable-pair': disableEnablePair,
   'no-aggregating-enable': noAggregatingEnable,
   'no-duplicate-disable': noDuplicateDisable,
+  'no-restricted-disable': noRestrictedDisable,
   'no-unlimited-disable': noUnlimitedDisable,
   'no-unused-enable': noUnusedEnable,
   'no-use': noUse,
