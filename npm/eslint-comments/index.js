@@ -227,8 +227,27 @@ const disableEnablePair = commentScanRule(
   },
 );
 
+const noAggregatingEnable = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'disallow a `eslint-enable` comment for multiple `eslint-disable` comments',
+      recommended: true,
+      url: `${DOCS_BASE}#no-aggregating-enable`,
+    },
+    fixable: null,
+    schema: [],
+    messages: {
+      aggregatingEnable:
+        'This `eslint-enable` comment affects {{count}} `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment.',
+    },
+  },
+  (comments) => native.scanNoAggregatingEnable(comments),
+);
+
 const rules = {
   'disable-enable-pair': disableEnablePair,
+  'no-aggregating-enable': noAggregatingEnable,
   'no-unlimited-disable': noUnlimitedDisable,
   'no-use': noUse,
   'require-description': requireDescription,
@@ -236,7 +255,11 @@ const rules = {
 
 // Mirror of upstream's `recommended` config, limited to the rules ported so far.
 // (no-use and require-description are not part of upstream's recommended set.)
-const recommendedRuleNames = ['disable-enable-pair', 'no-unlimited-disable'];
+const recommendedRuleNames = [
+  'disable-enable-pair',
+  'no-aggregating-enable',
+  'no-unlimited-disable',
+];
 
 const plugin = eslintCompatPlugin({
   meta: {

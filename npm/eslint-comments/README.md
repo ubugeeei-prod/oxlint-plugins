@@ -22,14 +22,15 @@ This is unofficial community work and is not an official Oxlint or eslint-commun
 
 ## Rules
 
-| Rule                   | Description                                           | Status |
-| ---------------------- | ----------------------------------------------------- | ------ |
-| `disable-enable-pair`  | require an `eslint-enable` for every `eslint-disable` | ported |
-| `no-unlimited-disable` | disallow `eslint-disable` comments without rule names | ported |
-| `no-use`               | disallow ESLint directive-comments                    | ported |
-| `require-description`  | require descriptions in ESLint directive-comments     | ported |
+| Rule                    | Description                                                | Status |
+| ----------------------- | ---------------------------------------------------------- | ------ |
+| `disable-enable-pair`   | require an `eslint-enable` for every `eslint-disable`      | ported |
+| `no-aggregating-enable` | disallow one `eslint-enable` for multiple `eslint-disable` | ported |
+| `no-unlimited-disable`  | disallow `eslint-disable` comments without rule names      | ported |
+| `no-use`                | disallow ESLint directive-comments                         | ported |
+| `require-description`   | require descriptions in ESLint directive-comments          | ported |
 
-Remaining upstream rules (`no-aggregating-enable`, `no-duplicate-disable`, `no-restricted-disable`, `no-unused-disable`, `no-unused-enable`) are tracked in [issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4) and land one rule per pull request.
+Remaining upstream rules (`no-duplicate-disable`, `no-restricted-disable`, `no-unused-disable`, `no-unused-enable`) are tracked in [issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4) and land one rule per pull request.
 
 ## Performance Shape
 
