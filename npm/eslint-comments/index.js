@@ -189,15 +189,54 @@ const requireDescription = commentScanRule(
   },
 );
 
+function firstTokenStart(context) {
+  const tokens = context.sourceCode.ast && context.sourceCode.ast.tokens;
+  if (!tokens || tokens.length === 0) {
+    return null;
+  }
+  const first = tokens[0];
+  return { line: first.loc.start.line, column: first.loc.start.column };
+}
+
+const disableEnablePair = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'require a `eslint-enable` comment for every `eslint-disable` comment',
+      recommended: true,
+      url: `${DOCS_BASE}#disable-enable-pair`,
+    },
+    fixable: null,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allowWholeFile: { type: 'boolean' },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingPair: "Requires 'eslint-enable' directive.",
+      missingRulePair: "Requires 'eslint-enable' directive for '{{ruleId}}'.",
+    },
+  },
+  (comments, context) => {
+    const allowWholeFile = !!(context.options[0] && context.options[0].allowWholeFile);
+    return native.scanDisableEnablePair(comments, allowWholeFile, firstTokenStart(context));
+  },
+);
+
 const rules = {
+  'disable-enable-pair': disableEnablePair,
   'no-unlimited-disable': noUnlimitedDisable,
   'no-use': noUse,
   'require-description': requireDescription,
 };
 
 // Mirror of upstream's `recommended` config, limited to the rules ported so far.
-// (no-use is not part of upstream's recommended set.)
-const recommendedRuleNames = ['no-unlimited-disable'];
+// (no-use and require-description are not part of upstream's recommended set.)
+const recommendedRuleNames = ['disable-enable-pair', 'no-unlimited-disable'];
 
 const plugin = eslintCompatPlugin({
   meta: {

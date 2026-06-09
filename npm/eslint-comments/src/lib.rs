@@ -5,8 +5,8 @@
 //! file level instead of one NAPI call per AST node.
 
 pub use napi_abi::{
-    CommentInput, Diagnostic, DiagnosticData, DiagnosticLoc, scan_no_unlimited_disable,
-    scan_no_use, scan_require_description,
+    CommentInput, Diagnostic, DiagnosticData, DiagnosticLoc, PositionInput,
+    scan_disable_enable_pair, scan_no_unlimited_disable, scan_no_use, scan_require_description,
 };
 
 #[allow(
@@ -17,8 +17,8 @@ mod napi_abi {
     use napi_derive::napi;
     use oxlint_plugins_eslint_comments::directive::CommentKind;
     use oxlint_plugins_eslint_comments::{
-        Comment, Diagnostic as CoreDiagnostic, Location, Position, no_unlimited_disable, no_use,
-        require_description,
+        Comment, Diagnostic as CoreDiagnostic, Location, Position, disable_enable_pair,
+        no_unlimited_disable, no_use, require_description,
     };
 
     /// A comment token, as collected from `sourceCode.getAllComments()`.
@@ -33,6 +33,14 @@ mod napi_abi {
         pub start_column: i32,
         pub end_line: u32,
         pub end_column: i32,
+    }
+
+    /// A source position passed from the wrapper (e.g. the first token).
+    #[napi(object)]
+    #[derive(Clone, Debug)]
+    pub struct PositionInput {
+        pub line: u32,
+        pub column: i32,
     }
 
     /// Values interpolated into a diagnostic message template.
@@ -93,6 +101,24 @@ mod napi_abi {
         let core = to_core_comments(&comments);
         let ignored: Vec<&str> = ignore.iter().map(String::as_str).collect();
         require_description(&core, &ignored)
+            .into_iter()
+            .map(diagnostic_from_core)
+            .collect()
+    }
+
+    /// `disable-enable-pair`: report disabled areas with no matching enable.
+    #[napi]
+    pub fn scan_disable_enable_pair(
+        comments: Vec<CommentInput>,
+        allow_whole_file: bool,
+        first_token_start: Option<PositionInput>,
+    ) -> Vec<Diagnostic> {
+        let core = to_core_comments(&comments);
+        let first = first_token_start.map(|position| Position {
+            line: position.line,
+            column: position.column,
+        });
+        disable_enable_pair(&core, allow_whole_file, first)
             .into_iter()
             .map(diagnostic_from_core)
             .collect()

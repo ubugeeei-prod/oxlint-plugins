@@ -61,6 +61,22 @@
           "oxlintIntegration": false
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/require-description; supports the ignore option; upstream RuleTester cases replayed via test/fixtures."
+      },
+      {
+        "name": "disable-enable-pair",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/disable-enable-pair; supports the allowWholeFile option; shared disabled-area algorithm in Rust; upstream RuleTester cases replayed via test/fixtures."
       }
     ]
   },
