@@ -1,0 +1,109 @@
+{
+  "__generated": {
+    "source": "@eslint-community/eslint-plugin-eslint-comments",
+    "version": "4.7.2",
+    "sourceFile": "tests/lib/rules/no-duplicate-disable.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-comments-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n//eslint-disable-line\n"
+    },
+    {
+      "code": "\n/*eslint-disable-line*/\n"
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\n//eslint-disable-line no-unused-vars\n//eslint-disable-next-line semi\n/*eslint-disable eqeqeq*/\n"
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable-line no-unused-vars*/\n/*eslint-disable-next-line semi*/\n/*eslint-disable eqeqeq*/\n"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n/*eslint-disable no-undef*/\n//eslint-disable-line no-undef\n",
+      "errors": [
+        {
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 23,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable-line no-undef*/\n",
+      "errors": [
+        {
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 23,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\n//eslint-disable-next-line no-undef\n",
+      "errors": [
+        {
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 28,
+          "endLine": 3,
+          "endColumn": 36
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable-next-line no-undef*/\n",
+      "errors": [
+        {
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 28,
+          "endLine": 3,
+          "endColumn": 36
+        }
+      ]
+    },
+    {
+      "code": "\n//eslint-disable-next-line no-undef\n//eslint-disable-line no-undef\n",
+      "errors": [
+        {
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 23,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable-next-line no-undef*/\n/*eslint-disable-line no-undef*/\n",
+      "errors": [
+        {
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 23,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ]
+    },
+    {
+      "code": "\n// eslint-disable-next-line no-undef -- description\n// eslint-disable-line no-undef -- description\n",
+      "errors": [
+        {
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 24,
+          "endLine": 3,
+          "endColumn": 32
+        }
+      ]
+    }
+  ]
+}
