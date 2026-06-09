@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/eslint-functional/eslint-plugin-functional |
-| Submodule | `upstream/eslint-plugin-functional` @ `v9.0.5` |
-| Baseline npm version | `9.0.5` |
+| Submodule | `upstream/eslint-plugin-functional` @ `v10.0.0` |
+| Baseline npm version | `10.0.0` |
 | License | MIT |
 | Oxlint native support | none — port target |
 | Rules to port | 20 |
