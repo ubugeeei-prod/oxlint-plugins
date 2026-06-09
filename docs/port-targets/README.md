@@ -13,6 +13,7 @@ Upstream source is vendored under `upstream/` as git submodules pinned to each p
 | [`eslint-plugin-regexp`](./eslint-plugin-regexp.md) | 82 | MIT | https://github.com/ota-meshi/eslint-plugin-regexp |
 | [`eslint-plugin-security`](./eslint-plugin-security.md) | 14 | Apache-2.0 | https://github.com/eslint-community/eslint-plugin-security |
 | [`eslint-plugin-simple-import-sort`](./eslint-plugin-simple-import-sort.md) | 2 | MIT | https://github.com/lydell/eslint-plugin-simple-import-sort |
+| [`@e18e/eslint-plugin`](./eslint-plugin-e18e.md) | 25 | MIT | https://github.com/e18e/eslint-plugin |
 | [`eslint-plugin-unused-imports`](./eslint-plugin-unused-imports.md) | 2 | MIT | https://github.com/sweepline/eslint-plugin-unused-imports |
 | [`eslint-plugin-testing-library`](./eslint-plugin-testing-library.md) | 29 | MIT | https://github.com/testing-library/eslint-plugin-testing-library |
 | [`eslint-plugin-perfectionist`](./eslint-plugin-perfectionist.md) | 23 | MIT | https://github.com/azat-io/eslint-plugin-perfectionist |
@@ -33,6 +34,6 @@ Upstream source is vendored under `upstream/` as git submodules pinned to each p
 | [`@eslint/markdown`](./eslint-markdown.md) | 21 | MIT | https://github.com/eslint/markdown |
 | [`eslint-plugin-postgresql`](./eslint-plugin-postgresql.md) | 89 | MIT | https://github.com/baseballyama/eslint-plugin-postgresql |
 | [`postgresql-eslint-parser`](./postgresql-eslint-parser.md) | 0 | MIT | https://github.com/baseballyama/postgresql-eslint-parser |
-| **Total** | **1108** | | |
+| **Total** | **1133** | | |
 
 [flyle-nexus]: internal

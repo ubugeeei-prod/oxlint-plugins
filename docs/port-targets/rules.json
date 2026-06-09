@@ -685,6 +685,141 @@
       ]
     },
     {
+      "id": "eslint-plugin-e18e",
+      "npm": "@e18e/eslint-plugin",
+      "repo": "https://github.com/e18e/eslint-plugin",
+      "baselineVersion": "0.5.0",
+      "license": "MIT",
+      "ruleCount": 25,
+      "rules": [
+        {
+          "name": "ban-dependencies",
+          "description": "Disallow dependencies in favor of more performant or secure alternatives",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/ban-dependencies.ts"
+        },
+        {
+          "name": "no-delete-property",
+          "description": "Disallow `delete` on properties — V8 deoptimizes the object to dictionary mode",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/no-delete-property.ts"
+        },
+        {
+          "name": "no-indexof-equality",
+          "description": "Prefer optimized alternatives to `indexOf()` equality checks",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/no-indexof-equality.ts"
+        },
+        {
+          "name": "no-spread-in-reduce",
+          "description": "Disallow spreading the accumulator inside a `reduce` callback (O(N²) growth)",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/no-spread-in-reduce.ts"
+        },
+        {
+          "name": "prefer-array-at",
+          "description": "Prefer Array.prototype.at() over length-based indexing",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-array-at.ts"
+        },
+        {
+          "name": "prefer-array-fill",
+          "description": "Prefer Array.prototype.fill() over Array.from or map with constant values",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-array-fill.ts"
+        },
+        {
+          "name": "prefer-array-from-map",
+          "description": "Prefer Array.from(iterable, mapper) over [...iterable].map(mapper) to avoid intermediate array allocation",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-array-from-map.ts"
+        },
+        {
+          "name": "prefer-array-some",
+          "description": "Prefer Array.some() over Array.find() and Array.filter().length checks when checking for element existence",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-array-some.ts"
+        },
+        {
+          "name": "prefer-array-to-reversed",
+          "description": "Prefer Array.prototype.toReversed() over copying and reversing arrays",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-array-to-reversed.ts"
+        },
+        {
+          "name": "prefer-array-to-sorted",
+          "description": "Prefer Array.prototype.toSorted() over copying and sorting arrays",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-array-to-sorted.ts"
+        },
+        {
+          "name": "prefer-array-to-spliced",
+          "description": "Prefer Array.prototype.toSpliced() over copying and splicing arrays",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-array-to-spliced.ts"
+        },
+        {
+          "name": "prefer-date-now",
+          "description": "Prefer Date.now() over new Date().getTime() and +new Date()",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-date-now.ts"
+        },
+        {
+          "name": "prefer-exponentiation-operator",
+          "description": "Prefer the exponentiation operator ** over Math.pow()",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-exponentiation-operator.ts"
+        },
+        {
+          "name": "prefer-includes",
+          "description": "Prefer .includes() over indexOf() comparisons for arrays and strings",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-includes.ts"
+        },
+        {
+          "name": "prefer-includes-over-regex-test",
+          "description": "Prefer String.prototype.{includes,startsWith,endsWith} over equivalent regex.test() calls",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-includes-over-regex-test.ts"
+        },
+        {
+          "name": "prefer-inline-equality",
+          "description": "Prefer inline equality checks over temporary object creation for simple comparisons",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-inline-equality.ts"
+        },
+        {
+          "name": "prefer-nullish-coalescing",
+          "description": "Prefer nullish coalescing operator (?? and ??=) over verbose null checks",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-nullish-coalescing.ts"
+        },
+        {
+          "name": "prefer-object-has-own",
+          "description": "Prefer Object.hasOwn() over Object.prototype.hasOwnProperty.call() and obj.hasOwnProperty()",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-object-has-own.ts"
+        },
+        {
+          "name": "prefer-regex-test",
+          "description": "prefer `RegExp.test()` over `String.match()` and `RegExp.exec()` when only checking for match existence",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-regex-test.ts"
+        },
+        {
+          "name": "prefer-spread-syntax",
+          "description": "Prefer spread syntax over Array.concat(), Array.from(), Object.assign({}, ...), and Function.apply()",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-spread-syntax.ts"
+        },
+        {
+          "name": "prefer-static-collator",
+          "description": "Prefer hoisting an `Intl.Collator` instance over calling localeCompare in a sort callback",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-static-collator.ts"
+        },
+        {
+          "name": "prefer-static-regex",
+          "description": "Prefer defining regular expressions at module scope to avoid re-compilation on every function call",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-static-regex.ts"
+        },
+        {
+          "name": "prefer-string-fromcharcode",
+          "description": "Prefer String.fromCharCode() over String.fromCodePoint() for code points below 0x10000",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-string-fromcharcode.ts"
+        },
+        {
+          "name": "prefer-timer-args",
+          "description": "Prefer passing function and arguments directly to setTimeout/setInterval instead of wrapping in an arrow function or using bind",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-timer-args.ts"
+        },
+        {
+          "name": "prefer-url-canparse",
+          "description": "Prefer URL.canParse() over try-catch blocks for URL validation",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-url-canparse.ts"
+        }
+      ]
+    },
+    {
       "id": "eslint-plugin-unused-imports",
       "npm": "eslint-plugin-unused-imports",
       "repo": "https://github.com/sweepline/eslint-plugin-unused-imports",

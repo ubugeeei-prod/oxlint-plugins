@@ -78,6 +78,21 @@
       "notes": ""
     },
     {
+      "id": "eslint-plugin-e18e",
+      "npm": "@e18e/eslint-plugin",
+      "repo": "https://github.com/e18e/eslint-plugin",
+      "submodule": "upstream/eslint-plugin-e18e",
+      "packageSubdir": ".",
+      "baselineVersion": "0.5.0",
+      "pinnedRef": "0.5.0",
+      "license": "MIT",
+      "monorepo": false,
+      "expectedRuleCount": 25,
+      "rules": { "type": "glob", "dir": "src/rules", "ext": ".ts", "exclude": [".test.ts"] },
+      "docsUrlTemplate": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/{rule}.ts",
+      "notes": "Modernization and performance rules. Some rules optionally require TypeScript type information."
+    },
+    {
       "id": "eslint-plugin-unused-imports",
       "npm": "eslint-plugin-unused-imports",
       "repo": "https://github.com/sweepline/eslint-plugin-unused-imports",

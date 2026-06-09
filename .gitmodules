@@ -90,3 +90,7 @@
 	path = upstream/eslint-stylistic
 	url = https://github.com/eslint-stylistic/eslint-stylistic
 	shallow = true
+[submodule "upstream/eslint-plugin-e18e"]
+	path = upstream/eslint-plugin-e18e
+	url = https://github.com/e18e/eslint-plugin
+	shallow = true
