@@ -17,6 +17,7 @@ type AuditJson = {
 const publishablePrefixes = [
   '@oxlint-plugins/oxlint-plugin-type-aware>',
   '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers>',
+  '@oxlint-plugins/oxlint-plugin-stylistic>',
 ];
 
 const audit = spawnSync('pnpm', ['audit', '--prod', '--no-optional', '--json'], {
