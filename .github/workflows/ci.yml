@@ -19,12 +19,53 @@ env:
   RUST_BACKTRACE: '1'
 
 jobs:
-  verify:
-    name: Verify
+  check:
+    name: ${{ matrix.name }}
     runs-on: blacksmith-32vcpu-ubuntu-2404
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Format
+            cache_scope: format
+            command: |
+              pnpm run fmt:rust:check
+              vp fmt --check
+          - name: Typecheck
+            cache_scope: typecheck
+            command: pnpm run typecheck
+          - name: Lint
+            cache_scope: lint
+            command: |
+              vp lint
+              pnpm run lint:rust
+              pnpm run lint:rust:layout
+          - name: Build
+            cache_scope: build
+            command: vp build
+          - name: JS Tests
+            cache_scope: js-tests
+            command: vp test
+          - name: Rust Tests
+            cache_scope: rust-tests
+            command: pnpm run test:rust
+          - name: Bench Check
+            cache_scope: bench-check
+            command: pnpm run bench:check
+          - name: Policy
+            cache_scope: policy
+            command: |
+              pnpm run security:audit
+              pnpm run license
+              pnpm run status:check
+          - name: Publish Readiness
+            cache_scope: publish-readiness
+            command: |
+              vp build
+              node tools/tasks/verify-package-publish-ready.ts
     steps:
-      - uses: actions/checkout@v6
+      - uses: useblacksmith/checkout@v1
 
       - uses: actions/setup-node@v4
         with:
@@ -41,7 +82,28 @@ jobs:
         with:
           components: clippy,rustfmt
 
+      - name: Mount pnpm store
+        uses: useblacksmith/stickydisk@v1
+        with:
+          key: ${{ github.repository }}-${{ matrix.cache_scope }}-pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          path: ~/.local/share/pnpm/store
+
+      - name: Mount node_modules
+        uses: useblacksmith/stickydisk@v1
+        with:
+          key: ${{ github.repository }}-${{ matrix.cache_scope }}-node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          path: ./node_modules
+
+      - name: Mount Cargo target
+        uses: useblacksmith/stickydisk@v1
+        with:
+          key: ${{ github.repository }}-${{ matrix.cache_scope }}-cargo-target-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+          path: ./target
+
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-targets: false
 
       - run: vp install --frozen-lockfile
-      - run: pnpm run verify
+      - name: Run ${{ matrix.name }}
+        run: ${{ matrix.command }}
