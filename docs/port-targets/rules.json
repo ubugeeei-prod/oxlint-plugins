@@ -685,6 +685,2917 @@
       ]
     },
     {
+      "id": "eslint-plugin-unused-imports",
+      "npm": "eslint-plugin-unused-imports",
+      "repo": "https://github.com/sweepline/eslint-plugin-unused-imports",
+      "baselineVersion": "4.4.1",
+      "license": "MIT",
+      "ruleCount": 2,
+      "rules": [
+        {
+          "name": "no-unused-imports",
+          "description": "",
+          "docsUrl": "https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-imports.md"
+        },
+        {
+          "name": "no-unused-vars",
+          "description": "",
+          "docsUrl": "https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-vars.md"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-testing-library",
+      "npm": "eslint-plugin-testing-library",
+      "repo": "https://github.com/testing-library/eslint-plugin-testing-library",
+      "baselineVersion": "7.16.2",
+      "license": "MIT",
+      "ruleCount": 29,
+      "rules": [
+        {
+          "name": "await-async-events",
+          "description": "Enforce promises from async event methods are handled",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/await-async-events.md"
+        },
+        {
+          "name": "await-async-queries",
+          "description": "Enforce promises from async queries to be handled",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/await-async-queries.md"
+        },
+        {
+          "name": "await-async-utils",
+          "description": "Enforce promises from async utils to be awaited properly",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/await-async-utils.md"
+        },
+        {
+          "name": "consistent-data-testid",
+          "description": "Ensures consistent usage of `data-testid`",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/consistent-data-testid.md"
+        },
+        {
+          "name": "no-await-sync-events",
+          "description": "Disallow unnecessary `await` for sync events",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-await-sync-events.md"
+        },
+        {
+          "name": "no-await-sync-queries",
+          "description": "Disallow unnecessary `await` for sync queries",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-await-sync-queries.md"
+        },
+        {
+          "name": "no-container",
+          "description": "Disallow the use of `container` methods",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-container.md"
+        },
+        {
+          "name": "no-debugging-utils",
+          "description": "Disallow the use of debugging utilities like `debug`",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-debugging-utils.md"
+        },
+        {
+          "name": "no-dom-import",
+          "description": "Disallow importing from DOM Testing Library",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-dom-import.md"
+        },
+        {
+          "name": "no-global-regexp-flag-in-query",
+          "description": "Disallow the use of the global RegExp flag (/g) in queries",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-global-regexp-flag-in-query.md"
+        },
+        {
+          "name": "no-manual-cleanup",
+          "description": "Disallow the use of `cleanup`",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-manual-cleanup.md"
+        },
+        {
+          "name": "no-node-access",
+          "description": "Disallow direct Node access",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-node-access.md"
+        },
+        {
+          "name": "no-promise-in-fire-event",
+          "description": "Disallow the use of promises passed to a `fireEvent` method",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-promise-in-fire-event.md"
+        },
+        {
+          "name": "no-render-in-lifecycle",
+          "description": "Disallow the use of `render` in testing frameworks setup functions",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-render-in-lifecycle.md"
+        },
+        {
+          "name": "no-test-id-queries",
+          "description": "Ensure no `data-testid` queries are used",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-test-id-queries.md"
+        },
+        {
+          "name": "no-unnecessary-act",
+          "description": "Disallow wrapping Testing Library utils or empty callbacks in `act`",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-unnecessary-act.md"
+        },
+        {
+          "name": "no-wait-for-multiple-assertions",
+          "description": "Disallow the use of multiple `expect` calls inside `waitFor`",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-wait-for-multiple-assertions.md"
+        },
+        {
+          "name": "no-wait-for-side-effects",
+          "description": "Disallow the use of side effects in `waitFor`",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-wait-for-side-effects.md"
+        },
+        {
+          "name": "no-wait-for-snapshot",
+          "description": "Ensures no snapshot is generated inside of a `waitFor` call",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/no-wait-for-snapshot.md"
+        },
+        {
+          "name": "prefer-explicit-assert",
+          "description": "Suggest using explicit assertions rather than standalone queries",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-explicit-assert.md"
+        },
+        {
+          "name": "prefer-find-by",
+          "description": "Suggest using `find(All)By*` query instead of `waitFor` + `get(All)By*` to wait for elements",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-find-by.md"
+        },
+        {
+          "name": "prefer-implicit-assert",
+          "description": "Suggest using implicit assertions for getBy* & findBy* queries",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-implicit-assert.md"
+        },
+        {
+          "name": "prefer-presence-queries",
+          "description": "Ensure appropriate `get*`/`query*` queries are used with their respective matchers",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-presence-queries.md"
+        },
+        {
+          "name": "prefer-query-by-disappearance",
+          "description": "Suggest using `queryBy*` queries when waiting for disappearance",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-query-by-disappearance.md"
+        },
+        {
+          "name": "prefer-query-matchers",
+          "description": "Ensure the configured `get*`/`query*` query is used with the corresponding matchers",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-query-matchers.md"
+        },
+        {
+          "name": "prefer-screen-queries",
+          "description": "Suggest using `screen` while querying",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-screen-queries.md"
+        },
+        {
+          "name": "prefer-user-event",
+          "description": "Suggest using `userEvent` over `fireEvent` for simulating user interactions",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-user-event.md"
+        },
+        {
+          "name": "prefer-user-event-setup",
+          "description": "Suggest using userEvent with setup() instead of direct methods",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-user-event-setup.md"
+        },
+        {
+          "name": "render-result-naming-convention",
+          "description": "Enforce a valid naming for return value from `render`",
+          "docsUrl": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/render-result-naming-convention.md"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-perfectionist",
+      "npm": "eslint-plugin-perfectionist",
+      "repo": "https://github.com/azat-io/eslint-plugin-perfectionist",
+      "baselineVersion": "5.9.0",
+      "license": "MIT",
+      "ruleCount": 23,
+      "rules": [
+        {
+          "name": "sort-array-includes",
+          "description": "Enforce sorted arrays before include method.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-array-includes"
+        },
+        {
+          "name": "sort-arrays",
+          "description": "Enforce sorted arrays.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-arrays"
+        },
+        {
+          "name": "sort-classes",
+          "description": "Enforce sorted classes.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-classes"
+        },
+        {
+          "name": "sort-decorators",
+          "description": "Enforce sorted decorators.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-decorators"
+        },
+        {
+          "name": "sort-enums",
+          "description": "Enforce sorted TypeScript enums.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-enums"
+        },
+        {
+          "name": "sort-export-attributes",
+          "description": "Enforce sorted export attributes.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-export-attributes"
+        },
+        {
+          "name": "sort-exports",
+          "description": "Enforce sorted exports.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-exports"
+        },
+        {
+          "name": "sort-heritage-clauses",
+          "description": "Enforce sorted heritage clauses.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-heritage-clauses"
+        },
+        {
+          "name": "sort-import-attributes",
+          "description": "Enforce sorted import attributes.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-import-attributes"
+        },
+        {
+          "name": "sort-imports",
+          "description": "Enforce sorted imports.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-imports"
+        },
+        {
+          "name": "sort-interfaces",
+          "description": "Enforce sorted interface properties.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-interfaces"
+        },
+        {
+          "name": "sort-intersection-types",
+          "description": "Enforce sorted intersection types.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-intersection-types"
+        },
+        {
+          "name": "sort-jsx-props",
+          "description": "Enforce sorted JSX props.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-jsx-props"
+        },
+        {
+          "name": "sort-maps",
+          "description": "Enforce sorted Map elements.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-maps"
+        },
+        {
+          "name": "sort-modules",
+          "description": "Enforce sorted modules.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-modules"
+        },
+        {
+          "name": "sort-named-exports",
+          "description": "Enforce sorted named exports.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-named-exports"
+        },
+        {
+          "name": "sort-named-imports",
+          "description": "Enforce sorted named imports.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-named-imports"
+        },
+        {
+          "name": "sort-object-types",
+          "description": "Enforce sorted object types.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-object-types"
+        },
+        {
+          "name": "sort-objects",
+          "description": "Enforce sorted objects.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-objects"
+        },
+        {
+          "name": "sort-sets",
+          "description": "Enforce sorted sets.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-sets"
+        },
+        {
+          "name": "sort-switch-case",
+          "description": "Enforce sorted switch cases.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-switch-case"
+        },
+        {
+          "name": "sort-union-types",
+          "description": "Enforce sorted union types.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-union-types"
+        },
+        {
+          "name": "sort-variable-declarations",
+          "description": "Enforce sorted variable declarations.",
+          "docsUrl": "https://perfectionist.dev/rules/sort-variable-declarations"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-cypress",
+      "npm": "eslint-plugin-cypress",
+      "repo": "https://github.com/cypress-io/eslint-plugin-cypress",
+      "baselineVersion": "6.4.1",
+      "license": "MIT",
+      "ruleCount": 13,
+      "rules": [
+        {
+          "name": "assertion-before-screenshot",
+          "description": "require screenshots to be preceded by an assertion",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/assertion-before-screenshot.md"
+        },
+        {
+          "name": "no-and",
+          "description": "enforce .should() over .and() for starting assertion chains",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-and.md"
+        },
+        {
+          "name": "no-assigning-return-values",
+          "description": "disallow assigning return values of `cy` calls",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-assigning-return-values.md"
+        },
+        {
+          "name": "no-async-before",
+          "description": "disallow using `async`/`await` in Cypress `before` methods",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-async-before.md"
+        },
+        {
+          "name": "no-async-tests",
+          "description": "disallow using `async`/`await` in Cypress test cases",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-async-tests.md"
+        },
+        {
+          "name": "no-chained-get",
+          "description": "disallow chain of `cy.get()` calls",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-chained-get.md"
+        },
+        {
+          "name": "no-debug",
+          "description": "disallow using `cy.debug()` calls",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-debug.md"
+        },
+        {
+          "name": "no-force",
+          "description": "disallow using `force: true` with action commands",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-force.md"
+        },
+        {
+          "name": "no-pause",
+          "description": "disallow using `cy.pause()` calls",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-pause.md"
+        },
+        {
+          "name": "no-unnecessary-waiting",
+          "description": "disallow waiting for arbitrary time periods",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-unnecessary-waiting.md"
+        },
+        {
+          "name": "no-xpath",
+          "description": "disallow using `cy.xpath()` calls",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/no-xpath.md"
+        },
+        {
+          "name": "require-data-selectors",
+          "description": "require `data-*` attribute selectors",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/require-data-selectors.md"
+        },
+        {
+          "name": "unsafe-to-chain-command",
+          "description": "",
+          "docsUrl": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/unsafe-to-chain-command.md"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-playwright",
+      "npm": "eslint-plugin-playwright",
+      "repo": "https://github.com/mskelton/eslint-plugin-playwright",
+      "baselineVersion": "2.10.4",
+      "license": "MIT",
+      "ruleCount": 58,
+      "rules": [
+        {
+          "name": "consistent-spacing-between-blocks",
+          "description": "Enforces a blank line between Playwright test blocks (e.g., test, test.step, test.beforeEach, etc.).",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/consistent-spacing-between-blocks.md"
+        },
+        {
+          "name": "expect-expect",
+          "description": "Enforce assertion to be made in a test body",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/expect-expect.md"
+        },
+        {
+          "name": "max-expects",
+          "description": "Enforces a maximum number assertion calls in a test body",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/max-expects.md"
+        },
+        {
+          "name": "max-nested-describe",
+          "description": "Enforces a maximum depth to nested describe calls",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/max-nested-describe.md"
+        },
+        {
+          "name": "missing-playwright-await",
+          "description": "Identify false positives when async Playwright APIs are not properly awaited.",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/missing-playwright-await.md"
+        },
+        {
+          "name": "no-commented-out-tests",
+          "description": "Disallow commented out tests",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-commented-out-tests.md"
+        },
+        {
+          "name": "no-conditional-expect",
+          "description": "Disallow calling `expect` conditionally",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-conditional-expect.md"
+        },
+        {
+          "name": "no-conditional-in-test",
+          "description": "Disallow conditional logic in tests",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-conditional-in-test.md"
+        },
+        {
+          "name": "no-duplicate-hooks",
+          "description": "Disallow duplicate setup and teardown hooks",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-duplicate-hooks.md"
+        },
+        {
+          "name": "no-duplicate-slow",
+          "description": "Disallow multiple `test.slow()` calls in the same test",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-duplicate-slow.md"
+        },
+        {
+          "name": "no-element-handle",
+          "description": "The use of ElementHandle is discouraged, use Locator instead",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-element-handle.md"
+        },
+        {
+          "name": "no-eval",
+          "description": "The use of `page.$eval` and `page.$$eval` are discouraged, use `locator.evaluate` or `locator.evaluateAll` instead",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-eval.md"
+        },
+        {
+          "name": "no-focused-test",
+          "description": "Prevent usage of `.only()` focus test annotation",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-focused-test.md"
+        },
+        {
+          "name": "no-force-option",
+          "description": "Prevent usage of `{ force: true }` option.",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-force-option.md"
+        },
+        {
+          "name": "no-get-by-title",
+          "description": "Disallows the usage of getByTitle()",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-get-by-title.md"
+        },
+        {
+          "name": "no-hooks",
+          "description": "Disallow setup and teardown hooks",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-hooks.md"
+        },
+        {
+          "name": "no-nested-step",
+          "description": "Disallow nested `test.step()` methods",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-nested-step.md"
+        },
+        {
+          "name": "no-networkidle",
+          "description": "Prevent usage of the networkidle option",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-networkidle.md"
+        },
+        {
+          "name": "no-nth-methods",
+          "description": "Disallow usage of nth methods",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-nth-methods.md"
+        },
+        {
+          "name": "no-page-pause",
+          "description": "Prevent usage of page.pause()",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-page-pause.md"
+        },
+        {
+          "name": "no-raw-locators",
+          "description": "Disallows the usage of raw locators",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-raw-locators.md"
+        },
+        {
+          "name": "no-restricted-locators",
+          "description": "Disallows the usage of specific locator methods",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-restricted-locators.md"
+        },
+        {
+          "name": "no-restricted-matchers",
+          "description": "Disallow specific matchers & modifiers",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-restricted-matchers.md"
+        },
+        {
+          "name": "no-restricted-roles",
+          "description": "Disallows the usage of specific roles in getByRole()",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-restricted-roles.md"
+        },
+        {
+          "name": "no-skipped-test",
+          "description": "Prevent usage of the `.skip()` skip test annotation.",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-skipped-test.md"
+        },
+        {
+          "name": "no-slowed-test",
+          "description": "Prevent usage of the `.slow()` slow test annotation.",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-slowed-test.md"
+        },
+        {
+          "name": "no-standalone-expect",
+          "description": "Disallow using `expect` outside of `test` blocks",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-standalone-expect.md"
+        },
+        {
+          "name": "no-unsafe-references",
+          "description": "Prevent unsafe variable references in page.evaluate() and page.addInitScript()",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-unsafe-references.md"
+        },
+        {
+          "name": "no-unused-locators",
+          "description": "Disallow usage of page locators that are not used",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-unused-locators.md"
+        },
+        {
+          "name": "no-useless-await",
+          "description": "Disallow unnecessary awaits for Playwright methods",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-useless-await.md"
+        },
+        {
+          "name": "no-useless-not",
+          "description": "Disallow usage of 'not' matchers when a more specific matcher exists",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-useless-not.md"
+        },
+        {
+          "name": "no-wait-for-navigation",
+          "description": "Prevent usage of page.waitForNavigation()",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-wait-for-navigation.md"
+        },
+        {
+          "name": "no-wait-for-selector",
+          "description": "Prevent usage of page.waitForSelector()",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-wait-for-selector.md"
+        },
+        {
+          "name": "no-wait-for-timeout",
+          "description": "Prevent usage of page.waitForTimeout()",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/no-wait-for-timeout.md"
+        },
+        {
+          "name": "prefer-comparison-matcher",
+          "description": "Suggest using the built-in comparison matchers",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-comparison-matcher.md"
+        },
+        {
+          "name": "prefer-equality-matcher",
+          "description": "Suggest using the built-in equality matchers",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-equality-matcher.md"
+        },
+        {
+          "name": "prefer-hooks-in-order",
+          "description": "Prefer having hooks in a consistent order",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-hooks-in-order.md"
+        },
+        {
+          "name": "prefer-hooks-on-top",
+          "description": "Suggest having hooks before any test cases",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-hooks-on-top.md"
+        },
+        {
+          "name": "prefer-locator",
+          "description": "Suggest locators over page methods",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-locator.md"
+        },
+        {
+          "name": "prefer-lowercase-title",
+          "description": "Enforce lowercase test names",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-lowercase-title.md"
+        },
+        {
+          "name": "prefer-native-locators",
+          "description": "Prefer native locator functions",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-native-locators.md"
+        },
+        {
+          "name": "prefer-strict-equal",
+          "description": "Suggest using `toStrictEqual()`",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-strict-equal.md"
+        },
+        {
+          "name": "prefer-to-be",
+          "description": "Suggest using `toBe()` for primitive literals",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-to-be.md"
+        },
+        {
+          "name": "prefer-to-contain",
+          "description": "Suggest using toContain()",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-to-contain.md"
+        },
+        {
+          "name": "prefer-to-have-count",
+          "description": "Suggest using `toHaveCount()`",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-to-have-count.md"
+        },
+        {
+          "name": "prefer-to-have-length",
+          "description": "Suggest using `toHaveLength()`",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-to-have-length.md"
+        },
+        {
+          "name": "prefer-web-first-assertions",
+          "description": "Prefer web first assertions",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/prefer-web-first-assertions.md"
+        },
+        {
+          "name": "require-hook",
+          "description": "Require setup and teardown code to be within a hook",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/require-hook.md"
+        },
+        {
+          "name": "require-soft-assertions",
+          "description": "Require all assertions to use `expect.soft`",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/require-soft-assertions.md"
+        },
+        {
+          "name": "require-tags",
+          "description": "Require test blocks to have tags",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/require-tags.md"
+        },
+        {
+          "name": "require-to-pass-timeout",
+          "description": "Require a timeout option for `toPass()`",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/require-to-pass-timeout.md"
+        },
+        {
+          "name": "require-to-throw-message",
+          "description": "Require a message for `toThrow()`",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/require-to-throw-message.md"
+        },
+        {
+          "name": "require-top-level-describe",
+          "description": "Require test cases and hooks to be inside a `test.describe` block",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/require-top-level-describe.md"
+        },
+        {
+          "name": "valid-describe-callback",
+          "description": "Enforce valid `describe()` callback",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/valid-describe-callback.md"
+        },
+        {
+          "name": "valid-expect",
+          "description": "Enforce valid `expect()` usage",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/valid-expect.md"
+        },
+        {
+          "name": "valid-expect-in-promise",
+          "description": "Require promises that have expectations in their chain to be valid",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/valid-expect-in-promise.md"
+        },
+        {
+          "name": "valid-test-tags",
+          "description": "Enforce valid tag format in Playwright test blocks and titles",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/valid-test-tags.md"
+        },
+        {
+          "name": "valid-title",
+          "description": "Enforce valid titles",
+          "docsUrl": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/valid-title.md"
+        }
+      ]
+    },
+    {
+      "id": "angular-eslint-eslint-plugin",
+      "npm": "@angular-eslint/eslint-plugin",
+      "repo": "https://github.com/angular-eslint/angular-eslint",
+      "baselineVersion": "22.0.0",
+      "license": "MIT",
+      "ruleCount": 48,
+      "rules": [
+        {
+          "name": "component-class-suffix",
+          "description": "Classes decorated with @Component must have suffix \"Component\" (or custom) in their name. Note: As of v20, this is no longer recommended by the Angular Team.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/component-class-suffix.md"
+        },
+        {
+          "name": "component-max-inline-declarations",
+          "description": "Enforces a maximum number of lines in inline template, styles and animations.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/component-max-inline-declarations.md"
+        },
+        {
+          "name": "component-selector",
+          "description": "Component selectors should follow given naming rules. See more at ${STYLE_GUIDE_LINK}.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/component-selector.md"
+        },
+        {
+          "name": "computed-must-return",
+          "description": "Ensures that computed() returns a value. Omitting the value is likely a mistake.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/computed-must-return.md"
+        },
+        {
+          "name": "consistent-component-styles",
+          "description": "Ensures consistent usage of `styles`/`styleUrls`/`styleUrl` within Component metadata",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/consistent-component-styles.md"
+        },
+        {
+          "name": "contextual-decorator",
+          "description": "Ensures that classes use contextual decorators in their body",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/contextual-decorator.md"
+        },
+        {
+          "name": "contextual-lifecycle",
+          "description": "Ensures that lifecycle methods are used in a correct context",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/contextual-lifecycle.md"
+        },
+        {
+          "name": "directive-class-suffix",
+          "description": "Classes decorated with @Directive must have suffix \"Directive\" (or custom) in their name. Note: As of v20, this is no longer recommended by the Angular Team.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/directive-class-suffix.md"
+        },
+        {
+          "name": "directive-selector",
+          "description": "Directive selectors should follow given naming rules. See more at https://angular.dev/style-guide#choosing-directive-selectors.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/directive-selector.md"
+        },
+        {
+          "name": "no-async-lifecycle-method",
+          "description": "Angular Lifecycle methods should not be async. Angular does not wait for async lifecycle but the code incorrectly suggests it does.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-async-lifecycle-method.md"
+        },
+        {
+          "name": "no-attribute-decorator",
+          "description": "The @Attribute decorator is used to obtain a single value for an attribute. This is a much less common use case than getting a stream of values (using @Input), so the @Attribute decorator is often mistakenly used when @Input is intended. This rule disallows the usage of @Attribute decorator entirely to prevent these mistakes.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-attribute-decorator.md"
+        },
+        {
+          "name": "no-developer-preview",
+          "description": "Disallow using code which is marked as developer preview",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-developer-preview.md"
+        },
+        {
+          "name": "no-duplicates-in-metadata-arrays",
+          "description": "Ensures that metadata arrays do not contain duplicate entries.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-duplicates-in-metadata-arrays.md"
+        },
+        {
+          "name": "no-empty-lifecycle-method",
+          "description": "Disallows declaring empty lifecycle methods",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-empty-lifecycle-method.md"
+        },
+        {
+          "name": "no-experimental",
+          "description": "Disallow using code which is marked as experimental",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-experimental.md"
+        },
+        {
+          "name": "no-forward-ref",
+          "description": "Disallows usage of \\`${FORWARD_REF}\\` references for DI",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-forward-ref.md"
+        },
+        {
+          "name": "no-implicit-take-until-destroyed",
+          "description": "Ensures that \\`takeUntilDestroyed()\\` is called with an explicit \\`DestroyRef\\` when used outside of an injection context",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-implicit-take-until-destroyed.md"
+        },
+        {
+          "name": "no-input-prefix",
+          "description": "Ensures that input bindings, including aliases, are not named or prefixed by the configured disallowed prefixes",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-input-prefix.md"
+        },
+        {
+          "name": "no-input-rename",
+          "description": "Ensures that input bindings are not aliased",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-input-rename.md"
+        },
+        {
+          "name": "no-inputs-metadata-property",
+          "description": "Disallows usage of the \\`${METADATA_PROPERTY_NAME}\\` metadata property",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-inputs-metadata-property.md"
+        },
+        {
+          "name": "no-lifecycle-call",
+          "description": "Disallows explicit calls to lifecycle methods",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-lifecycle-call.md"
+        },
+        {
+          "name": "no-output-native",
+          "description": "Ensures that output bindings, including aliases, are not named as standard DOM events",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-output-native.md"
+        },
+        {
+          "name": "no-output-on-prefix",
+          "description": "Ensures that output bindings, including aliases, are not named \"on\", nor prefixed with it. See more at ${STYLE_GUIDE_LINK}",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-output-on-prefix.md"
+        },
+        {
+          "name": "no-output-rename",
+          "description": "Ensures that output bindings are not aliased",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-output-rename.md"
+        },
+        {
+          "name": "no-outputs-metadata-property",
+          "description": "Disallows usage of the \\`${METADATA_PROPERTY_NAME}\\` metadata property",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-outputs-metadata-property.md"
+        },
+        {
+          "name": "no-pipe-impure",
+          "description": "Disallows the declaration of impure pipes",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-pipe-impure.md"
+        },
+        {
+          "name": "no-queries-metadata-property",
+          "description": "Disallows usage of the \\`${METADATA_PROPERTY_NAME}\\` metadata property.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-queries-metadata-property.md"
+        },
+        {
+          "name": "no-uncalled-signals",
+          "description": "Warns user about unintentionally doing logic on the signal, rather than the signal's value",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/no-uncalled-signals.md"
+        },
+        {
+          "name": "pipe-prefix",
+          "description": "Enforce consistent prefix for pipes.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/pipe-prefix.md"
+        },
+        {
+          "name": "prefer-host-metadata-property",
+          "description": "Use `host` metadata property instead of `@HostBinding` and `HostListener`",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/prefer-host-metadata-property.md"
+        },
+        {
+          "name": "prefer-inject",
+          "description": "Prefer using the inject() function over constructor parameter injection",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/prefer-inject.md"
+        },
+        {
+          "name": "prefer-on-push-component-change-detection",
+          "description": "Ensures components do not opt out of the default \\`${STRATEGY_ON_PUSH}\\` change detection strategy",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/prefer-on-push-component-change-detection.md"
+        },
+        {
+          "name": "prefer-output-emitter-ref",
+          "description": "Use `OutputEmitterRef` instead of `@Output()`",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/prefer-output-emitter-ref.md"
+        },
+        {
+          "name": "prefer-output-readonly",
+          "description": "Prefer to declare `@Output`, `OutputEmitterRef` and `OutputRef` as `readonly` since they are not supposed to be reassigned",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/prefer-output-readonly.md"
+        },
+        {
+          "name": "prefer-signal-model",
+          "description": "Use `model` instead of `input` and `output` for two-way bindings",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/prefer-signal-model.md"
+        },
+        {
+          "name": "prefer-signals",
+          "description": "Use readonly signals instead of `@Input()`, `@ViewChild()` and other legacy decorators",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/prefer-signals.md"
+        },
+        {
+          "name": "prefer-standalone",
+          "description": "Ensures Components, Directives and Pipes do not opt out of standalone.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/prefer-standalone.md"
+        },
+        {
+          "name": "relative-url-prefix",
+          "description": "The ./ and ../ prefix is standard syntax for relative URLs; don't depend on Angular's current ability to do without that prefix.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/relative-url-prefix.md"
+        },
+        {
+          "name": "require-lifecycle-on-prototype",
+          "description": "Ensures that lifecycle methods are defined on the object's prototype instead of on an instance.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/require-lifecycle-on-prototype.md"
+        },
+        {
+          "name": "require-localize-metadata",
+          "description": "Ensures that $localize tagged messages contain helpful metadata to aid with translations.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/require-localize-metadata.md"
+        },
+        {
+          "name": "runtime-localize",
+          "description": "Ensures that $localize tagged messages can use runtime-loaded translations.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/runtime-localize.md"
+        },
+        {
+          "name": "sort-keys-in-type-decorator",
+          "description": "Ensures that keys in type decorators (Component, Directive, NgModule, Pipe) are sorted in a consistent order",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/sort-keys-in-type-decorator.md"
+        },
+        {
+          "name": "sort-lifecycle-methods",
+          "description": "Ensures that lifecycle methods are declared in order of execution",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/sort-lifecycle-methods.md"
+        },
+        {
+          "name": "use-component-selector",
+          "description": "Component selector must be declared",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/use-component-selector.md"
+        },
+        {
+          "name": "use-component-view-encapsulation",
+          "description": "Disallows using \\`${VIEW_ENCAPSULATION_NONE}\\`",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/use-component-view-encapsulation.md"
+        },
+        {
+          "name": "use-injectable-provided-in",
+          "description": "Using the \\`${METADATA_PROPERTY_NAME}\\` property makes \\`Injectables\\` tree-shakable",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/use-injectable-provided-in.md"
+        },
+        {
+          "name": "use-lifecycle-interface",
+          "description": "Ensures that classes implement lifecycle interfaces corresponding to the declared lifecycle methods. See more at ${STYLE_GUIDE_LINK}",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/use-lifecycle-interface.md"
+        },
+        {
+          "name": "use-pipe-transform-interface",
+          "description": "Ensures that \\`Pipes\\` implement \\`${PIPE_TRANSFORM}\\` interface",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/use-pipe-transform-interface.md"
+        }
+      ]
+    },
+    {
+      "id": "angular-eslint-eslint-plugin-template",
+      "npm": "@angular-eslint/eslint-plugin-template",
+      "repo": "https://github.com/angular-eslint/angular-eslint",
+      "baselineVersion": "22.0.0",
+      "license": "MIT",
+      "ruleCount": 39,
+      "rules": [
+        {
+          "name": "alt-text",
+          "description": "[Accessibility] Enforces alternate text for elements which require the alt, aria-label, aria-labelledby attributes.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/alt-text.md"
+        },
+        {
+          "name": "attributes-order",
+          "description": "Ensures that HTML attributes and Angular bindings are sorted based on an expected order",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/attributes-order.md"
+        },
+        {
+          "name": "banana-in-box",
+          "description": "Ensures that the two-way data binding syntax is correct",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/banana-in-box.md"
+        },
+        {
+          "name": "button-has-type",
+          "description": "Ensures that a button has a valid type specified",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/button-has-type.md"
+        },
+        {
+          "name": "click-events-have-key-events",
+          "description": "[Accessibility] Ensures that the click event is accompanied with at least one key event keyup, keydown or keypress.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/click-events-have-key-events.md"
+        },
+        {
+          "name": "conditional-complexity",
+          "description": "The conditional complexity should not exceed a rational limit",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/conditional-complexity.md"
+        },
+        {
+          "name": "cyclomatic-complexity",
+          "description": "Checks cyclomatic complexity against a specified limit. It is a quantitative measure of the number of linearly independent paths through a program's source code",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/cyclomatic-complexity.md"
+        },
+        {
+          "name": "elements-content",
+          "description": "[Accessibility] Ensures that the heading, anchor and button elements have content in them",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/elements-content.md"
+        },
+        {
+          "name": "eqeqeq",
+          "description": "Requires `===` and `!==` in place of `==` and `!=`",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/eqeqeq.md"
+        },
+        {
+          "name": "i18n",
+          "description": "Ensures following best practices for i18n.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/i18n.md"
+        },
+        {
+          "name": "interactive-supports-focus",
+          "description": "[Accessibility] Ensures that elements with interactive handlers like `(click)` are focusable.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/interactive-supports-focus.md"
+        },
+        {
+          "name": "label-has-associated-control",
+          "description": "[Accessibility] Ensures that a label element/component is associated with a form element",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/label-has-associated-control.md"
+        },
+        {
+          "name": "mouse-events-have-key-events",
+          "description": "[Accessibility] Ensures that the mouse events \\`${MouseEvents.MouseOut}\\` and \\`${MouseEvents.MouseOver}\\` are accompanied by \\`${KeyEvents.Focus}\\` and \\`${KeyEvents.Blur}\\` events respectively. Coding for the keyboard is important for users with physical disabilities who cannot use a mouse, AT compatibility, and screenreader users. See more at ${STYLE_GUIDE_LINK}",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/mouse-events-have-key-events.md"
+        },
+        {
+          "name": "no-any",
+          "description": "The use of \"${ANY_TYPE_CAST_FUNCTION_NAME}\" nullifies the compile-time benefits of Angular's type system",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-any.md"
+        },
+        {
+          "name": "no-autofocus",
+          "description": "[Accessibility] Ensures that the `autofocus` attribute is not used",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-autofocus.md"
+        },
+        {
+          "name": "no-call-expression",
+          "description": "Disallows calling expressions in templates, except for output handlers",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-call-expression.md"
+        },
+        {
+          "name": "no-distracting-elements",
+          "description": "[Accessibility] Enforces that no distracting elements are used",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-distracting-elements.md"
+        },
+        {
+          "name": "no-duplicate-attributes",
+          "description": "Ensures that there are no duplicate input properties or output event listeners",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-duplicate-attributes.md"
+        },
+        {
+          "name": "no-empty-control-flow",
+          "description": "Ensures that control flow blocks are not empty. Empty control flow blocks usually occur due to refactoring that wasn't completed. They can cause confusion when reading code.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-empty-control-flow.md"
+        },
+        {
+          "name": "no-inline-styles",
+          "description": "Disallows the use of inline styles in HTML templates",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-inline-styles.md"
+        },
+        {
+          "name": "no-interpolation-in-attributes",
+          "description": "Ensures that property-binding is used instead of interpolation in attributes.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-interpolation-in-attributes.md"
+        },
+        {
+          "name": "no-negated-async",
+          "description": "Ensures that async pipe results, as well as values used with the async pipe, are not negated",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-negated-async.md"
+        },
+        {
+          "name": "no-nested-tags",
+          "description": "Denies nesting of `<p>` and `<a>` tags.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-nested-tags.md"
+        },
+        {
+          "name": "no-non-null-assertion",
+          "description": "Disallows the non-null assertion operator (!) in templates",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-non-null-assertion.md"
+        },
+        {
+          "name": "no-positive-tabindex",
+          "description": "Ensures that the `tabindex` attribute is not positive",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/no-positive-tabindex.md"
+        },
+        {
+          "name": "prefer-at-else",
+          "description": "Prefer using `@else` instead of a second `@if` with the opposite condition to reduce code and make it easier to read.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-at-else.md"
+        },
+        {
+          "name": "prefer-at-empty",
+          "description": "Prefer using `@empty` with `@for` loops instead of a separate `@if` or `@else` block to reduce code and make it easier to read.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-at-empty.md"
+        },
+        {
+          "name": "prefer-built-in-pipes",
+          "description": "Encourages the use of Angular built-in pipes (e.g. lowercase, uppercase, titlecase) instead of certain JavaScript methods in Angular templates.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-built-in-pipes.md"
+        },
+        {
+          "name": "prefer-class-binding",
+          "description": "Suggests using [class] bindings over ngClass where applicable",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-class-binding.md"
+        },
+        {
+          "name": "prefer-contextual-for-variables",
+          "description": "Ensures that contextual variables are used in @for blocks where possible instead of aliasing them.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-contextual-for-variables.md"
+        },
+        {
+          "name": "prefer-control-flow",
+          "description": "Ensures that the built-in control flow is used.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-control-flow.md"
+        },
+        {
+          "name": "prefer-ngsrc",
+          "description": "Ensures ngSrc is used instead of src for img elements",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-ngsrc.md"
+        },
+        {
+          "name": "prefer-self-closing-tags",
+          "description": "Ensures that self-closing tags are used for elements with a closing tag but no content.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-self-closing-tags.md"
+        },
+        {
+          "name": "prefer-static-string-properties",
+          "description": "Ensures that static string values use property assignment instead of property binding.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-static-string-properties.md"
+        },
+        {
+          "name": "prefer-template-literal",
+          "description": "Ensure that template literals are used instead of concatenating strings or expressions.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/prefer-template-literal.md"
+        },
+        {
+          "name": "role-has-required-aria",
+          "description": "[Accessibility] Ensures elements with ARIA roles have all required properties for that role.",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/role-has-required-aria.md"
+        },
+        {
+          "name": "table-scope",
+          "description": "[Accessibility] Ensures that the `scope` attribute is only used on the `<th>` element",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/table-scope.md"
+        },
+        {
+          "name": "use-track-by-function",
+          "description": "Ensures trackBy function is used",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/use-track-by-function.md"
+        },
+        {
+          "name": "valid-aria",
+          "description": "[Accessibility] Ensures that correct ARIA attributes and respective values are used",
+          "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/valid-aria.md"
+        }
+      ]
+    },
+    {
+      "id": "typescript-eslint-eslint-plugin",
+      "npm": "@typescript-eslint/eslint-plugin",
+      "repo": "https://github.com/typescript-eslint/typescript-eslint",
+      "baselineVersion": "8.61.0",
+      "license": "MIT",
+      "ruleCount": 134,
+      "rules": [
+        {
+          "name": "adjacent-overload-signatures",
+          "description": "Require that function overload signatures be consecutive",
+          "docsUrl": "https://typescript-eslint.io/rules/adjacent-overload-signatures"
+        },
+        {
+          "name": "array-type",
+          "description": "Require consistently using either `T[]` or `Array<T>` for arrays",
+          "docsUrl": "https://typescript-eslint.io/rules/array-type"
+        },
+        {
+          "name": "await-thenable",
+          "description": "Disallow awaiting a value that is not a Thenable",
+          "docsUrl": "https://typescript-eslint.io/rules/await-thenable"
+        },
+        {
+          "name": "ban-ts-comment",
+          "description": "Disallow `@ts-<directive>` comments or require descriptions after directives",
+          "docsUrl": "https://typescript-eslint.io/rules/ban-ts-comment"
+        },
+        {
+          "name": "ban-tslint-comment",
+          "description": "Disallow `// tslint:<rule-flag>` comments",
+          "docsUrl": "https://typescript-eslint.io/rules/ban-tslint-comment"
+        },
+        {
+          "name": "class-literal-property-style",
+          "description": "Enforce that literals on classes are exposed in a consistent style",
+          "docsUrl": "https://typescript-eslint.io/rules/class-literal-property-style"
+        },
+        {
+          "name": "class-methods-use-this",
+          "description": "Enforce that class methods utilize `this`",
+          "docsUrl": "https://typescript-eslint.io/rules/class-methods-use-this"
+        },
+        {
+          "name": "consistent-generic-constructors",
+          "description": "Enforce specifying generic type arguments on type annotation or constructor name of a constructor call",
+          "docsUrl": "https://typescript-eslint.io/rules/consistent-generic-constructors"
+        },
+        {
+          "name": "consistent-indexed-object-style",
+          "description": "Require or disallow the `Record` type",
+          "docsUrl": "https://typescript-eslint.io/rules/consistent-indexed-object-style"
+        },
+        {
+          "name": "consistent-return",
+          "description": "Require `return` statements to either always or never specify values",
+          "docsUrl": "https://typescript-eslint.io/rules/consistent-return"
+        },
+        {
+          "name": "consistent-type-assertions",
+          "description": "Enforce consistent usage of type assertions",
+          "docsUrl": "https://typescript-eslint.io/rules/consistent-type-assertions"
+        },
+        {
+          "name": "consistent-type-definitions",
+          "description": "Enforce type definitions to consistently use either `interface` or `type`",
+          "docsUrl": "https://typescript-eslint.io/rules/consistent-type-definitions"
+        },
+        {
+          "name": "consistent-type-exports",
+          "description": "Enforce consistent usage of type exports",
+          "docsUrl": "https://typescript-eslint.io/rules/consistent-type-exports"
+        },
+        {
+          "name": "consistent-type-imports",
+          "description": "Enforce consistent usage of type imports",
+          "docsUrl": "https://typescript-eslint.io/rules/consistent-type-imports"
+        },
+        {
+          "name": "default-param-last",
+          "description": "Enforce default parameters to be last",
+          "docsUrl": "https://typescript-eslint.io/rules/default-param-last"
+        },
+        {
+          "name": "dot-notation",
+          "description": "Enforce dot notation whenever possible",
+          "docsUrl": "https://typescript-eslint.io/rules/dot-notation"
+        },
+        {
+          "name": "explicit-function-return-type",
+          "description": "Require explicit return types on functions and class methods",
+          "docsUrl": "https://typescript-eslint.io/rules/explicit-function-return-type"
+        },
+        {
+          "name": "explicit-member-accessibility",
+          "description": "Require explicit accessibility modifiers on class properties and methods",
+          "docsUrl": "https://typescript-eslint.io/rules/explicit-member-accessibility"
+        },
+        {
+          "name": "explicit-module-boundary-types",
+          "description": "Require explicit return and argument types on exported functions' and classes' public class methods",
+          "docsUrl": "https://typescript-eslint.io/rules/explicit-module-boundary-types"
+        },
+        {
+          "name": "init-declarations",
+          "description": "Require or disallow initialization in variable declarations",
+          "docsUrl": "https://typescript-eslint.io/rules/init-declarations"
+        },
+        {
+          "name": "max-params",
+          "description": "Enforce a maximum number of parameters in function definitions",
+          "docsUrl": "https://typescript-eslint.io/rules/max-params"
+        },
+        {
+          "name": "member-ordering",
+          "description": "Require a consistent member declaration order",
+          "docsUrl": "https://typescript-eslint.io/rules/member-ordering"
+        },
+        {
+          "name": "method-signature-style",
+          "description": "Enforce using a particular method signature syntax",
+          "docsUrl": "https://typescript-eslint.io/rules/method-signature-style"
+        },
+        {
+          "name": "naming-convention",
+          "description": "Enforce naming conventions for everything across a codebase",
+          "docsUrl": "https://typescript-eslint.io/rules/naming-convention"
+        },
+        {
+          "name": "no-array-constructor",
+          "description": "Disallow generic `Array` constructors",
+          "docsUrl": "https://typescript-eslint.io/rules/no-array-constructor"
+        },
+        {
+          "name": "no-array-delete",
+          "description": "Disallow using the `delete` operator on array values",
+          "docsUrl": "https://typescript-eslint.io/rules/no-array-delete"
+        },
+        {
+          "name": "no-base-to-string",
+          "description": "Require `.toString()` and `.toLocaleString()` to only be called on objects which provide useful information when stringified",
+          "docsUrl": "https://typescript-eslint.io/rules/no-base-to-string"
+        },
+        {
+          "name": "no-confusing-non-null-assertion",
+          "description": "Disallow non-null assertion in locations that may be confusing",
+          "docsUrl": "https://typescript-eslint.io/rules/no-confusing-non-null-assertion"
+        },
+        {
+          "name": "no-confusing-void-expression",
+          "description": "Require expressions of type void to appear in statement position",
+          "docsUrl": "https://typescript-eslint.io/rules/no-confusing-void-expression"
+        },
+        {
+          "name": "no-deprecated",
+          "description": "Disallow using code marked as `@deprecated`",
+          "docsUrl": "https://typescript-eslint.io/rules/no-deprecated"
+        },
+        {
+          "name": "no-dupe-class-members",
+          "description": "Disallow duplicate class members",
+          "docsUrl": "https://typescript-eslint.io/rules/no-dupe-class-members"
+        },
+        {
+          "name": "no-duplicate-enum-values",
+          "description": "Disallow duplicate enum member values",
+          "docsUrl": "https://typescript-eslint.io/rules/no-duplicate-enum-values"
+        },
+        {
+          "name": "no-duplicate-type-constituents",
+          "description": "Disallow duplicate constituents of union or intersection types",
+          "docsUrl": "https://typescript-eslint.io/rules/no-duplicate-type-constituents"
+        },
+        {
+          "name": "no-dynamic-delete",
+          "description": "Disallow using the `delete` operator on computed key expressions",
+          "docsUrl": "https://typescript-eslint.io/rules/no-dynamic-delete"
+        },
+        {
+          "name": "no-empty-function",
+          "description": "Disallow empty functions",
+          "docsUrl": "https://typescript-eslint.io/rules/no-empty-function"
+        },
+        {
+          "name": "no-empty-interface",
+          "description": "Disallow the declaration of empty interfaces",
+          "docsUrl": "https://typescript-eslint.io/rules/no-empty-interface"
+        },
+        {
+          "name": "no-empty-object-type",
+          "description": "Disallow accidentally using the \"empty object\" type",
+          "docsUrl": "https://typescript-eslint.io/rules/no-empty-object-type"
+        },
+        {
+          "name": "no-explicit-any",
+          "description": "Disallow the `any` type",
+          "docsUrl": "https://typescript-eslint.io/rules/no-explicit-any"
+        },
+        {
+          "name": "no-extra-non-null-assertion",
+          "description": "Disallow extra non-null assertions",
+          "docsUrl": "https://typescript-eslint.io/rules/no-extra-non-null-assertion"
+        },
+        {
+          "name": "no-extraneous-class",
+          "description": "Disallow classes used as namespaces",
+          "docsUrl": "https://typescript-eslint.io/rules/no-extraneous-class"
+        },
+        {
+          "name": "no-floating-promises",
+          "description": "Require Promise-like statements to be handled appropriately",
+          "docsUrl": "https://typescript-eslint.io/rules/no-floating-promises"
+        },
+        {
+          "name": "no-for-in-array",
+          "description": "Disallow iterating over an array with a for-in loop",
+          "docsUrl": "https://typescript-eslint.io/rules/no-for-in-array"
+        },
+        {
+          "name": "no-implied-eval",
+          "description": "Disallow the use of `eval()`-like functions",
+          "docsUrl": "https://typescript-eslint.io/rules/no-implied-eval"
+        },
+        {
+          "name": "no-import-type-side-effects",
+          "description": "Enforce the use of top-level import type qualifier when an import only has specifiers with inline type qualifiers",
+          "docsUrl": "https://typescript-eslint.io/rules/no-import-type-side-effects"
+        },
+        {
+          "name": "no-inferrable-types",
+          "description": "Disallow explicit type declarations for variables or parameters initialized to a number, string, or boolean",
+          "docsUrl": "https://typescript-eslint.io/rules/no-inferrable-types"
+        },
+        {
+          "name": "no-invalid-this",
+          "description": "Disallow `this` keywords outside of classes or class-like objects",
+          "docsUrl": "https://typescript-eslint.io/rules/no-invalid-this"
+        },
+        {
+          "name": "no-invalid-void-type",
+          "description": "Disallow `void` type outside of generic or return types",
+          "docsUrl": "https://typescript-eslint.io/rules/no-invalid-void-type"
+        },
+        {
+          "name": "no-loop-func",
+          "description": "Disallow function declarations that contain unsafe references inside loop statements",
+          "docsUrl": "https://typescript-eslint.io/rules/no-loop-func"
+        },
+        {
+          "name": "no-loss-of-precision",
+          "description": "Disallow literal numbers that lose precision",
+          "docsUrl": "https://typescript-eslint.io/rules/no-loss-of-precision"
+        },
+        {
+          "name": "no-magic-numbers",
+          "description": "Disallow magic numbers",
+          "docsUrl": "https://typescript-eslint.io/rules/no-magic-numbers"
+        },
+        {
+          "name": "no-meaningless-void-operator",
+          "description": "Disallow the `void` operator except when used to discard a value",
+          "docsUrl": "https://typescript-eslint.io/rules/no-meaningless-void-operator"
+        },
+        {
+          "name": "no-misused-new",
+          "description": "Enforce valid definition of `new` and `constructor`",
+          "docsUrl": "https://typescript-eslint.io/rules/no-misused-new"
+        },
+        {
+          "name": "no-misused-promises",
+          "description": "Disallow Promises in places not designed to handle them",
+          "docsUrl": "https://typescript-eslint.io/rules/no-misused-promises"
+        },
+        {
+          "name": "no-misused-spread",
+          "description": "Disallow using the spread operator when it might cause unexpected behavior",
+          "docsUrl": "https://typescript-eslint.io/rules/no-misused-spread"
+        },
+        {
+          "name": "no-mixed-enums",
+          "description": "Disallow enums from having both number and string members",
+          "docsUrl": "https://typescript-eslint.io/rules/no-mixed-enums"
+        },
+        {
+          "name": "no-namespace",
+          "description": "Disallow TypeScript namespaces",
+          "docsUrl": "https://typescript-eslint.io/rules/no-namespace"
+        },
+        {
+          "name": "no-non-null-asserted-nullish-coalescing",
+          "description": "Disallow non-null assertions in the left operand of a nullish coalescing operator",
+          "docsUrl": "https://typescript-eslint.io/rules/no-non-null-asserted-nullish-coalescing"
+        },
+        {
+          "name": "no-non-null-asserted-optional-chain",
+          "description": "Disallow non-null assertions after an optional chain expression",
+          "docsUrl": "https://typescript-eslint.io/rules/no-non-null-asserted-optional-chain"
+        },
+        {
+          "name": "no-non-null-assertion",
+          "description": "Disallow non-null assertions using the `!` postfix operator",
+          "docsUrl": "https://typescript-eslint.io/rules/no-non-null-assertion"
+        },
+        {
+          "name": "no-redeclare",
+          "description": "Disallow variable redeclaration",
+          "docsUrl": "https://typescript-eslint.io/rules/no-redeclare"
+        },
+        {
+          "name": "no-redundant-type-constituents",
+          "description": "Disallow members of unions and intersections that do nothing or override type information",
+          "docsUrl": "https://typescript-eslint.io/rules/no-redundant-type-constituents"
+        },
+        {
+          "name": "no-require-imports",
+          "description": "Disallow invocation of `require()`",
+          "docsUrl": "https://typescript-eslint.io/rules/no-require-imports"
+        },
+        {
+          "name": "no-restricted-imports",
+          "description": "Disallow specified modules when loaded by `import`",
+          "docsUrl": "https://typescript-eslint.io/rules/no-restricted-imports"
+        },
+        {
+          "name": "no-restricted-types",
+          "description": "Disallow certain types",
+          "docsUrl": "https://typescript-eslint.io/rules/no-restricted-types"
+        },
+        {
+          "name": "no-shadow",
+          "description": "Disallow variable declarations from shadowing variables declared in the outer scope",
+          "docsUrl": "https://typescript-eslint.io/rules/no-shadow"
+        },
+        {
+          "name": "no-this-alias",
+          "description": "Disallow aliasing `this`",
+          "docsUrl": "https://typescript-eslint.io/rules/no-this-alias"
+        },
+        {
+          "name": "no-type-alias",
+          "description": "Disallow type aliases",
+          "docsUrl": "https://typescript-eslint.io/rules/no-type-alias"
+        },
+        {
+          "name": "no-unnecessary-boolean-literal-compare",
+          "description": "Disallow unnecessary equality comparisons against boolean literals",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-boolean-literal-compare"
+        },
+        {
+          "name": "no-unnecessary-condition",
+          "description": "Disallow conditionals where the type is always truthy or always falsy",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-condition"
+        },
+        {
+          "name": "no-unnecessary-parameter-property-assignment",
+          "description": "Disallow unnecessary assignment of constructor property parameter",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-parameter-property-assignment"
+        },
+        {
+          "name": "no-unnecessary-qualifier",
+          "description": "Disallow unnecessary namespace qualifiers",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-qualifier"
+        },
+        {
+          "name": "no-unnecessary-template-expression",
+          "description": "Disallow unnecessary template expressions",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-template-expression"
+        },
+        {
+          "name": "no-unnecessary-type-arguments",
+          "description": "Disallow type arguments that are equal to the default",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-type-arguments"
+        },
+        {
+          "name": "no-unnecessary-type-assertion",
+          "description": "Disallow type assertions that do not change the type of an expression",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-type-assertion"
+        },
+        {
+          "name": "no-unnecessary-type-constraint",
+          "description": "Disallow unnecessary constraints on generic types",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-type-constraint"
+        },
+        {
+          "name": "no-unnecessary-type-conversion",
+          "description": "Disallow conversion idioms when they do not change the type or value of the expression",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-type-conversion"
+        },
+        {
+          "name": "no-unnecessary-type-parameters",
+          "description": "Disallow type parameters that aren't used multiple times",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unnecessary-type-parameters"
+        },
+        {
+          "name": "no-unsafe-argument",
+          "description": "Disallow calling a function with a value with type `any`",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-argument"
+        },
+        {
+          "name": "no-unsafe-assignment",
+          "description": "Disallow assigning a value with type `any` to variables and properties",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-assignment"
+        },
+        {
+          "name": "no-unsafe-call",
+          "description": "Disallow calling a value with type `any`",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-call"
+        },
+        {
+          "name": "no-unsafe-declaration-merging",
+          "description": "Disallow unsafe declaration merging",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-declaration-merging"
+        },
+        {
+          "name": "no-unsafe-enum-comparison",
+          "description": "Disallow comparing an enum value with a non-enum value",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-enum-comparison"
+        },
+        {
+          "name": "no-unsafe-function-type",
+          "description": "Disallow using the unsafe built-in Function type",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-function-type"
+        },
+        {
+          "name": "no-unsafe-member-access",
+          "description": "Disallow member access on a value with type `any`",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-member-access"
+        },
+        {
+          "name": "no-unsafe-return",
+          "description": "Disallow returning a value with type `any` from a function",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-return"
+        },
+        {
+          "name": "no-unsafe-type-assertion",
+          "description": "Disallow type assertions that narrow a type",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-type-assertion"
+        },
+        {
+          "name": "no-unsafe-unary-minus",
+          "description": "Require unary negation to take a number",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unsafe-unary-minus"
+        },
+        {
+          "name": "no-unused-expressions",
+          "description": "Disallow unused expressions",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unused-expressions"
+        },
+        {
+          "name": "no-unused-private-class-members",
+          "description": "Disallow unused private class members",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unused-private-class-members"
+        },
+        {
+          "name": "no-unused-vars",
+          "description": "Disallow unused variables",
+          "docsUrl": "https://typescript-eslint.io/rules/no-unused-vars"
+        },
+        {
+          "name": "no-use-before-define",
+          "description": "Disallow the use of variables before they are defined",
+          "docsUrl": "https://typescript-eslint.io/rules/no-use-before-define"
+        },
+        {
+          "name": "no-useless-constructor",
+          "description": "Disallow unnecessary constructors",
+          "docsUrl": "https://typescript-eslint.io/rules/no-useless-constructor"
+        },
+        {
+          "name": "no-useless-default-assignment",
+          "description": "Disallow default values that will never be used",
+          "docsUrl": "https://typescript-eslint.io/rules/no-useless-default-assignment"
+        },
+        {
+          "name": "no-useless-empty-export",
+          "description": "Disallow empty exports that don't change anything in a module file",
+          "docsUrl": "https://typescript-eslint.io/rules/no-useless-empty-export"
+        },
+        {
+          "name": "no-var-requires",
+          "description": "Disallow `require` statements except in import statements",
+          "docsUrl": "https://typescript-eslint.io/rules/no-var-requires"
+        },
+        {
+          "name": "no-wrapper-object-types",
+          "description": "Disallow using confusing built-in primitive class wrappers",
+          "docsUrl": "https://typescript-eslint.io/rules/no-wrapper-object-types"
+        },
+        {
+          "name": "non-nullable-type-assertion-style",
+          "description": "Enforce non-null assertions over explicit type assertions",
+          "docsUrl": "https://typescript-eslint.io/rules/non-nullable-type-assertion-style"
+        },
+        {
+          "name": "only-throw-error",
+          "description": "Disallow throwing non-`Error` values as exceptions",
+          "docsUrl": "https://typescript-eslint.io/rules/only-throw-error"
+        },
+        {
+          "name": "parameter-properties",
+          "description": "Require or disallow parameter properties in class constructors",
+          "docsUrl": "https://typescript-eslint.io/rules/parameter-properties"
+        },
+        {
+          "name": "prefer-as-const",
+          "description": "Enforce the use of `as const` over literal type",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-as-const"
+        },
+        {
+          "name": "prefer-destructuring",
+          "description": "Require destructuring from arrays and/or objects",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-destructuring"
+        },
+        {
+          "name": "prefer-enum-initializers",
+          "description": "Require each enum member value to be explicitly initialized",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-enum-initializers"
+        },
+        {
+          "name": "prefer-find",
+          "description": "Enforce the use of Array.prototype.find() over Array.prototype.filter() followed by [0] when looking for a single result",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-find"
+        },
+        {
+          "name": "prefer-for-of",
+          "description": "Enforce the use of `for-of` loop over the standard `for` loop where possible",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-for-of"
+        },
+        {
+          "name": "prefer-function-type",
+          "description": "Enforce using function types instead of interfaces with call signatures",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-function-type"
+        },
+        {
+          "name": "prefer-includes",
+          "description": "Enforce `includes` method over `indexOf` method",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-includes"
+        },
+        {
+          "name": "prefer-literal-enum-member",
+          "description": "Require all enum members to be literal values",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-literal-enum-member"
+        },
+        {
+          "name": "prefer-namespace-keyword",
+          "description": "Require using `namespace` keyword over `module` keyword to declare custom TypeScript modules",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-namespace-keyword"
+        },
+        {
+          "name": "prefer-nullish-coalescing",
+          "description": "Enforce using the nullish coalescing operator instead of logical assignments or chaining",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-nullish-coalescing"
+        },
+        {
+          "name": "prefer-optional-chain",
+          "description": "Enforce using concise optional chain expressions instead of chained logical ands, negated logical ors, or empty objects",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-optional-chain"
+        },
+        {
+          "name": "prefer-promise-reject-errors",
+          "description": "Require using Error objects as Promise rejection reasons",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-promise-reject-errors"
+        },
+        {
+          "name": "prefer-readonly",
+          "description": "Require private members to be marked as `readonly` if they're never modified outside of the constructor",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-readonly"
+        },
+        {
+          "name": "prefer-readonly-parameter-types",
+          "description": "Require function parameters to be typed as `readonly` to prevent accidental mutation of inputs",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-readonly-parameter-types"
+        },
+        {
+          "name": "prefer-reduce-type-parameter",
+          "description": "Enforce using type parameter when calling `Array#reduce` instead of using a type assertion",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-reduce-type-parameter"
+        },
+        {
+          "name": "prefer-regexp-exec",
+          "description": "Enforce `RegExp#exec` over `String#match` if no global flag is provided",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-regexp-exec"
+        },
+        {
+          "name": "prefer-return-this-type",
+          "description": "Enforce that `this` is used when only `this` type is returned",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-return-this-type"
+        },
+        {
+          "name": "prefer-string-starts-ends-with",
+          "description": "Enforce using `String#startsWith` and `String#endsWith` over other equivalent methods of checking substrings",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-string-starts-ends-with"
+        },
+        {
+          "name": "prefer-ts-expect-error",
+          "description": "Enforce using `@ts-expect-error` over `@ts-ignore`",
+          "docsUrl": "https://typescript-eslint.io/rules/prefer-ts-expect-error"
+        },
+        {
+          "name": "promise-function-async",
+          "description": "Require any function or method that returns a Promise to be marked async",
+          "docsUrl": "https://typescript-eslint.io/rules/promise-function-async"
+        },
+        {
+          "name": "related-getter-setter-pairs",
+          "description": "Enforce that `get()` types should be assignable to their equivalent `set()` type",
+          "docsUrl": "https://typescript-eslint.io/rules/related-getter-setter-pairs"
+        },
+        {
+          "name": "require-array-sort-compare",
+          "description": "Require `Array#sort` and `Array#toSorted` calls to always provide a `compareFunction`",
+          "docsUrl": "https://typescript-eslint.io/rules/require-array-sort-compare"
+        },
+        {
+          "name": "require-await",
+          "description": "Disallow async functions which do not return promises and have no `await` expression",
+          "docsUrl": "https://typescript-eslint.io/rules/require-await"
+        },
+        {
+          "name": "restrict-plus-operands",
+          "description": "Require both operands of addition to be the same type and be `bigint`, `number`, or `string`",
+          "docsUrl": "https://typescript-eslint.io/rules/restrict-plus-operands"
+        },
+        {
+          "name": "restrict-template-expressions",
+          "description": "Enforce template literal expressions to be of `string` type",
+          "docsUrl": "https://typescript-eslint.io/rules/restrict-template-expressions"
+        },
+        {
+          "name": "return-await",
+          "description": "Enforce consistent awaiting of returned promises",
+          "docsUrl": "https://typescript-eslint.io/rules/return-await"
+        },
+        {
+          "name": "sort-type-constituents",
+          "description": "Enforce constituents of a type union/intersection to be sorted alphabetically",
+          "docsUrl": "https://typescript-eslint.io/rules/sort-type-constituents"
+        },
+        {
+          "name": "strict-boolean-expressions",
+          "description": "Disallow certain types in boolean expressions",
+          "docsUrl": "https://typescript-eslint.io/rules/strict-boolean-expressions"
+        },
+        {
+          "name": "strict-void-return",
+          "description": "Disallow passing a value-returning function in a position accepting a void function",
+          "docsUrl": "https://typescript-eslint.io/rules/strict-void-return"
+        },
+        {
+          "name": "switch-exhaustiveness-check",
+          "description": "Require switch-case statements to be exhaustive",
+          "docsUrl": "https://typescript-eslint.io/rules/switch-exhaustiveness-check"
+        },
+        {
+          "name": "triple-slash-reference",
+          "description": "Disallow certain triple slash directives in favor of ES6-style import declarations",
+          "docsUrl": "https://typescript-eslint.io/rules/triple-slash-reference"
+        },
+        {
+          "name": "typedef",
+          "description": "Require type annotations in certain places",
+          "docsUrl": "https://typescript-eslint.io/rules/typedef"
+        },
+        {
+          "name": "unbound-method",
+          "description": "Enforce unbound methods are called with their expected scope",
+          "docsUrl": "https://typescript-eslint.io/rules/unbound-method"
+        },
+        {
+          "name": "unified-signatures",
+          "description": "Disallow two overloads that could be unified into one with a union or an optional/rest parameter",
+          "docsUrl": "https://typescript-eslint.io/rules/unified-signatures"
+        },
+        {
+          "name": "use-unknown-in-catch-callback-variable",
+          "description": "Enforce typing arguments in Promise rejection callbacks as `unknown`",
+          "docsUrl": "https://typescript-eslint.io/rules/use-unknown-in-catch-callback-variable"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-react",
+      "npm": "eslint-plugin-react",
+      "repo": "https://github.com/jsx-eslint/eslint-plugin-react",
+      "baselineVersion": "7.37.5",
+      "license": "MIT",
+      "ruleCount": 103,
+      "rules": [
+        {
+          "name": "boolean-prop-naming",
+          "description": "Enforces consistent naming for boolean props",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/boolean-prop-naming.md"
+        },
+        {
+          "name": "button-has-type",
+          "description": "Disallow usage of `button` elements without an explicit `type` attribute",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/button-has-type.md"
+        },
+        {
+          "name": "checked-requires-onchange-or-readonly",
+          "description": "Enforce using `onChange` or `readonly` attribute when `checked` is used",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/checked-requires-onchange-or-readonly.md"
+        },
+        {
+          "name": "default-props-match-prop-types",
+          "description": "Enforce all defaultProps have a corresponding non-required PropType",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/default-props-match-prop-types.md"
+        },
+        {
+          "name": "destructuring-assignment",
+          "description": "Enforce consistent usage of destructuring assignment of props, state, and context",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/destructuring-assignment.md"
+        },
+        {
+          "name": "display-name",
+          "description": "Disallow missing displayName in a React component definition",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/display-name.md"
+        },
+        {
+          "name": "forbid-component-props",
+          "description": "Disallow certain props on components",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-component-props.md"
+        },
+        {
+          "name": "forbid-dom-props",
+          "description": "Disallow certain props on DOM Nodes",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-dom-props.md"
+        },
+        {
+          "name": "forbid-elements",
+          "description": "Disallow certain elements",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-elements.md"
+        },
+        {
+          "name": "forbid-foreign-prop-types",
+          "description": "Disallow using another component\\'s propTypes",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-foreign-prop-types.md"
+        },
+        {
+          "name": "forbid-prop-types",
+          "description": "Disallow certain propTypes",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-prop-types.md"
+        },
+        {
+          "name": "forward-ref-uses-ref",
+          "description": "Require all forwardRef components include a ref parameter",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forward-ref-uses-ref.md"
+        },
+        {
+          "name": "function-component-definition",
+          "description": "Enforce a specific function type for function components",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/function-component-definition.md"
+        },
+        {
+          "name": "hook-use-state",
+          "description": "Ensure destructuring and symmetric naming of useState hook value and setter variables",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/hook-use-state.md"
+        },
+        {
+          "name": "iframe-missing-sandbox",
+          "description": "Enforce sandbox attribute on iframe elements",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/iframe-missing-sandbox.md"
+        },
+        {
+          "name": "jsx-boolean-value",
+          "description": "Enforce boolean attributes notation in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-boolean-value.md"
+        },
+        {
+          "name": "jsx-child-element-spacing",
+          "description": "Enforce or disallow spaces inside of curly braces in JSX attributes and expressions",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-child-element-spacing.md"
+        },
+        {
+          "name": "jsx-closing-bracket-location",
+          "description": "Enforce closing bracket location in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-closing-bracket-location.md"
+        },
+        {
+          "name": "jsx-closing-tag-location",
+          "description": "Enforce closing tag location for multiline JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-closing-tag-location.md"
+        },
+        {
+          "name": "jsx-curly-brace-presence",
+          "description": "Disallow unnecessary JSX expressions when literals alone are sufficient or enforce JSX expressions on literals in JSX children or attributes",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-curly-brace-presence.md"
+        },
+        {
+          "name": "jsx-curly-newline",
+          "description": "Enforce consistent linebreaks in curly braces in JSX attributes and expressions",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-curly-newline.md"
+        },
+        {
+          "name": "jsx-curly-spacing",
+          "description": "Enforce or disallow spaces inside of curly braces in JSX attributes and expressions",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-curly-spacing.md"
+        },
+        {
+          "name": "jsx-equals-spacing",
+          "description": "Enforce or disallow spaces around equal signs in JSX attributes",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-equals-spacing.md"
+        },
+        {
+          "name": "jsx-filename-extension",
+          "description": "Disallow file extensions that may contain JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-filename-extension.md"
+        },
+        {
+          "name": "jsx-first-prop-new-line",
+          "description": "Enforce proper position of the first property in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-first-prop-new-line.md"
+        },
+        {
+          "name": "jsx-fragments",
+          "description": "Enforce shorthand or standard form for React fragments",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-fragments.md"
+        },
+        {
+          "name": "jsx-handler-names",
+          "description": "Enforce event handler naming conventions in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-handler-names.md"
+        },
+        {
+          "name": "jsx-indent",
+          "description": "Enforce JSX indentation",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-indent.md"
+        },
+        {
+          "name": "jsx-indent-props",
+          "description": "Enforce props indentation in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-indent-props.md"
+        },
+        {
+          "name": "jsx-key",
+          "description": "Disallow missing `key` props in iterators/collection literals",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-key.md"
+        },
+        {
+          "name": "jsx-max-depth",
+          "description": "Enforce JSX maximum depth",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-max-depth.md"
+        },
+        {
+          "name": "jsx-max-props-per-line",
+          "description": "Enforce maximum of props on a single line in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-max-props-per-line.md"
+        },
+        {
+          "name": "jsx-newline",
+          "description": "Require or prevent a new line after jsx elements and expressions.",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-newline.md"
+        },
+        {
+          "name": "jsx-no-bind",
+          "description": "Disallow `.bind()` or arrow functions in JSX props",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md"
+        },
+        {
+          "name": "jsx-no-comment-textnodes",
+          "description": "Disallow comments from being inserted as text nodes",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-comment-textnodes.md"
+        },
+        {
+          "name": "jsx-no-constructed-context-values",
+          "description": "Disallows JSX context provider values from taking values that will cause needless rerenders",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-constructed-context-values.md"
+        },
+        {
+          "name": "jsx-no-duplicate-props",
+          "description": "Disallow duplicate properties in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-duplicate-props.md"
+        },
+        {
+          "name": "jsx-no-leaked-render",
+          "description": "Disallow problematic leaked values from being rendered",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-leaked-render.md"
+        },
+        {
+          "name": "jsx-no-literals",
+          "description": "Disallow usage of string literals in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-literals.md"
+        },
+        {
+          "name": "jsx-no-script-url",
+          "description": "Disallow usage of `javascript:` URLs",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-script-url.md"
+        },
+        {
+          "name": "jsx-no-target-blank",
+          "description": "Disallow `target=\"_blank\"` attribute without `rel=\"noreferrer\"`",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-target-blank.md"
+        },
+        {
+          "name": "jsx-no-undef",
+          "description": "Disallow undeclared variables in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-undef.md"
+        },
+        {
+          "name": "jsx-no-useless-fragment",
+          "description": "Disallow unnecessary fragments",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-useless-fragment.md"
+        },
+        {
+          "name": "jsx-one-expression-per-line",
+          "description": "Require one JSX element per line",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-one-expression-per-line.md"
+        },
+        {
+          "name": "jsx-pascal-case",
+          "description": "Enforce PascalCase for user-defined JSX components",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-pascal-case.md"
+        },
+        {
+          "name": "jsx-props-no-multi-spaces",
+          "description": "Disallow multiple spaces between inline JSX props",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-multi-spaces.md"
+        },
+        {
+          "name": "jsx-props-no-spread-multi",
+          "description": "Disallow JSX prop spreading the same identifier multiple times",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spread-multi.md"
+        },
+        {
+          "name": "jsx-props-no-spreading",
+          "description": "Disallow JSX prop spreading",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md"
+        },
+        {
+          "name": "jsx-sort-default-props",
+          "description": "Enforce defaultProps declarations alphabetical sorting",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-sort-default-props.md"
+        },
+        {
+          "name": "jsx-sort-props",
+          "description": "Enforce props alphabetical sorting",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-sort-props.md"
+        },
+        {
+          "name": "jsx-space-before-closing",
+          "description": "Enforce spacing before closing bracket in JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-space-before-closing.md"
+        },
+        {
+          "name": "jsx-tag-spacing",
+          "description": "Enforce whitespace in and around the JSX opening and closing brackets",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-tag-spacing.md"
+        },
+        {
+          "name": "jsx-uses-react",
+          "description": "Disallow React to be incorrectly marked as unused",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-uses-react.md"
+        },
+        {
+          "name": "jsx-uses-vars",
+          "description": "Disallow variables used in JSX to be incorrectly marked as unused",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-uses-vars.md"
+        },
+        {
+          "name": "jsx-wrap-multilines",
+          "description": "Disallow missing parentheses around multiline JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md"
+        },
+        {
+          "name": "no-access-state-in-setstate",
+          "description": "Disallow when this.state is accessed within setState",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-access-state-in-setstate.md"
+        },
+        {
+          "name": "no-adjacent-inline-elements",
+          "description": "Disallow adjacent inline elements not separated by whitespace.",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-adjacent-inline-elements.md"
+        },
+        {
+          "name": "no-array-index-key",
+          "description": "Disallow usage of Array index in keys",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-array-index-key.md"
+        },
+        {
+          "name": "no-arrow-function-lifecycle",
+          "description": "Lifecycle methods should be methods on the prototype, not class fields",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-arrow-function-lifecycle.md"
+        },
+        {
+          "name": "no-children-prop",
+          "description": "Disallow passing of children as props",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-children-prop.md"
+        },
+        {
+          "name": "no-danger",
+          "description": "Disallow usage of dangerous JSX properties",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-danger.md"
+        },
+        {
+          "name": "no-danger-with-children",
+          "description": "Disallow when a DOM element is using both children and dangerouslySetInnerHTML",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-danger-with-children.md"
+        },
+        {
+          "name": "no-deprecated",
+          "description": "Disallow usage of deprecated methods",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-deprecated.md"
+        },
+        {
+          "name": "no-did-mount-set-state",
+          "description": "",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-did-mount-set-state.md"
+        },
+        {
+          "name": "no-did-update-set-state",
+          "description": "",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-did-update-set-state.md"
+        },
+        {
+          "name": "no-direct-mutation-state",
+          "description": "Disallow direct mutation of this.state",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-direct-mutation-state.md"
+        },
+        {
+          "name": "no-find-dom-node",
+          "description": "Disallow usage of findDOMNode",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-find-dom-node.md"
+        },
+        {
+          "name": "no-invalid-html-attribute",
+          "description": "Disallow usage of invalid attributes",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-invalid-html-attribute.md"
+        },
+        {
+          "name": "no-is-mounted",
+          "description": "Disallow usage of isMounted",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-is-mounted.md"
+        },
+        {
+          "name": "no-multi-comp",
+          "description": "Disallow multiple component definition per file",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-multi-comp.md"
+        },
+        {
+          "name": "no-namespace",
+          "description": "Enforce that namespaces are not used in React elements",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-namespace.md"
+        },
+        {
+          "name": "no-object-type-as-default-prop",
+          "description": "Disallow usage of referential-type variables as default param in functional component",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-object-type-as-default-prop.md"
+        },
+        {
+          "name": "no-redundant-should-component-update",
+          "description": "Disallow usage of shouldComponentUpdate when extending React.PureComponent",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-redundant-should-component-update.md"
+        },
+        {
+          "name": "no-render-return-value",
+          "description": "Disallow usage of the return value of ReactDOM.render",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-render-return-value.md"
+        },
+        {
+          "name": "no-set-state",
+          "description": "Disallow usage of setState",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-set-state.md"
+        },
+        {
+          "name": "no-string-refs",
+          "description": "Disallow using string references",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-string-refs.md"
+        },
+        {
+          "name": "no-this-in-sfc",
+          "description": "Disallow `this` from being used in stateless functional components",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-this-in-sfc.md"
+        },
+        {
+          "name": "no-typos",
+          "description": "Disallow common typos",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-typos.md"
+        },
+        {
+          "name": "no-unescaped-entities",
+          "description": "Disallow unescaped HTML entities from appearing in markup",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unescaped-entities.md"
+        },
+        {
+          "name": "no-unknown-property",
+          "description": "Disallow usage of unknown DOM property",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unknown-property.md"
+        },
+        {
+          "name": "no-unsafe",
+          "description": "Disallow usage of unsafe lifecycle methods",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unsafe.md"
+        },
+        {
+          "name": "no-unstable-nested-components",
+          "description": "Disallow creating unstable components inside components",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unstable-nested-components.md"
+        },
+        {
+          "name": "no-unused-class-component-methods",
+          "description": "Disallow declaring unused methods of component class",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unused-class-component-methods.md"
+        },
+        {
+          "name": "no-unused-prop-types",
+          "description": "Disallow definitions of unused propTypes",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unused-prop-types.md"
+        },
+        {
+          "name": "no-unused-state",
+          "description": "Disallow definitions of unused state",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unused-state.md"
+        },
+        {
+          "name": "no-will-update-set-state",
+          "description": "",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-will-update-set-state.md"
+        },
+        {
+          "name": "prefer-es6-class",
+          "description": "Enforce ES5 or ES6 class for React Components",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-es6-class.md"
+        },
+        {
+          "name": "prefer-exact-props",
+          "description": "Prefer exact proptype definitions",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-exact-props.md"
+        },
+        {
+          "name": "prefer-read-only-props",
+          "description": "Enforce that props are read-only",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-read-only-props.md"
+        },
+        {
+          "name": "prefer-stateless-function",
+          "description": "Enforce stateless components to be written as a pure function",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-stateless-function.md"
+        },
+        {
+          "name": "prop-types",
+          "description": "Disallow missing props validation in a React component definition",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prop-types.md"
+        },
+        {
+          "name": "react-in-jsx-scope",
+          "description": "Disallow missing React when using JSX",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/react-in-jsx-scope.md"
+        },
+        {
+          "name": "require-default-props",
+          "description": "Enforce a defaultProps definition for every prop that is not a required prop",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/require-default-props.md"
+        },
+        {
+          "name": "require-optimization",
+          "description": "Enforce React components to have a shouldComponentUpdate method",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/require-optimization.md"
+        },
+        {
+          "name": "require-render-return",
+          "description": "Enforce ES5 or ES6 class for returning value in render function",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/require-render-return.md"
+        },
+        {
+          "name": "self-closing-comp",
+          "description": "Disallow extra closing tags for components without children",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/self-closing-comp.md"
+        },
+        {
+          "name": "sort-comp",
+          "description": "Enforce component methods order",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/sort-comp.md"
+        },
+        {
+          "name": "sort-default-props",
+          "description": "Enforce defaultProps declarations alphabetical sorting",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/sort-default-props.md"
+        },
+        {
+          "name": "sort-prop-types",
+          "description": "Enforce propTypes declarations alphabetical sorting",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/sort-prop-types.md"
+        },
+        {
+          "name": "state-in-constructor",
+          "description": "Enforce class component state initialization style",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/state-in-constructor.md"
+        },
+        {
+          "name": "static-property-placement",
+          "description": "Enforces where React component static properties should be positioned.",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/static-property-placement.md"
+        },
+        {
+          "name": "style-prop-object",
+          "description": "Enforce style prop value is an object",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/style-prop-object.md"
+        },
+        {
+          "name": "void-dom-elements-no-children",
+          "description": "Disallow void DOM elements (e.g. `<img />`, `<br />`) from receiving children",
+          "docsUrl": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/void-dom-elements-no-children.md"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-react-hooks",
+      "npm": "eslint-plugin-react-hooks",
+      "repo": "https://github.com/facebook/react",
+      "baselineVersion": "7.1.1",
+      "license": "MIT",
+      "ruleCount": 29,
+      "rules": [
+        {
+          "name": "capitalized-calls",
+          "description": "Validates against calling capitalized functions/methods instead of using JSX",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/capitalized-calls"
+        },
+        {
+          "name": "component-hook-factories",
+          "description": "Deprecated: this rule has been removed in 7.1.0.",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/component-hook-factories"
+        },
+        {
+          "name": "config",
+          "description": "Validates the compiler configuration options",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/config"
+        },
+        {
+          "name": "error-boundaries",
+          "description": "Validates usage of error boundaries instead of try/catch for errors in child components",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/error-boundaries"
+        },
+        {
+          "name": "exhaustive-deps",
+          "description": "verifies the list of dependencies for Hooks like useEffect and similar",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/exhaustive-deps"
+        },
+        {
+          "name": "exhaustive-effect-dependencies",
+          "description": "Validates that effect dependencies are exhaustive and without extraneous values",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/exhaustive-effect-dependencies"
+        },
+        {
+          "name": "fbt",
+          "description": "Validates usage of fbt",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/fbt"
+        },
+        {
+          "name": "gating",
+          "description": "Validates configuration of [gating mode](https://react.dev/reference/react-compiler/gating)",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/gating"
+        },
+        {
+          "name": "globals",
+          "description": "Validates against assignment/mutation of globals during render, part of ensuring that [side effects must render outside of render](https://react.dev/reference/rules/components-and-hooks-must-be-pure#side-effects-must-run-outside-of-render)",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/globals"
+        },
+        {
+          "name": "hooks",
+          "description": "Validates the rules of hooks",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/hooks"
+        },
+        {
+          "name": "immutability",
+          "description": "Validates against mutating props, state, and other values that [are immutable](https://react.dev/reference/rules/components-and-hooks-must-be-pure#props-and-state-are-immutable)",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/immutability"
+        },
+        {
+          "name": "incompatible-library",
+          "description": "Validates against usage of libraries which are incompatible with memoization (manual or automatic)",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/incompatible-library"
+        },
+        {
+          "name": "invariant",
+          "description": "Internal invariants",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/invariant"
+        },
+        {
+          "name": "memo-dependencies",
+          "description": "Validates that useMemo() and useCallback() specify comprehensive dependencies without extraneous values. See [`useMemo()` docs](https://react.dev/reference/react/useMemo) for more information.",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/memo-dependencies"
+        },
+        {
+          "name": "memoized-effect-dependencies",
+          "description": "Validates that effect dependencies are memoized",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/memoized-effect-dependencies"
+        },
+        {
+          "name": "no-deriving-state-in-effects",
+          "description": "Validates against deriving values from state in an effect",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/no-deriving-state-in-effects"
+        },
+        {
+          "name": "preserve-manual-memoization",
+          "description": "Validates that existing manual memoized is preserved by the compiler. React Compiler will only compile components and hooks if its inference [matches or exceeds the existing manual memoization](https://react.dev/learn/react-compiler/introduction#what-should-i-do-about-usememo-usecallback-and-reactmemo)",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/preserve-manual-memoization"
+        },
+        {
+          "name": "purity",
+          "description": "Validates that [components/hooks are pure](https://react.dev/reference/rules/components-and-hooks-must-be-pure) by checking that they do not call known-impure functions",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/purity"
+        },
+        {
+          "name": "refs",
+          "description": "Validates correct usage of refs, not reading/writing during render. See the \"pitfalls\" section in [`useRef()` usage](https://react.dev/reference/react/useRef#usage)",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/refs"
+        },
+        {
+          "name": "rule-suppression",
+          "description": "Validates against suppression of other rules",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/rule-suppression"
+        },
+        {
+          "name": "rules-of-hooks",
+          "description": "enforces the Rules of Hooks",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/rules-of-hooks"
+        },
+        {
+          "name": "set-state-in-effect",
+          "description": "Validates against calling setState synchronously in an effect. This can indicate non-local derived data, a derived event pattern, or improper external data synchronization.",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/set-state-in-effect"
+        },
+        {
+          "name": "set-state-in-render",
+          "description": "Validates against setting state during render, which can trigger additional renders and potential infinite render loops",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/set-state-in-render"
+        },
+        {
+          "name": "static-components",
+          "description": "Validates that components are static, not recreated every render. Components that are recreated dynamically can reset state and trigger excessive re-rendering",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/static-components"
+        },
+        {
+          "name": "syntax",
+          "description": "Validates against invalid syntax",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/syntax"
+        },
+        {
+          "name": "todo",
+          "description": "Unimplemented features",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/todo"
+        },
+        {
+          "name": "unsupported-syntax",
+          "description": "Validates against syntax that we do not plan to support in React Compiler",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/unsupported-syntax"
+        },
+        {
+          "name": "use-memo",
+          "description": "Validates usage of the useMemo() hook against common mistakes. See [`useMemo()` docs](https://react.dev/reference/react/useMemo) for more information.",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/use-memo"
+        },
+        {
+          "name": "void-use-memo",
+          "description": "Validates that useMemos always return a value and that the result of the useMemo is used by the component/hook. See [`useMemo()` docs](https://react.dev/reference/react/useMemo) for more information.",
+          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/void-use-memo"
+        }
+      ]
+    },
+    {
+      "id": "eslint-plugin-react-refresh",
+      "npm": "eslint-plugin-react-refresh",
+      "repo": "https://github.com/ArnaudBarre/eslint-plugin-react-refresh",
+      "baselineVersion": "0.5.2",
+      "license": "MIT",
+      "ruleCount": 1,
+      "rules": [
+        {
+          "name": "only-export-components",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "eslint-stylistic",
+      "npm": "@stylistic/eslint-plugin",
+      "repo": "https://github.com/eslint-stylistic/eslint-stylistic",
+      "baselineVersion": "5.10.0",
+      "license": "MIT",
+      "ruleCount": 97,
+      "rules": [
+        {
+          "name": "array-bracket-newline",
+          "description": "Enforce linebreaks after opening and before closing array brackets"
+        },
+        {
+          "name": "array-bracket-spacing",
+          "description": "Enforce consistent spacing inside array brackets"
+        },
+        {
+          "name": "array-element-newline",
+          "description": "Enforce line breaks after each array element"
+        },
+        {
+          "name": "arrow-parens",
+          "description": "Require parentheses around arrow function arguments"
+        },
+        {
+          "name": "arrow-spacing",
+          "description": "Enforce consistent spacing before and after the arrow in arrow functions"
+        },
+        {
+          "name": "block-spacing",
+          "description": "Disallow or enforce spaces inside of blocks after opening block and before closing block"
+        },
+        {
+          "name": "brace-style",
+          "description": "Enforce consistent brace style for blocks"
+        },
+        {
+          "name": "comma-dangle",
+          "description": "Require or disallow trailing commas"
+        },
+        {
+          "name": "comma-spacing",
+          "description": "Enforce consistent spacing before and after commas"
+        },
+        {
+          "name": "comma-style",
+          "description": "Enforce consistent comma style"
+        },
+        {
+          "name": "computed-property-spacing",
+          "description": "Enforce consistent spacing inside computed property brackets"
+        },
+        {
+          "name": "curly-newline",
+          "description": "Enforce consistent line breaks after opening and before closing braces"
+        },
+        {
+          "name": "dot-location",
+          "description": "Enforce consistent newlines before and after dots"
+        },
+        {
+          "name": "eol-last",
+          "description": "Require or disallow newline at the end of files"
+        },
+        {
+          "name": "exp-jsx-props-style",
+          "description": "Enforce consistent line break styles for JSX props"
+        },
+        {
+          "name": "exp-list-style",
+          "description": "Enforce consistent spacing and line break styles inside brackets."
+        },
+        {
+          "name": "function-call-argument-newline",
+          "description": "Enforce line breaks between arguments of a function call"
+        },
+        {
+          "name": "function-call-spacing",
+          "description": "Require or disallow spacing between function identifiers and their invocations"
+        },
+        {
+          "name": "function-paren-newline",
+          "description": "Enforce consistent line breaks inside function parentheses"
+        },
+        {
+          "name": "generator-star-spacing",
+          "description": "Enforce consistent spacing around `*` operators in generator functions"
+        },
+        {
+          "name": "implicit-arrow-linebreak",
+          "description": "Enforce the location of arrow function bodies"
+        },
+        {
+          "name": "indent",
+          "description": "Enforce consistent indentation"
+        },
+        {
+          "name": "indent-binary-ops",
+          "description": "Indentation for binary operators"
+        },
+        {
+          "name": "jsx-child-element-spacing",
+          "description": "Enforce or disallow spaces inside of curly braces in JSX attributes and expressions"
+        },
+        {
+          "name": "jsx-closing-bracket-location",
+          "description": "Enforce closing bracket location in JSX"
+        },
+        {
+          "name": "jsx-closing-tag-location",
+          "description": "Enforce closing tag location for multiline JSX"
+        },
+        {
+          "name": "jsx-curly-brace-presence",
+          "description": "Disallow unnecessary JSX expressions when literals alone are sufficient or enforce JSX expressions on literals in JSX children or attributes"
+        },
+        {
+          "name": "jsx-curly-newline",
+          "description": "Enforce consistent linebreaks in curly braces in JSX attributes and expressions"
+        },
+        {
+          "name": "jsx-curly-spacing",
+          "description": "Enforce or disallow spaces inside of curly braces in JSX attributes and expressions"
+        },
+        {
+          "name": "jsx-equals-spacing",
+          "description": "Enforce or disallow spaces around equal signs in JSX attributes"
+        },
+        {
+          "name": "jsx-first-prop-new-line",
+          "description": "Enforce proper position of the first property in JSX"
+        },
+        {
+          "name": "jsx-function-call-newline",
+          "description": "Enforce line breaks before and after JSX elements when they are used as arguments to a function."
+        },
+        {
+          "name": "jsx-indent",
+          "description": "Enforce JSX indentation. Deprecated, use `indent` rule instead."
+        },
+        {
+          "name": "jsx-indent-props",
+          "description": "Enforce props indentation in JSX"
+        },
+        {
+          "name": "jsx-max-props-per-line",
+          "description": "Enforce maximum of props on a single line in JSX"
+        },
+        {
+          "name": "jsx-newline",
+          "description": "Require or prevent a new line after jsx elements and expressions."
+        },
+        {
+          "name": "jsx-one-expression-per-line",
+          "description": "Require one JSX element per line"
+        },
+        {
+          "name": "jsx-pascal-case",
+          "description": "Enforce PascalCase for user-defined JSX components"
+        },
+        {
+          "name": "jsx-props-no-multi-spaces",
+          "description": "Disallow multiple spaces between inline JSX props. Deprecated, use `no-multi-spaces` rule instead."
+        },
+        {
+          "name": "jsx-quotes",
+          "description": "Enforce the consistent use of either double or single quotes in JSX attributes"
+        },
+        {
+          "name": "jsx-self-closing-comp",
+          "description": "Disallow extra closing tags for components without children"
+        },
+        {
+          "name": "jsx-sort-props",
+          "description": "Enforce props alphabetical sorting"
+        },
+        {
+          "name": "jsx-tag-spacing",
+          "description": "Enforce whitespace in and around the JSX opening and closing brackets"
+        },
+        {
+          "name": "jsx-wrap-multilines",
+          "description": "Disallow missing parentheses around multiline JSX"
+        },
+        {
+          "name": "key-spacing",
+          "description": "Enforce consistent spacing between property names and type annotations in types and interfaces"
+        },
+        {
+          "name": "keyword-spacing",
+          "description": "Enforce consistent spacing before and after keywords"
+        },
+        {
+          "name": "line-comment-position",
+          "description": "Enforce position of line comments"
+        },
+        {
+          "name": "linebreak-style",
+          "description": "Enforce consistent linebreak style"
+        },
+        {
+          "name": "lines-around-comment",
+          "description": "Require empty lines around comments"
+        },
+        {
+          "name": "lines-between-class-members",
+          "description": "Require or disallow an empty line between class members"
+        },
+        {
+          "name": "max-len",
+          "description": "Enforce a maximum line length"
+        },
+        {
+          "name": "max-statements-per-line",
+          "description": "Enforce a maximum number of statements allowed per line"
+        },
+        {
+          "name": "member-delimiter-style",
+          "description": "Require a specific member delimiter style for interfaces and type literals"
+        },
+        {
+          "name": "multiline-comment-style",
+          "description": "Enforce a particular style for multiline comments"
+        },
+        {
+          "name": "multiline-ternary",
+          "description": "Enforce newlines between operands of ternary expressions"
+        },
+        {
+          "name": "new-parens",
+          "description": "Enforce or disallow parentheses when invoking a constructor with no arguments"
+        },
+        {
+          "name": "newline-per-chained-call",
+          "description": "Require a newline after each call in a method chain"
+        },
+        {
+          "name": "no-confusing-arrow",
+          "description": "Disallow arrow functions where they could be confused with comparisons"
+        },
+        {
+          "name": "no-extra-parens",
+          "description": "Disallow unnecessary parentheses"
+        },
+        {
+          "name": "no-extra-semi",
+          "description": "Disallow unnecessary semicolons"
+        },
+        {
+          "name": "no-floating-decimal",
+          "description": "Disallow leading or trailing decimal points in numeric literals"
+        },
+        {
+          "name": "no-mixed-operators",
+          "description": "Disallow mixed binary operators"
+        },
+        {
+          "name": "no-mixed-spaces-and-tabs",
+          "description": "Disallow mixed spaces and tabs for indentation"
+        },
+        {
+          "name": "no-multi-spaces",
+          "description": "Disallow multiple spaces"
+        },
+        {
+          "name": "no-multiple-empty-lines",
+          "description": "Disallow multiple empty lines"
+        },
+        {
+          "name": "no-tabs",
+          "description": "Disallow all tabs"
+        },
+        {
+          "name": "no-trailing-spaces",
+          "description": "Disallow trailing whitespace at the end of lines"
+        },
+        {
+          "name": "no-whitespace-before-property",
+          "description": "Disallow whitespace before properties"
+        },
+        {
+          "name": "nonblock-statement-body-position",
+          "description": "Enforce the location of single-line statements"
+        },
+        {
+          "name": "object-curly-newline",
+          "description": "Enforce consistent line breaks after opening and before closing braces"
+        },
+        {
+          "name": "object-curly-spacing",
+          "description": "Enforce consistent spacing inside braces"
+        },
+        {
+          "name": "object-property-newline",
+          "description": "Enforce placing object properties on separate lines"
+        },
+        {
+          "name": "one-var-declaration-per-line",
+          "description": "Require or disallow newlines around variable declarations"
+        },
+        {
+          "name": "operator-linebreak",
+          "description": "Enforce consistent linebreak style for operators"
+        },
+        {
+          "name": "padded-blocks",
+          "description": "Require or disallow padding within blocks"
+        },
+        {
+          "name": "padding-line-between-statements",
+          "description": "Require or disallow padding lines between statements"
+        },
+        {
+          "name": "quote-props",
+          "description": "Require quotes around object literal, type literal, interfaces and enums property names"
+        },
+        {
+          "name": "quotes",
+          "description": "Enforce the consistent use of either backticks, double, or single quotes"
+        },
+        {
+          "name": "rest-spread-spacing",
+          "description": "Enforce spacing between rest and spread operators and their expressions"
+        },
+        {
+          "name": "semi",
+          "description": "Require or disallow semicolons instead of ASI"
+        },
+        {
+          "name": "semi-spacing",
+          "description": "Enforce consistent spacing before and after semicolons"
+        },
+        {
+          "name": "semi-style",
+          "description": "Enforce location of semicolons"
+        },
+        {
+          "name": "space-before-blocks",
+          "description": "Enforce consistent spacing before blocks"
+        },
+        {
+          "name": "space-before-function-paren",
+          "description": "Enforce consistent spacing before function parenthesis"
+        },
+        {
+          "name": "space-in-parens",
+          "description": "Enforce consistent spacing inside parentheses"
+        },
+        {
+          "name": "space-infix-ops",
+          "description": "Require spacing around infix operators"
+        },
+        {
+          "name": "space-unary-ops",
+          "description": "Enforce consistent spacing before or after unary operators"
+        },
+        {
+          "name": "spaced-comment",
+          "description": "Enforce consistent spacing after the `//` or `/*` in a comment"
+        },
+        {
+          "name": "switch-colon-spacing",
+          "description": "Enforce spacing around colons of switch statements"
+        },
+        {
+          "name": "template-curly-spacing",
+          "description": "Require or disallow spacing around embedded expressions of template strings"
+        },
+        {
+          "name": "template-tag-spacing",
+          "description": "Require or disallow spacing between template tags and their literals"
+        },
+        {
+          "name": "type-annotation-spacing",
+          "description": "Require consistent spacing around type annotations"
+        },
+        {
+          "name": "type-generic-spacing",
+          "description": "Enforces consistent spacing inside TypeScript type generics"
+        },
+        {
+          "name": "type-named-tuple-spacing",
+          "description": "Expect space before the type declaration in the named tuple"
+        },
+        {
+          "name": "wrap-iife",
+          "description": "Require parentheses around immediate `function` invocations"
+        },
+        {
+          "name": "wrap-regex",
+          "description": "Require parenthesis around regex literals"
+        },
+        {
+          "name": "yield-star-spacing",
+          "description": "Require or disallow spacing around the `*` in `yield*` expressions"
+        }
+      ]
+    },
+    {
+      "id": "typescript-eslint",
+      "npm": "typescript-eslint",
+      "repo": "https://github.com/typescript-eslint/typescript-eslint",
+      "baselineVersion": "8.61.0",
+      "license": "MIT",
+      "ruleCount": 0,
+      "rules": []
+    },
+    {
       "id": "eslint-plugin-sonarjs",
       "npm": "eslint-plugin-sonarjs",
       "repo": "https://github.com/SonarSource/SonarJS",
