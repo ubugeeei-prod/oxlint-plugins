@@ -25,8 +25,9 @@ This is unofficial community work and is not an official Oxlint or eslint-commun
 | Rule                   | Description                                           | Status |
 | ---------------------- | ----------------------------------------------------- | ------ |
 | `no-unlimited-disable` | disallow `eslint-disable` comments without rule names | ported |
+| `no-use`               | disallow ESLint directive-comments                    | ported |
 
-Remaining upstream rules (`disable-enable-pair`, `no-aggregating-enable`, `no-duplicate-disable`, `no-restricted-disable`, `no-unused-disable`, `no-unused-enable`, `no-use`, `require-description`) are tracked in [issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4) and land one rule per pull request.
+Remaining upstream rules (`disable-enable-pair`, `no-aggregating-enable`, `no-duplicate-disable`, `no-restricted-disable`, `no-unused-disable`, `no-unused-enable`, `require-description`) are tracked in [issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4) and land one rule per pull request.
 
 ## Performance Shape
 
