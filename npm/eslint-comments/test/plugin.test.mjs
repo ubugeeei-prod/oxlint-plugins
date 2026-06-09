@@ -18,6 +18,8 @@ describe('eslint-comments plugin shape', () => {
   it('ships a recommended config for ported rules', () => {
     expect(plugin.configs.recommended.rules).toEqual({
       'eslint-comments/disable-enable-pair': 'error',
+      'eslint-comments/no-aggregating-enable': 'error',
+      'eslint-comments/no-duplicate-disable': 'error',
       'eslint-comments/no-unlimited-disable': 'error',
     });
   });

@@ -77,6 +77,38 @@
           "oxlintIntegration": false
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/disable-enable-pair; supports the allowWholeFile option; shared disabled-area algorithm in Rust; upstream RuleTester cases replayed via test/fixtures."
+      },
+      {
+        "name": "no-aggregating-enable",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-aggregating-enable; reuses the shared disabled-area algorithm; upstream RuleTester cases replayed via test/fixtures."
+      },
+      {
+        "name": "no-duplicate-disable",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-duplicate-disable; reuses the shared disabled-area algorithm; upstream RuleTester cases replayed via test/fixtures."
       }
     ]
   },
