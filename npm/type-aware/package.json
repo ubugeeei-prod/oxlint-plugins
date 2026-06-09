@@ -46,7 +46,9 @@
     "build": "vp pack src/index.ts --dts --format esm --out-dir dist"
   },
   "dependencies": {
-    "@corsa-bind/napi": "catalog:"
+    "@corsa-bind/napi": "catalog:",
+    "@oxlint/plugins": "catalog:",
+    "oxlint": "catalog:"
   },
   "devDependencies": {
     "typescript": "catalog:"

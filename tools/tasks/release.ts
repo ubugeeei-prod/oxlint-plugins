@@ -28,6 +28,7 @@ const packageFiles: string[] = [
   'package.json',
   'npm/type-aware/package.json',
   'npm/no-forbidden-identifiers/package.json',
+  'npm/stylistic/package.json',
 ];
 const currentVersion = JSON.parse(
   readFileSync('npm/no-forbidden-identifiers/package.json', 'utf8'),
@@ -45,7 +46,9 @@ updateCargoWorkspacePathDependencyVersion('Cargo.toml', 'oxlint-plugins-stylisti
 updateJsonVersion('status.json', nextVersion, { list: true });
 updatePluginRuntimeVersion('status.json', nextVersion);
 updateCargoVersion('npm/no-forbidden-identifiers/Cargo.toml', nextVersion);
+updateCargoVersion('npm/stylistic/Cargo.toml', nextVersion);
 updatePluginRuntimeVersion('npm/no-forbidden-identifiers/index.js', nextVersion);
+updatePluginRuntimeVersion('npm/stylistic/index.js', nextVersion);
 
 execFileSync('pnpm', ['install', '--lockfile-only'], { stdio: 'inherit' });
 execFileSync('pnpm', ['run', 'verify'], { stdio: 'inherit' });
@@ -59,6 +62,8 @@ execFileSync(
     'status.json',
     'npm/no-forbidden-identifiers/Cargo.toml',
     'npm/no-forbidden-identifiers/index.js',
+    'npm/stylistic/Cargo.toml',
+    'npm/stylistic/index.js',
     'pnpm-lock.yaml',
   ],
   {

@@ -15,6 +15,7 @@ if (!/^\d+\.\d+\.\d+$/.test(version)) {
 const packages: string[] = [
   'npm/type-aware/package.json',
   'npm/no-forbidden-identifiers/package.json',
+  'npm/stylistic/package.json',
 ];
 
 for (const file of packages) {

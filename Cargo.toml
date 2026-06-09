@@ -5,6 +5,7 @@ members = [
   "crates/stylistic",
   "npm/eslint-comments",
   "npm/no-forbidden-identifiers",
+  "npm/stylistic",
 ]
 resolver = "3"
 
@@ -21,7 +22,7 @@ compact_str = "0.9.1"
 divan = "0.1.21"
 ghost-cell = "0.2.6"
 insta = "1.47.2"
-napi = { version = "3.9.0", default-features = false, features = ["napi9"] }
+napi = { version = "3.9.0", default-features = false, features = ["napi9", "serde-json"] }
 napi-build = "2.3.2"
 napi-derive = "3.5.6"
 oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_carton", version = "0.0.0" }
@@ -29,6 +30,8 @@ oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0
 oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
 phf = { version = "0.13.1", features = ["macros"] }
 rustc-hash = "2.1.1"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
 smallvec = "1.15.1"
 
 [workspace.lints.rust]

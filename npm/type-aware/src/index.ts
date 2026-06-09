@@ -1,81 +1,241 @@
-export type CorsaExecutableConfig = {
-  executable: string;
-  rootUri?: string;
-  initializationOptions?: unknown;
-};
+import type { ESTree as OxlintESTree } from '@oxlint/plugins';
+import type { AST_NODE_TYPES as CorsaAST_NODE_TYPES } from './compat.js';
 
-export type CorsaSnapshot = {
-  uri: string;
-  text: string;
-  version?: number;
-};
+export { AST_NODE_TYPES, AST_TOKEN_TYPES, TSESTree } from './compat.js';
+export * as ASTUtils from './ast_utils.js';
+export * as JSONSchema from './json_schema.js';
+export * as OxlintCompat from './oxlint_compat.js';
+export * as TSUtils from './ts_utils.js';
+export * as Utils from './utils.js';
 
-export type CorsaTypeAwareSession = {
-  updateSnapshot(snapshot: CorsaSnapshot): Promise<unknown>;
-  callJson(method: string, params?: unknown): Promise<unknown>;
-  close(): Promise<void>;
-};
+export { createCorsaTypeAwareSession, pathToFileUri } from './legacy.js';
+export type { CorsaExecutableConfig, CorsaSnapshot, CorsaTypeAwareSession } from './legacy.js';
+export { ESLintUtils, OxlintUtils, RuleCreator } from './oxlint_utils.js';
+export { compatPlugin, definePlugin, defineRule } from './plugin.js';
+export type {
+  Plugin,
+  Rule,
+  RuleContext,
+  RuleDefinition,
+  RuleDiagnostic,
+  RuleMetaWithMessages,
+} from './plugin.js';
+export { getParserServices } from './parser_services.js';
+export { RuleTester } from './rule_tester.js';
+export { SignatureKind } from './types.js';
+export type { RuleTesterConfig } from './rule_tester.js';
+export { TSESLint } from './ts_eslint.js';
+export * as rules from './rules/index.js';
+export { oxlintCompat } from './oxlint_compat.js';
+type CorsaAstNodeType = keyof typeof CorsaAST_NODE_TYPES;
 
-type CorsaClient = {
-  initializeAsync?: (params?: unknown) => Promise<unknown>;
-  updateSnapshotAsync?: (snapshot: CorsaSnapshot) => Promise<unknown>;
-  callJsonAsync?: (method: string, params?: unknown) => Promise<unknown>;
-  closeAsync?: () => Promise<unknown>;
-};
-
-export async function createCorsaTypeAwareSession(
-  config: CorsaExecutableConfig,
-): Promise<CorsaTypeAwareSession> {
-  if (!config.executable) {
-    throw new Error('Corsa executable path is required for type-aware rules.');
+export type ESTree = ESTree.NodeTypes;
+export namespace ESTree {
+  export type Node = OxlintESTree.Node;
+  type NarrowNode<Candidate, Kind extends string> = Candidate extends {
+    readonly type: infer CandidateKind;
   }
+    ? Kind extends CandidateKind
+      ? Candidate & { readonly type: Kind }
+      : never
+    : never;
+  export type NodeByType<Kind extends string> = NarrowNode<Node, Kind>;
 
-  const corsa = (await import('@corsa-bind/napi')) as {
-    CorsaApiClient?: {
-      spawnAsync?: (options: { executable: string }) => Promise<CorsaClient>;
-      spawn?: (options: { executable: string }) => CorsaClient;
-    };
+  export type AccessorProperty = NodeByType<'AccessorProperty'>;
+  export type ArrayExpression = NodeByType<'ArrayExpression'>;
+  export type ArrayPattern = NodeByType<'ArrayPattern'>;
+  export type ArrowFunctionExpression = NodeByType<'ArrowFunctionExpression'>;
+  export type AssignmentExpression = NodeByType<'AssignmentExpression'>;
+  export type AssignmentPattern = NodeByType<'AssignmentPattern'>;
+  export type AwaitExpression = NodeByType<'AwaitExpression'>;
+  export type BinaryExpression = NodeByType<'BinaryExpression'>;
+  export type BlockStatement = NodeByType<'BlockStatement'>;
+  export type BreakStatement = NodeByType<'BreakStatement'>;
+  export type CallExpression = NodeByType<'CallExpression'>;
+  export type CatchClause = NodeByType<'CatchClause'>;
+  export type ChainExpression = NodeByType<'ChainExpression'>;
+  export type ClassBody = NodeByType<'ClassBody'>;
+  export type ClassDeclaration = NodeByType<'ClassDeclaration'>;
+  export type ClassExpression = NodeByType<'ClassExpression'>;
+  export type ConditionalExpression = NodeByType<'ConditionalExpression'>;
+  export type ContinueStatement = NodeByType<'ContinueStatement'>;
+  export type DebuggerStatement = NodeByType<'DebuggerStatement'>;
+  export type Decorator = NodeByType<'Decorator'>;
+  export type DoWhileStatement = NodeByType<'DoWhileStatement'>;
+  export type EmptyStatement = NodeByType<'EmptyStatement'>;
+  export type ExportAllDeclaration = NodeByType<'ExportAllDeclaration'>;
+  export type ExportDefaultDeclaration = NodeByType<'ExportDefaultDeclaration'>;
+  export type ExportNamedDeclaration = NodeByType<'ExportNamedDeclaration'>;
+  export type ExportSpecifier = NodeByType<'ExportSpecifier'>;
+  export type ExpressionStatement = NodeByType<'ExpressionStatement'>;
+  export type ForInStatement = NodeByType<'ForInStatement'>;
+  export type ForOfStatement = NodeByType<'ForOfStatement'>;
+  export type ForStatement = NodeByType<'ForStatement'>;
+  export type FunctionDeclaration = NodeByType<'FunctionDeclaration'>;
+  export type FunctionExpression = NodeByType<'FunctionExpression'>;
+  export type Identifier = NodeByType<'Identifier'> | BindingIdentifier;
+  export type IfStatement = NodeByType<'IfStatement'>;
+  export type ImportAttribute = NodeByType<'ImportAttribute'>;
+  export type ImportDeclaration = NodeByType<'ImportDeclaration'>;
+  export type ImportDefaultSpecifier = NodeByType<'ImportDefaultSpecifier'>;
+  export type ImportExpression = NodeByType<'ImportExpression'>;
+  export type ImportNamespaceSpecifier = NodeByType<'ImportNamespaceSpecifier'>;
+  export type ImportSpecifier = NodeByType<'ImportSpecifier'>;
+  export type JSXAttribute = NodeByType<'JSXAttribute'>;
+  export type JSXClosingElement = NodeByType<'JSXClosingElement'>;
+  export type JSXClosingFragment = NodeByType<'JSXClosingFragment'>;
+  export type JSXElement = NodeByType<'JSXElement'>;
+  export type JSXEmptyExpression = NodeByType<'JSXEmptyExpression'>;
+  export type JSXExpressionContainer = NodeByType<'JSXExpressionContainer'>;
+  export type JSXFragment = NodeByType<'JSXFragment'>;
+  export type JSXIdentifier = NodeByType<'JSXIdentifier'>;
+  export type JSXMemberExpression = NodeByType<'JSXMemberExpression'>;
+  export type JSXNamespacedName = NodeByType<'JSXNamespacedName'>;
+  export type JSXOpeningElement = NodeByType<'JSXOpeningElement'>;
+  export type JSXOpeningFragment = NodeByType<'JSXOpeningFragment'>;
+  export type JSXSpreadAttribute = NodeByType<'JSXSpreadAttribute'>;
+  export type JSXSpreadChild = NodeByType<'JSXSpreadChild'>;
+  export type JSXText = NodeByType<'JSXText'>;
+  export type LabeledStatement = NodeByType<'LabeledStatement'>;
+  export type Literal = NodeByType<'Literal'>;
+  export type LogicalExpression = NodeByType<'LogicalExpression'>;
+  export type MemberExpression = NodeByType<'MemberExpression'>;
+  export type MetaProperty = NodeByType<'MetaProperty'>;
+  export type MethodDefinition = NodeByType<'MethodDefinition'>;
+  export type NewExpression = NodeByType<'NewExpression'>;
+  export type ObjectExpression = NodeByType<'ObjectExpression'>;
+  export type ObjectPattern = NodeByType<'ObjectPattern'>;
+  export type PrivateIdentifier = NodeByType<'PrivateIdentifier'>;
+  export type Program = NodeByType<'Program'>;
+  export type Property = NodeByType<'Property'>;
+  export type PropertyDefinition = NodeByType<'PropertyDefinition'>;
+  export type RestElement = NodeByType<'RestElement'>;
+  export type ReturnStatement = NodeByType<'ReturnStatement'>;
+  export type SequenceExpression = NodeByType<'SequenceExpression'>;
+  export type SpreadElement = NodeByType<'SpreadElement'>;
+  export type StaticBlock = NodeByType<'StaticBlock'>;
+  export type Super = NodeByType<'Super'>;
+  export type SwitchCase = NodeByType<'SwitchCase'>;
+  export type SwitchStatement = NodeByType<'SwitchStatement'>;
+  export type TaggedTemplateExpression = NodeByType<'TaggedTemplateExpression'>;
+  export type TemplateElement = NodeByType<'TemplateElement'>;
+  export type TemplateLiteral = NodeByType<'TemplateLiteral'>;
+  export type ThisExpression = NodeByType<'ThisExpression'>;
+  export type ThrowStatement = NodeByType<'ThrowStatement'>;
+  export type TryStatement = NodeByType<'TryStatement'>;
+  export type UnaryExpression = NodeByType<'UnaryExpression'>;
+  export type UpdateExpression = NodeByType<'UpdateExpression'>;
+  export type VariableDeclaration = NodeByType<'VariableDeclaration'>;
+  export type VariableDeclarator = NodeByType<'VariableDeclarator'>;
+  export type WhileStatement = NodeByType<'WhileStatement'>;
+  export type WithStatement = NodeByType<'WithStatement'>;
+  export type YieldExpression = NodeByType<'YieldExpression'>;
+  export type TSAbstractAccessorProperty = NodeByType<'TSAbstractAccessorProperty'>;
+  export type TSAbstractKeyword = NodeByType<'TSAbstractKeyword'>;
+  export type TSAbstractMethodDefinition = NodeByType<'TSAbstractMethodDefinition'>;
+  export type TSAbstractPropertyDefinition = NodeByType<'TSAbstractPropertyDefinition'>;
+  export type TSAnyKeyword = NodeByType<'TSAnyKeyword'>;
+  export type TSArrayType = NodeByType<'TSArrayType'>;
+  export type TSAsExpression = NodeByType<'TSAsExpression'>;
+  export type TSAsyncKeyword = NodeByType<'TSAsyncKeyword'>;
+  export type TSBigIntKeyword = NodeByType<'TSBigIntKeyword'>;
+  export type TSBooleanKeyword = NodeByType<'TSBooleanKeyword'>;
+  export type TSCallSignatureDeclaration = NodeByType<'TSCallSignatureDeclaration'>;
+  export type TSClassImplements = NodeByType<'TSClassImplements'>;
+  export type TSConditionalType = NodeByType<'TSConditionalType'>;
+  export type TSConstructorType = NodeByType<'TSConstructorType'>;
+  export type TSConstructSignatureDeclaration = NodeByType<'TSConstructSignatureDeclaration'>;
+  export type TSDeclareFunction = NodeByType<'TSDeclareFunction'>;
+  export type TSDeclareKeyword = NodeByType<'TSDeclareKeyword'>;
+  export type TSEmptyBodyFunctionExpression = NodeByType<'TSEmptyBodyFunctionExpression'>;
+  export type TSEnumBody = NodeByType<'TSEnumBody'>;
+  export type TSEnumDeclaration = NodeByType<'TSEnumDeclaration'>;
+  export type TSEnumMember = NodeByType<'TSEnumMember'>;
+  export type TSExportAssignment = NodeByType<'TSExportAssignment'>;
+  export type TSExportKeyword = NodeByType<'TSExportKeyword'>;
+  export type TSExpressionWithTypeArguments = NodeByType<'TSExpressionWithTypeArguments'>;
+  export type TSExternalModuleReference = NodeByType<'TSExternalModuleReference'>;
+  export type TSFunctionType = NodeByType<'TSFunctionType'>;
+  export type TSImportEqualsDeclaration = NodeByType<'TSImportEqualsDeclaration'>;
+  export type TSImportType = NodeByType<'TSImportType'>;
+  export type TSIndexedAccessType = NodeByType<'TSIndexedAccessType'>;
+  export type TSIndexSignature = NodeByType<'TSIndexSignature'>;
+  export type TSInferType = NodeByType<'TSInferType'>;
+  export type TSInstantiationExpression = NodeByType<'TSInstantiationExpression'>;
+  export type TSInterfaceBody = NodeByType<'TSInterfaceBody'>;
+  export type TSInterfaceDeclaration = NodeByType<'TSInterfaceDeclaration'>;
+  export type TSInterfaceHeritage = NodeByType<'TSInterfaceHeritage'>;
+  export type TSIntersectionType = NodeByType<'TSIntersectionType'>;
+  export type TSIntrinsicKeyword = NodeByType<'TSIntrinsicKeyword'>;
+  export type TSLiteralType = NodeByType<'TSLiteralType'>;
+  export type TSMappedType = NodeByType<'TSMappedType'>;
+  export type TSMethodSignature = NodeByType<'TSMethodSignature'>;
+  export type TSModuleBlock = NodeByType<'TSModuleBlock'>;
+  export type TSModuleDeclaration = NodeByType<'TSModuleDeclaration'>;
+  export type TSNamedTupleMember = NodeByType<'TSNamedTupleMember'>;
+  export type TSNamespaceExportDeclaration = NodeByType<'TSNamespaceExportDeclaration'>;
+  export type TSNeverKeyword = NodeByType<'TSNeverKeyword'>;
+  export type TSNonNullExpression = NodeByType<'TSNonNullExpression'>;
+  export type TSNullKeyword = NodeByType<'TSNullKeyword'>;
+  export type TSNumberKeyword = NodeByType<'TSNumberKeyword'>;
+  export type TSObjectKeyword = NodeByType<'TSObjectKeyword'>;
+  export type TSOptionalType = NodeByType<'TSOptionalType'>;
+  export type TSParameterProperty = NodeByType<'TSParameterProperty'>;
+  export type TSPrivateKeyword = NodeByType<'TSPrivateKeyword'>;
+  export type TSPropertySignature = NodeByType<'TSPropertySignature'>;
+  export type TSProtectedKeyword = NodeByType<'TSProtectedKeyword'>;
+  export type TSPublicKeyword = NodeByType<'TSPublicKeyword'>;
+  export type TSQualifiedName = NodeByType<'TSQualifiedName'>;
+  export type TSReadonlyKeyword = NodeByType<'TSReadonlyKeyword'>;
+  export type TSRestType = NodeByType<'TSRestType'>;
+  export type TSSatisfiesExpression = NodeByType<'TSSatisfiesExpression'>;
+  export type TSStaticKeyword = NodeByType<'TSStaticKeyword'>;
+  export type TSStringKeyword = NodeByType<'TSStringKeyword'>;
+  export type TSSymbolKeyword = NodeByType<'TSSymbolKeyword'>;
+  export type TSTemplateLiteralType = NodeByType<'TSTemplateLiteralType'>;
+  export type TSThisType = NodeByType<'TSThisType'>;
+  export type TSTupleType = NodeByType<'TSTupleType'>;
+  export type TSTypeAliasDeclaration = NodeByType<'TSTypeAliasDeclaration'>;
+  export type TSTypeAnnotation = NodeByType<'TSTypeAnnotation'>;
+  export type TSTypeAssertion = NodeByType<'TSTypeAssertion'>;
+  export type TSTypeLiteral = NodeByType<'TSTypeLiteral'>;
+  export type TSTypeOperator = NodeByType<'TSTypeOperator'>;
+  export type TSTypeParameter = NodeByType<'TSTypeParameter'>;
+  export type TSTypeParameterDeclaration = NodeByType<'TSTypeParameterDeclaration'>;
+  export type TSTypeParameterInstantiation = NodeByType<'TSTypeParameterInstantiation'>;
+  export type TSTypePredicate = NodeByType<'TSTypePredicate'>;
+  export type TSTypeQuery = NodeByType<'TSTypeQuery'>;
+  export type TSTypeReference = NodeByType<'TSTypeReference'>;
+  export type TSUndefinedKeyword = NodeByType<'TSUndefinedKeyword'>;
+  export type TSUnionType = NodeByType<'TSUnionType'>;
+  export type TSUnknownKeyword = NodeByType<'TSUnknownKeyword'>;
+  export type TSVoidKeyword = NodeByType<'TSVoidKeyword'>;
+
+  export type BindingIdentifier = Omit<OxlintESTree.BindingIdentifier, 'typeAnnotation'> & {
+    typeAnnotation?: TSTypeAnnotation | null;
   };
-  const clientFactory = corsa.CorsaApiClient;
-
-  if (!clientFactory) {
-    throw new Error('@corsa-bind/napi did not expose CorsaApiClient.');
-  }
-
-  const client =
-    (await clientFactory.spawnAsync?.({ executable: config.executable })) ??
-    clientFactory.spawn?.({ executable: config.executable });
-
-  if (!client) {
-    throw new Error('Failed to spawn Corsa API client.');
-  }
-
-  await client.initializeAsync?.({
-    rootUri: config.rootUri,
-    initializationOptions: config.initializationOptions,
-  });
-
-  return {
-    updateSnapshot(snapshot) {
-      if (!client.updateSnapshotAsync) {
-        throw new Error('Corsa client does not support updateSnapshotAsync.');
-      }
-      return client.updateSnapshotAsync(snapshot);
-    },
-    callJson(method, params) {
-      if (!client.callJsonAsync) {
-        throw new Error('Corsa client does not support callJsonAsync.');
-      }
-      return client.callJsonAsync(method, params);
-    },
-    async close() {
-      await client.closeAsync?.();
-    },
+  export type NodeTypes = {
+    [Kind in CorsaAstNodeType]: NodeByType<Kind>;
+  } & {
+    BindingIdentifier: BindingIdentifier;
+    Identifier: Identifier | BindingIdentifier;
+    NewExpression: NewExpression;
+    TSTypeAnnotation: TSTypeAnnotation;
   };
 }
-
-export function pathToFileUri(path: string): string {
-  const normalized = path.replace(/\\/g, '/');
-  const prefixed = normalized.startsWith('/') ? normalized : `/${normalized}`;
-  return `file://${encodeURI(prefixed)}`;
-}
+export type {
+  CorsaNode,
+  CorsaProgramShape,
+  CorsaRuntimeOptions,
+  CorsaOxlintSettings,
+  CorsaStylisticSettings,
+  CorsaSignature,
+  CorsaSymbol,
+  CorsaType,
+  CorsaTypeCheckerShape,
+  ContextWithParserOptions,
+  ParserServices,
+  ParserServicesWithTypeInformation,
+  ProjectServiceOptions,
+  TypeAwareParserOptions,
+} from './types.js';

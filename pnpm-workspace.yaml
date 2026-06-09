@@ -2,12 +2,13 @@ packages:
   - docs/site
   - npm/*
 catalog:
-  '@corsa-bind/napi': ^0.42.0
+  '@corsa-bind/napi': ^0.43.0
   '@napi-rs/cli': ^3.7.0
   '@ox-content/wasm': ^2.64.0
   '@oxlint/plugins': ^1.68.0
   '@types/node': ^24.10.1
   '@typescript/native-preview': ^7.0.0-dev.20260608.1
+  oxlint: ^1.68.0
   typescript: ^5.9.2
   vite: ^8.0.16
   vite-plus: ^0.1.24
@@ -19,15 +20,15 @@ allowBuilds:
   sharp: true
   workerd: true
 minimumReleaseAgeExclude:
-  - '@corsa-bind/napi-darwin-arm64@0.42.0'
-  - '@corsa-bind/napi-darwin-x64@0.42.0'
-  - '@corsa-bind/napi-linux-arm64-gnu@0.42.0'
-  - '@corsa-bind/napi-linux-arm64-musl@0.42.0'
-  - '@corsa-bind/napi-linux-x64-gnu@0.42.0'
-  - '@corsa-bind/napi-linux-x64-musl@0.42.0'
-  - '@corsa-bind/napi-win32-arm64-msvc@0.42.0'
-  - '@corsa-bind/napi-win32-x64-msvc@0.42.0'
-  - '@corsa-bind/napi@0.42.0'
+  - '@corsa-bind/napi-darwin-arm64@0.43.0'
+  - '@corsa-bind/napi-darwin-x64@0.43.0'
+  - '@corsa-bind/napi-linux-arm64-gnu@0.43.0'
+  - '@corsa-bind/napi-linux-arm64-musl@0.43.0'
+  - '@corsa-bind/napi-linux-x64-gnu@0.43.0'
+  - '@corsa-bind/napi-linux-x64-musl@0.43.0'
+  - '@corsa-bind/napi-win32-arm64-msvc@0.43.0'
+  - '@corsa-bind/napi-win32-x64-msvc@0.43.0'
+  - '@corsa-bind/napi@0.43.0'
   - '@ox-content/wasm@2.64.0'
   - '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260608.1'
   - '@typescript/native-preview-darwin-x64@7.0.0-dev.20260608.1'

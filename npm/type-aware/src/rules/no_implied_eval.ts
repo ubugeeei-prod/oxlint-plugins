@@ -1,0 +1,35 @@
+import {
+  calleePropertyName,
+  isIdentifierNamed,
+  memberPropertyName,
+  stripChainExpression,
+} from './ast.js';
+import { createRustNativeRule } from './native_bridge.js';
+
+export const noImpliedEvalRule = createRustNativeRule(
+  'no-implied-eval',
+  {},
+  { shouldRun: shouldRunNoImpliedEval },
+);
+
+function shouldRunNoImpliedEval(node: any): boolean {
+  switch (node.type) {
+    case 'CallExpression':
+      return (
+        node.arguments?.length > 0 &&
+        ['execScript', 'setInterval', 'setTimeout'].includes(calleeName(node) ?? '')
+      );
+    case 'NewExpression':
+      return node.arguments?.length > 0 && isIdentifierNamed(node.callee, 'Function');
+    default:
+      return true;
+  }
+}
+
+function calleeName(node: any): string | undefined {
+  const callee = stripChainExpression(node.callee) as any;
+  if (callee?.type === 'Identifier') {
+    return callee.name;
+  }
+  return calleePropertyName(node) ?? memberPropertyName(callee);
+}

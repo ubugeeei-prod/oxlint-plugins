@@ -139,5 +139,694 @@
         "notes": "Scaffold rule used to prove the Rust/NAPI/Oxlint plugin shape."
       }
     ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-stylistic",
+    "directory": "npm/stylistic",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "corsa-oxlint/stylistic",
+      "version": "0.43.0",
+      "repository": "https://github.com/ubugeeei-prod/corsa-bind",
+      "license": "MIT"
+    },
+    "status": "in-progress",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "eol-last",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule eol-last; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "linebreak-style",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule linebreak-style; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "no-multiple-empty-lines",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule no-multiple-empty-lines; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "no-tabs",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule no-tabs; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "no-trailing-spaces",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule no-trailing-spaces; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "quotes",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule quotes; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "unicode-bom",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule unicode-bom; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "arrow-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule arrow-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "comma-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule comma-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "semi-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule semi-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "space-in-parens",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule space-in-parens; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "template-curly-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule template-curly-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "rest-spread-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule rest-spread-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "no-multi-spaces",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule no-multi-spaces; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "no-whitespace-before-property",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule no-whitespace-before-property; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "dot-location",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule dot-location; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "spaced-comment",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule spaced-comment; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "object-curly-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule object-curly-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "array-bracket-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule array-bracket-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "computed-property-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule computed-property-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "block-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule block-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "space-before-blocks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule space-before-blocks; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "function-call-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule function-call-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "space-before-function-paren",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule space-before-function-paren; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "no-floating-decimal",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule no-floating-decimal; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "template-tag-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule template-tag-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "yield-star-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule yield-star-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "generator-star-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule generator-star-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "comma-dangle",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule comma-dangle; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "space-infix-ops",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule space-infix-ops; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "max-len",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule max-len; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "semi-style",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule semi-style; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "comma-style",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule comma-style; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "arrow-parens",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule arrow-parens; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "switch-colon-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule switch-colon-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "no-extra-semi",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule no-extra-semi; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "new-parens",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule new-parens; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "space-unary-ops",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule space-unary-ops; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "wrap-regex",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule wrap-regex; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "implicit-arrow-linebreak",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule implicit-arrow-linebreak; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "operator-linebreak",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule operator-linebreak; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "keyword-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule keyword-spacing; source-wide Rust scan exposed through NAPI."
+      }
+    ]
   }
 ]
