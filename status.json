@@ -1,5 +1,38 @@
 [
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-eslint-comments",
+    "directory": "npm/eslint-comments",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "@eslint-community/eslint-plugin-eslint-comments",
+      "version": "4.7.2",
+      "repository": "https://github.com/eslint-community/eslint-plugin-eslint-comments",
+      "license": "MIT"
+    },
+    "status": "in-progress",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "no-unlimited-disable",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-unlimited-disable; upstream RuleTester cases replayed via test/fixtures."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers",
     "directory": "npm/no-forbidden-identifiers",
     "version": "0.0.0",

@@ -1,0 +1,40 @@
+---
+source: crates/eslint_comments/src/directive.rs
+expression: parsed
+---
+[
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable",
+            value: "eqeqeq",
+            description: Some(
+                "because reasons",
+            ),
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable",
+            value: "",
+            description: Some(
+                "a",
+            ),
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable",
+            value: "foo",
+            description: Some(
+                "triple",
+            ),
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable",
+            value: "foo -short",
+            description: None,
+        },
+    ),
+]

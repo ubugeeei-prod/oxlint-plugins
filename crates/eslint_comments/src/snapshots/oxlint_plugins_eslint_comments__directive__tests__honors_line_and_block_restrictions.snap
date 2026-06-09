@@ -1,0 +1,22 @@
+---
+source: crates/eslint_comments/src/directive.rs
+expression: "(line_disable, line_disable_line, multiline_disable_line,\nmultiline_next_line,)"
+---
+(
+    None,
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable-line",
+            value: "foo",
+            description: None,
+        },
+    ),
+    None,
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable-next-line",
+            value: "foo",
+            description: None,
+        },
+    ),
+)

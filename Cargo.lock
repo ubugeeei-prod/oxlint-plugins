@@ -446,6 +446,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
 
 [[package]]
+name = "oxlint-plugin-eslint-comments"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-eslint-comments",
+]
+
+[[package]]
 name = "oxlint-plugin-no-forbidden-identifiers"
 version = "0.0.0"
 dependencies = [
@@ -465,6 +476,15 @@ dependencies = [
  "ghost-cell",
  "rustc-hash",
  "smallvec",
+]
+
+[[package]]
+name = "oxlint-plugins-eslint-comments"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxlint-plugins-_carton",
+ "phf",
 ]
 
 [[package]]

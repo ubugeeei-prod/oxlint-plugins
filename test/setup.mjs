@@ -4,19 +4,31 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const nativeBinding = resolve(root, 'npm/no-forbidden-identifiers/native.js');
 
-if (!existsSync(nativeBinding)) {
-  const result = spawnSync(
-    'pnpm',
-    ['--filter', '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers', 'build'],
-    {
-      cwd: root,
-      stdio: 'inherit',
-    },
-  );
+// Packages whose Vitest suites depend on NAPI bindings. Normally `vp build`
+// produces these before `vp test`; this is the fallback for direct test runs.
+const nativePackages = [
+  {
+    name: '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers',
+    binding: 'npm/no-forbidden-identifiers/native.js',
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-eslint-comments',
+    binding: 'npm/eslint-comments/native.js',
+  },
+];
+
+for (const pkg of nativePackages) {
+  if (existsSync(resolve(root, pkg.binding))) {
+    continue;
+  }
+
+  const result = spawnSync('pnpm', ['--filter', pkg.name, 'build'], {
+    cwd: root,
+    stdio: 'inherit',
+  });
 
   if (result.status !== 0) {
-    throw new Error('Failed to build NAPI bindings required by Vitest.');
+    throw new Error(`Failed to build NAPI bindings required by Vitest for ${pkg.name}.`);
   }
 }
