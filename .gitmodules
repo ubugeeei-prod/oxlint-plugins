@@ -94,3 +94,7 @@
 	path = upstream/eslint-plugin-e18e
 	url = https://github.com/e18e/eslint-plugin
 	shallow = true
+[submodule "upstream/eslint-plugin-mocha"]
+	path = upstream/eslint-plugin-mocha
+	url = https://github.com/lo1tuma/eslint-plugin-mocha
+	shallow = true

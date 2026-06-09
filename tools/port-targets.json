@@ -93,6 +93,21 @@
       "notes": "Modernization and performance rules. Some rules optionally require TypeScript type information."
     },
     {
+      "id": "eslint-plugin-mocha",
+      "npm": "eslint-plugin-mocha",
+      "repo": "https://github.com/lo1tuma/eslint-plugin-mocha",
+      "submodule": "upstream/eslint-plugin-mocha",
+      "packageSubdir": ".",
+      "baselineVersion": "11.3.0",
+      "pinnedRef": "11.3.0",
+      "license": "MIT",
+      "monorepo": false,
+      "expectedRuleCount": 24,
+      "rules": { "type": "glob", "dir": "source/rules", "ext": ".ts", "exclude": [".test.ts"] },
+      "docsUrlTemplate": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/{rule}.md",
+      "notes": ""
+    },
+    {
       "id": "eslint-plugin-unused-imports",
       "npm": "eslint-plugin-unused-imports",
       "repo": "https://github.com/sweepline/eslint-plugin-unused-imports",

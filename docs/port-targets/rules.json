@@ -820,6 +820,136 @@
       ]
     },
     {
+      "id": "eslint-plugin-mocha",
+      "npm": "eslint-plugin-mocha",
+      "repo": "https://github.com/lo1tuma/eslint-plugin-mocha",
+      "baselineVersion": "11.3.0",
+      "license": "MIT",
+      "ruleCount": 24,
+      "rules": [
+        {
+          "name": "consistent-interface",
+          "description": "Enforces consistent use of mocha interfaces",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/consistent-interface.md"
+        },
+        {
+          "name": "consistent-spacing-between-blocks",
+          "description": "Require consistent spacing between blocks",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/consistent-spacing-between-blocks.md"
+        },
+        {
+          "name": "handle-done-callback",
+          "description": "Enforces handling of callbacks for async tests",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/handle-done-callback.md"
+        },
+        {
+          "name": "max-top-level-suites",
+          "description": "Enforce the number of top-level suites in a single file",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/max-top-level-suites.md"
+        },
+        {
+          "name": "no-async-suite",
+          "description": "Disallow async functions passed to a suite",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-async-suite.md"
+        },
+        {
+          "name": "no-empty-title",
+          "description": "Disallow empty test descriptions",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-empty-title.md"
+        },
+        {
+          "name": "no-exclusive-tests",
+          "description": "Disallow exclusive tests",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-exclusive-tests.md"
+        },
+        {
+          "name": "no-exports",
+          "description": "Disallow exports from test files",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-exports.md"
+        },
+        {
+          "name": "no-global-tests",
+          "description": "Disallow global tests",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-global-tests.md"
+        },
+        {
+          "name": "no-hooks",
+          "description": "Disallow hooks",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-hooks.md"
+        },
+        {
+          "name": "no-hooks-for-single-case",
+          "description": "Disallow hooks for a single test or test suite",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-hooks-for-single-case.md"
+        },
+        {
+          "name": "no-identical-title",
+          "description": "Disallow identical titles",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-identical-title.md"
+        },
+        {
+          "name": "no-mocha-arrows",
+          "description": "Disallow arrow functions as arguments to mocha functions",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-mocha-arrows.md"
+        },
+        {
+          "name": "no-nested-tests",
+          "description": "Disallow tests to be nested within other tests",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-nested-tests.md"
+        },
+        {
+          "name": "no-pending-tests",
+          "description": "Disallow pending tests",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-pending-tests.md"
+        },
+        {
+          "name": "no-return-and-callback",
+          "description": "Disallow returning in a test or hook function that uses a callback",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-return-and-callback.md"
+        },
+        {
+          "name": "no-return-from-async",
+          "description": "Disallow returning from an async test or hook",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-return-from-async.md"
+        },
+        {
+          "name": "no-setup-in-describe",
+          "description": "Disallow setup in describe blocks",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md"
+        },
+        {
+          "name": "no-sibling-hooks",
+          "description": "Disallow duplicate uses of a hook at the same level inside a suite",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-sibling-hooks.md"
+        },
+        {
+          "name": "no-synchronous-tests",
+          "description": "Disallow synchronous tests",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-synchronous-tests.md"
+        },
+        {
+          "name": "no-top-level-hooks",
+          "description": "Disallow top-level hooks",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-top-level-hooks.md"
+        },
+        {
+          "name": "prefer-arrow-callback",
+          "description": "Require using arrow functions for callbacks",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/prefer-arrow-callback.md"
+        },
+        {
+          "name": "valid-suite-title",
+          "description": "Require suite descriptions to match a pre-configured regular expression",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/valid-suite-title.md"
+        },
+        {
+          "name": "valid-test-title",
+          "description": "Require test descriptions to match a pre-configured regular expression",
+          "docsUrl": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/valid-test-title.md"
+        }
+      ]
+    },
+    {
       "id": "eslint-plugin-unused-imports",
       "npm": "eslint-plugin-unused-imports",
       "repo": "https://github.com/sweepline/eslint-plugin-unused-imports",
