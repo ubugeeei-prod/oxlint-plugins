@@ -2,7 +2,7 @@
 
 # Port targets
 
-ESLint plugins and adjacent packages used by [flyle-nexus], collected here as port targets or upstream references. `eslint-plugin-svelte` is intentionally excluded — it is handled by [rsvelte](https://github.com/baseballyama/rsvelte). Oxlint-supported plugins (`eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-unicorn`) are used directly via Oxlint and are not listed here.
+ESLint plugins and adjacent packages used by [flyle-nexus], collected here as port targets or upstream references. `eslint-plugin-svelte` is intentionally excluded — it is handled by [rsvelte](https://github.com/baseballyama/rsvelte). `eslint-plugin-vue` is intentionally excluded — it is handled by [vize](https://vizejs.dev/). Oxlint-supported plugins (`eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-unicorn`) are used directly via Oxlint and are not listed here.
 
 Upstream source is vendored under `upstream/` as git submodules pinned to each plugin's baseline version. The per-rule inventory below is generated from that source.
 

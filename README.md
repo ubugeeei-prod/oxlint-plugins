@@ -43,7 +43,7 @@ vp run release patch
 
 ## Port Targets
 
-`tools/port-targets.json` lists the ESLint plugins used by flyle-nexus that Oxlint does not yet support natively (`eslint-plugin-svelte` is excluded; it is handled by [rsvelte](https://github.com/baseballyama/rsvelte)). Their sources are vendored under `upstream/` as submodules.
+`tools/port-targets.json` lists the ESLint plugins used by flyle-nexus that Oxlint does not yet support natively (`eslint-plugin-svelte` is excluded; it is handled by [rsvelte](https://github.com/baseballyama/rsvelte), and `eslint-plugin-vue` is excluded; it is handled by [vize](https://vizejs.dev/)). Their sources are vendored under `upstream/` as submodules.
 
 ```sh
 git submodule update --init --depth 1   # fetch upstream sources
