@@ -1,0 +1,19 @@
+[package]
+name = "oxlint-plugins-eslint-comments"
+description = "Allocation-conscious ESLint directive-comment rule logic for Rust-backed oxlint plugins."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+oxlint-plugins-carton.workspace = true
+phf.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+
+[lints]
+workspace = true

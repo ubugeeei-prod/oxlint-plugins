@@ -19,6 +19,11 @@ const packages: PackageToPack[] = [
     dir: 'npm/no-forbidden-identifiers',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-eslint-comments',
+    dir: 'npm/eslint-comments',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
 ];
 
 for (const pkg of packages) {

@@ -1,0 +1,114 @@
+//! NAPI boundary for the eslint-comments oxlint plugin.
+//!
+//! The JavaScript wrapper passes every comment in a file once per rule, and the
+//! Rust core returns the diagnostics to report. This keeps work batched at the
+//! file level instead of one NAPI call per AST node.
+
+pub use napi_abi::{
+    CommentInput, Diagnostic, DiagnosticData, DiagnosticLoc, scan_no_unlimited_disable,
+};
+
+#[allow(
+    clippy::disallowed_types,
+    reason = "NAPI public ABI requires String/Vec; values are converted into carton/core types before rule logic runs."
+)]
+mod napi_abi {
+    use napi_derive::napi;
+    use oxlint_plugins_eslint_comments::directive::CommentKind;
+    use oxlint_plugins_eslint_comments::{
+        Comment, Diagnostic as CoreDiagnostic, Location, Position, no_unlimited_disable,
+    };
+
+    /// A comment token, as collected from `sourceCode.getAllComments()`.
+    #[napi(object)]
+    #[derive(Clone, Debug)]
+    pub struct CommentInput {
+        /// `"Line"` or `"Block"`.
+        pub kind: String,
+        /// The comment body (without the `//` or `/* */` delimiters).
+        pub value: String,
+        pub start_line: u32,
+        pub start_column: i32,
+        pub end_line: u32,
+        pub end_column: i32,
+    }
+
+    /// Values interpolated into a diagnostic message template.
+    #[napi(object)]
+    #[derive(Clone, Debug, Default)]
+    pub struct DiagnosticData {
+        pub kind: Option<String>,
+        pub rule_id: Option<String>,
+        pub count: Option<u32>,
+    }
+
+    /// A report location. A `column` of `-1` means "force the whole line".
+    #[napi(object)]
+    #[derive(Clone, Debug)]
+    pub struct DiagnosticLoc {
+        pub start_line: u32,
+        pub start_column: i32,
+        pub end_line: u32,
+        pub end_column: i32,
+    }
+
+    /// A diagnostic the wrapper maps onto `context.report`.
+    #[napi(object)]
+    #[derive(Clone, Debug)]
+    pub struct Diagnostic {
+        pub message_id: String,
+        pub data: DiagnosticData,
+        pub loc: DiagnosticLoc,
+    }
+
+    /// `no-unlimited-disable`: report `eslint-disable*` comments without rule names.
+    #[napi]
+    pub fn scan_no_unlimited_disable(comments: Vec<CommentInput>) -> Vec<Diagnostic> {
+        let core = to_core_comments(&comments);
+        no_unlimited_disable(&core)
+            .into_iter()
+            .map(diagnostic_from_core)
+            .collect()
+    }
+
+    fn to_core_comments(comments: &[CommentInput]) -> Vec<Comment<'_>> {
+        comments
+            .iter()
+            .map(|comment| Comment {
+                kind: if comment.kind == "Line" {
+                    CommentKind::Line
+                } else {
+                    CommentKind::Block
+                },
+                value: comment.value.as_str(),
+                loc: Location {
+                    start: Position {
+                        line: comment.start_line,
+                        column: comment.start_column,
+                    },
+                    end: Position {
+                        line: comment.end_line,
+                        column: comment.end_column,
+                    },
+                },
+            })
+            .collect()
+    }
+
+    fn diagnostic_from_core(diagnostic: CoreDiagnostic) -> Diagnostic {
+        Diagnostic {
+            message_id: diagnostic.message_id.into_string(),
+            data: DiagnosticData {
+                kind: diagnostic.data.kind.map(|value| value.into_string()),
+                rule_id: diagnostic.data.rule_id.map(|value| value.into_string()),
+                count: diagnostic.data.count,
+            },
+            loc: DiagnosticLoc {
+                start_line: diagnostic.loc.start.line,
+                start_column: diagnostic.loc.start.column,
+                end_line: diagnostic.loc.end.line,
+                end_column: diagnostic.loc.end.column,
+            },
+        }
+    }
+}

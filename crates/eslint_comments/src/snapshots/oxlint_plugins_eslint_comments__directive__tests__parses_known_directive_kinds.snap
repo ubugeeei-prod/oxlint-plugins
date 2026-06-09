@@ -1,0 +1,83 @@
+---
+source: crates/eslint_comments/src/directive.rs
+expression: parsed
+---
+[
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable",
+            value: "",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable",
+            value: "eqeqeq",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable",
+            value: "eqeqeq, no-console",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint-enable",
+            value: "",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable-line",
+            value: "eqeqeq",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint-disable-next-line",
+            value: "",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint-env",
+            value: "node",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "exported",
+            value: "foo",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "global",
+            value: "foo",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "globals",
+            value: "foo",
+            description: None,
+        },
+    ),
+    Some(
+        ParsedDirective {
+            kind: "eslint",
+            value: "quotes: error",
+            description: None,
+        },
+    ),
+]

@@ -1,0 +1,11 @@
+---
+source: crates/eslint_comments/src/directive.rs
+expression: parsed
+---
+[
+    None,
+    None,
+    None,
+    None,
+    None,
+]

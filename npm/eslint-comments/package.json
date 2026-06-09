@@ -1,0 +1,93 @@
+{
+  "name": "@oxlint-plugins/oxlint-plugin-eslint-comments",
+  "version": "0.0.0",
+  "description": "Rust-backed oxlint plugin port of @eslint-community/eslint-plugin-eslint-comments.",
+  "keywords": [
+    "eslint-comments",
+    "eslint-plugin",
+    "napi-rs",
+    "oxlint",
+    "oxlint-plugin",
+    "rust"
+  ],
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
+    "directory": "npm/eslint-comments"
+  },
+  "files": [
+    "index.js",
+    "api.js",
+    "api.d.ts",
+    "native.js",
+    "native.d.ts",
+    "*.node",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "index.js",
+  "types": "api.d.ts",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "default": "./index.js"
+    },
+    "./api": {
+      "types": "./api.d.ts",
+      "require": "./api.js",
+      "default": "./api.js"
+    },
+    "./native": {
+      "types": "./native.d.ts",
+      "require": "./native.js",
+      "default": "./native.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "napi build --platform --release --js native.js --dts native.d.ts",
+    "build:debug": "napi build --platform --js native.js --dts native.d.ts",
+    "prepack": "pnpm run build"
+  },
+  "dependencies": {
+    "@oxlint/plugins": "catalog:"
+  },
+  "devDependencies": {
+    "espree": "^10.4.0"
+  },
+  "napi": {
+    "binaryName": "oxlint_plugin_eslint_comments",
+    "targets": [
+      "x86_64-unknown-linux-gnu",
+      "aarch64-unknown-linux-gnu",
+      "x86_64-apple-darwin",
+      "aarch64-apple-darwin",
+      "x86_64-pc-windows-msvc"
+    ]
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

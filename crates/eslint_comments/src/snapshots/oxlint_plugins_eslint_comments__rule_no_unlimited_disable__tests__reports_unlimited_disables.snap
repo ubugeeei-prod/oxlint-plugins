@@ -1,0 +1,66 @@
+---
+source: crates/eslint_comments/src/rule_no_unlimited_disable.rs
+expression: no_unlimited_disable(&comments)
+---
+[
+    Diagnostic {
+        message_id: "unexpected",
+        data: DiagnosticData {
+            kind: Some(
+                "eslint-disable",
+            ),
+            rule_id: None,
+            count: None,
+        },
+        loc: Location {
+            start: Position {
+                line: 1,
+                column: -1,
+            },
+            end: Position {
+                line: 1,
+                column: 19,
+            },
+        },
+    },
+    Diagnostic {
+        message_id: "unexpected",
+        data: DiagnosticData {
+            kind: Some(
+                "eslint-disable-line",
+            ),
+            rule_id: None,
+            count: None,
+        },
+        loc: Location {
+            start: Position {
+                line: 1,
+                column: -1,
+            },
+            end: Position {
+                line: 1,
+                column: 23,
+            },
+        },
+    },
+    Diagnostic {
+        message_id: "unexpected",
+        data: DiagnosticData {
+            kind: Some(
+                "eslint-disable-next-line",
+            ),
+            rule_id: None,
+            count: None,
+        },
+        loc: Location {
+            start: Position {
+                line: 1,
+                column: -1,
+            },
+            end: Position {
+                line: 1,
+                column: 28,
+            },
+        },
+    },
+]
