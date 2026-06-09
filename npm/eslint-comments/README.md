@@ -28,10 +28,11 @@ This is unofficial community work and is not an official Oxlint or eslint-commun
 | `no-aggregating-enable` | disallow one `eslint-enable` for multiple `eslint-disable` | ported |
 | `no-duplicate-disable`  | disallow duplicate `eslint-disable` comments               | ported |
 | `no-unlimited-disable`  | disallow `eslint-disable` comments without rule names      | ported |
+| `no-unused-enable`      | disallow unused `eslint-enable` comments                   | ported |
 | `no-use`                | disallow ESLint directive-comments                         | ported |
 | `require-description`   | require descriptions in ESLint directive-comments          | ported |
 
-Remaining upstream rules (`no-restricted-disable`, `no-unused-disable`, `no-unused-enable`) are tracked in [issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4) and land one rule per pull request.
+Remaining upstream rules (`no-restricted-disable`, `no-unused-disable`) are tracked in [issue #4](https://github.com/ubugeeei-prod/oxlint-plugins/issues/4) and land one rule per pull request.
 
 ## Performance Shape
 
