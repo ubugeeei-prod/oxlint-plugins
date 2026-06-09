@@ -57,7 +57,10 @@ mod tests {
             block("eslint-disable no-unused-vars", 2),
             block("eslint-enable", 3),
         ];
-        insta::assert_debug_snapshot!(no_aggregating_enable(&comments));
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(no_aggregating_enable(&comments));
+        }
     }
 
     #[test]

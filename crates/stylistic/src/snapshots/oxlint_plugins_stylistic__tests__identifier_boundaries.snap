@@ -1,7 +1,7 @@
 ---
 source: crates/stylistic/src/lib.rs
 assertion_line: 101
-expression: "vec![contains_identifier(\"const event = 1\", \"event\"),\ncontains_identifier(\"const eventBus = 1\", \"event\"),\ncontains_identifier(\"const my_event = 1\", \"event\"),\ncontains_identifier(\"const $event = 1\", \"event\"),\ncontains_identifier(\"call(event)\", \"event\"),]"
+expression: "[contains_identifier(\"const event = 1\", \"event\"),\ncontains_identifier(\"const eventBus = 1\", \"event\"),\ncontains_identifier(\"const my_event = 1\", \"event\"),\ncontains_identifier(\"const $event = 1\", \"event\"),\ncontains_identifier(\"call(event)\", \"event\"),]"
 ---
 [
     true,

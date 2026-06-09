@@ -752,7 +752,11 @@ pub fn run_stylistic_lint(
                     .expect("token scan is built when a token rule is enabled");
                 run_token_rule(name, scan, &rule.options, &mut diagnostics);
             }
-            unknown => return Err(format!("unknown native stylistic rule: {unknown}")),
+            unknown => {
+                let mut message = String::from("unknown native stylistic rule: ");
+                message.push_str(unknown);
+                return Err(message);
+            }
         }
     }
 

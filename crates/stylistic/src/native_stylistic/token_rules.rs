@@ -730,7 +730,7 @@ mod tests {
         );
         assert!(run(check_space_in_parens, "f(a)", Value::Null).is_empty());
         assert!(run(check_space_in_parens, "f()", Value::Null).is_empty());
-        let always = Value::Array(vec![Value::String("always".into())]);
+        let always = Value::Array(std::iter::once(Value::String("always".into())).collect());
         assert_eq!(run(check_space_in_parens, "f(a)", always).len(), 2);
     }
 
@@ -792,7 +792,7 @@ mod tests {
             ["expectedDotAfterObject"]
         );
         assert!(run(check_dot_location, "foo.\nbar", Value::Null).is_empty());
-        let property = Value::Array(vec![Value::String("property".into())]);
+        let property = Value::Array(std::iter::once(Value::String("property".into())).collect());
         assert_eq!(
             ids(&run(check_dot_location, "foo.\nbar", property)),
             ["expectedDotBeforeProperty"]

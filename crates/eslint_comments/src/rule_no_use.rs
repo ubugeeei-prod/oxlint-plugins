@@ -57,7 +57,10 @@ mod tests {
             comment(CommentKind::Block, "not a directive"),
         ];
         // Allow eslint-enable only; the two disables remain reported.
-        insta::assert_debug_snapshot!(no_use(&comments, &["eslint-enable"]));
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(no_use(&comments, &["eslint-enable"]));
+        }
     }
 
     #[test]

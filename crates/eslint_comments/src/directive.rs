@@ -179,14 +179,20 @@ mod tests {
             "eslint quotes: error",
         ];
         let parsed = cases.map(parse_directive_text);
-        insta::assert_debug_snapshot!(parsed);
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(parsed);
+        }
     }
 
     #[test]
     fn rejects_non_directives() {
         let cases = ["", " ", "not-a-directive", "eslintfoo", "eslint-disablexyz"];
         let parsed = cases.map(parse_directive_text);
-        insta::assert_debug_snapshot!(parsed);
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(parsed);
+        }
     }
 
     #[test]
@@ -198,7 +204,10 @@ mod tests {
             "eslint-disable foo -short", // single hyphen is not a divider
         ];
         let parsed = cases.map(parse_directive_text);
-        insta::assert_debug_snapshot!(parsed);
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(parsed);
+        }
     }
 
     #[test]
@@ -214,11 +223,14 @@ mod tests {
         // disable-next-line may span (block) lines.
         let multiline_next_line =
             parse_directive_comment(CommentKind::Block, "eslint-disable-next-line foo", false);
-        insta::assert_debug_snapshot!((
-            line_disable,
-            line_disable_line,
-            multiline_disable_line,
-            multiline_next_line,
-        ));
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!((
+                line_disable,
+                line_disable_line,
+                multiline_disable_line,
+                multiline_next_line,
+            ));
+        }
     }
 }

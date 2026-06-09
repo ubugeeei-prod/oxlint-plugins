@@ -544,7 +544,7 @@ mod tests {
     fn lexes_basic_punctuators_and_identifiers() {
         assert_eq!(
             kinds("const x = 1;"),
-            vec![
+            [
                 (TokenKind::Identifier, "const"),
                 (TokenKind::Identifier, "x"),
                 (TokenKind::Punctuator, "="),
@@ -558,7 +558,7 @@ mod tests {
     fn matches_longest_punctuator() {
         assert_eq!(
             kinds("a >>>= b ?.c ?? d"),
-            vec![
+            [
                 (TokenKind::Identifier, "a"),
                 (TokenKind::Punctuator, ">>>="),
                 (TokenKind::Identifier, "b"),
@@ -574,7 +574,7 @@ mod tests {
     fn lexes_strings_and_comments() {
         assert_eq!(
             kinds("'a\\'b' /* c */ // d"),
-            vec![
+            [
                 (TokenKind::String, "'a\\'b'"),
                 (TokenKind::BlockComment, "/* c */"),
                 (TokenKind::LineComment, "// d"),
@@ -586,7 +586,7 @@ mod tests {
     fn distinguishes_regex_from_division() {
         assert_eq!(
             kinds("a = /ab+/gi"),
-            vec![
+            [
                 (TokenKind::Identifier, "a"),
                 (TokenKind::Punctuator, "="),
                 (TokenKind::Regex, "/ab+/gi"),
@@ -594,7 +594,7 @@ mod tests {
         );
         assert_eq!(
             kinds("a / b / c"),
-            vec![
+            [
                 (TokenKind::Identifier, "a"),
                 (TokenKind::Punctuator, "/"),
                 (TokenKind::Identifier, "b"),
@@ -608,7 +608,7 @@ mod tests {
     fn lexes_template_with_substitution() {
         assert_eq!(
             kinds("`a${ b + 1 }c`"),
-            vec![
+            [
                 (TokenKind::TemplateHead, "`a${"),
                 (TokenKind::Identifier, "b"),
                 (TokenKind::Punctuator, "+"),
@@ -622,7 +622,7 @@ mod tests {
     fn lexes_nested_braces_in_substitution() {
         assert_eq!(
             kinds("`${ {a: 1} }`"),
-            vec![
+            [
                 (TokenKind::TemplateHead, "`${"),
                 (TokenKind::Punctuator, "{"),
                 (TokenKind::Identifier, "a"),
@@ -638,7 +638,7 @@ mod tests {
     fn lexes_nested_templates() {
         assert_eq!(
             kinds("`${`${x}`}`"),
-            vec![
+            [
                 (TokenKind::TemplateHead, "`${"),
                 (TokenKind::TemplateHead, "`${"),
                 (TokenKind::Identifier, "x"),
@@ -652,7 +652,7 @@ mod tests {
     fn lexes_numbers() {
         assert_eq!(
             kinds("0xFF 1_000 1.5e-3 10n"),
-            vec![
+            [
                 (TokenKind::Number, "0xFF"),
                 (TokenKind::Number, "1_000"),
                 (TokenKind::Number, "1.5e-3"),
@@ -665,7 +665,7 @@ mod tests {
     fn regex_after_return_keyword() {
         assert_eq!(
             kinds("return /x/"),
-            vec![(TokenKind::Identifier, "return"), (TokenKind::Regex, "/x/"),]
+            [(TokenKind::Identifier, "return"), (TokenKind::Regex, "/x/")]
         );
     }
 }

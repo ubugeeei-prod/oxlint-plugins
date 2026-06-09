@@ -11,8 +11,9 @@ pub use napi_abi::{
 };
 
 #[allow(
+    clippy::disallowed_macros,
     clippy::disallowed_types,
-    reason = "NAPI public ABI requires String/Vec; values are converted into carton/core types before rule logic runs."
+    reason = "NAPI public ABI and proc macros require String/Vec/format expansion; values are converted into carton/core types before rule logic runs."
 )]
 mod napi_abi {
     use napi_derive::napi;

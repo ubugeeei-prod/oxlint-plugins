@@ -60,7 +60,10 @@ mod tests {
             block("eslint-disable no-undef", 1),
             block("eslint-disable no-undef", 2),
         ];
-        insta::assert_debug_snapshot!(no_duplicate_disable(&comments));
+        #[allow(clippy::disallowed_macros)]
+        {
+            insta::assert_debug_snapshot!(no_duplicate_disable(&comments));
+        }
     }
 
     #[test]

@@ -79,7 +79,7 @@ pub(crate) fn push_diagnostic<F>(
         .map(|(suggestion_id, suggestion_message, fix)| LintSuggestion {
             message_id: suggestion_id.to_owned(),
             message: suggestion_message.to_owned(),
-            fixes: vec![fix(range)],
+            fixes: std::iter::once(fix(range)).collect(),
         })
         .into_iter()
         .collect();
