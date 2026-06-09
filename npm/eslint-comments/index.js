@@ -245,9 +245,28 @@ const noAggregatingEnable = commentScanRule(
   (comments) => native.scanNoAggregatingEnable(comments),
 );
 
+const noDuplicateDisable = commentScanRule(
+  {
+    type: 'problem',
+    docs: {
+      description: 'disallow duplicate `eslint-disable` comments',
+      recommended: true,
+      url: `${DOCS_BASE}#no-duplicate-disable`,
+    },
+    fixable: null,
+    schema: [],
+    messages: {
+      duplicate: 'ESLint rules have been disabled already.',
+      duplicateRule: "'{{ruleId}}' rule has been disabled already.",
+    },
+  },
+  (comments) => native.scanNoDuplicateDisable(comments),
+);
+
 const rules = {
   'disable-enable-pair': disableEnablePair,
   'no-aggregating-enable': noAggregatingEnable,
+  'no-duplicate-disable': noDuplicateDisable,
   'no-unlimited-disable': noUnlimitedDisable,
   'no-use': noUse,
   'require-description': requireDescription,
@@ -258,6 +277,7 @@ const rules = {
 const recommendedRuleNames = [
   'disable-enable-pair',
   'no-aggregating-enable',
+  'no-duplicate-disable',
   'no-unlimited-disable',
 ];
 
