@@ -1,14 +1,13 @@
 {
-  "name": "@oxlint-plugins/oxlint-plugin-stylistic",
+  "name": "@oxlint-plugins/oxlint",
   "version": "0.0.0",
-  "description": "Rust-backed oxlint plugin port of Corsa's native stylistic rule scanner.",
+  "description": "Convenience bundle for the @oxlint-plugins suite: installs the shared native core and every plugin, and exposes a single combined oxlint plugin with a recommended config.",
   "keywords": [
     "eslint-plugin",
     "napi-rs",
     "oxlint",
     "oxlint-plugin",
-    "rust",
-    "stylistic"
+    "rust"
   ],
   "license": "MIT",
   "contributors": [
@@ -32,26 +31,18 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
-    "directory": "npm/stylistic"
+    "directory": "npm/oxlint"
   },
   "files": [
     "index.js",
-    "api.js",
-    "api.d.ts",
     "README.md",
     "LICENSE"
   ],
   "main": "index.js",
-  "types": "api.d.ts",
   "exports": {
     ".": {
       "require": "./index.js",
       "default": "./index.js"
-    },
-    "./api": {
-      "types": "./api.d.ts",
-      "require": "./api.js",
-      "default": "./api.js"
     }
   },
   "publishConfig": {
@@ -59,7 +50,9 @@
     "provenance": true
   },
   "dependencies": {
-    "@oxlint-plugins/core": "workspace:*",
+    "@oxlint-plugins/oxlint-plugin-eslint-comments": "workspace:*",
+    "@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers": "workspace:*",
+    "@oxlint-plugins/oxlint-plugin-stylistic": "workspace:*",
     "@oxlint/plugins": "catalog:"
   },
   "engines": {

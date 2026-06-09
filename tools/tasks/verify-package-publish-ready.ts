@@ -15,19 +15,32 @@ const packages: PackageToPack[] = [
     requiredFiles: ['dist/index.mjs', 'dist/index.d.mts'],
   },
   {
+    // Shared native core: the only package that ships a NAPI binding.
+    name: '@oxlint-plugins/core',
+    dir: 'npm/core',
+    requiredFiles: ['index.js', 'native.js', 'native.d.ts'],
+  },
+  {
+    // Thin JavaScript facades over the shared core; they ship no native binding.
     name: '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers',
     dir: 'npm/no-forbidden-identifiers',
-    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts'],
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-eslint-comments',
     dir: 'npm/eslint-comments',
-    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts'],
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-stylistic',
     dir: 'npm/stylistic',
-    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts'],
+  },
+  {
+    // Convenience bundle: aggregates the facades into one combined plugin.
+    name: '@oxlint-plugins/oxlint',
+    dir: 'npm/oxlint',
+    requiredFiles: ['index.js'],
   },
 ];
 

@@ -1,12 +1,5 @@
 [workspace]
-members = [
-  "crates/_carton",
-  "crates/eslint_comments",
-  "crates/stylistic",
-  "npm/eslint-comments",
-  "npm/no-forbidden-identifiers",
-  "npm/stylistic",
-]
+members = ["crates/_carton", "crates/eslint_comments", "crates/stylistic", "npm/core"]
 resolver = "3"
 
 [workspace.package]

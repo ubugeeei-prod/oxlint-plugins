@@ -25,7 +25,7 @@ mod napi_abi {
     };
 
     /// A comment token, as collected from `sourceCode.getAllComments()`.
-    #[napi(object)]
+    #[napi(object, namespace = "eslintComments")]
     #[derive(Clone, Debug)]
     pub struct CommentInput {
         /// `"Line"` or `"Block"`.
@@ -39,7 +39,7 @@ mod napi_abi {
     }
 
     /// A source position passed from the wrapper (e.g. the first token).
-    #[napi(object)]
+    #[napi(object, namespace = "eslintComments")]
     #[derive(Clone, Debug)]
     pub struct PositionInput {
         pub line: u32,
@@ -47,7 +47,7 @@ mod napi_abi {
     }
 
     /// Values interpolated into a diagnostic message template.
-    #[napi(object)]
+    #[napi(object, namespace = "eslintComments")]
     #[derive(Clone, Debug, Default)]
     pub struct DiagnosticData {
         pub kind: Option<String>,
@@ -56,7 +56,7 @@ mod napi_abi {
     }
 
     /// A report location. A `column` of `-1` means "force the whole line".
-    #[napi(object)]
+    #[napi(object, namespace = "eslintComments")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticLoc {
         pub start_line: u32,
@@ -66,7 +66,7 @@ mod napi_abi {
     }
 
     /// A diagnostic the wrapper maps onto `context.report`.
-    #[napi(object)]
+    #[napi(object, namespace = "eslintComments")]
     #[derive(Clone, Debug)]
     pub struct Diagnostic {
         pub message_id: String,
@@ -75,7 +75,7 @@ mod napi_abi {
     }
 
     /// `no-unlimited-disable`: report `eslint-disable*` comments without rule names.
-    #[napi]
+    #[napi(namespace = "eslintComments")]
     pub fn scan_no_unlimited_disable(comments: Vec<CommentInput>) -> Vec<Diagnostic> {
         let core = to_core_comments(&comments);
         no_unlimited_disable(&core)
@@ -85,7 +85,7 @@ mod napi_abi {
     }
 
     /// `no-use`: report directive comments whose kind is not in `allow`.
-    #[napi]
+    #[napi(namespace = "eslintComments")]
     pub fn scan_no_use(comments: Vec<CommentInput>, allow: Vec<String>) -> Vec<Diagnostic> {
         let core = to_core_comments(&comments);
         let allowed: Vec<&str> = allow.iter().map(String::as_str).collect();
@@ -96,7 +96,7 @@ mod napi_abi {
     }
 
     /// `require-description`: report directive comments without a description.
-    #[napi]
+    #[napi(namespace = "eslintComments")]
     pub fn scan_require_description(
         comments: Vec<CommentInput>,
         ignore: Vec<String>,
@@ -110,7 +110,7 @@ mod napi_abi {
     }
 
     /// `no-aggregating-enable`: report enables that close multiple disables.
-    #[napi]
+    #[napi(namespace = "eslintComments")]
     pub fn scan_no_aggregating_enable(comments: Vec<CommentInput>) -> Vec<Diagnostic> {
         let core = to_core_comments(&comments);
         no_aggregating_enable(&core)
@@ -120,7 +120,7 @@ mod napi_abi {
     }
 
     /// `no-duplicate-disable`: report disables that duplicate an active disable.
-    #[napi]
+    #[napi(namespace = "eslintComments")]
     pub fn scan_no_duplicate_disable(comments: Vec<CommentInput>) -> Vec<Diagnostic> {
         let core = to_core_comments(&comments);
         no_duplicate_disable(&core)
@@ -130,7 +130,7 @@ mod napi_abi {
     }
 
     /// `disable-enable-pair`: report disabled areas with no matching enable.
-    #[napi]
+    #[napi(namespace = "eslintComments")]
     pub fn scan_disable_enable_pair(
         comments: Vec<CommentInput>,
         allow_whole_file: bool,

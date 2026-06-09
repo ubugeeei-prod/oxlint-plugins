@@ -1,6 +1,6 @@
 [package]
-name = "oxlint-plugin-eslint-comments"
-description = "Rust core for the eslint-comments oxlint JavaScript plugin."
+name = "oxlint-plugins-core"
+description = "Shared Rust native core for all Rust-backed oxlint JavaScript plugins."
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
@@ -10,13 +10,18 @@ publish = false
 
 [lib]
 crate-type = ["cdylib", "rlib"]
-name = "oxlint_plugin_eslint_comments"
+name = "oxlint_plugins_core"
 
+# Every Rust-backed oxlint plugin is compiled into this single native addon.
+# Domain rule logic stays in its own crate (`crates/*`); this crate only holds
+# the NAPI boundary, namespaced per plugin so exported names never collide.
 [dependencies]
 napi.workspace = true
 napi-derive.workspace = true
 oxlint-plugins-carton.workspace = true
 oxlint-plugins-eslint-comments.workspace = true
+oxlint-plugins-stylistic.workspace = true
+serde_json.workspace = true
 
 [build-dependencies]
 napi-build.workspace = true

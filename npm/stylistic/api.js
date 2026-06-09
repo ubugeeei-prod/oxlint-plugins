@@ -1,6 +1,6 @@
 'use strict';
 
-const native = require('./native.js');
+const native = require('@oxlint-plugins/core').stylistic;
 
 function runNativeStylisticLint(sourceText, config) {
   if (typeof sourceText !== 'string') {

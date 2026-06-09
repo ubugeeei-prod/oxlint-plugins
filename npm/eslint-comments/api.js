@@ -4,7 +4,7 @@
 // a single file (as produced by an ESLint-compatible `getAllComments()`) and
 // returns the diagnostics the matching Oxlint rule would report.
 
-const native = require('./native.js');
+const native = require('@oxlint-plugins/core').eslintComments;
 
 function normalizeComments(comments) {
   if (!Array.isArray(comments)) {
