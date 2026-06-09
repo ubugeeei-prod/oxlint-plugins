@@ -155,9 +155,44 @@ const noUse = commentScanRule(
   },
 );
 
+const requireDescription = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'require include descriptions in ESLint directive-comments',
+      recommended: false,
+      url: `${DOCS_BASE}#require-description`,
+    },
+    fixable: null,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          ignore: {
+            type: 'array',
+            items: { enum: DIRECTIVE_KINDS },
+            additionalItems: false,
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingDescription:
+        'Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.',
+    },
+  },
+  (comments, context) => {
+    const ignore = (context.options[0] && context.options[0].ignore) || [];
+    return native.scanRequireDescription(comments, ignore);
+  },
+);
+
 const rules = {
   'no-unlimited-disable': noUnlimitedDisable,
   'no-use': noUse,
+  'require-description': requireDescription,
 };
 
 // Mirror of upstream's `recommended` config, limited to the rules ported so far.
