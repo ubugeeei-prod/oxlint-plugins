@@ -110,11 +110,58 @@ const noUnlimitedDisable = commentScanRule(
   (comments) => native.scanNoUnlimitedDisable(comments),
 );
 
+const DIRECTIVE_KINDS = [
+  'eslint',
+  'eslint-disable',
+  'eslint-disable-line',
+  'eslint-disable-next-line',
+  'eslint-enable',
+  'eslint-env',
+  'exported',
+  'global',
+  'globals',
+];
+
+const noUse = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'disallow ESLint directive-comments',
+      recommended: false,
+      url: `${DOCS_BASE}#no-use`,
+    },
+    fixable: null,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allow: {
+            type: 'array',
+            items: { enum: DIRECTIVE_KINDS },
+            additionalItems: false,
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      disallow: 'Unexpected ESLint directive comment.',
+    },
+  },
+  (comments, context) => {
+    const allow = (context.options[0] && context.options[0].allow) || [];
+    return native.scanNoUse(comments, allow);
+  },
+);
+
 const rules = {
   'no-unlimited-disable': noUnlimitedDisable,
+  'no-use': noUse,
 };
 
 // Mirror of upstream's `recommended` config, limited to the rules ported so far.
+// (no-use is not part of upstream's recommended set.)
 const recommendedRuleNames = ['no-unlimited-disable'];
 
 const plugin = eslintCompatPlugin({

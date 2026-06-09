@@ -5,7 +5,7 @@
 //! file level instead of one NAPI call per AST node.
 
 pub use napi_abi::{
-    CommentInput, Diagnostic, DiagnosticData, DiagnosticLoc, scan_no_unlimited_disable,
+    CommentInput, Diagnostic, DiagnosticData, DiagnosticLoc, scan_no_unlimited_disable, scan_no_use,
 };
 
 #[allow(
@@ -16,7 +16,7 @@ mod napi_abi {
     use napi_derive::napi;
     use oxlint_plugins_eslint_comments::directive::CommentKind;
     use oxlint_plugins_eslint_comments::{
-        Comment, Diagnostic as CoreDiagnostic, Location, Position, no_unlimited_disable,
+        Comment, Diagnostic as CoreDiagnostic, Location, Position, no_unlimited_disable, no_use,
     };
 
     /// A comment token, as collected from `sourceCode.getAllComments()`.
@@ -66,6 +66,17 @@ mod napi_abi {
     pub fn scan_no_unlimited_disable(comments: Vec<CommentInput>) -> Vec<Diagnostic> {
         let core = to_core_comments(&comments);
         no_unlimited_disable(&core)
+            .into_iter()
+            .map(diagnostic_from_core)
+            .collect()
+    }
+
+    /// `no-use`: report directive comments whose kind is not in `allow`.
+    #[napi]
+    pub fn scan_no_use(comments: Vec<CommentInput>, allow: Vec<String>) -> Vec<Diagnostic> {
+        let core = to_core_comments(&comments);
+        let allowed: Vec<&str> = allow.iter().map(String::as_str).collect();
+        no_use(&core, &allowed)
             .into_iter()
             .map(diagnostic_from_core)
             .collect()

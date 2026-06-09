@@ -9,9 +9,11 @@ pub mod directive;
 pub mod loc;
 
 mod rule_no_unlimited_disable;
+mod rule_no_use;
 
 pub use loc::{Location, Position};
 pub use rule_no_unlimited_disable::no_unlimited_disable;
+pub use rule_no_use::no_use;
 
 use oxlint_plugins_carton::CompactString;
 
