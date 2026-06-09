@@ -47,5 +47,8 @@
   },
   "dependencies": {
     "@corsa-bind/napi": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
   }
 }
