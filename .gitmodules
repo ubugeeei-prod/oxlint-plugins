@@ -46,3 +46,55 @@
 	path = upstream/SonarJS
 	url = https://github.com/SonarSource/SonarJS
 	shallow = true
+[submodule "upstream/eslint-plugin-unused-imports"]
+	path = upstream/eslint-plugin-unused-imports
+	url = https://github.com/sweepline/eslint-plugin-unused-imports
+	shallow = true
+[submodule "upstream/eslint-plugin-testing-library"]
+	path = upstream/eslint-plugin-testing-library
+	url = https://github.com/testing-library/eslint-plugin-testing-library
+	shallow = true
+[submodule "upstream/eslint-plugin-perfectionist"]
+	path = upstream/eslint-plugin-perfectionist
+	url = https://github.com/azat-io/eslint-plugin-perfectionist
+	shallow = true
+[submodule "upstream/eslint-plugin-cypress"]
+	path = upstream/eslint-plugin-cypress
+	url = https://github.com/cypress-io/eslint-plugin-cypress
+	shallow = true
+[submodule "upstream/eslint-plugin-playwright"]
+	path = upstream/eslint-plugin-playwright
+	url = https://github.com/mskelton/eslint-plugin-playwright
+	shallow = true
+[submodule "upstream/angular-eslint"]
+	path = upstream/angular-eslint
+	url = https://github.com/angular-eslint/angular-eslint
+	shallow = true
+[submodule "upstream/typescript-eslint"]
+	path = upstream/typescript-eslint
+	url = https://github.com/typescript-eslint/typescript-eslint
+	shallow = true
+[submodule "upstream/eslint-plugin-react"]
+	path = upstream/eslint-plugin-react
+	url = https://github.com/jsx-eslint/eslint-plugin-react
+	shallow = true
+[submodule "upstream/react"]
+	path = upstream/react
+	url = https://github.com/facebook/react
+	shallow = true
+[submodule "upstream/eslint-plugin-react-refresh"]
+	path = upstream/eslint-plugin-react-refresh
+	url = https://github.com/ArnaudBarre/eslint-plugin-react-refresh
+	shallow = true
+[submodule "upstream/eslint-stylistic"]
+	path = upstream/eslint-stylistic
+	url = https://github.com/eslint-stylistic/eslint-stylistic
+	shallow = true
+[submodule "upstream/eslint-plugin-e18e"]
+	path = upstream/eslint-plugin-e18e
+	url = https://github.com/e18e/eslint-plugin
+	shallow = true
+[submodule "upstream/eslint-plugin-mocha"]
+	path = upstream/eslint-plugin-mocha
+	url = https://github.com/lo1tuma/eslint-plugin-mocha
+	shallow = true
