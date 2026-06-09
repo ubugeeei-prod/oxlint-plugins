@@ -1,0 +1,205 @@
+{
+  "__generated": {
+    "source": "@eslint-community/eslint-plugin-eslint-comments",
+    "version": "4.7.2",
+    "sourceFile": "tests/lib/rules/disable-enable-pair.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-comments-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n/*eslint-disable*/\n/*eslint-enable*/\n"
+    },
+    {
+      "code": "\n/*eslint-disable no-undef,no-unused-vars*/\n/*eslint-enable no-undef,no-unused-vars*/\n"
+    },
+    {
+      "code": "\n/*eslint-disable no-undef,no-unused-vars*/\n/*eslint-enable*/\n"
+    },
+    {
+      "code": "//eslint-disable-line"
+    },
+    {
+      "code": "//eslint-disable-next-line"
+    },
+    {
+      "code": "/*eslint-disable-line*/"
+    },
+    {
+      "code": "/*eslint-disable-next-line*/"
+    },
+    {
+      "code": "/*eslint no-undef: off */"
+    },
+    {
+      "code": "\nfunction foo() {\n    /*eslint-disable*/\n    /*eslint-enable*/\n}\n"
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable no-unused-vars*/\n/*eslint-enable*/\n/*eslint-enable*/\n"
+    },
+    {
+      "code": "\nconsole.log('This code does not even have any special comments')\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable no-unused-vars*/\n/*eslint-enable*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ]
+    },
+    {
+      "code": "\n\n/**\n * @file This test case makes sure comments and blank lines\n * before \"whole-file\" eslint-disable are allowed.\n */\n\n/*eslint-disable*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-unused-vars, no-undef */\nvar foo = 1\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-undef -- description*/\n/*eslint-enable no-undef*/\n"
+    },
+    {
+      "code": "\n/*eslint-disable no-undef,no-unused-vars -- description*/\n/*eslint-enable no-undef,no-unused-vars*/\n"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n/*eslint-disable*/\n",
+      "errors": [
+        {
+          "message": "Requires 'eslint-enable' directive.",
+          "line": 2,
+          "column": 0,
+          "endLine": 2,
+          "endColumn": 19
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\n",
+      "errors": [
+        {
+          "message": "Requires 'eslint-enable' directive for 'no-undef'.",
+          "line": 2,
+          "column": 18,
+          "endLine": 2,
+          "endColumn": 26
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-undef,no-unused-vars*/\n/*eslint-enable no-undef*/\n",
+      "errors": [
+        {
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 2,
+          "column": 27,
+          "endLine": 2,
+          "endColumn": 41
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable no-unused-vars*/\n/*eslint-enable no-unused-vars*/\n",
+      "errors": [
+        {
+          "message": "Requires 'eslint-enable' directive for 'no-undef'.",
+          "line": 2,
+          "column": 18,
+          "endLine": 2,
+          "endColumn": 26
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-undef*/\nconsole.log();\n/*eslint-disable no-unused-vars*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "errors": [
+        {
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 4,
+          "column": 18,
+          "endLine": 4,
+          "endColumn": 32
+        }
+      ]
+    },
+    {
+      "code": "\nconsole.log();\n/*eslint-disable no-unused-vars*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "errors": [
+        {
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 3,
+          "column": 18,
+          "endLine": 3,
+          "endColumn": 32
+        }
+      ]
+    },
+    {
+      "code": "\n{\n/*eslint-disable no-unused-vars*/\n}\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "errors": [
+        {
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 3,
+          "column": 18,
+          "endLine": 3,
+          "endColumn": 32
+        }
+      ]
+    },
+    {
+      "code": "\n{\n/*eslint-disable no-unused-vars -- description */\n}\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "errors": [
+        {
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 3,
+          "column": 18,
+          "endLine": 3,
+          "endColumn": 32
+        }
+      ]
+    }
+  ]
+}
