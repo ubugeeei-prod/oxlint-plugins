@@ -5,7 +5,8 @@
 //! file level instead of one NAPI call per AST node.
 
 pub use napi_abi::{
-    CommentInput, Diagnostic, DiagnosticData, DiagnosticLoc, scan_no_unlimited_disable, scan_no_use,
+    CommentInput, Diagnostic, DiagnosticData, DiagnosticLoc, scan_no_unlimited_disable,
+    scan_no_use, scan_require_description,
 };
 
 #[allow(
@@ -17,6 +18,7 @@ mod napi_abi {
     use oxlint_plugins_eslint_comments::directive::CommentKind;
     use oxlint_plugins_eslint_comments::{
         Comment, Diagnostic as CoreDiagnostic, Location, Position, no_unlimited_disable, no_use,
+        require_description,
     };
 
     /// A comment token, as collected from `sourceCode.getAllComments()`.
@@ -77,6 +79,20 @@ mod napi_abi {
         let core = to_core_comments(&comments);
         let allowed: Vec<&str> = allow.iter().map(String::as_str).collect();
         no_use(&core, &allowed)
+            .into_iter()
+            .map(diagnostic_from_core)
+            .collect()
+    }
+
+    /// `require-description`: report directive comments without a description.
+    #[napi]
+    pub fn scan_require_description(
+        comments: Vec<CommentInput>,
+        ignore: Vec<String>,
+    ) -> Vec<Diagnostic> {
+        let core = to_core_comments(&comments);
+        let ignored: Vec<&str> = ignore.iter().map(String::as_str).collect();
+        require_description(&core, &ignored)
             .into_iter()
             .map(diagnostic_from_core)
             .collect()

@@ -10,10 +10,12 @@ pub mod loc;
 
 mod rule_no_unlimited_disable;
 mod rule_no_use;
+mod rule_require_description;
 
 pub use loc::{Location, Position};
 pub use rule_no_unlimited_disable::no_unlimited_disable;
 pub use rule_no_use::no_use;
+pub use rule_require_description::require_description;
 
 use oxlint_plugins_carton::CompactString;
 
