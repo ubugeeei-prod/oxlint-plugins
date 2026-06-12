@@ -21,6 +21,10 @@ const nativePackages = [
     binding: 'npm/security/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-cypress',
+    binding: 'npm/cypress/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-stylistic',
     binding: 'npm/stylistic/native.js',
   },
