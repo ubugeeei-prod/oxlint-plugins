@@ -4,6 +4,7 @@ members = [
   "crates/cypress",
   "crates/eslint_comments",
   "crates/mocha",
+  "crates/perfectionist",
   "crates/react_refresh",
   "crates/security",
   "crates/simple_import_sort",
@@ -13,6 +14,7 @@ members = [
   "npm/eslint-comments",
   "npm/mocha",
   "npm/no-forbidden-identifiers",
+  "npm/perfectionist",
   "npm/react-refresh",
   "npm/security",
   "npm/simple-import-sort",
@@ -47,6 +49,7 @@ oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_ca
 oxlint-plugins-cypress = { path = "crates/cypress", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
+oxlint-plugins-perfectionist = { path = "crates/perfectionist", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
 oxlint-plugins-simple-import-sort = { path = "crates/simple_import_sort", version = "0.0.0" }

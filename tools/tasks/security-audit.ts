@@ -25,6 +25,7 @@ const publishablePrefixes = [
   '@oxlint-plugins/oxlint-plugin-simple-import-sort>',
   '@oxlint-plugins/oxlint-plugin-unused-imports>',
   '@oxlint-plugins/oxlint-plugin-stylistic>',
+  '@oxlint-plugins/oxlint-plugin-perfectionist>',
 ];
 
 const audit = spawnSync('pnpm', ['audit', '--prod', '--no-optional', '--json'], {
