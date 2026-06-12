@@ -9,8 +9,10 @@ wildcards = "deny"
 allow = [
   "0BSD",
   "Apache-2.0",
+  "BSL-1.0",
   "BSD-2-Clause",
   "BSD-3-Clause",
+  "BSL-1.0",
   "ISC",
   "MIT",
   "MPL-2.0",
@@ -22,4 +24,3 @@ confidence-threshold = 0.8
 [sources]
 unknown-git = "deny"
 unknown-registry = "deny"
-

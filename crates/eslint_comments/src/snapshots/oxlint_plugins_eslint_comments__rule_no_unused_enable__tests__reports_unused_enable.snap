@@ -1,0 +1,26 @@
+---
+source: crates/eslint_comments/src/rule_no_unused_enable.rs
+expression: no_unused_enable(&comments)
+---
+[
+    Diagnostic {
+        message_id: "unusedRule",
+        data: DiagnosticData {
+            kind: None,
+            rule_id: Some(
+                "no-undef",
+            ),
+            count: None,
+        },
+        loc: Location {
+            start: Position {
+                line: 1,
+                column: 16,
+            },
+            end: Position {
+                line: 1,
+                column: 24,
+            },
+        },
+    },
+]

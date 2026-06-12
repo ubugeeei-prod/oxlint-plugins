@@ -11,7 +11,7 @@
       "repository": "https://github.com/eslint-community/eslint-plugin-eslint-comments",
       "license": "MIT"
     },
-    "status": "in-progress",
+    "status": "ported",
     "typeAware": false,
     "rules": [
       {
@@ -26,7 +26,7 @@
           "insta": true,
           "vitest": true,
           "lsp": true,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-unlimited-disable; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -42,7 +42,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-use; supports the allow option; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -58,7 +58,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/require-description; supports the ignore option; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -74,7 +74,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/disable-enable-pair; supports the allowWholeFile option; shared disabled-area algorithm in Rust; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -90,7 +90,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-aggregating-enable; reuses the shared disabled-area algorithm; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -106,9 +106,57 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-duplicate-disable; reuses the shared disabled-area algorithm; upstream RuleTester cases replayed via test/fixtures."
+      },
+      {
+        "name": "no-unused-enable",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-unused-enable; reuses the shared disabled-area algorithm; upstream RuleTester cases replayed via test/fixtures."
+      },
+      {
+        "name": "no-restricted-disable",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-restricted-disable; gitignore-style pattern matching in Rust; upstream RuleTester cases replayed via test/fixtures."
+      },
+      {
+        "name": "no-unused-disable",
+        "status": "approximation",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Deprecated upstream (use reportUnusedDisableDirectives). Approximation built on sourceCode.getDisableDirectives().problems; the upstream RuleTester suite needs the ESLint runtime, so the rule is covered by a synthetic-problem mechanism test (insta + Vitest) instead of the espree replay harness."
       }
     ]
   },
@@ -137,6 +185,505 @@
           "oxlintIntegration": false
         },
         "notes": "Scaffold rule used to prove the Rust/NAPI/Oxlint plugin shape."
+      }
+    ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-cypress",
+    "directory": "npm/cypress",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-cypress",
+      "version": "0.0.0-development",
+      "repository": "https://github.com/cypress-io/eslint-plugin-cypress",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "assertion-before-screenshot",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc Cypress command-chain port of eslint-plugin-cypress/assertion-before-screenshot; assertion-chain and previous-statement cases covered in Vitest."
+      },
+      {
+        "name": "no-and",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-and with autofix; UTF-16 range mapping covered in Vitest."
+      },
+      {
+        "name": "no-assigning-return-values",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-assigning-return-values; allowed cy.now/spy/state/stub commands and invalid assignment cases covered in Vitest."
+      },
+      {
+        "name": "no-async-before",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-async-before; async before/beforeEach callbacks containing cy/Cypress are covered in Vitest."
+      },
+      {
+        "name": "no-async-tests",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-async-tests; async it/test callbacks containing cy/Cypress are covered in Vitest."
+      },
+      {
+        "name": "no-chained-get",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc Cypress chain port of eslint-plugin-cypress/no-chained-get; nested get chains and valid single-get chains covered in Vitest."
+      },
+      {
+        "name": "no-debug",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-debug; direct adapter and Oxlint jsPlugins CLI cases covered in Vitest."
+      },
+      {
+        "name": "no-force",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-force; Cypress action commands with force options covered in Vitest."
+      },
+      {
+        "name": "no-pause",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-pause; cy.pause and non-Cypress pause cases covered in Vitest."
+      },
+      {
+        "name": "no-unnecessary-waiting",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc scope-aware port of eslint-plugin-cypress/no-unnecessary-waiting; numeric literals, const values, default parameters, aliases, and imports covered in Vitest."
+      },
+      {
+        "name": "no-xpath",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-xpath; direct cy.xpath and non-Cypress receiver cases covered in Vitest."
+      },
+      {
+        "name": "require-data-selectors",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/require-data-selectors; literal, template, identifier, alias, and conditional selector cases covered in Vitest."
+      },
+      {
+        "name": "unsafe-to-chain-command",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc Cypress command-chain port of eslint-plugin-cypress/unsafe-to-chain-command; built-in unsafe commands and custom methods option covered in Vitest and Oxlint jsPlugins CLI."
+      }
+    ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-react-refresh",
+    "directory": "npm/react-refresh",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-react-refresh",
+      "version": "0.5.2",
+      "repository": "https://github.com/ArnaudBarre/eslint-plugin-react-refresh",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "only-export-components",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc parser port of eslint-plugin-react-refresh/only-export-components; covers native helpers, LSP-shaped diagnostics, and upstream-style valid/invalid cases through Oxlint jsPlugins."
+      }
+    ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-security",
+    "directory": "npm/security",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-security",
+      "version": "4.0.0",
+      "repository": "https://github.com/eslint-community/eslint-plugin-security",
+      "license": "Apache-2.0"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "detect-bidi-characters",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc source scan port of eslint-plugin-security/detect-bidi-characters; upstream-style code/comment cases covered in Vitest."
+      },
+      {
+        "name": "detect-buffer-noassert",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc AST port of eslint-plugin-security/detect-buffer-noassert; read/write noAssert method matrix covered in Vitest."
+      },
+      {
+        "name": "detect-child-process",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc import and require access-path port of eslint-plugin-security/detect-child-process; require/import/destructure/shadowing cases covered in Vitest."
+      },
+      {
+        "name": "detect-disable-mustache-escape",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc AST port of eslint-plugin-security/detect-disable-mustache-escape; upstream valid/invalid cases covered in Vitest."
+      },
+      {
+        "name": "detect-eval-with-expression",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc AST port of eslint-plugin-security/detect-eval-with-expression; upstream literal and identifier cases covered in Vitest."
+      },
+      {
+        "name": "detect-new-buffer",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc AST port of eslint-plugin-security/detect-new-buffer; upstream literal and non-literal constructor cases covered in Vitest."
+      },
+      {
+        "name": "detect-no-csrf-before-method-override",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc traversal-order port of eslint-plugin-security/detect-no-csrf-before-method-override; upstream order cases covered in Vitest."
+      },
+      {
+        "name": "detect-non-literal-fs-filename",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc import/require/static-expression port of eslint-plugin-security/detect-non-literal-fs-filename; fs/node:fs/fs-extra/import/destructure/promises/static path cases covered in Vitest."
+      },
+      {
+        "name": "detect-non-literal-regexp",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc static-expression port of eslint-plugin-security/detect-non-literal-regexp; upstream literal/static/dynamic cases covered in Vitest."
+      },
+      {
+        "name": "detect-non-literal-require",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc static-expression port of eslint-plugin-security/detect-non-literal-require; literal/template/__dirname/dynamic cases covered in Vitest."
+      },
+      {
+        "name": "detect-object-injection",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc computed-member port of eslint-plugin-security/detect-object-injection; generic and function-call sinks covered in Vitest."
+      },
+      {
+        "name": "detect-possible-timing-attacks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc if/binary comparison port of eslint-plugin-security/detect-possible-timing-attacks; upstream left/right keyword cases covered in Vitest."
+      },
+      {
+        "name": "detect-pseudoRandomBytes",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc member-expression port of eslint-plugin-security/detect-pseudoRandomBytes; upstream valid/invalid cases covered in Vitest."
+      },
+      {
+        "name": "detect-unsafe-regex",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc regex-literal and RegExp constructor port of eslint-plugin-security/detect-unsafe-regex; safe and nested-quantifier cases covered in Vitest."
       }
     ]
   },

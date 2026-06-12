@@ -1,0 +1,22 @@
+[package]
+name = "oxlint-plugins-react-refresh"
+description = "Shared rule helpers for the Rust-backed react-refresh oxlint plugin."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+oxc_allocator.workspace = true
+oxc_ast.workspace = true
+oxc_parser.workspace = true
+oxc_span.workspace = true
+oxlint-plugins-carton.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+
+[lints]
+workspace = true

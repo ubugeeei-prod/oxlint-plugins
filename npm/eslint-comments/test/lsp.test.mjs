@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 
 import { runRule } from './harness.mjs';
 
-function toLspDiagnostics(reports) {
+function toLspDiagnostics(ruleName, reports) {
   return reports.map((report) => ({
     range: {
       start: { line: report.line - 1, character: Math.max(0, report.column - 1) },
@@ -15,16 +15,17 @@ function toLspDiagnostics(reports) {
     },
     severity: 1,
     source: 'oxlint-plugins',
-    code: `eslint-comments/no-unlimited-disable`,
+    code: `eslint-comments/${ruleName}`,
     message: report.message,
   }));
 }
 
 describe('LSP diagnostics fixture', () => {
   it('emits a diagnostic for an unlimited disable', () => {
-    const reports = runRule('no-unlimited-disable', { code: '\n/*eslint-disable*/\n' });
+    const ruleName = 'no-unlimited-disable';
+    const reports = runRule(ruleName, { code: '\n/*eslint-disable*/\n' });
 
-    expect(toLspDiagnostics(reports)).toMatchInlineSnapshot(`
+    expect(toLspDiagnostics(ruleName, reports)).toMatchInlineSnapshot(`
       [
         {
           "code": "eslint-comments/no-unlimited-disable",
@@ -36,6 +37,77 @@ describe('LSP diagnostics fixture', () => {
             },
             "start": {
               "character": 0,
+              "line": 1,
+            },
+          },
+          "severity": 1,
+          "source": "oxlint-plugins",
+        },
+      ]
+    `);
+  });
+
+  it('emits diagnostics for restricted disables', () => {
+    const ruleName = 'no-restricted-disable';
+    const reports = runRule(ruleName, {
+      code: '\n/*eslint-disable semi, no-extra-semi, comma-style*/\n',
+      options: ['*semi*'],
+    });
+
+    expect(toLspDiagnostics(ruleName, reports)).toMatchInlineSnapshot(`
+      [
+        {
+          "code": "eslint-comments/no-restricted-disable",
+          "message": "Disabling 'semi' is not allowed.",
+          "range": {
+            "end": {
+              "character": 21,
+              "line": 1,
+            },
+            "start": {
+              "character": 17,
+              "line": 1,
+            },
+          },
+          "severity": 1,
+          "source": "oxlint-plugins",
+        },
+        {
+          "code": "eslint-comments/no-restricted-disable",
+          "message": "Disabling 'no-extra-semi' is not allowed.",
+          "range": {
+            "end": {
+              "character": 36,
+              "line": 1,
+            },
+            "start": {
+              "character": 23,
+              "line": 1,
+            },
+          },
+          "severity": 1,
+          "source": "oxlint-plugins",
+        },
+      ]
+    `);
+  });
+
+  it('emits diagnostics for unused enables', () => {
+    const ruleName = 'no-unused-enable';
+    const reports = runRule(ruleName, { code: '\n/*eslint-enable no-undef*/\n' });
+
+    expect(toLspDiagnostics(ruleName, reports)).toMatchInlineSnapshot(`
+      [
+        {
+          "code": "eslint-comments/no-unused-enable",
+          "message": "'no-undef' rule is re-enabled but it has not been disabled.",
+          "range": {
+            "end": {
+              "character": 24,
+              "line": 1,
+            },
+            "start": {
+              "character": 16,
               "line": 1,
             },
           },

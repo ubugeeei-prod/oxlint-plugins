@@ -1,0 +1,76 @@
+{
+  "__generated": {
+    "source": "@eslint-community/eslint-plugin-eslint-comments",
+    "version": "4.7.2",
+    "sourceFile": "tests/lib/rules/no-unused-enable.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-comments-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n/*eslint no-undef:error*/\n/*eslint-disable*/\nvar a = b\n/*eslint-enable*/\n"
+    },
+    {
+      "code": "\n/*eslint no-undef:error*/\n/*eslint-disable no-undef*/\nvar a = b\n/*eslint-enable no-undef*/\n"
+    },
+    {
+      "code": "\n/*eslint no-undef:error*/\n/*eslint-disable no-undef*/\nvar a = b\n/*eslint-enable*/\n"
+    },
+    {
+      "code": "\n/*eslint no-undef:error, no-unused-vars:error*/\n/*eslint-disable no-undef,no-unused-vars*/\nvar a = b\n/*eslint-enable no-undef*/\n"
+    },
+    {
+      "code": "\n/*eslint no-undef:error, no-unused-vars:error*/\n/*eslint-disable no-undef,no-unused-vars*/\nvar a = b\n/*eslint-enable*/\n"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/*eslint-enable*/",
+      "errors": [
+        {
+          "message": "ESLint rules are re-enabled but those have not been disabled.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "/*eslint-enable no-undef*/",
+      "errors": [
+        {
+          "message": "'no-undef' rule is re-enabled but it has not been disabled.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "\n/*eslint-disable no-unused-vars*/\n/*eslint-enable no-undef*/\n",
+      "errors": [
+        {
+          "message": "'no-undef' rule is re-enabled but it has not been disabled.",
+          "line": 3,
+          "column": 17,
+          "endLine": 3,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "/*eslint-enable -- description*/",
+      "errors": [
+        {
+          "message": "ESLint rules are re-enabled but those have not been disabled.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ]
+    }
+  ]
+}

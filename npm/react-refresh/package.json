@@ -1,0 +1,68 @@
+{
+  "name": "@oxlint-plugins/oxlint-plugin-react-refresh",
+  "version": "0.0.0",
+  "description": "Rust-backed Oxlint plugin port of eslint-plugin-react-refresh.",
+  "keywords": [
+    "eslint-plugin",
+    "napi-rs",
+    "oxlint",
+    "oxlint-plugin",
+    "react-refresh",
+    "rust"
+  ],
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
+    "directory": "npm/react-refresh"
+  },
+  "files": [
+    "index.js",
+    "api.js",
+    "api.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "index.js",
+  "types": "api.d.ts",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "default": "./index.js"
+    },
+    "./api": {
+      "types": "./api.d.ts",
+      "require": "./api.js",
+      "default": "./api.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "dependencies": {
+    "@oxlint-plugins/core": "workspace:*",
+    "@oxlint/plugins": "catalog:"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

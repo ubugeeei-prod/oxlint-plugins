@@ -78,6 +78,15 @@ importers:
 
   npm/core: {}
 
+  npm/cypress:
+    dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
   npm/eslint-comments:
     dependencies:
       '@oxlint-plugins/core':
@@ -111,6 +120,24 @@ importers:
       '@oxlint-plugins/oxlint-plugin-stylistic':
         specifier: workspace:*
         version: link:../stylistic
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
+  npm/react-refresh:
+    dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
+  npm/security:
+    dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0

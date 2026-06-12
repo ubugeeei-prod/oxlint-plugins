@@ -54,16 +54,36 @@ function buildData(data) {
   return Object.keys(out).length > 0 ? out : undefined;
 }
 
+function locForContext(context, loc) {
+  if (!context.sourceCode?.isESTree) {
+    return loc;
+  }
+
+  return {
+    start: {
+      line: loc.start.line,
+      column: Math.max(0, loc.start.column),
+    },
+    end: {
+      line: loc.end.line,
+      column: Math.max(0, loc.end.column),
+    },
+  };
+}
+
 // Forward the diagnostics from a Rust scan to Oxlint. Diagnostic locations are
-// kept verbatim (including the upstream `column: -1` "whole line" sentinel).
+// kept verbatim in the upstream replay harness. Oxlint itself rejects the
+// upstream `column: -1` "whole line" sentinel, so clamp it only for Oxlint's
+// ESTree-compatible runtime.
 function reportDiagnostics(context, diagnostics) {
   for (const diagnostic of diagnostics) {
+    const loc = locForContext(context, {
+      start: { line: diagnostic.loc.startLine, column: diagnostic.loc.startColumn },
+      end: { line: diagnostic.loc.endLine, column: diagnostic.loc.endColumn },
+    });
     const descriptor = {
       messageId: diagnostic.messageId,
-      loc: {
-        start: { line: diagnostic.loc.startLine, column: diagnostic.loc.startColumn },
-        end: { line: diagnostic.loc.endLine, column: diagnostic.loc.endColumn },
-      },
+      loc,
     };
 
     const data = buildData(diagnostic.data);
@@ -264,11 +284,99 @@ const noDuplicateDisable = commentScanRule(
   (comments) => native.scanNoDuplicateDisable(comments),
 );
 
+const noUnusedEnable = commentScanRule(
+  {
+    type: 'problem',
+    docs: {
+      description: 'disallow unused `eslint-enable` comments',
+      recommended: true,
+      url: `${DOCS_BASE}#no-unused-enable`,
+    },
+    fixable: null,
+    schema: [],
+    messages: {
+      unused: 'ESLint rules are re-enabled but those have not been disabled.',
+      unusedRule: "'{{ruleId}}' rule is re-enabled but it has not been disabled.",
+    },
+  },
+  (comments) => native.scanNoUnusedEnable(comments),
+);
+
+const noRestrictedDisable = commentScanRule(
+  {
+    type: 'suggestion',
+    docs: {
+      description: 'disallow `eslint-disable` comments about specific rules',
+      recommended: false,
+      url: `${DOCS_BASE}#no-restricted-disable`,
+    },
+    fixable: null,
+    schema: {
+      type: 'array',
+      items: { type: 'string' },
+      uniqueItems: true,
+    },
+    messages: {
+      disallow: "Disabling '{{ruleId}}' is not allowed.",
+    },
+  },
+  (comments, context) => native.scanNoRestrictedDisable(comments, context.options || []),
+);
+
+// `no-unused-disable` needs the file's lint problems, which only exist at run
+// time via `sourceCode.getDisableDirectives()`. It is an approximation of
+// upstream's deprecated Linter-patch behavior and is skipped when the runtime
+// does not expose disable directives.
+const noUnusedDisable = {
+  meta: {
+    type: 'problem',
+    docs: {
+      description: 'disallow unused `eslint-disable` comments',
+      recommended: false,
+      url: `${DOCS_BASE}#no-unused-disable`,
+    },
+    deprecated: true,
+    fixable: null,
+    schema: [],
+    messages: {
+      unused: 'Unused eslint-disable directive (no problems were reported).',
+      unusedRule: "Unused eslint-disable directive (no problems were reported from '{{ruleId}}').",
+    },
+  },
+  createOnce(context) {
+    return {
+      Program() {
+        const sourceCode = context.sourceCode;
+        if (typeof sourceCode.getDisableDirectives !== 'function') {
+          return;
+        }
+
+        const comments = collectComments(sourceCode);
+        if (comments.length === 0) {
+          return;
+        }
+
+        const { problems } = sourceCode.getDisableDirectives();
+        const problemInputs = (problems || []).map((problem) => ({
+          ruleId: problem.ruleId == null ? null : problem.ruleId,
+          line: problem.loc.start.line,
+          column: problem.loc.start.column,
+        }));
+
+        reportDiagnostics(context, native.scanNoUnusedDisable(comments, problemInputs));
+      },
+    };
+  },
+};
+
 const rules = {
   'disable-enable-pair': disableEnablePair,
   'no-aggregating-enable': noAggregatingEnable,
   'no-duplicate-disable': noDuplicateDisable,
+  'no-restricted-disable': noRestrictedDisable,
   'no-unlimited-disable': noUnlimitedDisable,
+  'no-unused-disable': noUnusedDisable,
+  'no-unused-enable': noUnusedEnable,
   'no-use': noUse,
   'require-description': requireDescription,
 };
@@ -280,6 +388,7 @@ const recommendedRuleNames = [
   'no-aggregating-enable',
   'no-duplicate-disable',
   'no-unlimited-disable',
+  'no-unused-enable',
 ];
 
 const plugin = eslintCompatPlugin({

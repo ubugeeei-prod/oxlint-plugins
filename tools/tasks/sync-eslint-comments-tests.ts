@@ -140,10 +140,16 @@ function registerStubHooks(): void {
       '    };',
       '  }',
       '}',
-      'class Linter {}',
+      'class Linter {',
+      '  getRules() { return new Map(); }',
+      '}',
       "Linter.version = '8.57.0';",
       'module.exports = { RuleTester, Linter };',
     ].join('\n'),
+    // `eslint/use-at-your-own-risk`: some tests read `builtinRules` to register
+    // core rules in the RuleTester (which the stub ignores), so an empty Map is
+    // enough.
+    'eslint-internal': 'module.exports = { builtinRules: new Map() };',
     // Minimal `semver.satisfies` evaluated against the stub Linter.version
     // (8.57.0). This makes version guards like `>=7.0.0` true while keeping the
     // `>=9.6.0` language-plugin branches false, so v9.6 CSS/language cases (also
@@ -181,6 +187,9 @@ function registerStubHooks(): void {
     resolve(specifier, context, nextResolve) {
       if (specifier === 'eslint') {
         return { url: 'stub:///eslint', shortCircuit: true };
+      }
+      if (specifier.startsWith('eslint/')) {
+        return { url: 'stub:///eslint-internal', shortCircuit: true };
       }
       if (specifier === 'semver') {
         return { url: 'stub:///semver', shortCircuit: true };
@@ -238,14 +247,24 @@ function isPresent<T>(value: T | null): value is T {
   return value != null;
 }
 
+// Rules whose upstream RuleTester suite cannot be replayed by the espree
+// harness because it depends on the ESLint runtime (lint problems), not just
+// parsed comments. These are covered by dedicated mechanism tests instead.
+const RUNTIME_ONLY_RULES = new Set(['no-unused-disable']);
+
 function getPortedRules(): string[] {
   const pkgRequire = createRequire(join(ROOT, 'npm', 'eslint-comments', 'index.js'));
   const loaded = pkgRequire(resolve(ROOT, 'npm', 'eslint-comments', 'index.js')) as {
     rules?: Record<string, unknown>;
   };
-  const rules = loaded.rules ? Object.keys(loaded.rules) : [];
+  const rules = (loaded.rules ? Object.keys(loaded.rules) : []).filter(
+    (rule) => !RUNTIME_ONLY_RULES.has(rule),
+  );
   if (rules.length === 0) {
     throw new Error('No rules found on the eslint-comments plugin; build it first (vp build).');
+  }
+  for (const rule of RUNTIME_ONLY_RULES) {
+    console.log(`- ${rule}: skipped (needs ESLint runtime problems; covered by a mechanism test)`);
   }
   return rules.sort();
 }

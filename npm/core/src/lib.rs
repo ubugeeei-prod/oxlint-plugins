@@ -9,6 +9,9 @@
 //! `core.eslintComments.scanNoUse`) and can never collide across plugins as more
 //! are ported.
 
+pub mod cypress;
 pub mod eslint_comments;
 pub mod no_forbidden_identifiers;
+pub mod react_refresh;
+pub mod security;
 pub mod stylistic;

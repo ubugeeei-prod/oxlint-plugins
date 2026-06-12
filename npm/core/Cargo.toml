@@ -19,7 +19,10 @@ name = "oxlint_plugins_core"
 napi.workspace = true
 napi-derive.workspace = true
 oxlint-plugins-carton.workspace = true
+oxlint-plugins-cypress.workspace = true
 oxlint-plugins-eslint-comments.workspace = true
+oxlint-plugins-react-refresh.workspace = true
+oxlint-plugins-security.workspace = true
 oxlint-plugins-stylistic.workspace = true
 serde_json.workspace = true
 
