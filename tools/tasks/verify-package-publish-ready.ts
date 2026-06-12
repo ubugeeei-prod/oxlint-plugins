@@ -34,17 +34,17 @@ const packages: PackageToPack[] = [
   {
     name: '@oxlint-plugins/oxlint-plugin-react-refresh',
     dir: 'npm/react-refresh',
-    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts'],
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-security',
     dir: 'npm/security',
-    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts'],
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-cypress',
     dir: 'npm/cypress',
-    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts'],
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-stylistic',
