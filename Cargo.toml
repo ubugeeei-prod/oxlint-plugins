@@ -7,6 +7,7 @@ members = [
   "crates/react_refresh",
   "crates/security",
   "crates/simple_import_sort",
+  "crates/storybook",
   "crates/stylistic",
   "crates/unused_imports",
   "npm/cypress",
@@ -16,6 +17,7 @@ members = [
   "npm/react-refresh",
   "npm/security",
   "npm/simple-import-sort",
+  "npm/storybook",
   "npm/stylistic",
   "npm/unused-imports",
 ]
@@ -50,6 +52,7 @@ oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
 oxlint-plugins-simple-import-sort = { path = "crates/simple_import_sort", version = "0.0.0" }
+oxlint-plugins-storybook = { path = "crates/storybook", version = "0.0.0" }
 oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
 oxlint-plugins-unused-imports = { path = "crates/unused_imports", version = "0.0.0" }
 regex = "1.12.2"
