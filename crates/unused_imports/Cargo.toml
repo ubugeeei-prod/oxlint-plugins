@@ -1,0 +1,24 @@
+[package]
+name = "oxlint-plugins-unused-imports"
+description = "Rust core for the unused-imports oxlint JavaScript plugin."
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+oxc_allocator.workspace = true
+oxc_ast.workspace = true
+oxc_parser.workspace = true
+oxc_semantic.workspace = true
+oxc_span.workspace = true
+oxlint-plugins-carton.workspace = true
+regex.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+
+[lints]
+workspace = true

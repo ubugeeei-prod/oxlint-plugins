@@ -40,6 +40,10 @@ const nativePackages = [
     name: '@oxlint-plugins/oxlint-plugin-simple-import-sort',
     binding: 'npm/simple-import-sort/native.js',
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-unused-imports',
+    binding: 'npm/unused-imports/native.js',
+  },
 ];
 
 for (const pkg of nativePackages) {

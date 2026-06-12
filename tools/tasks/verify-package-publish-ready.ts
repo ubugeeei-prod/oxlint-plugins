@@ -50,6 +50,11 @@ const packages: PackageToPack[] = [
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-unused-imports',
+    dir: 'npm/unused-imports',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-stylistic',
     dir: 'npm/stylistic',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
