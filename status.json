@@ -1089,6 +1089,951 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-playwright",
+    "directory": "npm/playwright",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-playwright",
+      "version": "2.10.4",
+      "repository": "https://github.com/mskelton/eslint-plugin-playwright",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "consistent-spacing-between-blocks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/consistent-spacing-between-blocks; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "expect-expect",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/expect-expect; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "max-expects",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/max-expects; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "max-nested-describe",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/max-nested-describe; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "missing-playwright-await",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/missing-playwright-await; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-commented-out-tests",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-commented-out-tests; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-conditional-expect",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-conditional-expect; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-conditional-in-test",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-conditional-in-test; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-duplicate-hooks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-duplicate-hooks; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-duplicate-slow",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-duplicate-slow; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-element-handle",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-element-handle; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-eval",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-eval; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-focused-test",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-focused-test; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-force-option",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-force-option; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-get-by-title",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-get-by-title; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-hooks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-hooks; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-nested-step",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-nested-step; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-networkidle",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-networkidle; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-nth-methods",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-nth-methods; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-page-pause",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-page-pause; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-raw-locators",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-raw-locators; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-restricted-locators",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-restricted-locators; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-restricted-matchers",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-restricted-matchers; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-restricted-roles",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-restricted-roles; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-skipped-test",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-skipped-test; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-slowed-test",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-slowed-test; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-standalone-expect",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-standalone-expect; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-unsafe-references",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-unsafe-references; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-unused-locators",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-unused-locators; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-useless-await",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-useless-await; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-useless-not",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-useless-not; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-wait-for-navigation",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-wait-for-navigation; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-wait-for-selector",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-wait-for-selector; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "no-wait-for-timeout",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-wait-for-timeout; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-comparison-matcher",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-comparison-matcher; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-equality-matcher",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-equality-matcher; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-hooks-in-order",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-hooks-in-order; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-hooks-on-top",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-hooks-on-top; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-locator",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-locator; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-lowercase-title",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-lowercase-title; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-native-locators",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-native-locators; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-strict-equal",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-strict-equal; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-to-be",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-to-be; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-to-contain",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-to-contain; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-to-have-count",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-to-have-count; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-to-have-length",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-to-have-length; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-web-first-assertions",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/prefer-web-first-assertions; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "require-hook",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/require-hook; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "require-soft-assertions",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/require-soft-assertions; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "require-tags",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/require-tags; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "require-to-pass-timeout",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/require-to-pass-timeout; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "require-to-throw-message",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/require-to-throw-message; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "require-top-level-describe",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/require-top-level-describe; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "valid-describe-callback",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/valid-describe-callback; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "valid-expect",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/valid-expect; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "valid-expect-in-promise",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/valid-expect-in-promise; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "valid-test-tags",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/valid-test-tags; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      },
+      {
+        "name": "valid-title",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/valid-title; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-simple-import-sort",
     "directory": "npm/simple-import-sort",
     "version": "0.0.0",
