@@ -11,7 +11,10 @@
 
 pub mod cypress;
 pub mod eslint_comments;
+pub mod mocha;
 pub mod no_forbidden_identifiers;
 pub mod react_refresh;
 pub mod security;
+pub mod simple_import_sort;
 pub mod stylistic;
+pub mod unused_imports;

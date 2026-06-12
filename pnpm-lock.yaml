@@ -100,6 +100,15 @@ importers:
         specifier: ^10.4.0
         version: 10.4.0
 
+  npm/mocha:
+    dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
   npm/no-forbidden-identifiers:
     dependencies:
       '@oxlint-plugins/core':
@@ -142,6 +151,15 @@ importers:
         specifier: 'catalog:'
         version: 1.68.0
 
+  npm/simple-import-sort:
+    dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
   npm/stylistic:
     dependencies:
       '@oxlint-plugins/core':
@@ -166,6 +184,15 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+
+  npm/unused-imports:
+    dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
 
 packages:
 

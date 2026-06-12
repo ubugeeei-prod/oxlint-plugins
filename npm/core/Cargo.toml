@@ -21,9 +21,12 @@ napi-derive.workspace = true
 oxlint-plugins-carton.workspace = true
 oxlint-plugins-cypress.workspace = true
 oxlint-plugins-eslint-comments.workspace = true
+oxlint-plugins-mocha.workspace = true
 oxlint-plugins-react-refresh.workspace = true
 oxlint-plugins-security.workspace = true
+oxlint-plugins-simple-import-sort.workspace = true
 oxlint-plugins-stylistic.workspace = true
+oxlint-plugins-unused-imports.workspace = true
 serde_json.workspace = true
 
 [build-dependencies]

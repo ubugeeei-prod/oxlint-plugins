@@ -3,9 +3,12 @@ members = [
   "crates/_carton",
   "crates/cypress",
   "crates/eslint_comments",
+  "crates/mocha",
   "crates/react_refresh",
   "crates/security",
+  "crates/simple_import_sort",
   "crates/stylistic",
+  "crates/unused_imports",
   "npm/core",
 ]
 resolver = "3"
@@ -29,14 +32,19 @@ napi-derive = "3.5.6"
 oxc_allocator = "0.135.0"
 oxc_ast = "0.135.0"
 oxc_parser = "0.135.0"
+oxc_semantic = "0.135.0"
 oxc_span = "0.135.0"
 oxc_syntax = "0.135.0"
 oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_carton", version = "0.0.0" }
 oxlint-plugins-cypress = { path = "crates/cypress", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
+oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
+oxlint-plugins-simple-import-sort = { path = "crates/simple_import_sort", version = "0.0.0" }
 oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
+oxlint-plugins-unused-imports = { path = "crates/unused_imports", version = "0.0.0" }
+regex = "1.12.2"
 phf = { version = "0.13.1", features = ["macros"] }
 rustc-hash = "2.1.1"
 serde = { version = "1.0.228", features = ["derive"] }
