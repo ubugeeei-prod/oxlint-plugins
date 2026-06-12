@@ -1,7 +1,8 @@
 'use strict';
 
 const { eslintCompatPlugin } = require('@oxlint/plugins');
-const native = require('./native.js');
+// Rule logic runs in the shared native core; this package is a thin facade.
+const native = require('@oxlint-plugins/core').noForbiddenIdentifiers;
 
 const PLUGIN_NAME = 'no-forbidden-identifiers';
 const RULE_NAME = 'no-forbidden-identifiers';

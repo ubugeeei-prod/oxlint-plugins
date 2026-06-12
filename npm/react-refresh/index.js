@@ -5,7 +5,7 @@
 // classification run in Rust through Oxc.
 
 const { eslintCompatPlugin } = require('@oxlint/plugins');
-const native = require('./native.js');
+const { scanOnlyExportComponents } = require('./api.js');
 
 const PLUGIN_NAME = 'react-refresh';
 const RULE_NAME = 'only-export-components';
@@ -90,7 +90,7 @@ const onlyExportComponents = {
   createOnce(context) {
     return {
       Program() {
-        const diagnostics = native.scanOnlyExportComponents(
+        const diagnostics = scanOnlyExportComponents(
           sourceTextForContext(context),
           context.filename,
           normalizeOptions(context.options?.[0]),

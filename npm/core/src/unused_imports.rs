@@ -1,8 +1,8 @@
-//! NAPI boundary for the simple-import-sort oxlint plugin.
+//! NAPI boundary for the unused-imports oxlint plugin.
 
 pub use napi_abi::{
-    Diagnostic, DiagnosticFix, DiagnosticLoc, SimpleImportSortScanOptions,
-    implemented_simple_import_sort_rule_names, scan_simple_import_sort,
+    Diagnostic, DiagnosticFix, DiagnosticLoc, UnusedImportsScanOptions,
+    implemented_unused_imports_rule_names, scan_unused_imports,
 };
 
 #[allow(
@@ -13,15 +13,15 @@ pub use napi_abi::{
 mod napi_abi {
     use napi_derive::napi;
     use oxlint_plugins_carton::{CompactString, SmallVec};
-    use oxlint_plugins_simple_import_sort as core;
+    use oxlint_plugins_unused_imports as core;
 
-    #[napi(object)]
+    #[napi(object, namespace = "unusedImports")]
     #[derive(Clone, Debug, Default)]
-    pub struct SimpleImportSortScanOptions {
-        pub import_groups: Option<Vec<Vec<String>>>,
+    pub struct UnusedImportsScanOptions {
+        pub rule_names: Option<Vec<String>>,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "unusedImports")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticLoc {
         pub start_line: u32,
@@ -30,7 +30,7 @@ mod napi_abi {
         pub end_column: u32,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "unusedImports")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticFix {
         pub start: u32,
@@ -38,39 +38,39 @@ mod napi_abi {
         pub replacement: String,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "unusedImports")]
     #[derive(Clone, Debug)]
     pub struct Diagnostic {
         pub rule_name: String,
-        pub message_id: String,
+        pub message: String,
         pub loc: DiagnosticLoc,
         pub fix: Option<DiagnosticFix>,
     }
 
-    #[napi]
-    pub fn implemented_simple_import_sort_rule_names() -> Vec<String> {
-        core::implemented_simple_import_sort_rule_names()
+    #[napi(namespace = "unusedImports")]
+    pub fn implemented_unused_imports_rule_names() -> Vec<String> {
+        core::implemented_unused_imports_rule_names()
             .iter()
             .map(|name| (*name).to_owned())
             .collect()
     }
 
-    #[napi]
-    pub fn scan_simple_import_sort(
+    #[napi(namespace = "unusedImports")]
+    pub fn scan_unused_imports(
         source_text: String,
         filename: String,
-        options: Option<SimpleImportSortScanOptions>,
+        options: Option<UnusedImportsScanOptions>,
     ) -> Vec<Diagnostic> {
         let options = options.unwrap_or_default();
-        let core_options = core::SimpleImportSortOptions {
-            import_groups: compact_groups(options.import_groups.unwrap_or_default()),
+        let core_options = core::UnusedImportsOptions {
+            rule_names: compact_rule_names(options.rule_names),
         };
 
-        core::scan_simple_import_sort(&source_text, &filename, &core_options)
+        core::scan_unused_imports(&source_text, &filename, &core_options)
             .into_iter()
             .map(|diagnostic| Diagnostic {
                 rule_name: diagnostic.rule_name.to_owned(),
-                message_id: diagnostic.message_id.to_owned(),
+                message: diagnostic.message.into_string(),
                 loc: DiagnosticLoc {
                     start_line: diagnostic.loc.start_line,
                     start_column: diagnostic.loc.start_column,
@@ -86,17 +86,23 @@ mod napi_abi {
             .collect()
     }
 
-    fn compact_groups(values: Vec<Vec<String>>) -> SmallVec<[SmallVec<[CompactString; 4]>; 8]> {
-        values
-            .into_iter()
-            .filter_map(|group| {
-                let group: SmallVec<[CompactString; 4]> = group
+    fn compact_rule_names(values: Option<Vec<String>>) -> SmallVec<[CompactString; 2]> {
+        values.map_or_else(
+            || {
+                core::implemented_unused_imports_rule_names()
+                    .iter()
+                    .map(|name| CompactString::from(*name))
+                    .collect()
+            },
+            |values| {
+                values
                     .into_iter()
-                    .filter(|value| !value.is_empty())
+                    .filter(|value| {
+                        core::implemented_unused_imports_rule_names().contains(&value.as_str())
+                    })
                     .map(CompactString::from)
-                    .collect();
-                (!group.is_empty()).then_some(group)
-            })
-            .collect()
+                    .collect()
+            },
+        )
     }
 }

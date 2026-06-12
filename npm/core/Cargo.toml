@@ -1,0 +1,42 @@
+[package]
+name = "oxlint-plugins-core"
+description = "Shared Rust native core for all Rust-backed oxlint JavaScript plugins."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "oxlint_plugins_core"
+
+# Every Rust-backed oxlint plugin is compiled into this single native addon.
+# Domain rule logic stays in its own crate (`crates/*`); this crate only holds
+# the NAPI boundary, namespaced per plugin so exported names never collide.
+[dependencies]
+napi.workspace = true
+napi-derive.workspace = true
+oxlint-plugins-carton.workspace = true
+oxlint-plugins-cypress.workspace = true
+oxlint-plugins-eslint-comments.workspace = true
+oxlint-plugins-mocha.workspace = true
+oxlint-plugins-react-refresh.workspace = true
+oxlint-plugins-security.workspace = true
+oxlint-plugins-simple-import-sort.workspace = true
+oxlint-plugins-stylistic.workspace = true
+oxlint-plugins-unused-imports.workspace = true
+serde_json.workspace = true
+
+[build-dependencies]
+napi-build.workspace = true
+
+[lints.rust]
+unused_must_use = "deny"
+
+[lints.clippy]
+dbg_macro = "deny"
+disallowed_types = "warn"
+todo = "deny"
+unwrap_used = "deny"

@@ -1,6 +1,6 @@
 'use strict';
 
-const native = require('./native.js');
+const native = require('@oxlint-plugins/core').mocha;
 
 function implementedMochaRuleNames() {
   return native.implementedMochaRuleNames();

@@ -1,6 +1,6 @@
 'use strict';
 
-const native = require('./native.js');
+const native = require('@oxlint-plugins/core').simpleImportSort;
 
 function scanSimpleImportSort(sourceText, filename = 'file.js', options = {}) {
   if (typeof sourceText !== 'string') {

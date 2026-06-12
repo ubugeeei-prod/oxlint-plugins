@@ -9,15 +9,7 @@ members = [
   "crates/simple_import_sort",
   "crates/stylistic",
   "crates/unused_imports",
-  "npm/cypress",
-  "npm/eslint-comments",
-  "npm/mocha",
-  "npm/no-forbidden-identifiers",
-  "npm/react-refresh",
-  "npm/security",
-  "npm/simple-import-sort",
-  "npm/stylistic",
-  "npm/unused-imports",
+  "npm/core",
 ]
 resolver = "3"
 

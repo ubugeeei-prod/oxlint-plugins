@@ -76,14 +76,22 @@ importers:
         specifier: 'catalog:'
         version: 8.0.16(@types/node@24.13.1)(esbuild@0.28.0)(tsx@4.22.4)
 
+  npm/core: {}
+
   npm/cypress:
     dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0
 
   npm/eslint-comments:
     dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0
@@ -94,36 +102,69 @@ importers:
 
   npm/mocha:
     dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0
 
   npm/no-forbidden-identifiers:
     dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
+  npm/oxlint:
+    dependencies:
+      '@oxlint-plugins/oxlint-plugin-eslint-comments':
+        specifier: workspace:*
+        version: link:../eslint-comments
+      '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers':
+        specifier: workspace:*
+        version: link:../no-forbidden-identifiers
+      '@oxlint-plugins/oxlint-plugin-stylistic':
+        specifier: workspace:*
+        version: link:../stylistic
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0
 
   npm/react-refresh:
     dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0
 
   npm/security:
     dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0
 
   npm/simple-import-sort:
     dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0
 
   npm/stylistic:
     dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0
@@ -146,6 +187,9 @@ importers:
 
   npm/unused-imports:
     dependencies:
+      '@oxlint-plugins/core':
+        specifier: workspace:*
+        version: link:../core
       '@oxlint/plugins':
         specifier: 'catalog:'
         version: 1.68.0

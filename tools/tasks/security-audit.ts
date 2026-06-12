@@ -15,6 +15,7 @@ type AuditJson = {
 };
 
 const publishablePrefixes = [
+  '@oxlint-plugins/core>',
   '@oxlint-plugins/oxlint-plugin-type-aware>',
   '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers>',
   '@oxlint-plugins/oxlint-plugin-eslint-comments>',
