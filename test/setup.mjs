@@ -20,6 +20,10 @@ const nativePackages = [
     name: '@oxlint-plugins/oxlint-plugin-stylistic',
     binding: 'npm/stylistic/native.js',
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-react-refresh',
+    binding: 'npm/react-refresh/native.js',
+  },
 ];
 
 for (const pkg of nativePackages) {
