@@ -25,6 +25,10 @@ const nativePackages = [
     binding: 'npm/eslint-comments/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-eslint-markdown',
+    binding: 'npm/eslint-markdown/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-security',
     binding: 'npm/security/native.js',
   },
