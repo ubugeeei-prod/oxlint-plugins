@@ -52,6 +52,10 @@ const nativePackages = [
     name: '@oxlint-plugins/oxlint-plugin-unused-imports',
     binding: 'npm/unused-imports/native.js',
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-unocss',
+    binding: 'npm/unocss/native.js',
+  },
 ];
 
 function lockPathFor(pkg) {

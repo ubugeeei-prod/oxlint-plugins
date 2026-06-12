@@ -865,6 +865,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-unocss"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-unocss",
+]
+
+[[package]]
 name = "oxlint-plugin-unused-imports"
 version = "0.0.0"
 dependencies = [
@@ -968,6 +979,17 @@ dependencies = [
  "phf",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "oxlint-plugins-unocss"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+ "regex",
 ]
 
 [[package]]

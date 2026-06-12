@@ -1874,5 +1874,86 @@
         "notes": "Rust/Oxc semantic helper rule matching eslint-plugin-unused-imports' split-reporting role by reporting non-import unused bindings separately from no-unused-imports."
       }
     ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-unocss",
+    "directory": "npm/unocss",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "@unocss/eslint-plugin",
+      "version": "66.7.0",
+      "repository": "https://github.com/unocss/unocss",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "blocklist",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust/Oxc syntax-pattern port of @unocss/eslint-plugin/blocklist for JS/TS/JSX class literals and attributify-style JSX attributes; blocklist entries are passed through rule options or settings."
+      },
+      {
+        "name": "enforce-class-compile",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust/Oxc syntax-pattern port of @unocss/eslint-plugin/enforce-class-compile for JSX class/className literals, including prefix and enableFix options."
+      },
+      {
+        "name": "order",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of @unocss/eslint-plugin/order for JSX class/className literals, clsx/classnames-style calls, and class variable initializers."
+      },
+      {
+        "name": "order-attributify",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust/Oxc syntax-pattern port of @unocss/eslint-plugin/order-attributify for valueless JSX attributify attributes."
+      }
+    ]
   }
 ]
