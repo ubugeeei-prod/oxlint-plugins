@@ -23,6 +23,7 @@ const publishablePrefixes = [
   '@oxlint-plugins/oxlint-plugin-cypress>',
   '@oxlint-plugins/oxlint-plugin-mocha>',
   '@oxlint-plugins/oxlint-plugin-simple-import-sort>',
+  '@oxlint-plugins/oxlint-plugin-unused-imports>',
   '@oxlint-plugins/oxlint-plugin-stylistic>',
 ];
 

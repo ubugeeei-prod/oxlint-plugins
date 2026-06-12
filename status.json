@@ -1825,5 +1825,54 @@
         "notes": "Port of Corsa's native stylistic scanner rule keyword-spacing; source-wide Rust scan exposed through NAPI."
       }
     ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-unused-imports",
+    "directory": "npm/unused-imports",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-unused-imports",
+      "version": "4.4.1",
+      "repository": "https://github.com/sweepline/eslint-plugin-unused-imports",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "no-unused-imports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc semantic port of eslint-plugin-unused-imports/no-unused-imports; detects unused ESM import bindings with shadowing-aware references, supports JSDoc tag references, and provides autofixes for import specifiers and whole declarations."
+      },
+      {
+        "name": "no-unused-vars",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust/Oxc semantic helper rule matching eslint-plugin-unused-imports' split-reporting role by reporting non-import unused bindings separately from no-unused-imports."
+      }
+    ]
   }
 ]

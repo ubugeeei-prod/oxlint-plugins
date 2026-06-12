@@ -172,6 +172,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fd8e701084c37e7ef62d3f9e453b618130cbc0ef3573847785952a3ac3f746bf"
 
 [[package]]
+name = "either"
+version = "1.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "91622ff5e7162018101f2fea40d6ebf4a78bbe5a49736a2020649edf9693679e"
+
+[[package]]
 name = "encode_unicode"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -364,6 +370,15 @@ dependencies = [
  "once_cell",
  "similar",
  "tempfile",
+]
+
+[[package]]
+name = "itertools"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285"
+dependencies = [
+ "either",
 ]
 
 [[package]]
@@ -592,6 +607,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxc_ast_visit"
+version = "0.135.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "af8a8771bbedc5904b6536822fb719f76291d00ab2bccbf5f98950d666f0154f"
+dependencies = [
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_span",
+ "oxc_syntax",
+]
+
+[[package]]
 name = "oxc_data_structures"
 version = "0.135.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -679,6 +706,28 @@ dependencies = [
  "phf",
  "rustc-hash",
  "unicode-id-start",
+]
+
+[[package]]
+name = "oxc_semantic"
+version = "0.135.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6735efd98d54e0f5e8c30a6b17df921085373d54b2b1e10e42d7f4ec8d2597bc"
+dependencies = [
+ "itertools",
+ "memchr",
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_ast_visit",
+ "oxc_diagnostics",
+ "oxc_ecmascript",
+ "oxc_index",
+ "oxc_span",
+ "oxc_str",
+ "oxc_syntax",
+ "rustc-hash",
+ "self_cell",
+ "smallvec",
 ]
 
 [[package]]
@@ -816,6 +865,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-unused-imports"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-unused-imports",
+]
+
+[[package]]
 name = "oxlint-plugins-_carton"
 version = "0.0.0"
 dependencies = [
@@ -908,6 +968,20 @@ dependencies = [
  "phf",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "oxlint-plugins-unused-imports"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_semantic",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+ "regex",
 ]
 
 [[package]]
@@ -1066,6 +1140,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9774ba4a74de5f7b1c1451ed6cd5285a32eddb5cccb8cc655a4e50009e06477f"
 
 [[package]]
+name = "self_cell"
+version = "1.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b12e76d157a900eb52e81bc6e9f3069344290341720e9178cde2407113ac8d89"
+
+[[package]]
 name = "semver"
 version = "1.0.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1143,6 +1223,9 @@ name = "smallvec"
 version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "smawk"

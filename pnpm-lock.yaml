@@ -144,6 +144,12 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  npm/unused-imports:
+    dependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
 packages:
 
   '@ark/schema@0.56.0':
