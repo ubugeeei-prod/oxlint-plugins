@@ -3,6 +3,7 @@ members = [
   "crates/_carton",
   "crates/cypress",
   "crates/eslint_comments",
+  "crates/functional",
   "crates/mocha",
   "crates/react_refresh",
   "crates/security",
@@ -11,6 +12,7 @@ members = [
   "crates/unused_imports",
   "npm/cypress",
   "npm/eslint-comments",
+  "npm/functional",
   "npm/mocha",
   "npm/no-forbidden-identifiers",
   "npm/react-refresh",
@@ -46,6 +48,7 @@ oxc_syntax = "0.135.0"
 oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_carton", version = "0.0.0" }
 oxlint-plugins-cypress = { path = "crates/cypress", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
+oxlint-plugins-functional = { path = "crates/functional", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }

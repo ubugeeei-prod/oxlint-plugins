@@ -414,6 +414,343 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-functional",
+    "directory": "npm/functional",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-functional",
+      "version": "0.0.0-development",
+      "repository": "https://github.com/eslint-functional/eslint-plugin-functional",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "functional-parameters",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/functional-parameters; parameter count, rest parameter, and arguments keyword checks are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "immutable-data",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/immutable-data; member assignment, update, and mutating method calls are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-class-inheritance",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-class-inheritance; class extends syntax is covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-classes",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-classes; class declarations and expressions are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-conditional-statements",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-conditional-statements; if and switch statements are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-expression-statements",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-expression-statements; side-effect expression statements are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-let",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-let; let declarations and allowInForLoopInit are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-loop-statements",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-loop-statements; for, for-in, for-of, while, and do-while statements are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-mixed-types",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-mixed-types; mixed function and data members in interfaces and type literals are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-promise-reject",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-promise-reject; Promise.reject calls and async throws are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-return-void",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-return-void; void, null, and undefined return annotations are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-this-expressions",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-this-expressions; this expressions are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-throw-statements",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-throw-statements; throw statements and allowToRejectPromises are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-try-statements",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/no-try-statements; try/catch/finally statements and allow options are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-immutable-types",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-proven port of eslint-plugin-functional/prefer-immutable-types; mutable array and collection annotations are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-property-signatures",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/prefer-property-signatures; TypeScript method signatures are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-readonly-type",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-proven port of eslint-plugin-functional/prefer-readonly-type; readonly modifiers, array, tuple, and mutable collection annotations are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-tacit",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/prefer-tacit; simple arrow wrappers around calls are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "readonly-type",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-functional/readonly-type; keyword and generic readonly styles are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "type-declaration-immutability",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-proven port of eslint-plugin-functional/type-declaration-immutability; mutable interface and type literal members are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-react-refresh",
     "directory": "npm/react-refresh",
     "version": "0.0.0",

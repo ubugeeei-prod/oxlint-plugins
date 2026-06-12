@@ -1,6 +1,7 @@
 const packages: string[] = [
   '@oxlint-plugins/oxlint-plugin-type-aware',
   '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers',
+  '@oxlint-plugins/oxlint-plugin-functional',
   '@oxlint-plugins/oxlint-plugin-stylistic',
 ];
 

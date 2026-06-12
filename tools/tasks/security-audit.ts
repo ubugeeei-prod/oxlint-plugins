@@ -21,6 +21,7 @@ const publishablePrefixes = [
   '@oxlint-plugins/oxlint-plugin-react-refresh>',
   '@oxlint-plugins/oxlint-plugin-security>',
   '@oxlint-plugins/oxlint-plugin-cypress>',
+  '@oxlint-plugins/oxlint-plugin-functional>',
   '@oxlint-plugins/oxlint-plugin-mocha>',
   '@oxlint-plugins/oxlint-plugin-simple-import-sort>',
   '@oxlint-plugins/oxlint-plugin-unused-imports>',
