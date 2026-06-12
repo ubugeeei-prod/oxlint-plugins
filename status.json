@@ -189,6 +189,39 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-react-refresh",
+    "directory": "npm/react-refresh",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-react-refresh",
+      "version": "0.5.2",
+      "repository": "https://github.com/ArnaudBarre/eslint-plugin-react-refresh",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "only-export-components",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": true,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc parser port of eslint-plugin-react-refresh/only-export-components; covers native helpers, LSP-shaped diagnostics, and upstream-style valid/invalid cases through Oxlint jsPlugins."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-stylistic",
     "directory": "npm/stylistic",
     "version": "0.0.0",

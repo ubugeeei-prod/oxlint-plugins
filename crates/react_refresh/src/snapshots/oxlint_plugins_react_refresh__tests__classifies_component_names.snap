@@ -1,0 +1,38 @@
+---
+source: crates/react_refresh/src/lib.rs
+expression: "cases.map(|(name, _)| (name, is_react_component_name(name)))"
+---
+[
+    (
+        "Foo",
+        true,
+    ),
+    (
+        "Foo2",
+        true,
+    ),
+    (
+        "Foo_",
+        true,
+    ),
+    (
+        "CMS",
+        true,
+    ),
+    (
+        "foo",
+        false,
+    ),
+    (
+        "_Foo",
+        false,
+    ),
+    (
+        "Foo-Bar",
+        false,
+    ),
+    (
+        "",
+        false,
+    ),
+]
