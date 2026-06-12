@@ -189,6 +189,231 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-cypress",
+    "directory": "npm/cypress",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-cypress",
+      "version": "0.0.0-development",
+      "repository": "https://github.com/cypress-io/eslint-plugin-cypress",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "assertion-before-screenshot",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc Cypress command-chain port of eslint-plugin-cypress/assertion-before-screenshot; assertion-chain and previous-statement cases covered in Vitest."
+      },
+      {
+        "name": "no-and",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-and with autofix; UTF-16 range mapping covered in Vitest."
+      },
+      {
+        "name": "no-assigning-return-values",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-assigning-return-values; allowed cy.now/spy/state/stub commands and invalid assignment cases covered in Vitest."
+      },
+      {
+        "name": "no-async-before",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-async-before; async before/beforeEach callbacks containing cy/Cypress are covered in Vitest."
+      },
+      {
+        "name": "no-async-tests",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-async-tests; async it/test callbacks containing cy/Cypress are covered in Vitest."
+      },
+      {
+        "name": "no-chained-get",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc Cypress chain port of eslint-plugin-cypress/no-chained-get; nested get chains and valid single-get chains covered in Vitest."
+      },
+      {
+        "name": "no-debug",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-debug; direct adapter and Oxlint jsPlugins CLI cases covered in Vitest."
+      },
+      {
+        "name": "no-force",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-force; Cypress action commands with force options covered in Vitest."
+      },
+      {
+        "name": "no-pause",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-pause; cy.pause and non-Cypress pause cases covered in Vitest."
+      },
+      {
+        "name": "no-unnecessary-waiting",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc scope-aware port of eslint-plugin-cypress/no-unnecessary-waiting; numeric literals, const values, default parameters, aliases, and imports covered in Vitest."
+      },
+      {
+        "name": "no-xpath",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/no-xpath; direct cy.xpath and non-Cypress receiver cases covered in Vitest."
+      },
+      {
+        "name": "require-data-selectors",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-cypress/require-data-selectors; literal, template, identifier, alias, and conditional selector cases covered in Vitest."
+      },
+      {
+        "name": "unsafe-to-chain-command",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc Cypress command-chain port of eslint-plugin-cypress/unsafe-to-chain-command; built-in unsafe commands and custom methods option covered in Vitest and Oxlint jsPlugins CLI."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-react-refresh",
     "directory": "npm/react-refresh",
     "version": "0.0.0",
