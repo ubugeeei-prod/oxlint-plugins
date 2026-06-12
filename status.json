@@ -1089,6 +1089,55 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-simple-import-sort",
+    "directory": "npm/simple-import-sort",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-simple-import-sort",
+      "version": "13.0.0",
+      "repository": "https://github.com/lydell/eslint-plugin-simple-import-sort",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "imports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-simple-import-sort/imports; import chunk sorting, default/custom groups, named specifier sorting, NAPI fixes, and oxlint jsPlugins integration are covered in Vitest. The first port does not duplicate upstream's exhaustive comment-preserving printer."
+      },
+      {
+        "name": "exports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-simple-import-sort/exports; export-from chunk sorting, local named export specifier sorting, NAPI fixes, and oxlint jsPlugins integration are covered in Vitest. The first port does not duplicate upstream's exhaustive comment-preserving printer."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-stylistic",
     "directory": "npm/stylistic",
     "version": "0.0.0",

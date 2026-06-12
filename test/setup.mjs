@@ -36,6 +36,10 @@ const nativePackages = [
     name: '@oxlint-plugins/oxlint-plugin-mocha',
     binding: 'npm/mocha/native.js',
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-simple-import-sort',
+    binding: 'npm/simple-import-sort/native.js',
+  },
 ];
 
 for (const pkg of nativePackages) {
