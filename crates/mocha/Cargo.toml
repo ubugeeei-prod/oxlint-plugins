@@ -1,0 +1,29 @@
+[package]
+name = "oxlint-plugins-mocha"
+description = "Rust core for the mocha oxlint JavaScript plugin."
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+oxc_allocator.workspace = true
+oxc_ast.workspace = true
+oxc_parser.workspace = true
+oxc_span.workspace = true
+oxlint-plugins-carton.workspace = true
+regex.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+
+[lints.rust]
+unused_must_use = "deny"
+
+[lints.clippy]
+dbg_macro = "deny"
+disallowed_types = "warn"
+todo = "deny"
+unwrap_used = "deny"

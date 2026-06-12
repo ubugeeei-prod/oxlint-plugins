@@ -688,6 +688,407 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-mocha",
+    "directory": "npm/mocha",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-mocha",
+      "version": "10.4.0",
+      "repository": "https://github.com/lo1tuma/eslint-plugin-mocha",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "consistent-interface",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/consistent-interface; BDD/TDD interface checks and options covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "consistent-spacing-between-blocks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/consistent-spacing-between-blocks; diagnostic behavior is implemented, while upstream autofix is intentionally not exposed until native fix ranges are added."
+      },
+      {
+        "name": "handle-done-callback",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/handle-done-callback; callback usage and ignorePending option covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "max-top-level-suites",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/max-top-level-suites; limit option covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-async-suite",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-async-suite; diagnostic behavior is implemented, while upstream autofix is intentionally not exposed until native fix ranges are added."
+      },
+      {
+        "name": "no-empty-title",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-empty-title; custom message option covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-exclusive-tests",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-exclusive-tests; only modifier cases covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-exports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-exports; export declarations in files with Mocha tests covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-global-tests",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-global-tests; top-level test cases covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-hooks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-hooks; allow option covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-hooks-for-single-case",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-hooks-for-single-case; single-test suite hook tracking and allow option covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-identical-title",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-identical-title; duplicate suite/test title tracking covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-mocha-arrows",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-mocha-arrows; diagnostic behavior is implemented, while upstream autofix is intentionally not exposed until native fix ranges are added."
+      },
+      {
+        "name": "no-nested-tests",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-nested-tests; nested test callback tracking covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-pending-tests",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-pending-tests; skip and callback-less test cases covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-return-and-callback",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-return-and-callback; callback plus return cases covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-return-from-async",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-return-from-async; async callback returns covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-setup-in-describe",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-setup-in-describe; suite callback setup calls covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-sibling-hooks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-sibling-hooks; duplicate hook tracking covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-synchronous-tests",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-synchronous-tests; allowed async method option covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-top-level-hooks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/no-top-level-hooks; top-level hook calls covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-arrow-callback",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/prefer-arrow-callback; allowNamedFunctions and allowUnboundThis options covered in Vitest and oxlint jsPlugins; upstream autofix is intentionally not exposed until native fix ranges are added."
+      },
+      {
+        "name": "valid-suite-title",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/valid-suite-title; pattern and message options covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "valid-test-title",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-mocha/valid-test-title; pattern and message options covered in Vitest and oxlint jsPlugins."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-stylistic",
     "directory": "npm/stylistic",
     "version": "0.0.0",
