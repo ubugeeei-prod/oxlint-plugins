@@ -130,7 +130,9 @@ for (const pkg of nativePackages) {
   while (!existsSync(bindingPath)) {
     attempts += 1;
     if (attempts > 3) {
-      throw new Error(`Failed to build NAPI bindings required by Vitest for ${pkg.name} after ${attempts - 1} attempts.`);
+      throw new Error(
+        `Failed to build NAPI bindings required by Vitest for ${pkg.name} after ${attempts - 1} attempts.`,
+      );
     }
 
     if (tryAcquireLock(lockPath)) {
