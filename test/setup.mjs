@@ -17,6 +17,10 @@ const POLL_INTERVAL_MS = 250;
 // produces these before `vp test`; this is the fallback for direct test runs.
 const nativePackages = [
   {
+    name: '@oxlint-plugins/oxlint-plugin-angular-eslint',
+    binding: 'npm/angular-eslint/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers',
     binding: 'npm/no-forbidden-identifiers/native.js',
   },

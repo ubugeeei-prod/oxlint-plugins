@@ -777,6 +777,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-angular-eslint"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-angular-eslint",
+]
+
+[[package]]
 name = "oxlint-plugin-cypress"
 version = "0.0.0"
 dependencies = [
@@ -916,6 +926,17 @@ dependencies = [
  "ghost-cell",
  "rustc-hash",
  "smallvec",
+]
+
+[[package]]
+name = "oxlint-plugins-angular-eslint"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+ "regex",
 ]
 
 [[package]]
