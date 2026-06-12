@@ -11,7 +11,7 @@
       "repository": "https://github.com/eslint-community/eslint-plugin-eslint-comments",
       "license": "MIT"
     },
-    "status": "in-progress",
+    "status": "ported",
     "typeAware": false,
     "rules": [
       {
@@ -26,7 +26,7 @@
           "insta": true,
           "vitest": true,
           "lsp": true,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-unlimited-disable; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -42,7 +42,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-use; supports the allow option; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -58,7 +58,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/require-description; supports the ignore option; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -74,7 +74,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/disable-enable-pair; supports the allowWholeFile option; shared disabled-area algorithm in Rust; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -90,7 +90,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-aggregating-enable; reuses the shared disabled-area algorithm; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -106,7 +106,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-duplicate-disable; reuses the shared disabled-area algorithm; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -122,7 +122,7 @@
           "insta": true,
           "vitest": true,
           "lsp": true,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-unused-enable; reuses the shared disabled-area algorithm; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -138,7 +138,7 @@
           "insta": true,
           "vitest": true,
           "lsp": true,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Port of @eslint-community/eslint-plugin-eslint-comments/no-restricted-disable; gitignore-style pattern matching in Rust; upstream RuleTester cases replayed via test/fixtures."
       },
@@ -154,7 +154,7 @@
           "insta": true,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
         "notes": "Deprecated upstream (use reportUnusedDisableDirectives). Approximation built on sourceCode.getDisableDirectives().problems; the upstream RuleTester suite needs the ESLint runtime, so the rule is covered by a synthetic-problem mechanism test (insta + Vitest) instead of the espree replay harness."
       }
