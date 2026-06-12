@@ -2,6 +2,7 @@
 members = [
   "crates/_carton",
   "crates/cypress",
+  "crates/eslint_json",
   "crates/eslint_comments",
   "crates/mocha",
   "crates/react_refresh",
@@ -10,6 +11,7 @@ members = [
   "crates/stylistic",
   "crates/unused_imports",
   "npm/cypress",
+  "npm/eslint-json",
   "npm/eslint-comments",
   "npm/mocha",
   "npm/no-forbidden-identifiers",
@@ -46,6 +48,7 @@ oxc_syntax = "0.135.0"
 oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_carton", version = "0.0.0" }
 oxlint-plugins-cypress = { path = "crates/cypress", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
+oxlint-plugins-eslint-json = { path = "crates/eslint_json", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
@@ -58,6 +61,7 @@ rustc-hash = "2.1.1"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.145"
 smallvec = "1.15.1"
+unicode-normalization = "0.1.24"
 
 [workspace.lints.rust]
 unsafe_code = "deny"
