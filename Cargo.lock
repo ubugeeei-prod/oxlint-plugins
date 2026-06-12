@@ -853,6 +853,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-react-hooks"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-react-hooks",
+]
+
+[[package]]
 name = "oxlint-plugin-react-refresh"
 version = "0.0.0"
 dependencies = [
@@ -1015,6 +1025,17 @@ dependencies = [
  "oxc_span",
  "oxlint-plugins-_carton",
  "regex",
+]
+
+[[package]]
+name = "oxlint-plugins-react-hooks"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
 ]
 
 [[package]]

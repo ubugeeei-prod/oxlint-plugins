@@ -57,6 +57,10 @@ const nativePackages = [
     binding: 'npm/regexp/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-react-hooks',
+    binding: 'npm/react-hooks/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-mocha',
     binding: 'npm/mocha/native.js',
   },
