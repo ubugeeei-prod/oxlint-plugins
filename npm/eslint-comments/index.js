@@ -53,16 +53,36 @@ function buildData(data) {
   return Object.keys(out).length > 0 ? out : undefined;
 }
 
+function locForContext(context, loc) {
+  if (!context.sourceCode?.isESTree) {
+    return loc;
+  }
+
+  return {
+    start: {
+      line: loc.start.line,
+      column: Math.max(0, loc.start.column),
+    },
+    end: {
+      line: loc.end.line,
+      column: Math.max(0, loc.end.column),
+    },
+  };
+}
+
 // Forward the diagnostics from a Rust scan to Oxlint. Diagnostic locations are
-// kept verbatim (including the upstream `column: -1` "whole line" sentinel).
+// kept verbatim in the upstream replay harness. Oxlint itself rejects the
+// upstream `column: -1` "whole line" sentinel, so clamp it only for Oxlint's
+// ESTree-compatible runtime.
 function reportDiagnostics(context, diagnostics) {
   for (const diagnostic of diagnostics) {
+    const loc = locForContext(context, {
+      start: { line: diagnostic.loc.startLine, column: diagnostic.loc.startColumn },
+      end: { line: diagnostic.loc.endLine, column: diagnostic.loc.endColumn },
+    });
     const descriptor = {
       messageId: diagnostic.messageId,
-      loc: {
-        start: { line: diagnostic.loc.startLine, column: diagnostic.loc.startColumn },
-        end: { line: diagnostic.loc.endLine, column: diagnostic.loc.endColumn },
-      },
+      loc,
     };
 
     const data = buildData(diagnostic.data);
