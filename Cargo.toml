@@ -3,10 +3,12 @@ members = [
   "crates/_carton",
   "crates/eslint_comments",
   "crates/react_refresh",
+  "crates/security",
   "crates/stylistic",
   "npm/eslint-comments",
   "npm/no-forbidden-identifiers",
   "npm/react-refresh",
+  "npm/security",
   "npm/stylistic",
 ]
 resolver = "3"
@@ -31,9 +33,11 @@ oxc_allocator = "0.135.0"
 oxc_ast = "0.135.0"
 oxc_parser = "0.135.0"
 oxc_span = "0.135.0"
+oxc_syntax = "0.135.0"
 oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_carton", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
+oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
 oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
 phf = { version = "0.13.1", features = ["macros"] }
 rustc-hash = "2.1.1"

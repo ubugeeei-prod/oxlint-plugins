@@ -752,6 +752,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-security"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-security",
+]
+
+[[package]]
 name = "oxlint-plugin-stylistic"
 version = "0.0.0"
 dependencies = [
@@ -791,6 +802,19 @@ dependencies = [
  "oxc_ast",
  "oxc_parser",
  "oxc_span",
+ "oxlint-plugins-_carton",
+]
+
+[[package]]
+name = "oxlint-plugins-security"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_span",
+ "oxc_syntax",
  "oxlint-plugins-_carton",
 ]
 

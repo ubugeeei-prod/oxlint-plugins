@@ -222,6 +222,247 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-security",
+    "directory": "npm/security",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-security",
+      "version": "4.0.0",
+      "repository": "https://github.com/eslint-community/eslint-plugin-security",
+      "license": "Apache-2.0"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "detect-bidi-characters",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc source scan port of eslint-plugin-security/detect-bidi-characters; upstream-style code/comment cases covered in Vitest."
+      },
+      {
+        "name": "detect-buffer-noassert",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc AST port of eslint-plugin-security/detect-buffer-noassert; read/write noAssert method matrix covered in Vitest."
+      },
+      {
+        "name": "detect-child-process",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc import and require access-path port of eslint-plugin-security/detect-child-process; require/import/destructure/shadowing cases covered in Vitest."
+      },
+      {
+        "name": "detect-disable-mustache-escape",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc AST port of eslint-plugin-security/detect-disable-mustache-escape; upstream valid/invalid cases covered in Vitest."
+      },
+      {
+        "name": "detect-eval-with-expression",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc AST port of eslint-plugin-security/detect-eval-with-expression; upstream literal and identifier cases covered in Vitest."
+      },
+      {
+        "name": "detect-new-buffer",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc AST port of eslint-plugin-security/detect-new-buffer; upstream literal and non-literal constructor cases covered in Vitest."
+      },
+      {
+        "name": "detect-no-csrf-before-method-override",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc traversal-order port of eslint-plugin-security/detect-no-csrf-before-method-override; upstream order cases covered in Vitest."
+      },
+      {
+        "name": "detect-non-literal-fs-filename",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc import/require/static-expression port of eslint-plugin-security/detect-non-literal-fs-filename; fs/node:fs/fs-extra/import/destructure/promises/static path cases covered in Vitest."
+      },
+      {
+        "name": "detect-non-literal-regexp",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc static-expression port of eslint-plugin-security/detect-non-literal-regexp; upstream literal/static/dynamic cases covered in Vitest."
+      },
+      {
+        "name": "detect-non-literal-require",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc static-expression port of eslint-plugin-security/detect-non-literal-require; literal/template/__dirname/dynamic cases covered in Vitest."
+      },
+      {
+        "name": "detect-object-injection",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc computed-member port of eslint-plugin-security/detect-object-injection; generic and function-call sinks covered in Vitest."
+      },
+      {
+        "name": "detect-possible-timing-attacks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc if/binary comparison port of eslint-plugin-security/detect-possible-timing-attacks; upstream left/right keyword cases covered in Vitest."
+      },
+      {
+        "name": "detect-pseudoRandomBytes",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc member-expression port of eslint-plugin-security/detect-pseudoRandomBytes; upstream valid/invalid cases covered in Vitest."
+      },
+      {
+        "name": "detect-unsafe-regex",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc regex-literal and RegExp constructor port of eslint-plugin-security/detect-unsafe-regex; safe and nested-quantifier cases covered in Vitest."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-stylistic",
     "directory": "npm/stylistic",
     "version": "0.0.0",
