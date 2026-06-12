@@ -37,6 +37,10 @@ const nativePackages = [
     binding: 'npm/stylistic/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-testing-library',
+    binding: 'npm/testing-library/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-react-refresh',
     binding: 'npm/react-refresh/native.js',
   },

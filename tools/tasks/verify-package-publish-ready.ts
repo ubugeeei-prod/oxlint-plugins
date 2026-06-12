@@ -59,6 +59,11 @@ const packages: PackageToPack[] = [
     dir: 'npm/stylistic',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-testing-library',
+    dir: 'npm/testing-library',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
 ];
 
 for (const pkg of packages) {

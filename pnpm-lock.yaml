@@ -128,6 +128,12 @@ importers:
         specifier: 'catalog:'
         version: 1.68.0
 
+  npm/testing-library:
+    dependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
   npm/type-aware:
     dependencies:
       '@corsa-bind/napi':

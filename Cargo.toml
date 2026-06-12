@@ -8,6 +8,7 @@ members = [
   "crates/security",
   "crates/simple_import_sort",
   "crates/stylistic",
+  "crates/testing_library",
   "crates/unused_imports",
   "npm/cypress",
   "npm/eslint-comments",
@@ -17,6 +18,7 @@ members = [
   "npm/security",
   "npm/simple-import-sort",
   "npm/stylistic",
+  "npm/testing-library",
   "npm/unused-imports",
 ]
 resolver = "3"
@@ -51,6 +53,7 @@ oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
 oxlint-plugins-simple-import-sort = { path = "crates/simple_import_sort", version = "0.0.0" }
 oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
+oxlint-plugins-testing-library = { path = "crates/testing_library", version = "0.0.0" }
 oxlint-plugins-unused-imports = { path = "crates/unused_imports", version = "0.0.0" }
 regex = "1.12.2"
 phf = { version = "0.13.1", features = ["macros"] }
