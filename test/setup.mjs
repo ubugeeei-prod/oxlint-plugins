@@ -32,6 +32,10 @@ const nativePackages = [
     name: '@oxlint-plugins/oxlint-plugin-react-refresh',
     binding: 'npm/react-refresh/native.js',
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-mocha',
+    binding: 'npm/mocha/native.js',
+  },
 ];
 
 for (const pkg of nativePackages) {
