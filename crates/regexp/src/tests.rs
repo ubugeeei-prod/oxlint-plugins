@@ -86,8 +86,67 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-flag",
             "no-lazy-ends",
             "no-useless-dollar-replacements",
+            "prefer-escape-replacement-dollar-char",
         ]
     );
+}
+
+mod prefer_escape_replacement_dollar_char {
+    use super::*;
+
+    #[test]
+    fn reports_dollar_followed_by_invalid_char() {
+        assert_eq!(
+            rule_ids_for(
+                "str.replace(/foo/u, 'pre $ post');",
+                "prefer-escape-replacement-dollar-char"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+        // Trailing dollar.
+        assert_eq!(
+            rule_ids_for(
+                "str.replace(/foo/u, 'price$');",
+                "prefer-escape-replacement-dollar-char"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn accepts_valid_references_and_escaped_dollars() {
+        assert!(
+            rule_ids_for(
+                "str.replace(/(a)/u, '$1');",
+                "prefer-escape-replacement-dollar-char"
+            )
+            .is_empty()
+        );
+        assert!(
+            rule_ids_for(
+                "str.replace(/a/u, '$$');",
+                "prefer-escape-replacement-dollar-char"
+            )
+            .is_empty()
+        );
+        assert!(
+            rule_ids_for(
+                "str.replace(/a/u, '$&');",
+                "prefer-escape-replacement-dollar-char"
+            )
+            .is_empty()
+        );
+        // No dollar at all.
+        assert!(
+            rule_ids_for(
+                "str.replace(/a/u, 'bar');",
+                "prefer-escape-replacement-dollar-char"
+            )
+            .is_empty()
+        );
+    }
 }
 
 mod no_useless_dollar_replacements {

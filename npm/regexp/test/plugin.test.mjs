@@ -244,6 +244,19 @@ const invalidCases = [
     "str.replaceAll(/foo/gu, '$0');\n",
     ['unexpected'],
   ],
+  // prefer-escape-replacement-dollar-char
+  [
+    'prefer-escape-replacement-dollar-char',
+    'dollar followed by space',
+    "str.replace(/a/u, 'pre $ post');\n",
+    ['unexpected'],
+  ],
+  [
+    'prefer-escape-replacement-dollar-char',
+    'trailing dollar',
+    "str.replace(/a/u, 'price$');\n",
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

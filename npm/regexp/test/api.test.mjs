@@ -50,6 +50,7 @@ describe('regexp native API', () => {
       'no-useless-flag',
       'no-lazy-ends',
       'no-useless-dollar-replacements',
+      'prefer-escape-replacement-dollar-char',
     ]);
   });
 

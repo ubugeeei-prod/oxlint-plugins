@@ -9339,19 +9339,19 @@
       },
       {
         "name": "prefer-escape-replacement-dollar-char",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-escape-replacement-dollar-char."
+        "notes": "JS-side CallExpression check on <expr>.replace / replaceAll. Scans the literal replacement string and reports the first '$' that is NOT followed by a valid replacement-reference char (digit, '&', \"'\", '`', '<', '$'). The '$$' escape is the canonical form for a literal dollar."
       },
       {
         "name": "prefer-lookaround",
