@@ -8731,19 +8731,19 @@
       },
       {
         "name": "no-dupe-disjunctions",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-dupe-disjunctions."
+        "notes": "Builds on the per-alt prev_alt_first_byte tracker. At each | and at close ), when the current alternative is single ASCII alphanumeric AND equals the previously recorded alt byte, the duplicate is flagged. Multi-byte alts, escape alts, and class alts opt out (all_alts_single_literal becomes false). Capturing groups not in scope."
       },
       {
         "name": "no-empty-lookarounds-assertion",

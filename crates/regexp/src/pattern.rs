@@ -208,6 +208,9 @@ pub(crate) struct PatternAnalysis {
     /// because the inner quantifier accepts the empty match.
     /// `optimal-lookaround-quantifier`.
     pub(crate) has_suboptimal_lookaround_quantifier: bool,
+    /// `(?:a|a)` — alternation that contains the same single-literal
+    /// alternative twice in a row. `no-dupe-disjunctions`.
+    pub(crate) has_dupe_disjunctions: bool,
 }
 
 impl PatternAnalysis {
@@ -438,10 +441,13 @@ impl PatternAnalysis {
                                 // when at least one transition violated ascending order.
                                 let final_byte = bytes[group.current_alt_start];
                                 let mut alts_in_order = group.alts_in_order;
-                                if group.prev_alt_first_byte != 0
-                                    && final_byte < group.prev_alt_first_byte
-                                {
-                                    alts_in_order = false;
+                                if group.prev_alt_first_byte != 0 {
+                                    if final_byte < group.prev_alt_first_byte {
+                                        alts_in_order = false;
+                                    }
+                                    if final_byte == group.prev_alt_first_byte {
+                                        self.has_dupe_disjunctions = true;
+                                    }
                                 }
                                 if !alts_in_order {
                                     self.has_unsorted_alternatives = true;
@@ -493,10 +499,13 @@ impl PatternAnalysis {
                                 group.all_alts_single_literal = false;
                             } else {
                                 alt_first_byte = bytes[group.current_alt_start];
-                                if group.prev_alt_first_byte != 0
-                                    && alt_first_byte < group.prev_alt_first_byte
-                                {
-                                    group.alts_in_order = false;
+                                if group.prev_alt_first_byte != 0 {
+                                    if alt_first_byte < group.prev_alt_first_byte {
+                                        group.alts_in_order = false;
+                                    }
+                                    if alt_first_byte == group.prev_alt_first_byte {
+                                        self.has_dupe_disjunctions = true;
+                                    }
                                 }
                             }
                         }

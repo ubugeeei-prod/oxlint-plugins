@@ -229,6 +229,9 @@ const messages = Object.freeze({
     unexpected:
       'Lookaround whose inner quantifier accepts the empty match; the assertion is always true.',
   },
+  'no-dupe-disjunctions': {
+    unexpected: 'Alternation contains the same single-literal alternative more than once.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -320,6 +323,8 @@ const ruleDescriptions = Object.freeze({
     'prefer the bare `^` or `$` anchor over a lookaround that wraps it',
   'optimal-lookaround-quantifier':
     'disallow lookarounds whose body always matches because of a zero-min quantifier',
+  'no-dupe-disjunctions':
+    'disallow duplicate single-literal alternatives within a non-capturing group',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -382,6 +387,7 @@ const ruleTypes = Object.freeze({
   'sort-alternatives': 'suggestion',
   'prefer-predefined-assertion': 'suggestion',
   'optimal-lookaround-quantifier': 'problem',
+  'no-dupe-disjunctions': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -548,7 +554,7 @@ function ruleCategory(ruleName) {
   ) {
     return 'Stylistic Issues';
   }
-  if (ruleName === 'optimal-lookaround-quantifier') {
+  if (ruleName === 'optimal-lookaround-quantifier' || ruleName === 'no-dupe-disjunctions') {
     return 'Possible Errors';
   }
   return 'Best Practices';

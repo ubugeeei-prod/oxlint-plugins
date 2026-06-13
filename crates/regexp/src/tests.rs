@@ -101,8 +101,37 @@ fn exposes_initial_regexp_rule_names() {
             "sort-alternatives",
             "prefer-predefined-assertion",
             "optimal-lookaround-quantifier",
+            "no-dupe-disjunctions",
         ]
     );
+}
+
+mod no_dupe_disjunctions {
+    use super::*;
+
+    #[test]
+    fn reports_duplicate_single_literal_alternatives() {
+        assert_eq!(
+            rule_ids_for("const a = /(?:a|a)/u;", "no-dupe-disjunctions").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:a|b|b)/u;", "no-dupe-disjunctions").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_distinct_or_unsupported_alternatives() {
+        // Distinct single-literal alts.
+        assert!(rule_ids_for("const a = /(?:a|b)/u;", "no-dupe-disjunctions").is_empty());
+        // No alternation.
+        assert!(rule_ids_for("const a = /(?:a)/u;", "no-dupe-disjunctions").is_empty());
+        // Multi-byte alt — opt out via all_alts_single_literal=false.
+        assert!(rule_ids_for("const a = /(?:abc|abc)/u;", "no-dupe-disjunctions").is_empty());
+        // Capturing group.
+        assert!(rule_ids_for("const a = /(a|a)/u;", "no-dupe-disjunctions").is_empty());
+    }
 }
 
 mod optimal_lookaround_quantifier {
