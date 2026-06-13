@@ -121,31 +121,38 @@ describe('eslint-plugin-functional upstream parity', () => {
         expect(fixture.__generated.ref).toBeTruthy();
       });
 
-      describe('valid', () => {
-        validSyntactic.forEach((testCase, index) => {
-          it(label(testCase, index), () => {
-            const reports = runRule(ruleName, testCase);
-            if (full) {
-              expect(reports).toEqual([]);
-            } else {
-              expect(Array.isArray(reports)).toBe(true);
-            }
+      // Guard against empty suites: rules whose upstream cases are entirely
+      // type-aware have no syntactic cases to register (Vitest fails on an
+      // empty describe block).
+      if (validSyntactic.length > 0) {
+        describe('valid', () => {
+          validSyntactic.forEach((testCase, index) => {
+            it(label(testCase, index), () => {
+              const reports = runRule(ruleName, testCase);
+              if (full) {
+                expect(reports).toEqual([]);
+              } else {
+                expect(Array.isArray(reports)).toBe(true);
+              }
+            });
           });
         });
-      });
+      }
 
-      describe('invalid', () => {
-        invalidSyntactic.forEach((testCase, index) => {
-          it(label(testCase, index), () => {
-            const reports = runRule(ruleName, testCase);
-            if (full) {
-              assertErrors(reports, testCase.errors);
-            } else {
-              expect(Array.isArray(reports)).toBe(true);
-            }
+      if (invalidSyntactic.length > 0) {
+        describe('invalid', () => {
+          invalidSyntactic.forEach((testCase, index) => {
+            it(label(testCase, index), () => {
+              const reports = runRule(ruleName, testCase);
+              if (full) {
+                assertErrors(reports, testCase.errors);
+              } else {
+                expect(Array.isArray(reports)).toBe(true);
+              }
+            });
           });
         });
-      });
+      }
     });
   }
 
