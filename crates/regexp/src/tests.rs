@@ -2132,6 +2132,12 @@ mod prefer_named_backreference {
         assert!(
             rule_ids_for("const a = /(?<n>a)[\\1b]/u;", "prefer-named-backreference").is_empty()
         );
+        // \1 refers to an unnamed group (group 1); group 2 is named — must NOT flag.
+        assert!(rule_ids_for(
+            "const a = /(a)\\1 (?<foo>a)\\k<foo>/;",
+            "prefer-named-backreference"
+        )
+        .is_empty());
     }
 }
 
