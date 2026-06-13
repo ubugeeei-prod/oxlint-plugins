@@ -5,6 +5,7 @@ export type RegexpDiagnosticData = {
   sortedFlags?: string;
   expr?: string;
   charText?: string;
+  replacement?: string;
 };
 
 export type RegexpDiagnosticLoc = {

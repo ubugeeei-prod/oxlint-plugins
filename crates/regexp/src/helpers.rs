@@ -96,6 +96,118 @@ pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> (bool, bool, usize) {
     }
 }
 
+/// Shape of a `{...}` braced quantifier that can be rewritten as a shorter
+/// quantifier. `Plus` is `{1,}`, `Star` is `{0,}`, `Question` is `{0,1}`, and
+/// `EqualTwoNums(n)` is `{n,n}` with `n >= 1` (the `n == 0` case is reported by
+/// `no-zero-quantifier` instead).
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum BraceQuantifierShape {
+    Plus,
+    Star,
+    Question,
+    EqualTwoNums(u64),
+}
+
+/// Parse a `{n}`, `{n,}`, or `{n,m}` quantifier starting at `open` (the `{`
+/// byte). Returns `(end_exclusive, original_text, shape)` if the quantifier is
+/// well-formed and matches one of the four rewritable shapes; otherwise `None`.
+/// The decision is intentionally conservative: malformed inputs (e.g. trailing
+/// digits without a closing brace, non-digit characters) fall through to the
+/// caller's existing scan loop.
+pub(crate) fn parse_brace_quantifier(
+    bytes: &[u8],
+    open: usize,
+) -> Option<(usize, &str, BraceQuantifierShape)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'{'));
+
+    let mut cursor = open + 1;
+    let first_start = cursor;
+    while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+        cursor += 1;
+    }
+    if cursor == first_start {
+        return None;
+    }
+    let first = parse_u64(&bytes[first_start..cursor])?;
+
+    match bytes.get(cursor).copied() {
+        Some(b'}') => {
+            // `{n}` — never rewritable on its own (this is the canonical form).
+            let _ = first;
+            None
+        }
+        Some(b',') => {
+            cursor += 1;
+            let second_start = cursor;
+            while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+                cursor += 1;
+            }
+            if bytes.get(cursor) != Some(&b'}') {
+                return None;
+            }
+            let end = cursor + 1;
+            let original =
+                std::str::from_utf8(&bytes[open..end]).expect("ASCII slice is valid UTF-8");
+
+            if second_start == cursor {
+                // `{n,}` — open-ended.
+                let shape = match first {
+                    0 => BraceQuantifierShape::Star,
+                    1 => BraceQuantifierShape::Plus,
+                    _ => return None,
+                };
+                Some((end, original, shape))
+            } else {
+                // `{n,m}`.
+                let second = parse_u64(&bytes[second_start..cursor])?;
+                if first == 0 && second == 1 {
+                    Some((end, original, BraceQuantifierShape::Question))
+                } else if first == second && first >= 1 {
+                    Some((end, original, BraceQuantifierShape::EqualTwoNums(first)))
+                } else {
+                    None
+                }
+            }
+        }
+        _ => None,
+    }
+}
+
+fn parse_u64(digits: &[u8]) -> Option<u64> {
+    let mut value: u64 = 0;
+    for &byte in digits {
+        let digit = byte.checked_sub(b'0')?;
+        if digit > 9 {
+            return None;
+        }
+        value = value.checked_mul(10)?.checked_add(u64::from(digit))?;
+    }
+    Some(value)
+}
+
+/// Returns `true` when the character class starting at `open` (a `[` byte)
+/// contains at least one `\b` escape. The class is delimited by `find_class_end`
+/// semantics, so `\]` inside the class is correctly skipped.
+pub(crate) fn class_contains_backspace_escape(bytes: &[u8], open: usize) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let Some(end) = find_class_end(bytes, open) else {
+        return false;
+    };
+
+    let mut index = open + 1;
+    while index < end {
+        if bytes[index] == b'\\' {
+            if bytes.get(index + 1) == Some(&b'b') {
+                return true;
+            }
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    false
+}
+
 pub(crate) fn is_zero_quantifier(bytes: &[u8], open: usize) -> bool {
     let mut cursor = open + 1;
     while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {

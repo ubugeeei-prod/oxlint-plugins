@@ -11,6 +11,7 @@ pub struct DiagnosticData {
     pub sorted_flags: Option<CompactString>,
     pub expr: Option<CompactString>,
     pub char_text: Option<CompactString>,
+    pub replacement: Option<CompactString>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

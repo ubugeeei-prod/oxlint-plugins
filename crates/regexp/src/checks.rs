@@ -197,5 +197,53 @@ impl<'a> Scanner<'a> {
                 span,
             );
         }
+        if analysis.has_escape_backspace_in_class {
+            self.report("no-escape-backspace", "unexpected", span);
+        }
+        if let Some(expr) = analysis.first_plus_quantifier {
+            self.report_with_data(
+                "prefer-plus-quantifier",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(expr),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(expr) = analysis.first_star_quantifier {
+            self.report_with_data(
+                "prefer-star-quantifier",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(expr),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(expr) = analysis.first_question_quantifier {
+            self.report_with_data(
+                "prefer-question-quantifier",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(expr),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some((expr, replacement)) = analysis.first_useless_two_nums_quantifier {
+            self.report_with_data(
+                "no-useless-two-nums-quantifier",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(expr),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
     }
 }

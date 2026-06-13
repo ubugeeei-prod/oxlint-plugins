@@ -49,6 +49,21 @@ const validCases = [
   ['require-unicode-regexp', 'unicode flag', 'const re = /a/u;\n'],
   ['require-unicode-regexp', 'unicode set flag', 'const re = /a/v;\n'],
   ['require-unicode-regexp', 'unicode with other flags', 'const re = /a/gu;\n'],
+  // no-escape-backspace
+  ['no-escape-backspace', 'plain word boundary', 'const re = /\\bword/u;\n'],
+  ['no-escape-backspace', 'character class without \\b', 'const re = /[a-z]/u;\n'],
+  // prefer-plus-quantifier
+  ['prefer-plus-quantifier', 'plus quantifier', 'const re = /a+/u;\n'],
+  ['prefer-plus-quantifier', 'two-or-more braced quantifier', 'const re = /a{2,}/u;\n'],
+  // prefer-star-quantifier
+  ['prefer-star-quantifier', 'star quantifier', 'const re = /a*/u;\n'],
+  ['prefer-star-quantifier', 'open-upper-bound greater than zero', 'const re = /a{1,}/u;\n'],
+  // prefer-question-quantifier
+  ['prefer-question-quantifier', 'question quantifier', 'const re = /a?/u;\n'],
+  ['prefer-question-quantifier', 'distinct range bounds', 'const re = /a{1,2}/u;\n'],
+  // no-useless-two-nums-quantifier
+  ['no-useless-two-nums-quantifier', 'single-bound quantifier', 'const re = /a{3}/u;\n'],
+  ['no-useless-two-nums-quantifier', 'asymmetric range quantifier', 'const re = /a{2,5}/u;\n'],
 ];
 
 const invalidCases = [
@@ -116,6 +131,42 @@ const invalidCases = [
     'constructor without flags',
     "const re = new RegExp('a');\n",
     ['require'],
+  ],
+  // no-escape-backspace
+  ['no-escape-backspace', 'backspace alone in class', 'const re = /[\\b]/u;\n', ['unexpected']],
+  [
+    'no-escape-backspace',
+    'backspace mixed with other class elements',
+    'const re = /[a\\b]/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-plus-quantifier
+  [
+    'prefer-plus-quantifier',
+    'one-or-more braced quantifier',
+    'const re = /a{1,}/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-star-quantifier
+  [
+    'prefer-star-quantifier',
+    'zero-or-more braced quantifier',
+    'const re = /a{0,}/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-question-quantifier
+  [
+    'prefer-question-quantifier',
+    'zero-or-one braced quantifier',
+    'const re = /a{0,1}/u;\n',
+    ['unexpected'],
+  ],
+  // no-useless-two-nums-quantifier
+  [
+    'no-useless-two-nums-quantifier',
+    'equal-bounds quantifier',
+    'const re = /a{3,3}/u;\n',
+    ['unexpected'],
   ],
 ];
 
@@ -249,6 +300,30 @@ describe('regexp rules through direct Oxlint plugin adapter', () => {
         runRule('no-invalid-regexp', "new RegExp('a', 'gg');\n")[0],
       ),
     ).toBe('Duplicate g flag.');
+    expect(
+      renderMessage(
+        'prefer-plus-quantifier',
+        runRule('prefer-plus-quantifier', 'const re = /a{1,}/u;\n')[0],
+      ),
+    ).toBe("Unexpected quantifier '{1,}'. Use '+' instead.");
+    expect(
+      renderMessage(
+        'prefer-star-quantifier',
+        runRule('prefer-star-quantifier', 'const re = /a{0,}/u;\n')[0],
+      ),
+    ).toBe("Unexpected quantifier '{0,}'. Use '*' instead.");
+    expect(
+      renderMessage(
+        'prefer-question-quantifier',
+        runRule('prefer-question-quantifier', 'const re = /a{0,1}/u;\n')[0],
+      ),
+    ).toBe("Unexpected quantifier '{0,1}'. Use '?' instead.");
+    expect(
+      renderMessage(
+        'no-useless-two-nums-quantifier',
+        runRule('no-useless-two-nums-quantifier', 'const re = /a{3,3}/u;\n')[0],
+      ),
+    ).toBe("Unexpected quantifier '{3,3}'. Use '{3}' instead.");
   });
 
   it('ignores non-RegExp callees with the same shape', () => {

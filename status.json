@@ -8779,19 +8779,19 @@
       },
       {
         "name": "no-escape-backspace",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-escape-backspace."
+        "notes": "Detected at the literal level: `\\b` is flagged whenever it appears inside a `[...]` character class. Rust core via pattern walker; covered by insta-style unit tests and Vitest plugin tests."
       },
       {
         "name": "no-extra-lookaround-assertions",
@@ -9259,19 +9259,19 @@
       },
       {
         "name": "no-useless-two-nums-quantifier",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-two-nums-quantifier."
+        "notes": "Detects `{n,n}` with `n >= 1` and reports it as rewritable to `{n}` (the `n == 0` case stays with `no-zero-quantifier`). Pattern walker only; covered by Rust unit tests and Vitest plugin tests."
       },
       {
         "name": "optimal-lookaround-quantifier",
@@ -9419,19 +9419,19 @@
       },
       {
         "name": "prefer-plus-quantifier",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-plus-quantifier."
+        "notes": "Detects `{1,}` and reports it as rewritable to `+`. Pattern walker only (no full regexp parse); covered by Rust unit tests and Vitest plugin tests."
       },
       {
         "name": "prefer-predefined-assertion",
@@ -9467,19 +9467,19 @@
       },
       {
         "name": "prefer-question-quantifier",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-question-quantifier."
+        "notes": "Detects `{0,1}` and reports it as rewritable to `?`. Pattern walker only; covered by Rust unit tests and Vitest plugin tests."
       },
       {
         "name": "prefer-range",
@@ -9563,19 +9563,19 @@
       },
       {
         "name": "prefer-star-quantifier",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-star-quantifier."
+        "notes": "Detects `{0,}` and reports it as rewritable to `*`. Pattern walker only; covered by Rust unit tests and Vitest plugin tests."
       },
       {
         "name": "prefer-unicode-codepoint-escapes",

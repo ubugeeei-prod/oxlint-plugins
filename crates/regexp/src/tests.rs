@@ -51,6 +51,11 @@ fn exposes_initial_regexp_rule_names() {
             "no-control-character",
             "sort-flags",
             "require-unicode-regexp",
+            "no-escape-backspace",
+            "prefer-plus-quantifier",
+            "prefer-star-quantifier",
+            "prefer-question-quantifier",
+            "no-useless-two-nums-quantifier",
         ]
     );
 }
@@ -435,6 +440,125 @@ mod require_unicode_regexp {
             rule_ids_for("const a = new RegExp('a', 'u');", "require-unicode-regexp").is_empty()
         );
     }
+}
+
+mod no_escape_backspace {
+    use super::*;
+
+    #[test]
+    fn reports_backspace_escape_inside_character_class() {
+        assert_eq!(
+            rule_ids_for("const a = /[\\b]/u;", "no-escape-backspace").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /a[\\b]b/u;", "no-escape-backspace").as_slice(),
+            &["unexpected"]
+        );
+        // Mixed-content classes still report when `\b` is one element.
+        assert_eq!(
+            rule_ids_for("const a = /[a\\b]/u;", "no-escape-backspace").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_word_boundary_outside_character_class() {
+        // `\b` outside a character class is the word-boundary assertion, not a
+        // backspace; the rule must not flag it.
+        assert!(rule_ids_for("const a = /\\bword/u;", "no-escape-backspace").is_empty());
+        assert!(rule_ids_for("const a = /a\\bb/u;", "no-escape-backspace").is_empty());
+    }
+
+    #[test]
+    fn ignores_other_classes() {
+        assert!(rule_ids_for("const a = /[a-z]/u;", "no-escape-backspace").is_empty());
+        // `\\b` (escaped backslash followed by `b`) is just the letter `b`.
+        assert!(rule_ids_for("const a = /[\\\\b]/u;", "no-escape-backspace").is_empty());
+    }
+}
+
+mod prefer_plus_quantifier {
+    use super::*;
+
+    #[test]
+    fn reports_one_or_more_braced_form() {
+        let data = first_data("const a = /a{1,}/u;", "prefer-plus-quantifier");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("{1,}"));
+    }
+
+    #[test]
+    fn accepts_other_quantifiers_and_plus_itself() {
+        assert!(rule_ids_for("const a = /a+/u;", "prefer-plus-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a{2,}/u;", "prefer-plus-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a{1,3}/u;", "prefer-plus-quantifier").is_empty());
+    }
+}
+
+mod prefer_star_quantifier {
+    use super::*;
+
+    #[test]
+    fn reports_zero_or_more_braced_form() {
+        let data = first_data("const a = /a{0,}/u;", "prefer-star-quantifier");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("{0,}"));
+    }
+
+    #[test]
+    fn accepts_star_and_other_quantifiers() {
+        assert!(rule_ids_for("const a = /a*/u;", "prefer-star-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a{1,}/u;", "prefer-star-quantifier").is_empty());
+        // `{0,N}` is a different shape; not flagged by this rule.
+        assert!(rule_ids_for("const a = /a{0,5}/u;", "prefer-star-quantifier").is_empty());
+    }
+}
+
+mod prefer_question_quantifier {
+    use super::*;
+
+    #[test]
+    fn reports_zero_or_one_braced_form() {
+        let data = first_data("const a = /a{0,1}/u;", "prefer-question-quantifier");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("{0,1}"));
+    }
+
+    #[test]
+    fn accepts_question_mark_and_unrelated_quantifiers() {
+        assert!(rule_ids_for("const a = /a?/u;", "prefer-question-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a{0,2}/u;", "prefer-question-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a{1,2}/u;", "prefer-question-quantifier").is_empty());
+    }
+}
+
+mod no_useless_two_nums_quantifier {
+    use super::*;
+
+    #[test]
+    fn reports_equal_bounds_quantifier() {
+        let data = first_data("const a = /a{3,3}/u;", "no-useless-two-nums-quantifier");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("{3,3}"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("{3}")
+        );
+    }
+
+    #[test]
+    fn accepts_distinct_bounds_and_canonical_form() {
+        assert!(rule_ids_for("const a = /a{3}/u;", "no-useless-two-nums-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a{2,5}/u;", "no-useless-two-nums-quantifier").is_empty());
+        // `{0,0}` is no-zero-quantifier's responsibility; we do not double-report.
+        assert!(rule_ids_for("const a = /a{0,0}/u;", "no-useless-two-nums-quantifier").is_empty());
+    }
+}
+
+#[test]
+fn brace_quantifier_rules_ignore_quantifiers_inside_character_classes() {
+    // Inside `[...]` braces are literal characters, not quantifier syntax.
+    assert!(rule_ids_for("const a = /[a{1,}]/u;", "prefer-plus-quantifier").is_empty());
+    assert!(rule_ids_for("const a = /[a{0,}]/u;", "prefer-star-quantifier").is_empty());
+    assert!(rule_ids_for("const a = /[a{0,1}]/u;", "prefer-question-quantifier").is_empty());
+    assert!(rule_ids_for("const a = /[a{3,3}]/u;", "no-useless-two-nums-quantifier").is_empty());
 }
 
 #[test]
