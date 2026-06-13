@@ -8,8 +8,9 @@ use crate::helpers::{
     class_first_obscure_range, class_has_case_pair, class_has_unsorted_literal_elements,
     class_has_useless_range, class_has_useless_string_literal, class_is_digit_range,
     class_is_useless_single_literal, class_is_word_char_set, class_matches_anything,
-    class_negated_shorthand_letter, find_class_end, fixed_count_lazy_brace_end, group_prefix,
-    is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    class_negated_shorthand_letter, find_class_end, find_class_end_nested,
+    fixed_count_lazy_brace_end, group_prefix, is_zero_quantifier, parse_brace_quantifier,
+    skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -238,7 +239,13 @@ impl PatternAnalysis {
         Self::default()
     }
 
-    pub(crate) fn scan(&mut self, pattern: &str) {
+    /// Scan `pattern` and populate the analysis fields.
+    ///
+    /// `v_mode` must be `true` when the regex carries the `v` flag. Only
+    /// v-mode allows nested `[...]` classes (set-operation operands); in
+    /// non-v mode every unescaped `[` inside a class is a literal character
+    /// and must not be treated as opening a nested class.
+    pub(crate) fn scan(&mut self, pattern: &str, v_mode: bool) {
         let bytes = pattern.as_bytes();
         let mut groups = SmallVec::<[GroupState; 8]>::new();
         groups.push(GroupState::top_level());
@@ -259,7 +266,19 @@ impl PatternAnalysis {
                     index = skip_escape(bytes, index);
                 }
                 b'[' => {
-                    let close = find_class_end(bytes, index);
+                    // In v-mode, use the depth-aware variant so that nested
+                    // classes (set-operation operands such as `[\w--[ab]]`)
+                    // are correctly bounded and their inner `]` is not
+                    // mistaken for the closing `]` of the outer class.
+                    // In non-v mode, `[` inside a class is a literal
+                    // character; use the flat variant so that patterns like
+                    // `[[]` (matching a literal `[`) are not mis-parsed as
+                    // an unterminated class.
+                    let close = if v_mode {
+                        find_class_end_nested(bytes, index)
+                    } else {
+                        find_class_end(bytes, index)
+                    };
                     if let Some(close) = close {
                         if close == index + 1 {
                             self.has_empty_character_class = true;
@@ -312,7 +331,7 @@ impl PatternAnalysis {
                             self.first_useless_string_literal = Some(byte as char);
                         }
                         if self.first_dupe_class_literal.is_none()
-                            && let Some(byte) = class_first_duplicate_literal(bytes, index)
+                            && let Some(byte) = class_first_duplicate_literal(bytes, index, v_mode)
                         {
                             self.first_dupe_class_literal = Some(byte as char);
                         }
