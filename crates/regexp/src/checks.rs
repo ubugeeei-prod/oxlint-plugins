@@ -312,7 +312,7 @@ impl<'a> Scanner<'a> {
         }
 
         self.check_flag_style(flags, span);
-        self.check_pattern_rules(pattern, span);
+        self.check_pattern_rules(pattern, flags, span);
     }
 
     #[allow(
@@ -364,9 +364,41 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn check_pattern_rules(&mut self, pattern: &str, span: Span) {
+    fn check_pattern_rules(&mut self, pattern: &str, flags: &str, span: Span) {
         let mut analysis = PatternAnalysis::new();
         analysis.scan(pattern);
+
+        // `no-useless-flag` (narrow form): the `s` flag only affects the
+        // matching of `.`; the `m` flag only affects `^` and `$`. If neither
+        // syntax appears in the pattern, the flag is provably inert. Other
+        // useless-flag shapes (e.g. `i` on a pattern with no letters) are
+        // intentionally deferred — they need a richer case-class analysis.
+        if flags.contains('s') && !analysis.has_unescaped_dot {
+            let mut text = CompactString::new("");
+            text.push('s');
+            self.report_with_data(
+                "no-useless-flag",
+                "unexpected",
+                DiagnosticData {
+                    flag: Some(text),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if flags.contains('m') && !analysis.has_unescaped_anchor {
+            let mut text = CompactString::new("");
+            text.push('m');
+            self.report_with_data(
+                "no-useless-flag",
+                "unexpected",
+                DiagnosticData {
+                    flag: Some(text),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);

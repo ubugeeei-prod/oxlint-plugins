@@ -9147,19 +9147,19 @@
       },
       {
         "name": "no-useless-flag",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-flag."
+        "notes": "PatternAnalysis gains has_unescaped_dot and has_unescaped_anchor (set by the existing walker on `.` / `^` / `$` outside character classes). After scanning, the rule consults the flags string: `s` without `.` is inert, and `m` without `^`/`$` is inert. Other flags (`i`, etc.) are deferred — they need richer letter/case analysis."
       },
       {
         "name": "no-useless-lazy",

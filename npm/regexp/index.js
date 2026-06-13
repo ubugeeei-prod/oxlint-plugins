@@ -159,6 +159,10 @@ const messages = Object.freeze({
     unexpected:
       "Numbered backreference '{{expr}}' is used alongside a named capture group; prefer a named backreference `\\k<name>`.",
   },
+  'no-useless-flag': {
+    unexpected:
+      "Unexpected useless flag '{{flag}}'; the pattern does not use the syntax this flag affects.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -216,6 +220,8 @@ const ruleDescriptions = Object.freeze({
     'disallow `{1}` and `{1,1}` quantifiers (they match exactly once and can be removed)',
   'prefer-named-backreference':
     'enforce using named backreferences (`\\k<name>`) when the pattern has named capture groups',
+  'no-useless-flag':
+    'disallow regular-expression flags that have no effect on the pattern (narrow: `s` without `.`, `m` without `^`/`$`)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -260,6 +266,7 @@ const ruleTypes = Object.freeze({
   'no-useless-escape': 'suggestion',
   'no-useless-quantifier': 'suggestion',
   'prefer-named-backreference': 'suggestion',
+  'no-useless-flag': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -405,7 +412,8 @@ function ruleCategory(ruleName) {
     ruleName === 'prefer-range' ||
     ruleName === 'no-useless-escape' ||
     ruleName === 'no-useless-quantifier' ||
-    ruleName === 'prefer-named-backreference'
+    ruleName === 'prefer-named-backreference' ||
+    ruleName === 'no-useless-flag'
   ) {
     return 'Stylistic Issues';
   }
