@@ -113,7 +113,10 @@ fn no_promise_reject_matches_upstream_syntactic_behavior() {
     // Does not report resolves, executors without a reject param, or async
     // throws caught by an enclosing try/catch.
     assert_eq!(count("function f() { return Promise.resolve('x'); }"), 0);
-    assert_eq!(count("function f() { return new Promise((resolve) => resolve('x')); }"), 0);
+    assert_eq!(
+        count("function f() { return new Promise((resolve) => resolve('x')); }"),
+        0
+    );
     assert_eq!(
         count("async function f() { try { throw new Error('e'); } catch (e) { g(e); } }"),
         0
