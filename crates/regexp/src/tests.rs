@@ -1372,6 +1372,39 @@ mod require_unicode_regexp {
             "call expression with non-literal flags should not be flagged"
         );
     }
+
+    #[test]
+    fn ignores_shadowed_regexp_identifier() {
+        // When `RegExp` is shadowed by a local binding (e.g. a function
+        // parameter), the constructor call no longer refers to the global
+        // `RegExp` and must NOT trigger require-unicode-regexp or
+        // require-unicode-sets-regexp.
+        assert!(
+            rule_ids_for(
+                "function f(RegExp) { return new RegExp('foo') }",
+                "require-unicode-regexp"
+            )
+            .is_empty(),
+            "shadowed RegExp parameter must not fire require-unicode-regexp"
+        );
+        assert!(
+            rule_ids_for(
+                "function f(RegExp) { return new RegExp('foo') }",
+                "require-unicode-sets-regexp"
+            )
+            .is_empty(),
+            "shadowed RegExp parameter must not fire require-unicode-sets-regexp"
+        );
+        // But the global RegExp (no shadowing) still fires.
+        assert!(
+            !rule_ids_for("new RegExp('foo')", "require-unicode-regexp").is_empty(),
+            "global RegExp without flags must still fire require-unicode-regexp"
+        );
+        assert!(
+            !rule_ids_for("new RegExp('foo')", "require-unicode-sets-regexp").is_empty(),
+            "global RegExp without flags must still fire require-unicode-sets-regexp"
+        );
+    }
 }
 
 mod no_escape_backspace {
