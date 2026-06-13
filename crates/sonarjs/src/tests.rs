@@ -1044,3 +1044,34 @@ fn reports_elseif_without_else_exactly_once_for_inner_chain() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "elseifWithoutElse");
 }
+
+#[test]
+fn reports_no_case_label_in_switch_for_label_directly_in_case() {
+    let source = "switch (x) { case 1: foo(); lbl: bar(); break; }";
+    let diagnostics = scan("no-case-label-in-switch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-case-label-in-switch");
+    assert_eq!(diagnostics[0].message_id, "caseLabelInSwitch");
+}
+
+#[test]
+fn does_not_report_no_case_label_in_switch_for_switch_without_labels() {
+    let source = "switch (x) { case 1: break; default: break; }";
+    let diagnostics = scan("no-case-label-in-switch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_case_label_in_switch_for_label_nested_in_block() {
+    // The label is inside a block statement, not a direct child of the case consequent.
+    let source = "switch (x) { case 1: { lbl: bar(); } break; }";
+    let diagnostics = scan("no-case-label-in-switch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_case_label_in_switch_for_label_outside_switch() {
+    let source = "lbl: for (;;) {}";
+    let diagnostics = scan("no-case-label-in-switch", source);
+    assert!(diagnostics.is_empty());
+}
