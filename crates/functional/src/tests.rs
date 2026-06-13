@@ -1,6 +1,31 @@
 use super::{FunctionalOptions, implemented_functional_rule_names, scan_functional};
 
 #[test]
+fn prefer_property_signatures_honors_ignore_if_readonly_wrapped() {
+    let base = || FunctionalOptions {
+        rule_names: ["prefer-property-signatures".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let count = |source: &str, options: &FunctionalOptions| {
+        scan_functional(source, "fixture.ts", options).len()
+    };
+
+    // A bare method signature is always reported.
+    assert_eq!(count("type Foo = { bar(): number };", &base()), 1);
+
+    // Wrapped in Readonly<...> with the option enabled, it is ignored; without
+    // the option it is still reported.
+    let wrapped = "type Foo = Readonly<{ bar(): number }>;";
+    assert_eq!(count(wrapped, &base()), 1);
+    let mut ignoring = base();
+    ignoring.ignore_if_readonly_wrapped = true;
+    assert_eq!(count(wrapped, &ignoring), 0);
+
+    // Property signatures are never reported.
+    assert_eq!(count("type Foo = { bar: () => number };", &base()), 0);
+}
+
+#[test]
 fn exposes_all_rule_names() {
     assert_eq!(implemented_functional_rule_names().len(), 20);
     assert!(implemented_functional_rule_names().contains(&"no-let"));
@@ -87,6 +112,79 @@ do {} while (cond);
 
     // `if` is not a loop, so nothing is reported.
     assert!(scan_functional("if (cond) {}", "fixture.ts", &options).is_empty());
+}
+
+#[test]
+fn no_promise_reject_matches_upstream_syntactic_behavior() {
+    let options = FunctionalOptions {
+        rule_names: ["no-promise-reject".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let count = |source: &str| scan_functional(source, "fixture.ts", &options).len();
+
+    // Reports `Promise.reject`, `new Promise` with a `reject` param, and async
+    // throws that escape (no enclosing catch).
+    assert_eq!(count("function f() { return Promise.reject('e'); }"), 1);
+    assert_eq!(
+        count("function f() { return new Promise((resolve, reject) => { reject('e'); }); }"),
+        1
+    );
+    assert_eq!(count("async function f() { throw new Error('e'); }"), 1);
+    assert_eq!(
+        count("async function f() { try { throw new Error('e'); } finally { g(); } }"),
+        1
+    );
+
+    // Does not report resolves, executors without a reject param, or async
+    // throws caught by an enclosing try/catch.
+    assert_eq!(count("function f() { return Promise.resolve('x'); }"), 0);
+    assert_eq!(
+        count("function f() { return new Promise((resolve) => resolve('x')); }"),
+        0
+    );
+    assert_eq!(
+        count("async function f() { try { throw new Error('e'); } catch (e) { g(e); } }"),
+        0
+    );
+}
+
+#[test]
+fn no_classes_honors_ignore_patterns() {
+    let base_options = FunctionalOptions {
+        rule_names: ["no-classes".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+
+    // Plain class reports 1 diagnostic.
+    let diagnostics = scan_functional("class Foo {}", "fixture.ts", &base_options);
+    assert_eq!(diagnostics.len(), 1);
+
+    // ignoreIdentifierPattern matching the class name suppresses the report.
+    let id_pattern_options = FunctionalOptions {
+        rule_names: ["no-classes".into()].into_iter().collect(),
+        ignore_identifier_pattern: ["^Foo$".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let diagnostics = scan_functional("class Foo {}", "fixture.ts", &id_pattern_options);
+    assert_eq!(diagnostics.len(), 0);
+
+    // ignoreCodePattern matching the class source text suppresses the report.
+    let code_pattern_options = FunctionalOptions {
+        rule_names: ["no-classes".into()].into_iter().collect(),
+        ignore_code_pattern: ["class Foo".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let diagnostics = scan_functional("class Foo {}", "fixture.ts", &code_pattern_options);
+    assert_eq!(diagnostics.len(), 0);
+
+    // A non-matching identifier pattern still reports 1 diagnostic.
+    let non_matching_options = FunctionalOptions {
+        rule_names: ["no-classes".into()].into_iter().collect(),
+        ignore_identifier_pattern: ["^Bar$".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let diagnostics = scan_functional("class Foo {}", "fixture.ts", &non_matching_options);
+    assert_eq!(diagnostics.len(), 1);
 }
 
 #[test]

@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import { implementedSonarjsRuleNames, scanSonarjs } from '../api.js';
 
-const expectedRuleNames = ['no-nested-template-literals', 'no-nested-switch'];
+const expectedRuleNames = [
+  'no-nested-template-literals',
+  'no-nested-switch',
+  'no-nested-conditional',
+  'no-collapsible-if',
+];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
   return scanSonarjs(sourceText, filename, { ruleNames: [ruleName] });
@@ -47,10 +52,51 @@ describe('sonarjs native API', () => {
     expect(diagnostics).toHaveLength(0);
   });
 
+  it('reports a conditional nested in the alternate of another conditional', () => {
+    const diagnostics = scan('no-nested-conditional', 'const x = a ? b : (c ? d : e);');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-nested-conditional');
+    expect(diagnostics[0].messageId).toBe('nestedConditional');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+  });
+
+  it('does not report a single (non-nested) conditional expression', () => {
+    const diagnostics = scan('no-nested-conditional', 'const x = a ? b : c;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports each nested level of a doubly-nested conditional', () => {
+    const diagnostics = scan('no-nested-conditional', 'const x = a ? (b ? c : d) : (e ? f : g);');
+    expect(diagnostics).toHaveLength(2);
+  });
+
   it('ignores rules that are not enabled', () => {
     const diagnostics = scanSonarjs('const x = `outer ${`inner`}`;', 'sample.ts', {
       ruleNames: [],
     });
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports a collapsible if when the outer if contains only a nested if', () => {
+    const diagnostics = scan('no-collapsible-if', 'if (a) { if (b) {} }');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-collapsible-if');
+    expect(diagnostics[0].messageId).toBe('collapsibleIf');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+  });
+
+  it('does not report when the outer if has an else clause', () => {
+    const diagnostics = scan('no-collapsible-if', 'if (a) { if (b) {} } else {}');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the inner if has an else clause', () => {
+    const diagnostics = scan('no-collapsible-if', 'if (a) { if (b) {} else {} }');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the block contains more than one statement', () => {
+    const diagnostics = scan('no-collapsible-if', 'if (a) { if (b) {} doSomething(); }');
     expect(diagnostics).toHaveLength(0);
   });
 });

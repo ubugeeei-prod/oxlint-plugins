@@ -96,12 +96,18 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.implementedSonarjsRuleNames).toEqual([
       'no-nested-template-literals',
       'no-nested-switch',
+      'no-nested-conditional',
+      'no-collapsible-if',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
+    expect(typeof plugin.rules['no-nested-conditional']).toBe('object');
+    expect(typeof plugin.rules['no-collapsible-if']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-nested-conditional']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-collapsible-if']).toBe('error');
   });
 });
 
@@ -125,6 +131,18 @@ describe('sonarjs rules through direct adapter harness', () => {
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('nestedSwitch');
   });
+
+  it('reports a nested conditional expression', () => {
+    const reports = runRule('no-nested-conditional', 'const x = a ? b : (c ? d : e);');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('nestedConditional');
+  });
+
+  it('reports a collapsible if through the adapter', () => {
+    const reports = runRule('no-collapsible-if', 'if (a) { if (b) {} }');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('collapsibleIf');
+  });
 });
 
 describe('sonarjs rules through oxlint jsPlugins', () => {
@@ -147,5 +165,23 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-nested-switch)');
+  });
+
+  it('reports no-nested-conditional through the CLI', () => {
+    const result = runOxlint('no-nested-conditional', 'const x = a ? b : (c ? d : e);');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-nested-conditional)');
+  });
+
+  it('reports no-collapsible-if through the CLI', () => {
+    const result = runOxlint('no-collapsible-if', 'if (a) { if (b) {} }');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-collapsible-if)');
   });
 });

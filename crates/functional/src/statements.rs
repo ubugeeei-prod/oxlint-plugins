@@ -132,7 +132,15 @@ impl<'a> Scanner<'a> {
                         statement.span,
                     );
                 }
-                self.scan_statement_list(&statement.block.body, context);
+                // A throw inside this try's block is caught when the try has a
+                // catch handler, so it is not a promise rejection. The catch and
+                // finally bodies are not protected by this try's own catch; they
+                // inherit the enclosing context.
+                let block_context = FunctionContext {
+                    in_try_with_catch: context.in_try_with_catch || statement.handler.is_some(),
+                    ..context
+                };
+                self.scan_statement_list(&statement.block.body, block_context);
                 if let Some(handler) = &statement.handler {
                     self.scan_statement_list(&handler.body.body, context);
                 }
@@ -149,7 +157,7 @@ impl<'a> Scanner<'a> {
                         statement.span,
                     );
                 }
-                if context.in_async_function {
+                if context.in_async_function && !context.in_try_with_catch {
                     self.report(
                         "no-promise-reject",
                         "generic",

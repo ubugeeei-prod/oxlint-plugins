@@ -79,10 +79,83 @@ fn reports_each_inner_switch_of_doubly_nested() {
 }
 
 #[test]
+fn reports_conditional_nested_in_alternate() {
+    let diagnostics = scan("no-nested-conditional", "const x = a ? b : (c ? d : e);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-nested-conditional");
+    assert_eq!(diagnostics[0].message_id, "nestedConditional");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_conditional_nested_in_consequent() {
+    let diagnostics = scan("no-nested-conditional", "const x = a ? (b ? c : d) : e;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-nested-conditional");
+    assert_eq!(diagnostics[0].message_id, "nestedConditional");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn does_not_report_flat_conditional() {
+    let diagnostics = scan("no-nested-conditional", "const x = a ? b : c;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_two_diagnostics_for_doubly_nested_conditional() {
+    let diagnostics = scan(
+        "no-nested-conditional",
+        "const x = a ? (b ? c : d) : (e ? f : g);",
+    );
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
 fn disabled_rule_reports_nothing() {
     let options = SonarjsOptions {
         rule_names: SmallVec::new(),
     };
     let diagnostics = scan_sonarjs("const x = `outer ${`inner`}`;", "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_collapsible_if_direct_inner() {
+    let source = "if (a) if (b) {}";
+    let diagnostics = scan("no-collapsible-if", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-collapsible-if");
+    assert_eq!(diagnostics[0].message_id, "collapsibleIf");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_collapsible_if_block_with_single_inner() {
+    let source = "if (a) { if (b) {} }";
+    let diagnostics = scan("no-collapsible-if", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-collapsible-if");
+    assert_eq!(diagnostics[0].message_id, "collapsibleIf");
+}
+
+#[test]
+fn does_not_report_collapsible_if_outer_has_else() {
+    let source = "if (a) { if (b) {} } else {}";
+    let diagnostics = scan("no-collapsible-if", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_collapsible_if_inner_has_else() {
+    let source = "if (a) { if (b) {} else {} }";
+    let diagnostics = scan("no-collapsible-if", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_collapsible_if_block_has_two_statements() {
+    let source = "if (a) { if (b) {} doSomething(); }";
+    let diagnostics = scan("no-collapsible-if", source);
     assert!(diagnostics.is_empty());
 }

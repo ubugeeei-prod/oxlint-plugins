@@ -302,6 +302,11 @@ pub(crate) fn class_matches_anything(bytes: &[u8], open: usize) -> bool {
     if bytes.get(index) == Some(&b'^') {
         return false;
     }
+    // `[\s\S]` is the canonical form the rule itself recommends — treat it as valid.
+    let body = &bytes[open + 1..end];
+    if body == b"\\s\\S" {
+        return false;
+    }
     let mut has_lower = [false; 3]; // s, d, w
     let mut has_upper = [false; 3]; // S, D, W
     let mut count = 0usize;
@@ -605,6 +610,13 @@ pub(crate) fn first_fixed_unicode_escape(pattern: &str) -> Option<(&str, Compact
             && bytes[index + 4].is_ascii_hexdigit()
             && bytes[index + 5].is_ascii_hexdigit()
         {
+            // Surrogate halves (U+D800..=U+DFFF) belong to surrogate pairs handled
+            // by `prefer-unicode-codepoint-escapes`; skip them here.
+            let value = read_fixed_hex4(&bytes[index + 2..index + 6]).unwrap_or(0);
+            if (0xD800..=0xDFFF).contains(&value) {
+                index = skip_escape(bytes, index);
+                continue;
+            }
             let original = &pattern[index..index + 6];
             let mut replacement = CompactString::new("\\u{");
             for offset in 2..6 {
