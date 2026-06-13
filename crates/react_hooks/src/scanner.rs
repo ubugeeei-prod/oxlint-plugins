@@ -1,5 +1,6 @@
-//! AST scanner for the react-hooks port. Contains the `Scanner` struct and
-//! every traversal / rule check method as an `impl Scanner` block.
+//! Scanner driver, frame tracking, and per-hook reporting for the react-hooks
+//! port. Statement and expression traversal live in `statements.rs` and
+//! `expressions.rs`.
 
 #![allow(
     unused_imports,
@@ -7,14 +8,11 @@
 )]
 
 use oxc_ast::ast::*;
-use oxc_span::{GetSpan, Span};
+use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
-use crate::helpers::*;
-use crate::{
-    Diagnostic, DiagnosticData, FunctionFrame, HookCall, LineIndex, is_hook_name,
-    is_react_component_name,
-};
+use crate::helpers::{method_name, object_is_pascal_case_identifier};
+use crate::{Diagnostic, DiagnosticData, FunctionFrame, HookCall, LineIndex, is_hook_name, is_react_component_name};
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,
@@ -31,391 +29,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn scan_statement(&mut self, statement: &'a Statement<'a>) {
-        match statement {
-            Statement::BlockStatement(block) => {
-                self.scan_statement_list(&block.body);
-            }
-            Statement::ExpressionStatement(statement) => {
-                self.scan_expression(&statement.expression);
-            }
-            Statement::IfStatement(statement) => {
-                self.scan_expression(&statement.test);
-                self.with_conditional(|scanner| scanner.scan_statement(&statement.consequent));
-                if let Some(alternate) = &statement.alternate {
-                    self.with_conditional(|scanner| scanner.scan_statement(alternate));
-                }
-            }
-            Statement::ReturnStatement(statement) => {
-                if self
-                    .current_frame()
-                    .is_some_and(|frame| frame.conditional_depth > 0)
-                    && let Some(frame) = self.current_frame_mut()
-                {
-                    frame.possible_early_return = true;
-                }
-                if let Some(argument) = &statement.argument {
-                    self.scan_expression(argument);
-                }
-            }
-            Statement::ThrowStatement(statement) => {
-                self.scan_expression(&statement.argument);
-            }
-            Statement::WhileStatement(statement) => {
-                self.scan_expression(&statement.test);
-                self.with_loop(|scanner| scanner.scan_statement(&statement.body));
-            }
-            Statement::DoWhileStatement(statement) => {
-                self.with_loop(|scanner| scanner.scan_statement(&statement.body));
-                self.scan_expression(&statement.test);
-            }
-            Statement::ForStatement(statement) => {
-                if let Some(init) = &statement.init {
-                    self.scan_for_init(init);
-                }
-                self.with_loop(|scanner| {
-                    if let Some(test) = &statement.test {
-                        scanner.scan_expression(test);
-                    }
-                    if let Some(update) = &statement.update {
-                        scanner.scan_expression(update);
-                    }
-                    scanner.scan_statement(&statement.body);
-                });
-            }
-            Statement::ForInStatement(statement) => {
-                self.scan_for_left(&statement.left);
-                self.scan_expression(&statement.right);
-                self.with_loop(|scanner| scanner.scan_statement(&statement.body));
-            }
-            Statement::ForOfStatement(statement) => {
-                self.scan_for_left(&statement.left);
-                self.scan_expression(&statement.right);
-                self.with_loop(|scanner| scanner.scan_statement(&statement.body));
-            }
-            Statement::SwitchStatement(statement) => {
-                self.scan_expression(&statement.discriminant);
-                for case in &statement.cases {
-                    if let Some(test) = &case.test {
-                        self.scan_expression(test);
-                    }
-                    self.with_conditional(|scanner| scanner.scan_statement_list(&case.consequent));
-                }
-            }
-            Statement::TryStatement(statement) => {
-                self.with_try(|scanner| scanner.scan_statement_list(&statement.block.body));
-                if let Some(handler) = &statement.handler {
-                    self.with_try(|scanner| scanner.scan_statement_list(&handler.body.body));
-                }
-                if let Some(finalizer) = &statement.finalizer {
-                    self.with_try(|scanner| scanner.scan_statement_list(&finalizer.body));
-                }
-            }
-            Statement::LabeledStatement(statement) => {
-                self.scan_statement(&statement.body);
-            }
-            Statement::VariableDeclaration(declaration) => {
-                self.scan_variable_declaration(declaration);
-            }
-            Statement::FunctionDeclaration(function) => {
-                self.scan_function(function, function_name(function), false);
-            }
-            Statement::ClassDeclaration(class) => {
-                self.scan_class(class);
-            }
-            Statement::ExportNamedDeclaration(declaration) => {
-                if let Some(declaration) = &declaration.declaration {
-                    self.scan_declaration(declaration);
-                }
-            }
-            Statement::ExportDefaultDeclaration(declaration) => match &declaration.declaration {
-                ExportDefaultDeclarationKind::FunctionDeclaration(function) => {
-                    self.scan_function(function, function_name(function), false);
-                }
-                ExportDefaultDeclarationKind::ClassDeclaration(class) => {
-                    self.scan_class(class);
-                }
-                _ => {
-                    if let Some(expression) = declaration.declaration.as_expression() {
-                        self.scan_expression(expression);
-                    }
-                }
-            },
-            _ => {}
-        }
-    }
-
-    fn scan_declaration(&mut self, declaration: &'a Declaration<'a>) {
-        match declaration {
-            Declaration::VariableDeclaration(declaration) => {
-                self.scan_variable_declaration(declaration);
-            }
-            Declaration::FunctionDeclaration(function) => {
-                self.scan_function(function, function_name(function), false);
-            }
-            Declaration::ClassDeclaration(class) => {
-                self.scan_class(class);
-            }
-            _ => {}
-        }
-    }
-
-    fn scan_for_init(&mut self, init: &'a ForStatementInit<'a>) {
-        match init {
-            ForStatementInit::VariableDeclaration(declaration) => {
-                self.scan_variable_declaration(declaration);
-            }
-            _ => {
-                if let Some(expression) = init.as_expression() {
-                    self.scan_expression(expression);
-                }
-            }
-        }
-    }
-
-    fn scan_for_left(&mut self, left: &'a ForStatementLeft<'a>) {
-        if let ForStatementLeft::VariableDeclaration(declaration) = left {
-            self.scan_variable_declaration(declaration);
-        }
-    }
-
-    fn scan_variable_declaration(&mut self, declaration: &'a VariableDeclaration<'a>) {
-        for declarator in &declaration.declarations {
-            let name = binding_pattern_name(&declarator.id);
-            if let Some(init) = &declarator.init {
-                if let Expression::ArrowFunctionExpression(function) = init.get_inner_expression() {
-                    self.scan_arrow_function(function, name, false);
-                } else if let Expression::FunctionExpression(function) = init.get_inner_expression()
-                {
-                    self.scan_function(function, name.or_else(|| function_name(function)), false);
-                } else {
-                    self.scan_expression(init);
-                }
-            }
-        }
-    }
-
-    fn scan_expression(&mut self, expression: &'a Expression<'a>) {
-        match expression.get_inner_expression() {
-            Expression::CallExpression(call) => {
-                self.scan_call_expression(call);
-            }
-            Expression::NewExpression(new_expression) => {
-                self.scan_expression(&new_expression.callee);
-                for argument in &new_expression.arguments {
-                    self.scan_argument(argument, false);
-                }
-            }
-            Expression::AssignmentExpression(assignment) => {
-                self.scan_assignment_target(&assignment.left);
-                let name = assignment_target_name(&assignment.left);
-                if let Expression::ArrowFunctionExpression(function) =
-                    assignment.right.get_inner_expression()
-                {
-                    self.scan_arrow_function(function, name, false);
-                } else if let Expression::FunctionExpression(function) =
-                    assignment.right.get_inner_expression()
-                {
-                    self.scan_function(function, name.or_else(|| function_name(function)), false);
-                } else {
-                    self.scan_expression(&assignment.right);
-                }
-            }
-            Expression::StaticMemberExpression(member) => {
-                self.scan_expression(&member.object);
-            }
-            Expression::ComputedMemberExpression(member) => {
-                self.scan_expression(&member.object);
-                self.scan_expression(&member.expression);
-            }
-            Expression::PrivateFieldExpression(member) => {
-                self.scan_expression(&member.object);
-            }
-            Expression::BinaryExpression(binary) => {
-                self.scan_expression(&binary.left);
-                self.scan_expression(&binary.right);
-            }
-            Expression::LogicalExpression(logical) => {
-                self.scan_expression(&logical.left);
-                self.with_conditional(|scanner| scanner.scan_expression(&logical.right));
-            }
-            Expression::ConditionalExpression(conditional) => {
-                self.scan_expression(&conditional.test);
-                self.with_conditional(|scanner| {
-                    scanner.scan_expression(&conditional.consequent);
-                    scanner.scan_expression(&conditional.alternate);
-                });
-            }
-            Expression::ArrayExpression(array) => {
-                for element in &array.elements {
-                    self.scan_array_element(element);
-                }
-            }
-            Expression::ObjectExpression(object) => {
-                for property in &object.properties {
-                    match property {
-                        ObjectPropertyKind::ObjectProperty(property) => {
-                            if property.computed {
-                                self.scan_property_key(&property.key);
-                            }
-                            self.scan_expression(&property.value);
-                        }
-                        ObjectPropertyKind::SpreadProperty(spread) => {
-                            self.scan_expression(&spread.argument);
-                        }
-                    }
-                }
-            }
-            Expression::TemplateLiteral(template) => {
-                for expression in &template.expressions {
-                    self.scan_expression(expression);
-                }
-            }
-            Expression::TaggedTemplateExpression(tagged) => {
-                self.scan_expression(&tagged.tag);
-                for expression in &tagged.quasi.expressions {
-                    self.scan_expression(expression);
-                }
-            }
-            Expression::FunctionExpression(function) => {
-                self.scan_function(function, function_name(function), false);
-            }
-            Expression::ArrowFunctionExpression(function) => {
-                self.scan_arrow_function(function, None, false);
-            }
-            Expression::ClassExpression(class) => {
-                self.scan_class(class);
-            }
-            Expression::SequenceExpression(sequence) => {
-                for expression in &sequence.expressions {
-                    self.scan_expression(expression);
-                }
-            }
-            Expression::AwaitExpression(await_expression) => {
-                self.scan_expression(&await_expression.argument);
-            }
-            Expression::UnaryExpression(unary) => {
-                self.scan_expression(&unary.argument);
-            }
-            Expression::UpdateExpression(_) => {}
-            Expression::YieldExpression(yield_expression) => {
-                if let Some(argument) = &yield_expression.argument {
-                    self.scan_expression(argument);
-                }
-            }
-            Expression::ChainExpression(chain) => {
-                self.scan_chain_element(&chain.expression);
-            }
-            _ => {}
-        }
-    }
-
-    fn scan_call_expression(&mut self, call: &'a CallExpression<'a>) {
-        if let Some(hook_call) = self.hook_call(call) {
-            self.report_hook_call(&hook_call);
-        }
-
-        self.scan_expression(&call.callee);
-        for (index, argument) in call.arguments.iter().enumerate() {
-            self.scan_argument(
-                argument,
-                index == 0 && is_component_callback_callee(&call.callee),
-            );
-        }
-    }
-
-    fn scan_argument(&mut self, argument: &'a Argument<'a>, special_component_callback: bool) {
-        match argument {
-            Argument::FunctionExpression(function) => {
-                self.scan_function(
-                    function,
-                    function_name(function),
-                    special_component_callback,
-                );
-            }
-            Argument::ArrowFunctionExpression(function) => {
-                self.scan_arrow_function(function, None, special_component_callback);
-            }
-            Argument::SpreadElement(spread) => {
-                self.scan_expression(&spread.argument);
-            }
-            _ => {
-                if let Some(expression) = argument.as_expression() {
-                    self.scan_expression(expression);
-                }
-            }
-        }
-    }
-
-    fn scan_array_element(&mut self, element: &'a ArrayExpressionElement<'a>) {
-        match element {
-            ArrayExpressionElement::SpreadElement(spread) => {
-                self.scan_expression(&spread.argument);
-            }
-            _ => {
-                if let Some(expression) = element.as_expression() {
-                    self.scan_expression(expression);
-                }
-            }
-        }
-    }
-
-    fn scan_property_key(&mut self, key: &'a PropertyKey<'a>) {
-        if let Some(expression) = key.as_expression() {
-            self.scan_expression(expression);
-        }
-    }
-
-    fn scan_assignment_target(&mut self, target: &'a AssignmentTarget<'a>) {
-        match target {
-            AssignmentTarget::ComputedMemberExpression(member) => {
-                self.scan_expression(&member.object);
-                self.scan_expression(&member.expression);
-            }
-            AssignmentTarget::StaticMemberExpression(member) => {
-                self.scan_expression(&member.object);
-            }
-            AssignmentTarget::PrivateFieldExpression(member) => {
-                self.scan_expression(&member.object);
-            }
-            AssignmentTarget::TSAsExpression(expression) => {
-                self.scan_expression(&expression.expression);
-            }
-            AssignmentTarget::TSSatisfiesExpression(expression) => {
-                self.scan_expression(&expression.expression);
-            }
-            AssignmentTarget::TSNonNullExpression(expression) => {
-                self.scan_expression(&expression.expression);
-            }
-            AssignmentTarget::TSTypeAssertion(expression) => {
-                self.scan_expression(&expression.expression);
-            }
-            _ => {}
-        }
-    }
-
-    fn scan_chain_element(&mut self, element: &'a ChainElement<'a>) {
-        match element {
-            ChainElement::CallExpression(call) => {
-                self.scan_call_expression(call);
-            }
-            ChainElement::StaticMemberExpression(member) => {
-                self.scan_expression(&member.object);
-            }
-            ChainElement::ComputedMemberExpression(member) => {
-                self.scan_expression(&member.object);
-                self.scan_expression(&member.expression);
-            }
-            ChainElement::PrivateFieldExpression(member) => {
-                self.scan_expression(&member.object);
-            }
-            ChainElement::TSNonNullExpression(expression) => {
-                self.scan_expression(&expression.expression);
-            }
-        }
-    }
-
-    fn scan_function(
+    pub(crate) fn scan_function(
         &mut self,
         function: &'a Function<'a>,
         name: Option<&'a str>,
@@ -433,7 +47,7 @@ impl<'a> Scanner<'a> {
         );
     }
 
-    fn scan_arrow_function(
+    pub(crate) fn scan_arrow_function(
         &mut self,
         function: &'a ArrowFunctionExpression<'a>,
         name: Option<&'a str>,
@@ -477,7 +91,7 @@ impl<'a> Scanner<'a> {
         let _ = self.frames.pop();
     }
 
-    fn scan_class(&mut self, class: &'a Class<'a>) {
+    pub(crate) fn scan_class(&mut self, class: &'a Class<'a>) {
         if let Some(super_class) = &class.super_class {
             self.scan_expression(super_class);
         }
@@ -513,7 +127,7 @@ impl<'a> Scanner<'a> {
         self.class_depth = self.class_depth.saturating_sub(1);
     }
 
-    fn hook_call(&self, call: &'a CallExpression<'a>) -> Option<HookCall> {
+    pub(crate) fn hook_call(&self, call: &'a CallExpression<'a>) -> Option<HookCall> {
         match call.callee.get_inner_expression() {
             Expression::Identifier(identifier) if is_hook_name(identifier.name.as_str()) => {
                 Some(HookCall {
@@ -536,7 +150,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn report_hook_call(&mut self, hook_call: &HookCall) {
+    pub(crate) fn report_hook_call(&mut self, hook_call: &HookCall) {
         let Some(frame) = self.current_frame() else {
             if self.class_depth > 0 {
                 self.report("class", hook_call, None);
@@ -602,7 +216,7 @@ impl<'a> Scanner<'a> {
             .map_or_else(|| CompactString::from("React Hook"), CompactString::from)
     }
 
-    fn with_conditional(&mut self, f: impl FnOnce(&mut Self)) {
+    pub(crate) fn with_conditional(&mut self, f: impl FnOnce(&mut Self)) {
         if let Some(frame) = self.current_frame_mut() {
             frame.conditional_depth += 1;
         }
@@ -612,7 +226,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn with_loop(&mut self, f: impl FnOnce(&mut Self)) {
+    pub(crate) fn with_loop(&mut self, f: impl FnOnce(&mut Self)) {
         if let Some(frame) = self.current_frame_mut() {
             frame.loop_depth += 1;
         }
@@ -622,7 +236,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn with_try(&mut self, f: impl FnOnce(&mut Self)) {
+    pub(crate) fn with_try(&mut self, f: impl FnOnce(&mut Self)) {
         if let Some(frame) = self.current_frame_mut() {
             frame.try_depth += 1;
         }
@@ -632,11 +246,11 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn current_frame(&self) -> Option<&FunctionFrame> {
+    pub(crate) fn current_frame(&self) -> Option<&FunctionFrame> {
         self.frames.last()
     }
 
-    fn current_frame_mut(&mut self) -> Option<&mut FunctionFrame> {
+    pub(crate) fn current_frame_mut(&mut self) -> Option<&mut FunctionFrame> {
         self.frames.last_mut()
     }
 }
