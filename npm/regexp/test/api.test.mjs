@@ -99,7 +99,7 @@ describe('regexp native API', () => {
       flags: 'mi',
       sortedFlags: 'im',
     });
-    expect(diagnostics[6].data.charText).toBe('U+0001');
+    expect(diagnostics[7].data.charText).toBe('U+0001');
   });
 
   it('returns LSP-shaped locations from Rust', () => {

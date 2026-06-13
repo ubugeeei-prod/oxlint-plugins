@@ -576,6 +576,14 @@ fn is_invisible_character(ch: char) -> bool {
 /// can be written as `\xHH` and suggest the hexadecimal form). Code points
 /// above 0xFF are not representable as `\xHH` and are silently skipped.
 /// `\xHH` escapes (already in the correct form) are also skipped.
+/// Builds the lower-case `\xHH` escape for a code point in `0..=0xFF`.
+fn hex_escape_for(code_point: u32) -> CompactString {
+    let mut out = CompactString::new("\\x");
+    out.push(char::from_digit((code_point >> 4) & 0xF, 16).unwrap());
+    out.push(char::from_digit(code_point & 0xF, 16).unwrap());
+    out
+}
+
 pub(crate) fn first_unicode_escape_as_hex(pattern: &str) -> Option<(&str, CompactString)> {
     let bytes = pattern.as_bytes();
     let mut index = 0;
@@ -593,12 +601,11 @@ pub(crate) fn first_unicode_escape_as_hex(pattern: &str) -> Option<(&str, Compac
                 }
                 if cursor < bytes.len() {
                     let hex_str = &pattern[index + 3..cursor];
-                    if let Ok(code_point) = u32::from_str_radix(hex_str, 16) {
-                        if code_point <= 0xFF {
-                            let original = &pattern[index..cursor + 1];
-                            let replacement = format!("\\x{:02x}", code_point);
-                            return Some((original, CompactString::from(replacement.as_str())));
-                        }
+                    if let Ok(code_point) = u32::from_str_radix(hex_str, 16)
+                        && code_point <= 0xFF
+                    {
+                        let original = &pattern[index..cursor + 1];
+                        return Some((original, hex_escape_for(code_point)));
                     }
                     index = cursor + 1;
                     continue;
@@ -614,12 +621,11 @@ pub(crate) fn first_unicode_escape_as_hex(pattern: &str) -> Option<(&str, Compac
                 && bytes[index + 5].is_ascii_hexdigit()
             {
                 let hex_str = &pattern[index + 2..index + 6];
-                if let Ok(code_point) = u32::from_str_radix(hex_str, 16) {
-                    if code_point <= 0xFF {
-                        let original = &pattern[index..index + 6];
-                        let replacement = format!("\\x{:02x}", code_point);
-                        return Some((original, CompactString::from(replacement.as_str())));
-                    }
+                if let Ok(code_point) = u32::from_str_radix(hex_str, 16)
+                    && code_point <= 0xFF
+                {
+                    let original = &pattern[index..index + 6];
+                    return Some((original, hex_escape_for(code_point)));
                 }
             }
         }
