@@ -187,6 +187,13 @@ const validCases = [
     'v-mode valid control escapes',
     'const re = /[[\\cA-\\cZ]--\\cX]/v;\n',
   ],
+  // strict
+  ['strict', 'u-flag bypasses strict check', 'const re = /\\p{L}/u;\n'],
+  ['strict', 'v-flag bypasses strict check', 'const re = /[A--B]/v;\n'],
+  ['strict', 'escaped source characters are valid', 'const re = /\\{\\}\\]/;\n'],
+  ['strict', 'valid 4-hex unicode escape', 'const re = /\\u000f/;\n'],
+  ['strict', 'valid 2-hex hex escape', 'const re = /\\x00/;\n'],
+  ['strict', 'valid control escape', 'const re = /\\cA/;\n'],
 ];
 
 const invalidCases = [
@@ -504,6 +511,18 @@ const invalidCases = [
   ['no-standalone-backslash', '\\c at end of pattern', 'const re = /\\c/;\n', ['unexpected']],
   ['no-standalone-backslash', '\\c followed by digit', 'const re = /\\c1/;\n', ['unexpected']],
   ['no-standalone-backslash', '\\c inside class', 'const re = /[\\c]/;\n', ['unexpected']],
+  // strict
+  ['strict', 'unescaped ] outside class', 'const re = /]/;\n', ['unescapedSourceCharacter']],
+  ['strict', 'incomplete \\c escape', 'const re = /\\c;/;\n', ['invalidControlEscape']],
+  [
+    'strict',
+    '\\u followed by brace (non-u mode)',
+    'const re = /\\u{42}/;\n',
+    ['incompleteEscapeSequence'],
+  ],
+  ['strict', '\\x with only 1 hex digit', 'const re = /\\x4/;\n', ['incompleteEscapeSequence']],
+  ['strict', '\\p in non-u mode', 'const re = /\\p/;\n', ['invalidPropertyEscape']],
+  ['strict', 'quantified assertion', 'const re = /(?!a)+/;\n', ['quantifiedAssertion']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

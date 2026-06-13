@@ -255,6 +255,23 @@ const messages = Object.freeze({
     unexpected:
       "Unexpected standalone backslash (`\\`). It looks like an escape sequence, but it's a single `\\` character pattern.",
   },
+  strict: {
+    invalidControlEscape:
+      'Invalid or incomplete control escape sequence. Either use a valid control escape sequence or escape the standalone backslash.',
+    incompleteEscapeSequence:
+      'Incomplete escape sequence {{expr}}. Either use a valid escape sequence or remove the useless escaping.',
+    invalidPropertyEscape:
+      'Invalid property escape sequence {{expr}}. Either use a valid property escape sequence or remove the useless escaping.',
+    incompleteBackreference:
+      'Incomplete backreference {{expr}}. Either use a valid backreference or remove the useless escaping.',
+    unescapedSourceCharacter: 'Unescaped source character {{expr}}.',
+    octalEscape: 'Invalid legacy octal escape sequence {{expr}}. Use a hexadecimal escape instead.',
+    uselessEscape: 'Useless identity escapes with non-syntax characters are forbidden.',
+    invalidRange:
+      'Invalid character class range. A character set cannot be the minimum or maximum of a character class range.',
+    quantifiedAssertion: 'Assertion are not allowed to be quantified directly.',
+    regexMessage: '{{message}}.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -358,6 +375,7 @@ const ruleDescriptions = Object.freeze({
   'no-misleading-unicode-character':
     'disallow character classes that contain a ZWJ (U+200D) and match it as a separate atom',
   'no-standalone-backslash': 'disallow standalone backslashes (`\\`)',
+  strict: 'disallow not strictly valid regular expressions (narrow: escape and quantifier checks)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -427,6 +445,7 @@ const ruleTypes = Object.freeze({
   'no-useless-lazy': 'suggestion',
   'no-misleading-unicode-character': 'problem',
   'no-standalone-backslash': 'suggestion',
+  strict: 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -445,6 +464,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-legacy-features': 'error',
   'no-non-standard-flag': 'error',
   'no-invisible-character': 'error',
+  strict: 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
@@ -599,7 +619,8 @@ function ruleCategory(ruleName) {
     ruleName === 'optimal-lookaround-quantifier' ||
     ruleName === 'no-dupe-disjunctions' ||
     ruleName === 'no-useless-backreference' ||
-    ruleName === 'no-misleading-unicode-character'
+    ruleName === 'no-misleading-unicode-character' ||
+    ruleName === 'strict'
   ) {
     return 'Possible Errors';
   }

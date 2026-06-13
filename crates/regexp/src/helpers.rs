@@ -1824,6 +1824,133 @@ pub(crate) fn has_standalone_backslash(pattern: &str) -> bool {
     false
 }
 
+/// Returns the message ID of the first strict-mode violation found in
+/// `pattern`, or `None` when the pattern is strictly valid.
+///
+/// This function is ONLY called for patterns that do NOT carry the `u` or `v`
+/// flag — those flags force strict parsing automatically.
+///
+/// Narrow subset covered:
+/// 1. Unescaped `]` outside a character class (`unescapedSourceCharacter`).
+/// 2. `\c` not followed by an ASCII letter (`invalidControlEscape`).
+/// 3. `\u` not followed by exactly 4 hex digits (`incompleteEscapeSequence`).
+///    — catches both `\u{42}` (brace form, not valid in non-u mode) and
+///    — `\u000;` (fourth byte is not a hex digit).
+/// 4. `\x` not followed by exactly 2 hex digits (`incompleteEscapeSequence`).
+///    — catches `/\x4/` (only 1 hex digit).
+/// 5. `\p` or `\P` (Unicode property escapes, invalid in non-u mode)
+///    (`invalidPropertyEscape`).
+/// 6. A lookaround assertion (`(?=`, `(?!`, `(?<=`, `(?<!`) directly followed
+///    by `+`, `*`, `?`, or `{` (`quantifiedAssertion`).
+///
+/// The check intentionally skips `{` / `}` literal checks (would require
+/// quantifier-grammar parsing to stay sound) and the `\k` incomplete-
+/// backreference check (would require named-group tracking).
+pub(crate) fn first_strict_violation(pattern: &str) -> Option<&'static str> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    // Track whether the previous `)` closed a lookaround, so we can detect a
+    // quantifier immediately after it. We record the position of the `)` so
+    // that the very next byte can be inspected.
+    let mut lookaround_close_pos: Option<usize> = None;
+    // Stack: each entry is `true` when the open `(` is a lookaround.
+    let mut group_is_lookaround: SmallVec<[bool; 8]> = SmallVec::new();
+
+    while index < bytes.len() {
+        // Check whether this byte is the quantifier that immediately follows a
+        // lookaround's closing `)`.
+        if let Some(close_pos) = lookaround_close_pos {
+            if index == close_pos + 1 && matches!(bytes[index], b'+' | b'*' | b'?' | b'{') {
+                return Some("quantifiedAssertion");
+            }
+            lookaround_close_pos = None;
+        }
+
+        match bytes[index] {
+            b'[' => {
+                // Skip the entire character class so its `]` is not flagged.
+                if let Some(close) = find_class_end(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            b']' => {
+                // Unescaped `]` outside a character class.
+                return Some("unescapedSourceCharacter");
+            }
+            b'(' => {
+                // Detect lookaround prefix: `(?=`, `(?!`, `(?<=`, `(?<!`.
+                let is_la = matches!(bytes.get(index + 1), Some(b'?'))
+                    && (matches!(bytes.get(index + 2), Some(b'=') | Some(b'!'))
+                        || (matches!(bytes.get(index + 2), Some(b'<'))
+                            && matches!(bytes.get(index + 3), Some(b'=') | Some(b'!'))));
+                group_is_lookaround.push(is_la);
+                index += 1;
+            }
+            b')' => {
+                let is_la = group_is_lookaround.pop().unwrap_or(false);
+                if is_la {
+                    lookaround_close_pos = Some(index);
+                }
+                index += 1;
+            }
+            b'\\' => {
+                let Some(&next) = bytes.get(index + 1) else {
+                    break;
+                };
+                match next {
+                    b'c' => {
+                        let after = bytes.get(index + 2).copied();
+                        if !after.is_some_and(|b| b.is_ascii_alphabetic()) {
+                            return Some("invalidControlEscape");
+                        }
+                        index = skip_escape(bytes, index);
+                    }
+                    b'u' => {
+                        // In non-u mode, `\u` must be followed by exactly 4 hex
+                        // digits. The `\u{...}` form is ONLY valid with the `u`
+                        // flag, so `\u{` is a violation here.
+                        let b2 = bytes.get(index + 2).copied();
+                        let b3 = bytes.get(index + 3).copied();
+                        let b4 = bytes.get(index + 4).copied();
+                        let b5 = bytes.get(index + 5).copied();
+                        let valid = b2.is_some_and(|b| b.is_ascii_hexdigit())
+                            && b3.is_some_and(|b| b.is_ascii_hexdigit())
+                            && b4.is_some_and(|b| b.is_ascii_hexdigit())
+                            && b5.is_some_and(|b| b.is_ascii_hexdigit());
+                        if !valid {
+                            return Some("incompleteEscapeSequence");
+                        }
+                        index = skip_escape(bytes, index);
+                    }
+                    b'x' => {
+                        let b2 = bytes.get(index + 2).copied();
+                        let b3 = bytes.get(index + 3).copied();
+                        let valid = b2.is_some_and(|b| b.is_ascii_hexdigit())
+                            && b3.is_some_and(|b| b.is_ascii_hexdigit());
+                        if !valid {
+                            return Some("incompleteEscapeSequence");
+                        }
+                        index = skip_escape(bytes, index);
+                    }
+                    b'p' | b'P' => {
+                        // Unicode property escapes are not valid in non-u mode.
+                        return Some("invalidPropertyEscape");
+                    }
+                    _ => {
+                        index = skip_escape(bytes, index);
+                    }
+                }
+            }
+            _ => {
+                index += 1;
+            }
+        }
+    }
+    None
+}
+
 pub(crate) fn mention_char(ch: char) -> CompactString {
     let mut text = CompactString::new("U+");
     let code = ch as u32;

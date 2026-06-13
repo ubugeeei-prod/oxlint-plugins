@@ -108,8 +108,84 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-lazy",
             "no-misleading-unicode-character",
             "no-standalone-backslash",
+            "strict",
         ]
     );
+}
+
+mod strict {
+    use super::*;
+
+    #[test]
+    fn reports_unescaped_close_bracket() {
+        assert_eq!(
+            rule_ids_for("const a = /]/;", "strict").as_slice(),
+            &["unescapedSourceCharacter"]
+        );
+    }
+
+    #[test]
+    fn reports_incomplete_control_escape() {
+        assert_eq!(
+            rule_ids_for("const a = /\\c;/;", "strict").as_slice(),
+            &["invalidControlEscape"]
+        );
+        assert_eq!(
+            rule_ids_for(r"const a = /\c/;", "strict").as_slice(),
+            &["invalidControlEscape"]
+        );
+    }
+
+    #[test]
+    fn reports_incomplete_unicode_escape() {
+        assert_eq!(
+            rule_ids_for(r"const a = /\u{42}/;", "strict").as_slice(),
+            &["incompleteEscapeSequence"]
+        );
+        assert_eq!(
+            rule_ids_for(r"const a = /\u000;/;", "strict").as_slice(),
+            &["incompleteEscapeSequence"]
+        );
+    }
+
+    #[test]
+    fn reports_incomplete_hex_escape() {
+        assert_eq!(
+            rule_ids_for(r"const a = /\x4/;", "strict").as_slice(),
+            &["incompleteEscapeSequence"]
+        );
+    }
+
+    #[test]
+    fn reports_property_escape_in_non_u_mode() {
+        assert_eq!(
+            rule_ids_for(r"const a = /\p/;", "strict").as_slice(),
+            &["invalidPropertyEscape"]
+        );
+        assert_eq!(
+            rule_ids_for(r"const a = /\p{H}/;", "strict").as_slice(),
+            &["invalidPropertyEscape"]
+        );
+    }
+
+    #[test]
+    fn reports_quantified_assertion() {
+        assert_eq!(
+            rule_ids_for("const a = /(?!a)+/;", "strict").as_slice(),
+            &["quantifiedAssertion"]
+        );
+    }
+
+    #[test]
+    fn ignores_valid_patterns() {
+        assert!(rule_ids_for("const a = /\\p{L}/u;", "strict").is_empty());
+        assert!(rule_ids_for("const a = /[A--B]/v;", "strict").is_empty());
+        assert!(rule_ids_for(r"const a = /\{\}\]/;", "strict").is_empty());
+        assert!(rule_ids_for(r"const a = /\x00/;", "strict").is_empty());
+        assert!(rule_ids_for(r"const a = /\cA/;", "strict").is_empty());
+        assert!(rule_ids_for("const a = /()\\1/;", "strict").is_empty());
+        assert!(rule_ids_for("const a = /(?<foo>)\\k<foo>/;", "strict").is_empty());
+    }
 }
 
 mod no_standalone_backslash {
