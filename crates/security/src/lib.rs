@@ -1,7 +1,11 @@
 #![doc = "Rust implementation of eslint-plugin-security rule logic."]
 
+mod analysis;
+mod checks;
+mod expressions;
 mod helpers;
 mod scanner;
+mod statements;
 
 use oxc_allocator::Allocator;
 use oxc_parser::Parser;

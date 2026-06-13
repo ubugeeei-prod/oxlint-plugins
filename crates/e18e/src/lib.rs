@@ -9,9 +9,11 @@
     reason = "The e18e port builds many small autofix strings from source slices; keeping that string assembly local is clearer than adding broad formatting abstractions in the first native port."
 )]
 
+mod expressions;
 mod helpers;
 mod rules;
 mod scanner;
+mod statements;
 mod types;
 
 #[cfg(test)]

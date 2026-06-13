@@ -1,5 +1,7 @@
 #![doc = "Rust implementation of eslint-plugin-react-refresh rule logic."]
 
+mod components;
+mod exports;
 mod helpers;
 mod scanner;
 

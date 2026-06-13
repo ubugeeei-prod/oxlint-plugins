@@ -1,7 +1,9 @@
 #![doc = "Rust implementation of eslint-plugin-react-hooks rule logic."]
 
+mod expressions;
 mod helpers;
 mod scanner;
+mod statements;
 
 use std::path::Path;
 
