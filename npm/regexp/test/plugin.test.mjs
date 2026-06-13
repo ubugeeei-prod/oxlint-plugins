@@ -247,13 +247,13 @@ const invalidCases = [
   [
     'prefer-named-replacement',
     'numbered backref with named regex',
-    "str.replace(/(?<year>\\d{4})/u, '$1');\n",
+    "'s'.replace(/(?<year>\\d{4})/u, '$1');\n",
     ['unexpected'],
   ],
   [
     'prefer-named-replacement',
     'replaceAll variant',
-    "str.replaceAll(/(?<year>\\d{4})/gu, 'year: $1');\n",
+    "'s'.replaceAll(/(?<year>\\d{4})/gu, 'year: $1');\n",
     ['unexpected'],
   ],
   // no-obscure-range

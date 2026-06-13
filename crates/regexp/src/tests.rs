@@ -2268,9 +2268,10 @@ mod prefer_named_replacement {
 
     #[test]
     fn reports_numbered_backreference_with_named_capture_pattern() {
+        // String-literal receiver + $N referring to a named group → fires.
         assert_eq!(
             rule_ids_for(
-                "str.replace(/(?<year>\\d{4})/u, '$1');",
+                "\"s\".replace(/(?<year>\\d{4})/u, '$1');",
                 "prefer-named-replacement"
             )
             .as_slice(),
@@ -2279,7 +2280,7 @@ mod prefer_named_replacement {
         // `replaceAll` shares the same shape.
         assert_eq!(
             rule_ids_for(
-                "str.replaceAll(/(?<year>\\d{4})/gu, 'year: $1');",
+                "\"s\".replaceAll(/(?<year>\\d{4})/gu, 'year: $1');",
                 "prefer-named-replacement"
             )
             .as_slice(),
@@ -2292,7 +2293,7 @@ mod prefer_named_replacement {
         // Named replacement form — no diagnostic.
         assert!(
             rule_ids_for(
-                "str.replace(/(?<year>\\d{4})/u, '$<year>');",
+                "\"s\".replace(/(?<year>\\d{4})/u, '$<year>');",
                 "prefer-named-replacement"
             )
             .is_empty()
@@ -2300,7 +2301,7 @@ mod prefer_named_replacement {
         // Regex has no named capture, so `$1` is the only way to refer back.
         assert!(
             rule_ids_for(
-                "str.replace(/(\\d{4})/u, '$1');",
+                "\"s\".replace(/(\\d{4})/u, '$1');",
                 "prefer-named-replacement"
             )
             .is_empty()
@@ -2308,14 +2309,54 @@ mod prefer_named_replacement {
         // Escaped dollar must not count as a numeric backreference.
         assert!(
             rule_ids_for(
-                "str.replace(/(?<year>\\d{4})/u, '$$1');",
+                "\"s\".replace(/(?<year>\\d{4})/u, '$$1');",
                 "prefer-named-replacement"
             )
             .is_empty()
         );
         // Unrelated method.
         assert!(
-            rule_ids_for("str.match(/(?<year>\\d{4})/u);", "prefer-named-replacement").is_empty()
+            rule_ids_for(
+                "\"s\".match(/(?<year>\\d{4})/u);",
+                "prefer-named-replacement"
+            )
+            .is_empty()
+        );
+    }
+
+    #[test]
+    fn regression_unnamed_group_not_flagged() {
+        // $1 refers to group 1 = (a) which is UNNAMED → must NOT fire.
+        assert!(
+            rule_ids_for(
+                "\"str\".replace(/(a)(?<foo>b)c/, '_$1_');",
+                "prefer-named-replacement"
+            )
+            .is_empty()
+        );
+        // Free/unknown receiver → must NOT fire regardless of group type.
+        assert!(
+            rule_ids_for(
+                "unknown.replace(/a(?<foo>b)c/, '_$1_');",
+                "prefer-named-replacement"
+            )
+            .is_empty()
+        );
+        assert!(
+            rule_ids_for(
+                "unknown.replaceAll(/a(?<foo>b)c/, '_$1_');",
+                "prefer-named-replacement"
+            )
+            .is_empty()
+        );
+        // String-literal receiver + $N pointing at a NAMED group → fires.
+        assert_eq!(
+            rule_ids_for(
+                "\"s\".replace(/(?<foo>b)/, '$1');",
+                "prefer-named-replacement"
+            )
+            .as_slice(),
+            &["unexpected"]
         );
     }
 }
