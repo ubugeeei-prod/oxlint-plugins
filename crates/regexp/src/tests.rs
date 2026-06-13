@@ -910,13 +910,11 @@ fn ignores_dynamic_constructor_arguments() {
     // Non-literal pattern arguments cannot be statically analysed at all.
     assert!(ids("const a = new RegExp(pattern, 'u');").is_empty());
     assert!(ids("const a = RegExp();").is_empty());
-    // When the flags argument is non-literal we still scan the pattern and
-    // assume no `u`/`v` flag, which surfaces both `require-unicode-regexp`
-    // (needs `u` or `v`) and `require-unicode-sets-regexp` (needs `v`).
-    assert_eq!(
-        rule_names_for("const a = new RegExp('a', flags);").as_slice(),
-        &["require-unicode-regexp", "require-unicode-sets-regexp"]
-    );
+    // When the flags argument is a non-literal expression the flags cannot be
+    // statically determined, so the `u`/`v`-flag rules must stay silent (they
+    // would otherwise false-positive on `new RegExp('a', flags)`); upstream
+    // skips them in this case.
+    assert!(rule_names_for("const a = new RegExp('a', flags);").is_empty());
 }
 
 #[test]
@@ -1311,6 +1309,38 @@ mod require_unicode_regexp {
         assert!(rule_ids_for("const a = /a/gu;", "require-unicode-regexp").is_empty());
         assert!(
             rule_ids_for("const a = new RegExp('a', 'u');", "require-unicode-regexp").is_empty()
+        );
+    }
+
+    #[test]
+    fn skips_constructor_with_non_literal_flags_arg() {
+        // When the flags argument is a non-literal expression (identifier,
+        // binary expression, member expression, etc.) we cannot statically
+        // determine the flags, so the rule must not fire.
+        assert!(
+            rule_ids_for("new RegExp('', flags)", "require-unicode-regexp").is_empty(),
+            "free variable flags should not be flagged"
+        );
+        assert!(
+            rule_ids_for("new RegExp('', flags + 'u')", "require-unicode-regexp").is_empty(),
+            "binary expression flags should not be flagged"
+        );
+        assert!(
+            rule_ids_for("new RegExp('foo', flags[3])", "require-unicode-regexp").is_empty(),
+            "member expression flags should not be flagged"
+        );
+        assert!(
+            rule_ids_for(
+                "function f(flags) { return new RegExp('', flags) }",
+                "require-unicode-regexp"
+            )
+            .is_empty(),
+            "parameter variable flags should not be flagged"
+        );
+        // RegExp call (non-new) with non-literal flags also skipped.
+        assert!(
+            rule_ids_for("RegExp('foo', flags)", "require-unicode-regexp").is_empty(),
+            "call expression with non-literal flags should not be flagged"
         );
     }
 }

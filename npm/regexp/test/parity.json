@@ -23,7 +23,7 @@
     },
     "require-unicode-regexp": {
       "level": "off",
-      "reason": "Flags constructors whose flags are an unknown variable (e.g. new RegExp('', flags))."
+      "reason": "Non-literal constructor flags are now skipped, but the shadowed-global case (e.g. function f(RegExp) { return new RegExp('foo') }) still false-positives — needs scope analysis to know RegExp is not the global."
     },
     "use-ignore-case": {
       "level": "off",

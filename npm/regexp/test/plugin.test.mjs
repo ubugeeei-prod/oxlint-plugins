@@ -56,6 +56,9 @@ const validCases = [
   ['require-unicode-regexp', 'unicode flag', 'const re = /a/u;\n'],
   ['require-unicode-regexp', 'unicode set flag', 'const re = /a/v;\n'],
   ['require-unicode-regexp', 'unicode with other flags', 'const re = /a/gu;\n'],
+  ['require-unicode-regexp', 'non-literal flags variable', 'new RegExp("a", flags);\n'],
+  ['require-unicode-regexp', 'non-literal flags binary expr', "new RegExp('a', flags + 'u');\n"],
+  ['require-unicode-regexp', 'non-literal flags member expr', "new RegExp('foo', flags[3]);\n"],
   // no-escape-backspace
   ['no-escape-backspace', 'plain word boundary', 'const re = /\\bword/u;\n'],
   ['no-escape-backspace', 'character class without \\b', 'const re = /[a-z]/u;\n'],
