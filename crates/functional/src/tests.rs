@@ -609,6 +609,8 @@ fn no_conditional_statements_allow_returning_branches() {
     let switch_fallthrough = "function f(i) { switch (i) { case 1: case 2: return 1; } }";
     let switch_break = "function f(i) { switch (i) { case 1: g(); break; default: return 2; } }";
     let if_break_loop = "for (;;) { if (i) { break; } }";
+    let switch_self_label = "outer: switch (i) { case 1: break outer; }";
+    let switch_outer_label = "outer: for (;;) { switch (i) { case 1: break outer; } }";
 
     // Default: every if/switch is reported.
     assert_eq!(count(if_returns, &base), 1);
@@ -629,4 +631,8 @@ fn no_conditional_statements_allow_returning_branches() {
     assert_eq!(count(switch_fallthrough, &allow), 0);
     assert_eq!(count(switch_break, &allow), 1);
     assert_eq!(count(if_break_loop, &allow), 0);
+    // A `break <label>` targeting the switch's own enclosing label only exits the
+    // switch (reported); one targeting an outer construct is returning (allowed).
+    assert_eq!(count(switch_self_label, &allow), 1);
+    assert_eq!(count(switch_outer_label, &allow), 0);
 }
