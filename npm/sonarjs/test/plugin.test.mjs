@@ -116,6 +116,7 @@ describe('sonarjs plugin shape', () => {
       'class-prototype',
       'max-switch-cases',
       'max-union-size',
+      'elseif-without-else',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -139,6 +140,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['class-prototype']).toBe('object');
     expect(typeof plugin.rules['max-switch-cases']).toBe('object');
     expect(typeof plugin.rules['max-union-size']).toBe('object');
+    expect(typeof plugin.rules['elseif-without-else']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -162,6 +164,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/class-prototype']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/max-switch-cases']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/max-union-size']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/elseif-without-else']).toBe('error');
   });
 });
 
@@ -541,5 +544,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(max-union-size)');
+  });
+
+  it('reports elseif-without-else through the adapter', () => {
+    const source = 'if (a) {} else if (b) {}';
+    const reports = runRule('elseif-without-else', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('elseifWithoutElse');
+  });
+
+  it('reports elseif-without-else through the CLI', () => {
+    const source = 'if (a) {} else if (b) {}';
+    const result = runOxlint('elseif-without-else', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(elseif-without-else)');
   });
 });

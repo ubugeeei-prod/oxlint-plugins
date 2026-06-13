@@ -997,3 +997,50 @@ fn reports_max_union_size_for_union_in_variable_annotation() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "maxUnionSize");
 }
+
+#[test]
+fn reports_elseif_without_else_for_chain_with_one_else_if() {
+    let source = "if (a) {} else if (b) {}";
+    let diagnostics = scan("elseif-without-else", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "elseif-without-else");
+    assert_eq!(diagnostics[0].message_id, "elseifWithoutElse");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_elseif_without_else_for_chain_with_two_else_ifs() {
+    let source = "if (a) {} else if (b) {} else if (c) {}";
+    let diagnostics = scan("elseif-without-else", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "elseifWithoutElse");
+}
+
+#[test]
+fn does_not_report_elseif_without_else_when_chain_ends_with_else() {
+    let source = "if (a) {} else if (b) {} else {}";
+    let diagnostics = scan("elseif-without-else", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_elseif_without_else_for_lone_if() {
+    let source = "if (a) {}";
+    let diagnostics = scan("elseif-without-else", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_elseif_without_else_for_if_with_only_else() {
+    let source = "if (a) {} else {}";
+    let diagnostics = scan("elseif-without-else", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_elseif_without_else_exactly_once_for_inner_chain() {
+    let source = "if (a) { if (x) {} else if (y) {} }";
+    let diagnostics = scan("elseif-without-else", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "elseifWithoutElse");
+}

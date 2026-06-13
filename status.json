@@ -11022,19 +11022,19 @@
       },
       {
         "name": "elseif-without-else",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule elseif-without-else (Sonar key S126). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S126). Reports the head if of an else-if chain that has no terminal else. Reuses the shared if_chain_seen chain-head mechanism. No upstream source, tests, fixtures, or messages were consulted."
       },
       {
         "name": "empty-string-repetition",
