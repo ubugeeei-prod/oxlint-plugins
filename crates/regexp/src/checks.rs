@@ -530,12 +530,30 @@ impl<'a> Scanner<'a> {
                 "grapheme-string-literal",
                 "unexpected",
                 DiagnosticData {
+                    expr: Some(original.clone()),
+                    replacement: Some(replacement.clone()),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+            // `no-useless-string-literal` covers the same single-character
+            // `\q{X}` case from a slightly different angle (the string-literal
+            // wrapper is dropped because the bare char already works in
+            // v-mode classes); fire both rules so users can enable them
+            // independently.
+            self.report_with_data(
+                "no-useless-string-literal",
+                "unexpected",
+                DiagnosticData {
                     expr: Some(original),
                     replacement: Some(replacement),
                     ..DiagnosticData::default()
                 },
                 span,
             );
+        }
+        if analysis.has_unsorted_class_elements {
+            self.report("sort-character-class-elements", "unexpected", span);
         }
 
         if analysis.has_empty_character_class {

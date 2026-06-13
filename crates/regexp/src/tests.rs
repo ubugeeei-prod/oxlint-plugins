@@ -92,8 +92,61 @@ fn exposes_initial_regexp_rule_names() {
             "grapheme-string-literal",
             "no-useless-non-capturing-group",
             "prefer-quantifier",
+            "no-useless-string-literal",
+            "sort-character-class-elements",
         ]
     );
+}
+
+mod no_useless_string_literal {
+    use super::*;
+
+    #[test]
+    fn fires_alongside_grapheme_string_literal_on_single_char_body() {
+        assert_eq!(
+            rule_ids_for("const a = /[\\q{a}]/v;", "no-useless-string-literal").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_empty_and_multi_character_bodies() {
+        assert!(rule_ids_for("const a = /[\\q{}]/v;", "no-useless-string-literal").is_empty());
+        assert!(rule_ids_for("const a = /[\\q{ab}]/v;", "no-useless-string-literal").is_empty());
+    }
+}
+
+mod sort_character_class_elements {
+    use super::*;
+
+    #[test]
+    fn reports_unsorted_all_literal_classes() {
+        assert_eq!(
+            rule_ids_for("const a = /[ba]/u;", "sort-character-class-elements").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[cba]/u;", "sort-character-class-elements").as_slice(),
+            &["unexpected"]
+        );
+        // Digits and letters intermixed but still unsorted.
+        assert_eq!(
+            rule_ids_for("const a = /[b1a]/u;", "sort-character-class-elements").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_sorted_classes_and_classes_with_escapes_or_ranges() {
+        assert!(rule_ids_for("const a = /[ab]/u;", "sort-character-class-elements").is_empty());
+        assert!(rule_ids_for("const a = /[abc]/u;", "sort-character-class-elements").is_empty());
+        // Escape inside class — deferred.
+        assert!(rule_ids_for("const a = /[a\\d]/u;", "sort-character-class-elements").is_empty());
+        // Range — deferred.
+        assert!(rule_ids_for("const a = /[a-z]/u;", "sort-character-class-elements").is_empty());
+        // Negated class — deferred.
+        assert!(rule_ids_for("const a = /[^ba]/u;", "sort-character-class-elements").is_empty());
+    }
 }
 
 mod prefer_quantifier {

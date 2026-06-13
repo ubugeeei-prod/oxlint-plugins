@@ -9243,19 +9243,19 @@
       },
       {
         "name": "no-useless-string-literal",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-string-literal."
+        "notes": "Parallel emission with grapheme-string-literal: both fire on `\\q{X}` with a single ASCII alphanumeric body. Users can enable them independently. Empty / multi-character bodies are deferred."
       },
       {
         "name": "no-useless-two-nums-quantifier",
@@ -9659,19 +9659,19 @@
       },
       {
         "name": "sort-character-class-elements",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule sort-character-class-elements."
+        "notes": "Class-level scan via class_has_unsorted_literal_elements: walks the class body once, rejecting on any escape, range, negation, or non-alphanumeric byte. Reports when the remaining all-literal elements are not in ascending byte order. Sorting semantics across escapes/ranges are intentionally deferred."
       },
       {
         "name": "strict",
