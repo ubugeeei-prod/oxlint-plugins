@@ -196,14 +196,22 @@ impl<'a> Scanner<'a> {
                 "Unexpected class, use functions not classes.",
                 class.span,
             );
-        }
-        if class.super_class.is_some() {
-            self.report(
-                "no-class-inheritance",
-                "extends",
-                "Unexpected class inheritance.",
-                class.span,
-            );
+            if class.r#abstract {
+                self.report(
+                    "no-class-inheritance",
+                    "abstract",
+                    "Unexpected abstract class.",
+                    class.span,
+                );
+            }
+            if class.super_class.is_some() {
+                self.report(
+                    "no-class-inheritance",
+                    "extends",
+                    "Unexpected class inheritance.",
+                    class.span,
+                );
+            }
         }
         if let Some(super_class) = &class.super_class {
             self.scan_expression(super_class, context);

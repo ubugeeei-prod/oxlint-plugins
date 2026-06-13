@@ -30,6 +30,7 @@ const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), 'fixtures');
 // Rules whose syntax-only port has reached full upstream parity. Populated one
 // entry per porting PR. See the file header for what "full parity" asserts.
 const FULL_PARITY = new Set([
+  'no-class-inheritance',
   'no-classes',
   'no-loop-statements',
   'no-promise-reject',
