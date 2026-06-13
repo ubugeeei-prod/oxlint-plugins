@@ -102,6 +102,14 @@ const messages = Object.freeze({
   'no-useless-range': {
     unexpected: "Unexpected useless range '{{expr}}'. Use '{{replacement}}' instead.",
   },
+  'no-empty-lookarounds-assertion': {
+    unexpected:
+      'Unexpected empty lookaround assertion; this assertion can never fail or succeed meaningfully.',
+  },
+  'prefer-regexp-exec': {
+    unexpected:
+      'Use `RegExp.prototype.exec` instead of `String.prototype.match` for non-global regular expressions.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -132,6 +140,9 @@ const ruleDescriptions = Object.freeze({
   'hexadecimal-escape': 'disallow `\\xHH` escape sequences (default `never`)',
   'unicode-escape': 'enforce using `\\u{HHHH}` over `\\uHHHH` (default `unicodeCodePointEscape`)',
   'no-useless-range': 'disallow character class ranges whose start equals their end',
+  'no-empty-lookarounds-assertion': 'disallow lookaround assertions with an empty body',
+  'prefer-regexp-exec':
+    'enforce `RegExp.prototype.exec` over `String.prototype.match` for non-global regexes',
 });
 
 const ruleTypes = Object.freeze({
@@ -161,6 +172,8 @@ const ruleTypes = Object.freeze({
   'hexadecimal-escape': 'suggestion',
   'unicode-escape': 'suggestion',
   'no-useless-range': 'suggestion',
+  'no-empty-lookarounds-assertion': 'problem',
+  'prefer-regexp-exec': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -273,7 +286,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-escape-backspace' ||
     ruleName === 'no-legacy-features' ||
     ruleName === 'no-non-standard-flag' ||
-    ruleName === 'no-invisible-character'
+    ruleName === 'no-invisible-character' ||
+    ruleName === 'no-empty-lookarounds-assertion'
   ) {
     return 'Possible Errors';
   }

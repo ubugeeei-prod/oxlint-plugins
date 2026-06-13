@@ -67,6 +67,8 @@ fn exposes_initial_regexp_rule_names() {
             "hexadecimal-escape",
             "unicode-escape",
             "no-useless-range",
+            "no-empty-lookarounds-assertion",
+            "prefer-regexp-exec",
         ]
     );
 }
@@ -963,6 +965,64 @@ mod no_useless_range {
         assert!(rule_ids_for("const a = /[0-9]/u;", "no-useless-range").is_empty());
         // Bare repeated characters without a `-` in between are not ranges.
         assert!(rule_ids_for("const a = /[aa]/u;", "no-useless-range").is_empty());
+    }
+}
+
+mod no_empty_lookarounds_assertion {
+    use super::*;
+
+    #[test]
+    fn reports_each_empty_lookaround_shape() {
+        assert_eq!(
+            rule_ids_for("const a = /(?=)/u;", "no-empty-lookarounds-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?!)/u;", "no-empty-lookarounds-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?<=)/u;", "no-empty-lookarounds-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?<!)/u;", "no-empty-lookarounds-assertion").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_filled_lookarounds_and_empty_non_lookaround_groups() {
+        assert!(rule_ids_for("const a = /(?=a)/u;", "no-empty-lookarounds-assertion").is_empty());
+        // Empty non-capturing group is `no-empty-group`'s responsibility.
+        assert!(rule_ids_for("const a = /(?:)/u;", "no-empty-lookarounds-assertion").is_empty());
+    }
+}
+
+mod prefer_regexp_exec {
+    use super::*;
+
+    #[test]
+    fn reports_string_match_with_non_global_regexp() {
+        assert_eq!(
+            rule_ids_for("str.match(/foo/u);", "prefer-regexp-exec").as_slice(),
+            &["unexpected"]
+        );
+        // Other call shapes still match if the property is `match`.
+        assert_eq!(
+            rule_ids_for("obj.prop.match(/foo/);", "prefer-regexp-exec").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_global_regexps_and_unrelated_calls() {
+        assert!(rule_ids_for("str.match(/foo/gu);", "prefer-regexp-exec").is_empty());
+        assert!(rule_ids_for("str.match(/foo/g);", "prefer-regexp-exec").is_empty());
+        // Non-literal argument — we cannot be sure of the flags.
+        assert!(rule_ids_for("str.match(pattern);", "prefer-regexp-exec").is_empty());
+        // Different method name.
+        assert!(rule_ids_for("str.replace(/foo/u, 'bar');", "prefer-regexp-exec").is_empty());
     }
 }
 

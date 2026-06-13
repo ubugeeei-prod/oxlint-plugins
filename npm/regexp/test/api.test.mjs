@@ -31,6 +31,8 @@ describe('regexp native API', () => {
       'hexadecimal-escape',
       'unicode-escape',
       'no-useless-range',
+      'no-empty-lookarounds-assertion',
+      'prefer-regexp-exec',
     ]);
   });
 
