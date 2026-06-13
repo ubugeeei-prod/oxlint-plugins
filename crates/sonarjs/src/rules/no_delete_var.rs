@@ -27,7 +27,10 @@ impl Scanner<'_> {
         if expr.operator != UnaryOperator::Delete {
             return;
         }
-        if !matches!(expr.argument.get_inner_expression(), Expression::Identifier(_)) {
+        if !matches!(
+            expr.argument.get_inner_expression(),
+            Expression::Identifier(_)
+        ) {
             return;
         }
         self.report(RULE_NAME, "noDeleteVar", expr.span);
