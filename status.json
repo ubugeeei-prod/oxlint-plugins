@@ -10094,19 +10094,19 @@
       },
       {
         "name": "arguments-usage",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule arguments-usage (Sonar key S3513). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S3513). Reports every IdentifierReference named 'arguments'; suggests rest parameters instead. Syntactic check only; no upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "array-callback-without-return",

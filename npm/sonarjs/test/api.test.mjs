@@ -14,6 +14,7 @@ const expectedRuleNames = [
   'no-identical-conditions',
   'no-all-duplicated-branches',
   'no-identical-expressions',
+  'arguments-usage',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -415,6 +416,39 @@ describe('sonarjs native API', () => {
   it('does not report no-identical-expressions for a.b === a.c (different member access)', () => {
     const source = 'a.b === a.c';
     const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports arguments-usage when arguments is used inside a function', () => {
+    const source = 'function f() { return arguments[0]; }';
+    const diagnostics = scan('arguments-usage', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('arguments-usage');
+    expect(diagnostics[0].messageId).toBe('argumentsUsage');
+  });
+
+  it('reports arguments-usage when arguments.length is accessed', () => {
+    const source = 'function f() { console.log(arguments.length); }';
+    const diagnostics = scan('arguments-usage', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('argumentsUsage');
+  });
+
+  it('does not report arguments-usage when rest parameters are used', () => {
+    const source = 'function f(...args) { return args[0]; }';
+    const diagnostics = scan('arguments-usage', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report arguments-usage for object property named arguments', () => {
+    const source = 'const o = { arguments: 1 }; o.arguments;';
+    const diagnostics = scan('arguments-usage', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report arguments-usage for a function that does not use arguments', () => {
+    const source = 'function f() { return 1; }';
+    const diagnostics = scan('arguments-usage', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
