@@ -21,28 +21,28 @@ counted in the parity ledger — never silently dropped.
 
 ### Rule status
 
-| Rule                            | Status                                                                           |
-| ------------------------------- | -------------------------------------------------------------------------------- |
-| `functional-parameters`         | ✅ Full parity                                                                   |
-| `no-class-inheritance`          | ✅ Full parity                                                                   |
-| `no-classes`                    | ✅ Full parity                                                                   |
-| `no-let`                        | ✅ Full parity                                                                   |
-| `no-loop-statements`            | ✅ Full parity                                                                   |
-| `no-promise-reject`             | ✅ Full parity                                                                   |
-| `no-this-expressions`           | ✅ Full parity                                                                   |
-| `no-try-statements`             | ✅ Full parity                                                                   |
-| `prefer-property-signatures`    | ✅ Full parity                                                                   |
-| `readonly-type`                 | ✅ AST-only (no upstream test suite)                                             |
-| `no-conditional-statements`     | 🟡 Syntactic core; `allowReturningBranches: "ifExhaustive"` needs types          |
-| `no-expression-statements`      | 🟡 Syntactic core; `ignoreVoid` / `ignoreSelfReturning` need types               |
-| `no-mixed-types`                | 🟡 Syntactic core; resolving a property typed as a function needs types          |
-| `no-throw-statements`           | 🟡 Syntactic core; `allowToRejectPromises` promise-handler detection needs types |
-| `prefer-readonly-type`          | 🟡 Syntactic core; `checkImplicit` needs types                                   |
-| `immutable-data`                | 🔵 Needs type information (array/map/set detection)                              |
-| `no-return-void`                | 🔵 Needs type information (inferred return types)                                |
-| `prefer-immutable-types`        | 🔵 Needs type information (`is-immutable-type`)                                  |
-| `prefer-tacit`                  | 🔵 Needs type information (call-signature arity)                                 |
-| `type-declaration-immutability` | 🔵 Needs type information (`is-immutable-type`)                                  |
+| Rule                            | Status                                                                  |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| `functional-parameters`         | ✅ Full parity                                                          |
+| `no-class-inheritance`          | ✅ Full parity                                                          |
+| `no-classes`                    | ✅ Full parity                                                          |
+| `no-let`                        | ✅ Full parity                                                          |
+| `no-loop-statements`            | ✅ Full parity                                                          |
+| `no-mixed-types`                | ✅ Full parity                                                          |
+| `no-promise-reject`             | ✅ Full parity                                                          |
+| `no-this-expressions`           | ✅ Full parity                                                          |
+| `no-throw-statements`           | ✅ Full parity                                                          |
+| `no-try-statements`             | ✅ Full parity                                                          |
+| `prefer-property-signatures`    | ✅ Full parity                                                          |
+| `readonly-type`                 | ✅ AST-only (no upstream test suite)                                    |
+| `no-conditional-statements`     | 🟡 Syntactic core; `allowReturningBranches: "ifExhaustive"` needs types |
+| `no-expression-statements`      | 🟡 Syntactic core; `ignoreVoid` / `ignoreSelfReturning` need types      |
+| `prefer-readonly-type`          | 🟡 Syntactic core; `checkImplicit` needs types                          |
+| `immutable-data`                | 🔵 Needs type information (array/map/set detection)                     |
+| `no-return-void`                | 🔵 Needs type information (inferred return types)                       |
+| `prefer-immutable-types`        | 🔵 Needs type information (`is-immutable-type`)                         |
+| `prefer-tacit`                  | 🔵 Needs type information (call-signature arity)                        |
+| `type-declaration-immutability` | 🔵 Needs type information (`is-immutable-type`)                         |
 
 - ✅ Full parity — every upstream test case is asserted.
 - 🟡 Syntactic core — the rule's syntax-only behavior is implemented and the

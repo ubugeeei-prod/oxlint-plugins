@@ -29,6 +29,12 @@ pub(crate) struct Scanner<'a> {
     pub(crate) ignore_code_regexes: SmallVec<[regex::Regex; 4]>,
 }
 
+/// A function passed to `.then(...)`/`.catch(...)` is a promise handler: a throw
+/// inside it rejects the surrounding promise (no-throw `allowToRejectPromises`).
+fn meta_is_promise_handler(meta: &FunctionParamMeta<'_>) -> bool {
+    meta.is_lambda_arg && matches!(meta.enclosing_call_property, Some("then") | Some("catch"))
+}
+
 impl<'a> Scanner<'a> {
     pub(crate) fn report(
         &mut self,
@@ -70,6 +76,7 @@ impl<'a> Scanner<'a> {
             in_async_function: function.r#async,
             in_try_with_catch: false,
             in_function: true,
+            in_promise_handler: meta_is_promise_handler(&meta),
         };
         if let Some(body) = &function.body {
             self.scan_function_body(body, context);
@@ -90,6 +97,7 @@ impl<'a> Scanner<'a> {
             in_async_function: function.r#async,
             in_try_with_catch: false,
             in_function: true,
+            in_promise_handler: meta_is_promise_handler(&meta),
         };
         self.scan_function_body(&function.body, context);
     }
@@ -198,6 +206,7 @@ impl<'a> Scanner<'a> {
                         in_async_function: false,
                         in_try_with_catch: false,
                         in_function: false,
+                        in_promise_handler: false,
                     },
                 );
             }

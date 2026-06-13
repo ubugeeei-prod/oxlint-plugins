@@ -203,6 +203,9 @@ pub(crate) struct FunctionContext {
     pub(crate) in_try_with_catch: bool,
     /// True when inside any function/arrow/method body; used by no-let allowInFunctions.
     pub(crate) in_function: bool,
+    /// True when the enclosing function is a `.then`/`.catch` promise handler; an
+    /// async-style throw there rejects the promise (no-throw allowToRejectPromises).
+    pub(crate) in_promise_handler: bool,
 }
 
 pub fn implemented_functional_rule_names() -> &'static [&'static str] {
@@ -245,6 +248,7 @@ pub fn scan_functional(
             in_async_function: false,
             in_try_with_catch: false,
             in_function: false,
+            in_promise_handler: false,
         },
     );
     scanner.diagnostics

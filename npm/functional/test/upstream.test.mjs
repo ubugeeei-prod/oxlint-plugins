@@ -38,6 +38,7 @@ const FULL_PARITY = new Set([
   'no-mixed-types',
   'no-promise-reject',
   'no-this-expressions',
+  'no-throw-statements',
   'no-try-statements',
   'prefer-property-signatures',
 ]);
