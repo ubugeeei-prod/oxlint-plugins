@@ -39,6 +39,10 @@ const messages = Object.freeze({
   'no-duplicate-in-composite': {
     duplicateType: 'Remove this duplicated type or replace with another one.',
   },
+  'non-existent-operator': {
+    nonExistentOperator:
+      "Was this '=-', '=+', or '=!' meant to be a compound assignment or comparison? Add a space to clarify, or fix the operator.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -50,6 +54,8 @@ const ruleDescriptions = Object.freeze({
   'comma-or-logical-or-case': "Disallow '||' or ',' expressions as switch case labels",
   'no-duplicate-in-composite':
     'Disallow duplicate type members in TypeScript union or intersection types',
+  'non-existent-operator':
+    "Disallow the suspicious '=-', '=+', or '=!' operator typos adjacent to a plain assignment",
 });
 
 const ruleTypes = Object.freeze({
@@ -60,6 +66,7 @@ const ruleTypes = Object.freeze({
   'no-redundant-boolean': 'suggestion',
   'comma-or-logical-or-case': 'suggestion',
   'no-duplicate-in-composite': 'suggestion',
+  'non-existent-operator': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -70,6 +77,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-redundant-boolean': 'error',
   'comma-or-logical-or-case': 'error',
   'no-duplicate-in-composite': 'error',
+  'non-existent-operator': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

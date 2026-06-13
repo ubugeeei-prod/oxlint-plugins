@@ -8,3 +8,4 @@ mod no_nested_conditional;
 mod no_nested_switch;
 mod no_nested_template_literals;
 mod no_redundant_boolean;
+mod non_existent_operator;

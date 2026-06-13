@@ -291,3 +291,49 @@ fn reports_two_diagnostics_for_triple_duplicate_in_union() {
     let diagnostics = scan("no-duplicate-in-composite", source);
     assert_eq!(diagnostics.len(), 2);
 }
+
+#[test]
+fn reports_non_existent_operator_for_equals_minus() {
+    let source = "let x = 0; x =- 1;";
+    let diagnostics = scan("non-existent-operator", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "non-existent-operator");
+    assert_eq!(diagnostics[0].message_id, "nonExistentOperator");
+}
+
+#[test]
+fn reports_non_existent_operator_for_equals_plus() {
+    let source = "let x = 0; x =+ 1;";
+    let diagnostics = scan("non-existent-operator", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "nonExistentOperator");
+}
+
+#[test]
+fn reports_non_existent_operator_for_equals_not() {
+    let source = "let x = false; let y = true; x =! y;";
+    let diagnostics = scan("non-existent-operator", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "nonExistentOperator");
+}
+
+#[test]
+fn does_not_report_non_existent_operator_when_space_before_unary() {
+    let source = "let x = 0; x = -1;";
+    let diagnostics = scan("non-existent-operator", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_non_existent_operator_for_compound_assignment() {
+    let source = "let x = 0; x -= 1;";
+    let diagnostics = scan("non-existent-operator", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_non_existent_operator_for_plain_assign_non_unary() {
+    let source = "let x = 0; let y = 1; x = y;";
+    let diagnostics = scan("non-existent-operator", source);
+    assert!(diagnostics.is_empty());
+}
