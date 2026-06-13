@@ -273,11 +273,11 @@ impl<'a> Scanner<'a> {
         context: FunctionContext,
         in_for_init: bool,
     ) {
-        if declaration.kind == VariableDeclarationKind::Let
-            && !(in_for_init && self.options.allow_let_in_for_loop_init)
-            && !(self.options.allow_in_functions && context.in_function)
-            && !self.declaration_identifiers_ignored(declaration)
-        {
+        let is_let = declaration.kind == VariableDeclarationKind::Let;
+        let allowed_in_for_init = in_for_init && self.options.allow_let_in_for_loop_init;
+        let allowed_in_function = self.options.allow_in_functions && context.in_function;
+        let ignored = self.declaration_identifiers_ignored(declaration);
+        if is_let && !allowed_in_for_init && !allowed_in_function && !ignored {
             self.report(
                 "no-let",
                 "generic",
