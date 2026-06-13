@@ -71,6 +71,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_switch_statement(&mut self, it: &SwitchStatement<'a>) {
         self.check_no_nested_switch(it);
+        self.check_no_all_duplicated_branches_switch(it);
         self.switch_depth += 1;
         walk::walk_switch_statement(self, it);
         self.switch_depth -= 1;
@@ -102,6 +103,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_if_statement(&mut self, it: &IfStatement<'a>) {
         self.check_no_collapsible_if(it);
         self.check_no_identical_conditions(it);
+        self.check_no_all_duplicated_branches_if(it);
         walk::walk_if_statement(self, it);
     }
 

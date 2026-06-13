@@ -12,6 +12,7 @@ const expectedRuleNames = [
   'no-duplicate-in-composite',
   'non-existent-operator',
   'no-identical-conditions',
+  'no-all-duplicated-branches',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -275,5 +276,51 @@ describe('sonarjs native API', () => {
     const diagnostics = scan('no-identical-conditions', source);
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0].messageId).toBe('identicalConditions');
+  });
+
+  it('reports no-all-duplicated-branches for an if/else where both branches are identical', () => {
+    const source = 'if (a) { f(); } else { f(); }';
+    const diagnostics = scan('no-all-duplicated-branches', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-all-duplicated-branches');
+    expect(diagnostics[0].messageId).toBe('allDuplicatedBranches');
+  });
+
+  it('reports no-all-duplicated-branches for an if/else-if/else chain where all branches are identical', () => {
+    const source = 'if (a) { f(); } else if (b) { f(); } else { f(); }';
+    const diagnostics = scan('no-all-duplicated-branches', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('allDuplicatedBranches');
+  });
+
+  it('does not report no-all-duplicated-branches when branches differ', () => {
+    const source = 'if (a) { f(); } else { g(); }';
+    const diagnostics = scan('no-all-duplicated-branches', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-all-duplicated-branches when there is no terminal else', () => {
+    const source = 'if (a) { f(); } else if (b) { f(); }';
+    const diagnostics = scan('no-all-duplicated-branches', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-all-duplicated-branches for a switch where all cases are identical', () => {
+    const source = 'switch (x) { case 1: f(); break; default: f(); break; }';
+    const diagnostics = scan('no-all-duplicated-branches', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('allDuplicatedBranches');
+  });
+
+  it('does not report no-all-duplicated-branches for a switch where cases differ', () => {
+    const source = 'switch (x) { case 1: f(); break; default: g(); break; }';
+    const diagnostics = scan('no-all-duplicated-branches', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-all-duplicated-branches for a switch without a default case', () => {
+    const source = 'switch (x) { case 1: f(); break; case 2: f(); break; }';
+    const diagnostics = scan('no-all-duplicated-branches', source);
+    expect(diagnostics).toHaveLength(0);
   });
 });
