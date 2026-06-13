@@ -135,11 +135,55 @@ fn replacement_has_useless_dollar_zero_ref(replacement: &str, capture_count: u32
     false
 }
 
-/// Returns `true` when `replacement` contains a `$N` backreference (where `N`
-/// is a single ASCII digit 1-9). Used by `prefer-named-replacement` to decide
-/// whether a string replacement is using numbered backreferences. `$$` (escaped
-/// dollar) and `$&` (whole match) are intentionally skipped.
-fn contains_numeric_backreference(replacement: &str) -> bool {
+/// Builds a bitmask of capture-group indices (1-based, bits 1-9) that are
+/// named groups in `pattern`.  The bitmask is zero when there are no named
+/// groups.  Uses the same scanning approach as
+/// `first_numbered_backreference_with_named_group` in `helpers.rs`.
+fn named_group_mask(pattern: &str) -> u32 {
+    if !pattern.contains("(?<") {
+        return 0;
+    }
+    let bytes = pattern.as_bytes();
+    let mut mask: u32 = 0;
+    let mut group_counter: u32 = 0;
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+            } else {
+                index += 1;
+            }
+            continue;
+        }
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        if bytes[index] == b'(' {
+            let gp = group_prefix(bytes, index);
+            if gp.capturing {
+                group_counter += 1;
+                if gp.named && group_counter <= 9 {
+                    mask |= 1 << group_counter;
+                }
+            }
+            index = gp.next;
+            continue;
+        }
+        index += 1;
+    }
+    mask
+}
+
+/// Returns `true` when `replacement` contains a `$N` backreference (N = 1-9)
+/// where capture group N is a *named* group according to `named_mask`.
+/// `$$` (escaped dollar) is intentionally skipped.  Groups beyond 9 and the
+/// `$0` form are out of scope for this rule.
+fn replacement_has_named_group_numeric_ref(replacement: &str, named_mask: u32) -> bool {
+    if named_mask == 0 {
+        return false;
+    }
     let bytes = replacement.as_bytes();
     let mut index = 0;
     while index + 1 < bytes.len() {
@@ -149,8 +193,11 @@ fn contains_numeric_backreference(replacement: &str) -> bool {
                 index += 2;
                 continue;
             }
-            if next.is_ascii_digit() && next != b'0' {
-                return true;
+            if matches!(next, b'1'..=b'9') {
+                let group_num = (next - b'0') as u32;
+                if named_mask & (1 << group_num) != 0 {
+                    return true;
+                }
             }
         }
         index += 1;
@@ -299,9 +346,19 @@ impl<'a> Scanner<'a> {
         self.report("no-useless-dollar-replacements", "unexpected", call.span);
     }
 
-    /// `prefer-named-replacement`: when `<expr>.replace(<regexp with named
-    /// captures>, "...$N...")` mixes numbered backreferences with a regex that
-    /// has at least one named capture, the named form `$<name>` is clearer.
+    /// `prefer-named-replacement`: when `<string>.replace(<regexp with named
+    /// captures>, "...$N...")` uses a numbered backreference `$N` where group N
+    /// is itself a named capture, the named form `$<name>` is clearer.
+    ///
+    /// Two conditions must both hold before we report:
+    /// 1. The receiver is a statically-known string (string literal, no-expr
+    ///    template, or a `const`/`let`/`var` initialised with one). An unknown
+    ///    receiver (free variable, call result, …) might not be a `String` at
+    ///    all and is left unreported.
+    /// 2. The `$N` in the replacement refers to a group index that is itself a
+    ///    *named* group in the regex literal. A `$N` that points at an unnamed
+    ///    group has no named alternative and must not be flagged.
+    ///
     /// We only attempt the literal-regexp + literal-replacement case; dynamic
     /// arguments are deferred.
     fn check_prefer_named_replacement(&mut self, call: &'a CallExpression<'a>) {
@@ -310,6 +367,10 @@ impl<'a> Scanner<'a> {
         };
         let method = member.property.name.as_str();
         if method != "replace" && method != "replaceAll" {
+            return;
+        }
+        // Condition 1: receiver must be a statically-known string.
+        if !self.receiver_is_known_string(&member.object) {
             return;
         }
         if call.arguments.len() < 2 {
@@ -321,7 +382,10 @@ impl<'a> Scanner<'a> {
         let Expression::RegExpLiteral(literal) = arg0.get_inner_expression() else {
             return;
         };
-        if !literal.regex.pattern.text.as_str().contains("(?<") {
+        let pattern = literal.regex.pattern.text.as_str();
+        // Condition 2: build named-group mask; bail early when there are none.
+        let mask = named_group_mask(pattern);
+        if mask == 0 {
             return;
         }
         let Some(arg1) = call.arguments.get(1).and_then(Argument::as_expression) else {
@@ -330,7 +394,7 @@ impl<'a> Scanner<'a> {
         let Expression::StringLiteral(replacement) = arg1.get_inner_expression() else {
             return;
         };
-        if !contains_numeric_backreference(replacement.value.as_str()) {
+        if !replacement_has_named_group_numeric_ref(replacement.value.as_str(), mask) {
             return;
         }
         self.report("prefer-named-replacement", "unexpected", call.span);
