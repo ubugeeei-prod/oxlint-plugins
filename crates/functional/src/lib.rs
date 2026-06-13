@@ -137,6 +137,10 @@ impl LineIndex {
 #[derive(Clone, Copy)]
 pub(crate) struct FunctionContext {
     pub(crate) in_async_function: bool,
+    /// True when the current statement is inside the `try` block of a
+    /// `try`/`catch` (a thrown value would be caught, so an async `throw` here is
+    /// not a promise rejection). Reset at each function boundary.
+    pub(crate) in_try_with_catch: bool,
 }
 
 pub fn implemented_functional_rule_names() -> &'static [&'static str] {
@@ -167,6 +171,7 @@ pub fn scan_functional(
         &parser_return.program.body,
         FunctionContext {
             in_async_function: false,
+            in_try_with_catch: false,
         },
     );
     scanner.diagnostics
