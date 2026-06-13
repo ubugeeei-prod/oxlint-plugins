@@ -182,7 +182,25 @@ function createFunctionalRule(ruleName) {
   };
 }
 
+function stringOrStringArraySchema() {
+  return {
+    anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+  };
+}
+
 function schemaForRule(ruleName) {
+  if (ruleName === 'no-classes') {
+    return [
+      {
+        type: 'object',
+        properties: {
+          ignoreIdentifierPattern: stringOrStringArraySchema(),
+          ignoreCodePattern: stringOrStringArraySchema(),
+        },
+        additionalProperties: false,
+      },
+    ];
+  }
   if (ruleName === 'functional-parameters') {
     return [
       {
@@ -291,6 +309,9 @@ function scanOptionsForRule(context, ruleName) {
       ruleName === 'readonly-type' && (raw === 'keyword' || raw === 'generic') ? raw : undefined,
     ignoreIfReadonlyWrapped:
       ruleName === 'prefer-property-signatures' && options.ignoreIfReadonlyWrapped === true,
+    ignoreIdentifierPattern:
+      ruleName === 'no-classes' ? options.ignoreIdentifierPattern : undefined,
+    ignoreCodePattern: ruleName === 'no-classes' ? options.ignoreCodePattern : undefined,
   };
 }
 

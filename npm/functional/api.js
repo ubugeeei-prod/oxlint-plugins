@@ -31,7 +31,19 @@ function normalizeOptions(options) {
         ? raw.readonlyTypeMode
         : undefined,
     ignoreIfReadonlyWrapped: raw.ignoreIfReadonlyWrapped === true,
+    ignoreIdentifierPattern: normalizeStringList(raw.ignoreIdentifierPattern),
+    ignoreCodePattern: normalizeStringList(raw.ignoreCodePattern),
   };
+}
+
+function normalizeStringList(value) {
+  if (typeof value === 'string') {
+    return [value];
+  }
+  if (Array.isArray(value)) {
+    return value.filter((item) => typeof item === 'string');
+  }
+  return undefined;
 }
 
 function normalizeRuleNames(ruleNames) {

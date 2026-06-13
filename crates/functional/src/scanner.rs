@@ -22,6 +22,8 @@ pub(crate) struct Scanner<'a> {
     /// True while traversing the type arguments of a `Readonly<...>` reference,
     /// so `prefer-property-signatures` can honor `ignoreIfReadonlyWrapped`.
     pub(crate) within_readonly: bool,
+    pub(crate) ignore_identifier_regexes: SmallVec<[regex::Regex; 4]>,
+    pub(crate) ignore_code_regexes: SmallVec<[regex::Regex; 4]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -165,13 +167,36 @@ impl<'a> Scanner<'a> {
         self.scan_type(&return_type.type_annotation);
     }
 
+    pub(crate) fn class_is_ignored(&self, class: &Class<'a>) -> bool {
+        if let Some(id) = &class.id {
+            let name = id.name.as_str();
+            if self
+                .ignore_identifier_regexes
+                .iter()
+                .any(|re| re.is_match(name))
+            {
+                return true;
+            }
+        }
+        if !self.ignore_code_regexes.is_empty() {
+            let span = class.span;
+            let code = &self.source_text[span.start as usize..span.end as usize];
+            if self.ignore_code_regexes.iter().any(|re| re.is_match(code)) {
+                return true;
+            }
+        }
+        false
+    }
+
     pub(crate) fn scan_class(&mut self, class: &'a Class<'a>, context: FunctionContext) {
-        self.report(
-            "no-classes",
-            "generic",
-            "Unexpected class, use functions not classes.",
-            class.span,
-        );
+        if !self.class_is_ignored(class) {
+            self.report(
+                "no-classes",
+                "generic",
+                "Unexpected class, use functions not classes.",
+                class.span,
+            );
+        }
         if class.super_class.is_some() {
             self.report(
                 "no-class-inheritance",

@@ -69,6 +69,8 @@ pub struct FunctionalOptions {
     pub allow_try_finally: bool,
     pub readonly_type_mode: CompactString,
     pub ignore_if_readonly_wrapped: bool,
+    pub ignore_identifier_pattern: SmallVec<[CompactString; 4]>,
+    pub ignore_code_pattern: SmallVec<[CompactString; 4]>,
 }
 
 impl Default for FunctionalOptions {
@@ -86,6 +88,8 @@ impl Default for FunctionalOptions {
             allow_try_finally: false,
             readonly_type_mode: "generic".into(),
             ignore_if_readonly_wrapped: false,
+            ignore_identifier_pattern: SmallVec::new(),
+            ignore_code_pattern: SmallVec::new(),
         }
     }
 }
@@ -149,6 +153,13 @@ pub fn implemented_functional_rule_names() -> &'static [&'static str] {
     &RULE_NAMES
 }
 
+fn compile_patterns(patterns: &[CompactString]) -> SmallVec<[regex::Regex; 4]> {
+    patterns
+        .iter()
+        .filter_map(|pattern| regex::Regex::new(pattern).ok())
+        .collect()
+}
+
 pub fn scan_functional(
     source_text: &str,
     filename: &str,
@@ -169,6 +180,8 @@ pub fn scan_functional(
         diagnostics: SmallVec::new(),
         options,
         within_readonly: false,
+        ignore_identifier_regexes: compile_patterns(&options.ignore_identifier_pattern),
+        ignore_code_regexes: compile_patterns(&options.ignore_code_pattern),
     };
     scanner.scan_statement_list(
         &parser_return.program.body,
