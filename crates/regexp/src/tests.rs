@@ -1573,6 +1573,18 @@ mod unicode_escape {
         assert!(rule_ids_for("const a = /\\xab/u;", "unicode-escape").is_empty());
         assert!(rule_ids_for("const a = /\\d/u;", "unicode-escape").is_empty());
     }
+
+    #[test]
+    fn ignores_surrogate_halves() {
+        // Surrogate halves belong to `prefer-unicode-codepoint-escapes`, not here.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\ud83d\\\\ude00', 'u');",
+                "unicode-escape"
+            )
+            .is_empty()
+        );
+    }
 }
 
 mod no_useless_range {
