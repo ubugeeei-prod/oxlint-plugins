@@ -3,9 +3,9 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    BraceQuantifierShape, class_contains_backspace_escape, class_is_digit_range,
-    class_is_word_char_set, class_matches_anything, find_class_end, group_prefix,
-    is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    BraceQuantifierShape, class_contains_backspace_escape, class_has_useless_range,
+    class_is_digit_range, class_is_word_char_set, class_matches_anything, find_class_end,
+    group_prefix, is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -65,6 +65,9 @@ pub(crate) struct PatternAnalysis {
     /// First `[a-zA-Z0-9_]`-shaped class (any order) and whether it was
     /// negated. `Some(false)` → `\w`, `Some(true)` → `\W`. `prefer-w`.
     pub(crate) first_word_class: Option<bool>,
+    /// First useless single-character range like `[a-a]`. The captured `char`
+    /// is the repeated endpoint. `no-useless-range`.
+    pub(crate) first_useless_range: Option<char>,
 }
 
 impl PatternAnalysis {
@@ -107,6 +110,11 @@ impl PatternAnalysis {
                             && let Some(shape) = class_is_word_char_set(bytes, index)
                         {
                             self.first_word_class = Some(shape.negated);
+                        }
+                        if self.first_useless_range.is_none()
+                            && let Some(ch) = class_has_useless_range(bytes, index)
+                        {
+                            self.first_useless_range = Some(ch);
                         }
                         self.mark_content(&mut groups);
                         index = close + 1;

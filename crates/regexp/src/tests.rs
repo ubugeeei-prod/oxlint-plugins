@@ -64,6 +64,9 @@ fn exposes_initial_regexp_rule_names() {
             "letter-case",
             "no-non-standard-flag",
             "no-invisible-character",
+            "hexadecimal-escape",
+            "unicode-escape",
+            "no-useless-range",
         ]
     );
 }
@@ -861,6 +864,105 @@ mod no_invisible_character {
             )
             .is_empty()
         );
+    }
+}
+
+mod hexadecimal_escape {
+    use super::*;
+
+    #[test]
+    fn reports_hex_x_escapes_with_unicode_replacement() {
+        let data = first_data(
+            "const a = new RegExp('\\\\xab', 'u');",
+            "hexadecimal-escape",
+        );
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("\\xab"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\u{ab}")
+        );
+        // Uppercase digits are normalised in the replacement.
+        let data = first_data(
+            "const a = new RegExp('\\\\xAB', 'u');",
+            "hexadecimal-escape",
+        );
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\u{ab}")
+        );
+    }
+
+    #[test]
+    fn ignores_unicode_escapes_and_unrelated_escapes() {
+        assert!(rule_ids_for("const a = /\\uabcd/u;", "hexadecimal-escape").is_empty());
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\u{ab}', 'u');",
+                "hexadecimal-escape"
+            )
+            .is_empty()
+        );
+        assert!(rule_ids_for("const a = /\\d/u;", "hexadecimal-escape").is_empty());
+    }
+}
+
+mod unicode_escape {
+    use super::*;
+
+    #[test]
+    fn reports_fixed_unicode_escapes_with_codepoint_replacement() {
+        let data = first_data("const a = new RegExp('\\\\uabcd', 'u');", "unicode-escape");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("\\uabcd")
+        );
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\u{abcd}")
+        );
+    }
+
+    #[test]
+    fn ignores_codepoint_form_and_other_escapes() {
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\u{abcd}', 'u');",
+                "unicode-escape"
+            )
+            .is_empty()
+        );
+        assert!(rule_ids_for("const a = /\\xab/u;", "unicode-escape").is_empty());
+        assert!(rule_ids_for("const a = /\\d/u;", "unicode-escape").is_empty());
+    }
+}
+
+mod no_useless_range {
+    use super::*;
+
+    #[test]
+    fn reports_single_char_ranges() {
+        let data = first_data("const a = /[a-a]/u;", "no-useless-range");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("a-a"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("a")
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[0-0]/u;", "no-useless-range").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[a-ab]/u;", "no-useless-range").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_real_ranges_and_unrelated_classes() {
+        assert!(rule_ids_for("const a = /[a-z]/u;", "no-useless-range").is_empty());
+        assert!(rule_ids_for("const a = /[0-9]/u;", "no-useless-range").is_empty());
+        // Bare repeated characters without a `-` in between are not ranges.
+        assert!(rule_ids_for("const a = /[aa]/u;", "no-useless-range").is_empty());
     }
 }
 

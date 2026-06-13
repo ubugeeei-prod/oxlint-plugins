@@ -543,6 +543,97 @@ fn is_invisible_character(ch: char) -> bool {
     )
 }
 
+/// Returns the first `\xHH` escape sequence in `pattern` together with its
+/// `\u{HH}` replacement. Used by `hexadecimal-escape` (default config: flag
+/// hex escapes and prefer unicode-style replacements). Other escapes such as
+/// `\uHHHH`, `\u{H+}`, and `\d` are skipped via `skip_escape`.
+pub(crate) fn first_hex_x_escape(pattern: &str) -> Option<(&str, CompactString)> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        if bytes.get(index + 1) == Some(&b'x')
+            && index + 4 <= bytes.len()
+            && bytes[index + 2].is_ascii_hexdigit()
+            && bytes[index + 3].is_ascii_hexdigit()
+        {
+            let original = &pattern[index..index + 4];
+            let mut replacement = CompactString::new("\\u{");
+            replacement.push(bytes[index + 2].to_ascii_lowercase() as char);
+            replacement.push(bytes[index + 3].to_ascii_lowercase() as char);
+            replacement.push('}');
+            return Some((original, replacement));
+        }
+        index = skip_escape(bytes, index);
+    }
+    None
+}
+
+/// Returns the first fixed-width `\uHHHH` escape (i.e. not the `\u{H+}`
+/// variant) in `pattern` together with its `\u{HHHH}` replacement. Used by
+/// `unicode-escape` (default config: prefer the unicode code-point escape).
+pub(crate) fn first_fixed_unicode_escape(pattern: &str) -> Option<(&str, CompactString)> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        if bytes.get(index + 1) == Some(&b'u')
+            && bytes.get(index + 2).copied() != Some(b'{')
+            && index + 6 <= bytes.len()
+            && bytes[index + 2].is_ascii_hexdigit()
+            && bytes[index + 3].is_ascii_hexdigit()
+            && bytes[index + 4].is_ascii_hexdigit()
+            && bytes[index + 5].is_ascii_hexdigit()
+        {
+            let original = &pattern[index..index + 6];
+            let mut replacement = CompactString::new("\\u{");
+            for offset in 2..6 {
+                replacement.push(bytes[index + offset].to_ascii_lowercase() as char);
+            }
+            replacement.push('}');
+            return Some((original, replacement));
+        }
+        index = skip_escape(bytes, index);
+    }
+    None
+}
+
+/// Returns `true` when the `[...]` class at `open` contains at least one
+/// `X-X` range whose start and end byte are literal ASCII characters that
+/// match exactly. Used by `no-useless-range`. Escaped or compound ranges
+/// (`\d-\d`, `\xHH-\xHH`) are intentionally not handled — they need
+/// equivalence analysis that we defer.
+pub(crate) fn class_has_useless_range(bytes: &[u8], open: usize) -> Option<char> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end
+            && bytes[index + 1] == b'-'
+            && bytes[index + 2] != b'\\'
+            && bytes[index + 2] != b']'
+            && bytes[index] == bytes[index + 2]
+        {
+            return Some(bytes[index] as char);
+        }
+        index += 1;
+    }
+    None
+}
+
 pub(crate) fn first_control_character(pattern: &str) -> Option<char> {
     let bytes = pattern.as_bytes();
     let mut index = 0;

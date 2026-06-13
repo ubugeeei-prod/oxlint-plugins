@@ -11,9 +11,9 @@ use oxc_span::Span;
 use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
-    duplicate_flag, first_control_character, first_invisible_character, first_non_standard_flag,
-    first_octal_escape, first_uppercase_hex_escape, mention_char, sorted_flags,
-    string_literal_value_with_span,
+    duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
+    first_invisible_character, first_non_standard_flag, first_octal_escape,
+    first_uppercase_hex_escape, mention_char, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -361,6 +361,48 @@ impl<'a> Scanner<'a> {
                 DiagnosticData {
                     expr: Some(CompactString::from(escape)),
                     replacement: Some(CompactString::from(escape.to_ascii_lowercase().as_str())),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some((escape, replacement)) = first_hex_x_escape(pattern) {
+            self.report_with_data(
+                "hexadecimal-escape",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(escape)),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some((escape, replacement)) = first_fixed_unicode_escape(pattern) {
+            self.report_with_data(
+                "unicode-escape",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(escape)),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(ch) = analysis.first_useless_range {
+            let mut text = CompactString::new("");
+            text.push(ch);
+            text.push('-');
+            text.push(ch);
+            let mut replacement = CompactString::new("");
+            replacement.push(ch);
+            self.report_with_data(
+                "no-useless-range",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(text),
+                    replacement: Some(replacement),
                     ..DiagnosticData::default()
                 },
                 span,
