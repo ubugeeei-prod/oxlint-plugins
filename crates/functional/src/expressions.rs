@@ -178,83 +178,25 @@ impl<'a> Scanner<'a> {
         element: &'a ArrayExpressionElement<'a>,
         context: FunctionContext,
     ) {
-        match element {
-            ArrayExpressionElement::SpreadElement(spread) => {
-                self.scan_expression(&spread.argument, context)
-            }
-            ArrayExpressionElement::CallExpression(call) => {
-                self.scan_call_expression(call, context)
-            }
-            ArrayExpressionElement::StaticMemberExpression(member) => {
-                self.scan_static_member_expression(member, context);
-            }
-            ArrayExpressionElement::ComputedMemberExpression(member) => {
-                self.scan_computed_member_expression(member, context);
-            }
-            ArrayExpressionElement::ArrowFunctionExpression(function) => {
-                self.scan_arrow_function(function, FunctionParamMeta::default());
-            }
-            ArrayExpressionElement::FunctionExpression(function) => {
-                self.scan_function(function, FunctionParamMeta::default());
-            }
-            ArrayExpressionElement::ArrayExpression(expression) => {
-                for element in &expression.elements {
-                    self.scan_array_element(element, context);
-                }
-            }
-            ArrayExpressionElement::ObjectExpression(expression) => {
-                for property in &expression.properties {
-                    if let ObjectPropertyKind::ObjectProperty(property) = property {
-                        self.scan_expression(&property.value, context);
-                    }
-                }
-            }
-            _ => {}
+        // Spread elements wrap an expression; an elision (hole) has none; every
+        // other element is an expression. Route expressions through
+        // `scan_expression` so no node type is skipped in array-element position.
+        if let ArrayExpressionElement::SpreadElement(spread) = element {
+            self.scan_expression(&spread.argument, context);
+        } else if let Some(expression) = element.as_expression() {
+            self.scan_expression(expression, context);
         }
     }
 
     pub(crate) fn scan_argument(&mut self, argument: &'a Argument<'a>, context: FunctionContext) {
-        match argument {
-            Argument::SpreadElement(spread) => self.scan_expression(&spread.argument, context),
-            Argument::Identifier(identifier) => {
-                let is_arguments = identifier.name == "arguments";
-                let allow_args = self.options.allow_arguments_keyword;
-                if is_arguments && !allow_args {
-                    self.report(
-                        "functional-parameters",
-                        "arguments",
-                        "Unexpected use of `arguments`. Use regular function arguments instead.",
-                        identifier.span,
-                    );
-                }
-            }
-            Argument::CallExpression(call) => self.scan_call_expression(call, context),
-            Argument::StaticMemberExpression(member) => {
-                self.scan_static_member_expression(member, context);
-            }
-            Argument::ComputedMemberExpression(member) => {
-                self.scan_computed_member_expression(member, context);
-            }
-            Argument::ArrowFunctionExpression(function) => {
-                self.scan_arrow_function(function, FunctionParamMeta::default());
-            }
-            Argument::FunctionExpression(function) => {
-                self.scan_function(function, FunctionParamMeta::default());
-            }
-            Argument::ClassExpression(class) => self.scan_class(class, context),
-            Argument::ArrayExpression(expression) => {
-                for element in &expression.elements {
-                    self.scan_array_element(element, context);
-                }
-            }
-            Argument::ObjectExpression(expression) => {
-                for property in &expression.properties {
-                    if let ObjectPropertyKind::ObjectProperty(property) = property {
-                        self.scan_expression(&property.value, context);
-                    }
-                }
-            }
-            _ => {}
+        // A call/new argument is either a spread element or any expression; route
+        // every expression through `scan_expression` so no node type (e.g.
+        // `this`, `new Promise(...)`, update/assignment expressions) is silently
+        // skipped in argument position.
+        if let Argument::SpreadElement(spread) = argument {
+            self.scan_expression(&spread.argument, context);
+        } else if let Some(expression) = argument.as_expression() {
+            self.scan_expression(expression, context);
         }
     }
 
