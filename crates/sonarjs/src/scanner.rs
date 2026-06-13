@@ -3,10 +3,10 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, ConditionalExpression, ExpressionStatement, Function,
-    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral,
-    SwitchCase, SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
-    YieldExpression,
+    AssignmentExpression, BinaryExpression, ConditionalExpression, Expression, ExpressionStatement,
+    Function, IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral,
+    StaticMemberExpression, SwitchCase, SwitchStatement, TSIntersectionType, TSUnionType,
+    TemplateLiteral, UnaryExpression, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -145,6 +145,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_reg_exp_literal(&mut self, it: &RegExpLiteral<'a>) {
         self.check_no_empty_character_class(it);
         walk::walk_reg_exp_literal(self, it);
+    }
+
+    fn visit_static_member_expression(&mut self, it: &StaticMemberExpression<'a>) {
+        self.check_no_exclusive_tests(it);
+        walk::walk_static_member_expression(self, it);
     }
 
     fn visit_labeled_statement(&mut self, it: &LabeledStatement<'a>) {

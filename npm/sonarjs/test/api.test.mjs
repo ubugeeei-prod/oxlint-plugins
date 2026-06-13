@@ -20,6 +20,7 @@ const expectedRuleNames = [
   'constructor-for-side-effects',
   'no-empty-character-class',
   'generator-without-yield',
+  'no-exclusive-tests',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -630,5 +631,45 @@ describe('sonarjs native API', () => {
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0].messageId).toBe('generatorWithoutYield');
     expect(diagnostics[0].loc.startColumn).toBeGreaterThan(0);
+  });
+
+  it('reports no-exclusive-tests for describe.only(...)', () => {
+    const source = "describe.only('x', () => {});";
+    const diagnostics = scan('no-exclusive-tests', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-exclusive-tests');
+    expect(diagnostics[0].messageId).toBe('noExclusiveTests');
+  });
+
+  it('reports no-exclusive-tests for it.only(...)', () => {
+    const source = "it.only('x', () => {});";
+    const diagnostics = scan('no-exclusive-tests', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noExclusiveTests');
+  });
+
+  it('reports no-exclusive-tests for test.only(...)', () => {
+    const source = "test.only('x', () => {});";
+    const diagnostics = scan('no-exclusive-tests', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noExclusiveTests');
+  });
+
+  it('does not report no-exclusive-tests for it without .only', () => {
+    const source = "it('x', () => {});";
+    const diagnostics = scan('no-exclusive-tests', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-exclusive-tests for foo.only (unknown function)', () => {
+    const source = 'foo.only();';
+    const diagnostics = scan('no-exclusive-tests', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-exclusive-tests for describe without .only', () => {
+    const source = "describe('x', () => {});";
+    const diagnostics = scan('no-exclusive-tests', source);
+    expect(diagnostics).toHaveLength(0);
   });
 });

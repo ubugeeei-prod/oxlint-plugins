@@ -111,6 +111,7 @@ describe('sonarjs plugin shape', () => {
       'constructor-for-side-effects',
       'no-empty-character-class',
       'generator-without-yield',
+      'no-exclusive-tests',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -129,6 +130,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['constructor-for-side-effects']).toBe('object');
     expect(typeof plugin.rules['no-empty-character-class']).toBe('object');
     expect(typeof plugin.rules['generator-without-yield']).toBe('object');
+    expect(typeof plugin.rules['no-exclusive-tests']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -147,6 +149,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/constructor-for-side-effects']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-character-class']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/generator-without-yield']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-exclusive-tests']).toBe('error');
   });
 });
 
@@ -271,6 +274,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('generator-without-yield', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('generatorWithoutYield');
+  });
+
+  it('reports no-exclusive-tests for describe.only through the adapter', () => {
+    const source = "describe.only('x', () => {});";
+    const reports = runRule('no-exclusive-tests', source, { filename: 'sample.js' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noExclusiveTests');
   });
 });
 
@@ -439,5 +449,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(generator-without-yield)');
+  });
+
+  it('reports no-exclusive-tests through the CLI', () => {
+    const source = "describe.only('x', () => {});";
+    const result = runOxlint('no-exclusive-tests', source, 'sample.js');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-exclusive-tests)');
   });
 });
