@@ -6,6 +6,7 @@ mod comma_or_logical_or_case;
 mod constructor_for_side_effects;
 mod generator_without_yield;
 mod no_all_duplicated_branches;
+mod no_built_in_override;
 mod no_collapsible_if;
 mod no_delete_var;
 mod no_duplicate_in_composite;

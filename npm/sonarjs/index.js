@@ -80,6 +80,9 @@ const messages = Object.freeze({
   'no-exclusive-tests': {
     noExclusiveTests: "Remove '.only' so the whole test suite runs, not just this test.",
   },
+  'no-built-in-override': {
+    noBuiltInOverride: 'Do not override or shadow a built-in object or function.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -111,6 +114,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow generator functions that contain no 'yield' expression and therefore behave like plain functions",
   'no-exclusive-tests':
     'Disallow .only on test-runner functions (describe, it, test, etc.) that would disable all other tests',
+  'no-built-in-override':
+    'Disallow overriding or shadowing standard ECMAScript built-in global objects and functions',
 });
 
 const ruleTypes = Object.freeze({
@@ -132,6 +137,7 @@ const ruleTypes = Object.freeze({
   'no-empty-character-class': 'problem',
   'generator-without-yield': 'problem',
   'no-exclusive-tests': 'problem',
+  'no-built-in-override': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -153,6 +159,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-empty-character-class': 'error',
   'generator-without-yield': 'error',
   'no-exclusive-tests': 'error',
+  'no-built-in-override': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

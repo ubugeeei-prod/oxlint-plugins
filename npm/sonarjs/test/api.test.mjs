@@ -21,6 +21,7 @@ const expectedRuleNames = [
   'no-empty-character-class',
   'generator-without-yield',
   'no-exclusive-tests',
+  'no-built-in-override',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -670,6 +671,46 @@ describe('sonarjs native API', () => {
   it('does not report no-exclusive-tests for describe without .only', () => {
     const source = "describe('x', () => {});";
     const diagnostics = scan('no-exclusive-tests', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-built-in-override for a let declaration that shadows Object', () => {
+    const source = 'let Object = 1;';
+    const diagnostics = scan('no-built-in-override', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-built-in-override');
+    expect(diagnostics[0].messageId).toBe('noBuiltInOverride');
+  });
+
+  it('reports no-built-in-override for a simple assignment to Array', () => {
+    const source = 'Array = 2;';
+    const diagnostics = scan('no-built-in-override', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noBuiltInOverride');
+  });
+
+  it('reports no-built-in-override for a function declaration named Map', () => {
+    const source = 'function Map() {}';
+    const diagnostics = scan('no-built-in-override', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noBuiltInOverride');
+  });
+
+  it('does not report no-built-in-override for a member-expression assignment to Math.PI', () => {
+    const source = 'Math.PI = 3;';
+    const diagnostics = scan('no-built-in-override', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-built-in-override for a non-builtin variable declaration', () => {
+    const source = 'let obj = 1;';
+    const diagnostics = scan('no-built-in-override', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-built-in-override for a member assignment to foo.Object', () => {
+    const source = 'foo.Object = 1;';
+    const diagnostics = scan('no-built-in-override', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
