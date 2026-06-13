@@ -885,15 +885,62 @@ pub(crate) fn pattern_ends_with_lazy_quantifier(pattern: &str) -> bool {
 }
 
 /// Returns `Some(text)` for the first numbered backreference `\N` (N in 1-9)
-/// inside `pattern` when the same pattern contains at least one named capture
-/// group `(?<name>...)`. Numbered backreferences alongside named groups are
-/// the canonical case for `prefer-named-backreference`. Backreferences inside
-/// classes are skipped because they are literal characters there.
+/// inside `pattern` where capture group N is itself a named capture group
+/// `(?<name>...)`. Only named-group backreferences have a `\k<name>` alternative,
+/// so `\N` referring to an unnamed group must not be flagged. Backreferences
+/// inside character classes are skipped because they are literal characters there.
 pub(crate) fn first_numbered_backreference_with_named_group(pattern: &str) -> Option<&str> {
     let bytes = pattern.as_bytes();
+    // Fast path: no named group syntax at all.
     if !pattern.contains("(?<") {
         return None;
     }
+
+    // Pass 1: walk the pattern and record which 1-based capture group indices
+    // are named.  A `(` that is NOT `(?:`, `(?=`, `(?!`, `(?<=`, `(?<!`
+    // increments the group counter; `(?<name>...)` marks that index as named.
+    // We use a u32 bitmask (bits 1-9 = groups 1-9) because the rule only
+    // checks single-digit backreferences \1..\9.
+    let mut named_mask: u32 = 0;
+    {
+        let mut group_counter: u32 = 0;
+        let mut index = 0;
+        while index < bytes.len() {
+            if bytes[index] == b'[' {
+                if let Some(close) = find_class_end(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+                continue;
+            }
+            if bytes[index] == b'\\' {
+                index = skip_escape(bytes, index).max(index + 1);
+                continue;
+            }
+            if bytes[index] == b'(' {
+                // Classify the group via the existing helper.
+                let gp = group_prefix(bytes, index);
+                if gp.capturing {
+                    group_counter += 1;
+                    if gp.named && group_counter <= 9 {
+                        named_mask |= 1 << group_counter;
+                    }
+                }
+                // Advance past the group prefix (the helper already skipped
+                // the opening `(` plus any `?<name>` prefix).
+                index = gp.next;
+                continue;
+            }
+            index += 1;
+        }
+    }
+
+    if named_mask == 0 {
+        return None;
+    }
+
+    // Pass 2: find the first \N where group N is named.
     let mut index = 0;
     while index < bytes.len() {
         if bytes[index] == b'[' {
@@ -907,7 +954,13 @@ pub(crate) fn first_numbered_backreference_with_named_group(pattern: &str) -> Op
             && let Some(&next) = bytes.get(index + 1)
             && matches!(next, b'1'..=b'9')
         {
-            return Some(&pattern[index..index + 2]);
+            let group_num = (next - b'0') as u32;
+            if named_mask & (1 << group_num) != 0 {
+                return Some(&pattern[index..index + 2]);
+            }
+            // Not a named group — skip past this escape and continue.
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
         }
         if bytes[index] == b'\\' {
             index = skip_escape(bytes, index).max(index + 1);
