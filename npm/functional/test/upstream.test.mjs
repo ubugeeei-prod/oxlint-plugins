@@ -60,10 +60,16 @@ function reportMessageId(report) {
   return report.messageId ?? 'unexpected';
 }
 
-// Compare reported errors against the upstream-declared expectations: a count
-// (number) or a list of `{ messageId }` objects. messageIds are compared as a
-// sorted multiset so report ordering does not matter.
+// Compare reported errors against the upstream-declared expectations: a list of
+// `{ messageId }` objects (from inline `errors` or the upstream snapshot), a
+// count (number), or `undefined` when the upstream `invalid()` call declared no
+// expectations and only asserted "at least one error". messageIds are compared
+// as a sorted multiset so report ordering does not matter.
 function assertErrors(reports, expectedErrors) {
+  if (expectedErrors === undefined) {
+    expect(reports.length).toBeGreaterThanOrEqual(1);
+    return;
+  }
   if (typeof expectedErrors === 'number') {
     expect(reports.length).toBe(expectedErrors);
     return;

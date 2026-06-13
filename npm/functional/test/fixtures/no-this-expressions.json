@@ -18,7 +18,11 @@
     {
       "code": "function foo() {\n  this.bar();\n}",
       "typeAware": false,
-      "errors": []
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
     }
   ]
 }

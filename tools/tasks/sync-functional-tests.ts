@@ -24,6 +24,14 @@
 //   - `is-immutable-type` -> an `Immutability` proxy yielding member names, so the
 //                            type-aware rules' enum option values serialize readably.
 //
+// Many upstream invalid tests assert their reported errors via
+// `toMatchSnapshot()` rather than inline `errors`, so the captured expectations
+// are completed from the committed Vitest `__snapshots__` (the `expect(result)
+// .toMatchSnapshot()` call is matched to its snapshot key and the messageIds are
+// extracted). When a case has neither inline `errors` nor a snapshot, the
+// upstream `invalid()` only asserts "at least one error", so `errors` is left
+// omitted and the replay harness checks `>= 1`.
+//
 // The upstream `.ts` test files run directly through Node's native type stripping
 // (Node >= 24). Type-aware cases (TypeScript `projectService` config) are captured
 // and tagged but cannot be replayed by the syntax-only Rust port; the replay
@@ -34,7 +42,7 @@
 
 import { registerHooks } from 'node:module';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 type Manifest = {
@@ -56,12 +64,22 @@ type CapturedCase = {
   errors?: unknown;
   output?: string | null;
   typeAware: boolean;
+  // Authoritative expected messageIds extracted from the upstream Vitest
+  // snapshot when the test relied on `toMatchSnapshot()` instead of declaring
+  // inline `errors`. Preferred over `errors` during normalization.
+  snapshotMessageIds?: string[];
 };
 type Capture = { valid: CapturedCase[]; invalid: CapturedCase[] };
-type CollectedTest = { name: string; fn: () => unknown };
+type CollectedTest = { name: string; fullName: string; fn: () => unknown };
 
 type SyncGlobal = {
   capture: Capture;
+  // Describe-name stack (maintained while test files are imported) and the
+  // running snapshot key state (maintained while collected `it`s execute), so
+  // `expect(result).toMatchSnapshot()` can be matched to the upstream snapshot.
+  stack: string[];
+  currentTest: { fullName: string; snapCounter: number } | null;
+  snapshotsByKey: Record<string, string[]>;
   collected: CollectedTest[];
 };
 
@@ -90,7 +108,13 @@ if (!existsSync(SRC_RULES_DIR) || !existsSync(TESTS_DIR)) {
 
 mkdirSync(FIXTURES_DIR, { recursive: true });
 
-const state: SyncGlobal = { capture: { valid: [], invalid: [] }, collected: [] };
+const state: SyncGlobal = {
+  capture: { valid: [], invalid: [] },
+  stack: [],
+  currentTest: null,
+  snapshotsByKey: {},
+  collected: [],
+};
 (globalThis as Record<string, unknown>)[SYNC_KEY] = state;
 
 registerStubHooks();
@@ -113,16 +137,24 @@ for (const rule of ruleNames) {
 
   state.capture = { valid: [], invalid: [] };
   state.collected = [];
+  state.stack = [];
+  state.currentTest = null;
+  state.snapshotsByKey = loadSnapshots(testFiles);
 
   // Sequential import + run keeps the shared capture buffer deterministic:
-  // `it()` callbacks are only registered during import, then run in order so the
-  // imperative `valid()`/`invalid()` calls inside them fire and are captured.
+  // `it()` callbacks are only registered during import (building the describe
+  // stack), then run in order so the imperative `valid()`/`invalid()` calls
+  // inside them fire and are captured. Before each `it` runs we publish its full
+  // name + a fresh snapshot counter so `toMatchSnapshot()` resolves the matching
+  // upstream snapshot key (`<describe> > … > <it> <n>`).
   for (const file of testFiles) {
     await import(pathToFileURL(file).href);
   }
   for (const test of state.collected) {
+    state.currentTest = { fullName: test.fullName, snapCounter: 0 };
     await test.fn();
   }
+  state.currentTest = null;
 
   const captured = state.capture;
   const result = normalizeCapture(captured);
@@ -160,6 +192,32 @@ function testFilesForRule(rule: string): string[] {
     }
   }
   return files;
+}
+
+// Parse the Vitest snapshot files alongside the given test files into a map of
+// snapshot key -> ordered list of expected messageIds. Many upstream invalid
+// tests assert via `toMatchSnapshot()` rather than inline `errors`, and the
+// snapshot is the authoritative expected output. A snapshot body nests the same
+// messages under a `steps` array, so only the messageIds before `"steps"` (the
+// top-level `messages`) are taken to avoid double-counting.
+function loadSnapshots(testFiles: string[]): Record<string, string[]> {
+  const map: Record<string, string[]> = {};
+  for (const file of testFiles) {
+    const snapFile = join(dirname(file), '__snapshots__', `${basename(file)}.snap`);
+    if (!existsSync(snapFile)) {
+      continue;
+    }
+    const text = readFileSync(snapFile, 'utf8');
+    const entry = /exports\[`([\s\S]*?)`\]\s*=\s*`([\s\S]*?)`;/g;
+    let match: RegExpExecArray | null;
+    while ((match = entry.exec(text)) !== null) {
+      const key = match[1];
+      const topLevel = match[2].split('"steps"')[0];
+      const ids = [...topLevel.matchAll(/"messageId":\s*"([^"]+)"/g)].map((m) => m[1]);
+      map[key] = ids;
+    }
+  }
+  return map;
 }
 
 function writeFixture(
@@ -228,7 +286,19 @@ function normalizeCase(raw: CapturedCase, isInvalid: boolean): CapturedCase | nu
     out.filename = raw.filename;
   }
   if (isInvalid) {
-    out.errors = normalizeErrors(raw.errors);
+    // Prefer the snapshot's messageIds (authoritative, present even when the
+    // test declared no inline `errors`); otherwise fall back to inline `errors`.
+    // When neither is present the upstream `invalid()` call only asserts "at
+    // least one error" — leave `errors` omitted so the harness checks that.
+    if (Array.isArray(raw.snapshotMessageIds)) {
+      out.errors = raw.snapshotMessageIds.map((messageId) => ({ messageId }));
+    } else {
+      const inline = normalizeErrors(raw.errors);
+      const hasInline = typeof inline === 'number' || (Array.isArray(inline) && inline.length > 0);
+      if (hasInline) {
+        out.errors = inline;
+      }
+    }
     if (typeof raw.output === 'string') {
       out.output = raw.output;
     }
@@ -345,19 +415,52 @@ function vitestStub(): string {
     `const KEY = ${JSON.stringify(SYNC_KEY)};`,
     'function state() { return globalThis[KEY]; }',
     'function callRow(fn, row) { return Array.isArray(row) ? fn(...row) : fn(row); }',
-    'export function describe(_name, fn) { if (typeof fn === "function") { fn(); } }',
+    'function fullName(name) { return [...state().stack, name].join(" > "); }',
+    'export function describe(name, fn) {',
+    '  state().stack.push(String(name));',
+    '  try { if (typeof fn === "function") fn(); } finally { state().stack.pop(); }',
+    '}',
     'describe.only = describe; describe.skip = function () {}; describe.todo = function () {};',
-    'describe.each = (table) => (_name, fn) => { for (const row of table || []) callRow(fn, row); };',
-    'export function it(name, fn) { if (typeof fn === "function") { state().collected.push({ name, fn }); } }',
+    'describe.each = (table) => (name, fn) => {',
+    '  for (const row of table || []) {',
+    '    state().stack.push(String(name));',
+    '    try { callRow(fn, row); } finally { state().stack.pop(); }',
+    '  }',
+    '};',
+    'export function it(name, fn) {',
+    '  if (typeof fn === "function") state().collected.push({ name, fullName: fullName(name), fn });',
+    '}',
     'it.only = it; it.skip = function () {}; it.todo = function () {};',
-    'it.each = (table) => (name, fn) => { for (const row of table || []) state().collected.push({ name, fn: () => callRow(fn, row) }); };',
+    'it.each = (table) => (name, fn) => {',
+    '  for (const row of table || [])',
+    '    state().collected.push({ name, fullName: fullName(name), fn: () => callRow(fn, row) });',
+    '};',
     'export const test = it;',
-    'function noop() { return chain; }',
-    'const chain = new Proxy(function () {}, {',
-    '  get(_t, prop) { if (prop === "resolves" || prop === "rejects" || prop === "not") return chain; return noop; },',
-    '  apply() { return chain; },',
-    '});',
-    'export function expect() { return chain; }',
+    // `expect(value)` keeps `value` bound so `toMatchSnapshot()` can attach the
+    // matching upstream snapshot (keyed `<full test name> <n>`) to the invalid
+    // case the result came from. Every other matcher is a chainable no-op.
+    'function chainFor(value) {',
+    '  return new Proxy(function () {}, {',
+    '    get(_t, prop) {',
+    '      if (prop === "toMatchSnapshot" || prop === "toMatchInlineSnapshot") {',
+    '        return function () {',
+    '          const ct = state().currentTest;',
+    '          if (ct) {',
+    '            const ids = state().snapshotsByKey[ct.fullName + " " + ++ct.snapCounter];',
+    '            if (ids && value && typeof value === "object" && value.__caseRef) {',
+    '              value.__caseRef.snapshotMessageIds = ids;',
+    '            }',
+    '          }',
+    '          return chainFor(value);',
+    '        };',
+    '      }',
+    '      if (prop === "resolves" || prop === "rejects" || prop === "not") return chainFor(value);',
+    '      return function () { return chainFor(value); };',
+    '    },',
+    '    apply() { return chainFor(value); },',
+    '  });',
+    '}',
+    'export function expect(value) { return chainFor(value); }',
     'expect.any = function () { return {}; }; expect.objectContaining = function (o) { return o; };',
     'expect.stringContaining = function (s) { return s; }; expect.arrayContaining = function (a) { return a; };',
     'export function beforeAll() {} export function afterAll() {}',
@@ -390,8 +493,9 @@ function ruleTesterStub(): string {
     '  };',
     '  const invalid = async (input) => {',
     '    const items = Array.isArray(input) ? input : [input];',
-    '    for (const item of items) state().capture.invalid.push(toCase(item, typeAware));',
-    '    return { result: { messages: [], output: null, fixed: false, steps: [] } };',
+    '    let last = null;',
+    '    for (const item of items) { last = toCase(item, typeAware); state().capture.invalid.push(last); }',
+    '    return { result: { __caseRef: last, messages: [], output: null, fixed: false, steps: [] } };',
     '  };',
     '  return { valid, invalid, rule: opts && opts.rule, name: opts && opts.name };',
     '}',
