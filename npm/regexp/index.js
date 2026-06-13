@@ -191,6 +191,10 @@ const messages = Object.freeze({
     unexpected:
       'Unexpected non-capturing group with a single literal body; remove the `(?:` ... `)` wrapper.',
   },
+  'prefer-quantifier': {
+    unexpected:
+      'Apply the quantifier directly to the single-character body instead of wrapping it in a non-capturing group.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -264,6 +268,8 @@ const ruleDescriptions = Object.freeze({
     'disallow single-character `\\q{X}` string literals in v-mode character classes',
   'no-useless-non-capturing-group':
     'disallow non-capturing groups that wrap a single literal character without a quantifier',
+  'prefer-quantifier':
+    'apply quantifiers directly to single-character atoms instead of wrapping them in a non-capturing group',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -316,6 +322,7 @@ const ruleTypes = Object.freeze({
   'control-character-escape': 'problem',
   'grapheme-string-literal': 'suggestion',
   'no-useless-non-capturing-group': 'suggestion',
+  'prefer-quantifier': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -469,7 +476,8 @@ function ruleCategory(ruleName) {
     ruleName === 'prefer-escape-replacement-dollar-char' ||
     ruleName === 'use-ignore-case' ||
     ruleName === 'grapheme-string-literal' ||
-    ruleName === 'no-useless-non-capturing-group'
+    ruleName === 'no-useless-non-capturing-group' ||
+    ruleName === 'prefer-quantifier'
   ) {
     return 'Stylistic Issues';
   }

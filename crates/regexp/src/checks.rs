@@ -517,6 +517,9 @@ impl<'a> Scanner<'a> {
         if analysis.has_useless_non_capturing_group {
             self.report("no-useless-non-capturing-group", "unexpected", span);
         }
+        if analysis.has_preferable_quantifier_group {
+            self.report("prefer-quantifier", "unexpected", span);
+        }
         if let Some(ch) = analysis.first_useless_string_literal {
             let mut original = CompactString::new("\\q{");
             original.push(ch);

@@ -282,6 +282,9 @@ const invalidCases = [
     'const re = /pre(?:b)post/u;\n',
     ['unexpected'],
   ],
+  // prefer-quantifier
+  ['prefer-quantifier', 'braced quantifier', 'const re = /(?:a){3}/u;\n', ['unexpected']],
+  ['prefer-quantifier', 'plus quantifier', 'const re = /(?:a)+/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

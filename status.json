@@ -9451,19 +9451,19 @@
       },
       {
         "name": "prefer-quantifier",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-quantifier."
+        "notes": "Built on the GroupState body-byte tracker introduced for no-useless-non-capturing-group. At close `)`, when the group is non-capturing, has not seen `|`, the body is exactly one ASCII alphanumeric byte, AND the byte after `)` is a quantifier (`*`, `+`, `?`, or `{`), the wrapper is reported. The quantifier could apply directly to the bare atom. Multi-atom bodies and escape/class/group bodies are deferred."
       },
       {
         "name": "prefer-question-quantifier",

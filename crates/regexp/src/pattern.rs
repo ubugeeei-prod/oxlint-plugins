@@ -129,6 +129,11 @@ pub(crate) struct PatternAnalysis {
     /// regular ASCII alphanumeric character and is not followed by a
     /// quantifier — the wrapper is useless. `no-useless-non-capturing-group`.
     pub(crate) has_useless_non_capturing_group: bool,
+    /// At least one `(?:X){n}` non-capturing group whose body is a single
+    /// regular ASCII alphanumeric character AND is followed by a quantifier —
+    /// the wrapper is unnecessary because the quantifier could apply to the
+    /// bare atom. `prefer-quantifier`.
+    pub(crate) has_preferable_quantifier_group: bool,
 }
 
 impl PatternAnalysis {
@@ -249,12 +254,14 @@ impl PatternAnalysis {
                         if group.is_lookaround && bytes.get(index + 1) == Some(&b'?') {
                             self.has_optional_assertion = true;
                         }
-                        // `(?:X)` with a single ASCII-alphanumeric body and no
-                        // following quantifier — the wrapper carries no meaning.
-                        // We only consider non-capturing groups with no `|` and
-                        // exactly one literal byte between `:` and `)`. Other
-                        // body shapes (escapes, classes, groups) are deferred
-                        // so the check stays sound.
+                        // `(?:X)` with a single ASCII-alphanumeric body. The
+                        // wrapper carries no meaning regardless of what follows
+                        // because the quantifier (if any) could apply directly
+                        // to the bare atom. Two complementary rules cover this:
+                        // `no-useless-non-capturing-group` when no quantifier
+                        // follows, `prefer-quantifier` when one does. We only
+                        // consider non-capturing groups with no `|` and exactly
+                        // one literal byte between `:` and `)`.
                         if group.is_non_capturing
                             && !group.seen_pipe
                             && index == group.body_start + 1
@@ -263,8 +270,12 @@ impl PatternAnalysis {
                             let next = bytes.get(index + 1).copied();
                             let followed_by_quantifier =
                                 matches!(next, Some(b'*' | b'+' | b'?' | b'{'));
-                            if byte.is_ascii_alphanumeric() && !followed_by_quantifier {
-                                self.has_useless_non_capturing_group = true;
+                            if byte.is_ascii_alphanumeric() {
+                                if followed_by_quantifier {
+                                    self.has_preferable_quantifier_group = true;
+                                } else {
+                                    self.has_useless_non_capturing_group = true;
+                                }
                             }
                         }
                         self.mark_content(&mut groups);
