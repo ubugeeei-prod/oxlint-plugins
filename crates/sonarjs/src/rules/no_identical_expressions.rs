@@ -71,10 +71,7 @@ impl Scanner<'_> {
         }
     }
 
-    pub(crate) fn check_no_identical_expressions_logical(
-        &mut self,
-        expr: &LogicalExpression<'_>,
-    ) {
+    pub(crate) fn check_no_identical_expressions_logical(&mut self, expr: &LogicalExpression<'_>) {
         if !matches!(expr.operator, LogicalOperator::And | LogicalOperator::Or) {
             return;
         }
