@@ -284,13 +284,13 @@ const invalidCases = [
   [
     'prefer-escape-replacement-dollar-char',
     'dollar followed by space',
-    "str.replace(/a/u, 'pre $ post');\n",
+    "'str'.replace(/a/u, 'pre $ post');\n",
     ['unexpected'],
   ],
   [
     'prefer-escape-replacement-dollar-char',
     'trailing dollar',
-    "str.replace(/a/u, 'price$');\n",
+    "'str'.replace(/a/u, 'price$');\n",
     ['unexpected'],
   ],
   // use-ignore-case

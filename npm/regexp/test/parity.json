@@ -25,17 +25,9 @@
       "level": "off",
       "reason": "Flags replaceAll on an unknown receiver where upstream only reports a known string receiver."
     },
-    "no-useless-non-capturing-group": {
-      "level": "off",
-      "reason": "Flags non-capturing groups that disambiguate adjacent tokens, e.g. /\\1(?:0)/, /{(?:2)}/."
-    },
     "prefer-character-class": {
       "level": "off",
       "reason": "Flags single-character alternations like /(?:a|b)/ that upstream allows by default."
-    },
-    "prefer-escape-replacement-dollar-char": {
-      "level": "off",
-      "reason": "Flags a lone trailing $ in a replacement string that upstream treats as valid."
     },
     "prefer-named-replacement": {
       "level": "off",
