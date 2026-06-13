@@ -57,6 +57,10 @@ const nativePackages = [
     binding: 'npm/mocha/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-playwright',
+    binding: 'npm/playwright/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-simple-import-sort',
     binding: 'npm/simple-import-sort/native.js',
   },

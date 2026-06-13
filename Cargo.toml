@@ -6,6 +6,7 @@ members = [
   "crates/eslint_comments",
   "crates/eslint_markdown",
   "crates/mocha",
+  "crates/playwright",
   "crates/react_refresh",
   "crates/regexp",
   "crates/security",
@@ -19,6 +20,7 @@ members = [
   "npm/eslint-markdown",
   "npm/mocha",
   "npm/no-forbidden-identifiers",
+  "npm/playwright",
   "npm/react-refresh",
   "npm/regexp",
   "npm/security",
@@ -58,6 +60,7 @@ oxlint-plugins-e18e = { path = "crates/e18e", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
 oxlint-plugins-eslint-markdown = { path = "crates/eslint_markdown", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
+oxlint-plugins-playwright = { path = "crates/playwright", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-regexp = { path = "crates/regexp", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }

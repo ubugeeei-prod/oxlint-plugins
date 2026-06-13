@@ -60,6 +60,11 @@ const packages: PackageToPack[] = [
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-playwright',
+    dir: 'npm/playwright',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-simple-import-sort',
     dir: 'npm/simple-import-sort',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
