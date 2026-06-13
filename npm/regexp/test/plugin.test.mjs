@@ -153,6 +153,11 @@ const validCases = [
   // no-useless-backreference
   ['no-useless-backreference', 'valid backreference', 'const re = /(a)\\1/u;\n'],
   ['no-useless-backreference', 'no backref', 'const re = /abc/u;\n'],
+  // negation
+  ['negation', 'non-negated shorthand class', 'const re = /[\\d]/u;\n'],
+  ['negation', 'plain negated literal', 'const re = /[^a]/u;\n'],
+  ['negation', 'multi-element negated class', 'const re = /[^\\d\\s]/u;\n'],
+  ['negation', 'unrelated escape inside negated class', 'const re = /[^\\b]/u;\n'],
   // prefer-unicode-codepoint-escapes
   [
     'prefer-unicode-codepoint-escapes',
@@ -444,6 +449,10 @@ const invalidCases = [
   // no-useless-backreference
   ['no-useless-backreference', 'forward reference', 'const re = /\\1(a)/u;\n', ['unexpected']],
   ['no-useless-backreference', 'undefined group number', 'const re = /(a)\\2/u;\n', ['unexpected']],
+  // negation
+  ['negation', 'negated \\d', 'const re = /[^\\d]/u;\n', ['unexpected']],
+  ['negation', 'negated \\w', 'const re = /[^\\w]/u;\n', ['unexpected']],
+  ['negation', 'negated \\S', 'const re = /[^\\S]/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

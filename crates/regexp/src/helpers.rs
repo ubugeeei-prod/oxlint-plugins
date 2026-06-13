@@ -1514,6 +1514,34 @@ fn hex_value(byte: u8) -> Option<u8> {
     }
 }
 
+/// When the character class at `open` is exactly `[^\X]` with `X` being one
+/// of the predefined character-class shorthand letters (`d`, `D`, `s`, `S`,
+/// `w`, `W`), returns that shorthand letter. Returns `None` otherwise.
+///
+/// The body must be exactly the three bytes `^`, `\\`, `X` between `[` and
+/// `]`. Anything else (extra escapes, ranges, multiple atoms, the unescaped
+/// form `[^d]`, etc.) is rejected so the rule stays sound. This is the
+/// narrow form of `negation`: each detected case has a single unambiguous
+/// shorthand replacement (`\\D`, `\\d`, `\\S`, `\\s`, `\\W`, `\\w`).
+pub(crate) fn class_negated_shorthand_letter(bytes: &[u8], open: usize) -> Option<u8> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let start = open + 1;
+    // Body length must be exactly 3 (`^`, `\\`, letter).
+    if end != start + 3 {
+        return None;
+    }
+    if bytes[start] != b'^' || bytes[start + 1] != b'\\' {
+        return None;
+    }
+    let letter = bytes[start + 2];
+    if matches!(letter, b'd' | b'D' | b's' | b'S' | b'w' | b'W') {
+        Some(letter)
+    } else {
+        None
+    }
+}
+
 pub(crate) fn mention_char(ch: char) -> CompactString {
     let mut text = CompactString::new("U+");
     let code = ch as u32;
