@@ -424,7 +424,7 @@ impl<'a> Scanner<'a> {
             .as_ref()
             .and_then(|raw| raw.as_str().rsplit_once('/').map(|(_, flags)| flags))
             .unwrap_or("");
-        self.check_regexp(pattern, flags, literal.span, false, None, None);
+        self.check_regexp(pattern, flags, literal.span, false, None, None, false);
     }
 
     fn check_regexp_constructor(
@@ -438,10 +438,15 @@ impl<'a> Scanner<'a> {
         let Some((pattern, pattern_span)) = string_literal_value_with_span(pattern_argument) else {
             return;
         };
-        let flags = arguments
-            .get(1)
-            .and_then(Argument::as_expression)
-            .and_then(string_literal_value_with_span);
+        // `flags_arg_expr` is the second argument (if any) as an expression.
+        let flags_arg_expr = arguments.get(1).and_then(Argument::as_expression);
+        // `flags` is `Some(...)` only when the flags argument is a string literal.
+        let flags = flags_arg_expr.and_then(string_literal_value_with_span);
+        // `flags_is_non_literal` is true when a flags argument is present but is
+        // not a string literal (e.g. an identifier, binary expression, or member
+        // expression). In that case we cannot statically know the flag set, so
+        // `require-unicode-regexp` must not fire.
+        let flags_is_non_literal = flags_arg_expr.is_some() && flags.is_none();
         let flags_value = flags.map_or("", |(value, _)| value);
         self.check_regexp(
             pattern,
@@ -450,6 +455,7 @@ impl<'a> Scanner<'a> {
             true,
             Some(pattern_span),
             flags.map(|(_, span)| span),
+            flags_is_non_literal,
         );
     }
 
@@ -461,6 +467,12 @@ impl<'a> Scanner<'a> {
         is_constructor: bool,
         pattern_span: Option<Span>,
         flags_span: Option<Span>,
+        /// `true` when this is a constructor call and the flags argument is a
+        /// non-literal expression (identifier, binary, member, etc.).  In that
+        /// case we cannot statically determine the flags, so the
+        /// `require-unicode-regexp` and `require-unicode-sets-regexp` checks
+        /// must be skipped to avoid false positives.
+        flags_is_non_literal: bool,
     ) {
         if let Some(flag) = duplicate_flag(flags) {
             self.report_with_data(
@@ -510,7 +522,7 @@ impl<'a> Scanner<'a> {
             return;
         }
 
-        self.check_flag_style(flags, span);
+        self.check_flag_style(flags, span, flags_is_non_literal);
         self.check_pattern_rules(pattern, flags, span, is_constructor);
     }
 
@@ -541,7 +553,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn check_flag_style(&mut self, flags: &str, span: Span) {
+    fn check_flag_style(&mut self, flags: &str, span: Span, flags_is_non_literal: bool) {
         let sorted_flags = sorted_flags(flags);
         if flags != sorted_flags.as_str() {
             self.report_with_data(
@@ -555,11 +567,16 @@ impl<'a> Scanner<'a> {
                 span,
             );
         }
-        if !flags.contains('u') && !flags.contains('v') {
-            self.report("require-unicode-regexp", "require", span);
-        }
-        if !flags.contains('v') {
-            self.report("require-unicode-sets-regexp", "require", span);
+        // When the flags argument is a non-literal expression (identifier,
+        // binary, member, etc.) we cannot statically know the flag set, so
+        // skip the unicode-presence checks to avoid false positives.
+        if !flags_is_non_literal {
+            if !flags.contains('u') && !flags.contains('v') {
+                self.report("require-unicode-regexp", "require", span);
+            }
+            if !flags.contains('v') {
+                self.report("require-unicode-sets-regexp", "require", span);
+            }
         }
     }
 

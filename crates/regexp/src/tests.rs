@@ -1236,6 +1236,38 @@ mod require_unicode_regexp {
             rule_ids_for("const a = new RegExp('a', 'u');", "require-unicode-regexp").is_empty()
         );
     }
+
+    #[test]
+    fn skips_constructor_with_non_literal_flags_arg() {
+        // When the flags argument is a non-literal expression (identifier,
+        // binary expression, member expression, etc.) we cannot statically
+        // determine the flags, so the rule must not fire.
+        assert!(
+            rule_ids_for("new RegExp('', flags)", "require-unicode-regexp").is_empty(),
+            "free variable flags should not be flagged"
+        );
+        assert!(
+            rule_ids_for("new RegExp('', flags + 'u')", "require-unicode-regexp").is_empty(),
+            "binary expression flags should not be flagged"
+        );
+        assert!(
+            rule_ids_for("new RegExp('foo', flags[3])", "require-unicode-regexp").is_empty(),
+            "member expression flags should not be flagged"
+        );
+        assert!(
+            rule_ids_for(
+                "function f(flags) { return new RegExp('', flags) }",
+                "require-unicode-regexp"
+            )
+            .is_empty(),
+            "parameter variable flags should not be flagged"
+        );
+        // RegExp call (non-new) with non-literal flags also skipped.
+        assert!(
+            rule_ids_for("RegExp('foo', flags)", "require-unicode-regexp").is_empty(),
+            "call expression with non-literal flags should not be flagged"
+        );
+    }
 }
 
 mod no_escape_backspace {

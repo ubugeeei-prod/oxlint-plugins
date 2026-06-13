@@ -29,10 +29,6 @@
       "level": "off",
       "reason": "Flags $1 referring to an unnamed group, which has no named-replacement alternative."
     },
-    "require-unicode-regexp": {
-      "level": "off",
-      "reason": "Flags constructors whose flags are an unknown variable (e.g. new RegExp('', flags))."
-    },
     "use-ignore-case": {
       "level": "off",
       "reason": "Flags case-pair classes like /[aA]a/ where adding the i flag would alter other literals in the pattern."
