@@ -102,7 +102,10 @@ describe('eslint-plugin-functional upstream parity', () => {
     const validSyntactic = fixture.valid.filter((testCase) => !testCase.typeAware);
     const invalidSyntactic = fixture.invalid.filter((testCase) => !testCase.typeAware);
     const typeAwareCount =
-      fixture.valid.length + fixture.invalid.length - validSyntactic.length - invalidSyntactic.length;
+      fixture.valid.length +
+      fixture.invalid.length -
+      validSyntactic.length -
+      invalidSyntactic.length;
     const full = FULL_PARITY.has(ruleName);
 
     ledger.push({
