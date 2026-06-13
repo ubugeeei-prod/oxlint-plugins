@@ -9,10 +9,6 @@
       "level": "off",
       "reason": "Diverges on mixed escape forms under the u flag (e.g. /a \\x0a \\cM \\0 \\u0100 \\u{100}/u)."
     },
-    "match-any": {
-      "level": "off",
-      "reason": "Flags /[\\s\\S]/ which upstream allows under the default option."
-    },
     "no-control-character": {
       "level": "off",
       "reason": "Flags a literal newline (new RegExp('\\n')) which upstream does not treat as a control character."
@@ -72,10 +68,6 @@
     "require-unicode-regexp": {
       "level": "off",
       "reason": "Flags constructors whose flags are an unknown variable (e.g. new RegExp('', flags))."
-    },
-    "unicode-escape": {
-      "level": "off",
-      "reason": "Diverges on mixed escape forms under the u flag."
     },
     "use-ignore-case": {
       "level": "off",
