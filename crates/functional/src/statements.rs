@@ -30,12 +30,16 @@ impl<'a> Scanner<'a> {
             }
             Statement::BlockStatement(block) => self.scan_statement_list(&block.body, context),
             Statement::IfStatement(statement) => {
-                self.report(
-                    "no-conditional-statements",
-                    "unexpectedIf",
-                    "Unexpected if, use a conditional expression (ternary operator) instead.",
-                    statement.span,
-                );
+                let allowed =
+                    self.options.allow_returning_branches && self.if_all_branches_return(statement);
+                if !allowed {
+                    self.report(
+                        "no-conditional-statements",
+                        "unexpectedIf",
+                        "Unexpected if, use a conditional expression (ternary operator) instead.",
+                        statement.span,
+                    );
+                }
                 self.scan_expression(&statement.test, context);
                 self.scan_statement(&statement.consequent, context);
                 if let Some(alternate) = &statement.alternate {
@@ -43,12 +47,16 @@ impl<'a> Scanner<'a> {
                 }
             }
             Statement::SwitchStatement(statement) => {
-                self.report(
-                    "no-conditional-statements",
-                    "unexpectedSwitch",
-                    "Unexpected switch, use a conditional expression instead.",
-                    statement.span,
-                );
+                let allowed = self.options.allow_returning_branches
+                    && self.switch_all_cases_return(&statement.cases);
+                if !allowed {
+                    self.report(
+                        "no-conditional-statements",
+                        "unexpectedSwitch",
+                        "Unexpected switch, use a conditional expression instead.",
+                        statement.span,
+                    );
+                }
                 self.scan_expression(&statement.discriminant, context);
                 for case in &statement.cases {
                     if let Some(test) = &case.test {
@@ -278,6 +286,61 @@ impl<'a> Scanner<'a> {
             }
             None => {}
         }
+    }
+
+    /// Whether a branch statement guarantees an abrupt completion (return,
+    /// throw, break, or continue) — the syntactic basis of `no-conditional-
+    /// statements`' `allowReturningBranches: true`. A `never`-returning call
+    /// would also count upstream, but that needs type information.
+    fn branch_is_returning(&self, statement: &Statement<'a>) -> bool {
+        match statement {
+            Statement::ReturnStatement(_)
+            | Statement::ThrowStatement(_)
+            | Statement::BreakStatement(_)
+            | Statement::ContinueStatement(_) => true,
+            Statement::BlockStatement(block) => block
+                .body
+                .last()
+                .is_some_and(|last| self.branch_is_returning(last)),
+            Statement::IfStatement(inner) => inner.alternate.as_ref().is_some_and(|alternate| {
+                self.branch_is_returning(&inner.consequent) && self.branch_is_returning(alternate)
+            }),
+            _ => false,
+        }
+    }
+
+    /// An `if` is "returning" when its consequent is returning and, if present,
+    /// its alternate is too (an `if` without `else` only needs the consequent).
+    fn if_all_branches_return(&self, statement: &IfStatement<'a>) -> bool {
+        if !self.branch_is_returning(&statement.consequent) {
+            return false;
+        }
+        match &statement.alternate {
+            Some(alternate) => self.branch_is_returning(alternate),
+            None => true,
+        }
+    }
+
+    /// A `switch` is "returning" when every case is returning. Empty
+    /// (fall-through) cases inherit the returning status of the case they fall
+    /// into, so cases are walked bottom-up.
+    fn switch_all_cases_return(&self, cases: &[SwitchCase<'a>]) -> bool {
+        if cases.is_empty() {
+            return false;
+        }
+        let mut following_returns = false;
+        for case in cases.iter().rev() {
+            if !case.consequent.is_empty() {
+                following_returns = case
+                    .consequent
+                    .last()
+                    .is_some_and(|last| self.branch_is_returning(last));
+            }
+            if !following_returns {
+                return false;
+            }
+        }
+        following_returns
     }
 
     fn scan_for_init(&mut self, init: &'a ForStatementInit<'a>, context: FunctionContext) {

@@ -99,6 +99,11 @@ pub struct FunctionalOptions {
     pub check_interfaces: bool,
     /// no-mixed-types: check object type literals (default: true).
     pub check_type_literals: bool,
+    /// no-conditional-statements: when true (the `allowReturningBranches: true`
+    /// option), an `if`/`switch` is allowed when every branch ends in an abrupt
+    /// completion (return/throw/break/continue). The `"ifExhaustive"` mode needs
+    /// type information and is not modeled here. Default: false.
+    pub allow_returning_branches: bool,
 }
 
 impl Default for FunctionalOptions {
@@ -126,6 +131,7 @@ impl Default for FunctionalOptions {
             ignore_prefix_selector_names: SmallVec::new(),
             check_interfaces: true,
             check_type_literals: true,
+            allow_returning_branches: false,
         }
     }
 }

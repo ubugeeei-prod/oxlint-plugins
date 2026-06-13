@@ -48,6 +48,7 @@ function normalizeOptions(options) {
     checkInterfaces: typeof raw.checkInterfaces === 'boolean' ? raw.checkInterfaces : undefined,
     checkTypeLiterals:
       typeof raw.checkTypeLiterals === 'boolean' ? raw.checkTypeLiterals : undefined,
+    allowReturningBranches: raw.allowReturningBranches === true,
   };
 }
 

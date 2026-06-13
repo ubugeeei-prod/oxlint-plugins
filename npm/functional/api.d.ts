@@ -32,6 +32,7 @@ export type FunctionalScanOptions = {
   ignorePrefixSelectorNames?: string[];
   checkInterfaces?: boolean;
   checkTypeLiterals?: boolean;
+  allowReturningBranches?: boolean;
 };
 
 export function implementedFunctionalRuleNames(): string[];
