@@ -8811,19 +8811,19 @@
       },
       {
         "name": "no-invisible-character",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-invisible-character."
+        "notes": "Pattern-level scan via first_invisible_character: flags literal occurrences of NBSP, ZWSP/ZWNJ/ZWJ, BOM, narrow/medium/ideographic spaces, U+2028/U+2029, and friends. Escaped hex sequences are intentionally skipped. Vitest covers NBSP, ZWSP, and escaped-hex (must not fire)."
       },
       {
         "name": "no-lazy-ends",
@@ -8907,19 +8907,19 @@
       },
       {
         "name": "no-non-standard-flag",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-non-standard-flag."
+        "notes": "Flag-level check via first_non_standard_flag: flags any character outside the canonical d/g/i/m/s/u/v/y set. Runs before constructor parse so the diagnostic fires independently of no-invalid-regexp/error. Vitest covers canonical sets and an out-of-set flag."
       },
       {
         "name": "no-obscure-range",

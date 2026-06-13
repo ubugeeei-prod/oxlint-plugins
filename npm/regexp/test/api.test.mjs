@@ -26,6 +26,8 @@ describe('regexp native API', () => {
       'prefer-d',
       'prefer-w',
       'letter-case',
+      'no-non-standard-flag',
+      'no-invisible-character',
     ]);
   });
 

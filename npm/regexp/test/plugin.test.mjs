@@ -90,6 +90,13 @@ const validCases = [
   ['letter-case', 'lowercase hex escape', 'const re = /\\xab/u;\n'],
   ['letter-case', 'lowercase unicode escape', 'const re = /\\uabcd/u;\n'],
   ['letter-case', 'decimal-only unicode escape', "const re = new RegExp('\\\\u0041', 'u');\n"],
+  // no-non-standard-flag
+  ['no-non-standard-flag', 'canonical flags', "const re = new RegExp('a', 'gimsuy');\n"],
+  ['no-non-standard-flag', 'no flags', 'const re = /a/;\n'],
+  // no-invisible-character
+  ['no-invisible-character', 'plain pattern', 'const re = /ab/u;\n'],
+  ['no-invisible-character', 'ascii space', 'const re = /a b/u;\n'],
+  ['no-invisible-character', 'escaped hex NBSP', "const re = new RegExp('a\\\\xa0b', 'u');\n"],
 ];
 
 const invalidCases = [
@@ -236,6 +243,16 @@ const invalidCases = [
     "const re = new RegExp('\\\\u{1F4A9}', 'u');\n",
     ['unexpected'],
   ],
+  // no-non-standard-flag
+  [
+    'no-non-standard-flag',
+    'q flag is non-standard',
+    "const re = new RegExp('a', 'gq');\n",
+    ['unexpected'],
+  ],
+  // no-invisible-character — NBSP in pattern
+  ['no-invisible-character', 'nbsp in pattern', 'const re = /a\u00A0b/u;\n', ['unexpected']],
+  ['no-invisible-character', 'zwsp in pattern', 'const re = /a\u200Bb/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
