@@ -501,7 +501,20 @@ impl<'a> Scanner<'a> {
             .as_ref()
             .and_then(|raw| raw.as_str().rsplit_once('/').map(|(_, flags)| flags))
             .unwrap_or("");
-        self.check_regexp(pattern, flags, literal.span, false, None, None, false);
+        // Determine whether this regex literal is used as a complete (whole)
+        // pattern — i.e. actually matched against a string.  The pre-pass in
+        // `usage.rs` collected the span-starts of all such literals.
+        let used_as_whole = self.whole_pattern_regex_spans.contains(&literal.span.start);
+        self.check_regexp(
+            pattern,
+            flags,
+            literal.span,
+            false,
+            None,
+            None,
+            false,
+            used_as_whole,
+        );
     }
 
     fn check_regexp_constructor(
@@ -533,6 +546,9 @@ impl<'a> Scanner<'a> {
             Some(pattern_span),
             flags.map(|(_, span)| span),
             flags_is_non_literal,
+            // RegExp constructor calls produce patterns that are typically used
+            // as building blocks (partial), so `no-lazy-ends` is not fired.
+            false,
         );
     }
 
@@ -551,6 +567,10 @@ impl<'a> Scanner<'a> {
         // `require-unicode-regexp` and `require-unicode-sets-regexp` checks
         // are skipped to avoid false positives.
         flags_is_non_literal: bool,
+        // `true` when the regex is provably used as a complete (whole) pattern —
+        // directly called via `.test()` / `.exec()` / etc., or via a variable
+        // that is used that way and is not exported.  Controls `no-lazy-ends`.
+        used_as_whole: bool,
     ) {
         if let Some(flag) = duplicate_flag(flags) {
             self.report_with_data(
@@ -601,7 +621,7 @@ impl<'a> Scanner<'a> {
         }
 
         self.check_flag_style(flags, span, flags_is_non_literal);
-        self.check_pattern_rules(pattern, flags, span, is_constructor);
+        self.check_pattern_rules(pattern, flags, span, is_constructor, used_as_whole);
     }
 
     #[allow(
@@ -664,6 +684,7 @@ impl<'a> Scanner<'a> {
         flags: &str,
         span: Span,
         is_constructor: bool,
+        used_as_whole: bool,
     ) {
         let mut analysis = PatternAnalysis::new();
         analysis.scan(pattern);
@@ -1091,7 +1112,11 @@ impl<'a> Scanner<'a> {
                 span,
             );
         }
-        if pattern_ends_with_lazy_quantifier(pattern) {
+        // `no-lazy-ends`: only fire when the regex is provably used as a
+        // whole (complete) pattern, matching upstream `ignorePartial: true`
+        // (the default).  A bare literal or an exported binding is "unknown /
+        // partial" and should not be flagged.
+        if used_as_whole && pattern_ends_with_lazy_quantifier(pattern) {
             self.report("no-lazy-ends", "unexpected", span);
         }
         if let Some(text) = first_useless_one_quantifier(pattern) {

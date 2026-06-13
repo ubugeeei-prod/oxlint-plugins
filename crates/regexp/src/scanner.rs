@@ -5,7 +5,7 @@ use oxc_ast::AstKind;
 use oxc_ast::ast::Expression;
 use oxc_semantic::{AstNodes, Scoping};
 use oxc_span::Span;
-use oxlint_plugins_carton::SmallVec;
+use oxlint_plugins_carton::{FastHashSet, SmallVec};
 
 use crate::types::{Diagnostic, DiagnosticData, LineIndex};
 
@@ -21,6 +21,12 @@ pub(crate) struct Scanner<'a> {
     /// (e.g. to check whether a variable is initialised with a string
     /// literal).
     pub(crate) nodes: &'a AstNodes<'a>,
+    /// Span-starts of `RegExpLiteral` nodes that are "used as a whole pattern"
+    /// (i.e. directly applied via `.test()` / `.exec()` / etc., or assigned to
+    /// a non-exported variable that is then used that way).  Only these regexps
+    /// are eligible for `no-lazy-ends` diagnostics; bare / exported / partial
+    /// usages are excluded, matching upstream `ignorePartial: true` semantics.
+    pub(crate) whole_pattern_regex_spans: FastHashSet<u32>,
 }
 
 impl<'a> Scanner<'a> {

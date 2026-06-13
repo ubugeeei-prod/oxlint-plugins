@@ -862,34 +862,100 @@ mod no_useless_dollar_replacements {
 mod no_lazy_ends {
     use super::*;
 
+    // ── used-as-whole-pattern cases (should fire) ─────────────────────────
+
     #[test]
-    fn reports_lazy_quantifiers_at_end_of_pattern() {
+    fn reports_direct_lazy_quantifiers_at_end_of_pattern() {
+        // Direct usage: regex literal is the receiver of a regexp method call.
         assert_eq!(
-            rule_ids_for("const a = /a*?/u;", "no-lazy-ends").as_slice(),
+            rule_ids_for("/a*?/u.test(str)", "no-lazy-ends").as_slice(),
             &["unexpected"]
         );
         assert_eq!(
-            rule_ids_for("const a = /a+?/u;", "no-lazy-ends").as_slice(),
+            rule_ids_for("/a+?/u.test(str)", "no-lazy-ends").as_slice(),
             &["unexpected"]
         );
         assert_eq!(
-            rule_ids_for("const a = /a??/u;", "no-lazy-ends").as_slice(),
+            rule_ids_for("/a??/u.test(str)", "no-lazy-ends").as_slice(),
             &["unexpected"]
         );
         assert_eq!(
-            rule_ids_for("const a = /a{2,}?/u;", "no-lazy-ends").as_slice(),
+            rule_ids_for("/a{2,}?/u.test(str)", "no-lazy-ends").as_slice(),
             &["unexpected"]
         );
     }
 
     #[test]
+    fn reports_variable_based_lazy_quantifiers() {
+        // Variable usage: regex assigned to a non-exported variable that is
+        // later used as a regexp object.
+        assert_eq!(
+            rule_ids_for("const foo = /a*?/u;\nfoo.exec(str)", "no-lazy-ends").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    // ── not-used-as-whole-pattern cases (must NOT fire) ───────────────────
+
+    #[test]
+    fn ignores_bare_literal_without_usage() {
+        // `/a??/` — unknown usage, must not fire (upstream valid case).
+        assert!(rule_ids_for("/a??/u", "no-lazy-ends").is_empty());
+        assert!(rule_ids_for("const a = /a??/u;", "no-lazy-ends").is_empty());
+        assert!(rule_ids_for("const a = /a*?/u;", "no-lazy-ends").is_empty());
+    }
+
+    #[test]
+    fn ignores_fixed_braced_quantifier() {
+        // `/a{3}?/.test(str)` — upstream treats `{n}?` (min == max) as
+        // "uselessly lazy" but NOT as a `no-lazy-ends` violation.
+        assert!(rule_ids_for("/a{3}?/u.test(str)", "no-lazy-ends").is_empty());
+    }
+
+    #[test]
     fn ignores_lazy_quantifiers_followed_by_something() {
-        assert!(rule_ids_for("const a = /a*?b/u;", "no-lazy-ends").is_empty());
-        assert!(rule_ids_for("const a = /a*?$/u;", "no-lazy-ends").is_empty());
+        // Lazy quantifier not at the end — not a lazy-end.
+        assert!(rule_ids_for("/a*?b/u.test(str)", "no-lazy-ends").is_empty());
+        // Anchored: `$` follows the lazy quantifier.
+        assert!(rule_ids_for("/a*?$/u.test(str)", "no-lazy-ends").is_empty());
         // Greedy quantifier at the end is fine.
-        assert!(rule_ids_for("const a = /a*/u;", "no-lazy-ends").is_empty());
+        assert!(rule_ids_for("/a*/u.test(str)", "no-lazy-ends").is_empty());
         // Plain greedy braced quantifier.
-        assert!(rule_ids_for("const a = /a{2,}/u;", "no-lazy-ends").is_empty());
+        assert!(rule_ids_for("/a{2,}/u.test(str)", "no-lazy-ends").is_empty());
+    }
+
+    #[test]
+    fn regression_bare_vs_direct_usage() {
+        // The key regression: same pattern `/a??/` must NOT fire when bare,
+        // but MUST fire when used via `.test()`.
+        assert!(rule_ids_for("/a??/u", "no-lazy-ends").is_empty());
+        assert_eq!(
+            rule_ids_for("/a??/u.test(str)", "no-lazy-ends").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_exported_variable_upstream_valid_cases() {
+        // Upstream valid case: `/* exported a */` makes the binding exported;
+        // even though `a.test(str)` is a whole-pattern usage, the regex should
+        // not be flagged because it may be used externally as a partial pattern.
+        assert!(
+            rule_ids_for(
+                "\n/* exported a */\nconst a = /a??/\na.test(str)",
+                "no-lazy-ends"
+            )
+            .is_empty()
+        );
+    }
+
+    #[test]
+    fn upstream_valid_lazy_not_at_end() {
+        // From upstream fixture valid[]: lazy quantifier is NOT the last element.
+        assert!(rule_ids_for("/a+?b*/.test(str)", "no-lazy-ends").is_empty());
+        assert!(rule_ids_for("/a??(?:ba+?|c)*/.test(str)", "no-lazy-ends").is_empty());
+        // `$` follows the lazy quantifier — not at effective end.
+        assert!(rule_ids_for("/ba*?$/.test(str)", "no-lazy-ends").is_empty());
     }
 }
 

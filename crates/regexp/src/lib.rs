@@ -7,6 +7,7 @@ mod pattern;
 mod scanner;
 mod traversal;
 mod types;
+mod usage;
 
 #[cfg(test)]
 mod tests;
@@ -19,6 +20,7 @@ use oxlint_plugins_carton::SmallVec;
 
 use crate::scanner::Scanner;
 use crate::types::LineIndex;
+use crate::usage::collect_whole_pattern_regex_spans;
 
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticLoc};
 
@@ -112,12 +114,18 @@ pub fn scan_regexp(source_text: &str, filename: &str) -> SmallVec<[Diagnostic; 1
     let scoping = semantic.scoping();
     let nodes = semantic.nodes();
 
+    // Pre-pass: determine which regex literals are "used as a whole pattern"
+    // so that `no-lazy-ends` can apply `ignorePartial: true` semantics.
+    let whole_pattern_regex_spans =
+        collect_whole_pattern_regex_spans(&parser_return.program, scoping, nodes, source_text);
+
     let mut scanner = Scanner {
         source_text,
         line_index: LineIndex::new(source_text),
         diagnostics: SmallVec::new(),
         scoping,
         nodes,
+        whole_pattern_regex_spans,
     };
     scanner.scan_program(&parser_return.program.body);
     scanner.diagnostics

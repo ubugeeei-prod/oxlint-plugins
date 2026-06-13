@@ -958,12 +958,18 @@ pub(crate) fn pattern_ends_with_lazy_quantifier(pattern: &str) -> bool {
         while idx > 0 && bytes[idx] != b'{' && bytes[idx] != b']' {
             idx -= 1;
         }
+        let content = &bytes[idx + 1..len - 2];
         if bytes.get(idx) == Some(&b'{')
             && (idx == 0 || bytes[idx - 1] != b'\\')
-            && bytes[idx + 1..len - 2]
-                .iter()
-                .all(|&b| b.is_ascii_digit() || b == b',')
+            && content.iter().all(|&b| b.is_ascii_digit() || b == b',')
         {
+            // `{n}` (no comma) means min == max — the lazy modifier `?` is
+            // "uselessly lazy" in a different sense but upstream's
+            // `extractLazyEndQuantifiers` only yields quantifiers where
+            // `min !== max`, so fixed-count braced quantifiers must be skipped.
+            if !content.contains(&b',') {
+                return false;
+            }
             return true;
         }
     }
