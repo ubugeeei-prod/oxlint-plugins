@@ -15,6 +15,7 @@ const expectedRuleNames = [
   'no-all-duplicated-branches',
   'no-identical-expressions',
   'arguments-usage',
+  'no-labels',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -449,6 +450,32 @@ describe('sonarjs native API', () => {
   it('does not report arguments-usage for a function that does not use arguments', () => {
     const source = 'function f() { return 1; }';
     const diagnostics = scan('arguments-usage', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-labels for a labeled loop', () => {
+    const source = 'loop: for (;;) { break loop; }';
+    const diagnostics = scan('no-labels', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-labels');
+    expect(diagnostics[0].messageId).toBe('noLabels');
+  });
+
+  it('reports no-labels for two nested labeled loops (one diagnostic per label)', () => {
+    const source = 'outer: for (;;) { inner: for (;;) { break outer; } }';
+    const diagnostics = scan('no-labels', source);
+    expect(diagnostics).toHaveLength(2);
+  });
+
+  it('does not report no-labels for an unlabeled loop', () => {
+    const source = 'for (;;) { break; }';
+    const diagnostics = scan('no-labels', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-labels for a plain variable declaration', () => {
+    const source = 'const x = 1;';
+    const diagnostics = scan('no-labels', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
