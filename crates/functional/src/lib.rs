@@ -64,6 +64,7 @@ pub struct FunctionalOptions {
     pub allow_rest_parameter: bool,
     pub allow_arguments_keyword: bool,
     pub allow_let_in_for_loop_init: bool,
+    pub allow_in_functions: bool,
     pub allow_throw_to_reject_promises: bool,
     pub allow_try_catch: bool,
     pub allow_try_finally: bool,
@@ -83,6 +84,7 @@ impl Default for FunctionalOptions {
             allow_rest_parameter: false,
             allow_arguments_keyword: false,
             allow_let_in_for_loop_init: false,
+            allow_in_functions: false,
             allow_throw_to_reject_promises: false,
             allow_try_catch: false,
             allow_try_finally: false,
@@ -147,6 +149,8 @@ pub(crate) struct FunctionContext {
     /// `try`/`catch` (a thrown value would be caught, so an async `throw` here is
     /// not a promise rejection). Reset at each function boundary.
     pub(crate) in_try_with_catch: bool,
+    /// True when inside any function/arrow/method body; used by no-let allowInFunctions.
+    pub(crate) in_function: bool,
 }
 
 pub fn implemented_functional_rule_names() -> &'static [&'static str] {
@@ -188,6 +192,7 @@ pub fn scan_functional(
         FunctionContext {
             in_async_function: false,
             in_try_with_catch: false,
+            in_function: false,
         },
     );
     scanner.diagnostics
