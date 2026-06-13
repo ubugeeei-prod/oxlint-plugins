@@ -159,3 +159,97 @@ fn does_not_report_collapsible_if_block_has_two_statements() {
     let diagnostics = scan("no-collapsible-if", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_boolean_literal_in_strict_equality() {
+    let source = "x === true";
+    let diagnostics = scan("no-redundant-boolean", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-redundant-boolean");
+    assert_eq!(diagnostics[0].message_id, "redundantBoolean");
+}
+
+#[test]
+fn reports_boolean_literal_on_left_of_strict_inequality() {
+    let source = "false !== y";
+    let diagnostics = scan("no-redundant-boolean", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantBoolean");
+}
+
+#[test]
+fn reports_negation_of_boolean_literal() {
+    let source = "!true";
+    let diagnostics = scan("no-redundant-boolean", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantBoolean");
+}
+
+#[test]
+fn reports_ternary_true_false() {
+    let source = "cond ? true : false";
+    let diagnostics = scan("no-redundant-boolean", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantBoolean");
+}
+
+#[test]
+fn reports_ternary_false_true() {
+    let source = "cond ? false : true";
+    let diagnostics = scan("no-redundant-boolean", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantBoolean");
+}
+
+#[test]
+fn does_not_report_equality_without_boolean_literal() {
+    let source = "x === y";
+    let diagnostics = scan("no-redundant-boolean", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_logical_not_of_non_boolean() {
+    let source = "!x";
+    let diagnostics = scan("no-redundant-boolean", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_ternary_with_non_boolean_branches() {
+    let source = "cond ? a : b";
+    let diagnostics = scan("no-redundant-boolean", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_logical_or_as_case_label() {
+    let source = "switch (x) { case 1 || 2: break; }";
+    let diagnostics = scan("comma-or-logical-or-case", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "comma-or-logical-or-case");
+    assert_eq!(diagnostics[0].message_id, "commaOrLogicalOrInCase");
+}
+
+#[test]
+fn reports_sequence_expression_as_case_label() {
+    let source = "switch (x) { case (1, 2): break; }";
+    let diagnostics = scan("comma-or-logical-or-case", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "comma-or-logical-or-case");
+    assert_eq!(diagnostics[0].message_id, "commaOrLogicalOrInCase");
+}
+
+#[test]
+fn does_not_report_plain_case_or_default() {
+    let source = "switch (x) { case 1: break; default: break; }";
+    let diagnostics = scan("comma-or-logical-or-case", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_logical_and_as_case_label() {
+    let source = "switch (x) { case 1 && 2: break; }";
+    let diagnostics = scan("comma-or-logical-or-case", source);
+    assert!(diagnostics.is_empty());
+}

@@ -22,6 +22,7 @@ mod napi_abi {
         pub allow_rest_parameter: Option<bool>,
         pub allow_arguments_keyword: Option<bool>,
         pub allow_let_in_for_loop_init: Option<bool>,
+        pub allow_in_functions: Option<bool>,
         pub allow_throw_to_reject_promises: Option<bool>,
         pub allow_try_catch: Option<bool>,
         pub allow_try_finally: Option<bool>,
@@ -76,6 +77,9 @@ mod napi_abi {
             allow_let_in_for_loop_init: options
                 .allow_let_in_for_loop_init
                 .unwrap_or(default_options.allow_let_in_for_loop_init),
+            allow_in_functions: options
+                .allow_in_functions
+                .unwrap_or(default_options.allow_in_functions),
             allow_throw_to_reject_promises: options
                 .allow_throw_to_reject_promises
                 .unwrap_or(default_options.allow_throw_to_reject_promises),

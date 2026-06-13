@@ -1,6 +1,39 @@
 use super::{FunctionalOptions, implemented_functional_rule_names, scan_functional};
 
 #[test]
+fn no_let_honors_options() {
+    let base = || FunctionalOptions {
+        rule_names: ["no-let".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let count = |source: &str, options: &FunctionalOptions| {
+        scan_functional(source, "fixture.ts", options).len()
+    };
+
+    // Plain let reports 1 diagnostic.
+    assert_eq!(count("let x;", &base()), 1);
+
+    // With allow_in_functions, let inside a function body is allowed.
+    let allow_fn = FunctionalOptions {
+        rule_names: ["no-let".into()].into_iter().collect(),
+        allow_in_functions: true,
+        ..FunctionalOptions::default()
+    };
+    assert_eq!(count("function f() { let x; }", &allow_fn), 0);
+    // But top-level let is still reported.
+    assert_eq!(count("let x;", &allow_fn), 1);
+
+    // With ignore_identifier_pattern, matching names are allowed.
+    let ignore_mutable = FunctionalOptions {
+        rule_names: ["no-let".into()].into_iter().collect(),
+        ignore_identifier_pattern: ["^mutable".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    assert_eq!(count("let mutable;", &ignore_mutable), 0);
+    assert_eq!(count("let immutable;", &ignore_mutable), 1);
+}
+
+#[test]
 fn prefer_property_signatures_honors_ignore_if_readonly_wrapped() {
     let base = || FunctionalOptions {
         rule_names: ["prefer-property-signatures".into()].into_iter().collect(),

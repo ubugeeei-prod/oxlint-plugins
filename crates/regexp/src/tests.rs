@@ -1787,6 +1787,36 @@ mod no_useless_character_class {
         // we intentionally skip it.
         assert!(rule_ids_for("const a = /[-]/u;", "no-useless-character-class").is_empty());
     }
+
+    #[test]
+    fn ignores_equals_sign_class() {
+        // `[=]` is exempted upstream to avoid confusion with POSIX equivalence classes.
+        assert!(rule_ids_for("const a = /[=]/;", "no-useless-character-class").is_empty());
+    }
+
+    #[test]
+    fn ignores_classes_that_disambiguate_adjacent_tokens() {
+        // `\1[0]` — removing brackets makes `\10` (different back-reference).
+        assert!(rule_ids_for("const a = /\\1[0]/;", "no-useless-character-class").is_empty());
+        // `\0[1]` — removing brackets makes `\01` (octal escape).
+        assert!(rule_ids_for("const a = /\\0[1]/;", "no-useless-character-class").is_empty());
+        // `{[0]}` / `{123[0]}` — bracket is inside a quantifier body.
+        assert!(rule_ids_for("const a = /a{[0]}/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /a{123[0]}/;", "no-useless-character-class").is_empty());
+        // `\c[M]` — removing brackets produces `\cM` (control-M escape).
+        assert!(rule_ids_for("const a = /\\c[M]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\c[A]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\c[Z]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\c[m]/;", "no-useless-character-class").is_empty());
+        // `\xF[F]` — removing brackets completes `\xFF` hex escape.
+        assert!(rule_ids_for("const a = /\\xF[F]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\xf[f]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\x4[4]/;", "no-useless-character-class").is_empty());
+        // `\uF[F]FF` — removing brackets supplies the second digit of `￿`.
+        assert!(rule_ids_for("const a = /\\uF[F]FF/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\uf[f]ff/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\u4[4]44/;", "no-useless-character-class").is_empty());
+    }
 }
 
 mod no_empty_string_literal {
@@ -2047,12 +2077,12 @@ mod prefer_range {
     use super::*;
 
     #[test]
-    fn reports_three_or_more_consecutive_literals() {
-        let data = first_data("const a = /[abc]/u;", "prefer-range");
-        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("abc"));
+    fn reports_four_or_more_consecutive_literals() {
+        let data = first_data("const a = /[abcd]/u;", "prefer-range");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("abcd"));
         assert_eq!(
             data.replacement.as_ref().map(CompactString::as_str),
-            Some("a-c")
+            Some("a-d")
         );
         // Digits collapse just like letters.
         assert_eq!(
@@ -2064,6 +2094,9 @@ mod prefer_range {
     #[test]
     fn ignores_short_runs_and_existing_ranges() {
         assert!(rule_ids_for("const a = /[ab]/u;", "prefer-range").is_empty());
+        // A run of three is left alone — upstream only collapses runs of four
+        // or more (`[abc]` is valid, `[abcd]` is not).
+        assert!(rule_ids_for("const a = /[abc]/u;", "prefer-range").is_empty());
         // A range already covers the chars; no further reduction needed.
         assert!(rule_ids_for("const a = /[a-c]/u;", "prefer-range").is_empty());
         // Non-consecutive bytes break the run.
@@ -2147,6 +2180,14 @@ mod prefer_named_backreference {
         // \1 inside a character class is literal, not a backreference.
         assert!(
             rule_ids_for("const a = /(?<n>a)[\\1b]/u;", "prefer-named-backreference").is_empty()
+        );
+        // \1 refers to an unnamed group (group 1); group 2 is named — must NOT flag.
+        assert!(
+            rule_ids_for(
+                "const a = /(a)\\1 (?<foo>a)\\k<foo>/;",
+                "prefer-named-backreference"
+            )
+            .is_empty()
         );
     }
 }

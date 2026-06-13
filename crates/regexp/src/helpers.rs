@@ -885,15 +885,62 @@ pub(crate) fn pattern_ends_with_lazy_quantifier(pattern: &str) -> bool {
 }
 
 /// Returns `Some(text)` for the first numbered backreference `\N` (N in 1-9)
-/// inside `pattern` when the same pattern contains at least one named capture
-/// group `(?<name>...)`. Numbered backreferences alongside named groups are
-/// the canonical case for `prefer-named-backreference`. Backreferences inside
-/// classes are skipped because they are literal characters there.
+/// inside `pattern` where capture group N is itself a named capture group
+/// `(?<name>...)`. Only named-group backreferences have a `\k<name>` alternative,
+/// so `\N` referring to an unnamed group must not be flagged. Backreferences
+/// inside character classes are skipped because they are literal characters there.
 pub(crate) fn first_numbered_backreference_with_named_group(pattern: &str) -> Option<&str> {
     let bytes = pattern.as_bytes();
+    // Fast path: no named group syntax at all.
     if !pattern.contains("(?<") {
         return None;
     }
+
+    // Pass 1: walk the pattern and record which 1-based capture group indices
+    // are named.  A `(` that is NOT `(?:`, `(?=`, `(?!`, `(?<=`, `(?<!`
+    // increments the group counter; `(?<name>...)` marks that index as named.
+    // We use a u32 bitmask (bits 1-9 = groups 1-9) because the rule only
+    // checks single-digit backreferences \1..\9.
+    let mut named_mask: u32 = 0;
+    {
+        let mut group_counter: u32 = 0;
+        let mut index = 0;
+        while index < bytes.len() {
+            if bytes[index] == b'[' {
+                if let Some(close) = find_class_end(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+                continue;
+            }
+            if bytes[index] == b'\\' {
+                index = skip_escape(bytes, index).max(index + 1);
+                continue;
+            }
+            if bytes[index] == b'(' {
+                // Classify the group via the existing helper.
+                let gp = group_prefix(bytes, index);
+                if gp.capturing {
+                    group_counter += 1;
+                    if gp.named && group_counter <= 9 {
+                        named_mask |= 1 << group_counter;
+                    }
+                }
+                // Advance past the group prefix (the helper already skipped
+                // the opening `(` plus any `?<name>` prefix).
+                index = gp.next;
+                continue;
+            }
+            index += 1;
+        }
+    }
+
+    if named_mask == 0 {
+        return None;
+    }
+
+    // Pass 2: find the first \N where group N is named.
     let mut index = 0;
     while index < bytes.len() {
         if bytes[index] == b'[' {
@@ -907,7 +954,13 @@ pub(crate) fn first_numbered_backreference_with_named_group(pattern: &str) -> Op
             && let Some(&next) = bytes.get(index + 1)
             && matches!(next, b'1'..=b'9')
         {
-            return Some(&pattern[index..index + 2]);
+            let group_num = (next - b'0') as u32;
+            if named_mask & (1 << group_num) != 0 {
+                return Some(&pattern[index..index + 2]);
+            }
+            // Not a named group — skip past this escape and continue.
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
         }
         if bytes[index] == b'\\' {
             index = skip_escape(bytes, index).max(index + 1);
@@ -1126,10 +1179,12 @@ pub(crate) fn class_first_duplicate_literal(bytes: &[u8], open: usize) -> Option
 }
 
 /// Returns `Some((start, end))` when the `[...]` class at `open` contains
-/// three or more consecutive ASCII characters (digits, lower-case, or
+/// four or more consecutive ASCII characters (digits, lower-case, or
 /// upper-case letters) at the top level — these collapse into the equivalent
-/// range `start-end`. Used by `prefer-range`. Escapes and existing ranges
-/// are intentionally skipped to keep the check conservative.
+/// range `start-end`. Used by `prefer-range`. A run of three (e.g. `[abc]`)
+/// is left alone to match upstream, which only collapses runs of four or
+/// more. Escapes and existing ranges are intentionally skipped to keep the
+/// check conservative.
 pub(crate) fn class_first_collapsible_run(bytes: &[u8], open: usize) -> Option<(char, char)> {
     debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
     let end = find_class_end(bytes, open)?;
@@ -1157,7 +1212,7 @@ pub(crate) fn class_first_collapsible_run(bytes: &[u8], open: usize) -> Option<(
                 run_end = bytes[cursor];
                 cursor += 1;
             }
-            if run_end >= start + 2 {
+            if run_end >= start + 3 {
                 return Some((start as char, run_end as char));
             }
             index = cursor.max(index + 1);
@@ -1192,6 +1247,9 @@ pub(crate) fn class_is_useless_single_literal(bytes: &[u8], open: usize) -> Opti
     // non-ASCII (multi-byte chars are fine in principle but reading them as a
     // single byte is incorrect), and anything that would change the surrounding
     // pattern if extracted from the class context.
+    // `=` is also excluded: upstream exempts `[=]` because in some legacy regex
+    // flavours `[=X=]` is a POSIX equivalence class; keeping the brackets avoids
+    // accidental meaning changes and upstream explicitly allows it.
     if !byte.is_ascii()
         || matches!(
             byte,
@@ -1210,11 +1268,79 @@ pub(crate) fn class_is_useless_single_literal(bytes: &[u8], open: usize) -> Opti
                 | b'?'
                 | b'{'
                 | b'}'
+                | b'='
         )
     {
         return None;
     }
     Some(byte as char)
+}
+
+/// Returns `true` when removing the `[...]` brackets around the single
+/// character at `open` would change the meaning of the surrounding pattern.
+/// This guards `no-useless-character-class` from false positives in cases
+/// where the class character is syntactically significant in context:
+///
+/// - `\c[X]` — removing brackets produces `\cX` (a control-character escape).
+/// - `\xH[X]` — removing brackets completes a `\xHX` hex escape.
+/// - `\uH[X]` — removing brackets supplies the second digit of a `\uHXXX` unicode escape.
+/// - `\N[D]` (N = 1–9, D = digit) — removing brackets makes `\ND`, a multi-digit
+///   back-reference that refers to a different group.
+/// - `\0[D]` (D = octal digit 0–7) — removing brackets makes `\0D`, an octal escape.
+/// - `{digits[D]` — the bracket is inside a `{n}` quantifier body; removing
+///   brackets makes the quantifier literal (e.g. `a{[0]}` → `a{0}`).
+///
+/// `class_char` is the single byte inside `[...]` (already validated as ASCII
+/// and not inherently special by `class_is_useless_single_literal`).
+pub(crate) fn class_bracket_changes_meaning(bytes: &[u8], open: usize, class_char: u8) -> bool {
+    // \c[X] → \cX control-character escape (X must be an ASCII letter).
+    if open >= 2
+        && bytes[open - 1] == b'c'
+        && bytes[open - 2] == b'\\'
+        && class_char.is_ascii_alphabetic()
+    {
+        return true;
+    }
+    // \xH[X] → \xHX or \uH[X] → \uHX... — completing a hex/unicode escape.
+    if open >= 3
+        && bytes[open - 3] == b'\\'
+        && matches!(bytes[open - 2], b'x' | b'u')
+        && bytes[open - 1].is_ascii_hexdigit()
+        && class_char.is_ascii_hexdigit()
+    {
+        return true;
+    }
+    // \N[D] (N in 1–9, D a digit) → \ND multi-digit back-reference.
+    if open >= 2
+        && bytes[open - 2] == b'\\'
+        && matches!(bytes[open - 1], b'1'..=b'9')
+        && class_char.is_ascii_digit()
+    {
+        return true;
+    }
+    // \0[D] (D an octal digit 0–7) → \0D octal escape.
+    if open >= 2
+        && bytes[open - 2] == b'\\'
+        && bytes[open - 1] == b'0'
+        && matches!(class_char, b'0'..=b'7')
+    {
+        return true;
+    }
+    // {digits[D] — bracket is inside a `{n}` quantifier body.
+    // Walk backwards over ASCII digits; if we reach an unescaped `{` the
+    // bracket is inside a quantifier and removing it would change the meaning.
+    let mut p = open;
+    while p > 0 {
+        p -= 1;
+        if bytes[p].is_ascii_digit() {
+            continue;
+        }
+        if bytes[p] == b'{' && !(p > 0 && bytes[p - 1] == b'\\') {
+            return true;
+        }
+        break;
+    }
+    false
 }
 
 /// Returns `true` when `pattern` contains the literal sequence `\q{}` — an
