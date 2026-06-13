@@ -69,8 +69,82 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-range",
             "no-empty-lookarounds-assertion",
             "prefer-regexp-exec",
+            "no-missing-g-flag",
+            "no-useless-character-class",
+            "no-empty-string-literal",
+            "no-optional-assertion",
+            "require-unicode-sets-regexp",
         ]
     );
+}
+
+mod no_optional_assertion {
+    use super::*;
+
+    #[test]
+    fn reports_question_after_each_lookaround_shape() {
+        assert_eq!(
+            rule_ids_for("const a = /(?=a)?/u;", "no-optional-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?!a)?/u;", "no-optional-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?<=a)?/u;", "no-optional-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?<!a)?/u;", "no-optional-assertion").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_assertions_without_quantifier_and_non_assertion_optionals() {
+        assert!(rule_ids_for("const a = /(?=a)/u;", "no-optional-assertion").is_empty());
+        // `?` after a non-lookaround group must not fire this rule.
+        assert!(rule_ids_for("const a = /(?:a)?/u;", "no-optional-assertion").is_empty());
+        assert!(rule_ids_for("const a = /(a)?/u;", "no-optional-assertion").is_empty());
+    }
+}
+
+mod require_unicode_sets_regexp {
+    use super::*;
+
+    #[test]
+    fn reports_missing_v_flag() {
+        assert_eq!(
+            rule_ids_for("const a = /a/u;", "require-unicode-sets-regexp").as_slice(),
+            &["require"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /a/;", "require-unicode-sets-regexp").as_slice(),
+            &["require"]
+        );
+        assert_eq!(
+            rule_ids_for(
+                "const a = new RegExp('a', 'gimsu');",
+                "require-unicode-sets-regexp"
+            )
+            .as_slice(),
+            &["require"]
+        );
+    }
+
+    #[test]
+    fn accepts_patterns_with_v_flag() {
+        assert!(rule_ids_for("const a = /a/v;", "require-unicode-sets-regexp").is_empty());
+        assert!(rule_ids_for("const a = /a/gv;", "require-unicode-sets-regexp").is_empty());
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('a', 'v');",
+                "require-unicode-sets-regexp"
+            )
+            .is_empty()
+        );
+    }
 }
 
 #[test]
@@ -86,10 +160,11 @@ fn ignores_dynamic_constructor_arguments() {
     assert!(ids("const a = new RegExp(pattern, 'u');").is_empty());
     assert!(ids("const a = RegExp();").is_empty());
     // When the flags argument is non-literal we still scan the pattern and
-    // assume no `u`/`v` flag, which surfaces `require-unicode-regexp` only.
+    // assume no `u`/`v` flag, which surfaces both `require-unicode-regexp`
+    // (needs `u` or `v`) and `require-unicode-sets-regexp` (needs `v`).
     assert_eq!(
         rule_names_for("const a = new RegExp('a', flags);").as_slice(),
-        &["require-unicode-regexp"]
+        &["require-unicode-regexp", "require-unicode-sets-regexp"]
     );
 }
 
@@ -1026,6 +1101,98 @@ mod prefer_regexp_exec {
     }
 }
 
+mod no_missing_g_flag {
+    use super::*;
+
+    #[test]
+    fn reports_match_all_and_replace_all_without_g() {
+        let data = first_data("str.matchAll(/foo/u);", "no-missing-g-flag");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("matchAll")
+        );
+        let data = first_data("str.replaceAll(/foo/, 'bar');", "no-missing-g-flag");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("replaceAll")
+        );
+    }
+
+    #[test]
+    fn ignores_global_regexps_and_unrelated_calls() {
+        assert!(rule_ids_for("str.matchAll(/foo/g);", "no-missing-g-flag").is_empty());
+        assert!(rule_ids_for("str.replaceAll(/foo/gu, 'bar');", "no-missing-g-flag").is_empty());
+        // Non-literal argument — flags cannot be determined statically.
+        assert!(rule_ids_for("str.matchAll(pattern);", "no-missing-g-flag").is_empty());
+        // Unrelated method.
+        assert!(rule_ids_for("str.match(/foo/u);", "no-missing-g-flag").is_empty());
+        // `replaceAll` accepts a string as its first argument; we must not
+        // false-positive when the call is not regex-based.
+        assert!(rule_ids_for("str.replaceAll('foo', 'bar');", "no-missing-g-flag").is_empty());
+    }
+}
+
+mod no_useless_character_class {
+    use super::*;
+
+    #[test]
+    fn reports_single_literal_classes() {
+        let data = first_data("const a = /[a]/u;", "no-useless-character-class");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("[a]"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("a")
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[5]/u;", "no-useless-character-class").as_slice(),
+            &["unexpected"]
+        );
+        // Even followed by a quantifier the class is equivalent to the bare char.
+        assert_eq!(
+            rule_ids_for("const a = /[a]+/u;", "no-useless-character-class").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_negation_escape_and_multi_element_classes() {
+        assert!(rule_ids_for("const a = /[^a]/u;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /[\\d]/u;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /[ab]/u;", "no-useless-character-class").is_empty());
+        // `[-]` is technically one literal but `-` carries range meaning;
+        // we intentionally skip it.
+        assert!(rule_ids_for("const a = /[-]/u;", "no-useless-character-class").is_empty());
+    }
+}
+
+mod no_empty_string_literal {
+    use super::*;
+
+    #[test]
+    fn reports_empty_v_mode_string_literal() {
+        assert_eq!(
+            rule_ids_for("const a = /[\\q{}]/v;", "no-empty-string-literal").as_slice(),
+            &["unexpected"]
+        );
+        // Non-empty string literals are not flagged.
+        assert!(rule_ids_for("const a = /[\\q{ab}]/v;", "no-empty-string-literal").is_empty());
+    }
+
+    #[test]
+    fn ignores_unrelated_braced_constructs() {
+        // `\u{...}` is unrelated.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\u{41}', 'u');",
+                "no-empty-string-literal"
+            )
+            .is_empty()
+        );
+        // `{}` outside a `\q` context is not the empty string literal.
+        assert!(rule_ids_for("const a = /a{}/u;", "no-empty-string-literal").is_empty());
+    }
+}
+
 #[test]
 fn brace_quantifier_rules_ignore_quantifiers_inside_character_classes() {
     // Inside `[...]` braces are literal characters, not quantifier syntax.
@@ -1047,8 +1214,15 @@ fn reports_multiple_rules_for_a_single_regex() {
 
 #[test]
 fn reports_each_literal_independently() {
+    // The `u`-only flags trigger `require-unicode-sets-regexp` once per literal
+    // alongside the pattern-specific diagnostics.
     assert_eq!(
         rule_names_for("const a = /[]/u; const b = /a|/u;").as_slice(),
-        &["no-empty-character-class", "no-empty-alternative"]
+        &[
+            "require-unicode-sets-regexp",
+            "no-empty-character-class",
+            "require-unicode-sets-regexp",
+            "no-empty-alternative",
+        ]
     );
 }

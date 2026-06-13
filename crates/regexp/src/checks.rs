@@ -13,7 +13,8 @@ use oxlint_plugins_carton::CompactString;
 use crate::helpers::{
     duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
     first_invisible_character, first_non_standard_flag, first_octal_escape,
-    first_uppercase_hex_escape, mention_char, sorted_flags, string_literal_value_with_span,
+    first_uppercase_hex_escape, mention_char, pattern_has_empty_string_literal, sorted_flags,
+    string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -71,6 +72,50 @@ impl<'a> Scanner<'a> {
             self.check_regexp_constructor(call.span, &call.arguments);
         }
         self.check_prefer_regexp_exec(call);
+        self.check_no_missing_g_flag(call);
+    }
+
+    /// `no-missing-g-flag`: `<expr>.matchAll(<regexp without 'g'>)` and
+    /// `<expr>.replaceAll(<regexp without 'g'>, ...)` throw at runtime (the
+    /// engine requires the global flag). Flag the literal-regexp case
+    /// statically; constructor calls are deferred for the same type-info
+    /// reason as `prefer-regexp-exec`.
+    fn check_no_missing_g_flag(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        let method = member.property.name.as_str();
+        if method != "matchAll" && method != "replaceAll" {
+            return;
+        }
+        if call.arguments.is_empty() {
+            return;
+        }
+        let Some(argument) = call.arguments.first().and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::RegExpLiteral(literal) = argument.get_inner_expression() else {
+            return;
+        };
+        let flags = literal
+            .raw
+            .as_ref()
+            .and_then(|raw| raw.as_str().rsplit_once('/').map(|(_, flags)| flags))
+            .unwrap_or("");
+        if flags.contains('g') {
+            return;
+        }
+        let mut method_text = CompactString::new("");
+        method_text.push_str(method);
+        self.report_with_data(
+            "no-missing-g-flag",
+            "unexpected",
+            DiagnosticData {
+                expr: Some(method_text),
+                ..DiagnosticData::default()
+            },
+            call.span,
+        );
     }
 
     /// `prefer-regexp-exec`: flag `<expr>.match(<regexp literal without 'g'>)`
@@ -252,6 +297,9 @@ impl<'a> Scanner<'a> {
         if !flags.contains('u') && !flags.contains('v') {
             self.report("require-unicode-regexp", "require", span);
         }
+        if !flags.contains('v') {
+            self.report("require-unicode-sets-regexp", "require", span);
+        }
     }
 
     fn check_pattern_rules(&mut self, pattern: &str, span: Span) {
@@ -426,6 +474,26 @@ impl<'a> Scanner<'a> {
         if analysis.has_empty_lookaround {
             self.report("no-empty-lookarounds-assertion", "unexpected", span);
         }
+        if let Some(ch) = analysis.first_useless_single_literal_class {
+            let mut original = CompactString::new("[");
+            original.push(ch);
+            original.push(']');
+            let mut replacement = CompactString::new("");
+            replacement.push(ch);
+            self.report_with_data(
+                "no-useless-character-class",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(original),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if pattern_has_empty_string_literal(pattern) {
+            self.report("no-empty-string-literal", "unexpected", span);
+        }
         if let Some(ch) = analysis.first_useless_range {
             let mut text = CompactString::new("");
             text.push(ch);
@@ -443,6 +511,9 @@ impl<'a> Scanner<'a> {
                 },
                 span,
             );
+        }
+        if analysis.has_optional_assertion {
+            self.report("no-optional-assertion", "unexpected", span);
         }
     }
 }

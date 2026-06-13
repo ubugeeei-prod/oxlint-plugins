@@ -8763,19 +8763,19 @@
       },
       {
         "name": "no-empty-string-literal",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-empty-string-literal."
+        "notes": "Substring scan via pattern_has_empty_string_literal: the `\\q{}` syntax is only legal in `v`-flag patterns, so seeing the literal sequence implies v-mode without needing a flag check."
       },
       {
         "name": "no-escape-backspace",
@@ -8891,19 +8891,19 @@
       },
       {
         "name": "no-missing-g-flag",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-missing-g-flag."
+        "notes": "JS-side CallExpression check on `<expr>.matchAll(...)` and `<expr>.replaceAll(...)` where the first argument is a RegExp literal without the `g` flag. RegExp constructor calls are deferred (need type information)."
       },
       {
         "name": "no-non-standard-flag",
@@ -8939,19 +8939,19 @@
       },
       {
         "name": "no-optional-assertion",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-optional-assertion."
+        "notes": "GroupPrefix gains is_lookaround so the closing paren handler can peek the next byte: if a lookaround is followed by `?`, it is reported. Other quantifiers on assertions are syntax errors in the regexp parser anyway, so we only target the `?` case explicitly."
       },
       {
         "name": "no-potentially-useless-backreference",
@@ -9099,19 +9099,19 @@
       },
       {
         "name": "no-useless-character-class",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-character-class."
+        "notes": "Class-level scan via class_is_useless_single_literal flags `[X]` where the body is exactly one ASCII literal with no regex meaning of its own; negation, escapes, ranges, and multi-element classes are deferred to keep the check sound (no false positives)."
       },
       {
         "name": "no-useless-dollar-replacements",
@@ -9611,19 +9611,19 @@
       },
       {
         "name": "require-unicode-sets-regexp",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule require-unicode-sets-regexp."
+        "notes": "Flag-level check that mirrors require-unicode-regexp but specifically requires the `v` (unicode sets) flag rather than `u` or `v`. Patterns that only carry `u` still fire this rule when it is enabled."
       },
       {
         "name": "simplify-set-operations",

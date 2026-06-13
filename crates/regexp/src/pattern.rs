@@ -4,8 +4,9 @@ use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
     BraceQuantifierShape, class_contains_backspace_escape, class_has_useless_range,
-    class_is_digit_range, class_is_word_char_set, class_matches_anything, find_class_end,
-    group_prefix, is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    class_is_digit_range, class_is_useless_single_literal, class_is_word_char_set,
+    class_matches_anything, find_class_end, group_prefix, is_zero_quantifier,
+    parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -74,6 +75,13 @@ pub(crate) struct PatternAnalysis {
     /// At least one lookaround assertion (`(?=)`, `(?!)`, `(?<=)`, `(?<!)`)
     /// with an empty body. `no-empty-lookarounds-assertion`.
     pub(crate) has_empty_lookaround: bool,
+    /// First single-literal class `[X]` and the bare character it could be
+    /// replaced with. `no-useless-character-class`.
+    pub(crate) first_useless_single_literal_class: Option<char>,
+    /// At least one lookaround assertion followed by an optional `?` quantifier
+    /// (`(?=a)?`). The `?` is always meaningless because the assertion either
+    /// succeeds or fails without consuming input. `no-optional-assertion`.
+    pub(crate) has_optional_assertion: bool,
 }
 
 impl PatternAnalysis {
@@ -122,6 +130,11 @@ impl PatternAnalysis {
                         {
                             self.first_useless_range = Some(ch);
                         }
+                        if self.first_useless_single_literal_class.is_none()
+                            && let Some(ch) = class_is_useless_single_literal(bytes, index)
+                        {
+                            self.first_useless_single_literal_class = Some(ch);
+                        }
                         self.mark_content(&mut groups);
                         index = close + 1;
                     } else {
@@ -156,6 +169,13 @@ impl PatternAnalysis {
                         }
                         if group.is_lookaround && !group.seen_pipe && !group.current_has_content {
                             self.has_empty_lookaround = true;
+                        }
+                        // `(?=...)?` and friends: a `?` immediately after the
+                        // closing paren of a lookaround makes the assertion
+                        // optional, which is always meaningless because the
+                        // assertion does not consume input.
+                        if group.is_lookaround && bytes.get(index + 1) == Some(&b'?') {
+                            self.has_optional_assertion = true;
                         }
                         self.mark_content(&mut groups);
                     }

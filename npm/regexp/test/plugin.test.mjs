@@ -150,6 +150,30 @@ const invalidCases = [
   // prefer-regexp-exec
   ['prefer-regexp-exec', 'match with non-global literal', 'str.match(/foo/u);\n', ['unexpected']],
   ['prefer-regexp-exec', 'member-chained receiver', 'obj.prop.match(/bar/);\n', ['unexpected']],
+  // no-missing-g-flag
+  ['no-missing-g-flag', 'matchAll without g', 'str.matchAll(/foo/u);\n', ['unexpected']],
+  [
+    'no-missing-g-flag',
+    'replaceAll regex without g',
+    "str.replaceAll(/foo/, 'bar');\n",
+    ['unexpected'],
+  ],
+  // no-useless-character-class
+  ['no-useless-character-class', 'single literal class', 'const re = /[a]/u;\n', ['unexpected']],
+  ['no-useless-character-class', 'single digit class', 'const re = /[5]/u;\n', ['unexpected']],
+  // no-empty-string-literal
+  ['no-empty-string-literal', 'empty v literal', 'const re = /[\\q{}]/v;\n', ['unexpected']],
+  // no-optional-assertion
+  [
+    'no-optional-assertion',
+    'optional positive lookahead',
+    'const re = /(?=a)?/u;\n',
+    ['unexpected'],
+  ],
+  ['no-optional-assertion', 'optional lookbehind', 'const re = /(?<=a)?/u;\n', ['unexpected']],
+  // require-unicode-sets-regexp
+  ['require-unicode-sets-regexp', 'u flag only', 'const re = /a/u;\n', ['require']],
+  ['require-unicode-sets-regexp', 'no flags', 'const re = /a/;\n', ['require']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
