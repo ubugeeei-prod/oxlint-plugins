@@ -302,6 +302,11 @@ pub(crate) fn class_matches_anything(bytes: &[u8], open: usize) -> bool {
     if bytes.get(index) == Some(&b'^') {
         return false;
     }
+    // `[\s\S]` is the canonical form the rule itself recommends — treat it as valid.
+    let body = &bytes[open + 1..end];
+    if body == b"\\s\\S" {
+        return false;
+    }
     let mut has_lower = [false; 3]; // s, d, w
     let mut has_upper = [false; 3]; // S, D, W
     let mut count = 0usize;
