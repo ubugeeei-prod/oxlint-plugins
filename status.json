@@ -189,6 +189,423 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-e18e",
+    "directory": "npm/e18e",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "@e18e/eslint-plugin",
+      "version": "0.0.1",
+      "repository": "https://github.com/e18e/eslint-plugin",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "prefer-array-at",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-array-at; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-array-fill",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-array-fill; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-array-from-map",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-array-from-map; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-includes",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-includes; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-array-to-reversed",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-array-to-reversed; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-array-to-sorted",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-array-to-sorted; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-array-to-spliced",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-array-to-spliced; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-exponentiation-operator",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-exponentiation-operator; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-nullish-coalescing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-nullish-coalescing; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-object-has-own",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-object-has-own; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-spread-syntax",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-spread-syntax; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-url-canparse",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-url-canparse; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "no-indexof-equality",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/no-indexof-equality; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-timer-args",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-timer-args; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-date-now",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-date-now; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-regex-test",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-regex-test; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-array-some",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-array-some; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-static-regex",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-static-regex; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-inline-equality",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-inline-equality; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-string-fromcharcode",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-string-fromcharcode; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-includes-over-regex-test",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-includes-over-regex-test; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "no-delete-property",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/no-delete-property; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "no-spread-in-reduce",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/no-spread-in-reduce; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-static-collator",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/prefer-static-collator; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "ban-dependencies",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of @e18e/eslint-plugin/ban-dependencies; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-cypress",
     "directory": "npm/cypress",
     "version": "0.0.0",
