@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { implementedSonarjsRuleNames, scanSonarjs } from '../api.js';
 
-const expectedRuleNames = ['no-nested-template-literals'];
+const expectedRuleNames = ['no-nested-template-literals', 'no-nested-switch'];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
   return scanSonarjs(sourceText, filename, { ruleNames: [ruleName] });
@@ -29,6 +29,22 @@ describe('sonarjs native API', () => {
   it('reports each nested level independently', () => {
     const diagnostics = scan('no-nested-template-literals', 'const x = `a ${`b ${`c`}`}`;');
     expect(diagnostics).toHaveLength(2);
+  });
+
+  it('reports a switch nested inside another switch', () => {
+    const diagnostics = scan(
+      'no-nested-switch',
+      'switch (a) {\n  case 1:\n    switch (b) {\n      case 2:\n        break;\n    }\n    break;\n}',
+    );
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-nested-switch');
+    expect(diagnostics[0].messageId).toBe('nestedSwitch');
+    expect(diagnostics[0].loc.startLine).toBe(3);
+  });
+
+  it('does not report a single switch', () => {
+    const diagnostics = scan('no-nested-switch', 'switch (a) {\n  case 1:\n    break;\n}');
+    expect(diagnostics).toHaveLength(0);
   });
 
   it('ignores rules that are not enabled', () => {

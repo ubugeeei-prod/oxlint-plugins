@@ -22,7 +22,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 1] = ["no-nested-template-literals"];
+pub const RULE_NAMES: [&str; 2] = ["no-nested-template-literals", "no-nested-switch"];
 
 /// Returns the implemented rule names as a static slice.
 pub fn implemented_sonarjs_rule_names() -> &'static [&'static str] {
@@ -51,6 +51,7 @@ pub fn scan_sonarjs(
         options,
         diagnostics: SmallVec::new(),
         template_literal_depth: 0,
+        switch_depth: 0,
     };
     scanner.visit_program(&parser_return.program);
     scanner.diagnostics
