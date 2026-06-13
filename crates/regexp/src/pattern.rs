@@ -8,7 +8,8 @@ use crate::helpers::{
     class_has_case_pair, class_has_unsorted_literal_elements, class_has_useless_range,
     class_has_useless_string_literal, class_is_digit_range, class_is_useless_single_literal,
     class_is_word_char_set, class_matches_anything, class_negated_shorthand_letter, find_class_end,
-    group_prefix, is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    fixed_count_lazy_brace_end, group_prefix, is_zero_quantifier, parse_brace_quantifier,
+    skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -222,6 +223,10 @@ pub(crate) struct PatternAnalysis {
     /// class whose body is exactly one predefined shorthand and can be
     /// replaced by the negated shorthand. `negation`.
     pub(crate) has_negation_shorthand: bool,
+    /// `{n}?` or `{n,n}?` — fixed-count brace quantifier with a lazy
+    /// modifier. The lazy modifier is a no-op because the engine always
+    /// matches exactly `n` repetitions. `no-useless-lazy`.
+    pub(crate) has_useless_lazy: bool,
 }
 
 impl PatternAnalysis {
@@ -550,9 +555,17 @@ impl PatternAnalysis {
                 }
                 b'{' if is_zero_quantifier(bytes, index) => {
                     self.has_zero_quantifier = true;
+                    if !self.has_useless_lazy && fixed_count_lazy_brace_end(bytes, index).is_some()
+                    {
+                        self.has_useless_lazy = true;
+                    }
                     index += 1;
                 }
                 b'{' => {
+                    if !self.has_useless_lazy && fixed_count_lazy_brace_end(bytes, index).is_some()
+                    {
+                        self.has_useless_lazy = true;
+                    }
                     if let Some((end, original, shape)) = parse_brace_quantifier(bytes, index) {
                         self.record_brace_quantifier(original, shape);
                         // `{0,}?` and `{0,1}?` are lazy quantifiers whose

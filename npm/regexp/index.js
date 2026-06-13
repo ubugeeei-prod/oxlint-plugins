@@ -240,6 +240,10 @@ const messages = Object.freeze({
     unexpected:
       'Negated character class containing a single predefined shorthand can be replaced by the corresponding negated shorthand.',
   },
+  'no-useless-lazy': {
+    unexpected:
+      'Lazy modifier is useless on a fixed-count quantifier; the engine always matches exactly the same number of repetitions.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -337,6 +341,7 @@ const ruleDescriptions = Object.freeze({
     'disallow numbered backreferences that point to a not-yet-defined capture',
   negation:
     'enforce use of equivalent shorthand for negated character classes containing a single predefined shorthand',
+  'no-useless-lazy': 'disallow lazy modifiers on fixed-count brace quantifiers (`{n}?`, `{n,n}?`)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -402,6 +407,7 @@ const ruleTypes = Object.freeze({
   'no-dupe-disjunctions': 'problem',
   'no-useless-backreference': 'problem',
   negation: 'suggestion',
+  'no-useless-lazy': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -565,7 +571,8 @@ function ruleCategory(ruleName) {
     ruleName === 'prefer-character-class' ||
     ruleName === 'sort-alternatives' ||
     ruleName === 'prefer-predefined-assertion' ||
-    ruleName === 'negation'
+    ruleName === 'negation' ||
+    ruleName === 'no-useless-lazy'
   ) {
     return 'Stylistic Issues';
   }

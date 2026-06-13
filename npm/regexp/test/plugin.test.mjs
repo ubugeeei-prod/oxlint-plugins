@@ -158,6 +158,12 @@ const validCases = [
   ['negation', 'plain negated literal', 'const re = /[^a]/u;\n'],
   ['negation', 'multi-element negated class', 'const re = /[^\\d\\s]/u;\n'],
   ['negation', 'unrelated escape inside negated class', 'const re = /[^\\b]/u;\n'],
+  // no-useless-lazy
+  ['no-useless-lazy', 'open range lazy', 'const re = /a{2,5}?/u;\n'],
+  ['no-useless-lazy', 'lazy star via brace', 'const re = /a{0,}?/u;\n'],
+  ['no-useless-lazy', 'plain greedy fixed count', 'const re = /a{3}/u;\n'],
+  ['no-useless-lazy', 'star lazy (deferred)', 'const re = /a*?/u;\n'],
+  ['no-useless-lazy', 'plus lazy (deferred)', 'const re = /a+?/u;\n'],
   // prefer-unicode-codepoint-escapes
   [
     'prefer-unicode-codepoint-escapes',
@@ -453,6 +459,9 @@ const invalidCases = [
   ['negation', 'negated \\d', 'const re = /[^\\d]/u;\n', ['unexpected']],
   ['negation', 'negated \\w', 'const re = /[^\\w]/u;\n', ['unexpected']],
   ['negation', 'negated \\S', 'const re = /[^\\S]/u;\n', ['unexpected']],
+  // no-useless-lazy
+  ['no-useless-lazy', 'fixed count {n}?', 'const re = /a{3}?/u;\n', ['unexpected']],
+  ['no-useless-lazy', 'fixed count {n,n}?', 'const re = /a{2,2}?/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
