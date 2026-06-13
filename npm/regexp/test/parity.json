@@ -17,10 +17,6 @@
       "level": "off",
       "reason": "Flags a literal newline (new RegExp('\\n')) which upstream does not treat as a control character."
     },
-    "no-dupe-characters-character-class": {
-      "level": "off",
-      "reason": "Diverges on v-flag string-disjunction (\\q{...}) set syntax."
-    },
     "no-invisible-character": {
       "level": "off",
       "reason": "Flags a literal tab (new RegExp('\\t')) which upstream treats as valid."
