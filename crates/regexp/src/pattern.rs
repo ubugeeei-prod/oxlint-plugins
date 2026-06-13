@@ -12,6 +12,7 @@ use crate::helpers::{
 pub(crate) struct GroupState {
     pub(crate) check_empty: bool,
     pub(crate) capturing: bool,
+    pub(crate) is_lookaround: bool,
     pub(crate) seen_pipe: bool,
     pub(crate) current_has_content: bool,
 }
@@ -21,15 +22,17 @@ impl GroupState {
         Self {
             check_empty: false,
             capturing: false,
+            is_lookaround: false,
             seen_pipe: false,
             current_has_content: false,
         }
     }
 
-    fn group(check_empty: bool, capturing: bool) -> Self {
+    fn group(check_empty: bool, capturing: bool, is_lookaround: bool) -> Self {
         Self {
             check_empty,
             capturing,
+            is_lookaround,
             seen_pipe: false,
             current_has_content: false,
         }
@@ -68,6 +71,9 @@ pub(crate) struct PatternAnalysis {
     /// First useless single-character range like `[a-a]`. The captured `char`
     /// is the repeated endpoint. `no-useless-range`.
     pub(crate) first_useless_range: Option<char>,
+    /// At least one lookaround assertion (`(?=)`, `(?!)`, `(?<=)`, `(?<!)`)
+    /// with an empty body. `no-empty-lookarounds-assertion`.
+    pub(crate) has_empty_lookaround: bool,
 }
 
 impl PatternAnalysis {
@@ -128,7 +134,11 @@ impl PatternAnalysis {
                     if prefix.capturing && !prefix.named {
                         self.has_unnamed_capturing_group = true;
                     }
-                    groups.push(GroupState::group(prefix.check_empty, prefix.capturing));
+                    groups.push(GroupState::group(
+                        prefix.check_empty,
+                        prefix.capturing,
+                        prefix.is_lookaround,
+                    ));
                     index = prefix.next;
                 }
                 b')' => {
@@ -143,6 +153,9 @@ impl PatternAnalysis {
                             if group.capturing {
                                 self.has_empty_capturing_group = true;
                             }
+                        }
+                        if group.is_lookaround && !group.seen_pipe && !group.current_has_content {
+                            self.has_empty_lookaround = true;
                         }
                         self.mark_content(&mut groups);
                     }

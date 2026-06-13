@@ -134,6 +134,22 @@ const invalidCases = [
   // no-useless-range
   ['no-useless-range', 'literal a-a range', 'const re = /[a-a]/u;\n', ['unexpected']],
   ['no-useless-range', 'literal 0-0 range', 'const re = /[0-0]/u;\n', ['unexpected']],
+  // no-empty-lookarounds-assertion
+  [
+    'no-empty-lookarounds-assertion',
+    'empty positive lookahead',
+    'const re = /(?=)/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-empty-lookarounds-assertion',
+    'empty negative lookbehind',
+    'const re = /(?<!)/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-regexp-exec
+  ['prefer-regexp-exec', 'match with non-global literal', 'str.match(/foo/u);\n', ['unexpected']],
+  ['prefer-regexp-exec', 'member-chained receiver', 'obj.prop.match(/bar/);\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
