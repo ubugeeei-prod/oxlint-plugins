@@ -104,6 +104,12 @@ importers:
         specifier: ^10.4.0
         version: 10.4.0
 
+  npm/eslint-json:
+    dependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
   npm/eslint-markdown:
     dependencies:
       '@oxlint/plugins':
