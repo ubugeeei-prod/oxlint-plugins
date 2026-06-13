@@ -22,21 +22,28 @@ const messages = Object.freeze({
     nestedSwitch:
       'Do not nest switch statements. Extract the nested switch into a separate function.',
   },
+  'no-nested-conditional': {
+    nestedConditional:
+      'Do not nest ternary/conditional expressions; extract the nested conditional into an independent statement.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
   'no-nested-template-literals': 'Disallow nested template literals',
   'no-nested-switch': 'Disallow nested switch statements',
+  'no-nested-conditional': 'Disallow nested conditional (ternary) expressions',
 });
 
 const ruleTypes = Object.freeze({
   'no-nested-template-literals': 'suggestion',
   'no-nested-switch': 'suggestion',
+  'no-nested-conditional': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
   'no-nested-template-literals': 'error',
   'no-nested-switch': 'error',
+  'no-nested-conditional': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { implementedSonarjsRuleNames, scanSonarjs } from '../api.js';
 
-const expectedRuleNames = ['no-nested-template-literals', 'no-nested-switch'];
+const expectedRuleNames = [
+  'no-nested-template-literals',
+  'no-nested-switch',
+  'no-nested-conditional',
+];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
   return scanSonarjs(sourceText, filename, { ruleNames: [ruleName] });
@@ -45,6 +49,24 @@ describe('sonarjs native API', () => {
   it('does not report a single switch', () => {
     const diagnostics = scan('no-nested-switch', 'switch (a) {\n  case 1:\n    break;\n}');
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports a conditional nested in the alternate of another conditional', () => {
+    const diagnostics = scan('no-nested-conditional', 'const x = a ? b : (c ? d : e);');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-nested-conditional');
+    expect(diagnostics[0].messageId).toBe('nestedConditional');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+  });
+
+  it('does not report a single (non-nested) conditional expression', () => {
+    const diagnostics = scan('no-nested-conditional', 'const x = a ? b : c;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports each nested level of a doubly-nested conditional', () => {
+    const diagnostics = scan('no-nested-conditional', 'const x = a ? (b ? c : d) : (e ? f : g);');
+    expect(diagnostics).toHaveLength(2);
   });
 
   it('ignores rules that are not enabled', () => {
