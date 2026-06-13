@@ -164,6 +164,10 @@ const validCases = [
   ['no-useless-lazy', 'plain greedy fixed count', 'const re = /a{3}/u;\n'],
   ['no-useless-lazy', 'star lazy (deferred)', 'const re = /a*?/u;\n'],
   ['no-useless-lazy', 'plus lazy (deferred)', 'const re = /a+?/u;\n'],
+  // no-misleading-unicode-character
+  ['no-misleading-unicode-character', 'ascii class', 'const re = /[abc]/u;\n'],
+  ['no-misleading-unicode-character', 'bmp emoji single', 'const re = /[😀]/u;\n'],
+  ['no-misleading-unicode-character', 'zwj outside class', 'const re = /a‍b/u;\n'],
   // prefer-unicode-codepoint-escapes
   [
     'prefer-unicode-codepoint-escapes',
@@ -462,6 +466,14 @@ const invalidCases = [
   // no-useless-lazy
   ['no-useless-lazy', 'fixed count {n}?', 'const re = /a{3}?/u;\n', ['unexpected']],
   ['no-useless-lazy', 'fixed count {n,n}?', 'const re = /a{2,2}?/u;\n', ['unexpected']],
+  // no-misleading-unicode-character
+  [
+    'no-misleading-unicode-character',
+    'zwj-joined family in class',
+    'const re = /[👨‍👩‍👦]/u;\n',
+    ['unexpected'],
+  ],
+  ['no-misleading-unicode-character', 'bare zwj in class', 'const re = /[‍]/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

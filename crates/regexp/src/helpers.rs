@@ -1675,6 +1675,24 @@ pub(crate) fn class_negated_shorthand_letter(bytes: &[u8], open: usize) -> Optio
     }
 }
 
+/// Returns `true` when the character class at `open` contains a Zero
+/// Width Joiner (U+200D) in its raw UTF-8 form (bytes `0xE2 0x80 0x8D`).
+///
+/// A ZWJ inside a character class is always misleading: the class matches the
+/// ZWJ as a separate atom, so a grapheme such as a ZWJ-joined family emoji
+/// (man, ZWJ, woman, ZWJ, boy) cannot be matched as a single unit. The narrow
+/// form of `no-misleading-unicode-character` flags this raw-UTF-8 case; the
+/// equivalent `\\u200D`, `\\u{200D}`, or v-mode `\\q{}` forms are
+/// intentionally deferred because they need additional escape decoding.
+pub(crate) fn class_contains_zwj(bytes: &[u8], open: usize) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let Some(end) = find_class_end(bytes, open) else {
+        return false;
+    };
+    let body = &bytes[open + 1..end];
+    body.windows(3).any(|w| w == [0xE2, 0x80, 0x8D])
+}
+
 pub(crate) fn mention_char(ch: char) -> CompactString {
     let mut text = CompactString::new("U+");
     let code = ch as u32;

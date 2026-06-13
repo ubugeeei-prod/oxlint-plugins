@@ -244,6 +244,10 @@ const messages = Object.freeze({
     unexpected:
       'Lazy modifier is useless on a fixed-count quantifier; the engine always matches exactly the same number of repetitions.',
   },
+  'no-misleading-unicode-character': {
+    unexpected:
+      'Character class contains a ZWJ (U+200D) and matches it as a separate atom; ZWJ-joined sequences cannot be matched as a single grapheme this way.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -408,6 +412,7 @@ const ruleTypes = Object.freeze({
   'no-useless-backreference': 'problem',
   negation: 'suggestion',
   'no-useless-lazy': 'suggestion',
+  'no-misleading-unicode-character': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -579,7 +584,8 @@ function ruleCategory(ruleName) {
   if (
     ruleName === 'optimal-lookaround-quantifier' ||
     ruleName === 'no-dupe-disjunctions' ||
-    ruleName === 'no-useless-backreference'
+    ruleName === 'no-useless-backreference' ||
+    ruleName === 'no-misleading-unicode-character'
   ) {
     return 'Possible Errors';
   }
