@@ -17,6 +17,10 @@ const POLL_INTERVAL_MS = 250;
 // produces these before `vp test`; this is the fallback for direct test runs.
 const nativePackages = [
   {
+    name: '@oxlint-plugins/oxlint-plugin-angular-eslint',
+    binding: 'npm/angular-eslint/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers',
     binding: 'npm/no-forbidden-identifiers/native.js',
   },
@@ -27,6 +31,10 @@ const nativePackages = [
   {
     name: '@oxlint-plugins/oxlint-plugin-eslint-json',
     binding: 'npm/eslint-json/native.js',
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-eslint-markdown',
+    binding: 'npm/eslint-markdown/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-security',
@@ -45,6 +53,10 @@ const nativePackages = [
     binding: 'npm/stylistic/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-testing-library',
+    binding: 'npm/testing-library/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-react-refresh',
     binding: 'npm/react-refresh/native.js',
   },
@@ -55,6 +67,10 @@ const nativePackages = [
   {
     name: '@oxlint-plugins/oxlint-plugin-mocha',
     binding: 'npm/mocha/native.js',
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-playwright',
+    binding: 'npm/playwright/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-simple-import-sort',

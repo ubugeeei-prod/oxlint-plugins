@@ -1,30 +1,38 @@
 [workspace]
 members = [
   "crates/_carton",
+  "crates/angular_eslint",
   "crates/cypress",
   "crates/e18e",
   "crates/eslint_comments",
   "crates/eslint_json",
+  "crates/eslint_markdown",
   "crates/mocha",
+  "crates/playwright",
   "crates/react_refresh",
   "crates/regexp",
   "crates/security",
   "crates/simple_import_sort",
   "crates/storybook",
   "crates/stylistic",
+  "crates/testing_library",
   "crates/unused_imports",
+  "npm/angular-eslint",
   "npm/cypress",
   "npm/e18e",
   "npm/eslint-comments",
   "npm/eslint-json",
+  "npm/eslint-markdown",
   "npm/mocha",
   "npm/no-forbidden-identifiers",
+  "npm/playwright",
   "npm/react-refresh",
   "npm/regexp",
   "npm/security",
   "npm/simple-import-sort",
   "npm/storybook",
   "npm/stylistic",
+  "npm/testing-library",
   "npm/unused-imports",
 ]
 resolver = "3"
@@ -53,17 +61,21 @@ oxc_semantic = "0.135.0"
 oxc_span = "0.135.0"
 oxc_syntax = "0.135.0"
 oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_carton", version = "0.0.0" }
+oxlint-plugins-angular-eslint = { path = "crates/angular_eslint", version = "0.0.0" }
 oxlint-plugins-cypress = { path = "crates/cypress", version = "0.0.0" }
 oxlint-plugins-e18e = { path = "crates/e18e", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
 oxlint-plugins-eslint-json = { path = "crates/eslint_json", version = "0.0.0" }
+oxlint-plugins-eslint-markdown = { path = "crates/eslint_markdown", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
+oxlint-plugins-playwright = { path = "crates/playwright", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-regexp = { path = "crates/regexp", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
 oxlint-plugins-simple-import-sort = { path = "crates/simple_import_sort", version = "0.0.0" }
 oxlint-plugins-storybook = { path = "crates/storybook", version = "0.0.0" }
 oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
+oxlint-plugins-testing-library = { path = "crates/testing_library", version = "0.0.0" }
 oxlint-plugins-unused-imports = { path = "crates/unused_imports", version = "0.0.0" }
 regex = "1.12.2"
 phf = { version = "0.13.1", features = ["macros"] }

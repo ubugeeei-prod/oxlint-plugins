@@ -15,19 +15,23 @@ type AuditJson = {
 };
 
 const publishablePrefixes = [
+  '@oxlint-plugins/oxlint-plugin-angular-eslint>',
   '@oxlint-plugins/oxlint-plugin-type-aware>',
   '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers>',
   '@oxlint-plugins/oxlint-plugin-e18e>',
   '@oxlint-plugins/oxlint-plugin-eslint-comments>',
   '@oxlint-plugins/oxlint-plugin-eslint-json>',
+  '@oxlint-plugins/oxlint-plugin-eslint-markdown>',
   '@oxlint-plugins/oxlint-plugin-react-refresh>',
   '@oxlint-plugins/oxlint-plugin-security>',
   '@oxlint-plugins/oxlint-plugin-cypress>',
   '@oxlint-plugins/oxlint-plugin-mocha>',
+  '@oxlint-plugins/oxlint-plugin-playwright>',
   '@oxlint-plugins/oxlint-plugin-simple-import-sort>',
   '@oxlint-plugins/oxlint-plugin-unused-imports>',
   '@oxlint-plugins/oxlint-plugin-storybook>',
   '@oxlint-plugins/oxlint-plugin-stylistic>',
+  '@oxlint-plugins/oxlint-plugin-testing-library>',
 ];
 
 const audit = spawnSync('pnpm', ['audit', '--prod', '--no-optional', '--json'], {
