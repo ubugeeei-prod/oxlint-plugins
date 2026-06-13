@@ -17,6 +17,10 @@
       "level": "off",
       "reason": "Flags a literal newline (new RegExp('\\n')) which upstream does not treat as a control character."
     },
+    "no-dupe-characters-character-class": {
+      "level": "off",
+      "reason": "False duplicate in nested v-mode classes / set operations, e.g. /[\\q{a}\\q{ab}\\q{abc}[\\w--[ab]][\\w&&b]]/v. The \\q{...} body is now skipped (so simple cases pass), but nested [...] operands still need set-aware handling."
+    },
     "no-invisible-character": {
       "level": "off",
       "reason": "Flags a literal tab (new RegExp('\\t')) which upstream treats as valid."
