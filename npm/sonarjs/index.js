@@ -69,6 +69,10 @@ const messages = Object.freeze({
     constructorForSideEffects:
       'Either use this object, assign it to a variable, or move the side effects into a named function instead of a constructor.',
   },
+  'no-empty-character-class': {
+    emptyCharacterClass:
+      'This empty character class [] can never match, so this regular expression will never match anything.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -94,6 +98,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow 'delete' applied to a plain variable; use it only on object properties",
   'constructor-for-side-effects':
     'Disallow using new solely for side effects without capturing or using the constructed object',
+  'no-empty-character-class':
+    'Disallow empty character classes in regular expression literals, which can never match',
 });
 
 const ruleTypes = Object.freeze({
@@ -112,6 +118,7 @@ const ruleTypes = Object.freeze({
   'no-labels': 'suggestion',
   'no-delete-var': 'problem',
   'constructor-for-side-effects': 'problem',
+  'no-empty-character-class': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -130,6 +137,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-labels': 'error',
   'no-delete-var': 'error',
   'constructor-for-side-effects': 'error',
+  'no-empty-character-class': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

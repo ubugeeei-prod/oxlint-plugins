@@ -11982,19 +11982,19 @@
       },
       {
         "name": "no-empty-character-class",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-empty-character-class (Sonar key S2639). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S2639). Detects regex literals containing an empty character class [] that can never match. Scope: regex literals only; new RegExp(\"[]\") string-argument form is out of scope (follow-up). Uses visit_reg_exp_literal hook; pattern text via lit.regex.pattern.text.as_str()."
       },
       {
         "name": "no-empty-collection",
