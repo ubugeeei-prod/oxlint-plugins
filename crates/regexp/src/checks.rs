@@ -3,7 +3,9 @@
 //! `traversal.rs` and rely on helpers in `helpers.rs` / `pattern.rs`.
 
 use oxc_allocator::Allocator;
-use oxc_ast::ast::{Argument, CallExpression, NewExpression, RegExpLiteral};
+use oxc_ast::ast::{
+    Argument, CallExpression, Expression, NewExpression, RegExpLiteral, StaticMemberExpression,
+};
 use oxc_regular_expression::{ConstructorParser, Options as RegExpOptions};
 use oxc_span::Span;
 use oxlint_plugins_carton::CompactString;
@@ -16,7 +18,53 @@ use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
 use crate::types::DiagnosticData;
 
+/// Static `RegExp.*` properties that upstream `eslint-plugin-regexp/no-legacy-features`
+/// reports. Excludes special-character aliases such as `$&`, `$+`, `` $` ``, and
+/// `$'`, which cannot be accessed through plain static member syntax (those go
+/// through computed-member access and are not handled by this rule here).
+static LEGACY_REGEXP_STATIC_PROPERTIES: &[&str] = &[
+    "$1",
+    "$2",
+    "$3",
+    "$4",
+    "$5",
+    "$6",
+    "$7",
+    "$8",
+    "$9",
+    "input",
+    "$_",
+    "lastMatch",
+    "lastParen",
+    "leftContext",
+    "rightContext",
+];
+
 impl<'a> Scanner<'a> {
+    pub(crate) fn check_static_member_expression(
+        &mut self,
+        member: &'a StaticMemberExpression<'a>,
+    ) {
+        let Expression::Identifier(identifier) = &member.object else {
+            return;
+        };
+        if identifier.name != "RegExp" {
+            return;
+        }
+        let property = member.property.name.as_str();
+        if LEGACY_REGEXP_STATIC_PROPERTIES.contains(&property) {
+            self.report_with_data(
+                "no-legacy-features",
+                "staticProperty",
+                DiagnosticData {
+                    expr: Some(CompactString::from(property)),
+                    ..DiagnosticData::default()
+                },
+                member.span,
+            );
+        }
+    }
+
     pub(crate) fn check_call_expression(&mut self, call: &'a CallExpression<'a>) {
         if call.callee.is_specific_id("RegExp") {
             self.check_regexp_constructor(call.span, &call.arguments);
@@ -244,6 +292,12 @@ impl<'a> Scanner<'a> {
                 },
                 span,
             );
+        }
+        if analysis.has_unnamed_capturing_group {
+            self.report("prefer-named-capture-group", "required", span);
+        }
+        if analysis.has_match_any_class {
+            self.report("match-any", "unexpected", span);
         }
     }
 }

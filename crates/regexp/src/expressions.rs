@@ -30,7 +30,10 @@ impl<'a> Scanner<'a> {
                 self.scan_assignment_target(&assignment.left);
                 self.scan_expression(&assignment.right);
             }
-            Expression::StaticMemberExpression(member) => self.scan_expression(&member.object),
+            Expression::StaticMemberExpression(member) => {
+                self.check_static_member_expression(member);
+                self.scan_expression(&member.object);
+            }
             Expression::ComputedMemberExpression(member) => {
                 self.scan_expression(&member.object);
                 self.scan_expression(&member.expression);
@@ -117,6 +120,7 @@ impl<'a> Scanner<'a> {
                     }
                 }
                 ChainElement::StaticMemberExpression(member) => {
+                    self.check_static_member_expression(member);
                     self.scan_expression(&member.object);
                 }
                 ChainElement::ComputedMemberExpression(member) => {

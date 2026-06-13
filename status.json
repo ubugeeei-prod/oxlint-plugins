@@ -8667,19 +8667,19 @@
       },
       {
         "name": "match-any",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule match-any."
+        "notes": "Detects `[\\s\\S]`, `[\\d\\D]`, `[\\w\\W]` character classes (in either order) as character classes that match every character; negated classes and asymmetric pairs are ignored. Rust core; Vitest plugin tests cover anti-pairs across families."
       },
       {
         "name": "negation",
@@ -8843,19 +8843,19 @@
       },
       {
         "name": "no-legacy-features",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-legacy-features."
+        "notes": "JS-side check at `StaticMemberExpression` for the legacy `RegExp.$1`-`RegExp.$9`, `RegExp.input`, `RegExp.$_`, `RegExp.lastMatch`, `RegExp.lastParen`, `RegExp.leftContext`, `RegExp.rightContext` static properties; deprecated `RegExp.prototype.compile` is deferred to a future type-aware port. Rust core; Vitest tests cover each property and unrelated member access."
       },
       {
         "name": "no-misleading-capturing-group",
@@ -9387,19 +9387,19 @@
       },
       {
         "name": "prefer-named-capture-group",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-named-capture-group."
+        "notes": "Detects any anonymous capturing group `(...)` at literal level via the existing PatternAnalysis walker; named captures and non-capturing groups are ignored. Rust core; Vitest plugin tests cover valid and invalid cases."
       },
       {
         "name": "prefer-named-replacement",
