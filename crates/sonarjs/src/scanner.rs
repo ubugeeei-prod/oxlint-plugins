@@ -2,7 +2,10 @@
 //! sonarjs port. Traversal uses the Oxc visitor so every node is reached; each
 //! `check_*` rule body lives under [`crate::rules`].
 
-use oxc_ast::ast::{ConditionalExpression, IfStatement, SwitchStatement, TemplateLiteral};
+use oxc_ast::ast::{
+    BinaryExpression, ConditionalExpression, IfStatement, SwitchStatement, TemplateLiteral,
+    UnaryExpression,
+};
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
 use oxlint_plugins_carton::SmallVec;
@@ -63,8 +66,19 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.switch_depth -= 1;
     }
 
+    fn visit_binary_expression(&mut self, it: &BinaryExpression<'a>) {
+        self.check_no_redundant_boolean_binary(it);
+        walk::walk_binary_expression(self, it);
+    }
+
+    fn visit_unary_expression(&mut self, it: &UnaryExpression<'a>) {
+        self.check_no_redundant_boolean_unary(it);
+        walk::walk_unary_expression(self, it);
+    }
+
     fn visit_conditional_expression(&mut self, it: &ConditionalExpression<'a>) {
         self.check_no_nested_conditional(it);
+        self.check_no_redundant_boolean_conditional(it);
         self.conditional_depth += 1;
         walk::walk_conditional_expression(self, it);
         self.conditional_depth -= 1;

@@ -98,16 +98,19 @@ describe('sonarjs plugin shape', () => {
       'no-nested-switch',
       'no-nested-conditional',
       'no-collapsible-if',
+      'no-redundant-boolean',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
     expect(typeof plugin.rules['no-nested-conditional']).toBe('object');
     expect(typeof plugin.rules['no-collapsible-if']).toBe('object');
+    expect(typeof plugin.rules['no-redundant-boolean']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-conditional']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-collapsible-if']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-redundant-boolean']).toBe('error');
   });
 });
 
@@ -142,6 +145,12 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('no-collapsible-if', 'if (a) { if (b) {} }');
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('collapsibleIf');
+  });
+
+  it('reports a redundant boolean literal through the adapter', () => {
+    const reports = runRule('no-redundant-boolean', 'x === true');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('redundantBoolean');
   });
 });
 
@@ -183,5 +192,14 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-collapsible-if)');
+  });
+
+  it('reports no-redundant-boolean through the CLI', () => {
+    const result = runOxlint('no-redundant-boolean', 'x === true');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-redundant-boolean)');
   });
 });
