@@ -11,12 +11,12 @@ use oxc_span::Span;
 use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
-    duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
-    first_invisible_character, first_literal_control_character, first_non_standard_flag,
-    first_numbered_backreference_with_named_group, first_octal_escape, first_surrogate_pair_escape,
-    first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, mention_char,
-    pattern_ends_with_lazy_quantifier, pattern_has_empty_string_literal, sorted_flags,
-    string_literal_value_with_span,
+    duplicate_flag, find_class_end, first_control_character, first_fixed_unicode_escape,
+    first_hex_x_escape, first_invisible_character, first_literal_control_character,
+    first_non_standard_flag, first_numbered_backreference_with_named_group, first_octal_escape,
+    first_surrogate_pair_escape, first_uppercase_hex_escape, first_useless_escape,
+    first_useless_one_quantifier, group_prefix, mention_char, pattern_ends_with_lazy_quantifier,
+    pattern_has_empty_string_literal, skip_escape, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -51,25 +51,84 @@ fn replacement_has_lone_dollar(replacement: &str) -> bool {
     false
 }
 
-/// Returns `true` when `replacement` contains a literal `$0` token that is not
-/// part of a longer numeric backreference like `$01`. JS `String.prototype.replace`
-/// never accepts `$0` as a capture reference, so this is almost always a typo.
-/// `$$` (escaped dollar) is skipped.
-fn replacement_contains_dollar_zero(replacement: &str) -> bool {
+/// Count the number of capturing groups in a regex pattern string.
+/// Skips character classes `[...]`, escape sequences `\X`, and non-capturing
+/// prefixes `(?:`, `(?=`, `(?!`, `(?<=`, `(?<!`.
+fn count_capture_groups(pattern: &str) -> u32 {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    let mut count = 0u32;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => {
+                index = skip_escape(bytes, index);
+            }
+            b'[' => {
+                if let Some(close) = find_class_end(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            b'(' => {
+                let prefix = group_prefix(bytes, index);
+                if prefix.capturing {
+                    count += 1;
+                }
+                index = prefix.next;
+            }
+            _ => {
+                index += 1;
+            }
+        }
+    }
+    count
+}
+
+/// Returns `true` when the replacement string contains a `$0N` (N = 1-9)
+/// backreference that refers to a capture group that does not exist in the
+/// pattern. Only the leading-zero form is checked here; `$N` (N = 1-9)
+/// references without a leading zero are not flagged by this function so as
+/// to stay conservative on receivers/patterns we cannot fully type-resolve.
+///
+/// JS replacement-string semantics for the `$0N` form:
+/// - `$0N` (N 1-9) → same as `$N`: refers to capture group N.
+///   Flag when group N does not exist in the pattern.
+/// - `$0` (bare, not followed by a digit 1-9) → always a literal `$0`.
+///   Never flag.
+/// - `$$` → escaped dollar, skip.
+fn replacement_has_useless_dollar_zero_ref(replacement: &str, capture_count: u32) -> bool {
     let bytes = replacement.as_bytes();
     let mut index = 0;
-    while index + 1 < bytes.len() {
-        if bytes[index] == b'$' {
-            let next = bytes[index + 1];
-            if next == b'$' {
-                index += 2;
+    while index < bytes.len() {
+        if bytes[index] != b'$' {
+            index += 1;
+            continue;
+        }
+        let Some(&next) = bytes.get(index + 1) else {
+            index += 1;
+            continue;
+        };
+        if next == b'$' {
+            // `$$` — escaped dollar, skip both bytes
+            index += 2;
+            continue;
+        }
+        if next == b'0' {
+            // Check for `$0N` where N is 1-9
+            if let Some(&after) = bytes.get(index + 2)
+                && matches!(after, b'1'..=b'9')
+            {
+                let n = (after - b'0') as u32;
+                if n > capture_count {
+                    return true;
+                }
+                index += 3;
                 continue;
             }
-            if next == b'0' {
-                // `$0` is bad unless it is the prefix of `$01`-`$09` which are
-                // also nonsensical (no group zero) — flag those too.
-                return true;
-            }
+            // Bare `$0` (not followed by 1-9) or `$00...` — always literal, never flag.
+            index += 1;
+            continue;
         }
         index += 1;
     }
@@ -188,10 +247,15 @@ impl<'a> Scanner<'a> {
     }
 
     /// `no-useless-dollar-replacements`: in JavaScript replacement strings the
-    /// `$N` syntax references the Nth capture group. `$0` is never a valid
-    /// backreference (groups start at 1) so it is always interpreted as a
-    /// literal `$0` — usually a typo. Flag the literal-replacement case;
-    /// dynamic arguments are deferred.
+    /// `$0N` (N = 1-9) form is a backreference to capture group N. Flag when
+    /// the referenced group does not exist in the pattern. Bare `$0` (not
+    /// followed by a non-zero digit) is always a literal and is never flagged.
+    ///
+    /// Only the leading-zero form is checked here. Plain `$N` (N = 1-9)
+    /// references require receiver-type tracking to avoid false positives on
+    /// unknown variables (e.g. `str.replace(/./, '$1')`) and are deferred.
+    /// Only literal `RegExp` first arguments are handled; constructor calls
+    /// and variable-held patterns are deferred.
     fn check_no_useless_dollar_replacements(&mut self, call: &'a CallExpression<'a>) {
         let Expression::StaticMemberExpression(member) = &call.callee else {
             return;
@@ -206,7 +270,16 @@ impl<'a> Scanner<'a> {
         let Expression::StringLiteral(replacement) = arg1.get_inner_expression() else {
             return;
         };
-        if !replacement_contains_dollar_zero(replacement.value.as_str()) {
+        // First argument must be a literal RegExp so we know the group count.
+        let Some(arg0) = call.arguments.first().and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::RegExpLiteral(regex) = arg0.get_inner_expression() else {
+            return;
+        };
+        let pattern = regex.regex.pattern.text.as_str();
+        let capture_count = count_capture_groups(pattern);
+        if !replacement_has_useless_dollar_zero_ref(replacement.value.as_str(), capture_count) {
             return;
         }
         self.report("no-useless-dollar-replacements", "unexpected", call.span);

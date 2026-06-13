@@ -270,14 +270,14 @@ const invalidCases = [
   // no-useless-dollar-replacements
   [
     'no-useless-dollar-replacements',
-    'dollar zero alone',
-    "str.replace(/foo/u, '$0');\n",
+    'dollar zero three in two-group pattern',
+    "str.replace(/(\\w+)\\s(\\w+)/u, '$03');\n",
     ['unexpected'],
   ],
   [
     'no-useless-dollar-replacements',
-    'replaceAll variant',
-    "str.replaceAll(/foo/gu, '$0');\n",
+    'replaceAll variant dollar zero nine in eight-group pattern',
+    "\"abc\".replaceAll(/()()(()())()()(.)/gu, '$09');\n",
     ['unexpected'],
   ],
   // prefer-escape-replacement-dollar-char

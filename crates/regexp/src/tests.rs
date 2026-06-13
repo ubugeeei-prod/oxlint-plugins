@@ -554,28 +554,20 @@ mod no_useless_dollar_replacements {
     use super::*;
 
     #[test]
-    fn reports_dollar_zero_in_replacement_strings() {
+    fn reports_useless_dollar_zero_n_when_group_missing() {
+        // $03 when pattern has only 2 groups — group 3 does not exist.
         assert_eq!(
             rule_ids_for(
-                "str.replace(/foo/u, '$0');",
+                "str.replace(/(\\w+)\\s(\\w+)/u, '$03');",
                 "no-useless-dollar-replacements"
             )
             .as_slice(),
             &["unexpected"]
         );
-        // Embedded in a longer string.
+        // replaceAll variant: $09 in an 8-group pattern.
         assert_eq!(
             rule_ids_for(
-                "str.replace(/foo/u, 'pre-$0-post');",
-                "no-useless-dollar-replacements"
-            )
-            .as_slice(),
-            &["unexpected"]
-        );
-        // replaceAll variant.
-        assert_eq!(
-            rule_ids_for(
-                "str.replaceAll(/foo/gu, '$0');",
+                "\"abc\".replaceAll(/()()(()())()()(.)/gu, '$09');",
                 "no-useless-dollar-replacements"
             )
             .as_slice(),
@@ -585,10 +577,26 @@ mod no_useless_dollar_replacements {
 
     #[test]
     fn ignores_valid_and_unrelated_replacement_strings() {
-        // Real backreferences are fine.
+        // $0 is always a literal in JS replace — never flag it.
         assert!(
             rule_ids_for(
-                "str.replace(/(foo)/u, '$1');",
+                "\"abc\".replaceAll(/./gu, '$0');",
+                "no-useless-dollar-replacements"
+            )
+            .is_empty()
+        );
+        // $0_ (bare $0 not followed by 1-9) — literal, never flag.
+        assert!(
+            rule_ids_for(
+                "\"abc\".replaceAll(/./gu, '$0_');",
+                "no-useless-dollar-replacements"
+            )
+            .is_empty()
+        );
+        // $09 with 9 capture groups — refers to group 9, which exists.
+        assert!(
+            rule_ids_for(
+                "\"abc\".replaceAll(/()()(()())()()((.))/gu, '$09');",
                 "no-useless-dollar-replacements"
             )
             .is_empty()
@@ -596,12 +604,20 @@ mod no_useless_dollar_replacements {
         // Escaped dollar is intentional.
         assert!(
             rule_ids_for(
-                "str.replace(/foo/u, '$$0');",
+                "str.replace(/foo/u, '$$03');",
                 "no-useless-dollar-replacements"
             )
             .is_empty()
         );
-        // Method without a regex is not our concern.
+        // String first argument (not a regex literal) — cannot determine group count.
+        assert!(
+            rule_ids_for(
+                "'abc'.replaceAll('a', '$09');",
+                "no-useless-dollar-replacements"
+            )
+            .is_empty()
+        );
+        // Method without replacement is not our concern.
         assert!(rule_ids_for("str.match(/foo/u);", "no-useless-dollar-replacements").is_empty());
     }
 }
