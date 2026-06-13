@@ -119,3 +119,43 @@ fn disabled_rule_reports_nothing() {
     let diagnostics = scan_sonarjs("const x = `outer ${`inner`}`;", "sample.ts", &options);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_collapsible_if_direct_inner() {
+    let source = "if (a) if (b) {}";
+    let diagnostics = scan("no-collapsible-if", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-collapsible-if");
+    assert_eq!(diagnostics[0].message_id, "collapsibleIf");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_collapsible_if_block_with_single_inner() {
+    let source = "if (a) { if (b) {} }";
+    let diagnostics = scan("no-collapsible-if", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-collapsible-if");
+    assert_eq!(diagnostics[0].message_id, "collapsibleIf");
+}
+
+#[test]
+fn does_not_report_collapsible_if_outer_has_else() {
+    let source = "if (a) { if (b) {} } else {}";
+    let diagnostics = scan("no-collapsible-if", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_collapsible_if_inner_has_else() {
+    let source = "if (a) { if (b) {} else {} }";
+    let diagnostics = scan("no-collapsible-if", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_collapsible_if_block_has_two_statements() {
+    let source = "if (a) { if (b) {} doSomething(); }";
+    let diagnostics = scan("no-collapsible-if", source);
+    assert!(diagnostics.is_empty());
+}
