@@ -53,7 +53,8 @@ const messages = Object.freeze({
     require: "Use the 'u' flag.",
   },
   'no-escape-backspace': {
-    unexpected: "Unexpected '\\b' inside a character class. Use '\\x08' to match the backspace character.",
+    unexpected:
+      "Unexpected '\\b' inside a character class. Use '\\x08' to match the backspace character.",
   },
   'prefer-plus-quantifier': {
     unexpected: "Unexpected quantifier '{{expr}}'. Use '+' instead.",

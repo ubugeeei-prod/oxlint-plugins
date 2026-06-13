@@ -133,12 +133,7 @@ const invalidCases = [
     ['require'],
   ],
   // no-escape-backspace
-  [
-    'no-escape-backspace',
-    'backspace alone in class',
-    'const re = /[\\b]/u;\n',
-    ['unexpected'],
-  ],
+  ['no-escape-backspace', 'backspace alone in class', 'const re = /[\\b]/u;\n', ['unexpected']],
   [
     'no-escape-backspace',
     'backspace mixed with other class elements',
