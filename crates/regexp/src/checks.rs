@@ -12,8 +12,9 @@ use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
     duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
-    first_invisible_character, first_non_standard_flag, first_octal_escape,
-    first_surrogate_pair_escape, first_uppercase_hex_escape, first_useless_escape, mention_char,
+    first_invisible_character, first_non_standard_flag,
+    first_numbered_backreference_with_named_group, first_octal_escape, first_surrogate_pair_escape,
+    first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, mention_char,
     pattern_has_empty_string_literal, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
@@ -311,7 +312,7 @@ impl<'a> Scanner<'a> {
         }
 
         self.check_flag_style(flags, span);
-        self.check_pattern_rules(pattern, span);
+        self.check_pattern_rules(pattern, flags, span);
     }
 
     #[allow(
@@ -363,9 +364,41 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn check_pattern_rules(&mut self, pattern: &str, span: Span) {
+    fn check_pattern_rules(&mut self, pattern: &str, flags: &str, span: Span) {
         let mut analysis = PatternAnalysis::new();
         analysis.scan(pattern);
+
+        // `no-useless-flag` (narrow form): the `s` flag only affects the
+        // matching of `.`; the `m` flag only affects `^` and `$`. If neither
+        // syntax appears in the pattern, the flag is provably inert. Other
+        // useless-flag shapes (e.g. `i` on a pattern with no letters) are
+        // intentionally deferred — they need a richer case-class analysis.
+        if flags.contains('s') && !analysis.has_unescaped_dot {
+            let mut text = CompactString::new("");
+            text.push('s');
+            self.report_with_data(
+                "no-useless-flag",
+                "unexpected",
+                DiagnosticData {
+                    flag: Some(text),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if flags.contains('m') && !analysis.has_unescaped_anchor {
+            let mut text = CompactString::new("");
+            text.push('m');
+            self.report_with_data(
+                "no-useless-flag",
+                "unexpected",
+                DiagnosticData {
+                    flag: Some(text),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);
@@ -625,6 +658,28 @@ impl<'a> Scanner<'a> {
                 DiagnosticData {
                     expr: Some(original),
                     replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(text) = first_useless_one_quantifier(pattern) {
+            self.report_with_data(
+                "no-useless-quantifier",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(text)),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(text) = first_numbered_backreference_with_named_group(pattern) {
+            self.report_with_data(
+                "prefer-named-backreference",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(text)),
                     ..DiagnosticData::default()
                 },
                 span,

@@ -97,6 +97,14 @@ pub(crate) struct PatternAnalysis {
     /// First run of three or more consecutive ASCII letters/digits inside the
     /// same `[...]` class. `prefer-range`.
     pub(crate) first_collapsible_run: Option<(char, char)>,
+    /// The pattern contains at least one unescaped `.` outside a character
+    /// class. Used by `no-useless-flag` to decide whether the `s` flag has
+    /// any effect.
+    pub(crate) has_unescaped_dot: bool,
+    /// The pattern contains at least one unescaped `^` or `$` outside a
+    /// character class. Used by `no-useless-flag` to decide whether the `m`
+    /// flag has any effect.
+    pub(crate) has_unescaped_anchor: bool,
 }
 
 impl PatternAnalysis {
@@ -258,7 +266,16 @@ impl PatternAnalysis {
                     }
                     index += 1;
                 }
-                b'+' | b'}' | b'^' | b'$' => {
+                b'^' | b'$' => {
+                    self.has_unescaped_anchor = true;
+                    index += 1;
+                }
+                b'+' | b'}' => {
+                    index += 1;
+                }
+                b'.' => {
+                    self.has_unescaped_dot = true;
+                    self.mark_content(&mut groups);
                     index += 1;
                 }
                 _ => {

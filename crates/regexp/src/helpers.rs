@@ -766,6 +766,76 @@ fn append_lower_hex(target: &mut CompactString, mut value: u32) {
     }
 }
 
+/// Returns `Some(original)` when the pattern contains a literal `{1}` or
+/// `{1,1}` quantifier at the top level. Such quantifiers are no-ops; the
+/// referenced atom matches itself exactly once anyway. Class context is
+/// skipped because `{` and `1` are literal characters inside `[...]`. Used by
+/// `no-useless-quantifier`.
+pub(crate) fn first_useless_one_quantifier(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        if bytes[index] == b'{' && bytes.get(index + 1) == Some(&b'1') {
+            if bytes.get(index + 2) == Some(&b'}') {
+                return Some(&pattern[index..index + 3]);
+            }
+            if bytes.get(index + 2) == Some(&b',')
+                && bytes.get(index + 3) == Some(&b'1')
+                && bytes.get(index + 4) == Some(&b'}')
+            {
+                return Some(&pattern[index..index + 5]);
+            }
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some(text)` for the first numbered backreference `\N` (N in 1-9)
+/// inside `pattern` when the same pattern contains at least one named capture
+/// group `(?<name>...)`. Numbered backreferences alongside named groups are
+/// the canonical case for `prefer-named-backreference`. Backreferences inside
+/// classes are skipped because they are literal characters there.
+pub(crate) fn first_numbered_backreference_with_named_group(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    if !pattern.contains("(?<") {
+        return None;
+    }
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] == b'\\'
+            && let Some(&next) = bytes.get(index + 1)
+            && matches!(next, b'1'..=b'9')
+        {
+            return Some(&pattern[index..index + 2]);
+        }
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    None
+}
+
 /// Returns `Some(byte)` for the first escape `\X` in `pattern` where `X` is
 /// a character that is never special in a regular expression (not in a
 /// character class either), so the `\` is useless. Stays narrow on purpose:

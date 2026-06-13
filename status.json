@@ -9147,19 +9147,19 @@
       },
       {
         "name": "no-useless-flag",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-flag."
+        "notes": "PatternAnalysis gains has_unescaped_dot and has_unescaped_anchor (set by the existing walker on `.` / `^` / `$` outside character classes). After scanning, the rule consults the flags string: `s` without `.` is inert, and `m` without `^`/`$` is inert. Other flags (`i`, etc.) are deferred — they need richer letter/case analysis."
       },
       {
         "name": "no-useless-lazy",
@@ -9195,19 +9195,19 @@
       },
       {
         "name": "no-useless-quantifier",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-quantifier."
+        "notes": "Pattern-level scan via first_useless_one_quantifier: walks the pattern bytes, skips classes via find_class_end, and reports the first literal `{1}` or `{1,1}` at top level. Other quantifiers with min=max=1 forms beyond these two are deferred."
       },
       {
         "name": "no-useless-range",
@@ -9371,19 +9371,19 @@
       },
       {
         "name": "prefer-named-backreference",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-named-backreference."
+        "notes": "Pattern-level scan via first_numbered_backreference_with_named_group: gates on the presence of `(?<` (named capture) anywhere in the pattern, then walks for `\\N` (N in 1-9) outside classes. Classes are skipped because `\\1` is literal there."
       },
       {
         "name": "prefer-named-capture-group",
