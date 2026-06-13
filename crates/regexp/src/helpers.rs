@@ -58,6 +58,14 @@ pub(crate) fn skip_escape(bytes: &[u8], index: usize) -> usize {
         }
         b'u' => (index + 6).min(bytes.len()),
         b'x' => (index + 4).min(bytes.len()),
+        // v-mode string disjunction: \q{...} — skip past the closing `}`.
+        b'q' if index + 2 < bytes.len() && bytes[index + 2] == b'{' => {
+            let mut cursor = index + 3;
+            while cursor < bytes.len() && bytes[cursor] != b'}' {
+                cursor += 1;
+            }
+            cursor.saturating_add(1).min(bytes.len())
+        }
         _ => (index + 2).min(bytes.len()),
     }
 }

@@ -11,7 +11,7 @@
     },
     "no-dupe-characters-character-class": {
       "level": "off",
-      "reason": "Diverges on v-flag string-disjunction (\\q{...}) set syntax."
+      "reason": "False duplicate in nested v-mode classes / set operations, e.g. /[\\q{a}\\q{ab}\\q{abc}[\\w--[ab]][\\w&&b]]/v. The \\q{...} body is now skipped (so simple cases pass), but nested [...] operands still need set-aware handling."
     },
     "no-invisible-character": {
       "level": "off",
