@@ -15,9 +15,9 @@ use crate::helpers::{
     first_invisible_character, first_literal_control_character, first_non_standard_flag,
     first_numbered_backreference_with_named_group, first_octal_escape, first_surrogate_pair_escape,
     first_unicode_escape_as_hex, first_uppercase_hex_escape, first_useless_escape,
-    first_useless_one_quantifier, group_prefix, mention_char, pattern_ends_with_lazy_quantifier,
-    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags,
-    string_literal_value_with_span,
+    first_useless_one_quantifier, group_prefix, has_standalone_backslash, mention_char,
+    pattern_ends_with_lazy_quantifier, pattern_has_empty_string_literal,
+    pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -1244,6 +1244,15 @@ impl<'a> Scanner<'a> {
                 },
                 span,
             );
+        }
+        // `no-standalone-backslash`: in non-`u`/non-`v` mode the engine
+        // silently accepts `\c[non-letter]` as a literal backslash. This is
+        // almost certainly unintentional — the author probably intended a
+        // control-character escape `\cX` (which requires a letter after `\c`).
+        // Narrow form: only flag when `u`/`v` are absent (with those flags the
+        // pattern is a parse error that `no-invalid-regexp` already catches).
+        if !flags.contains('u') && !flags.contains('v') && has_standalone_backslash(pattern) {
+            self.report("no-standalone-backslash", "unexpected", span);
         }
     }
 }
