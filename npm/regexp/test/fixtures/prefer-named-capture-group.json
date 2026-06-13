@@ -1,0 +1,52 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-named-capture-group.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-named-capture-group.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/foo/"
+    },
+    {
+      "code": "/b(?:a(?:r))/"
+    },
+    {
+      "code": "/(?<foo>bar)/"
+    },
+    {
+      "code": "/(?=a)(?<=b)/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(foo)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capture group '(foo)' should be converted to a named or non-capturing group.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(foo)/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capture group '(foo)' should be converted to a named or non-capturing group.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    }
+  ]
+}

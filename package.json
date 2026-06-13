@@ -52,6 +52,7 @@
     "port:status": "node tools/tasks/sync-status-from-port-targets.ts",
     "port:tests:eslint-comments": "node tools/tasks/sync-eslint-comments-tests.ts",
     "port:tests:functional": "node tools/tasks/sync-functional-tests.ts",
+    "port:tests:regexp": "node tools/tasks/sync-regexp-tests.ts",
     "port:tests:security": "node tools/tasks/sync-eslint-security-tests.ts",
     "port:tests:simple-import-sort": "node tools/tasks/sync-simple-import-sort-tests.ts",
     "profile": "node tools/tasks/profile.ts",

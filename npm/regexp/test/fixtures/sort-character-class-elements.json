@@ -1,0 +1,400 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/sort-character-class-elements.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/sort-character-class-elements.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[abcd]/"
+    },
+    {
+      "code": "/[aa]/u"
+    },
+    {
+      "code": "/[\\d\\d]/u"
+    },
+    {
+      "code": "/[\\s\\S]/u"
+    },
+    {
+      "code": "/[\\S\\s]/u"
+    },
+    {
+      "code": "/[\\d\\D]/u"
+    },
+    {
+      "code": "/[\\D\\d]/u"
+    },
+    {
+      "code": "/[\\w\\W]/u"
+    },
+    {
+      "code": "/[\\W\\w]/u"
+    },
+    {
+      "code": "/[\\p{Script=Hiragana}\\p{Script=Hiragana}]/u"
+    },
+    {
+      "code": "/[\\p{Script=Hiragana}\\P{Script=Hiragana}]/u"
+    },
+    {
+      "code": "/[\\P{Script=Hiragana}\\p{Script=Hiragana}]/u"
+    },
+    {
+      "code": "/[\\w\\p{ASCII}]/u"
+    },
+    {
+      "code": "/[\\p{ASCII}\\p{Script=Hiragana}]/u"
+    },
+    {
+      "code": "/[\\w\\d]/u"
+    },
+    {
+      "code": "/[\\p{ASCII}a]/u"
+    },
+    {
+      "code": "/[a\\q{a}[a][a--b]]/v"
+    },
+    {
+      "code": "/[\\q{a}\\q{b}\\q{c}]/v"
+    },
+    {
+      "code": "/[\\q{aa}\\q{ab}\\q{ac}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[acdb]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. 'b' should be before 'c'.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[abcd]/"
+    },
+    {
+      "code": "/[b-da]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. 'a' should be before 'b-d'.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[ab-d]/"
+    },
+    {
+      "code": "/[da-c]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. 'a-c' should be before 'd'.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[a-cd]/"
+    },
+    {
+      "code": "/[abcd\\d]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\d' should be before 'a'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[\\dabcd]/"
+    },
+    {
+      "code": "/[\\s\\d\\w]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\w' should be before '\\d'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[\\s\\w\\d]/"
+    },
+    {
+      "code": "/[\\p{ASCII}\\w]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\w' should be before '\\p{ASCII}'.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[\\w\\p{ASCII}]/u"
+    },
+    {
+      "code": "/[\\p{Script=Hiragana}\\p{ASCII}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\p{ASCII}' should be before '\\p{Script=Hiragana}'.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 31
+        }
+      ],
+      "output": "/[\\p{ASCII}\\p{Script=Hiragana}]/u"
+    },
+    {
+      "code": "/[\\p{Script=Hiragana}\\p{Script=Han}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\p{Script=Han}' should be before '\\p{Script=Hiragana}'.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 36
+        }
+      ],
+      "output": "/[\\p{Script=Han}\\p{Script=Hiragana}]/u"
+    },
+    {
+      "code": "/[\\da-b-]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '-' should be before 'a-b'.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[\\d\\-a-b]/u"
+    },
+    {
+      "code": "/[a-b-]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '-' should be before 'a-b'.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[-a-b]/u"
+    },
+    {
+      "code": "/[-$a]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '$' should be before '-'.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[$\\-a]/u"
+    },
+    {
+      "code": "/[-_\\s]+/gu",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\s' should be before '-'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[\\s\\-_]+/gu"
+    },
+    {
+      "code": "/[-_-]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '-' should be before '_'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[-\\-_]/u"
+    },
+    {
+      "code": "\n            const jsxWhitespaceChars = \" \\n\\r\\t\";\n            const matchJsxWhitespaceRegex = new RegExp(\"([\" + jsxWhitespaceChars + \"]+)\");\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\n' should be before ' '.",
+          "line": 2,
+          "column": 42,
+          "endColumn": 44
+        },
+        {
+          "message": "Expected character class elements to be in ascending order. '\t' should be before ' '.",
+          "line": 2,
+          "column": 46,
+          "endColumn": 48
+        }
+      ],
+      "output": "\n            const jsxWhitespaceChars = \"\\t\\n\\r \";\n            const matchJsxWhitespaceRegex = new RegExp(\"([\" + jsxWhitespaceChars + \"]+)\");\n            "
+    },
+    {
+      "code": "/[[a--b][a]\\q{a}a]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\q{a}' should be before '[a--b]'.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 17
+        },
+        {
+          "message": "Expected character class elements to be in ascending order. 'a' should be before '[a--b]'.",
+          "line": 1,
+          "column": 17,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[a\\q{a}[a--b][a]]/v"
+    },
+    {
+      "code": "/[\\q{a}[a--b][a]a]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. 'a' should be before '\\q{a}'.",
+          "line": 1,
+          "column": 17,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[a\\q{a}[a--b][a]]/v"
+    },
+    {
+      "code": "/[[b--c][a]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '[a]' should be before '[b--c]'.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[[a][b--c]]/v"
+    },
+    {
+      "code": "/[\\q{c}\\q{b}\\q{a}]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\q{b}' should be before '\\q{c}'.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 13
+        },
+        {
+          "message": "Expected character class elements to be in ascending order. '\\q{a}' should be before '\\q{c}'.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[\\q{a}\\q{b}\\q{c}]/v"
+    },
+    {
+      "code": "/[\\q{b}\\q{c}\\q{a}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\q{a}' should be before '\\q{b}'.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[\\q{a}\\q{b}\\q{c}]/v"
+    },
+    {
+      "code": "/[\\q{ac}\\q{ab}\\q{aa}]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\q{ab}' should be before '\\q{ac}'.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 15
+        },
+        {
+          "message": "Expected character class elements to be in ascending order. '\\q{aa}' should be before '\\q{ac}'.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 21
+        }
+      ],
+      "output": "/[\\q{aa}\\q{ab}\\q{ac}]/v"
+    },
+    {
+      "code": "/[\\q{ab}\\q{ac}\\q{aa}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '\\q{aa}' should be before '\\q{ab}'.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 21
+        }
+      ],
+      "output": "/[\\q{aa}\\q{ab}\\q{ac}]/v"
+    },
+    {
+      "code": "/[~^*]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '^' should be before '~'.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        },
+        {
+          "message": "Expected character class elements to be in ascending order. '*' should be before '~'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[*\\^~]/"
+    },
+    {
+      "code": "/[~^]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Expected character class elements to be in ascending order. '^' should be before '~'.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[\\^~]/"
+    }
+  ]
+}

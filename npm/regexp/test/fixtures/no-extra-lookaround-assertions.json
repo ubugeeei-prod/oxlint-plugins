@@ -1,0 +1,165 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-extra-lookaround-assertions.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-extra-lookaround-assertions.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "console.log('JavaScript'.replace(/Java(?=Script)/u, 'Type'))"
+    },
+    {
+      "code": "console.log('JavaScript'.replace(/(?<=Java)Script/u, ''))"
+    },
+    {
+      "code": "console.log('JavaScript'.replace(/(?<=[\\q{Java}])Script/v, ''))"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "console.log('JavaScript'.replace(/Java(?=Scrip(?=t))/u, 'Type'))",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookahead assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 47,
+          "endColumn": 52
+        }
+      ],
+      "output": "console.log('JavaScript'.replace(/Java(?=Script)/u, 'Type'))"
+    },
+    {
+      "code": "console.log('JavaScript'.replace(/(?<=(?<=J)ava)Script/u, ''))",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookbehind assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 39,
+          "endColumn": 45
+        }
+      ],
+      "output": "console.log('JavaScript'.replace(/(?<=Java)Script/u, ''))"
+    },
+    {
+      "code": "console.log('JavaScript Java JavaRuntime'.replace(/Java(?!Scrip(?=t))/gu, 'Python'))",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookahead assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 64,
+          "endColumn": 69
+        }
+      ],
+      "output": "console.log('JavaScript Java JavaRuntime'.replace(/Java(?!Script)/gu, 'Python'))"
+    },
+    {
+      "code": "console.log('JavaScript TypeScript ActionScript'.replace(/(?<!(?<=J)ava)Script/gu, 'ScriptCompiler'))",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookbehind assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 63,
+          "endColumn": 69
+        }
+      ],
+      "output": "console.log('JavaScript TypeScript ActionScript'.replace(/(?<!Java)Script/gu, 'ScriptCompiler'))"
+    },
+    {
+      "code": "console.log('JavaScriptChecker JavaScriptLinter'.replace(/Java(?=Script(?=Checker|Linter))/gu, 'Type'))",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookahead assertion is useless and can be converted into a group.",
+          "line": 1,
+          "column": 72,
+          "endColumn": 90
+        }
+      ],
+      "output": "console.log('JavaScriptChecker JavaScriptLinter'.replace(/Java(?=Script(?:Checker|Linter))/gu, 'Type'))"
+    },
+    {
+      "code": "console.log('JavaScriptChecker JavaScriptLinter'.replace(/Java(?=Script(?=(?:Check|Lint)er))/gu, 'Type'))",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookahead assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 72,
+          "endColumn": 92
+        }
+      ],
+      "output": "console.log('JavaScriptChecker JavaScriptLinter'.replace(/Java(?=Script(?:Check|Lint)er)/gu, 'Type'))"
+    },
+    {
+      "code": "console.log('ESLint JSLint TSLint'.replace(/(?<=(?<=J|T)S)Lint/gu, '-Runtime'))",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookbehind assertion is useless and can be converted into a group.",
+          "line": 1,
+          "column": 49,
+          "endColumn": 57
+        }
+      ],
+      "output": "console.log('ESLint JSLint TSLint'.replace(/(?<=(?:J|T)S)Lint/gu, '-Runtime'))"
+    },
+    {
+      "code": "console.log('JavaScriptChecker JavaScriptLinter'.replace(/Java(?=Script(?=Checker)|Script(?=Linter))/gu, 'Type'))",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "This lookahead assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 72,
+          "endColumn": 83
+        },
+        {
+          "message": "This lookahead assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 90,
+          "endColumn": 100
+        }
+      ],
+      "output": "console.log('JavaScriptChecker JavaScriptLinter'.replace(/Java(?=ScriptChecker|ScriptLinter)/gu, 'Type'))"
+    },
+    {
+      "code": "console.log('ESLint JSLint TSLint'.replace(/(?<=(?<=J)S|(?<=T)S)Lint/gu, '-Runtime'))",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "This lookbehind assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 49,
+          "endColumn": 55
+        },
+        {
+          "message": "This lookbehind assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 57,
+          "endColumn": 63
+        }
+      ],
+      "output": "console.log('ESLint JSLint TSLint'.replace(/(?<=JS|TS)Lint/gu, '-Runtime'))"
+    },
+    {
+      "code": "console.log('JavaScript'.replace(/Java(?=Scrip(?=[\\q{t}]))/v, 'Type'))",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookahead assertion is useless and can be inlined.",
+          "line": 1,
+          "column": 47,
+          "endColumn": 58
+        }
+      ],
+      "output": "console.log('JavaScript'.replace(/Java(?=Scrip[\\q{t}])/v, 'Type'))"
+    }
+  ]
+}

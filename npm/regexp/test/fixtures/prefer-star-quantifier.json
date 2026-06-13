@@ -1,0 +1,123 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-star-quantifier.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-star-quantifier.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a*/"
+    },
+    {
+      "code": "/a*?/"
+    },
+    {
+      "code": "/(a*)/"
+    },
+    {
+      "code": "/(a*?)/"
+    },
+    {
+      "code": "/[a{0,}]/"
+    },
+    {
+      "code": "/a{0,10}/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a{0,}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,}'. Use '*' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a*/"
+    },
+    {
+      "code": "/a{0,}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,}'. Use '*' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a*?/"
+    },
+    {
+      "code": "/(a){0,}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,}'. Use '*' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 9
+        }
+      ],
+      "output": "/(a)*/"
+    },
+    {
+      "code": "/(a){0,}/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,}'. Use '*' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 9
+        }
+      ],
+      "output": "/(a)*/v"
+    },
+    {
+      "code": "/(a){0,}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,}'. Use '*' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 9
+        }
+      ],
+      "output": "/(a)*?/"
+    },
+    {
+      "code": "\n            const s = \"a{0,}\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,}'. Use '*' instead.",
+          "line": 2,
+          "column": 25,
+          "endColumn": 29
+        }
+      ],
+      "output": "\n            const s = \"a*\"\n            new RegExp(s)\n            "
+    },
+    {
+      "code": "\n            const s = \"a{0\"+\",}\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,}'. Use '*' instead.",
+          "line": 2,
+          "column": 23,
+          "endColumn": 33
+        }
+      ],
+      "output": null
+    }
+  ]
+}

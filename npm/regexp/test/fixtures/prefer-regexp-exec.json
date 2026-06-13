@@ -1,0 +1,84 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-regexp-exec.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-regexp-exec.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n        /thing/.exec('something');\n\n        'some things are just things'.match(/thing/g);\n\n        const text = 'something';\n        const search = /thing/;\n        search.exec(text);\n        "
+    },
+    {
+      "code": "\n        /thin[[g]]/v.exec('something');\n        "
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n            'something'.match(/thing/);\n\n            'some things are just things'.match(/thing/);\n\n            const text = 'something';\n            const search = /thing/;\n            text.match(search);\n            ",
+      "errorCount": 3,
+      "errors": [
+        {
+          "message": "Use the `RegExp#exec()` method instead.",
+          "line": 2,
+          "column": 13,
+          "endColumn": 39
+        },
+        {
+          "message": "Use the `RegExp#exec()` method instead.",
+          "line": 4,
+          "column": 13,
+          "endColumn": 57
+        },
+        {
+          "message": "Use the `RegExp#exec()` method instead.",
+          "line": 8,
+          "column": 13,
+          "endColumn": 31
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const fn = (a) => a + ''\n            fn(1).match(search);\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the `RegExp#exec()` method instead.",
+          "line": 3,
+          "column": 13,
+          "endColumn": 32
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const v = a + b\n            v.match(search);\n\n            const n = 1 + 2\n            n.match(search); // ignore\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the `RegExp#exec()` method instead.",
+          "line": 3,
+          "column": 13,
+          "endColumn": 28
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            'something'.match(/thin[[g]]/v);\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the `RegExp#exec()` method instead.",
+          "line": 2,
+          "column": 13,
+          "endColumn": 44
+        }
+      ],
+      "output": null
+    }
+  ]
+}

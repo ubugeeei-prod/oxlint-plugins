@@ -1,0 +1,191 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/control-character-escape.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/control-character-escape.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\0\\t\\n\\v\\f\\r/"
+    },
+    {
+      "code": "RegExp(/\\0\\t\\n\\v\\f\\r/, \"i\")"
+    },
+    {
+      "code": "RegExp(\"\\0\\t\\n\\v\\f\\r\", \"i\")"
+    },
+    {
+      "code": "RegExp(\"\\\\0\\\\t\\\\n\\\\v\\\\f\\\\r\", \"i\")"
+    },
+    {
+      "code": "/\\t/"
+    },
+    {
+      "code": "new RegExp('\t')"
+    },
+    {
+      "code": "/[\\q{\\0\\t\\n\\v\\f\\r}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/\\x00/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\x00' (U+0000). Use '\\0' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": "/\\0/"
+    },
+    {
+      "code": "/\\x0a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\x0a' (U+000a). Use '\\n' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": "/\\n/"
+    },
+    {
+      "code": "/\\cJ/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\cJ' (U+000a). Use '\\n' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/\\n/"
+    },
+    {
+      "code": "/\\u{a}/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\u{a}' (U+000a). Use '\\n' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\n/u"
+    },
+    {
+      "code": "RegExp(\"\\\\cJ\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\cJ' (U+000a). Use '\\n' instead.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 13
+        }
+      ],
+      "output": "RegExp(\"\\\\n\")"
+    },
+    {
+      "code": "RegExp(\"\\\\u{a}\", \"u\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\u{a}' (U+000a). Use '\\n' instead.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 15
+        }
+      ],
+      "output": "RegExp(\"\\\\n\", \"u\")"
+    },
+    {
+      "code": "/\\u0009/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\u0009' (U+0009). Use '\\t' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\t/"
+    },
+    {
+      "code": "/\t/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\t' (U+0009). Use '\\t' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": "/\\t/"
+    },
+    {
+      "code": "\n            const s = \"\\\\u0009\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\u0009' (U+0009). Use '\\t' instead.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 31
+        }
+      ],
+      "output": "\n            const s = \"\\\\t\"\n            new RegExp(s)\n            "
+    },
+    {
+      "code": "\n            const s = \"\\\\u\"+\"0009\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\u0009' (U+0009). Use '\\t' instead.",
+          "line": 2,
+          "column": 23,
+          "endColumn": 35
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp(\"\\t\\r\\n\\0\" + /\t/.source)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\t' (U+0009). Use '\\t' instead.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 23
+        }
+      ],
+      "output": "RegExp(\"\\t\\r\\n\\0\" + /\\t/.source)"
+    },
+    {
+      "code": "/[\\q{\\x00}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character escape '\\x00' (U+0000). Use '\\0' instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[\\q{\\0}]/v"
+    }
+  ]
+}

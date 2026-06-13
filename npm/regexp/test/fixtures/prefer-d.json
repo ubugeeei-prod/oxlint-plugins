@@ -1,0 +1,139 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-d.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-d.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\d/"
+    },
+    {
+      "code": "/[1-9]/"
+    },
+    {
+      "code": "/[^0-9\\w]/"
+    },
+    {
+      "code": "/\\d/v"
+    },
+    {
+      "code": "/[\\q{0|1|2|3|4|5|6|7|8}]/v"
+    },
+    {
+      "code": "/[\\q{0|1|2|3|4|5|6|7|8|9|a}]/v"
+    },
+    {
+      "code": "/[\\q{0|1|2|3|4|5|6|7|8|9|abc}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[0-9]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9]'. Use '\\d' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\d/"
+    },
+    {
+      "code": "/[^0-9]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[^0-9]'. Use '\\D' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\D/"
+    },
+    {
+      "code": "\n            const s = \"[0-9]\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9]'. Use '\\d' instead.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 29
+        }
+      ],
+      "output": "\n            const s = \"\\\\d\"\n            new RegExp(s)\n            "
+    },
+    {
+      "code": "\n            const s = \"[0-\"+\"9]\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9]'. Use '\\d' instead.",
+          "line": 2,
+          "column": 23,
+          "endColumn": 33
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[0-9]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9]'. Use '\\d' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\d/v"
+    },
+    {
+      "code": "/[[0-9]--[0-7]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9]'. Use '\\d' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": "/[\\d--[0-7]]/v"
+    },
+    {
+      "code": "/[[0-:]--:]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[[0-:]--:]'. Use '\\d' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/\\d/v"
+    },
+    {
+      "code": "/[\\q{0|1|2|3|4|5|6|7|8|9}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[\\q{0|1|2|3|4|5|6|7|8|9}]'. Use '\\d' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 27
+        }
+      ],
+      "output": "/\\d/v"
+    }
+  ]
+}

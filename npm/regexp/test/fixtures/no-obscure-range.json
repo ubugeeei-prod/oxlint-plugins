@@ -1,0 +1,153 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-obscure-range.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-obscure-range.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[\\d\\0-\\x1f\\cA-\\cZ\\2-\\5\\012-\\123\\x10-\\uffff a-z a-f]/"
+    },
+    {
+      "code": "/[а-я А-Я]/"
+    },
+    {
+      "code": "/[[0-9]--[6-8]]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[\\1-\\x13]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of '\\1-\\x13' (U+0001 - U+0013) are not obvious.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\x20-\\113]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of '\\x20-\\113' (U+0020 - U+004b) are not obvious.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\n-\\r]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of '\\n-\\r' (U+000a - U+000d) are not obvious.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\cA-Z]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of '\\cA-Z' (U+0001 - U+005a) are not obvious.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[A-z]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of 'A-z' (U+0041 - U+007a) are not obvious.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[0-A]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of '0-A' (U+0030 - U+0041) are not obvious.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[Z-a]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of 'Z-a' (U+005a - U+0061) are not obvious.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[A-\\x43]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of 'A-\\x43' (U+0041 - U+0043) are not obvious.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[*+-/]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of '+-/' (U+002b - U+002f) are not obvious.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[[ -\\/]--+]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected obscure character range. The characters of ' -\\/' (U+0020 - U+002f) are not obvious.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    }
+  ]
+}

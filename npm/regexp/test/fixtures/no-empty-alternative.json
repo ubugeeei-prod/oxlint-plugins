@@ -1,0 +1,143 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-empty-alternative.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-empty-alternative.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/()|(?:)|(?=)/"
+    },
+    {
+      "code": "/(?:)/"
+    },
+    {
+      "code": "/a*|b+/"
+    },
+    {
+      "code": "/[\\q{a|b}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/|||||/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This empty alternative might be a mistake. If not, use a quantifier instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(a+|b+|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This empty alternative might be a mistake. If not, use a quantifier instead.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:\\|\\|||\\|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This empty alternative might be a mistake. If not, use a quantifier instead.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 11
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<name>a|b|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This empty alternative might be a mistake. If not, use a quantifier instead.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:a|b|)f/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This empty alternative might be a mistake. If not, use a quantifier instead.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:a|b|)+f/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This empty alternative might be a mistake. If not, use a quantifier instead.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{a|}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This empty alternative might be a mistake. If not, use a quantifier instead.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{|a}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This empty alternative might be a mistake. If not, use a quantifier instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{a||b}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This empty alternative might be a mistake. If not, use a quantifier instead.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    }
+  ]
+}

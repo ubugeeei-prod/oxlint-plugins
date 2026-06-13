@@ -1,0 +1,177 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-dollar-replacements.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-dollar-replacements.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n        const str = 'John Smith';\n\n        /* ✓ GOOD */\n        var newStr = str.replace(/(\\w+)\\s(\\w+)/, '$2, $1');\n        // newStr = 'Smith, John'\n        var newStr = str.replace(/(?<first>\\w+)\\s(?<last>\\w+)/, '$<last>, $<first>');\n        // newStr = 'Smith, John'\n        "
+    },
+    {
+      "code": "\n        const str = 'John Smith';\n\n        var newStr = str.replace(/(\\w+)\\s(\\w+)/, '$$3, $1 $2');\n        var newStr = str.replace(/(?<first>\\w+)\\s(?<last>\\w+)/, '$<last>, $<first> $$<middle>');\n        "
+    },
+    {
+      "code": "\n        'abc'.foo(/./, '$1');\n        "
+    },
+    {
+      "code": "\n        'abc'.replace(/./);\n        "
+    },
+    {
+      "code": "\n        const s = '$1'\n        'abc'.replace(/./, s);\n        "
+    },
+    {
+      "code": "\n        const r = /./\n        'abc'.replace(...r, '$1');\n        "
+    },
+    {
+      "code": "\n        str.replace(/./, '$1');\n        "
+    },
+    {
+      "code": "\n        'abc'.replaceAll('a', '$1');\n        "
+    },
+    {
+      "code": "\n        const str = '0123456789_';\n        str.replace(/(0)(1)(2)(3)(4)(5)(6)(7)(8)(9)(_)/, '_$11_'); // \"___\"\n        "
+    },
+    {
+      "code": "\n        const str = '0123456789_';\n        str.replace(/(0)(1)(2)(3)(4)(5)(6)(7)(8)(9)(_)/, '_$12_'); // \"_02_\"\n        "
+    },
+    {
+      "code": "\n        \"abc\".replaceAll(/./g, '$'); // \"$$$\"\n        "
+    },
+    {
+      "code": "\n        \"abc\".replaceAll(/./g, '$_'); // \"$_$_$_\"\n        "
+    },
+    {
+      "code": "\n        \"abc\".replaceAll(/./g, '$0'); // \"$0$0$0\"\n        "
+    },
+    {
+      "code": "\n        \"abc\".replaceAll(/./g, '$0_'); // \"$0_$0_$0_\"\n        "
+    },
+    {
+      "code": "\n        \"abc\".replaceAll(/()()(()())()()((.))/g, '$9'); // \"abc\"\n        "
+    },
+    {
+      "code": "\n        \"abc\".replaceAll(/()()(()())()()((.))/g, '$09'); // \"abc\"\n        "
+    },
+    {
+      "code": "\n        \"abc\".replaceAll(/(.)/g, '$<'); // \"$<$<$<\"\n        "
+    },
+    {
+      "code": "\n        \"abc\".replaceAll(/(.)/g, '$<foo'); // \"$<foo$<foo$<foo\"\n        "
+    },
+    {
+      "code": "\n        var regexp = /./g\n        regexp = 'a'\n        \"abc\".replaceAll(regexp, '$1');\n        "
+    },
+    {
+      "code": "\n        const regexp = 'a'\n        \"abc\".replaceAll(regexp, '$1');\n        "
+    },
+    {
+      "code": "\n        const regexp = /(.)/g\n        regexp = 'a'\n        \"abc\".replaceAll(regexp, 'foo');\n        "
+    },
+    {
+      "code": "\n        const str = 'John Smith';\n        var newStr = str.replace(/(\\w+)\\s(\\w+)/v, '$2, $1');\n        "
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n            const str = 'John Smith';\n\n            /* ✗ BAD */\n            var newStr = str.replace(/(\\w+)\\s(\\w+)/, '$3, $1 $2');\n            // newStr = '$3, John Smith'\n            var newStr = str.replace(/(?<first>\\w+)\\s(?<last>\\w+)/, '$<last>, $<first> $<middle>');\n            // newStr = 'Smith, John '\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "'$3' replacement will insert '$3' because there are less than 3 capturing groups. Use '$$' if you want to escape '$'.",
+          "line": 5,
+          "column": 55,
+          "endColumn": 57
+        },
+        {
+          "message": "'$<middle>' replacement will be ignored because the named capturing group is not found. Use '$$' if you want to escape '$'.",
+          "line": 7,
+          "column": 88,
+          "endColumn": 97
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const str = 'John Smith';\n            var newStr = str.replace(/(\\w+)\\s(\\w+)/, '$03, $01 $02');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$03' replacement will insert '$03' because there are less than 3 capturing groups. Use '$$' if you want to escape '$'.",
+          "line": 3,
+          "column": 55,
+          "endColumn": 58
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            \"abc\".replaceAll(/()()(()())()()(.)/g, '$9'); // \"$9$9$9\"\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$9' replacement will insert '$9' because there are less than 9 capturing groups. Use '$$' if you want to escape '$'.",
+          "line": 2,
+          "column": 53,
+          "endColumn": 55
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            \"abc\".replaceAll(/()()(()())()()(.)/g, '$09'); // \"$09$09$09\"\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$09' replacement will insert '$09' because there are less than 9 capturing groups. Use '$$' if you want to escape '$'.",
+          "line": 2,
+          "column": 53,
+          "endColumn": 56
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const regexp = /./g\n            \"abc\".replaceAll(regexp, '$1');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$1' replacement will insert '$1' because capturing group is not found. Use '$$' if you want to escape '$'.",
+          "line": 3,
+          "column": 39,
+          "endColumn": 41
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            \"abc\".replaceAll(/(.)/g, '$<a>');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$<a>' replacement will insert '$<a>' because named capturing group is not found. Use '$$' if you want to escape '$'.",
+          "line": 2,
+          "column": 39,
+          "endColumn": 43
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const str = 'John Smith';\n            var newStr = str.replace(/([[\\w]]+)[\\s](\\w+)/v, '$3, $1 $2');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$3' replacement will insert '$3' because there are less than 3 capturing groups. Use '$$' if you want to escape '$'.",
+          "line": 3,
+          "column": 62,
+          "endColumn": 64
+        }
+      ],
+      "output": null
+    }
+  ]
+}

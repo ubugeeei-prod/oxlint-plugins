@@ -1,0 +1,235 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-question-quantifier.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-question-quantifier.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a?/"
+    },
+    {
+      "code": "/a??/"
+    },
+    {
+      "code": "/(a?)/"
+    },
+    {
+      "code": "/(a??)/"
+    },
+    {
+      "code": "/[a{0,1}]/"
+    },
+    {
+      "code": "/a{0,}/"
+    },
+    {
+      "code": "/(?:a|b)/"
+    },
+    {
+      "code": "/a(?:|a)/"
+    },
+    {
+      "code": "/(?:abc||def)/"
+    },
+    {
+      "code": "/(?:)/"
+    },
+    {
+      "code": "/(?:||)/"
+    },
+    {
+      "code": "/(?:abc|def|)+/"
+    },
+    {
+      "code": "/(?:abc|def|)??/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a{0,1}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,1}'. Use '?' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": "/a?/"
+    },
+    {
+      "code": "/a{0,1}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,1}'. Use '?' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": "/a??/"
+    },
+    {
+      "code": "/(a){0,1}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,1}'. Use '?' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(a)?/"
+    },
+    {
+      "code": "/(a){0,1}/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,1}'. Use '?' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(a)?/v"
+    },
+    {
+      "code": "/(a){0,1}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,1}'. Use '?' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(a)??/"
+    },
+    {
+      "code": "/(?:abc|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected group '(?:abc|)'. Use '(?:abc)?' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(?:abc)?/"
+    },
+    {
+      "code": "/(?:abc|def|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected group '(?:abc|def|)'. Use '(?:abc|def)?' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/(?:abc|def)?/"
+    },
+    {
+      "code": "/(?:abc||def|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected group '(?:abc||def|)'. Use '(?:abc||def)?' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 15
+        }
+      ],
+      "output": "/(?:abc||def)?/"
+    },
+    {
+      "code": "/(?:abc|def||)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected group '(?:abc|def||)'. Use '(?:abc|def)?' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 15
+        }
+      ],
+      "output": "/(?:abc|def)?/"
+    },
+    {
+      "code": "/(?:abc|def|)?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected group '(?:abc|def|)?'. Use '(?:abc|def)?' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 15
+        }
+      ],
+      "output": "/(?:abc|def)?/"
+    },
+    {
+      "code": "\n            const s = \"a{0,1}\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,1}'. Use '?' instead.",
+          "line": 2,
+          "column": 25,
+          "endColumn": 30
+        }
+      ],
+      "output": "\n            const s = \"a?\"\n            new RegExp(s)\n            "
+    },
+    {
+      "code": "\n            const s = \"a{0,\"+\"1}\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{0,1}'. Use '?' instead.",
+          "line": 2,
+          "column": 23,
+          "endColumn": 34
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const s = \"(?:abc|def|)\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected group '(?:abc|def|)'. Use '(?:abc|def)?' instead.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 36
+        }
+      ],
+      "output": "\n            const s = \"(?:abc|def)?\"\n            new RegExp(s)\n            "
+    },
+    {
+      "code": "\n            const s = \"(?:abc|\"+\"def|)\"\n            new RegExp(s)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected group '(?:abc|def|)'. Use '(?:abc|def)?' instead.",
+          "line": 2,
+          "column": 23,
+          "endColumn": 40
+        }
+      ],
+      "output": null
+    }
+  ]
+}

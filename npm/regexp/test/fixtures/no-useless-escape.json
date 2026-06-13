@@ -1,0 +1,963 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-escape.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-escape.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\\\/; /[\\\\]/"
+    },
+    {
+      "code": "/\\^/; /[\\^]/"
+    },
+    {
+      "code": "/\\//"
+    },
+    {
+      "code": "/\\./"
+    },
+    {
+      "code": "/\\$/"
+    },
+    {
+      "code": "/a\\*/"
+    },
+    {
+      "code": "/a\\+/"
+    },
+    {
+      "code": "/a\\?/"
+    },
+    {
+      "code": "/\\[\\]/; /[[\\]]/"
+    },
+    {
+      "code": "/\\{\\}/"
+    },
+    {
+      "code": "/a\\|b/"
+    },
+    {
+      "code": "/\\(\\)/"
+    },
+    {
+      "code": "/[a\\-b]/"
+    },
+    {
+      "code": "/a\\b/"
+    },
+    {
+      "code": "/[\\b]/"
+    },
+    {
+      "code": "/a\\B/"
+    },
+    {
+      "code": "/\\cM/; /[\\cM]/"
+    },
+    {
+      "code": "/\\d/; /[\\d]/"
+    },
+    {
+      "code": "/\\D/; /[\\D]/"
+    },
+    {
+      "code": "/\\f/; /[\\f]/"
+    },
+    {
+      "code": "/(?<title>\\w+), yes \\k<title>/"
+    },
+    {
+      "code": "/\\n/; /[\\n]/"
+    },
+    {
+      "code": "/\\p{ASCII}/u; /[\\p{ASCII}]/u"
+    },
+    {
+      "code": "/\\P{ASCII}/u; /[\\P{ASCII}]/u"
+    },
+    {
+      "code": "/\\r/; /[\\r]/"
+    },
+    {
+      "code": "/\\s/; /[\\s]/"
+    },
+    {
+      "code": "/\\S/; /[\\S]/"
+    },
+    {
+      "code": "/\\t/; /[\\t]/"
+    },
+    {
+      "code": "/\\v/; /[\\v]/"
+    },
+    {
+      "code": "/\\w/; /[\\w]/"
+    },
+    {
+      "code": "/\\W/; /[\\W]/"
+    },
+    {
+      "code": "/\\x77/; /[\\x77]/"
+    },
+    {
+      "code": "/\\u0041/; /[\\u0041]/"
+    },
+    {
+      "code": "/\\u{41}/u; /[\\u{41}]/u"
+    },
+    {
+      "code": "/()\\1/"
+    },
+    {
+      "code": "/()()\\2/"
+    },
+    {
+      "code": "/()()()\\3/"
+    },
+    {
+      "code": "/()()()()\\4/"
+    },
+    {
+      "code": "/()()()()()\\5/"
+    },
+    {
+      "code": "/()()()()()()\\6/"
+    },
+    {
+      "code": "/()()()()()()()\\7/"
+    },
+    {
+      "code": "/()()()()()()()()\\8/"
+    },
+    {
+      "code": "/()()()()()()()()()\\9/"
+    },
+    {
+      "code": "/()()()()()()()()()()\\10/"
+    },
+    {
+      "code": "/\\0/; /[\\0]/"
+    },
+    {
+      "code": "/\\1/; /[\\1]/"
+    },
+    {
+      "code": "/\\2/; /[\\2]/"
+    },
+    {
+      "code": "/\\3/; /[\\3]/"
+    },
+    {
+      "code": "/\\4/; /[\\4]/"
+    },
+    {
+      "code": "/\\5/; /[\\5]/"
+    },
+    {
+      "code": "/\\6/; /[\\6]/"
+    },
+    {
+      "code": "/\\7/; /[\\7]/"
+    },
+    {
+      "code": "/()\\1\\8/; /()\\1\\9/"
+    },
+    {
+      "code": "/[\\^-`]/"
+    },
+    {
+      "code": "/[\\q{abc}]/v"
+    },
+    {
+      "code": "/[\\(]/v"
+    },
+    {
+      "code": "/[\\)]/v"
+    },
+    {
+      "code": "/[\\{]/v"
+    },
+    {
+      "code": "/[\\]]/v"
+    },
+    {
+      "code": "/[\\}]/v"
+    },
+    {
+      "code": "/[\\/]/v"
+    },
+    {
+      "code": "/[\\-]/v"
+    },
+    {
+      "code": "/[\\|]/v"
+    },
+    {
+      "code": "/[\\$$]/v"
+    },
+    {
+      "code": "/[\\&&]/v"
+    },
+    {
+      "code": "/[\\!!]/v"
+    },
+    {
+      "code": "/[\\##]/v"
+    },
+    {
+      "code": "/[\\%%]/v"
+    },
+    {
+      "code": "/[\\**]/v"
+    },
+    {
+      "code": "/[\\++]/v"
+    },
+    {
+      "code": "/[\\,,]/v"
+    },
+    {
+      "code": "/[\\..]/v"
+    },
+    {
+      "code": "/[\\::]/v"
+    },
+    {
+      "code": "/[\\;;]/v"
+    },
+    {
+      "code": "/[\\<<]/v"
+    },
+    {
+      "code": "/[\\==]/v"
+    },
+    {
+      "code": "/[\\>>]/v"
+    },
+    {
+      "code": "/[\\??]/v"
+    },
+    {
+      "code": "/[\\@@]/v"
+    },
+    {
+      "code": "/[\\``]/v"
+    },
+    {
+      "code": "/[\\~~]/v"
+    },
+    {
+      "code": "/[^\\^^]/v"
+    },
+    {
+      "code": "/[_\\^^]/v"
+    },
+    {
+      "code": "/[$\\$]/v"
+    },
+    {
+      "code": "/[&\\&]/v"
+    },
+    {
+      "code": "/[!\\!]/v"
+    },
+    {
+      "code": "/[#\\#]/v"
+    },
+    {
+      "code": "/[%\\%]/v"
+    },
+    {
+      "code": "/[*\\*]/v"
+    },
+    {
+      "code": "/[+\\+]/v"
+    },
+    {
+      "code": "/[,\\,]/v"
+    },
+    {
+      "code": "/[.\\.]/v"
+    },
+    {
+      "code": "/[:\\:]/v"
+    },
+    {
+      "code": "/[;\\;]/v"
+    },
+    {
+      "code": "/[<\\<]/v"
+    },
+    {
+      "code": "/[=\\=]/v"
+    },
+    {
+      "code": "/[>\\>]/v"
+    },
+    {
+      "code": "/[?\\?]/v"
+    },
+    {
+      "code": "/[@\\@]/v"
+    },
+    {
+      "code": "/[`\\`]/v"
+    },
+    {
+      "code": "/[~\\~]/v"
+    },
+    {
+      "code": "/[^^\\^]/v"
+    },
+    {
+      "code": "/[_^\\^]/v"
+    },
+    {
+      "code": "/[\\&&&\\&]/v"
+    },
+    {
+      "code": "/[[\\-]\\-]/v"
+    },
+    {
+      "code": "/[\\^]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/\\a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\a.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": "/a/"
+    },
+    {
+      "code": "/\\x7/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\x.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\u41/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\u.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\u{[41]}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\u.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[ \\^ \\/ \\. \\$ \\* \\+ \\? \\[ \\{ \\} \\| \\( \\) \\k<title> \\B \\8 \\9]/",
+      "errorCount": 17,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\^.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        },
+        {
+          "message": "Unnecessary escape character: \\/.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        },
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 10,
+          "endColumn": 11
+        },
+        {
+          "message": "Unnecessary escape character: \\$.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 14
+        },
+        {
+          "message": "Unnecessary escape character: \\*.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 17
+        },
+        {
+          "message": "Unnecessary escape character: \\+.",
+          "line": 1,
+          "column": 19,
+          "endColumn": 20
+        },
+        {
+          "message": "Unnecessary escape character: \\?.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 23
+        },
+        {
+          "message": "Unnecessary escape character: \\[.",
+          "line": 1,
+          "column": 25,
+          "endColumn": 26
+        },
+        {
+          "message": "Unnecessary escape character: \\{.",
+          "line": 1,
+          "column": 28,
+          "endColumn": 29
+        },
+        {
+          "message": "Unnecessary escape character: \\}.",
+          "line": 1,
+          "column": 31,
+          "endColumn": 32
+        },
+        {
+          "message": "Unnecessary escape character: \\|.",
+          "line": 1,
+          "column": 34,
+          "endColumn": 35
+        },
+        {
+          "message": "Unnecessary escape character: \\(.",
+          "line": 1,
+          "column": 37,
+          "endColumn": 38
+        },
+        {
+          "message": "Unnecessary escape character: \\).",
+          "line": 1,
+          "column": 40,
+          "endColumn": 41
+        },
+        {
+          "message": "Unnecessary escape character: \\k.",
+          "line": 1,
+          "column": 43,
+          "endColumn": 44
+        },
+        {
+          "message": "Unnecessary escape character: \\B.",
+          "line": 1,
+          "column": 53,
+          "endColumn": 54
+        },
+        {
+          "message": "Unnecessary escape character: \\8.",
+          "line": 1,
+          "column": 56,
+          "endColumn": 57
+        },
+        {
+          "message": "Unnecessary escape character: \\9.",
+          "line": 1,
+          "column": 59,
+          "endColumn": 60
+        }
+      ],
+      "output": "/[ ^ / . $ * + ? [ { } | ( ) \\k<title> B 8 9]/"
+    },
+    {
+      "code": "/\\p{ASCII}/; /[\\p{ASCII}]/; /\\P{ASCII}/; /[\\P{ASCII}]/",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\p.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        },
+        {
+          "message": "Unnecessary escape character: \\p.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 17
+        },
+        {
+          "message": "Unnecessary escape character: \\P.",
+          "line": 1,
+          "column": 30,
+          "endColumn": 31
+        },
+        {
+          "message": "Unnecessary escape character: \\P.",
+          "line": 1,
+          "column": 44,
+          "endColumn": 45
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{abc}]/;",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\q.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\$]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\$.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[$]/v"
+    },
+    {
+      "code": "/[\\&\\&]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\&.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[&\\&]/v"
+    },
+    {
+      "code": "/[\\!\\!]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\!.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[!\\!]/v"
+    },
+    {
+      "code": "/[\\#\\#]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\#.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[#\\#]/v"
+    },
+    {
+      "code": "/[\\%\\%]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\%.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[%\\%]/v"
+    },
+    {
+      "code": "/[\\*\\*]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\*.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[*\\*]/v"
+    },
+    {
+      "code": "/[\\+\\+]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\+.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[+\\+]/v"
+    },
+    {
+      "code": "/[\\,\\,]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\,.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[,\\,]/v"
+    },
+    {
+      "code": "/[\\.\\.]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[.\\.]/v"
+    },
+    {
+      "code": "/[\\:\\:]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\:.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[:\\:]/v"
+    },
+    {
+      "code": "/[\\;\\;]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\;.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[;\\;]/v"
+    },
+    {
+      "code": "/[\\<\\<]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\<.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[<\\<]/v"
+    },
+    {
+      "code": "/[\\=\\=]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\=.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[=\\=]/v"
+    },
+    {
+      "code": "/[\\>\\>]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\>.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[>\\>]/v"
+    },
+    {
+      "code": "/[\\?\\?]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\?.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[?\\?]/v"
+    },
+    {
+      "code": "/[\\@\\@]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\@.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[@\\@]/v"
+    },
+    {
+      "code": "/[\\`\\`]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\`.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[`\\`]/v"
+    },
+    {
+      "code": "/[\\~\\~]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\~.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[~\\~]/v"
+    },
+    {
+      "code": "/[^\\^\\^]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\^.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[^^\\^]/v"
+    },
+    {
+      "code": "/[_\\^\\^]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\^.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[_^\\^]/v"
+    },
+    {
+      "code": "/[^\\^]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\^.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[^^]/v"
+    },
+    {
+      "code": "/[\\&\\&&\\&]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\&.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[&\\&&\\&]/v"
+    },
+    {
+      "code": "/[\\p{ASCII}--\\.]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 14,
+          "endColumn": 15
+        }
+      ],
+      "output": "/[\\p{ASCII}--.]/v"
+    },
+    {
+      "code": "/[\\p{ASCII}&&\\.]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 14,
+          "endColumn": 15
+        }
+      ],
+      "output": "/[\\p{ASCII}&&.]/v"
+    },
+    {
+      "code": "/[\\.--[.&]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[.--[.&]]/v"
+    },
+    {
+      "code": "/[\\.&&[.&]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[.&&[.&]]/v"
+    },
+    {
+      "code": "/[\\.--\\.--\\.]/v",
+      "errorCount": 3,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        },
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        },
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 11,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[.--.--.]/v"
+    },
+    {
+      "code": "/[\\.&&\\.&&\\.]/v",
+      "errorCount": 3,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        },
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        },
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 11,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[.&&.&&.]/v"
+    },
+    {
+      "code": "/[[\\.&]--[\\.&]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        },
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 11,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[[.&]--[.&]]/v"
+    },
+    {
+      "code": "/[[\\.&]&&[\\.&]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        },
+        {
+          "message": "Unnecessary escape character: \\..",
+          "line": 1,
+          "column": 11,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[[.&]&&[.&]]/v"
+    }
+  ]
+}

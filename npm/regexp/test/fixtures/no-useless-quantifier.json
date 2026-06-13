@@ -1,0 +1,194 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-quantifier.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-quantifier.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a*/"
+    },
+    {
+      "code": "/(?:a)?/"
+    },
+    {
+      "code": "/(?:a|b?)??/"
+    },
+    {
+      "code": "/(?:\\b|a)?/"
+    },
+    {
+      "code": "/(?:\\b)*/"
+    },
+    {
+      "code": "/(?:\\b|(?!a))*/"
+    },
+    {
+      "code": "/(?:\\b|(?!))*/"
+    },
+    {
+      "code": "/#[\\da-z]+|#(?:-|([+/\\\\*~<>=@%|&?!])\\1?)|#(?=\\()/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a{1}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": "/a/"
+    },
+    {
+      "code": "/a{1,1}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/a/"
+    },
+    {
+      "code": "/(?:)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element doesn't consume or assert characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:[\\q{}])+/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element doesn't consume or assert characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:|(?:)){5,9}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element doesn't consume or assert characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:|()()())*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element doesn't consume or assert characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:a+b*|c*)?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element can already accept the empty string, so this quantifier is redundant.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:a|b?c?d?e?f?)?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element can already accept the empty string, so this quantifier is redundant.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:\\b)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element doesn't consume characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:\\b){5,100}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element doesn't consume characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:\\b|(?!a))+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element doesn't consume characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:\\b|(?!)){6}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless quantifier. The quantified element doesn't consume characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    }
+  ]
+}

@@ -1,0 +1,341 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-non-capturing-group.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-non-capturing-group.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/(?:abcd)?/.test(str)"
+    },
+    {
+      "code": "/(?:)/.test(str)"
+    },
+    {
+      "code": "/(?:a|b)/"
+    },
+    {
+      "code": "\n        const foo = /(?:a|b)/\n        const bar = new RegExp(foo.source + 'c')\n        foo.test(str)\n        bar.test(str)\n        "
+    },
+    {
+      "code": "\n        const foo = /(?:a|b)/\n        const bar = new RegExp(foo.source + 'c')\n        foo.exec('a')\n        bar.exec('a')\n        "
+    },
+    {
+      "code": "/()\\1(?:0)/.test(str)"
+    },
+    {
+      "code": "/\\1(?:0)/.test(str)"
+    },
+    {
+      "code": "/\\0(?:1)/.test(str)"
+    },
+    {
+      "code": "/(\\d)(?=(?:\\d{3})+(?!\\d))/g.test(str)"
+    },
+    {
+      "code": "/(?:a{2})+/.test(str)"
+    },
+    {
+      "code": "/{(?:2)}/.test(str)"
+    },
+    {
+      "code": "/{(?:2,)}/.test(str)"
+    },
+    {
+      "code": "/{(?:2,5)}/.test(str)"
+    },
+    {
+      "code": "/{2,(?:5)}/.test(str)"
+    },
+    {
+      "code": "/a{(?:5})/.test(str)"
+    },
+    {
+      "code": "/\\u{(?:41)}/.test(str)"
+    },
+    {
+      "code": "/(.)\\1(?:2\\s)/.test(str)"
+    },
+    {
+      "code": "/\\0(?:2)/.test(str)"
+    },
+    {
+      "code": "/\\x4(?:1)*/.test(str)"
+    },
+    {
+      "code": "/\\x4(?:1)/.test(str)"
+    },
+    {
+      "code": "/(?:\\x4)1/.test(str)"
+    },
+    {
+      "code": "/\\x(?:4)1/.test(str)"
+    },
+    {
+      "code": "/\\x(?:41\\w+)/.test(str)"
+    },
+    {
+      "code": "/\\u004(?:1)/.test(str)"
+    },
+    {
+      "code": "/\\u00(?:4)1/.test(str)"
+    },
+    {
+      "code": "/\\u0(?:0)41/.test(str)"
+    },
+    {
+      "code": "/\\u(?:0)041/.test(str)"
+    },
+    {
+      "code": "/\\c(?:A)/.test(str)"
+    },
+    {
+      "code": "/(?:a|b)c/.test(str)"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(?:abcd)/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/abcd/.test(str)"
+    },
+    {
+      "code": "/(?:abcd)/v.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/abcd/v.test(str)"
+    },
+    {
+      "code": "/(?:[abcd])/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[abcd]/.test(str)"
+    },
+    {
+      "code": "/(?:ab|cd)/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/ab|cd/.test(str)"
+    },
+    {
+      "code": "/a(?:ab|(?:.|a|b))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 12
+        }
+      ],
+      "output": "/a(?:ab|.|a|b)/"
+    },
+    {
+      "code": "/(?:[abcd]+?)/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[abcd]+?/.test(str)"
+    },
+    {
+      "code": "/(?:0)/.test(str); /\\1(?:0)/.test(str); /(?:1)/.test(str); /\\1(?:1)/.test(str)",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        },
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 42,
+          "endColumn": 45
+        }
+      ],
+      "output": "/0/.test(str); /\\1(?:0)/.test(str); /1/.test(str); /\\1(?:1)/.test(str)"
+    },
+    {
+      "code": "/(?:a\\n)/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/a\\n/.test(str)"
+    },
+    {
+      "code": "\n            const s = \"(?:a\\\\n)\"\n            ;(new RegExp(s)).test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 27
+        }
+      ],
+      "output": "\n            const s = \"a\\\\n\"\n            ;(new RegExp(s)).test(str)"
+    },
+    {
+      "code": "\n            const s = \"(?:a\"+\"\\\\n)\"\n            ;(new RegExp(s)).test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:a)/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/a/.test(str)"
+    },
+    {
+      "code": "/(?:a)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/a+/"
+    },
+    {
+      "code": "/(?:\\w)/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/\\w/.test(str)"
+    },
+    {
+      "code": "/(?:[abc])*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[abc]*/"
+    },
+    {
+      "code": "/foo(?:[abc]*)bar/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": "/foo[abc]*bar/"
+    },
+    {
+      "code": "/foo(?:bar)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": "/foobar/"
+    },
+    {
+      "code": "/(?:a|b)/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/a|b/.test(str)"
+    },
+    {
+      "code": "/a|(?:b|c)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary non-capturing group. This group can be removed without changing the behaviour of the regex.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a|b|c/"
+    }
+  ]
+}

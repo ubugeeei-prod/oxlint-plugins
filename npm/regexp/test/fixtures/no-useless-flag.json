@@ -1,0 +1,541 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-flag.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-flag.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/foo/i"
+    },
+    {
+      "code": "/BAR/i"
+    },
+    {
+      "code": "/\\w\\W/iu"
+    },
+    {
+      "code": "/\\p{Lu}/i"
+    },
+    {
+      "code": "/K/iu"
+    },
+    {
+      "code": "/\\b/iu"
+    },
+    {
+      "code": "/\\x41/i"
+    },
+    {
+      "code": "/[a-zA-Z]/i"
+    },
+    {
+      "code": "/\\p{Ll}/iu"
+    },
+    {
+      "code": "/^foo/m"
+    },
+    {
+      "code": "/foo$/m"
+    },
+    {
+      "code": "/^foo$/m"
+    },
+    {
+      "code": "/./s"
+    },
+    {
+      "code": "\n        let c = 0\n        for (const regex = /foo/g; c<=5; c++) {\n            console.log(c, regex.test(''));\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        regex.test(bar);\n        regex.test(bar);\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        regex.exec(bar);\n        regex.exec(bar);\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        function fn () {\n            return regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        while (foo) {\n            regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        for (;foo;) {\n            regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        for (const foo of bar) {\n            regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        for (const foo in bar) {\n            regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        do {\n            regex.test(bar);\n        } while (foo)\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        unknown.search(regex)\n        'str'.search(regex)\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        unknown(regex)\n        'str'.search(regex)\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        regex.split(unknown)\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/g;\n        unknown.exec(regex)\n        "
+    },
+    {
+      "code": "\n        const notStr = {}\n        notStr.split(/foo/g);\n\n        maybeStr.split(/foo/g);\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y\n        regex.lastIndex = 4\n        regex.test('bar_foo')\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        regex.test(bar);\n        regex.test(bar);\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        regex.exec(bar);\n        regex.exec(bar);\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        function fn () {\n            return regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        while (foo) {\n            regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        for (;foo;) {\n            regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        for (const foo of bar) {\n            regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        for (const foo in bar) {\n            regex.test(bar);\n        }\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        do {\n            regex.test(bar);\n        } while (foo)\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        unknown.search(regex)\n        'str'.search(regex)\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        unknown(regex)\n        'str'.search(regex)\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        regex.split(unknown)\n        "
+    },
+    {
+      "code": "\n        const regex = /foo/y;\n        unknown.exec(regex)\n        "
+    },
+    {
+      "code": "\n            /* exported b */\n            const a = /foo/y;\n            const b = a;\n            const regex = b;\n\n            'str'.split(regex)\n            "
+    },
+    {
+      "code": "\n        const a = /foo/y;\n        const b = a;\n        const regex = b; // unused\n\n        'str'.split(b)\n        "
+    },
+    {
+      "code": "\n        const orig = /\\w/i; // eslint-disable-line\n        const clone = new RegExp(orig);\n        "
+    },
+    {
+      "code": "/a/u"
+    },
+    {
+      "code": "/a/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/\\w \\W \\s \\S \\d \\D . \\b/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'i' flag is unnecessary because the pattern only contains case-invariant characters.",
+          "line": 1,
+          "column": 25,
+          "endColumn": 26
+        }
+      ],
+      "output": "/\\w \\W \\s \\S \\d \\D . \\b/"
+    },
+    {
+      "code": "/K/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'i' flag is unnecessary because the pattern only contains case-invariant characters.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/K/"
+    },
+    {
+      "code": "/\\w/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'm' flag is unnecessary because the pattern does not contain start (^) or end ($) assertions.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": "/\\w/"
+    },
+    {
+      "code": "/\\w/s",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 's' flag is unnecessary because the pattern does not contain dots (.).",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": "/\\w/"
+    },
+    {
+      "code": "/\\w/ims",
+      "errorCount": 3,
+      "errors": [
+        {
+          "message": "The 'i' flag is unnecessary because the pattern only contains case-invariant characters.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        },
+        {
+          "message": "The 'm' flag is unnecessary because the pattern does not contain start (^) or end ($) assertions.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        },
+        {
+          "message": "The 's' flag is unnecessary because the pattern does not contain dots (.).",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\w/"
+    },
+    {
+      "code": "/\\w/ms",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "The 'm' flag is unnecessary because the pattern does not contain start (^) or end ($) assertions.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        },
+        {
+          "message": "The 's' flag is unnecessary because the pattern does not contain dots (.).",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\w/"
+    },
+    {
+      "code": "\n            /* ✓ GOOD */\n            const regex1 = /foo/g;\n            const str = 'table football, foosball';\n            while ((array = regex1.exec(str)) !== null) {\n              //\n            }\n\n            const regex2 = /foo/g;\n            regex2.test(string);\n            regex2.test(string);\n\n            str.replace(/foo/g, 'bar');\n            str.replaceAll(/foo/g, 'bar');\n\n            /* ✗ BAD */\n            /foo/g.test(string);\n            const regex3 = /foo/g;\n            regex3.test(string); // You have used it only once.\n\n            /foo/g.exec(string);\n            const regex4 = /foo/g;\n            regex4.exec(string); // You have used it only once.\n\n            new RegExp('foo', 'g').test(string);\n\n            str.search(/foo/g);\n            ",
+      "errorCount": 6,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.test'.",
+          "line": 9,
+          "column": 18,
+          "endColumn": 19
+        },
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.test'.",
+          "line": 9,
+          "column": 33,
+          "endColumn": 34
+        },
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.exec'.",
+          "line": 9,
+          "column": 18,
+          "endColumn": 19
+        },
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.exec'.",
+          "line": 9,
+          "column": 33,
+          "endColumn": 34
+        },
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.test'.",
+          "line": 9,
+          "column": 32,
+          "endColumn": 33
+        },
+        {
+          "message": "The 'g' flag is unnecessary because 'String.prototype.search' ignores the 'g' flag.",
+          "line": 9,
+          "column": 29,
+          "endColumn": 30
+        }
+      ],
+      "output": "\n            /* ✓ GOOD */\n            const regex1 = /foo/g;\n            const str = 'table football, foosball';\n            while ((array = regex1.exec(str)) !== null) {\n              //\n            }\n\n            const regex2 = /foo/g;"
+    },
+    {
+      "code": "\n            /foo/g.test(bar);\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.test'.",
+          "line": 2,
+          "column": 18,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n            /foo/.test(bar);\n            "
+    },
+    {
+      "code": "\n            /foo/g.exec(bar);\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.exec'.",
+          "line": 2,
+          "column": 18,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n            /foo/.exec(bar);\n            "
+    },
+    {
+      "code": "\n            new RegExp('foo', 'g').test(bar);\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.test'.",
+          "line": 2,
+          "column": 32,
+          "endColumn": 33
+        }
+      ],
+      "output": "\n            new RegExp('foo', '').test(bar);\n            "
+    },
+    {
+      "code": "\n            \"foo foo\".search(/foo/g);\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because 'String.prototype.search' ignores the 'g' flag.",
+          "line": 2,
+          "column": 35,
+          "endColumn": 36
+        }
+      ],
+      "output": "\n            \"foo foo\".search(/foo/);\n            "
+    },
+    {
+      "code": "\n            const regex = /foo/g;\n            regex.test(bar);\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.test'.",
+          "line": 2,
+          "column": 32,
+          "endColumn": 33
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            function fn () {\n                const regex = /foo/g;\n                return regex.test(bar);\n            }\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because the regex is used only once in 'RegExp.prototype.test'.",
+          "line": 3,
+          "column": 36,
+          "endColumn": 37
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const a = /foo/g;\n            const b = a;\n            const regex = b;\n\n            regex.test(bar);\n\n            'str'.split(b)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because the regex does not use global search.",
+          "line": 2,
+          "column": 28,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const a = /foo/g;\n            'str'.split(a)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because 'String.prototype.split' ignores the 'g' flag.",
+          "line": 2,
+          "column": 28,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const a = /foo/g;\n            'str'.split(a)\n            'str'.split(a)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'g' flag is unnecessary because 'String.prototype.split' ignores the 'g' flag.",
+          "line": 2,
+          "column": 28,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            /* ✓ GOOD */\n            const regex1 = /foo/y;\n            const str = 'table football, foosball';\n            regex1.lastIndex = 6\n            var array = regex1.exec(str)\n\n            const regex2 = /foo/y;\n            regex2.test(string);\n            regex2.test(string);\n\n            str.replace(/foo/y, 'bar');\n            str.replaceAll(/foo/gy, 'bar');\n\n            const regexp3 = /foo/y\n            str.search(regexp3)\n\n            /* ✗ BAD */\n            str.split(/foo/y);\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'y' flag is unnecessary because 'String.prototype.split' ignores the 'y' flag.",
+          "line": 9,
+          "column": 28,
+          "endColumn": 29
+        }
+      ],
+      "output": "\n            /* ✓ GOOD */\n            const regex1 = /foo/y;\n            const str = 'table football, foosball';\n            regex1.lastIndex = 6\n            var array = regex1.exec(str)\n\n            const regex2 = /foo/y;\n            regex2.test(string);"
+    },
+    {
+      "code": "\n            \"str\".split(/foo/y)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'y' flag is unnecessary because 'String.prototype.split' ignores the 'y' flag.",
+          "line": 2,
+          "column": 30,
+          "endColumn": 31
+        }
+      ],
+      "output": "\n            \"str\".split(/foo/)\n            "
+    },
+    {
+      "code": "\n            \"str\".split(new RegExp('foo', 'y'));\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'y' flag is unnecessary because 'String.prototype.split' ignores the 'y' flag.",
+          "line": 2,
+          "column": 44,
+          "endColumn": 45
+        }
+      ],
+      "output": "\n            \"str\".split(new RegExp('foo', ''));\n            "
+    },
+    {
+      "code": "\n            const a = /foo/y;\n            const b = a;\n            const regex = b;\n\n            'str'.split(regex)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'y' flag is unnecessary because 'String.prototype.split' ignores the 'y' flag.",
+          "line": 2,
+          "column": 28,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const orig = /\\w/i; // eslint-disable-line\n            const clone = new RegExp(orig, 'i');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'i' flag is unnecessary because the pattern only contains case-invariant characters.",
+          "line": 3,
+          "column": 45,
+          "endColumn": 46
+        }
+      ],
+      "output": "\n            const orig = /\\w/i; // eslint-disable-line\n            const clone = new RegExp(orig, '');\n            "
+    },
+    {
+      "code": "\n            const orig = /\\w/iy;\n            const clone = new RegExp(orig, '');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The flags of this RegExp literal are useless because only the source of the regex is used.",
+          "line": 2,
+          "column": 30,
+          "endColumn": 32
+        }
+      ],
+      "output": "\n            const orig = /\\w/;\n            const clone = new RegExp(orig, '');\n            "
+    },
+    {
+      "code": "\n            const orig = /\\w/i;\n            const clone = new RegExp(orig);\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'i' flag is unnecessary because the pattern only contains case-invariant characters.",
+          "line": 2,
+          "column": 30,
+          "endColumn": 31
+        }
+      ],
+      "output": "\n            const orig = /\\w/;\n            const clone = new RegExp(orig);\n            "
+    },
+    {
+      "code": "RegExp(/\\w/i);",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'i' flag is unnecessary because the pattern only contains case-invariant characters.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 13
+        }
+      ],
+      "output": "RegExp(/\\w/);"
+    },
+    {
+      "code": "\n            const orig = /\\w/;\n            const clone = new RegExp(orig, 'i');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The 'i' flag is unnecessary because the pattern only contains case-invariant characters.",
+          "line": 3,
+          "column": 45,
+          "endColumn": 46
+        }
+      ],
+      "output": "\n            const orig = /\\w/;\n            const clone = new RegExp(orig, '');\n            "
+    },
+    {
+      "code": "RegExp(/\\w/imu.source);",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The flags of this RegExp literal are useless because only the source of the regex is used.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 15
+        }
+      ],
+      "output": "RegExp(/\\w/u.source);"
+    }
+  ]
+}

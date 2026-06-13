@@ -1,0 +1,1011 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-dupe-characters-character-class.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-dupe-characters-character-class.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "var re = /[a-zA-Z0-9\\s]/"
+    },
+    {
+      "code": "/[abc]/"
+    },
+    {
+      "code": "/[a][a][a]/"
+    },
+    {
+      "code": "/[0-9\\D]/"
+    },
+    {
+      "code": "/[\\S \\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]/"
+    },
+    {
+      "code": "/\\s \\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff/"
+    },
+    {
+      "code": "/[\\WA-Za-z0-9_]/"
+    },
+    {
+      "code": "/[\\w \\/-:]/"
+    },
+    {
+      "code": "/[\\w\\p{L}]/u"
+    },
+    {
+      "code": "/\\p{ASCII}abc/u"
+    },
+    {
+      "code": "/[\\u1fff-\\u2020\\s]/"
+    },
+    {
+      "code": "/[\\q{a}\\q{ab}\\q{abc}[\\w--[ab]][\\w&&b]]/v"
+    },
+    {
+      "code": "var r = new RegExp('[\\\\wA-Za-z0-9_][invalid');"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "var re = /[\\\\(\\\\)]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate '\\\\' (U+005c).",
+          "line": 1,
+          "column": 15,
+          "endColumn": 17
+        }
+      ],
+      "output": "var re = /[\\\\()]/"
+    },
+    {
+      "code": "var re = /[a-z\\\\s]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'s' (U+0073) is already included in 'a-z' (U+0061 - U+007a).",
+          "line": 1,
+          "column": 17,
+          "endColumn": 18
+        }
+      ],
+      "output": "var re = /[a-z\\\\]/"
+    },
+    {
+      "code": "/[aaa]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected duplicate 'a' (U+0061).",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        },
+        {
+          "message": "Unexpected duplicate 'a' (U+0061).",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[a]/"
+    },
+    {
+      "code": "/[0-9\\d]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'0-9' (U+0030 - U+0039) is already included in '\\d'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[\\d]/"
+    },
+    {
+      "code": "/[\\f\\u000C]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate. '\\u000C' (U+000c) is a duplicate of '\\f' (U+000c).",
+          "line": 1,
+          "column": 5,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[\\f]/"
+    },
+    {
+      "code": "RegExp(/[bb]/)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate 'b' (U+0062).",
+          "line": 1,
+          "column": 11,
+          "endColumn": 12
+        }
+      ],
+      "output": "RegExp(/[b]/)"
+    },
+    {
+      "code": "/[\\s \\f\\n\\r\\t\\v\\u00a0\\u1680\\u180e\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]/",
+      "errorCount": 15,
+      "errors": [
+        {
+          "message": "' ' (U+0020) is already included in '\\s'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        },
+        {
+          "message": "'\\f' (U+000c) is already included in '\\s'.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 8
+        },
+        {
+          "message": "'\\n' (U+000a) is already included in '\\s'.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 10
+        },
+        {
+          "message": "'\\r' (U+000d) is already included in '\\s'.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 12
+        },
+        {
+          "message": "'\\t' (U+0009) is already included in '\\s'.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        },
+        {
+          "message": "'\\v' (U+000b) is already included in '\\s'.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 16
+        },
+        {
+          "message": "'\\u00a0' (U+00a0) is already included in '\\s'.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 22
+        },
+        {
+          "message": "'\\u1680' (U+1680) is already included in '\\s'.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 28
+        },
+        {
+          "message": "'\\u2000-\\u200a' (U+2000 - U+200a) is already included in '\\s'.",
+          "line": 1,
+          "column": 34,
+          "endColumn": 47
+        },
+        {
+          "message": "'\\u2028' (U+2028) is already included in '\\s'.",
+          "line": 1,
+          "column": 47,
+          "endColumn": 53
+        },
+        {
+          "message": "'\\u2029' (U+2029) is already included in '\\s'.",
+          "line": 1,
+          "column": 53,
+          "endColumn": 59
+        },
+        {
+          "message": "'\\u202f' (U+202f) is already included in '\\s'.",
+          "line": 1,
+          "column": 59,
+          "endColumn": 65
+        },
+        {
+          "message": "'\\u205f' (U+205f) is already included in '\\s'.",
+          "line": 1,
+          "column": 65,
+          "endColumn": 71
+        },
+        {
+          "message": "'\\u3000' (U+3000) is already included in '\\s'.",
+          "line": 1,
+          "column": 71,
+          "endColumn": 77
+        },
+        {
+          "message": "'\\ufeff' (U+feff) is already included in '\\s'.",
+          "line": 1,
+          "column": 77,
+          "endColumn": 83
+        }
+      ],
+      "output": "/[\\s\\u180e]/"
+    },
+    {
+      "code": "/[\\t\t \\u0009]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected duplicate. '\t' (U+0009) is a duplicate of '\\t' (U+0009).",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected duplicate. '\\u0009' (U+0009) is a duplicate of '\\t' (U+0009).",
+          "line": 1,
+          "column": 7,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[\\t ]/"
+    },
+    {
+      "code": "/[\\wA-Z a-z:0-9,_]/",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "'A-Z' (U+0041 - U+005a) is already included in '\\w'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        },
+        {
+          "message": "'a-z' (U+0061 - U+007a) is already included in '\\w'.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 12
+        },
+        {
+          "message": "'0-9' (U+0030 - U+0039) is already included in '\\w'.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 16
+        },
+        {
+          "message": "'_' (U+005f) is already included in '\\w'.",
+          "line": 1,
+          "column": 17,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[\\w :,]/"
+    },
+    {
+      "code": "/[!-z_abc-]/",
+      "errorCount": 5,
+      "errors": [
+        {
+          "message": "'_' (U+005f) is already included in '!-z' (U+0021 - U+007a).",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        },
+        {
+          "message": "'a' (U+0061) is already included in '!-z' (U+0021 - U+007a).",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        },
+        {
+          "message": "'b' (U+0062) is already included in '!-z' (U+0021 - U+007a).",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        },
+        {
+          "message": "'c' (U+0063) is already included in '!-z' (U+0021 - U+007a).",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        },
+        {
+          "message": "'-' (U+002d) is already included in '!-z' (U+0021 - U+007a).",
+          "line": 1,
+          "column": 10,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[!-z]/"
+    },
+    {
+      "code": "/[\\w_abc-][\\s \\t\\r\\n\\u2000\\u3000]/",
+      "errorCount": 10,
+      "errors": [
+        {
+          "message": "'_' (U+005f) is already included in '\\w'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        },
+        {
+          "message": "'a' (U+0061) is already included in '\\w'.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        },
+        {
+          "message": "'b' (U+0062) is already included in '\\w'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        },
+        {
+          "message": "'c' (U+0063) is already included in '\\w'.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        },
+        {
+          "message": "' ' (U+0020) is already included in '\\s'.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 15
+        },
+        {
+          "message": "'\\t' (U+0009) is already included in '\\s'.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 17
+        },
+        {
+          "message": "'\\r' (U+000d) is already included in '\\s'.",
+          "line": 1,
+          "column": 17,
+          "endColumn": 19
+        },
+        {
+          "message": "'\\n' (U+000a) is already included in '\\s'.",
+          "line": 1,
+          "column": 19,
+          "endColumn": 21
+        },
+        {
+          "message": "'\\u2000' (U+2000) is already included in '\\s'.",
+          "line": 1,
+          "column": 21,
+          "endColumn": 27
+        },
+        {
+          "message": "'\\u3000' (U+3000) is already included in '\\s'.",
+          "line": 1,
+          "column": 27,
+          "endColumn": 33
+        }
+      ],
+      "output": "/[\\w-][\\s]/"
+    },
+    {
+      "code": "/[a-z a-z]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate 'a-z' (U+0061 - U+007a).",
+          "line": 1,
+          "column": 7,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[a-z ]/"
+    },
+    {
+      "code": "/[a-z A-Z]/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate. 'A-Z' (U+0041 - U+005a) is a duplicate of 'a-z' (U+0061 - U+007a).",
+          "line": 1,
+          "column": 7,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[a-z ]/i"
+    },
+    {
+      "code": "/[a-d e-h_d-e+c-d]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "'d-e' (U+0064 - U+0065) is already included by the elements 'a-de-h' ('a-d' (U+0061 - U+0064), 'e-h' (U+0065 - U+0068)).",
+          "line": 1,
+          "column": 11,
+          "endColumn": 14
+        },
+        {
+          "message": "'c-d' (U+0063 - U+0064) is already included in 'a-d' (U+0061 - U+0064).",
+          "line": 1,
+          "column": 15,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[a-d e-h_+]/"
+    },
+    {
+      "code": "/[3-6 3-6_2-4+5-7]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "'3-6' (U+0033 - U+0036) is already included by the elements '2-45-7' ('2-4' (U+0032 - U+0034), '5-7' (U+0035 - U+0037)).",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected duplicate '3-6' (U+0033 - U+0036).",
+          "line": 1,
+          "column": 7,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[ _2-4+5-7]/"
+    },
+    {
+      "code": "/[3-6 3-6_5-7]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected overlap of '3-6' (U+0033 - U+0036) and '5-7' (U+0035 - U+0037) was found '[56]'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected duplicate '3-6' (U+0033 - U+0036).",
+          "line": 1,
+          "column": 7,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[3-6 _5-7]/"
+    },
+    {
+      "code": "/[\\s\\s \\s]/",
+      "errorCount": 3,
+      "errors": [
+        {
+          "message": "Unexpected duplicate '\\s'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        },
+        {
+          "message": "' ' (U+0020) is already included in '\\s'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        },
+        {
+          "message": "Unexpected duplicate '\\s'.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[\\s]/"
+    },
+    {
+      "code": "/[\\S\\S \\sa]/",
+      "errorCount": 3,
+      "errors": [
+        {
+          "message": "Unexpected duplicate '\\S'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        },
+        {
+          "message": "' ' (U+0020) is already included in '\\s'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        },
+        {
+          "message": "'a' (U+0061) is already included in '\\S'.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[\\S\\s]/"
+    },
+    {
+      "code": "/[\\d 0-9_!-z]/",
+      "errorCount": 3,
+      "errors": [
+        {
+          "message": "'\\d' is already included in '!-z' (U+0021 - U+007a).",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        },
+        {
+          "message": "'0-9' (U+0030 - U+0039) is already included in '!-z' (U+0021 - U+007a).",
+          "line": 1,
+          "column": 6,
+          "endColumn": 9
+        },
+        {
+          "message": "'_' (U+005f) is already included in '!-z' (U+0021 - U+007a).",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[ !-z]/"
+    },
+    {
+      "code": "/[\\W\\W\\w \\d\\d\\D]/",
+      "errorCount": 5,
+      "errors": [
+        {
+          "message": "'\\W' is already included in '\\D'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        },
+        {
+          "message": "Unexpected duplicate '\\W'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        },
+        {
+          "message": "' ' (U+0020) is already included in '\\W'.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        },
+        {
+          "message": "'\\d' is already included in '\\w'.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 12
+        },
+        {
+          "message": "Unexpected duplicate '\\d'.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[\\w\\D]/"
+    },
+    {
+      "code": "/[\\p{ASCII}\\P{ASCII}\\p{Script=Hiragana}\\P{Script=Hiragana}\\p{ASCII}\\p{Script=Hiragana}]/u",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "'\\p{ASCII}' is already included in '\\P{Script=Hiragana}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 12
+        },
+        {
+          "message": "'\\p{Script=Hiragana}' is already included in '\\P{ASCII}'.",
+          "line": 1,
+          "column": 21,
+          "endColumn": 40
+        },
+        {
+          "message": "Unexpected duplicate '\\p{ASCII}'.",
+          "line": 1,
+          "column": 59,
+          "endColumn": 68
+        },
+        {
+          "message": "Unexpected duplicate '\\p{Script=Hiragana}'.",
+          "line": 1,
+          "column": 68,
+          "endColumn": 87
+        }
+      ],
+      "output": "/[\\P{ASCII}\\P{Script=Hiragana}]/u"
+    },
+    {
+      "code": "/[\\p{ASCII} abc\\P{ASCII}]/u",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "' ' (U+0020) is already included in '\\p{ASCII}'.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 13
+        },
+        {
+          "message": "'a' (U+0061) is already included in '\\p{ASCII}'.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 14
+        },
+        {
+          "message": "'b' (U+0062) is already included in '\\p{ASCII}'.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 15
+        },
+        {
+          "message": "'c' (U+0063) is already included in '\\p{ASCII}'.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[\\p{ASCII}\\P{ASCII}]/u"
+    },
+    {
+      "code": "/[\\P{Script=Hiragana} abc\\p{Script=Hiragana}]/u",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "' ' (U+0020) is already included in '\\P{Script=Hiragana}'.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 23
+        },
+        {
+          "message": "'a' (U+0061) is already included in '\\P{Script=Hiragana}'.",
+          "line": 1,
+          "column": 23,
+          "endColumn": 24
+        },
+        {
+          "message": "'b' (U+0062) is already included in '\\P{Script=Hiragana}'.",
+          "line": 1,
+          "column": 24,
+          "endColumn": 25
+        },
+        {
+          "message": "'c' (U+0063) is already included in '\\P{Script=Hiragana}'.",
+          "line": 1,
+          "column": 25,
+          "endColumn": 26
+        }
+      ],
+      "output": "/[\\P{Script=Hiragana}\\p{Script=Hiragana}]/u"
+    },
+    {
+      "code": "/[\\w /-7+8-:]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected overlap of '/-7' (U+002f - U+0037) and '\\w' was found '[0-7]'.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 9
+        },
+        {
+          "message": "Unexpected overlap of '8-:' (U+0038 - U+003a) and '\\w' was found '[89]'.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[ -/\\s]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected overlap of ' -/' (U+0020 - U+002f) and '\\s' was found ' '.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\wA-_]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected overlap of 'A-_' (U+0041 - U+005f) and '\\w' was found '[A-Z_]'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\w0-z]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w' is already included in '0-z' (U+0030 - U+007a).",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[0-z]/"
+    },
+    {
+      "code": "/[\\t-\\uFFFF\\s]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\s' is already included in '\\t-\\uFFFF' (U+0009 - U+ffff).",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[\\t-\\uFFFF]/"
+    },
+    {
+      "code": "/[\\Sa]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a' (U+0061) is already included in '\\S'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[\\S]/"
+    },
+    {
+      "code": "/[a-z\\p{L}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a-z' (U+0061 - U+007a) is already included in '\\p{L}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[\\p{L}]/u"
+    },
+    {
+      "code": "/[\\d\\p{ASCII}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d' is already included in '\\p{ASCII}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[\\p{ASCII}]/u"
+    },
+    {
+      "code": "/[\\t\\s]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\t' (U+0009) is already included in '\\s'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[\\s]/"
+    },
+    {
+      "code": "/[A-Z a-\\uFFFF]/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'A-Z' (U+0041 - U+005a) is already included in 'a-\\uFFFF' (U+0061 - U+ffff).",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[ a-\\uFFFF]/i"
+    },
+    {
+      "code": "/[\\xA0-\\uFFFF\\s]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected overlap of '\\xA0-\\uFFFF' (U+00a0 - U+ffff) and '\\s' was found '\\xa0'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\u1fff-\\u2005\\s]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected overlap of '\\u1fff-\\u2005' (U+1fff - U+2005) and '\\s' was found '[\\u2000-\\u2005]'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected overlap of '\\x21-\\x5a' (U+0021 - U+005a) and '\\x53-\\x7f' (U+0053 - U+007f) was found '[A-Z]'.",
+          "line": 1,
+          "column": 29,
+          "endColumn": 38
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a^\\w]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a' (U+0061) is already included in '\\w'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[\\^\\w]/"
+    },
+    {
+      "code": "/[0a-a-9a-z]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a-a' (U+0061 - U+0061) is already included in 'a-z' (U+0061 - U+007a).",
+          "line": 1,
+          "column": 4,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[0\\-9a-z]/"
+    },
+    {
+      "code": "/[a:^\\w]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a' (U+0061) is already included in '\\w'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[:^\\w]/"
+    },
+    {
+      "code": "/[\\sa-\\w]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a' (U+0061) is already included in '\\w'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[\\s-\\w]/"
+    },
+    {
+      "code": "/[\\x01\\d-\\x03\\w]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d' is already included in '\\w'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[\\x01\\-\\x03\\w]/"
+    },
+    {
+      "code": "/[\\x01-\\d\\x03\\w]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d' is already included in '\\w'.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\s0-\\s9]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate '\\s'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\x0x9]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate. 'x' (U+0078) is a duplicate of '\\x' (U+0078).",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{a}aa-c[\\w--b][\\w&&a]]/v",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "'\\q{a}' is already included in 'a-c' (U+0061 - U+0063).",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        },
+        {
+          "message": "'a' (U+0061) is already included in 'a-c' (U+0061 - U+0063).",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        },
+        {
+          "message": "Unexpected overlap of 'a-c' (U+0061 - U+0063) and '[\\w--b]' was found '[ac]'.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 12
+        },
+        {
+          "message": "'[\\w&&a]' is already included in 'a-c' (U+0061 - U+0063).",
+          "line": 1,
+          "column": 19,
+          "endColumn": 26
+        }
+      ],
+      "output": "/[a-c[\\w--b]]/v"
+    },
+    {
+      "code": "/[\\q{abc}\\q{abc|ab}[\\q{abc}--b][\\q{abc}&&\\q{abc|ab}]]/v",
+      "errorCount": 3,
+      "errors": [
+        {
+          "message": "'\\q{abc}' is already included in '\\q{abc|ab}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        },
+        {
+          "message": "'[\\q{abc}--b]' is already included in '\\q{abc|ab}'.",
+          "line": 1,
+          "column": 20,
+          "endColumn": 32
+        },
+        {
+          "message": "'[\\q{abc}&&\\q{abc|ab}]' is already included in '\\q{abc|ab}'.",
+          "line": 1,
+          "column": 32,
+          "endColumn": 53
+        }
+      ],
+      "output": "/[\\q{abc|ab}]/v"
+    }
+  ]
+}
