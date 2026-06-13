@@ -13630,19 +13630,19 @@
       },
       {
         "name": "prefer-while",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule prefer-while (Sonar key S1264). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S1264). Reports a ForStatement with no init and no update clause — such a loop should use while instead. Reports the for keyword span. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "process-argv",

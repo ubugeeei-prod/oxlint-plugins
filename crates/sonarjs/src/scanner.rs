@@ -4,7 +4,7 @@
 
 use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, BindingIdentifier, ConditionalExpression,
-    ExpressionStatement, ForInStatement, Function, IdentifierReference, IfStatement,
+    ExpressionStatement, ForInStatement, ForStatement, Function, IdentifierReference, IfStatement,
     LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression, SwitchCase,
     SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
     YieldExpression,
@@ -129,6 +129,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_for_in_statement(&mut self, it: &ForInStatement<'a>) {
         self.check_for_in(it);
         walk::walk_for_in_statement(self, it);
+    }
+
+    fn visit_for_statement(&mut self, it: &ForStatement<'a>) {
+        self.check_prefer_while(it);
+        walk::walk_for_statement(self, it);
     }
 
     fn visit_binding_identifier(&mut self, it: &BindingIdentifier<'a>) {
