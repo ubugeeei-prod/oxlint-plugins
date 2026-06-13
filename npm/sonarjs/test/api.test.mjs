@@ -10,6 +10,7 @@ const expectedRuleNames = [
   'no-redundant-boolean',
   'comma-or-logical-or-case',
   'no-duplicate-in-composite',
+  'non-existent-operator',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -199,5 +200,45 @@ describe('sonarjs native API', () => {
     const diagnostics = scan('no-duplicate-in-composite', source);
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0].messageId).toBe('duplicateType');
+  });
+
+  it('reports non-existent-operator for x =- 1 (negation adjacent to assign)', () => {
+    const source = 'let x = 0; x =- 1;';
+    const diagnostics = scan('non-existent-operator', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('non-existent-operator');
+    expect(diagnostics[0].messageId).toBe('nonExistentOperator');
+  });
+
+  it('reports non-existent-operator for x =+ 1 (unary plus adjacent to assign)', () => {
+    const source = 'let x = 0; x =+ 1;';
+    const diagnostics = scan('non-existent-operator', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('nonExistentOperator');
+  });
+
+  it('reports non-existent-operator for x =! y (logical not adjacent to assign)', () => {
+    const source = 'let x = false; let y = true; x =! y;';
+    const diagnostics = scan('non-existent-operator', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('nonExistentOperator');
+  });
+
+  it('does not report non-existent-operator for x = -1 (space before unary)', () => {
+    const source = 'let x = 0; x = -1;';
+    const diagnostics = scan('non-existent-operator', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report non-existent-operator for x -= 1 (compound assignment)', () => {
+    const source = 'let x = 0; x -= 1;';
+    const diagnostics = scan('non-existent-operator', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report non-existent-operator for plain assignment x = y', () => {
+    const source = 'let x = 0; let y = 1; x = y;';
+    const diagnostics = scan('non-existent-operator', source);
+    expect(diagnostics).toHaveLength(0);
   });
 });

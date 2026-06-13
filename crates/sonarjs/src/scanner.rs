@@ -3,8 +3,8 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    BinaryExpression, ConditionalExpression, IfStatement, SwitchCase, SwitchStatement,
-    TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
+    AssignmentExpression, BinaryExpression, ConditionalExpression, IfStatement, SwitchCase,
+    SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -98,6 +98,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_if_statement(&mut self, it: &IfStatement<'a>) {
         self.check_no_collapsible_if(it);
         walk::walk_if_statement(self, it);
+    }
+
+    fn visit_assignment_expression(&mut self, it: &AssignmentExpression<'a>) {
+        self.check_non_existent_operator(it);
+        walk::walk_assignment_expression(self, it);
     }
 
     fn visit_ts_union_type(&mut self, it: &TSUnionType<'a>) {
