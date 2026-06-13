@@ -30,7 +30,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 type Manifest = {
@@ -107,23 +107,31 @@ function collect(bucket: NormalizedCase[], cases: RawCase[], rule: string): void
   }
 }
 
-const testFiles = listTestFiles(TESTS_DIR);
-for (const file of testFiles) {
-  const runs = captureRuns(file);
-  for (const run of runs) {
-    const rule = baseRuleName(run.name, portedRules);
-    if (!rule) {
-      // A run for a rule we have not ported yet; record it so it is visible.
-      skippedRuns.push(run.name);
-      continue;
-    }
-    const bucket = grouped.get(rule)!;
-    collect(bucket.valid, run.valid, rule);
-    collect(bucket.invalid, run.invalid, rule);
-  }
-}
+// Records the actual upstream file each rule's cases came from, so the
+// generated metadata is accurate even when the file name differs from the rule
+// id (e.g. detect-unsafe-regex lives in test/rules/detect-unsafe-regexp.js).
+const sourceFileByRule = new Map<string, string>();
 
-rmSync(tempDir, { recursive: true, force: true });
+try {
+  const testFiles = listTestFiles(TESTS_DIR);
+  for (const file of testFiles) {
+    const runs = captureRuns(file);
+    for (const run of runs) {
+      const rule = baseRuleName(run.name, portedRules);
+      if (!rule) {
+        // A run for a rule we have not ported yet; record it so it is visible.
+        skippedRuns.push(run.name);
+        continue;
+      }
+      sourceFileByRule.set(rule, basename(file));
+      const bucket = grouped.get(rule)!;
+      collect(bucket.valid, run.valid, rule);
+      collect(bucket.invalid, run.invalid, rule);
+    }
+  }
+} finally {
+  rmSync(tempDir, { recursive: true, force: true });
+}
 
 const summary: string[] = [];
 for (const rule of portedRules) {
@@ -135,7 +143,7 @@ for (const rule of portedRules) {
     __generated: {
       source: plugin.npm,
       version: plugin.baselineVersion,
-      sourceFile: `test/rules/${rule}.js`,
+      sourceFile: `test/rules/${sourceFileByRule.get(rule) ?? `${rule}.js`}`,
       license: plugin.license,
       tool: 'tools/tasks/sync-eslint-security-tests.ts',
     },
@@ -196,12 +204,13 @@ function registerStubHooks(): void {
 
   const eslintStub = [
     'class RuleTester {',
-    '  constructor(config) { this.config = config || {}; }',
+    // Constructor config (e.g. `languageOptions.sourceType`) is irrelevant to
+    // the Rust scanner, so it is accepted and ignored rather than captured.
+    '  constructor() {}',
     '  run(name, _rule, tests) {',
     `    const store = globalThis['${CAPTURE_KEY}'] || (globalThis['${CAPTURE_KEY}'] = []);`,
     '    store.push({',
     '      name,',
-    '      defaults: this.config,',
     '      valid: (tests && tests.valid) || [],',
     '      invalid: (tests && tests.invalid) || [],',
     '    });',
