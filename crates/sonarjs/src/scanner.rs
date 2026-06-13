@@ -4,9 +4,10 @@
 
 use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, BindingIdentifier, ConditionalExpression,
-    ExpressionStatement, Function, IdentifierReference, IfStatement, LabeledStatement,
-    LogicalExpression, RegExpLiteral, StaticMemberExpression, SwitchCase, SwitchStatement,
-    TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression, YieldExpression,
+    ExpressionStatement, ForInStatement, Function, IdentifierReference, IfStatement,
+    LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression, SwitchCase,
+    SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
+    YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -123,6 +124,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_all_duplicated_branches_if(it);
         self.check_elseif_without_else(it);
         walk::walk_if_statement(self, it);
+    }
+
+    fn visit_for_in_statement(&mut self, it: &ForInStatement<'a>) {
+        self.check_for_in(it);
+        walk::walk_for_in_statement(self, it);
     }
 
     fn visit_binding_identifier(&mut self, it: &BindingIdentifier<'a>) {

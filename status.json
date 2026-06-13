@@ -11198,19 +11198,19 @@
       },
       {
         "name": "for-in",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule for-in (Sonar key S1535). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S1535). Structural-only check: reports a for...in loop whose body is not a single if statement (directly or as the sole statement in a block). Does not inspect the if condition. No upstream source, fixtures, tests, or messages consulted or copied."
       },
       {
         "name": "for-loop-increment-sign",

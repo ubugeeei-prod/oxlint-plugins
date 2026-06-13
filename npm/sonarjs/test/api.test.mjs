@@ -27,6 +27,7 @@ const expectedRuleNames = [
   'max-union-size',
   'elseif-without-else',
   'no-case-label-in-switch',
+  'for-in',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -865,6 +866,47 @@ describe('sonarjs native API', () => {
   it('does not report no-case-label-in-switch for a label outside any switch', () => {
     const source = 'lbl: for (;;) {}';
     const diagnostics = scan('no-case-label-in-switch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports for-in when body is a block with a non-if statement', () => {
+    const source = 'for (const k in o) { doStuff(k); }';
+    const diagnostics = scan('for-in', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('for-in');
+    expect(diagnostics[0].messageId).toBe('forIn');
+  });
+
+  it('reports for-in when body is a single non-if statement (no block)', () => {
+    const source = 'for (const k in o) doStuff(k);';
+    const diagnostics = scan('for-in', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('forIn');
+  });
+
+  it('reports for-in when body is an empty block', () => {
+    const source = 'for (const k in o) {}';
+    const diagnostics = scan('for-in', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('forIn');
+  });
+
+  it('reports for-in when block has two statements (if plus another)', () => {
+    const source = 'for (const k in o) { if (a) {} doStuff(); }';
+    const diagnostics = scan('for-in', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('forIn');
+  });
+
+  it('does not report for-in when body block contains exactly one if statement', () => {
+    const source = 'for (const k in o) { if (o.hasOwnProperty(k)) { doStuff(k); } }';
+    const diagnostics = scan('for-in', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report for-in when body is directly an if statement (no block)', () => {
+    const source = 'for (const k in o) if (cond) doStuff();';
+    const diagnostics = scan('for-in', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
