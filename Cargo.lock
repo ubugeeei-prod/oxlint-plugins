@@ -810,6 +810,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-eslint-markdown"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-eslint-markdown",
+]
+
+[[package]]
 name = "oxlint-plugin-mocha"
 version = "0.0.0"
 dependencies = [
@@ -950,6 +961,15 @@ dependencies = [
  "insta",
  "oxlint-plugins-_carton",
  "phf",
+]
+
+[[package]]
+name = "oxlint-plugins-eslint-markdown"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxlint-plugins-_carton",
+ "regex",
 ]
 
 [[package]]

@@ -161,6 +161,359 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-eslint-markdown",
+    "directory": "npm/eslint-markdown",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "@eslint/markdown",
+      "version": "8.0.2",
+      "repository": "https://github.com/eslint/markdown",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "fenced-code-language",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/fenced-code-language with required language options; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "fenced-code-meta",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/fenced-code-meta with always/never mode; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "heading-increment",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/heading-increment with frontmatterTitle handling; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-bare-urls",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-bare-urls with autolink fixes; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-duplicate-definitions",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-duplicate-definitions with definition and footnote allow options; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-duplicate-headings",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-duplicate-headings with siblings-only mode; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-empty-definitions",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-empty-definitions with definition and footnote allow options; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-empty-images",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-empty-images; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-empty-links",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-empty-links; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-html",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-html with allowed and allowedIgnoreCase options; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-invalid-label-refs",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-invalid-label-refs; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-missing-atx-heading-space",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-missing-atx-heading-space with whitespace fixes and checkClosedHeadings; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-missing-label-refs",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-missing-label-refs with allowLabels; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-missing-link-fragments",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-missing-link-fragments with heading/HTML anchor collection, ignoreCase, and allowPattern; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-multiple-h1",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-multiple-h1 with frontmatterTitle handling; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-reference-like-urls",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-reference-like-urls with reference-style fixes; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-reversed-media-syntax",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-reversed-media-syntax with link syntax fixes; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-space-in-emphasis",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-space-in-emphasis with checkStrikethrough; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "no-unused-definitions",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/no-unused-definitions with definition and footnote allow options; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "require-alt-text",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/require-alt-text for Markdown images and HTML img tags; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      },
+      {
+        "name": "table-column-count",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust source scanner port of @eslint/markdown/table-column-count with checkMissingCells; covered by native API and direct adapter Vitest tests. Oxlint 1.68 does not route .md files to jsPlugins."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers",
     "directory": "npm/no-forbidden-identifiers",
     "version": "0.0.0",
