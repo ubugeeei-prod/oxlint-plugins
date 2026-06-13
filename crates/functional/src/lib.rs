@@ -58,6 +58,18 @@ pub struct Diagnostic {
     pub loc: DiagnosticLoc,
 }
 
+/// Whether and how to enforce parameter counts for functional-parameters.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Default)]
+pub enum EnforceParameterCount {
+    /// Do not enforce parameter count.
+    Off,
+    /// Every function must have at least one parameter.
+    #[default]
+    AtLeastOne,
+    /// Every function must have exactly one parameter.
+    ExactlyOne,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FunctionalOptions {
     pub rule_names: SmallVec<[CompactString; 20]>,
@@ -72,6 +84,17 @@ pub struct FunctionalOptions {
     pub ignore_if_readonly_wrapped: bool,
     pub ignore_identifier_pattern: SmallVec<[CompactString; 4]>,
     pub ignore_code_pattern: SmallVec<[CompactString; 4]>,
+    /// Whether/how to enforce parameter counts (default: AtLeastOne).
+    pub enforce_parameter_count: EnforceParameterCount,
+    /// When true, IIFEs are exempt from the parameter count check (default: true).
+    pub enforce_count_ignore_iife: bool,
+    /// When true, getters and setters are exempt from the parameter count check (default: true).
+    pub enforce_count_ignore_getters_setters: bool,
+    /// When true, lambda expressions (functions passed as arguments) are exempt (default: false).
+    pub enforce_count_ignore_lambda: bool,
+    /// Extracted method names from `ignorePrefixSelector` patterns of the form
+    /// `CallExpression[callee.property.name='NAME']`.
+    pub ignore_prefix_selector_names: SmallVec<[CompactString; 4]>,
 }
 
 impl Default for FunctionalOptions {
@@ -92,6 +115,11 @@ impl Default for FunctionalOptions {
             ignore_if_readonly_wrapped: false,
             ignore_identifier_pattern: SmallVec::new(),
             ignore_code_pattern: SmallVec::new(),
+            enforce_parameter_count: EnforceParameterCount::AtLeastOne,
+            enforce_count_ignore_iife: true,
+            enforce_count_ignore_getters_setters: true,
+            enforce_count_ignore_lambda: false,
+            ignore_prefix_selector_names: SmallVec::new(),
         }
     }
 }
@@ -140,6 +168,24 @@ impl LineIndex {
             .sum::<usize>();
         ((line_index + 1) as u32, column as u32)
     }
+}
+
+/// Metadata threaded into `scan_function`/`scan_arrow_function` so that
+/// `scan_function_parameters` can apply the correct `functional-parameters`
+/// ignore/count logic without a second traversal pass.
+#[derive(Clone, Copy, Default)]
+pub(crate) struct FunctionParamMeta<'a> {
+    /// The declared name of the function, if any (for `ignoreIdentifierPattern`).
+    pub name: Option<&'a str>,
+    /// True when this function is the callee of a call expression (IIFE).
+    pub is_iife: bool,
+    /// True when this function is a getter or setter.
+    pub is_getter_setter: bool,
+    /// True when this function is passed directly as a call argument (lambda).
+    pub is_lambda_arg: bool,
+    /// The `callee.property.name` of the enclosing call when the function is a
+    /// lambda arg, used for `ignorePrefixSelector` matching.
+    pub enclosing_call_property: Option<&'a str>,
 }
 
 #[derive(Clone, Copy)]

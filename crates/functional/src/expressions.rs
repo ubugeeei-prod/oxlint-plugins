@@ -3,8 +3,10 @@
 use oxc_ast::ast::*;
 
 use crate::FunctionContext;
+use crate::FunctionParamMeta;
 use crate::helpers::{
     assignment_target_is_member, is_identifier_expression, is_mutating_call, is_static_call,
+    property_key_name,
 };
 use crate::scanner::Scanner;
 
@@ -16,7 +18,9 @@ impl<'a> Scanner<'a> {
     ) {
         match expression.get_inner_expression() {
             Expression::Identifier(identifier) => {
-                if identifier.name == "arguments" && !self.options.allow_arguments_keyword {
+                let is_arguments = identifier.name == "arguments";
+                let allow_args = self.options.allow_arguments_keyword;
+                if is_arguments && !allow_args {
                     self.report(
                         "functional-parameters",
                         "arguments",
@@ -59,8 +63,17 @@ impl<'a> Scanner<'a> {
                     expression.span,
                 );
             }
-            Expression::ArrowFunctionExpression(function) => self.scan_arrow_function(function),
-            Expression::FunctionExpression(function) => self.scan_function(function),
+            Expression::ArrowFunctionExpression(function) => {
+                self.scan_arrow_function(function, FunctionParamMeta::default());
+            }
+            Expression::FunctionExpression(function) => {
+                let fn_name: Option<&'a str> = function.id.as_ref().map(|id| id.name.as_str());
+                let meta = FunctionParamMeta {
+                    name: fn_name,
+                    ..FunctionParamMeta::default()
+                };
+                self.scan_function(function, meta);
+            }
             Expression::ClassExpression(class) => self.scan_class(class, context),
             Expression::ObjectExpression(expression) => {
                 for property in &expression.properties {
@@ -69,7 +82,34 @@ impl<'a> Scanner<'a> {
                             if property.computed {
                                 self.scan_property_key(&property.key, context);
                             }
-                            self.scan_expression(&property.value, context);
+                            // For function/arrow values in an object literal, thread the
+                            // property name and getter/setter flag into the meta so that
+                            // `ignoreIdentifierPattern` and `ignoreGettersAndSetters` work.
+                            let prop_name = property_key_name(&property.key);
+                            let is_getter_setter =
+                                matches!(property.kind, PropertyKind::Get | PropertyKind::Set);
+                            match property.value.get_inner_expression() {
+                                Expression::FunctionExpression(func) => {
+                                    let from_id = func.id.as_ref().map(|id| id.name.as_str());
+                                    let meta = FunctionParamMeta {
+                                        name: from_id.or(prop_name),
+                                        is_getter_setter,
+                                        ..FunctionParamMeta::default()
+                                    };
+                                    self.scan_function(func, meta);
+                                }
+                                Expression::ArrowFunctionExpression(func) => {
+                                    let meta = FunctionParamMeta {
+                                        name: prop_name,
+                                        is_getter_setter,
+                                        ..FunctionParamMeta::default()
+                                    };
+                                    self.scan_arrow_function(func, meta);
+                                }
+                                _ => {
+                                    self.scan_expression(&property.value, context);
+                                }
+                            }
                         }
                         ObjectPropertyKind::SpreadProperty(spread) => {
                             self.scan_expression(&spread.argument, context);
@@ -152,9 +192,11 @@ impl<'a> Scanner<'a> {
                 self.scan_computed_member_expression(member, context);
             }
             ArrayExpressionElement::ArrowFunctionExpression(function) => {
-                self.scan_arrow_function(function)
+                self.scan_arrow_function(function, FunctionParamMeta::default());
             }
-            ArrayExpressionElement::FunctionExpression(function) => self.scan_function(function),
+            ArrayExpressionElement::FunctionExpression(function) => {
+                self.scan_function(function, FunctionParamMeta::default());
+            }
             ArrayExpressionElement::ArrayExpression(expression) => {
                 for element in &expression.elements {
                     self.scan_array_element(element, context);
@@ -174,6 +216,18 @@ impl<'a> Scanner<'a> {
     pub(crate) fn scan_argument(&mut self, argument: &'a Argument<'a>, context: FunctionContext) {
         match argument {
             Argument::SpreadElement(spread) => self.scan_expression(&spread.argument, context),
+            Argument::Identifier(identifier) => {
+                let is_arguments = identifier.name == "arguments";
+                let allow_args = self.options.allow_arguments_keyword;
+                if is_arguments && !allow_args {
+                    self.report(
+                        "functional-parameters",
+                        "arguments",
+                        "Unexpected use of `arguments`. Use regular function arguments instead.",
+                        identifier.span,
+                    );
+                }
+            }
             Argument::CallExpression(call) => self.scan_call_expression(call, context),
             Argument::StaticMemberExpression(member) => {
                 self.scan_static_member_expression(member, context);
@@ -181,8 +235,12 @@ impl<'a> Scanner<'a> {
             Argument::ComputedMemberExpression(member) => {
                 self.scan_computed_member_expression(member, context);
             }
-            Argument::ArrowFunctionExpression(function) => self.scan_arrow_function(function),
-            Argument::FunctionExpression(function) => self.scan_function(function),
+            Argument::ArrowFunctionExpression(function) => {
+                self.scan_arrow_function(function, FunctionParamMeta::default());
+            }
+            Argument::FunctionExpression(function) => {
+                self.scan_function(function, FunctionParamMeta::default());
+            }
             Argument::ClassExpression(class) => self.scan_class(class, context),
             Argument::ArrayExpression(expression) => {
                 for element in &expression.elements {
@@ -299,9 +357,70 @@ impl<'a> Scanner<'a> {
                 call.span,
             );
         }
-        self.scan_expression(&call.callee, context);
+
+        // Determine if the callee itself is a function (IIFE).
+        let callee_inner = call.callee.get_inner_expression();
+        let callee_is_iife_fn = matches!(
+            callee_inner,
+            Expression::FunctionExpression(_) | Expression::ArrowFunctionExpression(_)
+        );
+        if callee_is_iife_fn {
+            match callee_inner {
+                Expression::FunctionExpression(func) => {
+                    let fn_name: Option<&'a str> = func.id.as_ref().map(|id| id.name.as_str());
+                    let meta = FunctionParamMeta {
+                        name: fn_name,
+                        is_iife: true,
+                        ..FunctionParamMeta::default()
+                    };
+                    self.scan_function(func, meta);
+                }
+                Expression::ArrowFunctionExpression(func) => {
+                    let meta = FunctionParamMeta {
+                        is_iife: true,
+                        ..FunctionParamMeta::default()
+                    };
+                    self.scan_arrow_function(func, meta);
+                }
+                _ => {}
+            }
+        } else {
+            self.scan_expression(&call.callee, context);
+        }
+
+        // Determine the callee property name for ignorePrefixSelector.
+        let callee_prop_name = match callee_inner {
+            Expression::StaticMemberExpression(member) => Some(member.property.name.as_str()),
+            _ => None,
+        };
+
         for argument in &call.arguments {
-            self.scan_argument(argument, context);
+            // For function/arrow arguments, scan them as lambda args with the
+            // enclosing call property set (for ignorePrefixSelector). This avoids
+            // double-scanning via the generic scan_argument path.
+            match argument {
+                Argument::FunctionExpression(func) => {
+                    let fn_name: Option<&'a str> = func.id.as_ref().map(|id| id.name.as_str());
+                    let meta = FunctionParamMeta {
+                        name: fn_name,
+                        is_lambda_arg: true,
+                        enclosing_call_property: callee_prop_name,
+                        ..FunctionParamMeta::default()
+                    };
+                    self.scan_function(func, meta);
+                }
+                Argument::ArrowFunctionExpression(func) => {
+                    let meta = FunctionParamMeta {
+                        is_lambda_arg: true,
+                        enclosing_call_property: callee_prop_name,
+                        ..FunctionParamMeta::default()
+                    };
+                    self.scan_arrow_function(func, meta);
+                }
+                _ => {
+                    self.scan_argument(argument, context);
+                }
+            }
         }
     }
 

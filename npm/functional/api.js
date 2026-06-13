@@ -34,6 +34,17 @@ function normalizeOptions(options) {
     ignoreIfReadonlyWrapped: raw.ignoreIfReadonlyWrapped === true,
     ignoreIdentifierPattern: normalizeStringList(raw.ignoreIdentifierPattern),
     ignoreCodePattern: normalizeStringList(raw.ignoreCodePattern),
+    enforceParameterCount:
+      typeof raw.enforceParameterCount === 'string' ? raw.enforceParameterCount : undefined,
+    enforceCountIgnoreIife:
+      typeof raw.enforceCountIgnoreIife === 'boolean' ? raw.enforceCountIgnoreIife : undefined,
+    enforceCountIgnoreGettersSetters:
+      typeof raw.enforceCountIgnoreGettersSetters === 'boolean'
+        ? raw.enforceCountIgnoreGettersSetters
+        : undefined,
+    enforceCountIgnoreLambda:
+      typeof raw.enforceCountIgnoreLambda === 'boolean' ? raw.enforceCountIgnoreLambda : undefined,
+    ignorePrefixSelectorNames: normalizeStringList(raw.ignorePrefixSelectorNames),
   };
 }
 

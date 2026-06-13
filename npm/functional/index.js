@@ -208,6 +208,24 @@ function schemaForRule(ruleName) {
         properties: {
           allowRestParameter: { type: 'boolean' },
           allowArgumentsKeyword: { type: 'boolean' },
+          enforceParameterCount: {
+            oneOf: [
+              { type: 'boolean', enum: [false] },
+              { type: 'string', enum: ['atLeastOne', 'exactlyOne'] },
+              {
+                type: 'object',
+                properties: {
+                  count: { type: 'string', enum: ['atLeastOne', 'exactlyOne'] },
+                  ignoreIIFE: { type: 'boolean' },
+                  ignoreLambdaExpression: { type: 'boolean' },
+                  ignoreGettersAndSetters: { type: 'boolean' },
+                },
+                additionalProperties: false,
+              },
+            ],
+          },
+          ignoreIdentifierPattern: stringOrStringArraySchema(),
+          ignorePrefixSelector: stringOrStringArraySchema(),
         },
         additionalProperties: true,
       },
@@ -298,9 +316,90 @@ function classRuleUsesIgnorePatterns(ruleName) {
   return ruleName === 'no-classes' || ruleName === 'no-class-inheritance';
 }
 
+function normalizeEnforceParameterCount(enforceOpt) {
+  // enforceOpt can be: false | "atLeastOne" | "exactlyOne" | { count, ignoreIIFE, ... }
+  if (enforceOpt === false) {
+    return {
+      enforceParameterCount: 'off',
+      enforceCountIgnoreIife: true,
+      enforceCountIgnoreGettersSetters: true,
+      enforceCountIgnoreLambda: false,
+    };
+  }
+  if (typeof enforceOpt === 'string') {
+    return {
+      enforceParameterCount: enforceOpt,
+      enforceCountIgnoreIife: true,
+      enforceCountIgnoreGettersSetters: true,
+      enforceCountIgnoreLambda: false,
+    };
+  }
+  if (enforceOpt && typeof enforceOpt === 'object') {
+    const count = typeof enforceOpt.count === 'string' ? enforceOpt.count : 'atLeastOne';
+    const ignoreIife = typeof enforceOpt.ignoreIIFE === 'boolean' ? enforceOpt.ignoreIIFE : true;
+    const ignoreGettersSetter =
+      typeof enforceOpt.ignoreGettersAndSetters === 'boolean'
+        ? enforceOpt.ignoreGettersAndSetters
+        : true;
+    const ignoreLambda =
+      typeof enforceOpt.ignoreLambdaExpression === 'boolean'
+        ? enforceOpt.ignoreLambdaExpression
+        : false;
+    return {
+      enforceParameterCount: count,
+      enforceCountIgnoreIife: ignoreIife,
+      enforceCountIgnoreGettersSetters: ignoreGettersSetter,
+      enforceCountIgnoreLambda: ignoreLambda,
+    };
+  }
+  // Default: atLeastOne, ignoreIIFE=true, ignoreGettersAndSetters=true
+  return {
+    enforceParameterCount: 'atLeastOne',
+    enforceCountIgnoreIife: true,
+    enforceCountIgnoreGettersSetters: true,
+    enforceCountIgnoreLambda: false,
+  };
+}
+
+// Parse an ignorePrefixSelector string/string[] into an array of method-name
+// strings extracted from the narrow pattern
+// `CallExpression[callee.property.name='NAME']`.
+const PREFIX_SELECTOR_RE = /^CallExpression\[callee\.property\.name='([^']+)'\]$/;
+
+function parsePrefixSelectorNames(selectorOpt) {
+  if (!selectorOpt) return undefined;
+  const selectors = Array.isArray(selectorOpt) ? selectorOpt : [selectorOpt];
+  const names = [];
+  for (const sel of selectors) {
+    const match = typeof sel === 'string' ? PREFIX_SELECTOR_RE.exec(sel) : null;
+    if (match) {
+      names.push(match[1]);
+    }
+  }
+  return names.length > 0 ? names : undefined;
+}
+
 function scanOptionsForRule(context, ruleName) {
   const raw = context.options?.[0];
   const options = raw && typeof raw === 'object' ? raw : {};
+
+  let enforceParameterCount;
+  let enforceCountIgnoreIife;
+  let enforceCountIgnoreGettersSetters;
+  let enforceCountIgnoreLambda;
+  let ignoreIdentifierPatternForFunctional;
+  let ignorePrefixSelectorNames;
+
+  if (ruleName === 'functional-parameters') {
+    const normalized = normalizeEnforceParameterCount(options.enforceParameterCount);
+    enforceParameterCount = normalized.enforceParameterCount;
+    enforceCountIgnoreIife = normalized.enforceCountIgnoreIife;
+    enforceCountIgnoreGettersSetters = normalized.enforceCountIgnoreGettersSetters;
+    enforceCountIgnoreLambda = normalized.enforceCountIgnoreLambda;
+    ignoreIdentifierPatternForFunctional = options.ignoreIdentifierPattern;
+    ignorePrefixSelectorNames = parsePrefixSelectorNames(options.ignorePrefixSelector);
+  }
+
   return {
     ruleNames: [ruleName],
     allowRestParameter: ruleName === 'functional-parameters' && options.allowRestParameter === true,
@@ -319,10 +418,17 @@ function scanOptionsForRule(context, ruleName) {
     ignoreIdentifierPattern:
       classRuleUsesIgnorePatterns(ruleName) || ruleName === 'no-let'
         ? options.ignoreIdentifierPattern
-        : undefined,
+        : ruleName === 'functional-parameters'
+          ? ignoreIdentifierPatternForFunctional
+          : undefined,
     ignoreCodePattern: classRuleUsesIgnorePatterns(ruleName)
       ? options.ignoreCodePattern
       : undefined,
+    enforceParameterCount,
+    enforceCountIgnoreIife,
+    enforceCountIgnoreGettersSetters,
+    enforceCountIgnoreLambda,
+    ignorePrefixSelectorNames,
   };
 }
 

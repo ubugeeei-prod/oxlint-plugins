@@ -3,6 +3,7 @@
 use oxc_ast::ast::*;
 
 use crate::FunctionContext;
+use crate::FunctionParamMeta;
 use crate::helpers::is_mutable_type;
 use crate::scanner::Scanner;
 
@@ -175,7 +176,14 @@ impl<'a> Scanner<'a> {
             Statement::VariableDeclaration(declaration) => {
                 self.scan_variable_declaration(declaration, context, false);
             }
-            Statement::FunctionDeclaration(function) => self.scan_function(function),
+            Statement::FunctionDeclaration(function) => {
+                let fn_name: Option<&'a str> = function.id.as_ref().map(|id| id.name.as_str());
+                let meta = FunctionParamMeta {
+                    name: fn_name,
+                    ..FunctionParamMeta::default()
+                };
+                self.scan_function(function, meta);
+            }
             Statement::ClassDeclaration(class) => self.scan_class(class, context),
             Statement::TSTypeAliasDeclaration(declaration) => {
                 self.scan_type_alias_declaration(declaration);
@@ -190,7 +198,12 @@ impl<'a> Scanner<'a> {
             }
             Statement::ExportDefaultDeclaration(declaration) => match &declaration.declaration {
                 ExportDefaultDeclarationKind::FunctionDeclaration(function) => {
-                    self.scan_function(function)
+                    let fn_name: Option<&'a str> = function.id.as_ref().map(|id| id.name.as_str());
+                    let meta = FunctionParamMeta {
+                        name: fn_name,
+                        ..FunctionParamMeta::default()
+                    };
+                    self.scan_function(function, meta);
                 }
                 ExportDefaultDeclarationKind::ClassDeclaration(class) => {
                     self.scan_class(class, context)
@@ -210,7 +223,14 @@ impl<'a> Scanner<'a> {
             Declaration::VariableDeclaration(declaration) => {
                 self.scan_variable_declaration(declaration, context, false);
             }
-            Declaration::FunctionDeclaration(function) => self.scan_function(function),
+            Declaration::FunctionDeclaration(function) => {
+                let fn_name: Option<&'a str> = function.id.as_ref().map(|id| id.name.as_str());
+                let meta = FunctionParamMeta {
+                    name: fn_name,
+                    ..FunctionParamMeta::default()
+                };
+                self.scan_function(function, meta);
+            }
             Declaration::ClassDeclaration(class) => self.scan_class(class, context),
             Declaration::TSTypeAliasDeclaration(declaration) => {
                 self.scan_type_alias_declaration(declaration);

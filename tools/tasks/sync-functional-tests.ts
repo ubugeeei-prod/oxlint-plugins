@@ -273,6 +273,15 @@ function normalizeCase(raw: CapturedCase, isInvalid: boolean): CapturedCase | nu
     return null;
   }
 
+  // The eslint-plugin-functional "overrides" meta-feature passes options as a
+  // non-array object (`{ ...opts, overrides: [...] }`) that applies different
+  // options per file/type specifier. The syntax-only port cannot model it, so
+  // such cases are dropped (counted as dropped — not silently truncated).
+  const rawOptions: unknown = raw.options;
+  if (rawOptions !== undefined && !Array.isArray(rawOptions)) {
+    return null;
+  }
+
   const out: CapturedCase = { code: raw.code, typeAware: raw.typeAware };
 
   if (Array.isArray(raw.options) && raw.options.length > 0) {

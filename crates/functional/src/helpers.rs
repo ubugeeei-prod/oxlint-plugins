@@ -7,6 +7,16 @@
 
 use oxc_ast::ast::*;
 
+/// The static name of a property/method key (identifier or string literal),
+/// used for `ignoreIdentifierPattern` matching on object/class members.
+pub(crate) fn property_key_name<'a>(key: &'a PropertyKey<'a>) -> Option<&'a str> {
+    match key {
+        PropertyKey::StaticIdentifier(id) => Some(id.name.as_str()),
+        PropertyKey::StringLiteral(literal) => Some(literal.value.as_str()),
+        _ => None,
+    }
+}
+
 pub(crate) fn assignment_target_is_member(target: &AssignmentTarget<'_>) -> bool {
     matches!(
         target,

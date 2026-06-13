@@ -217,22 +217,6 @@
           ]
         }
       ]
-    },
-    {
-      "code": "function foo(...bar: string[]) {\n  console.log(bar);\n}",
-      "typeAware": true
-    },
-    {
-      "code": "function foo(bar: string[]) {\n  console.log(arguments);\n}",
-      "typeAware": true
-    },
-    {
-      "code": "function foo(...bar: string[]) {\n  console.log(bar);\n}",
-      "typeAware": true
-    },
-    {
-      "code": "function foo(bar: string[]) {\n  console.log(arguments);\n}",
-      "typeAware": true
     }
   ],
   "invalid": [
