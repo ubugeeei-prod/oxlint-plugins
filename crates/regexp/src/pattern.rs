@@ -211,6 +211,13 @@ pub(crate) struct PatternAnalysis {
     /// `(?:a|a)` — alternation that contains the same single-literal
     /// alternative twice in a row. `no-dupe-disjunctions`.
     pub(crate) has_dupe_disjunctions: bool,
+    /// Number of capturing groups opened so far during the scan. Used by
+    /// `no-useless-backreference` to detect forward references.
+    pub(crate) capture_count: u32,
+    /// `\N` was encountered where N > capture_count at the point of
+    /// observation, so the back-reference can never match a real capture.
+    /// `no-useless-backreference`.
+    pub(crate) has_useless_backreference: bool,
 }
 
 impl PatternAnalysis {
@@ -227,6 +234,14 @@ impl PatternAnalysis {
         while index < bytes.len() {
             match bytes[index] {
                 b'\\' => {
+                    if let Some(&next) = bytes.get(index + 1)
+                        && matches!(next, b'1'..=b'9')
+                    {
+                        let n = u32::from(next - b'0');
+                        if n > self.capture_count {
+                            self.has_useless_backreference = true;
+                        }
+                    }
                     self.mark_content(&mut groups);
                     index = skip_escape(bytes, index);
                 }
@@ -304,6 +319,9 @@ impl PatternAnalysis {
                     let prefix = group_prefix(bytes, index);
                     if prefix.capturing && !prefix.named {
                         self.has_unnamed_capturing_group = true;
+                    }
+                    if prefix.capturing {
+                        self.capture_count = self.capture_count.saturating_add(1);
                     }
                     groups.push(GroupState::group(
                         prefix.check_empty,

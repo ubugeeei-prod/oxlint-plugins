@@ -9083,19 +9083,19 @@
       },
       {
         "name": "no-useless-backreference",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-backreference."
+        "notes": "Narrow byte-walker port that tracks `capture_count` while scanning a literal pattern and flags any `\\N` escape where N (single digit 1-9) is greater than the number of capturing groups opened so far. This covers forward references (`\\1(a)`) and out-of-range references (`(a)\\2`). Multi-digit references, named backreferences, and references inside lookarounds or non-traversed alternatives are intentionally deferred."
       },
       {
         "name": "no-useless-character-class",

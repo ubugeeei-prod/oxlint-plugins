@@ -232,6 +232,10 @@ const messages = Object.freeze({
   'no-dupe-disjunctions': {
     unexpected: 'Alternation contains the same single-literal alternative more than once.',
   },
+  'no-useless-backreference': {
+    unexpected:
+      'Backreference to a capturing group that was not yet defined when the reference appears.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -325,6 +329,8 @@ const ruleDescriptions = Object.freeze({
     'disallow lookarounds whose body always matches because of a zero-min quantifier',
   'no-dupe-disjunctions':
     'disallow duplicate single-literal alternatives within a non-capturing group',
+  'no-useless-backreference':
+    'disallow numbered backreferences that point to a not-yet-defined capture',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -388,6 +394,7 @@ const ruleTypes = Object.freeze({
   'prefer-predefined-assertion': 'suggestion',
   'optimal-lookaround-quantifier': 'problem',
   'no-dupe-disjunctions': 'problem',
+  'no-useless-backreference': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -554,7 +561,11 @@ function ruleCategory(ruleName) {
   ) {
     return 'Stylistic Issues';
   }
-  if (ruleName === 'optimal-lookaround-quantifier' || ruleName === 'no-dupe-disjunctions') {
+  if (
+    ruleName === 'optimal-lookaround-quantifier' ||
+    ruleName === 'no-dupe-disjunctions' ||
+    ruleName === 'no-useless-backreference'
+  ) {
     return 'Possible Errors';
   }
   return 'Best Practices';
