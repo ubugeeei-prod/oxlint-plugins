@@ -15,7 +15,8 @@ use crate::helpers::{
     first_invisible_character, first_non_standard_flag,
     first_numbered_backreference_with_named_group, first_octal_escape, first_surrogate_pair_escape,
     first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, mention_char,
-    pattern_has_empty_string_literal, sorted_flags, string_literal_value_with_span,
+    pattern_ends_with_lazy_quantifier, pattern_has_empty_string_literal, sorted_flags,
+    string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -662,6 +663,9 @@ impl<'a> Scanner<'a> {
                 },
                 span,
             );
+        }
+        if pattern_ends_with_lazy_quantifier(pattern) {
+            self.report("no-lazy-ends", "unexpected", span);
         }
         if let Some(text) = first_useless_one_quantifier(pattern) {
             self.report_with_data(

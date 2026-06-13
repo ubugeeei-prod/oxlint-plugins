@@ -163,6 +163,10 @@ const messages = Object.freeze({
     unexpected:
       "Unexpected useless flag '{{flag}}'; the pattern does not use the syntax this flag affects.",
   },
+  'no-lazy-ends': {
+    unexpected:
+      'Unexpected lazy quantifier at the end of the pattern; it will always prefer to match nothing.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -222,6 +226,8 @@ const ruleDescriptions = Object.freeze({
     'enforce using named backreferences (`\\k<name>`) when the pattern has named capture groups',
   'no-useless-flag':
     'disallow regular-expression flags that have no effect on the pattern (narrow: `s` without `.`, `m` without `^`/`$`)',
+  'no-lazy-ends':
+    'disallow lazy quantifiers at the very end of a pattern (they prefer to match nothing)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -267,6 +273,7 @@ const ruleTypes = Object.freeze({
   'no-useless-quantifier': 'suggestion',
   'prefer-named-backreference': 'suggestion',
   'no-useless-flag': 'suggestion',
+  'no-lazy-ends': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -384,7 +391,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-missing-g-flag' ||
     ruleName === 'no-empty-string-literal' ||
     ruleName === 'no-optional-assertion' ||
-    ruleName === 'no-dupe-characters-character-class'
+    ruleName === 'no-dupe-characters-character-class' ||
+    ruleName === 'no-lazy-ends'
   ) {
     return 'Possible Errors';
   }

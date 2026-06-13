@@ -48,6 +48,7 @@ describe('regexp native API', () => {
       'no-useless-quantifier',
       'prefer-named-backreference',
       'no-useless-flag',
+      'no-lazy-ends',
     ]);
   });
 

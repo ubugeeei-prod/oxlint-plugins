@@ -227,6 +227,10 @@ const invalidCases = [
   // no-useless-flag
   ['no-useless-flag', 's without dot', "const re = new RegExp('abc', 's');\n", ['unexpected']],
   ['no-useless-flag', 'm without anchor', "const re = new RegExp('abc', 'm');\n", ['unexpected']],
+  // no-lazy-ends
+  ['no-lazy-ends', 'star lazy at end', 'const re = /a*?/u;\n', ['unexpected']],
+  ['no-lazy-ends', 'plus lazy at end', 'const re = /a+?/u;\n', ['unexpected']],
+  ['no-lazy-ends', 'braced lazy at end', 'const re = /a{2,}?/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

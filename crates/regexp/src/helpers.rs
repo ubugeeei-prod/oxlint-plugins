@@ -802,6 +802,61 @@ pub(crate) fn first_useless_one_quantifier(pattern: &str) -> Option<&str> {
     None
 }
 
+/// Returns `true` when the pattern ends with a lazy quantifier (`*?`, `+?`,
+/// `??`, or `{...}?`) and nothing after it. A lazy quantifier at the very end
+/// of a pattern always prefers to match as little as possible, which usually
+/// means matching nothing — the quantifier is effectively dead code. Used by
+/// `no-lazy-ends`. The check is purely textual to stay conservative; anchored
+/// patterns like `a*?$` where the `$` follows are excluded by definition.
+pub(crate) fn pattern_ends_with_lazy_quantifier(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let len = bytes.len();
+    if len < 2 {
+        return false;
+    }
+    // The last byte must be the lazy `?`.
+    if bytes[len - 1] != b'?' {
+        return false;
+    }
+    let preceding = bytes[len - 2];
+    if matches!(preceding, b'*' | b'+' | b'?') {
+        // Make sure the quantifier byte itself is not an escape (e.g. `\*?`).
+        if len >= 3 && bytes[len - 3] == b'\\' {
+            // Need to count backslashes to know whether the quantifier is escaped:
+            // `\\*?` (backslash escape of `\`, then `*?`) is a quantifier; `\*?`
+            // is an escaped `*` followed by `?`. Walk leading backslashes.
+            let mut count = 0;
+            let mut idx = len - 3;
+            while idx > 0 && bytes[idx] == b'\\' {
+                count += 1;
+                idx -= 1;
+            }
+            // Plus the one we already saw.
+            if count % 2 == 0 {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+    if preceding == b'}' {
+        // Walk back to find the matching `{` and verify it is a braced quantifier.
+        let mut idx = len - 3;
+        while idx > 0 && bytes[idx] != b'{' && bytes[idx] != b']' {
+            idx -= 1;
+        }
+        if bytes.get(idx) == Some(&b'{')
+            && (idx == 0 || bytes[idx - 1] != b'\\')
+            && bytes[idx + 1..len - 2]
+                .iter()
+                .all(|&b| b.is_ascii_digit() || b == b',')
+        {
+            return true;
+        }
+    }
+    false
+}
+
 /// Returns `Some(text)` for the first numbered backreference `\N` (N in 1-9)
 /// inside `pattern` when the same pattern contains at least one named capture
 /// group `(?<name>...)`. Numbered backreferences alongside named groups are

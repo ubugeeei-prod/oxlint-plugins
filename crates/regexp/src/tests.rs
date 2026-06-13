@@ -84,8 +84,43 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-quantifier",
             "prefer-named-backreference",
             "no-useless-flag",
+            "no-lazy-ends",
         ]
     );
+}
+
+mod no_lazy_ends {
+    use super::*;
+
+    #[test]
+    fn reports_lazy_quantifiers_at_end_of_pattern() {
+        assert_eq!(
+            rule_ids_for("const a = /a*?/u;", "no-lazy-ends").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /a+?/u;", "no-lazy-ends").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /a??/u;", "no-lazy-ends").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /a{2,}?/u;", "no-lazy-ends").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_lazy_quantifiers_followed_by_something() {
+        assert!(rule_ids_for("const a = /a*?b/u;", "no-lazy-ends").is_empty());
+        assert!(rule_ids_for("const a = /a*?$/u;", "no-lazy-ends").is_empty());
+        // Greedy quantifier at the end is fine.
+        assert!(rule_ids_for("const a = /a*/u;", "no-lazy-ends").is_empty());
+        // Plain greedy braced quantifier.
+        assert!(rule_ids_for("const a = /a{2,}/u;", "no-lazy-ends").is_empty());
+    }
 }
 
 mod no_useless_flag {
