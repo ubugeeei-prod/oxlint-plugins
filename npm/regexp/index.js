@@ -171,6 +171,10 @@ const messages = Object.freeze({
     unexpected:
       "Unexpected '\\$0' in replacement string; `$0` is not a valid backreference (capture groups start at 1).",
   },
+  'prefer-escape-replacement-dollar-char': {
+    unexpected:
+      "Use '$$' to escape a literal '$' in the replacement string; a stray '$' is almost always a typo.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -234,6 +238,8 @@ const ruleDescriptions = Object.freeze({
     'disallow lazy quantifiers at the very end of a pattern (they prefer to match nothing)',
   'no-useless-dollar-replacements':
     'disallow `$0` in replacement strings (capture groups start at 1; `$0` is always literal)',
+  'prefer-escape-replacement-dollar-char':
+    'enforce escaping a literal `$` as `$$` in replacement strings',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -281,6 +287,7 @@ const ruleTypes = Object.freeze({
   'no-useless-flag': 'suggestion',
   'no-lazy-ends': 'problem',
   'no-useless-dollar-replacements': 'problem',
+  'prefer-escape-replacement-dollar-char': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -429,7 +436,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-useless-escape' ||
     ruleName === 'no-useless-quantifier' ||
     ruleName === 'prefer-named-backreference' ||
-    ruleName === 'no-useless-flag'
+    ruleName === 'no-useless-flag' ||
+    ruleName === 'prefer-escape-replacement-dollar-char'
   ) {
     return 'Stylistic Issues';
   }

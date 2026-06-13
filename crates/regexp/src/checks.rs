@@ -22,6 +22,35 @@ use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
 use crate::types::DiagnosticData;
 
+/// Returns `true` when `replacement` contains a `$` that is followed by a
+/// character outside the valid replacement-reference set: digit, `&`, `'`,
+/// `` ` ``, `<` (named-group reference), `$` (escaped dollar). A trailing `$`
+/// at the very end of the string also counts. Used by
+/// `prefer-escape-replacement-dollar-char`.
+fn replacement_has_lone_dollar(replacement: &str) -> bool {
+    let bytes = replacement.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] != b'$' {
+            index += 1;
+            continue;
+        }
+        let Some(&next) = bytes.get(index + 1) else {
+            return true;
+        };
+        if next == b'$' {
+            index += 2;
+            continue;
+        }
+        if next.is_ascii_digit() || matches!(next, b'&' | b'\'' | b'`' | b'<') {
+            index += 2;
+            continue;
+        }
+        return true;
+    }
+    false
+}
+
 /// Returns `true` when `replacement` contains a literal `$0` token that is not
 /// part of a longer numeric backreference like `$01`. JS `String.prototype.replace`
 /// never accepts `$0` as a capture reference, so this is almost always a typo.
@@ -125,6 +154,37 @@ impl<'a> Scanner<'a> {
         self.check_no_missing_g_flag(call);
         self.check_prefer_named_replacement(call);
         self.check_no_useless_dollar_replacements(call);
+        self.check_prefer_escape_replacement_dollar_char(call);
+    }
+
+    /// `prefer-escape-replacement-dollar-char`: in JS replacement strings a
+    /// literal `$` should be written as `$$` to avoid being mistaken for a
+    /// pattern reference. The reverse — `$` followed by an unrecognised char —
+    /// is already a literal at runtime but is almost always a copy-paste bug.
+    /// Flag any `$` in a literal replacement string that is followed by a char
+    /// outside the valid reference set (digit, `&`, `'`, `` ` ``, `<`, `$`).
+    fn check_prefer_escape_replacement_dollar_char(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        let method = member.property.name.as_str();
+        if method != "replace" && method != "replaceAll" {
+            return;
+        }
+        let Some(arg1) = call.arguments.get(1).and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::StringLiteral(replacement) = arg1.get_inner_expression() else {
+            return;
+        };
+        if !replacement_has_lone_dollar(replacement.value.as_str()) {
+            return;
+        }
+        self.report(
+            "prefer-escape-replacement-dollar-char",
+            "unexpected",
+            call.span,
+        );
     }
 
     /// `no-useless-dollar-replacements`: in JavaScript replacement strings the
