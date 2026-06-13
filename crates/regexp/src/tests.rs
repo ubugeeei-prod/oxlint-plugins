@@ -2640,6 +2640,31 @@ mod no_dupe_characters_character_class {
             "flat /[aab]/u must still report a duplicate"
         );
     }
+
+    #[test]
+    fn non_v_literal_open_bracket_parsed_flat() {
+        // In non-v mode an unescaped `[` inside a class is a literal character,
+        // not the start of a nested class. The class `[[]` (pattern `[[]`) ends
+        // at the first unescaped `]` and must not produce a false positive for
+        // `no-empty-character-class` (regression: `find_class_end_nested` would
+        // see the inner `[` as opening a nested class and return `None` for the
+        // supposed outer class, causing the scanner to advance byte-by-byte
+        // past the `]` and treat the remaining `]` as an empty class).
+        assert!(
+            rule_ids_for("const a = /[[]/u;", "no-empty-character-class").is_empty(),
+            "/[[]/u must not trigger no-empty-character-class"
+        );
+        // `/[a[b]/u` — class contains `a`, `[`, `b`; no duplicates.
+        assert!(
+            rule_ids_for("const a = /[a[b]/u;", "no-dupe-characters-character-class").is_empty(),
+            "/[a[b]/u must not trigger no-dupe-characters-character-class"
+        );
+        // Sanity: a real duplicate in non-v mode is still caught.
+        assert!(
+            !rule_ids_for("const a = /[aab]/u;", "no-dupe-characters-character-class").is_empty(),
+            "/[aab]/u must still report a duplicate"
+        );
+    }
 }
 
 mod prefer_range {

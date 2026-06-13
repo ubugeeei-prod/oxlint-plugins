@@ -687,7 +687,7 @@ impl<'a> Scanner<'a> {
         used_as_whole: bool,
     ) {
         let mut analysis = PatternAnalysis::new();
-        analysis.scan(pattern);
+        analysis.scan(pattern, flags.contains('v'));
 
         // `no-useless-flag` (narrow form): the `s` flag only affects the
         // matching of `.`; the `m` flag only affects `^` and `$`. If neither
