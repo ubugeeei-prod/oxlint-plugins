@@ -15,6 +15,10 @@ pub(crate) struct GroupState {
     pub(crate) check_empty: bool,
     pub(crate) capturing: bool,
     pub(crate) is_lookaround: bool,
+    pub(crate) is_non_capturing: bool,
+    /// Byte offset of the body start (after the prefix). Used by
+    /// `no-useless-non-capturing-group` to read the body character.
+    pub(crate) body_start: usize,
     pub(crate) seen_pipe: bool,
     pub(crate) current_has_content: bool,
 }
@@ -25,16 +29,26 @@ impl GroupState {
             check_empty: false,
             capturing: false,
             is_lookaround: false,
+            is_non_capturing: false,
+            body_start: 0,
             seen_pipe: false,
             current_has_content: false,
         }
     }
 
-    fn group(check_empty: bool, capturing: bool, is_lookaround: bool) -> Self {
+    fn group(
+        check_empty: bool,
+        capturing: bool,
+        is_lookaround: bool,
+        is_non_capturing: bool,
+        body_start: usize,
+    ) -> Self {
         Self {
             check_empty,
             capturing,
             is_lookaround,
+            is_non_capturing,
+            body_start,
             seen_pipe: false,
             current_has_content: false,
         }
@@ -111,6 +125,10 @@ pub(crate) struct PatternAnalysis {
     /// First single-character `\q{X}` string literal inside a class, holding
     /// the bare character it could be simplified to. `grapheme-string-literal`.
     pub(crate) first_useless_string_literal: Option<char>,
+    /// At least one `(?:X)` non-capturing group whose body is a single
+    /// regular ASCII alphanumeric character and is not followed by a
+    /// quantifier — the wrapper is useless. `no-useless-non-capturing-group`.
+    pub(crate) has_useless_non_capturing_group: bool,
 }
 
 impl PatternAnalysis {
@@ -203,6 +221,8 @@ impl PatternAnalysis {
                         prefix.check_empty,
                         prefix.capturing,
                         prefix.is_lookaround,
+                        prefix.is_non_capturing,
+                        prefix.next,
                     ));
                     index = prefix.next;
                 }
@@ -228,6 +248,24 @@ impl PatternAnalysis {
                         // assertion does not consume input.
                         if group.is_lookaround && bytes.get(index + 1) == Some(&b'?') {
                             self.has_optional_assertion = true;
+                        }
+                        // `(?:X)` with a single ASCII-alphanumeric body and no
+                        // following quantifier — the wrapper carries no meaning.
+                        // We only consider non-capturing groups with no `|` and
+                        // exactly one literal byte between `:` and `)`. Other
+                        // body shapes (escapes, classes, groups) are deferred
+                        // so the check stays sound.
+                        if group.is_non_capturing
+                            && !group.seen_pipe
+                            && index == group.body_start + 1
+                        {
+                            let byte = bytes[group.body_start];
+                            let next = bytes.get(index + 1).copied();
+                            let followed_by_quantifier =
+                                matches!(next, Some(b'*' | b'+' | b'?' | b'{'));
+                            if byte.is_ascii_alphanumeric() && !followed_by_quantifier {
+                                self.has_useless_non_capturing_group = true;
+                            }
                         }
                         self.mark_content(&mut groups);
                     }

@@ -85,6 +85,7 @@ pub(crate) struct GroupPrefix {
     pub(crate) capturing: bool,
     pub(crate) named: bool,
     pub(crate) is_lookaround: bool,
+    pub(crate) is_non_capturing: bool,
     pub(crate) next: usize,
 }
 
@@ -95,6 +96,7 @@ pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> GroupPrefix {
             capturing: true,
             named: false,
             is_lookaround: false,
+            is_non_capturing: false,
             next: open + 1,
         };
     }
@@ -104,6 +106,7 @@ pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> GroupPrefix {
             capturing: false,
             named: false,
             is_lookaround: false,
+            is_non_capturing: true,
             next: open + 3,
         },
         Some(b'=') | Some(b'!') => GroupPrefix {
@@ -111,6 +114,7 @@ pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> GroupPrefix {
             capturing: false,
             named: false,
             is_lookaround: true,
+            is_non_capturing: false,
             next: open + 3,
         },
         Some(b'<') => {
@@ -120,6 +124,7 @@ pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> GroupPrefix {
                     capturing: false,
                     named: false,
                     is_lookaround: true,
+                    is_non_capturing: false,
                     next: open + 4,
                 }
             } else {
@@ -132,6 +137,7 @@ pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> GroupPrefix {
                     capturing: true,
                     named: true,
                     is_lookaround: false,
+                    is_non_capturing: false,
                     next: cursor.saturating_add(1).min(bytes.len()),
                 }
             }
@@ -141,6 +147,7 @@ pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> GroupPrefix {
             capturing: false,
             named: false,
             is_lookaround: false,
+            is_non_capturing: false,
             next: open + 2,
         },
     }

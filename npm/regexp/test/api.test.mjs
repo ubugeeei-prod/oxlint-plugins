@@ -54,6 +54,7 @@ describe('regexp native API', () => {
       'use-ignore-case',
       'control-character-escape',
       'grapheme-string-literal',
+      'no-useless-non-capturing-group',
     ]);
   });
 

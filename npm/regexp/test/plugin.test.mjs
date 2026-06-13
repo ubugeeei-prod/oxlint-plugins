@@ -274,6 +274,14 @@ const invalidCases = [
     'const re = /[\\q{a}]/v;\n',
     ['unexpected'],
   ],
+  // no-useless-non-capturing-group
+  ['no-useless-non-capturing-group', 'single-char body', 'const re = /(?:a)/u;\n', ['unexpected']],
+  [
+    'no-useless-non-capturing-group',
+    'inline context',
+    'const re = /pre(?:b)post/u;\n',
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
