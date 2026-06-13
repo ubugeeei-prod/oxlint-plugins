@@ -1244,10 +1244,8 @@ mod match_any {
 
     #[test]
     fn reports_anti_pair_character_classes() {
-        assert_eq!(
-            rule_ids_for("const a = /[\\s\\S]/u;", "match-any").as_slice(),
-            &["unexpected"]
-        );
+        // `[\s\S]` is the canonical recommended form — it is valid.
+        assert!(rule_ids_for("const a = /[\\s\\S]/u;", "match-any").is_empty());
         assert_eq!(
             rule_ids_for("const a = /[\\d\\D]/u;", "match-any").as_slice(),
             &["unexpected"]
@@ -1274,6 +1272,16 @@ mod match_any {
         assert!(rule_ids_for("const a = /[\\s\\Sa]/u;", "match-any").is_empty());
         // Negated classes never match anything; do not flag.
         assert!(rule_ids_for("const a = /[^\\s\\S]/u;", "match-any").is_empty());
+        // The canonical `[\s\S]` is the recommended form; only the reverse and other families are flagged.
+        assert!(rule_ids_for("const a = /[\\s\\S]/u;", "match-any").is_empty());
+    }
+
+    #[test]
+    fn reversed_order_still_reports() {
+        assert_eq!(
+            rule_ids_for("const a = /[\\S\\s]/u;", "match-any").as_slice(),
+            &["unexpected"]
+        );
     }
 }
 

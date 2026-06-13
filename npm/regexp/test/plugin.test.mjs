@@ -74,6 +74,7 @@ const validCases = [
   ['match-any', 'half anti-pair', 'const re = /[\\s]/u;\n'],
   ['match-any', 'mixed family', 'const re = /[\\s\\D]/u;\n'],
   ['match-any', 'negated anti-pair', 'const re = /[^\\s\\S]/u;\n'],
+  ['match-any', 'canonical \\s\\S form', 'const re = /[\\s\\S]/u;\n'],
   // no-legacy-features
   ['no-legacy-features', 'unrelated identifier', 'Foo.$1;\n'],
   ['no-legacy-features', 'lowercase regexp', 'regexp.lastMatch;\n'],
@@ -525,7 +526,7 @@ describe('regexp rules through direct Oxlint plugin adapter', () => {
         runRule('prefer-named-capture-group', 'const re = /(a)/u;\n')[0],
       ),
     ).toBe('Capturing group should be converted to a named or non-capturing group.');
-    expect(renderMessage('match-any', runRule('match-any', 'const re = /[\\s\\S]/u;\n')[0])).toBe(
+    expect(renderMessage('match-any', runRule('match-any', 'const re = /[\\S\\s]/u;\n')[0])).toBe(
       'Unexpected any character class. Use `.` with the `s` flag instead.',
     );
     expect(
