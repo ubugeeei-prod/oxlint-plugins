@@ -57,9 +57,18 @@ function interpolate(template, data) {
 // adapter both emit 0-indexed UTF-16 columns, matching ESLint's internal `loc`.
 function formatReport(rule, descriptor) {
   const messages = rule.meta.messages ?? {};
-  const message = descriptor.messageId
-    ? interpolate(messages[descriptor.messageId], descriptor.data)
-    : descriptor.message;
+  let message;
+  if (descriptor.messageId) {
+    const template = messages[descriptor.messageId];
+    if (template === undefined) {
+      throw new Error(
+        `Rule reported unknown messageId "${descriptor.messageId}" (not in meta.messages)`,
+      );
+    }
+    message = interpolate(template, descriptor.data);
+  } else {
+    message = descriptor.message;
+  }
 
   const result = { message };
   if (descriptor.messageId) {

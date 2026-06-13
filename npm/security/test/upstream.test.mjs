@@ -54,7 +54,7 @@ describe('eslint-plugin-security upstream parity', () => {
 
     describe(ruleName, () => {
       describe('valid', () => {
-        fixture.valid.forEach((testCase, index) => {
+        (fixture.valid ?? []).forEach((testCase, index) => {
           it(label(testCase, index), () => {
             expect(runRule(ruleName, testCase)).toEqual([]);
           });
@@ -62,7 +62,7 @@ describe('eslint-plugin-security upstream parity', () => {
       });
 
       describe('invalid', () => {
-        fixture.invalid.forEach((testCase, index) => {
+        (fixture.invalid ?? []).forEach((testCase, index) => {
           it(label(testCase, index), () => {
             assertErrors(runRule(ruleName, testCase), testCase.errors);
           });

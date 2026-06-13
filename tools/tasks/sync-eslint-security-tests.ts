@@ -91,28 +91,35 @@ for (const rule of portedRules) {
   grouped.set(rule, { valid: [], invalid: [] });
 }
 
+// Drop accounting, so truncation is never silent (cases that cannot be
+// replayed, or whole runs for rules we have not ported).
+const dropped = new Map<string, number>();
+const skippedRuns: string[] = [];
+
+function collect(bucket: NormalizedCase[], cases: RawCase[], rule: string): void {
+  for (const raw of cases) {
+    const normalized = normalizeCase(raw);
+    if (normalized) {
+      bucket.push(normalized);
+    } else {
+      dropped.set(rule, (dropped.get(rule) ?? 0) + 1);
+    }
+  }
+}
+
 const testFiles = listTestFiles(TESTS_DIR);
 for (const file of testFiles) {
   const runs = captureRuns(file);
   for (const run of runs) {
     const rule = baseRuleName(run.name, portedRules);
     if (!rule) {
-      // A run for a rule we have not ported; skip silently (not our target).
+      // A run for a rule we have not ported yet; record it so it is visible.
+      skippedRuns.push(run.name);
       continue;
     }
     const bucket = grouped.get(rule)!;
-    for (const raw of run.valid) {
-      const normalized = normalizeCase(raw);
-      if (normalized) {
-        bucket.valid.push(normalized);
-      }
-    }
-    for (const raw of run.invalid) {
-      const normalized = normalizeCase(raw);
-      if (normalized) {
-        bucket.invalid.push(normalized);
-      }
-    }
+    collect(bucket.valid, run.valid, rule);
+    collect(bucket.invalid, run.invalid, rule);
   }
 }
 
@@ -136,12 +143,22 @@ for (const rule of portedRules) {
     invalid: bucket.invalid,
   };
   writeFileSync(join(FIXTURES_DIR, `${rule}.json`), `${JSON.stringify(fixture, null, 2)}\n`);
-  summary.push(`${rule}: ${bucket.valid.length} valid, ${bucket.invalid.length} invalid`);
+  const drops = dropped.get(rule) ?? 0;
+  summary.push(
+    `${rule}: ${bucket.valid.length} valid, ${bucket.invalid.length} invalid${
+      drops > 0 ? ` (${drops} non-replayable case(s) dropped)` : ''
+    }`,
+  );
 }
 
 console.log('Synced eslint-plugin-security fixtures from upstream:');
 for (const line of summary) {
   console.log(`- ${line}`);
+}
+if (skippedRuns.length > 0) {
+  console.log(
+    `Skipped ${skippedRuns.length} upstream run(s) for not-yet-ported rules: ${skippedRuns.join(', ')}`,
+  );
 }
 
 // --- helpers ---------------------------------------------------------------
