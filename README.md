@@ -48,9 +48,12 @@ vp run release patch
 ```sh
 git submodule update --init --depth 1   # fetch upstream sources
 pnpm run port:rules                      # regenerate docs/port-targets/*
+pnpm run port:status                     # sync upstream rules into status.json as pending
 ```
 
 `pnpm run port:rules` enumerates every rule of each target straight from its submodule and fails if a plugin's rule count drifts from the manifest, so the porting backlog stays complete. See `docs/port-targets/README.md` for the generated inventory.
+
+`pnpm run port:status` reads that inventory and ensures every upstream rule of every port target is listed in `status.json`. Rules that have not been ported yet are added with `status: "pending"` and zeroed test flags; existing entries are preserved verbatim. New plugins (e.g. `react`, `typescript-eslint`, `sonarjs`, `postgresql`, `angular-eslint-template`) are bootstrapped with a scaffold `npm/<plugin>/package.json` so the entire 1157-rule backlog is visible and parallelizable across contributors.
 
 ## Sample Plugin
 

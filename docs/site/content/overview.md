@@ -16,7 +16,7 @@ This is unofficial community work, not an official Oxlint project.
 - TypeScript checks use `tsgo`, not `tsc`.
 - `crates/_carton` provides shared allocation, profiling, and fast-hash primitives.
 - Rust rule logic is grouped by domain crates such as `crates/stylistic`.
-- `status.json` tracks package and rule status.
+- `status.json` tracks package and rule status. Every upstream rule of every port target is enumerated; rules that have not been ported yet are listed with `status: "pending"` so the porting backlog stays fully visible. Run `node tools/tasks/sync-status-from-port-targets.ts` to re-sync new upstream rules into the pending list.
 
 ## Docs Stack
 
