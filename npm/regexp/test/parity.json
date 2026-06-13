@@ -65,10 +65,6 @@
       "level": "off",
       "reason": "Flags short runs like /[abc]/ that are valid under the default option."
     },
-    "prefer-unicode-codepoint-escapes": {
-      "level": "off",
-      "reason": "Flags surrogate escapes without the u flag (e.g. /\\ud83d\\ude00/) where no codepoint escape applies."
-    },
     "require-unicode-regexp": {
       "level": "off",
       "reason": "Flags constructors whose flags are an unknown variable (e.g. new RegExp('', flags))."
