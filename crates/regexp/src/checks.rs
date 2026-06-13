@@ -615,10 +615,10 @@ impl<'a> Scanner<'a> {
             // For regex literals, ALL literal control characters must be
             // escaped, because the author could have written \t instead of a
             // raw tab inside /.../.
-            const NAMED_ESCAPES: &[char] =
-                &['\u{0000}', '\u{0009}', '\u{000A}', '\u{000B}', '\u{000C}', '\u{000D}'];
-            let skip = is_constructor && NAMED_ESCAPES.contains(&ch);
-            if !skip {
+            // The named-escape set is \0 (U+0000) and \t \n \v \f \r
+            // (U+0009..=U+000D, contiguous).
+            let named_escape = matches!(ch, '\0' | '\t'..='\r');
+            if !(is_constructor && named_escape) {
                 self.report_with_data(
                     "control-character-escape",
                     "unexpected",
