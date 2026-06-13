@@ -230,7 +230,7 @@ const invalidCases = [
     ['unexpected'],
   ],
   // prefer-range
-  ['prefer-range', 'three consecutive letters', 'const re = /[abc]/u;\n', ['unexpected']],
+  ['prefer-range', 'four consecutive letters', 'const re = /[abcd]/u;\n', ['unexpected']],
   ['prefer-range', 'five consecutive digits', 'const re = /[12345]/u;\n', ['unexpected']],
   // no-useless-escape
   ['no-useless-escape', 'escaped colon', 'const re = /\\:/u;\n', ['unexpected']],
