@@ -16,6 +16,7 @@ const expectedRuleNames = [
   'no-identical-expressions',
   'arguments-usage',
   'no-labels',
+  'no-delete-var',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -476,6 +477,39 @@ describe('sonarjs native API', () => {
   it('does not report no-labels for a plain variable declaration', () => {
     const source = 'const x = 1;';
     const diagnostics = scan('no-labels', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-delete-var for delete applied to a bare variable', () => {
+    const source = 'delete x;';
+    const diagnostics = scan('no-delete-var', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-delete-var');
+    expect(diagnostics[0].messageId).toBe('noDeleteVar');
+  });
+
+  it('reports no-delete-var for delete applied to a parenthesised variable', () => {
+    const source = 'delete (y);';
+    const diagnostics = scan('no-delete-var', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noDeleteVar');
+  });
+
+  it('does not report no-delete-var for delete on a member expression (dot)', () => {
+    const source = 'delete obj.prop;';
+    const diagnostics = scan('no-delete-var', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-delete-var for delete on a member expression (bracket)', () => {
+    const source = 'delete obj[key];';
+    const diagnostics = scan('no-delete-var', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-delete-var for a plain variable declaration', () => {
+    const source = 'const z = 1;';
+    const diagnostics = scan('no-delete-var', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

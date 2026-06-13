@@ -107,6 +107,7 @@ describe('sonarjs plugin shape', () => {
       'no-identical-expressions',
       'arguments-usage',
       'no-labels',
+      'no-delete-var',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -121,6 +122,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-identical-expressions']).toBe('object');
     expect(typeof plugin.rules['arguments-usage']).toBe('object');
     expect(typeof plugin.rules['no-labels']).toBe('object');
+    expect(typeof plugin.rules['no-delete-var']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -135,6 +137,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-identical-expressions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/arguments-usage']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-labels']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-delete-var']).toBe('error');
   });
 });
 
@@ -231,6 +234,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('no-labels', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('noLabels');
+  });
+
+  it('reports no-delete-var through the adapter', () => {
+    const source = 'delete x;';
+    const reports = runRule('no-delete-var', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noDeleteVar');
   });
 });
 
@@ -359,5 +369,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-labels)');
+  });
+
+  it('reports no-delete-var through the CLI', () => {
+    const source = 'delete x;';
+    const result = runOxlint('no-delete-var', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-delete-var)');
   });
 });

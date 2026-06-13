@@ -613,3 +613,41 @@ fn does_not_report_no_labels_for_plain_variable_declaration() {
     let diagnostics = scan("no-labels", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_delete_var_for_bare_variable() {
+    let source = "delete x;";
+    let diagnostics = scan("no-delete-var", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-delete-var");
+    assert_eq!(diagnostics[0].message_id, "noDeleteVar");
+}
+
+#[test]
+fn reports_no_delete_var_for_parenthesised_variable() {
+    let source = "delete (y);";
+    let diagnostics = scan("no-delete-var", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noDeleteVar");
+}
+
+#[test]
+fn does_not_report_no_delete_var_for_member_expression_dot() {
+    let source = "delete obj.prop;";
+    let diagnostics = scan("no-delete-var", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_delete_var_for_member_expression_bracket() {
+    let source = "delete obj[key];";
+    let diagnostics = scan("no-delete-var", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_delete_var_for_plain_variable_declaration() {
+    let source = "const z = 1;";
+    let diagnostics = scan("no-delete-var", source);
+    assert!(diagnostics.is_empty());
+}
