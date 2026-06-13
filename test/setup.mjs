@@ -89,6 +89,10 @@ const nativePackages = [
     binding: 'npm/unused-imports/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-perfectionist',
+    binding: 'npm/perfectionist/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-storybook',
     binding: 'npm/storybook/native.js',
   },

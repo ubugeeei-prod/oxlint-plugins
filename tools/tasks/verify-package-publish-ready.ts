@@ -105,6 +105,11 @@ const packages: PackageToPack[] = [
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-perfectionist',
+    dir: 'npm/perfectionist',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-testing-library',
     dir: 'npm/testing-library',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],

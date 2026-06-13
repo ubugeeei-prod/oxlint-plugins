@@ -9,6 +9,7 @@ members = [
   "crates/eslint_markdown",
   "crates/functional",
   "crates/mocha",
+  "crates/perfectionist",
   "crates/playwright",
   "crates/react_hooks",
   "crates/react_refresh",
@@ -29,6 +30,7 @@ members = [
   "npm/functional",
   "npm/mocha",
   "npm/no-forbidden-identifiers",
+  "npm/perfectionist",
   "npm/playwright",
   "npm/react-hooks",
   "npm/react-refresh",
@@ -75,6 +77,7 @@ oxlint-plugins-eslint-json = { path = "crates/eslint_json", version = "0.0.0" }
 oxlint-plugins-eslint-markdown = { path = "crates/eslint_markdown", version = "0.0.0" }
 oxlint-plugins-functional = { path = "crates/functional", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
+oxlint-plugins-perfectionist = { path = "crates/perfectionist", version = "0.0.0" }
 oxlint-plugins-playwright = { path = "crates/playwright", version = "0.0.0" }
 oxlint-plugins-react-hooks = { path = "crates/react_hooks", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }

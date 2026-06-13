@@ -875,6 +875,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-perfectionist"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-perfectionist",
+]
+
+[[package]]
 name = "oxlint-plugin-playwright"
 version = "0.0.0"
 dependencies = [
@@ -1085,6 +1095,17 @@ dependencies = [
  "insta",
  "oxc_allocator",
  "oxc_ast",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+ "regex",
+]
+
+[[package]]
+name = "oxlint-plugins-perfectionist"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
  "oxc_parser",
  "oxc_span",
  "oxlint-plugins-_carton",

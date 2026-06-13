@@ -5581,6 +5581,276 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-perfectionist",
+    "directory": "npm/perfectionist",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-perfectionist",
+      "version": "5.9.0",
+      "repository": "https://github.com/azat-io/eslint-plugin-perfectionist",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "sort-array-includes",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-array-includes with focused unsorted array includes coverage."
+      },
+      {
+        "name": "sort-arrays",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-arrays with focused unsorted array literal coverage."
+      },
+      {
+        "name": "sort-classes",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-classes with focused class member ordering coverage."
+      },
+      {
+        "name": "sort-decorators",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-decorators with focused decorator ordering coverage."
+      },
+      {
+        "name": "sort-enums",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-enums with focused enum member ordering coverage."
+      },
+      {
+        "name": "sort-export-attributes",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-export-attributes with focused export attributes coverage."
+      },
+      {
+        "name": "sort-exports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-exports with focused export declaration ordering coverage."
+      },
+      {
+        "name": "sort-heritage-clauses",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-heritage-clauses with focused implements ordering coverage."
+      },
+      {
+        "name": "sort-import-attributes",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-import-attributes with focused import attributes coverage."
+      },
+      {
+        "name": "sort-imports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-imports with focused import declaration ordering coverage."
+      },
+      {
+        "name": "sort-interfaces",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-interfaces with focused interface member ordering coverage."
+      },
+      {
+        "name": "sort-intersection-types",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-intersection-types with focused intersection member ordering coverage."
+      },
+      {
+        "name": "sort-jsx-props",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-jsx-props with focused JSX prop ordering coverage."
+      },
+      {
+        "name": "sort-maps",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-maps with focused Map entry ordering coverage."
+      },
+      {
+        "name": "sort-modules",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-modules with focused top-level declaration ordering coverage."
+      },
+      {
+        "name": "sort-named-exports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-named-exports with focused named export specifier ordering coverage."
+      },
+      {
+        "name": "sort-named-imports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": true },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-named-imports with focused named import specifier ordering and oxlint jsPlugins coverage."
+      },
+      {
+        "name": "sort-object-types",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-object-types with focused object type member ordering coverage."
+      },
+      {
+        "name": "sort-objects",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-objects with focused object property ordering coverage."
+      },
+      {
+        "name": "sort-sets",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-sets with focused Set entry ordering coverage."
+      },
+      {
+        "name": "sort-switch-case",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-switch-case with focused case ordering coverage."
+      },
+      {
+        "name": "sort-union-types",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-union-types with focused union member ordering coverage."
+      },
+      {
+        "name": "sort-variable-declarations",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": { "insta": false, "vitest": true, "lsp": false, "oxlintIntegration": false },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-variable-declarations with focused variable declarator ordering coverage."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-storybook",
     "directory": "npm/storybook",
     "version": "0.0.0",
