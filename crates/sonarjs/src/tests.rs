@@ -545,3 +545,41 @@ fn does_not_report_identical_expressions_different_member_access() {
     let diagnostics = scan("no-identical-expressions", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_arguments_usage_inside_function() {
+    let source = "function f() { return arguments[0]; }";
+    let diagnostics = scan("arguments-usage", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "arguments-usage");
+    assert_eq!(diagnostics[0].message_id, "argumentsUsage");
+}
+
+#[test]
+fn reports_arguments_usage_for_arguments_length() {
+    let source = "function f() { console.log(arguments.length); }";
+    let diagnostics = scan("arguments-usage", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "argumentsUsage");
+}
+
+#[test]
+fn does_not_report_arguments_usage_with_rest_params() {
+    let source = "function f(...args) { return args[0]; }";
+    let diagnostics = scan("arguments-usage", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_arguments_usage_for_property_name() {
+    let source = "const o = { arguments: 1 }; o.arguments;";
+    let diagnostics = scan("arguments-usage", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_arguments_usage_for_plain_function() {
+    let source = "function f() { return 1; }";
+    let diagnostics = scan("arguments-usage", source);
+    assert!(diagnostics.is_empty());
+}

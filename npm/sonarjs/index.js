@@ -55,6 +55,9 @@ const messages = Object.freeze({
     identicalExpressions:
       'Identical sub-expressions on both sides of this operator make the result constant or redundant.',
   },
+  'arguments-usage': {
+    argumentsUsage: "Use the rest parameter syntax (...args) instead of the 'arguments' object.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -74,6 +77,7 @@ const ruleDescriptions = Object.freeze({
     'Disallow conditional structures where every branch has the same implementation',
   'no-identical-expressions':
     'Disallow identical sub-expressions on both sides of binary or logical operators where the result is constant or redundant',
+  'arguments-usage': "Disallow use of the 'arguments' object; use rest parameters instead",
 });
 
 const ruleTypes = Object.freeze({
@@ -88,6 +92,7 @@ const ruleTypes = Object.freeze({
   'no-identical-conditions': 'problem',
   'no-all-duplicated-branches': 'problem',
   'no-identical-expressions': 'problem',
+  'arguments-usage': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -102,6 +107,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-identical-conditions': 'error',
   'no-all-duplicated-branches': 'error',
   'no-identical-expressions': 'error',
+  'arguments-usage': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

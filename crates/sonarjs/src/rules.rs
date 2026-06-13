@@ -1,6 +1,7 @@
 //! Clean-room rule implementations for the sonarjs port. Each module attaches
 //! one `check_*` method to [`crate::scanner::Scanner`].
 
+mod arguments_usage;
 mod comma_or_logical_or_case;
 mod no_all_duplicated_branches;
 mod no_collapsible_if;

@@ -3,8 +3,9 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, ConditionalExpression, IfStatement, LogicalExpression,
-    SwitchCase, SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
+    AssignmentExpression, BinaryExpression, ConditionalExpression, IdentifierReference,
+    IfStatement, LogicalExpression, SwitchCase, SwitchStatement, TSIntersectionType, TSUnionType,
+    TemplateLiteral, UnaryExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -126,5 +127,10 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_ts_intersection_type(&mut self, it: &TSIntersectionType<'a>) {
         self.check_no_duplicate_in_composite(&it.types);
         walk::walk_ts_intersection_type(self, it);
+    }
+
+    fn visit_identifier_reference(&mut self, it: &IdentifierReference<'a>) {
+        self.check_arguments_usage(it);
+        walk::walk_identifier_reference(self, it);
     }
 }

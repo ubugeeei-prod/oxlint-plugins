@@ -105,6 +105,7 @@ describe('sonarjs plugin shape', () => {
       'no-identical-conditions',
       'no-all-duplicated-branches',
       'no-identical-expressions',
+      'arguments-usage',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -117,6 +118,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-identical-conditions']).toBe('object');
     expect(typeof plugin.rules['no-all-duplicated-branches']).toBe('object');
     expect(typeof plugin.rules['no-identical-expressions']).toBe('object');
+    expect(typeof plugin.rules['arguments-usage']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -129,6 +131,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-identical-conditions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-all-duplicated-branches']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-identical-expressions']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/arguments-usage']).toBe('error');
   });
 });
 
@@ -211,6 +214,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('no-identical-expressions', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('identicalExpressions');
+  });
+
+  it('reports arguments-usage through the adapter', () => {
+    const source = 'function f() { return arguments[0]; }';
+    const reports = runRule('arguments-usage', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('argumentsUsage');
   });
 });
 
@@ -319,5 +329,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-identical-expressions)');
+  });
+
+  it('reports arguments-usage through the CLI', () => {
+    const source = 'function f() { return arguments[0]; }';
+    const result = runOxlint('arguments-usage', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(arguments-usage)');
   });
 });
