@@ -202,12 +202,12 @@ fn no_class_inheritance_reports_abstract_and_extends() {
         ids
     };
 
-    assert_eq!(message_ids("class Foo {}"), Vec::<&'static str>::new());
-    assert_eq!(message_ids("class Foo extends Bar {}"), vec!["extends"]);
-    assert_eq!(message_ids("abstract class Foo {}"), vec!["abstract"]);
+    assert!(message_ids("class Foo {}").is_empty());
+    assert_eq!(message_ids("class Foo extends Bar {}"), ["extends"]);
+    assert_eq!(message_ids("abstract class Foo {}"), ["abstract"]);
     assert_eq!(
         message_ids("abstract class Foo extends Bar {}"),
-        vec!["abstract", "extends"]
+        ["abstract", "extends"]
     );
 
     // Ignore patterns suppress both reports.
