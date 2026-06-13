@@ -220,6 +220,14 @@ const messages = Object.freeze({
   'sort-alternatives': {
     unexpected: 'Single-literal alternation is not in ascending order; sort the alternatives.',
   },
+  'prefer-predefined-assertion': {
+    unexpected:
+      'Lookaround whose body is exactly the `^` or `$` anchor; use the bare anchor instead.',
+  },
+  'optimal-lookaround-quantifier': {
+    unexpected:
+      'Lookaround whose inner quantifier accepts the empty match; the assertion is always true.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -307,6 +315,10 @@ const ruleDescriptions = Object.freeze({
   'prefer-character-class':
     'enforce using a character class instead of alternation of single literals',
   'sort-alternatives': 'enforce sorted single-literal alternation alternatives',
+  'prefer-predefined-assertion':
+    'prefer the bare `^` or `$` anchor over a lookaround that wraps it',
+  'optimal-lookaround-quantifier':
+    'disallow lookarounds whose body always matches because of a zero-min quantifier',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -368,6 +380,7 @@ const ruleTypes = Object.freeze({
   'prefer-character-class': 'suggestion',
   'sort-alternatives': 'suggestion',
   'prefer-predefined-assertion': 'suggestion',
+  'optimal-lookaround-quantifier': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -529,9 +542,13 @@ function ruleCategory(ruleName) {
     ruleName === 'no-extra-lookaround-assertions' ||
     ruleName === 'no-trivially-nested-quantifier' ||
     ruleName === 'prefer-character-class' ||
-    ruleName === 'sort-alternatives'
+    ruleName === 'sort-alternatives' ||
+    ruleName === 'prefer-predefined-assertion'
   ) {
     return 'Stylistic Issues';
+  }
+  if (ruleName === 'optimal-lookaround-quantifier') {
+    return 'Possible Errors';
   }
   return 'Best Practices';
 }

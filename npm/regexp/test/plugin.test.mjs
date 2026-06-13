@@ -138,6 +138,10 @@ const validCases = [
   // prefer-predefined-assertion
   ['prefer-predefined-assertion', 'lookaround with literal body', 'const re = /(?=a)/u;\n'],
   ['prefer-predefined-assertion', 'bare anchor', 'const re = /^abc$/u;\n'],
+  // optimal-lookaround-quantifier
+  ['optimal-lookaround-quantifier', 'required match plus', 'const re = /(?=a+)/u;\n'],
+  ['optimal-lookaround-quantifier', 'bare atom', 'const re = /(?=a)/u;\n'],
+  ['optimal-lookaround-quantifier', 'non-cap group', 'const re = /(?:a*)/u;\n'],
   // prefer-unicode-codepoint-escapes
   [
     'prefer-unicode-codepoint-escapes',
@@ -404,6 +408,19 @@ const invalidCases = [
     'prefer-predefined-assertion',
     'lookbehind start anchor',
     'const re = /(?<=^)/u;\n',
+    ['unexpected'],
+  ],
+  // optimal-lookaround-quantifier
+  [
+    'optimal-lookaround-quantifier',
+    'star inside lookahead',
+    'const re = /(?=a*)/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'optimal-lookaround-quantifier',
+    'question inside lookbehind',
+    'const re = /(?<=b?)/u;\n',
     ['unexpected'],
   ],
 ];
