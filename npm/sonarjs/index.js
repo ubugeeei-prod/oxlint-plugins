@@ -61,6 +61,10 @@ const messages = Object.freeze({
   'no-labels': {
     noLabels: 'Remove this label and refactor the code to use structured control flow instead.',
   },
+  'no-delete-var': {
+    noDeleteVar:
+      "Do not use 'delete' on a variable; it has no effect. Use 'delete' only to remove object properties.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -82,6 +86,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow identical sub-expressions on both sides of binary or logical operators where the result is constant or redundant',
   'arguments-usage': "Disallow use of the 'arguments' object; use rest parameters instead",
   'no-labels': 'Disallow labeled statements; use structured control flow instead',
+  'no-delete-var':
+    "Disallow 'delete' applied to a plain variable; use it only on object properties",
 });
 
 const ruleTypes = Object.freeze({
@@ -98,6 +104,7 @@ const ruleTypes = Object.freeze({
   'no-identical-expressions': 'problem',
   'arguments-usage': 'suggestion',
   'no-labels': 'suggestion',
+  'no-delete-var': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -114,6 +121,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-identical-expressions': 'error',
   'arguments-usage': 'error',
   'no-labels': 'error',
+  'no-delete-var': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

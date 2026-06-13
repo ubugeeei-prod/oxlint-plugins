@@ -11870,19 +11870,19 @@
       },
       {
         "name": "no-delete-var",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-delete-var (Sonar key S3001). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S3001. Reports delete applied to a bare variable identifier (delete x), which is a no-op in sloppy mode and a SyntaxError in strict mode. Member-expression operands (delete obj.prop, delete obj[key]) are not flagged. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-duplicate-in-composite",

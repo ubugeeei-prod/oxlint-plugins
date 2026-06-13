@@ -5,6 +5,7 @@ mod arguments_usage;
 mod comma_or_logical_or_case;
 mod no_all_duplicated_branches;
 mod no_collapsible_if;
+mod no_delete_var;
 mod no_duplicate_in_composite;
 mod no_identical_conditions;
 mod no_identical_expressions;
