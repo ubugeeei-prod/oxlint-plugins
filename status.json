@@ -1874,5 +1874,278 @@
         "notes": "Rust/Oxc semantic helper rule matching eslint-plugin-unused-imports' split-reporting role by reporting non-import unused bindings separately from no-unused-imports."
       }
     ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-storybook",
+    "directory": "npm/storybook",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-storybook",
+      "version": "10.4.2",
+      "repository": "https://github.com/storybookjs/storybook",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "await-interactions",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/await-interactions; interaction call classification and native autofix ranges are covered in Vitest."
+      },
+      {
+        "name": "context-in-play-function",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/context-in-play-function; play context propagation is covered in Vitest."
+      },
+      {
+        "name": "csf-component",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/csf-component; default meta object resolution is shared with the other CSF rules."
+      },
+      {
+        "name": "default-exports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/default-exports; CSF4 skip, storiesOf skip, component-name inference, and native insertion fixes are covered in Vitest."
+      },
+      {
+        "name": "hierarchy-separator",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/hierarchy-separator; title literal detection and replacement fixes are covered in Vitest."
+      },
+      {
+        "name": "meta-inline-properties",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/meta-inline-properties; dynamic title and args properties are covered in Vitest."
+      },
+      {
+        "name": "meta-satisfies-type",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/meta-satisfies-type; direct object, identifier meta, `as`, and variable annotation cases are covered in Vitest."
+      },
+      {
+        "name": "no-redundant-story-name",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/no-redundant-story-name; CSF2 and CSF3 redundant story name checks and removal fixes are covered in Vitest."
+      },
+      {
+        "name": "no-renderer-packages",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/no-renderer-packages; renderer-to-framework suggestions are covered in Vitest and oxlint jsPlugins."
+      },
+      {
+        "name": "no-stories-of",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/no-stories-of; import specifier detection is covered in Vitest."
+      },
+      {
+        "name": "no-title-property-in-meta",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/no-title-property-in-meta; meta title removal fixes are covered in Vitest."
+      },
+      {
+        "name": "no-uninstalled-addons",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/no-uninstalled-addons; Storybook config addon extraction runs in native code while the JS adapter supplies package.json dependency names."
+      },
+      {
+        "name": "prefer-pascal-case",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/prefer-pascal-case; story export filtering and native rename suggestions are covered in Vitest."
+      },
+      {
+        "name": "story-exports",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/story-exports; named export collection and includeStories/excludeStories filters are covered in Vitest."
+      },
+      {
+        "name": "use-storybook-expect",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/use-storybook-expect; Storybook expect imports and global expect calls are covered in Vitest."
+      },
+      {
+        "name": "use-storybook-testing-library",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc port of eslint-plugin-storybook/use-storybook-testing-library; direct testing-library imports and native import rewrite fixes are covered in Vitest."
+      }
+    ]
   }
 ]
