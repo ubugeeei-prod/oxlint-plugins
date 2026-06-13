@@ -11,9 +11,9 @@ use oxc_span::Span;
 use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
-    duplicate_flag, first_control_character, first_invisible_character, first_non_standard_flag,
-    first_octal_escape, first_uppercase_hex_escape, mention_char, sorted_flags,
-    string_literal_value_with_span,
+    duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
+    first_invisible_character, first_non_standard_flag, first_octal_escape,
+    first_uppercase_hex_escape, mention_char, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -70,6 +70,39 @@ impl<'a> Scanner<'a> {
         if call.callee.is_specific_id("RegExp") {
             self.check_regexp_constructor(call.span, &call.arguments);
         }
+        self.check_prefer_regexp_exec(call);
+    }
+
+    /// `prefer-regexp-exec`: flag `<expr>.match(<regexp literal without 'g'>)`
+    /// and recommend `<regexp literal>.exec(<expr>)`. We can only act on
+    /// RegExp literals (constructor calls need type information to identify
+    /// the receiver as a string). Patterns without a `g` flag are the
+    /// canonical case the rule targets.
+    fn check_prefer_regexp_exec(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        if member.property.name != "match" {
+            return;
+        }
+        if call.arguments.len() != 1 {
+            return;
+        }
+        let Some(argument) = call.arguments.first().and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::RegExpLiteral(literal) = argument.get_inner_expression() else {
+            return;
+        };
+        let flags = literal
+            .raw
+            .as_ref()
+            .and_then(|raw| raw.as_str().rsplit_once('/').map(|(_, flags)| flags))
+            .unwrap_or("");
+        if flags.contains('g') {
+            return;
+        }
+        self.report("prefer-regexp-exec", "unexpected", call.span);
     }
 
     pub(crate) fn check_new_expression(&mut self, new_expression: &'a NewExpression<'a>) {
@@ -361,6 +394,51 @@ impl<'a> Scanner<'a> {
                 DiagnosticData {
                     expr: Some(CompactString::from(escape)),
                     replacement: Some(CompactString::from(escape.to_ascii_lowercase().as_str())),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some((escape, replacement)) = first_hex_x_escape(pattern) {
+            self.report_with_data(
+                "hexadecimal-escape",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(escape)),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some((escape, replacement)) = first_fixed_unicode_escape(pattern) {
+            self.report_with_data(
+                "unicode-escape",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(escape)),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if analysis.has_empty_lookaround {
+            self.report("no-empty-lookarounds-assertion", "unexpected", span);
+        }
+        if let Some(ch) = analysis.first_useless_range {
+            let mut text = CompactString::new("");
+            text.push(ch);
+            text.push('-');
+            text.push(ch);
+            let mut replacement = CompactString::new("");
+            replacement.push(ch);
+            self.report_with_data(
+                "no-useless-range",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(text),
+                    replacement: Some(replacement),
                     ..DiagnosticData::default()
                 },
                 span,

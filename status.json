@@ -8635,19 +8635,19 @@
       },
       {
         "name": "hexadecimal-escape",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule hexadecimal-escape."
+        "notes": "Default `never` config: pattern-level scan via first_hex_x_escape flags `\\xHH` and recommends the `\\u{HH}` equivalent. Other escapes are skipped through the existing skip_escape walker."
       },
       {
         "name": "letter-case",
@@ -8747,19 +8747,19 @@
       },
       {
         "name": "no-empty-lookarounds-assertion",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-empty-lookarounds-assertion."
+        "notes": "GroupPrefix gains is_lookaround so the existing pattern walker can flag any of `(?=)` / `(?!)` / `(?<=)` / `(?<!)` whose body is empty; non-capturing empty groups stay with no-empty-group."
       },
       {
         "name": "no-empty-string-literal",
@@ -9211,19 +9211,19 @@
       },
       {
         "name": "no-useless-range",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-range."
+        "notes": "Class-level scan via class_has_useless_range flags `X-X` ranges whose start and end are the same literal ASCII character; escaped or compound ranges (`\\d-\\d`, `\\xHH-\\xHH`) are intentionally deferred."
       },
       {
         "name": "no-useless-set-operand",
@@ -9499,19 +9499,19 @@
       },
       {
         "name": "prefer-regexp-exec",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-regexp-exec."
+        "notes": "JS-side CallExpression check on `<expr>.match(<regexp literal>)` where the literal has no `g` flag. RegExp constructor calls are deferred because deciding whether the receiver is a string needs type information."
       },
       {
         "name": "prefer-regexp-test",
@@ -9691,19 +9691,19 @@
       },
       {
         "name": "unicode-escape",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule unicode-escape."
+        "notes": "Default `unicodeCodePointEscape` config: pattern-level scan via first_fixed_unicode_escape flags the fixed-width `\\uHHHH` form and recommends `\\u{HHHH}`; the `\\u{H+}` form is left alone."
       },
       {
         "name": "unicode-property",

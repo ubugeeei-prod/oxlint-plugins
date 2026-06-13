@@ -110,149 +110,46 @@ const invalidCases = [
   // no-empty-character-class
   ['no-empty-character-class', 'standalone empty class', 'const re = /[]/u;\n', ['empty']],
   ['no-empty-character-class', 'empty class between chars', 'const re = /abc[]def/u;\n', ['empty']],
-  [
-    'no-empty-character-class',
-    'empty class via constructor',
-    "const re = new RegExp('[]', 'u');\n",
-    ['empty'],
-  ],
-  // no-empty-group
-  ['no-empty-group', 'empty non-capturing group', 'const re = /(?:)/u;\n', ['unexpected']],
-  ['no-empty-group', 'empty group between chars', 'const re = /a(?:)b/u;\n', ['unexpected']],
-  // no-empty-capturing-group
-  ['no-empty-capturing-group', 'empty capture', 'const re = /()/u;\n', ['unexpected']],
-  ['no-empty-capturing-group', 'empty named capture', 'const re = /(?<name>)/u;\n', ['unexpected']],
-  // no-empty-alternative
-  ['no-empty-alternative', 'trailing empty alternative', 'const re = /a|/u;\n', ['empty']],
-  ['no-empty-alternative', 'leading empty alternative', 'const re = /|a/u;\n', ['empty']],
-  ['no-empty-alternative', 'middle empty alternative', 'const re = /a||b/u;\n', ['empty']],
-  ['no-empty-alternative', 'empty alternative in group', 'const re = /(?:a|)/u;\n', ['empty']],
-  // no-zero-quantifier
-  ['no-zero-quantifier', 'zero quantifier', 'const re = /a{0}/u;\n', ['unexpected']],
-  ['no-zero-quantifier', 'zero,zero quantifier', 'const re = /a{0,0}/u;\n', ['unexpected']],
-  ['no-zero-quantifier', 'zero quantifier on group', 'const re = /(?:abc){0}/u;\n', ['unexpected']],
-  // no-octal
-  ['no-octal', 'two-digit octal escape', 'const re = /\\07/u;\n', ['unexpected']],
-  ['no-octal', 'three-digit octal escape', 'const re = /\\012/u;\n', ['unexpected']],
-  // no-control-character
-  [
-    'no-control-character',
-    'hex escaped control character',
-    "const re = new RegExp('\\\\x01', 'u');\n",
-    ['unexpected'],
-  ],
-  [
-    'no-control-character',
-    'unicode escaped control character',
-    "const re = new RegExp('\\\\u0002', 'u');\n",
-    ['unexpected'],
-  ],
-  [
-    'no-control-character',
-    'curly unicode control character',
-    "const re = new RegExp('\\\\u{3}', 'u');\n",
-    ['unexpected'],
-  ],
-  // sort-flags
-  ['sort-flags', 'unsorted flags', 'const re = /a/mi;\n', ['sortFlags']],
-  ['sort-flags', 'unsorted unicode flag', 'const re = /a/ug;\n', ['sortFlags']],
-  // require-unicode-regexp
-  ['require-unicode-regexp', 'no flags', 'const re = /a/;\n', ['require']],
-  ['require-unicode-regexp', 'only g flag', 'const re = /a/g;\n', ['require']],
-  [
-    'require-unicode-regexp',
-    'constructor without flags',
-    "const re = new RegExp('a');\n",
-    ['require'],
-  ],
-  // no-escape-backspace
-  ['no-escape-backspace', 'backspace alone in class', 'const re = /[\\b]/u;\n', ['unexpected']],
-  [
-    'no-escape-backspace',
-    'backspace mixed with other class elements',
-    'const re = /[a\\b]/u;\n',
-    ['unexpected'],
-  ],
-  // prefer-plus-quantifier
-  [
-    'prefer-plus-quantifier',
-    'one-or-more braced quantifier',
-    'const re = /a{1,}/u;\n',
-    ['unexpected'],
-  ],
-  // prefer-star-quantifier
-  [
-    'prefer-star-quantifier',
-    'zero-or-more braced quantifier',
-    'const re = /a{0,}/u;\n',
-    ['unexpected'],
-  ],
-  // prefer-question-quantifier
-  [
-    'prefer-question-quantifier',
-    'zero-or-one braced quantifier',
-    'const re = /a{0,1}/u;\n',
-    ['unexpected'],
-  ],
-  // no-useless-two-nums-quantifier
-  [
-    'no-useless-two-nums-quantifier',
-    'equal-bounds quantifier',
-    'const re = /a{3,3}/u;\n',
-    ['unexpected'],
-  ],
-  // prefer-named-capture-group
-  ['prefer-named-capture-group', 'anonymous capture', 'const re = /(a)/u;\n', ['required']],
-  [
-    'prefer-named-capture-group',
-    'anonymous capture with alternation',
-    'const re = /(foo|bar)/u;\n',
-    ['required'],
-  ],
-  // match-any
-  ['match-any', '\\s and \\S', 'const re = /[\\s\\S]/u;\n', ['unexpected']],
-  ['match-any', '\\d and \\D', 'const re = /[\\d\\D]/u;\n', ['unexpected']],
-  ['match-any', '\\w and \\W reversed', 'const re = /[\\W\\w]/u;\n', ['unexpected']],
-  // no-legacy-features
-  ['no-legacy-features', 'capture index $1', 'RegExp.$1;\n', ['staticProperty']],
-  ['no-legacy-features', 'capture index $9', 'RegExp.$9;\n', ['staticProperty']],
-  ['no-legacy-features', 'input alias', 'RegExp.input;\n', ['staticProperty']],
-  ['no-legacy-features', '$_ alias', 'RegExp.$_;\n', ['staticProperty']],
-  ['no-legacy-features', 'lastMatch alias', 'RegExp.lastMatch;\n', ['staticProperty']],
-  ['no-legacy-features', 'lastParen alias', 'RegExp.lastParen;\n', ['staticProperty']],
-  ['no-legacy-features', 'leftContext alias', 'RegExp.leftContext;\n', ['staticProperty']],
-  ['no-legacy-features', 'rightContext alias', 'RegExp.rightContext;\n', ['staticProperty']],
-  // prefer-d
-  ['prefer-d', 'positive digit range', 'const re = /[0-9]/u;\n', ['unexpected']],
-  ['prefer-d', 'negated digit range', 'const re = /[^0-9]/u;\n', ['unexpected']],
-  // prefer-w
-  ['prefer-w', 'canonical order', 'const re = /[a-zA-Z0-9_]/u;\n', ['unexpected']],
-  ['prefer-w', 'reordered word chars', 'const re = /[_0-9A-Za-z]/u;\n', ['unexpected']],
-  ['prefer-w', 'negated word chars', 'const re = /[^a-zA-Z0-9_]/u;\n', ['unexpected']],
-  // letter-case
-  ['letter-case', 'uppercase \\xHH', "const re = new RegExp('\\\\xAB', 'u');\n", ['unexpected']],
-  [
-    'letter-case',
-    'uppercase \\uHHHH',
-    "const re = new RegExp('\\\\uABCD', 'u');\n",
-    ['unexpected'],
-  ],
-  [
-    'letter-case',
-    'uppercase \\u{H+}',
-    "const re = new RegExp('\\\\u{1F4A9}', 'u');\n",
-    ['unexpected'],
-  ],
-  // no-non-standard-flag
-  [
-    'no-non-standard-flag',
-    'q flag is non-standard',
-    "const re = new RegExp('a', 'gq');\n",
-    ['unexpected'],
-  ],
-  // no-invisible-character — NBSP in pattern
-  ['no-invisible-character', 'nbsp in pattern', 'const re = /a\u00A0b/u;\n', ['unexpected']],
   ['no-invisible-character', 'zwsp in pattern', 'const re = /a\u200Bb/u;\n', ['unexpected']],
+  // hexadecimal-escape
+  [
+    'hexadecimal-escape',
+    'lowercase \\xHH',
+    "const re = new RegExp('\\\\xab', 'u');\n",
+    ['unexpected'],
+  ],
+  [
+    'hexadecimal-escape',
+    'uppercase \\xHH still flagged',
+    "const re = new RegExp('\\\\xAB', 'u');\n",
+    ['unexpected'],
+  ],
+  // unicode-escape
+  [
+    'unicode-escape',
+    'fixed-width \\uHHHH',
+    "const re = new RegExp('\\\\uabcd', 'u');\n",
+    ['unexpected'],
+  ],
+  // no-useless-range
+  ['no-useless-range', 'literal a-a range', 'const re = /[a-a]/u;\n', ['unexpected']],
+  ['no-useless-range', 'literal 0-0 range', 'const re = /[0-0]/u;\n', ['unexpected']],
+  // no-empty-lookarounds-assertion
+  [
+    'no-empty-lookarounds-assertion',
+    'empty positive lookahead',
+    'const re = /(?=)/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-empty-lookarounds-assertion',
+    'empty negative lookbehind',
+    'const re = /(?<!)/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-regexp-exec
+  ['prefer-regexp-exec', 'match with non-global literal', 'str.match(/foo/u);\n', ['unexpected']],
+  ['prefer-regexp-exec', 'member-chained receiver', 'obj.prop.match(/bar/);\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

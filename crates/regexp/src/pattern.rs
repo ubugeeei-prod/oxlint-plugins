@@ -3,15 +3,16 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    BraceQuantifierShape, class_contains_backspace_escape, class_is_digit_range,
-    class_is_word_char_set, class_matches_anything, find_class_end, group_prefix,
-    is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    BraceQuantifierShape, class_contains_backspace_escape, class_has_useless_range,
+    class_is_digit_range, class_is_word_char_set, class_matches_anything, find_class_end,
+    group_prefix, is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
 pub(crate) struct GroupState {
     pub(crate) check_empty: bool,
     pub(crate) capturing: bool,
+    pub(crate) is_lookaround: bool,
     pub(crate) seen_pipe: bool,
     pub(crate) current_has_content: bool,
 }
@@ -21,15 +22,17 @@ impl GroupState {
         Self {
             check_empty: false,
             capturing: false,
+            is_lookaround: false,
             seen_pipe: false,
             current_has_content: false,
         }
     }
 
-    fn group(check_empty: bool, capturing: bool) -> Self {
+    fn group(check_empty: bool, capturing: bool, is_lookaround: bool) -> Self {
         Self {
             check_empty,
             capturing,
+            is_lookaround,
             seen_pipe: false,
             current_has_content: false,
         }
@@ -65,6 +68,12 @@ pub(crate) struct PatternAnalysis {
     /// First `[a-zA-Z0-9_]`-shaped class (any order) and whether it was
     /// negated. `Some(false)` → `\w`, `Some(true)` → `\W`. `prefer-w`.
     pub(crate) first_word_class: Option<bool>,
+    /// First useless single-character range like `[a-a]`. The captured `char`
+    /// is the repeated endpoint. `no-useless-range`.
+    pub(crate) first_useless_range: Option<char>,
+    /// At least one lookaround assertion (`(?=)`, `(?!)`, `(?<=)`, `(?<!)`)
+    /// with an empty body. `no-empty-lookarounds-assertion`.
+    pub(crate) has_empty_lookaround: bool,
 }
 
 impl PatternAnalysis {
@@ -108,6 +117,11 @@ impl PatternAnalysis {
                         {
                             self.first_word_class = Some(shape.negated);
                         }
+                        if self.first_useless_range.is_none()
+                            && let Some(ch) = class_has_useless_range(bytes, index)
+                        {
+                            self.first_useless_range = Some(ch);
+                        }
                         self.mark_content(&mut groups);
                         index = close + 1;
                     } else {
@@ -120,7 +134,11 @@ impl PatternAnalysis {
                     if prefix.capturing && !prefix.named {
                         self.has_unnamed_capturing_group = true;
                     }
-                    groups.push(GroupState::group(prefix.check_empty, prefix.capturing));
+                    groups.push(GroupState::group(
+                        prefix.check_empty,
+                        prefix.capturing,
+                        prefix.is_lookaround,
+                    ));
                     index = prefix.next;
                 }
                 b')' => {
@@ -135,6 +153,9 @@ impl PatternAnalysis {
                             if group.capturing {
                                 self.has_empty_capturing_group = true;
                             }
+                        }
+                        if group.is_lookaround && !group.seen_pipe && !group.current_has_content {
+                            self.has_empty_lookaround = true;
                         }
                         self.mark_content(&mut groups);
                     }

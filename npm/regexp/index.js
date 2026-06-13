@@ -93,6 +93,23 @@ const messages = Object.freeze({
   'no-invisible-character': {
     unexpected: 'Unexpected invisible character {{ char }}.',
   },
+  'hexadecimal-escape': {
+    unexpected: "Unexpected hexadecimal escape '{{expr}}'. Use '{{replacement}}' instead.",
+  },
+  'unicode-escape': {
+    unexpected: "Unexpected fixed-width unicode escape '{{expr}}'. Use '{{replacement}}' instead.",
+  },
+  'no-useless-range': {
+    unexpected: "Unexpected useless range '{{expr}}'. Use '{{replacement}}' instead.",
+  },
+  'no-empty-lookarounds-assertion': {
+    unexpected:
+      'Unexpected empty lookaround assertion; this assertion can never fail or succeed meaningfully.',
+  },
+  'prefer-regexp-exec': {
+    unexpected:
+      'Use `RegExp.prototype.exec` instead of `String.prototype.match` for non-global regular expressions.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -120,6 +137,12 @@ const ruleDescriptions = Object.freeze({
   'letter-case': 'enforce consistent case for escape sequences (default lowercase)',
   'no-non-standard-flag': 'disallow non-standard flags on regular expressions',
   'no-invisible-character': 'disallow invisible characters in regular expressions',
+  'hexadecimal-escape': 'disallow `\\xHH` escape sequences (default `never`)',
+  'unicode-escape': 'enforce using `\\u{HHHH}` over `\\uHHHH` (default `unicodeCodePointEscape`)',
+  'no-useless-range': 'disallow character class ranges whose start equals their end',
+  'no-empty-lookarounds-assertion': 'disallow lookaround assertions with an empty body',
+  'prefer-regexp-exec':
+    'enforce `RegExp.prototype.exec` over `String.prototype.match` for non-global regexes',
 });
 
 const ruleTypes = Object.freeze({
@@ -146,6 +169,11 @@ const ruleTypes = Object.freeze({
   'letter-case': 'suggestion',
   'no-non-standard-flag': 'problem',
   'no-invisible-character': 'problem',
+  'hexadecimal-escape': 'suggestion',
+  'unicode-escape': 'suggestion',
+  'no-useless-range': 'suggestion',
+  'no-empty-lookarounds-assertion': 'problem',
+  'prefer-regexp-exec': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -258,7 +286,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-escape-backspace' ||
     ruleName === 'no-legacy-features' ||
     ruleName === 'no-non-standard-flag' ||
-    ruleName === 'no-invisible-character'
+    ruleName === 'no-invisible-character' ||
+    ruleName === 'no-empty-lookarounds-assertion'
   ) {
     return 'Possible Errors';
   }
@@ -274,7 +303,10 @@ function ruleCategory(ruleName) {
     ruleName === 'match-any' ||
     ruleName === 'prefer-d' ||
     ruleName === 'prefer-w' ||
-    ruleName === 'letter-case'
+    ruleName === 'letter-case' ||
+    ruleName === 'hexadecimal-escape' ||
+    ruleName === 'unicode-escape' ||
+    ruleName === 'no-useless-range'
   ) {
     return 'Stylistic Issues';
   }

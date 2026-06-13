@@ -28,6 +28,11 @@ describe('regexp native API', () => {
       'letter-case',
       'no-non-standard-flag',
       'no-invisible-character',
+      'hexadecimal-escape',
+      'unicode-escape',
+      'no-useless-range',
+      'no-empty-lookarounds-assertion',
+      'prefer-regexp-exec',
     ]);
   });
 
