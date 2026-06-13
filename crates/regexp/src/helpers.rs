@@ -933,6 +933,10 @@ pub(crate) fn first_useless_escape(pattern: &str) -> Option<u8> {
     None
 }
 
+// Note: `/` is intentionally absent. Escaping the forward slash in a regex
+// literal (`/\//`) is necessary — an unescaped `/` would terminate the literal
+// — so upstream `no-useless-escape` treats `\/` as a required, non-useless
+// escape.
 fn is_pointlessly_escaped(byte: u8) -> bool {
     matches!(
         byte,
@@ -950,7 +954,6 @@ fn is_pointlessly_escaped(byte: u8) -> bool {
             | b'~'
             | b'\''
             | b'"'
-            | b'/'
     )
 }
 
