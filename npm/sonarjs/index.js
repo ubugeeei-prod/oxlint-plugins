@@ -65,6 +65,10 @@ const messages = Object.freeze({
     noDeleteVar:
       "Do not use 'delete' on a variable; it has no effect. Use 'delete' only to remove object properties.",
   },
+  'constructor-for-side-effects': {
+    constructorForSideEffects:
+      'Either use this object, assign it to a variable, or move the side effects into a named function instead of a constructor.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -88,6 +92,8 @@ const ruleDescriptions = Object.freeze({
   'no-labels': 'Disallow labeled statements; use structured control flow instead',
   'no-delete-var':
     "Disallow 'delete' applied to a plain variable; use it only on object properties",
+  'constructor-for-side-effects':
+    'Disallow using new solely for side effects without capturing or using the constructed object',
 });
 
 const ruleTypes = Object.freeze({
@@ -105,6 +111,7 @@ const ruleTypes = Object.freeze({
   'arguments-usage': 'suggestion',
   'no-labels': 'suggestion',
   'no-delete-var': 'problem',
+  'constructor-for-side-effects': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -122,6 +129,7 @@ const recommendedRuleConfig = Object.freeze({
   'arguments-usage': 'error',
   'no-labels': 'error',
   'no-delete-var': 'error',
+  'constructor-for-side-effects': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

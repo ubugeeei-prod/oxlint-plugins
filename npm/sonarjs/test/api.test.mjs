@@ -17,6 +17,7 @@ const expectedRuleNames = [
   'arguments-usage',
   'no-labels',
   'no-delete-var',
+  'constructor-for-side-effects',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -510,6 +511,39 @@ describe('sonarjs native API', () => {
   it('does not report no-delete-var for a plain variable declaration', () => {
     const source = 'const z = 1;';
     const diagnostics = scan('no-delete-var', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports constructor-for-side-effects for new Foo() as a bare statement', () => {
+    const source = 'new Foo();';
+    const diagnostics = scan('constructor-for-side-effects', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('constructor-for-side-effects');
+    expect(diagnostics[0].messageId).toBe('constructorForSideEffects');
+  });
+
+  it('reports constructor-for-side-effects for new Foo (no parens) as a bare statement', () => {
+    const source = 'new Foo;';
+    const diagnostics = scan('constructor-for-side-effects', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('constructorForSideEffects');
+  });
+
+  it('does not report constructor-for-side-effects when result is assigned to a variable', () => {
+    const source = 'const x = new Foo();';
+    const diagnostics = scan('constructor-for-side-effects', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report constructor-for-side-effects when result is used as a call receiver', () => {
+    const source = 'new Foo().bar();';
+    const diagnostics = scan('constructor-for-side-effects', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report constructor-for-side-effects for a plain function call statement', () => {
+    const source = 'foo();';
+    const diagnostics = scan('constructor-for-side-effects', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

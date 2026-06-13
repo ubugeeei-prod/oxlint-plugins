@@ -3,9 +3,9 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, ConditionalExpression, IdentifierReference,
-    IfStatement, LabeledStatement, LogicalExpression, SwitchCase, SwitchStatement,
-    TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
+    AssignmentExpression, BinaryExpression, ConditionalExpression, ExpressionStatement,
+    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, SwitchCase,
+    SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -138,5 +138,10 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_labeled_statement(&mut self, it: &LabeledStatement<'a>) {
         self.check_no_labels(it);
         walk::walk_labeled_statement(self, it);
+    }
+
+    fn visit_expression_statement(&mut self, it: &ExpressionStatement<'a>) {
+        self.check_constructor_for_side_effects(it);
+        walk::walk_expression_statement(self, it);
     }
 }
