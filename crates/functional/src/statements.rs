@@ -150,7 +150,14 @@ impl<'a> Scanner<'a> {
                 }
             }
             Statement::ThrowStatement(statement) => {
-                if !(self.options.allow_throw_to_reject_promises && context.in_async_function) {
+                // allowToRejectPromises permits a throw that rejects the enclosing
+                // promise: one in a `.then`/`.catch` handler, or an async throw that
+                // escapes (not caught by a try/catch in the same function).
+                let rejects_via_handler = context.in_promise_handler;
+                let rejects_via_async = context.in_async_function && !context.in_try_with_catch;
+                let allowed_as_rejection = self.options.allow_throw_to_reject_promises
+                    && (rejects_via_handler || rejects_via_async);
+                if !allowed_as_rejection {
                     self.report(
                         "no-throw-statements",
                         "generic",

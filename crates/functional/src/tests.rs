@@ -469,3 +469,37 @@ fn no_mixed_types_reports_once_and_honors_options() {
         0
     );
 }
+
+#[test]
+fn no_throw_statements_honors_allow_to_reject_promises() {
+    let base = FunctionalOptions {
+        rule_names: ["no-throw-statements".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let allow = FunctionalOptions {
+        rule_names: ["no-throw-statements".into()].into_iter().collect(),
+        allow_throw_to_reject_promises: true,
+        ..FunctionalOptions::default()
+    };
+    let count =
+        |source: &str, opts: &FunctionalOptions| scan_functional(source, "fixture.ts", opts).len();
+
+    // Default: every throw is reported.
+    let basic = count("function f() { throw new Error(); }", &base);
+    assert_eq!(basic, 1);
+
+    // allowToRejectPromises: an async escape, a `.then` handler, and a
+    // try/finally (no catch) all reject the promise and are allowed.
+    let async_escape = count("async function f() { throw new Error(); }", &allow);
+    assert_eq!(async_escape, 0);
+    let handler = count("function f() { p.then(() => { throw new Error(); }); }", &allow);
+    assert_eq!(handler, 0);
+    let finally_throw = count("async function f() { try { throw e; } finally { g(); } }", &allow);
+    assert_eq!(finally_throw, 0);
+
+    // A caught throw and a nested non-async throw still report.
+    let caught = count("async function f() { try { throw e; } catch (x) { g(); } }", &allow);
+    assert_eq!(caught, 1);
+    let nested = count("async function f() { function g() { throw e; } }", &allow);
+    assert_eq!(nested, 1);
+}
