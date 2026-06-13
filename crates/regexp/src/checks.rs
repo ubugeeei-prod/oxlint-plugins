@@ -769,6 +769,9 @@ impl<'a> Scanner<'a> {
         if analysis.has_useless_backreference {
             self.report("no-useless-backreference", "unexpected", span);
         }
+        if analysis.has_negation_shorthand {
+            self.report("negation", "unexpected", span);
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);

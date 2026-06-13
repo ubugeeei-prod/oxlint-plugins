@@ -8683,19 +8683,19 @@
       },
       {
         "name": "negation",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule negation."
+        "notes": "Class-level scan via `class_negated_shorthand_letter` flags `[^\\X]` where the body is exactly one predefined character-class shorthand (d/D/s/S/w/W); each case has a single unambiguous shorthand replacement (`\\D`/`\\d`/`\\S`/`\\s`/`\\W`/`\\w`). Multi-element bodies, ranges, literal letters, and bodies needing v-mode set semantics are intentionally deferred."
       },
       {
         "name": "no-contradiction-with-assertion",

@@ -103,6 +103,7 @@ fn exposes_initial_regexp_rule_names() {
             "optimal-lookaround-quantifier",
             "no-dupe-disjunctions",
             "no-useless-backreference",
+            "negation",
         ]
     );
 }
@@ -2641,6 +2642,54 @@ mod prefer_named_backreference {
             )
             .is_empty()
         );
+    }
+}
+
+mod negation {
+    use super::*;
+
+    #[test]
+    fn reports_negated_shorthand_classes() {
+        // All six shorthand letters: one explicit assertion per case to keep
+        // the test loop free of `format!` (disallowed by the perf policy).
+        assert_eq!(
+            rule_ids_for("const a = /[^\\d]/u;", "negation").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[^\\D]/u;", "negation").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[^\\s]/u;", "negation").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[^\\S]/u;", "negation").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[^\\w]/u;", "negation").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[^\\W]/u;", "negation").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_unsupported_classes() {
+        // Non-negated shorthand stays silent (`[\\d]` is the useless-class case).
+        assert!(rule_ids_for("const a = /[\\d]/u;", "negation").is_empty());
+        // Negated body is a literal, not a shorthand.
+        assert!(rule_ids_for("const a = /[^a]/u;", "negation").is_empty());
+        // Multi-element body — not a clean single replacement.
+        assert!(rule_ids_for("const a = /[^\\d\\s]/u;", "negation").is_empty());
+        // Unrelated escape letter inside negated class.
+        assert!(rule_ids_for("const a = /[^\\b]/u;", "negation").is_empty());
+        // No character class at all.
+        assert!(rule_ids_for("const a = /abc/u;", "negation").is_empty());
     }
 }
 

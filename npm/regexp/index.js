@@ -236,6 +236,10 @@ const messages = Object.freeze({
     unexpected:
       'Backreference to a capturing group that was not yet defined when the reference appears.',
   },
+  negation: {
+    unexpected:
+      'Negated character class containing a single predefined shorthand can be replaced by the corresponding negated shorthand.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -331,6 +335,8 @@ const ruleDescriptions = Object.freeze({
     'disallow duplicate single-literal alternatives within a non-capturing group',
   'no-useless-backreference':
     'disallow numbered backreferences that point to a not-yet-defined capture',
+  negation:
+    'enforce use of equivalent shorthand for negated character classes containing a single predefined shorthand',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -395,6 +401,7 @@ const ruleTypes = Object.freeze({
   'optimal-lookaround-quantifier': 'problem',
   'no-dupe-disjunctions': 'problem',
   'no-useless-backreference': 'problem',
+  negation: 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -557,7 +564,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-trivially-nested-quantifier' ||
     ruleName === 'prefer-character-class' ||
     ruleName === 'sort-alternatives' ||
-    ruleName === 'prefer-predefined-assertion'
+    ruleName === 'prefer-predefined-assertion' ||
+    ruleName === 'negation'
   ) {
     return 'Stylistic Issues';
   }

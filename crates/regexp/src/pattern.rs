@@ -7,8 +7,8 @@ use crate::helpers::{
     class_first_collapsible_run, class_first_duplicate_literal, class_first_obscure_range,
     class_has_case_pair, class_has_unsorted_literal_elements, class_has_useless_range,
     class_has_useless_string_literal, class_is_digit_range, class_is_useless_single_literal,
-    class_is_word_char_set, class_matches_anything, find_class_end, group_prefix,
-    is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    class_is_word_char_set, class_matches_anything, class_negated_shorthand_letter, find_class_end,
+    group_prefix, is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -218,6 +218,10 @@ pub(crate) struct PatternAnalysis {
     /// observation, so the back-reference can never match a real capture.
     /// `no-useless-backreference`.
     pub(crate) has_useless_backreference: bool,
+    /// `[^\\d]` (or `\\D`/`\\s`/`\\S`/`\\w`/`\\W`) — a negated character
+    /// class whose body is exactly one predefined shorthand and can be
+    /// replaced by the negated shorthand. `negation`.
+    pub(crate) has_negation_shorthand: bool,
 }
 
 impl PatternAnalysis {
@@ -307,6 +311,11 @@ impl PatternAnalysis {
                             && let Some(run) = class_first_collapsible_run(bytes, index)
                         {
                             self.first_collapsible_run = Some(run);
+                        }
+                        if !self.has_negation_shorthand
+                            && class_negated_shorthand_letter(bytes, index).is_some()
+                        {
+                            self.has_negation_shorthand = true;
                         }
                         self.mark_content(&mut groups);
                         index = close + 1;
