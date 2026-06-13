@@ -119,6 +119,7 @@ describe('sonarjs plugin shape', () => {
       'elseif-without-else',
       'no-case-label-in-switch',
       'for-in',
+      'prefer-while',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -145,6 +146,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['elseif-without-else']).toBe('object');
     expect(typeof plugin.rules['no-case-label-in-switch']).toBe('object');
     expect(typeof plugin.rules['for-in']).toBe('object');
+    expect(typeof plugin.rules['prefer-while']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -171,6 +173,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/elseif-without-else']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-case-label-in-switch']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/for-in']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/prefer-while']).toBe('error');
   });
 });
 
@@ -601,5 +604,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(for-in)');
+  });
+
+  it('reports prefer-while through the adapter', () => {
+    const source = 'for (; i < 10;) { i++; }';
+    const reports = runRule('prefer-while', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('preferWhile');
+  });
+
+  it('reports prefer-while through the CLI', () => {
+    const source = 'for (;;) {}';
+    const result = runOxlint('prefer-while', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(prefer-while)');
   });
 });

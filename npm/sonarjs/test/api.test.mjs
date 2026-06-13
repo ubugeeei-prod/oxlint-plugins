@@ -28,6 +28,7 @@ const expectedRuleNames = [
   'elseif-without-else',
   'no-case-label-in-switch',
   'for-in',
+  'prefer-while',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -907,6 +908,40 @@ describe('sonarjs native API', () => {
   it('does not report for-in when body is directly an if statement (no block)', () => {
     const source = 'for (const k in o) if (cond) doStuff();';
     const diagnostics = scan('for-in', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports prefer-while when for loop has no init and no update', () => {
+    const source = 'for (; i < 10;) { i++; }';
+    const diagnostics = scan('prefer-while', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('prefer-while');
+    expect(diagnostics[0].messageId).toBe('preferWhile');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+  });
+
+  it('reports prefer-while when for loop has no init, no test, and no update', () => {
+    const source = 'for (;;) {}';
+    const diagnostics = scan('prefer-while', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('preferWhile');
+  });
+
+  it('does not report prefer-while when for loop has an init clause', () => {
+    const source = 'for (let i = 0; i < 10;) {}';
+    const diagnostics = scan('prefer-while', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-while when for loop has an update clause', () => {
+    const source = 'for (; i < 10; i++) {}';
+    const diagnostics = scan('prefer-while', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-while when for loop has both init and update', () => {
+    const source = 'for (let i = 0; i < 10; i++) {}';
+    const diagnostics = scan('prefer-while', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

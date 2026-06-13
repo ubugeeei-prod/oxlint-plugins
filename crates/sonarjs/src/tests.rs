@@ -1123,3 +1123,42 @@ fn does_not_report_for_in_when_body_is_directly_an_if_statement() {
     let diagnostics = scan("for-in", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_prefer_while_when_for_has_no_init_and_no_update() {
+    let source = "for (; i < 10;) { i++; }";
+    let diagnostics = scan("prefer-while", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "prefer-while");
+    assert_eq!(diagnostics[0].message_id, "preferWhile");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_prefer_while_when_for_has_no_init_no_test_no_update() {
+    let source = "for (;;) {}";
+    let diagnostics = scan("prefer-while", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferWhile");
+}
+
+#[test]
+fn does_not_report_prefer_while_when_for_has_init() {
+    let source = "for (let i = 0; i < 10;) {}";
+    let diagnostics = scan("prefer-while", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_while_when_for_has_update() {
+    let source = "for (; i < 10; i++) {}";
+    let diagnostics = scan("prefer-while", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_while_when_for_has_init_and_update() {
+    let source = "for (let i = 0; i < 10; i++) {}";
+    let diagnostics = scan("prefer-while", source);
+    assert!(diagnostics.is_empty());
+}
