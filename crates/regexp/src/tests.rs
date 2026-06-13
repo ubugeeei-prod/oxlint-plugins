@@ -1953,6 +1953,32 @@ mod prefer_unicode_codepoint_escapes {
             .is_empty()
         );
     }
+
+    #[test]
+    fn ignores_surrogate_pair_without_unicode_flag() {
+        // Without u/v flag, \uHHHH pairs are two separate code units, not a
+        // surrogate pair — upstream does not flag them.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\uD83D\\\\uDE00');",
+                "prefer-unicode-codepoint-escapes"
+            )
+            .is_empty()
+        );
+    }
+
+    #[test]
+    fn still_reports_with_u_flag() {
+        // With the u flag the pair IS a surrogate pair and must be flagged.
+        assert_eq!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\uD83D\\\\uDE00', 'u');",
+                "prefer-unicode-codepoint-escapes"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+    }
 }
 
 mod no_dupe_characters_character_class {
