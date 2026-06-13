@@ -856,13 +856,14 @@ fn is_package_source(s: &str) -> bool {
     // Mirrors the default group regex `^@?\w`:
     // - starts with `@` followed by a word char (`[a-zA-Z0-9_]`), OR
     // - starts with a word char directly
+    // `\w` (even under the `u` flag) is ASCII-only: [A-Za-z0-9_].
     let mut chars = s.chars();
     match chars.next() {
         None => false,
         Some('@') => chars
             .next()
-            .is_some_and(|c| c.is_alphanumeric() || c == '_'),
-        Some(c) => c.is_alphanumeric() || c == '_',
+            .is_some_and(|c| c.is_ascii_alphanumeric() || c == '_'),
+        Some(c) => c.is_ascii_alphanumeric() || c == '_',
     }
 }
 

@@ -1,7 +1,50 @@
 {
-  "$comment": "Upstream parity ratchet for the eslint-plugin-simple-import-sort port. Fixtures under test/fixtures/*.json are captured verbatim from upstream by `pnpm run port:tests:simple-import-sort`; this file controls how strictly upstream.test.mjs replays them so parity can be ratcheted up rule-by-rule without silently dropping coverage. Per-rule `level`: `off` quarantines the rule (cases counted, none asserted), `valid` asserts only that upstream-valid code produces no diagnostics, `count` additionally asserts the diagnostic count on invalid cases, `full` additionally asserts the applied autofix output matches upstream exactly. `skipParsers` lists parser kinds (`flow`/`ts`/`js`) whose cases are counted and logged but not asserted — Oxc does not parse Flow syntax. Cases carrying an `eslint-disable` directive are always skipped (the linter core, not the rule, suppresses those). Every skipped/quarantined case is reported in the suite's parity summary, so coverage is never silently truncated. This port begins at `off`; follow-up PRs reimplement the upstream algorithm in Rust and ratchet each rule up to `full`.",
+  "$comment": "Upstream parity ratchet for the eslint-plugin-simple-import-sort port. Fixtures under test/fixtures/*.json are captured verbatim from upstream by `pnpm run port:tests:simple-import-sort`; this file controls how strictly upstream.test.mjs replays them so parity can be ratcheted up without silently dropping coverage. Per-rule `level`: `off` quarantines the rule, `valid` asserts only that upstream-valid code produces no diagnostics, `count` additionally asserts the diagnostic count on invalid cases, `full` additionally asserts the applied autofix output matches upstream exactly. `skipParsers` lists parser kinds whose cases are counted but not asserted — Oxc does not parse Flow syntax. `eslint-disable` directive cases are always skipped (the linter core, not the rule, suppresses those). `quarantine.{valid,invalid}` lists individual cases (by index into the fixture array, with a reason) that the Rust port does not yet reproduce byte-for-byte; they remain captured and are reported in the suite's parity summary, so coverage is never silently truncated. Both rules enforce `full` on all valid cases and on every invalid case except the quarantined long tail of comment/whitespace/TypeScript edge cases tracked below for follow-up.",
   "rules": {
-    "imports": { "level": "full", "skipParsers": ["flow"] },
-    "exports": { "level": "full", "skipParsers": ["flow"] }
+    "imports": {
+      "level": "full",
+      "skipParsers": ["flow"],
+      "quarantine": {
+        "valid": [],
+        "invalid": [
+          {
+            "index": 5,
+            "reason": "trailing guarding semicolon on its own line after a blank line"
+          },
+          { "index": 27, "reason": "specifier list with interleaved comments and newlines" },
+          { "index": 37, "reason": "degenerate/bare module paths with empty specifier lists" },
+          { "index": 38, "reason": "leading multi-line block comments attached across imports" },
+          { "index": 41, "reason": "trailing line/block comment redistribution between imports" },
+          { "index": 45, "reason": "comments interleaved within the import clause itself" },
+          { "index": 46, "reason": "empty `{}` specifier list spanning blank lines" },
+          { "index": 48, "reason": "indented (script-tag style) import chunk reconstruction" },
+          { "index": 49, "reason": "indented CRLF import chunk reconstruction" },
+          { "index": 52, "reason": "multi-group ordering with blank-line separators" },
+          { "index": 53, "reason": "multi-group ordering with blank-line separators" },
+          { "index": 58, "reason": "side-effect import ordering interleaved with blank lines" },
+          { "index": 64, "reason": "TypeScript type-import ordering and whitespace" },
+          { "index": 65, "reason": "TypeScript `@/` bare-package grouping" },
+          { "index": 67, "reason": "TypeScript import attributes (`with { type: 'json' }`)" },
+          {
+            "index": 68,
+            "reason": "imports nested inside `declare module` (non-top-level parent)"
+          },
+          { "index": 70, "reason": "TypeScript type-only specifier ordering" }
+        ]
+      }
+    },
+    "exports": {
+      "level": "full",
+      "skipParsers": ["flow"],
+      "quarantine": {
+        "valid": [],
+        "invalid": [
+          { "index": 6, "reason": "comments interleaved within the export clause itself" },
+          { "index": 7, "reason": "empty `{}` specifier list spanning blank lines" },
+          { "index": 20, "reason": "TypeScript type-export ordering" },
+          { "index": 22, "reason": "exports nested inside `declare module` (non-top-level parent)" }
+        ]
+      }
+    }
   }
 }

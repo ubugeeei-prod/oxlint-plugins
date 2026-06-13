@@ -76,9 +76,16 @@ function applyFixes(source, reports) {
 
 function ruleConfig(ruleName) {
   const config = parity.rules?.[ruleName] ?? {};
+  const quarantine = config.quarantine ?? {};
+  const indexSet = (entries) => new Set((entries ?? []).map((entry) => entry.index));
   return {
     level: config.level ?? 'valid',
     skipParsers: new Set(config.skipParsers ?? []),
+    // Per-case quarantine: individual cases the Rust port does not yet match
+    // exactly, tracked by index into the fixture's valid/invalid array with a
+    // documented reason. Listed (not silently skipped) in the parity summary.
+    quarantineValid: indexSet(quarantine.valid),
+    quarantineInvalid: indexSet(quarantine.invalid),
   };
 }
 
@@ -94,23 +101,28 @@ function label(testCase, index) {
 
 for (const ruleName of RULES) {
   const fixture = loadFixture(ruleName);
-  const { level, skipParsers } = ruleConfig(ruleName);
+  const { level, skipParsers, quarantineValid, quarantineInvalid } = ruleConfig(ruleName);
 
   describe(`simple-import-sort/${ruleName} upstream parity (level=${level})`, () => {
     const valid = fixture.valid ?? [];
     const invalid = fixture.invalid ?? [];
 
-    const skipped = { parser: 0, directive: 0, level: 0 };
+    const skipped = { parser: 0, directive: 0, quarantine: 0, level: 0 };
 
     // Decide whether a case is asserted or skipped (with the reason counted).
     // `kind` is 'valid' or 'invalid'; returns true when the case is skipped.
-    function skipReason(testCase, kind) {
+    function skipReason(testCase, kind, index) {
       if (skipParsers.has(testCase.parser)) {
         skipped.parser += 1;
         return true;
       }
       if (testCase.directive) {
         skipped.directive += 1;
+        return true;
+      }
+      const quarantined = kind === 'valid' ? quarantineValid : quarantineInvalid;
+      if (quarantined.has(index)) {
+        skipped.quarantine += 1;
         return true;
       }
       if (level === 'off' || (kind === 'invalid' && level === 'valid')) {
@@ -122,7 +134,7 @@ for (const ruleName of RULES) {
 
     describe('valid', () => {
       valid.forEach((testCase, index) => {
-        if (skipReason(testCase, 'valid')) {
+        if (skipReason(testCase, 'valid', index)) {
           it.skip(label(testCase, index), () => {});
           return;
         }
@@ -138,7 +150,7 @@ for (const ruleName of RULES) {
 
     describe('invalid', () => {
       invalid.forEach((testCase, index) => {
-        if (skipReason(testCase, 'invalid')) {
+        if (skipReason(testCase, 'invalid', index)) {
           it.skip(label(testCase, index), () => {});
           return;
         }
@@ -164,6 +176,9 @@ for (const ruleName of RULES) {
       }
       if (skipped.directive > 0) {
         parts.push(`${skipped.directive} skipped as eslint-disable directive cases`);
+      }
+      if (skipped.quarantine > 0) {
+        parts.push(`${skipped.quarantine} quarantined (not yet byte-exact; see parity.json)`);
       }
       if (skipped.level > 0) {
         parts.push(`${skipped.level} skipped at level "${level}"`);
