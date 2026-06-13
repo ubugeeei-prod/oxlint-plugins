@@ -1075,3 +1075,51 @@ fn does_not_report_no_case_label_in_switch_for_label_outside_switch() {
     let diagnostics = scan("no-case-label-in-switch", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_for_in_when_body_is_block_with_non_if_statement() {
+    let source = "for (const k in o) { doStuff(k); }";
+    let diagnostics = scan("for-in", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "for-in");
+    assert_eq!(diagnostics[0].message_id, "forIn");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_for_in_when_body_is_single_non_if_statement_no_block() {
+    let source = "for (const k in o) doStuff(k);";
+    let diagnostics = scan("for-in", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "forIn");
+}
+
+#[test]
+fn reports_for_in_when_body_is_empty_block() {
+    let source = "for (const k in o) {}";
+    let diagnostics = scan("for-in", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "forIn");
+}
+
+#[test]
+fn reports_for_in_when_block_has_two_statements() {
+    let source = "for (const k in o) { if (a) {} doStuff(); }";
+    let diagnostics = scan("for-in", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "forIn");
+}
+
+#[test]
+fn does_not_report_for_in_when_body_block_contains_single_if() {
+    let source = "for (const k in o) { if (o.hasOwnProperty(k)) { doStuff(k); } }";
+    let diagnostics = scan("for-in", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_for_in_when_body_is_directly_an_if_statement() {
+    let source = "for (const k in o) if (cond) doStuff();";
+    let diagnostics = scan("for-in", source);
+    assert!(diagnostics.is_empty());
+}

@@ -118,6 +118,7 @@ describe('sonarjs plugin shape', () => {
       'max-union-size',
       'elseif-without-else',
       'no-case-label-in-switch',
+      'for-in',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -143,6 +144,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['max-union-size']).toBe('object');
     expect(typeof plugin.rules['elseif-without-else']).toBe('object');
     expect(typeof plugin.rules['no-case-label-in-switch']).toBe('object');
+    expect(typeof plugin.rules['for-in']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -168,6 +170,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/max-union-size']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/elseif-without-else']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-case-label-in-switch']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/for-in']).toBe('error');
   });
 });
 
@@ -328,6 +331,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('max-union-size', source, { filename: 'sample.ts' });
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('maxUnionSize');
+  });
+
+  it('reports for-in when body is a block with no if statement through the adapter', () => {
+    const source = 'for (const k in o) { doStuff(k); }';
+    const reports = runRule('for-in', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('forIn');
   });
 });
 
@@ -581,5 +591,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-case-label-in-switch)');
+  });
+
+  it('reports for-in through the CLI', () => {
+    const source = 'for (const k in o) { doStuff(k); }';
+    const result = runOxlint('for-in', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(for-in)');
   });
 });

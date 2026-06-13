@@ -102,6 +102,10 @@ const messages = Object.freeze({
     caseLabelInSwitch:
       "Remove this misleading label; it looks like a 'case' clause but is a labeled statement.",
   },
+  'for-in': {
+    forIn:
+      "Wrap this 'for...in' loop body in an 'if' statement to filter out inherited properties.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -145,6 +149,8 @@ const ruleDescriptions = Object.freeze({
     "Require a final 'else' clause when an 'if … else if' chain is present, to explicitly handle the remaining case",
   'no-case-label-in-switch':
     "Disallow labeled statements appearing directly in a switch case's consequent list, where they are likely mistaken 'case' clauses",
+  'for-in':
+    "Require a 'for...in' loop body to be a single 'if' statement that filters inherited properties (structural check only — the 'if' condition is not inspected)",
 });
 
 const ruleTypes = Object.freeze({
@@ -172,6 +178,7 @@ const ruleTypes = Object.freeze({
   'max-union-size': 'suggestion',
   'elseif-without-else': 'suggestion',
   'no-case-label-in-switch': 'problem',
+  'for-in': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -199,6 +206,7 @@ const recommendedRuleConfig = Object.freeze({
   'max-union-size': 'error',
   'elseif-without-else': 'error',
   'no-case-label-in-switch': 'error',
+  'for-in': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
