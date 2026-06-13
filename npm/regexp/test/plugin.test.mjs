@@ -150,6 +150,9 @@ const validCases = [
   ['no-dupe-disjunctions', 'distinct alts', 'const re = /(?:a|b)/u;\n'],
   ['no-dupe-disjunctions', 'multi-byte alt', 'const re = /(?:abc|abc)/u;\n'],
   ['no-dupe-disjunctions', 'no alternation', 'const re = /(?:a)/u;\n'],
+  // no-useless-backreference
+  ['no-useless-backreference', 'valid backreference', 'const re = /(a)\\1/u;\n'],
+  ['no-useless-backreference', 'no backref', 'const re = /abc/u;\n'],
   // prefer-unicode-codepoint-escapes
   [
     'prefer-unicode-codepoint-escapes',
@@ -438,6 +441,9 @@ const invalidCases = [
     'const re = /(?:a|b|b)/u;\n',
     ['unexpected'],
   ],
+  // no-useless-backreference
+  ['no-useless-backreference', 'forward reference', 'const re = /\\1(a)/u;\n', ['unexpected']],
+  ['no-useless-backreference', 'undefined group number', 'const re = /(a)\\2/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

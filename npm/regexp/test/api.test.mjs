@@ -66,6 +66,7 @@ describe('regexp native API', () => {
       'prefer-predefined-assertion',
       'optimal-lookaround-quantifier',
       'no-dupe-disjunctions',
+      'no-useless-backreference',
     ]);
   });
 

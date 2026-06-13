@@ -102,8 +102,37 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-predefined-assertion",
             "optimal-lookaround-quantifier",
             "no-dupe-disjunctions",
+            "no-useless-backreference",
         ]
     );
+}
+
+mod no_useless_backreference {
+    use super::*;
+
+    #[test]
+    fn reports_forward_only_backreferences() {
+        // \1 appears BEFORE the capture group it references.
+        assert_eq!(
+            rule_ids_for("const a = /\\1(a)/u;", "no-useless-backreference").as_slice(),
+            &["unexpected"]
+        );
+        // \2 references a non-existent second capture.
+        assert_eq!(
+            rule_ids_for("const a = /(a)\\2/u;", "no-useless-backreference").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_valid_backreferences_and_non_digit_escapes() {
+        // Normal backref after group definition.
+        assert!(rule_ids_for("const a = /(a)\\1/u;", "no-useless-backreference").is_empty());
+        // \d is a class shorthand, not a backref.
+        assert!(rule_ids_for("const a = /\\d/u;", "no-useless-backreference").is_empty());
+        // No backrefs at all.
+        assert!(rule_ids_for("const a = /abc/u;", "no-useless-backreference").is_empty());
+    }
 }
 
 mod no_dupe_disjunctions {

@@ -702,6 +702,9 @@ impl<'a> Scanner<'a> {
         if analysis.has_dupe_disjunctions {
             self.report("no-dupe-disjunctions", "unexpected", span);
         }
+        if analysis.has_useless_backreference {
+            self.report("no-useless-backreference", "unexpected", span);
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);
