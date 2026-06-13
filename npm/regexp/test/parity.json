@@ -25,10 +25,6 @@
       "level": "off",
       "reason": "Flags replaceAll on an unknown receiver where upstream only reports a known string receiver."
     },
-    "no-useless-dollar-replacements": {
-      "level": "off",
-      "reason": "Flags $0 in String#replaceAll where it is a literal substitution, not a useless backreference."
-    },
     "prefer-character-class": {
       "level": "off",
       "reason": "Flags single-character alternations like /(?:a|b)/ that upstream allows by default."
