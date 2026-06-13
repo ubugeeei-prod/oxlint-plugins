@@ -2031,12 +2031,12 @@ mod prefer_range {
     use super::*;
 
     #[test]
-    fn reports_three_or_more_consecutive_literals() {
-        let data = first_data("const a = /[abc]/u;", "prefer-range");
-        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("abc"));
+    fn reports_four_or_more_consecutive_literals() {
+        let data = first_data("const a = /[abcd]/u;", "prefer-range");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("abcd"));
         assert_eq!(
             data.replacement.as_ref().map(CompactString::as_str),
-            Some("a-c")
+            Some("a-d")
         );
         // Digits collapse just like letters.
         assert_eq!(
@@ -2048,6 +2048,9 @@ mod prefer_range {
     #[test]
     fn ignores_short_runs_and_existing_ranges() {
         assert!(rule_ids_for("const a = /[ab]/u;", "prefer-range").is_empty());
+        // A run of three is left alone — upstream only collapses runs of four
+        // or more (`[abc]` is valid, `[abcd]` is not).
+        assert!(rule_ids_for("const a = /[abc]/u;", "prefer-range").is_empty());
         // A range already covers the chars; no further reduction needed.
         assert!(rule_ids_for("const a = /[a-c]/u;", "prefer-range").is_empty());
         // Non-consecutive bytes break the run.

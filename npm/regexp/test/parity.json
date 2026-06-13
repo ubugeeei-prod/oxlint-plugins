@@ -53,10 +53,6 @@
       "level": "off",
       "reason": "Flags $1 referring to an unnamed group, which has no named-replacement alternative."
     },
-    "prefer-range": {
-      "level": "off",
-      "reason": "Flags short runs like /[abc]/ that are valid under the default option."
-    },
     "require-unicode-regexp": {
       "level": "off",
       "reason": "Flags constructors whose flags are an unknown variable (e.g. new RegExp('', flags))."

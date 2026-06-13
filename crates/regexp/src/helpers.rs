@@ -1126,10 +1126,12 @@ pub(crate) fn class_first_duplicate_literal(bytes: &[u8], open: usize) -> Option
 }
 
 /// Returns `Some((start, end))` when the `[...]` class at `open` contains
-/// three or more consecutive ASCII characters (digits, lower-case, or
+/// four or more consecutive ASCII characters (digits, lower-case, or
 /// upper-case letters) at the top level — these collapse into the equivalent
-/// range `start-end`. Used by `prefer-range`. Escapes and existing ranges
-/// are intentionally skipped to keep the check conservative.
+/// range `start-end`. Used by `prefer-range`. A run of three (e.g. `[abc]`)
+/// is left alone to match upstream, which only collapses runs of four or
+/// more. Escapes and existing ranges are intentionally skipped to keep the
+/// check conservative.
 pub(crate) fn class_first_collapsible_run(bytes: &[u8], open: usize) -> Option<(char, char)> {
     debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
     let end = find_class_end(bytes, open)?;
@@ -1157,7 +1159,7 @@ pub(crate) fn class_first_collapsible_run(bytes: &[u8], open: usize) -> Option<(
                 run_end = bytes[cursor];
                 cursor += 1;
             }
-            if run_end >= start + 2 {
+            if run_end >= start + 3 {
                 return Some((start as char, run_end as char));
             }
             index = cursor.max(index + 1);
