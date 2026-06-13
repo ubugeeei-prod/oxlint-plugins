@@ -883,19 +883,22 @@ impl<'a> Scanner<'a> {
                 span,
             );
         }
-        if flags.contains('u') || flags.contains('v') {
-            if let Some((escape, replacement)) = first_surrogate_pair_escape(pattern) {
-                self.report_with_data(
-                    "prefer-unicode-codepoint-escapes",
-                    "unexpected",
-                    DiagnosticData {
-                        expr: Some(CompactString::from(escape)),
-                        replacement: Some(replacement),
-                        ..DiagnosticData::default()
-                    },
-                    span,
-                );
-            }
+        // Surrogate-pair escapes are only meaningful with the `u`/`v` flag;
+        // without it `\uHHHH\uHHHH` is two independent code units, so upstream
+        // leaves them alone.
+        if (flags.contains('u') || flags.contains('v'))
+            && let Some((escape, replacement)) = first_surrogate_pair_escape(pattern)
+        {
+            self.report_with_data(
+                "prefer-unicode-codepoint-escapes",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(escape)),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
         }
     }
 }
