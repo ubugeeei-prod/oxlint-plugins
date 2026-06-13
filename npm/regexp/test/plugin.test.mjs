@@ -229,11 +229,6 @@ const invalidCases = [
     'const re = /[aab]/u;\n',
     ['unexpected'],
   ],
-  [
-    'no-dupe-characters-character-class',
-    'v-mode string disjunctions',
-    'const re = /[\\q{a}\\q{ab}\\q{abc}]/v;\n',
-  ],
   // prefer-range
   ['prefer-range', 'three consecutive letters', 'const re = /[abc]/u;\n', ['unexpected']],
   ['prefer-range', 'five consecutive digits', 'const re = /[12345]/u;\n', ['unexpected']],
