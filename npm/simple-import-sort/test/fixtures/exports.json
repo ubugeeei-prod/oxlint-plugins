@@ -232,7 +232,7 @@
     },
     {
       "code": "export type {X} from \"X\";\nexport type {B} from \"./B\";\n\ndeclare module 'my-module' {\n  export type { PlatformPath, ParsedPath } from 'path';\n  export { type CopyOptions } from 'fs'; interface Something {}\n  export {a, type type as type, z} from \"../type\";\n  // comment\n    export * as d from \"d\"\nexport {c} from \"c\"; /*\n  */\texport {} from \"b\"; // b\n}",
-      "output": "export type {B} from \"./B\";\nexport type {X} from \"X\";\n\ndeclare module 'my-module' {\n  export { type CopyOptions } from 'fs'; \n  export type { ParsedPath,PlatformPath } from 'path';interface Something {}\n  export {a, type type as type, z} from \"../type\";\n  // comment\n/*\n  */→export {} from \"b\"; // b\nexport {c} from \"c\"; \n    export * as d from \"d\"\n}",
+      "output": "export type {B} from \"./B\";\nexport type {X} from \"X\";\n\ndeclare module 'my-module' {\n  export { type CopyOptions } from 'fs'; \n  export type { ParsedPath,PlatformPath } from 'path';interface Something {}\n  export {a, type type as type, z} from \"../type\";\n  // comment\n/*\n  */\texport {} from \"b\"; // b\nexport {c} from \"c\"; \n    export * as d from \"d\"\n}",
       "errors": 3,
       "parser": "ts"
     }

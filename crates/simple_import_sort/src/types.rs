@@ -1,10 +1,7 @@
-//! Diagnostic types, options, and chunk metadata for simple-import-sort.
+//! Public types and internal helpers for simple-import-sort.
 
 use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
-
-pub(crate) const SIDE_EFFECT_STYLE: u8 = 0;
-pub(crate) const EXPORT_STYLE: u8 = 1;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct DiagnosticLoc {
@@ -40,19 +37,6 @@ pub(crate) enum RuleKind {
     Exports,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) struct Item {
-    pub(crate) span: Span,
-    pub(crate) code: CompactString,
-    pub(crate) source_original: CompactString,
-    pub(crate) source_key: CompactString,
-    pub(crate) kind_rank: u8,
-    pub(crate) style: u8,
-    pub(crate) index: usize,
-    pub(crate) outer_group: usize,
-    pub(crate) inner_group: usize,
-}
-
 pub(crate) struct LineIndex {
     line_starts: SmallVec<[usize; 64]>,
 }
@@ -72,12 +56,7 @@ impl LineIndex {
     pub(crate) fn loc_for_span(&self, source_text: &str, span: Span) -> DiagnosticLoc {
         let (start_line, start_column) = self.position_for_offset(source_text, span.start);
         let (end_line, end_column) = self.position_for_offset(source_text, span.end);
-        DiagnosticLoc {
-            start_line,
-            start_column,
-            end_line,
-            end_column,
-        }
+        DiagnosticLoc { start_line, start_column, end_line, end_column }
     }
 
     fn position_for_offset(&self, source_text: &str, offset: u32) -> (u32, u32) {

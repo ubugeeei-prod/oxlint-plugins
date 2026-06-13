@@ -1,19 +1,18 @@
 #![doc = "Rust implementation of eslint-plugin-simple-import-sort rule logic."]
 
-mod items;
+mod shared;
 mod scanner;
-mod specifiers;
 mod types;
 
 #[cfg(test)]
 mod tests;
 
 use oxc_allocator::Allocator;
+use oxc_ast::ast::Comment;
 use oxc_parser::Parser;
 use oxc_span::SourceType;
 use oxlint_plugins_carton::SmallVec;
 
-use crate::scanner::{scan_export_chunks, scan_import_chunks};
 use crate::types::LineIndex;
 
 pub use crate::types::{Diagnostic, DiagnosticFix, DiagnosticLoc, SimpleImportSortOptions};
@@ -38,19 +37,30 @@ pub fn scan_simple_import_sort(
         return SmallVec::new();
     }
 
+    // Collect all comments in source order (OXC guarantees sorted order)
+    let all_comments: SmallVec<[Comment; 32]> = parser_return
+        .program
+        .comments
+        .iter()
+        .copied()
+        .collect();
+
     let line_index = LineIndex::new(source_text);
     let mut diagnostics = SmallVec::new();
-    scan_import_chunks(
+
+    scanner::scan_import_chunks(
         source_text,
         &line_index,
         &parser_return.program.body,
+        &all_comments,
         options,
         &mut diagnostics,
     );
-    scan_export_chunks(
+    scanner::scan_export_chunks(
         source_text,
         &line_index,
         &parser_return.program.body,
+        &all_comments,
         &mut diagnostics,
     );
     diagnostics

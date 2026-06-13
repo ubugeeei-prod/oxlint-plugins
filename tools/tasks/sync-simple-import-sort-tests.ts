@@ -450,15 +450,19 @@ function resolveOutput(output: unknown, code: string): string | null {
 
 // The upstream helpers indent inline snapshots and prefix every line with `|`.
 // `toMatchInlineSnapshot` receives the raw indented template; `toBe` (via the
-// `expect2` wrapper) receives the already pipe-stripped form. Normalize both to
-// the real expected source.
+// `expect2` wrapper) receives the already pipe-stripped form. The helpers also
+// make whitespace visible in the *output* snapshots by replacing tabs with `→`
+// and carriage returns with `<CR>` (see helpers.js `assert.strictEqual` hack),
+// so we reverse that to recover the real expected source.
 function cleanSnapshot(method: string, value: string): string {
-  if (method === 'toMatchInlineSnapshot') {
-    return value.replace(/\n *\|/g, '\n').replace(/^\n|\n[^\S\n]*$/g, '');
-  }
-  // `toBe`: value is `strip(snapshot, { keepPipes: true })` — every line begins
-  // with a `|` marker (edges already trimmed). Drop the markers.
-  return value.replace(/^\|/, '').replace(/\n\|/g, '\n');
+  const unpiped =
+    method === 'toMatchInlineSnapshot'
+      ? // raw indented template
+        value.replace(/\n *\|/g, '\n').replace(/^\n|\n[^\S\n]*$/g, '')
+      : // `toBe`: `strip(snapshot, { keepPipes: true })` — every line begins
+        // with a `|` marker (edges already trimmed). Drop the markers.
+        value.replace(/^\|/, '').replace(/\n\|/g, '\n');
+  return unpiped.replaceAll('→', '\t').replaceAll('<CR>', '\r');
 }
 
 function resolveErrorCount(errors: unknown): number | null {
