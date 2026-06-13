@@ -1,0 +1,24 @@
+[package]
+name = "oxlint-plugin-angular-eslint"
+description = "Rust-backed oxlint plugin port of @angular-eslint/eslint-plugin."
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "oxlint_plugin_angular_eslint"
+
+[dependencies]
+napi.workspace = true
+napi-derive.workspace = true
+oxlint-plugins-angular-eslint.workspace = true
+
+[build-dependencies]
+napi-build.workspace = true
+
+[lints]
+workspace = true

@@ -76,6 +76,12 @@ importers:
         specifier: 'catalog:'
         version: 8.0.16(@types/node@24.13.1)(esbuild@0.28.0)(tsx@4.22.4)
 
+  npm/angular-eslint:
+    dependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
   npm/cypress:
     dependencies:
       '@oxlint/plugins':
@@ -98,6 +104,12 @@ importers:
         specifier: ^10.4.0
         version: 10.4.0
 
+  npm/eslint-markdown:
+    dependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
   npm/mocha:
     dependencies:
       '@oxlint/plugins':
@@ -105,6 +117,12 @@ importers:
         version: 1.68.0
 
   npm/no-forbidden-identifiers:
+    dependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
+  npm/playwright:
     dependencies:
       '@oxlint/plugins':
         specifier: 'catalog:'
@@ -141,6 +159,12 @@ importers:
         version: 1.68.0
 
   npm/stylistic:
+    dependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
+  npm/testing-library:
     dependencies:
       '@oxlint/plugins':
         specifier: 'catalog:'

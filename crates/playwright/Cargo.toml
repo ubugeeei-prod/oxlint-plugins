@@ -1,0 +1,19 @@
+[package]
+name = "oxlint-plugins-playwright"
+description = "Rust core for the playwright oxlint JavaScript plugin."
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+oxc_allocator.workspace = true
+oxc_parser.workspace = true
+oxc_span.workspace = true
+oxlint-plugins-carton.workspace = true
+regex.workspace = true
+
+[lints]
+workspace = true
