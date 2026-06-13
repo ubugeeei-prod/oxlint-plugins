@@ -1969,6 +1969,39 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-react-hooks",
+    "directory": "npm/react-hooks",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-react-hooks",
+      "version": "7.1.1",
+      "repository": "https://github.com/facebook/react",
+      "license": "MIT"
+    },
+    "status": "in-progress",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "rules-of-hooks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc scope and control-flow port of eslint-plugin-react-hooks/rules-of-hooks; covers component and hook scopes, memo/forwardRef callbacks, loops, conditionals, early returns, async functions, class methods, nested callbacks, top-level calls, and React use() try/catch handling."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-react-refresh",
     "directory": "npm/react-refresh",
     "version": "0.0.0",

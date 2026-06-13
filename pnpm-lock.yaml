@@ -128,6 +128,12 @@ importers:
         specifier: 'catalog:'
         version: 1.68.0
 
+  npm/react-hooks:
+    dependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
   npm/react-refresh:
     dependencies:
       '@oxlint/plugins':
