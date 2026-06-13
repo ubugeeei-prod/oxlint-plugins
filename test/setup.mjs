@@ -33,12 +33,20 @@ const nativePackages = [
     binding: 'npm/cypress/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-e18e',
+    binding: 'npm/e18e/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-stylistic',
     binding: 'npm/stylistic/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-react-refresh',
     binding: 'npm/react-refresh/native.js',
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-regexp',
+    binding: 'npm/regexp/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-mocha',
@@ -51,6 +59,10 @@ const nativePackages = [
   {
     name: '@oxlint-plugins/oxlint-plugin-unused-imports',
     binding: 'npm/unused-imports/native.js',
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-storybook',
+    binding: 'npm/storybook/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-unocss',

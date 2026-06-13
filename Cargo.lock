@@ -788,6 +788,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-e18e"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-e18e",
+]
+
+[[package]]
 name = "oxlint-plugin-eslint-comments"
 version = "0.0.0"
 dependencies = [
@@ -832,6 +843,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-regexp"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-regexp",
+]
+
+[[package]]
 name = "oxlint-plugin-security"
 version = "0.0.0"
 dependencies = [
@@ -851,6 +872,17 @@ dependencies = [
  "napi-derive",
  "oxlint-plugins-_carton",
  "oxlint-plugins-simple-import-sort",
+]
+
+[[package]]
+name = "oxlint-plugin-storybook"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-storybook",
 ]
 
 [[package]]
@@ -910,6 +942,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugins-e18e"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_span",
+ "oxc_syntax",
+ "oxlint-plugins-_carton",
+]
+
+[[package]]
 name = "oxlint-plugins-eslint-comments"
 version = "0.0.0"
 dependencies = [
@@ -944,6 +989,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugins-regexp"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_regular_expression",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+]
+
+[[package]]
 name = "oxlint-plugins-security"
 version = "0.0.0"
 dependencies = [
@@ -967,6 +1024,18 @@ dependencies = [
  "oxc_span",
  "oxlint-plugins-_carton",
  "regex",
+]
+
+[[package]]
+name = "oxlint-plugins-storybook"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
 ]
 
 [[package]]
