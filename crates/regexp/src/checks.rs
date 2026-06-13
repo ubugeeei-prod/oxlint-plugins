@@ -22,6 +22,31 @@ use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
 use crate::types::DiagnosticData;
 
+/// Returns `true` when `replacement` contains a literal `$0` token that is not
+/// part of a longer numeric backreference like `$01`. JS `String.prototype.replace`
+/// never accepts `$0` as a capture reference, so this is almost always a typo.
+/// `$$` (escaped dollar) is skipped.
+fn replacement_contains_dollar_zero(replacement: &str) -> bool {
+    let bytes = replacement.as_bytes();
+    let mut index = 0;
+    while index + 1 < bytes.len() {
+        if bytes[index] == b'$' {
+            let next = bytes[index + 1];
+            if next == b'$' {
+                index += 2;
+                continue;
+            }
+            if next == b'0' {
+                // `$0` is bad unless it is the prefix of `$01`-`$09` which are
+                // also nonsensical (no group zero) — flag those too.
+                return true;
+            }
+        }
+        index += 1;
+    }
+    false
+}
+
 /// Returns `true` when `replacement` contains a `$N` backreference (where `N`
 /// is a single ASCII digit 1-9). Used by `prefer-named-replacement` to decide
 /// whether a string replacement is using numbered backreferences. `$$` (escaped
@@ -99,6 +124,32 @@ impl<'a> Scanner<'a> {
         self.check_prefer_regexp_exec(call);
         self.check_no_missing_g_flag(call);
         self.check_prefer_named_replacement(call);
+        self.check_no_useless_dollar_replacements(call);
+    }
+
+    /// `no-useless-dollar-replacements`: in JavaScript replacement strings the
+    /// `$N` syntax references the Nth capture group. `$0` is never a valid
+    /// backreference (groups start at 1) so it is always interpreted as a
+    /// literal `$0` — usually a typo. Flag the literal-replacement case;
+    /// dynamic arguments are deferred.
+    fn check_no_useless_dollar_replacements(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        let method = member.property.name.as_str();
+        if method != "replace" && method != "replaceAll" {
+            return;
+        }
+        let Some(arg1) = call.arguments.get(1).and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::StringLiteral(replacement) = arg1.get_inner_expression() else {
+            return;
+        };
+        if !replacement_contains_dollar_zero(replacement.value.as_str()) {
+            return;
+        }
+        self.report("no-useless-dollar-replacements", "unexpected", call.span);
     }
 
     /// `prefer-named-replacement`: when `<expr>.replace(<regexp with named

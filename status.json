@@ -9115,19 +9115,19 @@
       },
       {
         "name": "no-useless-dollar-replacements",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-dollar-replacements."
+        "notes": "JS-side CallExpression check on `<expr>.replace(<regex>, <string>)` / `replaceAll`. Scans the literal replacement string for a `$0` token (skipping `$$`); `$0` is never a valid backreference because capture groups start at 1, so the dollar-zero is always interpreted as a literal `$0` and almost always a typo. Dynamic replacement arguments are deferred."
       },
       {
         "name": "no-useless-escape",

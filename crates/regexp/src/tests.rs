@@ -85,8 +85,65 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-named-backreference",
             "no-useless-flag",
             "no-lazy-ends",
+            "no-useless-dollar-replacements",
         ]
     );
+}
+
+mod no_useless_dollar_replacements {
+    use super::*;
+
+    #[test]
+    fn reports_dollar_zero_in_replacement_strings() {
+        assert_eq!(
+            rule_ids_for(
+                "str.replace(/foo/u, '$0');",
+                "no-useless-dollar-replacements"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+        // Embedded in a longer string.
+        assert_eq!(
+            rule_ids_for(
+                "str.replace(/foo/u, 'pre-$0-post');",
+                "no-useless-dollar-replacements"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+        // replaceAll variant.
+        assert_eq!(
+            rule_ids_for(
+                "str.replaceAll(/foo/gu, '$0');",
+                "no-useless-dollar-replacements"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_valid_and_unrelated_replacement_strings() {
+        // Real backreferences are fine.
+        assert!(
+            rule_ids_for(
+                "str.replace(/(foo)/u, '$1');",
+                "no-useless-dollar-replacements"
+            )
+            .is_empty()
+        );
+        // Escaped dollar is intentional.
+        assert!(
+            rule_ids_for(
+                "str.replace(/foo/u, '$$0');",
+                "no-useless-dollar-replacements"
+            )
+            .is_empty()
+        );
+        // Method without a regex is not our concern.
+        assert!(rule_ids_for("str.match(/foo/u);", "no-useless-dollar-replacements").is_empty());
+    }
 }
 
 mod no_lazy_ends {

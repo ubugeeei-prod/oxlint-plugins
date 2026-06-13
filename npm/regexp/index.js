@@ -167,6 +167,10 @@ const messages = Object.freeze({
     unexpected:
       'Unexpected lazy quantifier at the end of the pattern; it will always prefer to match nothing.',
   },
+  'no-useless-dollar-replacements': {
+    unexpected:
+      "Unexpected '\\$0' in replacement string; `$0` is not a valid backreference (capture groups start at 1).",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -228,6 +232,8 @@ const ruleDescriptions = Object.freeze({
     'disallow regular-expression flags that have no effect on the pattern (narrow: `s` without `.`, `m` without `^`/`$`)',
   'no-lazy-ends':
     'disallow lazy quantifiers at the very end of a pattern (they prefer to match nothing)',
+  'no-useless-dollar-replacements':
+    'disallow `$0` in replacement strings (capture groups start at 1; `$0` is always literal)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -274,6 +280,7 @@ const ruleTypes = Object.freeze({
   'prefer-named-backreference': 'suggestion',
   'no-useless-flag': 'suggestion',
   'no-lazy-ends': 'problem',
+  'no-useless-dollar-replacements': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -392,7 +399,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-empty-string-literal' ||
     ruleName === 'no-optional-assertion' ||
     ruleName === 'no-dupe-characters-character-class' ||
-    ruleName === 'no-lazy-ends'
+    ruleName === 'no-lazy-ends' ||
+    ruleName === 'no-useless-dollar-replacements'
   ) {
     return 'Possible Errors';
   }
