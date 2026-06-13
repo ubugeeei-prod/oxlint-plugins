@@ -201,6 +201,16 @@ const invalidCases = [
     "const re = new RegExp('\\\\uD83D\\\\uDE00', 'u');\n",
     ['unexpected'],
   ],
+  // no-dupe-characters-character-class
+  [
+    'no-dupe-characters-character-class',
+    'literal duplicate',
+    'const re = /[aab]/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-range
+  ['prefer-range', 'three consecutive letters', 'const re = /[abc]/u;\n', ['unexpected']],
+  ['prefer-range', 'five consecutive digits', 'const re = /[12345]/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

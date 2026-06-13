@@ -594,6 +594,42 @@ impl<'a> Scanner<'a> {
                 span,
             );
         }
+        if let Some(ch) = analysis.first_dupe_class_literal {
+            let mut text = CompactString::new("");
+            text.push(ch);
+            self.report_with_data(
+                "no-dupe-characters-character-class",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(text),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some((start, end)) = analysis.first_collapsible_run {
+            let mut original = CompactString::new("");
+            // Push the inclusive run as the original text for the diagnostic.
+            let mut cursor = start as u8;
+            while cursor <= end as u8 {
+                original.push(cursor as char);
+                cursor += 1;
+            }
+            let mut replacement = CompactString::new("");
+            replacement.push(start);
+            replacement.push('-');
+            replacement.push(end);
+            self.report_with_data(
+                "prefer-range",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(original),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
         if let Some((escape, replacement)) = first_surrogate_pair_escape(pattern) {
             self.report_with_data(
                 "prefer-unicode-codepoint-escapes",

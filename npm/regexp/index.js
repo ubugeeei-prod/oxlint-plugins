@@ -142,6 +142,12 @@ const messages = Object.freeze({
     unexpected:
       "Unexpected surrogate-pair escape '{{expr}}'. Use the unicode code-point escape '{{replacement}}' instead.",
   },
+  'no-dupe-characters-character-class': {
+    unexpected: "Duplicate character '{{expr}}' in a character class.",
+  },
+  'prefer-range': {
+    unexpected: "Unexpected consecutive characters '{{expr}}'. Use '{{replacement}}' instead.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -191,6 +197,9 @@ const ruleDescriptions = Object.freeze({
     'disallow character class ranges that cross ASCII category boundaries (digits/uppercase/lowercase)',
   'prefer-unicode-codepoint-escapes':
     'enforce using `\\u{H+}` over surrogate-pair `\\uHHHH\\uHHHH` escapes',
+  'no-dupe-characters-character-class':
+    'disallow duplicate literal characters in a character class',
+  'prefer-range': 'enforce using a range (`a-c`) instead of three or more consecutive characters',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -230,6 +239,8 @@ const ruleTypes = Object.freeze({
   'prefer-named-replacement': 'suggestion',
   'no-obscure-range': 'suggestion',
   'prefer-unicode-codepoint-escapes': 'suggestion',
+  'no-dupe-characters-character-class': 'problem',
+  'prefer-range': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -346,7 +357,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-empty-lookarounds-assertion' ||
     ruleName === 'no-missing-g-flag' ||
     ruleName === 'no-empty-string-literal' ||
-    ruleName === 'no-optional-assertion'
+    ruleName === 'no-optional-assertion' ||
+    ruleName === 'no-dupe-characters-character-class'
   ) {
     return 'Possible Errors';
   }
@@ -370,7 +382,8 @@ function ruleCategory(ruleName) {
     ruleName === 'confusing-quantifier' ||
     ruleName === 'prefer-named-replacement' ||
     ruleName === 'no-obscure-range' ||
-    ruleName === 'prefer-unicode-codepoint-escapes'
+    ruleName === 'prefer-unicode-codepoint-escapes' ||
+    ruleName === 'prefer-range'
   ) {
     return 'Stylistic Issues';
   }

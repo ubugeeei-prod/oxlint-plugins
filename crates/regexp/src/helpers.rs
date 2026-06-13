@@ -766,6 +766,94 @@ fn append_lower_hex(target: &mut CompactString, mut value: u32) {
     }
 }
 
+/// Returns `Some(byte)` for the first ASCII literal byte that appears more
+/// than once in the `[...]` class at `open`. Escapes, ranges, and nested
+/// classes are intentionally skipped — comparing them for equivalence needs
+/// decoding we have not implemented yet. Used by
+/// `no-dupe-characters-character-class`. Keeps a small fixed-size bitmap on
+/// the stack so the check has no allocation.
+pub(crate) fn class_first_duplicate_literal(bytes: &[u8], open: usize) -> Option<u8> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    // 16 bytes covers all 128 ASCII bit slots.
+    let mut seen = [0u8; 16];
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            // Skip the entire range — `a-c` does not mean three repeats of
+            // any character, and the helper deliberately ignores ranges.
+            index += 3;
+            continue;
+        }
+        let byte = bytes[index];
+        if byte.is_ascii() {
+            let bit = byte as usize;
+            let slot = bit / 8;
+            let mask = 1u8 << (bit % 8);
+            if seen[slot] & mask != 0 {
+                return Some(byte);
+            }
+            seen[slot] |= mask;
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some((start, end))` when the `[...]` class at `open` contains
+/// three or more consecutive ASCII characters (digits, lower-case, or
+/// upper-case letters) at the top level — these collapse into the equivalent
+/// range `start-end`. Used by `prefer-range`. Escapes and existing ranges
+/// are intentionally skipped to keep the check conservative.
+pub(crate) fn class_first_collapsible_run(bytes: &[u8], open: usize) -> Option<(char, char)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            index += 3;
+            continue;
+        }
+        if is_collapsible_run_byte(bytes[index]) {
+            let start = bytes[index];
+            let mut run_end = start;
+            let mut cursor = index + 1;
+            while cursor < end
+                && bytes[cursor] == run_end + 1
+                && is_collapsible_run_byte(bytes[cursor])
+            {
+                run_end = bytes[cursor];
+                cursor += 1;
+            }
+            if run_end >= start + 2 {
+                return Some((start as char, run_end as char));
+            }
+            index = cursor.max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    None
+}
+
+fn is_collapsible_run_byte(byte: u8) -> bool {
+    matches!(byte, b'0'..=b'9' | b'a'..=b'z' | b'A'..=b'Z')
+}
+
 /// Returns `Some(ch)` when the `[...]` class at `open` is exactly `[X]` for a
 /// regular ASCII literal `X`. Negated classes, escaped contents, ranges,
 /// nested classes, and bodies of length other than one are intentionally

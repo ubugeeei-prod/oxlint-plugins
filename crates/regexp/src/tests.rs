@@ -78,6 +78,8 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-named-replacement",
             "no-obscure-range",
             "prefer-unicode-codepoint-escapes",
+            "no-dupe-characters-character-class",
+            "prefer-range",
         ]
     );
 }
@@ -1348,6 +1350,68 @@ mod prefer_unicode_codepoint_escapes {
             )
             .is_empty()
         );
+    }
+}
+
+mod no_dupe_characters_character_class {
+    use super::*;
+
+    #[test]
+    fn reports_duplicate_literal_characters() {
+        let data = first_data("const a = /[aab]/u;", "no-dupe-characters-character-class");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("a"));
+        // Reordered or with surrounding chars still reports.
+        assert_eq!(
+            rule_ids_for("const a = /[xaya]/u;", "no-dupe-characters-character-class").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_unique_literals_ranges_and_escapes() {
+        assert!(
+            rule_ids_for("const a = /[abc]/u;", "no-dupe-characters-character-class").is_empty()
+        );
+        // Range `a-c` is not a duplicate of `a`.
+        assert!(
+            rule_ids_for("const a = /[a-c]/u;", "no-dupe-characters-character-class").is_empty()
+        );
+        // Escapes are skipped; `\\d\\d` is not flagged.
+        assert!(
+            rule_ids_for(
+                "const a = /[\\d\\d]/u;",
+                "no-dupe-characters-character-class"
+            )
+            .is_empty()
+        );
+    }
+}
+
+mod prefer_range {
+    use super::*;
+
+    #[test]
+    fn reports_three_or_more_consecutive_literals() {
+        let data = first_data("const a = /[abc]/u;", "prefer-range");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("abc"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("a-c")
+        );
+        // Digits collapse just like letters.
+        assert_eq!(
+            rule_ids_for("const a = /[12345]/u;", "prefer-range").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_short_runs_and_existing_ranges() {
+        assert!(rule_ids_for("const a = /[ab]/u;", "prefer-range").is_empty());
+        // A range already covers the chars; no further reduction needed.
+        assert!(rule_ids_for("const a = /[a-c]/u;", "prefer-range").is_empty());
+        // Non-consecutive bytes break the run.
+        assert!(rule_ids_for("const a = /[acd]/u;", "prefer-range").is_empty());
     }
 }
 

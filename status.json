@@ -8715,19 +8715,19 @@
       },
       {
         "name": "no-dupe-characters-character-class",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-dupe-characters-character-class."
+        "notes": "Class-level scan via class_first_duplicate_literal: walks the class body with a 128-bit on-stack bitmap; skips escapes and ranges so it never false-positives on `\\\\d\\\\d` or `a-c`. Reports the first ASCII literal that appears twice."
       },
       {
         "name": "no-dupe-disjunctions",
@@ -9483,19 +9483,19 @@
       },
       {
         "name": "prefer-range",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-range."
+        "notes": "Class-level scan via class_first_collapsible_run finds three or more consecutive ASCII letters/digits at the top level of a class and reports them with the equivalent `a-c`-style replacement. Escapes and existing ranges are skipped to keep the check conservative."
       },
       {
         "name": "prefer-regexp-exec",
