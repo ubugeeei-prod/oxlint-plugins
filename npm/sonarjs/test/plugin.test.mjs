@@ -117,6 +117,7 @@ describe('sonarjs plugin shape', () => {
       'max-switch-cases',
       'max-union-size',
       'elseif-without-else',
+      'no-case-label-in-switch',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -141,6 +142,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['max-switch-cases']).toBe('object');
     expect(typeof plugin.rules['max-union-size']).toBe('object');
     expect(typeof plugin.rules['elseif-without-else']).toBe('object');
+    expect(typeof plugin.rules['no-case-label-in-switch']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -165,6 +167,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/max-switch-cases']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/max-union-size']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/elseif-without-else']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-case-label-in-switch']).toBe('error');
   });
 });
 
@@ -561,5 +564,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(elseif-without-else)');
+  });
+
+  it('reports no-case-label-in-switch through the adapter', () => {
+    const source = 'switch (x) { case 1: foo(); lbl: bar(); break; }';
+    const reports = runRule('no-case-label-in-switch', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('caseLabelInSwitch');
+  });
+
+  it('reports no-case-label-in-switch through the CLI', () => {
+    const source = 'switch (x) { case 1: foo(); lbl: bar(); break; }';
+    const result = runOxlint('no-case-label-in-switch', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-case-label-in-switch)');
   });
 });

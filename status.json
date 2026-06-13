@@ -11742,19 +11742,19 @@
       },
       {
         "name": "no-case-label-in-switch",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-case-label-in-switch (Sonar key S1219). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S1219). Detects labeled statements appearing directly in the consequent list of a switch case, where they almost certainly represent a mistyped 'case' clause. Only direct children of SwitchCase.consequent are flagged; labels nested inside a block within a case are intentionally out of scope. Overlap with no-labels is intentional — both rules may fire when both are enabled. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-clear-text-protocols",

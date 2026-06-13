@@ -26,6 +26,7 @@ const expectedRuleNames = [
   'max-switch-cases',
   'max-union-size',
   'elseif-without-else',
+  'no-case-label-in-switch',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -838,5 +839,32 @@ describe('sonarjs native API', () => {
     const diagnostics = scan('elseif-without-else', source);
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0].messageId).toBe('elseifWithoutElse');
+  });
+
+  it('reports no-case-label-in-switch for a label directly in a case consequent', () => {
+    const source = 'switch (x) { case 1: foo(); lbl: bar(); break; }';
+    const diagnostics = scan('no-case-label-in-switch', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-case-label-in-switch');
+    expect(diagnostics[0].messageId).toBe('caseLabelInSwitch');
+  });
+
+  it('does not report no-case-label-in-switch for a switch with no labels', () => {
+    const source = 'switch (x) { case 1: break; default: break; }';
+    const diagnostics = scan('no-case-label-in-switch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-case-label-in-switch for a label nested inside a block within a case', () => {
+    // Label is inside a block statement, not a direct child of the case consequent.
+    const source = 'switch (x) { case 1: { lbl: bar(); } break; }';
+    const diagnostics = scan('no-case-label-in-switch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-case-label-in-switch for a label outside any switch', () => {
+    const source = 'lbl: for (;;) {}';
+    const diagnostics = scan('no-case-label-in-switch', source);
+    expect(diagnostics).toHaveLength(0);
   });
 });

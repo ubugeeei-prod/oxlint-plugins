@@ -98,6 +98,10 @@ const messages = Object.freeze({
     elseifWithoutElse:
       "Add a final 'else' clause to this 'if … else if' chain to handle the remaining cases explicitly.",
   },
+  'no-case-label-in-switch': {
+    caseLabelInSwitch:
+      "Remove this misleading label; it looks like a 'case' clause but is a labeled statement.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -139,6 +143,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow union types with more than 3 members (threshold fixed at default 3; configurability is a follow-up; each TSUnionType node is counted per-node)',
   'elseif-without-else':
     "Require a final 'else' clause when an 'if … else if' chain is present, to explicitly handle the remaining case",
+  'no-case-label-in-switch':
+    "Disallow labeled statements appearing directly in a switch case's consequent list, where they are likely mistaken 'case' clauses",
 });
 
 const ruleTypes = Object.freeze({
@@ -165,6 +171,7 @@ const ruleTypes = Object.freeze({
   'max-switch-cases': 'suggestion',
   'max-union-size': 'suggestion',
   'elseif-without-else': 'suggestion',
+  'no-case-label-in-switch': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -191,6 +198,7 @@ const recommendedRuleConfig = Object.freeze({
   'max-switch-cases': 'error',
   'max-union-size': 'error',
   'elseif-without-else': 'error',
+  'no-case-label-in-switch': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
