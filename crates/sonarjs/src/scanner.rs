@@ -4,11 +4,13 @@
 
 use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, ConditionalExpression, ExpressionStatement,
-    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral,
+    Function, IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral,
     SwitchCase, SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
+    YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
+use oxc_syntax::scope::ScopeFlags;
 use oxlint_plugins_carton::SmallVec;
 
 use crate::{Diagnostic, DiagnosticData, DiagnosticFix, LineIndex, SonarjsOptions};
@@ -28,6 +30,11 @@ pub(crate) struct Scanner<'a> {
     /// chain already processed by their head; used by `no-identical-conditions`
     /// to avoid double-processing a chain.
     pub(crate) if_chain_seen: SmallVec<[u32; 16]>,
+    /// Stack of boolean frames tracking whether each currently-open generator
+    /// function has seen at least one `yield` expression. A frame is pushed on
+    /// entry to a generator with a body and popped on exit; `generator-without-yield`
+    /// reports generators whose frame is still `false` when popped.
+    pub(crate) generator_yield_stack: SmallVec<[bool; 8]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -148,5 +155,16 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_expression_statement(&mut self, it: &ExpressionStatement<'a>) {
         self.check_constructor_for_side_effects(it);
         walk::walk_expression_statement(self, it);
+    }
+
+    fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
+        let track = self.enter_generator(it);
+        walk::walk_function(self, it, flags);
+        self.leave_generator(it, track);
+    }
+
+    fn visit_yield_expression(&mut self, it: &YieldExpression<'a>) {
+        self.mark_generator_yield();
+        walk::walk_yield_expression(self, it);
     }
 }

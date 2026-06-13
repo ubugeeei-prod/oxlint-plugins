@@ -737,3 +737,57 @@ fn does_not_report_no_empty_character_class_for_literal_bracket_in_class() {
     let diagnostics = scan("no-empty-character-class", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_generator_without_yield_for_generator_that_only_returns() {
+    let source = "function* g() { return 1; }";
+    let diagnostics = scan("generator-without-yield", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "generator-without-yield");
+    assert_eq!(diagnostics[0].message_id, "generatorWithoutYield");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_generator_without_yield_for_empty_body_generator() {
+    let source = "function* g() {}";
+    let diagnostics = scan("generator-without-yield", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "generatorWithoutYield");
+}
+
+#[test]
+fn does_not_report_generator_without_yield_when_generator_yields() {
+    let source = "function* g() { yield 1; }";
+    let diagnostics = scan("generator-without-yield", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_generator_without_yield_for_regular_function() {
+    let source = "function g() { return 1; }";
+    let diagnostics = scan("generator-without-yield", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_generator_without_yield_for_outer_only_when_inner_yields() {
+    // outer has no direct yield; inner has yield 1 → only outer is flagged
+    let source = "function* outer() { function* inner() { yield 1; } }";
+    let diagnostics = scan("generator-without-yield", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "generatorWithoutYield");
+    // outer starts at column 0
+    assert_eq!(diagnostics[0].loc.start_column, 0);
+}
+
+#[test]
+fn reports_generator_without_yield_for_inner_only_when_outer_yields() {
+    // outer yields directly; inner has no yield → only inner is flagged
+    let source = "function* outer() { yield 1; function* inner() {} }";
+    let diagnostics = scan("generator-without-yield", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "generatorWithoutYield");
+    // inner starts at column > 0 (it is not at the start of the line)
+    assert!(diagnostics[0].loc.start_column > 0);
+}
