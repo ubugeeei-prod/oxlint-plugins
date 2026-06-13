@@ -627,7 +627,10 @@ fn non_capturing_group_removal_would_change_meaning(
     let p4 = bytes[open_pos - 4];
 
     // `\uHH(?:H)` — two hex digits after `\u`.
-    if p4 == b'\\' && p3 == b'u' && p2.is_ascii_hexdigit() && p1.is_ascii_hexdigit()
+    if p4 == b'\\'
+        && p3 == b'u'
+        && p2.is_ascii_hexdigit()
+        && p1.is_ascii_hexdigit()
         && inner.is_ascii_hexdigit()
     {
         return true;
