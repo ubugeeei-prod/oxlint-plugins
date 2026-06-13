@@ -56,6 +56,9 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-star-quantifier",
             "prefer-question-quantifier",
             "no-useless-two-nums-quantifier",
+            "prefer-named-capture-group",
+            "match-any",
+            "no-legacy-features",
         ]
     );
 }
@@ -549,6 +552,132 @@ mod no_useless_two_nums_quantifier {
         assert!(rule_ids_for("const a = /a{2,5}/u;", "no-useless-two-nums-quantifier").is_empty());
         // `{0,0}` is no-zero-quantifier's responsibility; we do not double-report.
         assert!(rule_ids_for("const a = /a{0,0}/u;", "no-useless-two-nums-quantifier").is_empty());
+    }
+}
+
+mod prefer_named_capture_group {
+    use super::*;
+
+    #[test]
+    fn reports_anonymous_capturing_groups() {
+        assert_eq!(
+            rule_ids_for("const a = /(a)/u;", "prefer-named-capture-group").as_slice(),
+            &["required"]
+        );
+        // Even when alternation is present, the unnamed capture is flagged.
+        assert_eq!(
+            rule_ids_for("const a = /(foo|bar)/u;", "prefer-named-capture-group").as_slice(),
+            &["required"]
+        );
+    }
+
+    #[test]
+    fn ignores_named_captures_and_non_capturing_groups() {
+        assert!(rule_ids_for("const a = /(?<name>a)/u;", "prefer-named-capture-group").is_empty());
+        assert!(rule_ids_for("const a = /(?:a)/u;", "prefer-named-capture-group").is_empty());
+        assert!(rule_ids_for("const a = /(?=a)/u;", "prefer-named-capture-group").is_empty());
+        assert!(rule_ids_for("const a = /(?!a)/u;", "prefer-named-capture-group").is_empty());
+        assert!(rule_ids_for("const a = /(?<=a)/u;", "prefer-named-capture-group").is_empty());
+        assert!(rule_ids_for("const a = /(?<!a)/u;", "prefer-named-capture-group").is_empty());
+    }
+
+    #[test]
+    fn reports_once_per_literal_even_with_multiple_anonymous_captures() {
+        // Per the existing pattern, each literal emits at most one diagnostic
+        // per rule; multiple anonymous captures collapse to one report.
+        assert_eq!(
+            rule_ids_for("const a = /(a)(b)/u;", "prefer-named-capture-group").as_slice(),
+            &["required"]
+        );
+    }
+}
+
+mod match_any {
+    use super::*;
+
+    #[test]
+    fn reports_anti_pair_character_classes() {
+        assert_eq!(
+            rule_ids_for("const a = /[\\s\\S]/u;", "match-any").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[\\d\\D]/u;", "match-any").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[\\w\\W]/u;", "match-any").as_slice(),
+            &["unexpected"]
+        );
+        // Order does not matter.
+        assert_eq!(
+            rule_ids_for("const a = /[\\S\\s]/u;", "match-any").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_non_anti_pair_classes() {
+        assert!(rule_ids_for("const a = /[a-z]/u;", "match-any").is_empty());
+        // Only one of the pair is present.
+        assert!(rule_ids_for("const a = /[\\s]/u;", "match-any").is_empty());
+        // Mixed shorthand families are NOT anti-pairs.
+        assert!(rule_ids_for("const a = /[\\s\\D]/u;", "match-any").is_empty());
+        // Three or more elements are not "exactly an anti-pair".
+        assert!(rule_ids_for("const a = /[\\s\\Sa]/u;", "match-any").is_empty());
+        // Negated classes never match anything; do not flag.
+        assert!(rule_ids_for("const a = /[^\\s\\S]/u;", "match-any").is_empty());
+    }
+}
+
+mod no_legacy_features {
+    use super::*;
+
+    #[test]
+    fn reports_indexed_capture_properties() {
+        let data = first_data("RegExp.$1;", "no-legacy-features");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("$1"));
+        assert_eq!(
+            rule_ids_for("RegExp.$9;", "no-legacy-features").as_slice(),
+            &["staticProperty"]
+        );
+    }
+
+    #[test]
+    fn reports_named_legacy_properties() {
+        assert_eq!(
+            rule_ids_for("RegExp.input;", "no-legacy-features").as_slice(),
+            &["staticProperty"]
+        );
+        assert_eq!(
+            rule_ids_for("RegExp.$_;", "no-legacy-features").as_slice(),
+            &["staticProperty"]
+        );
+        assert_eq!(
+            rule_ids_for("RegExp.lastMatch;", "no-legacy-features").as_slice(),
+            &["staticProperty"]
+        );
+        assert_eq!(
+            rule_ids_for("RegExp.lastParen;", "no-legacy-features").as_slice(),
+            &["staticProperty"]
+        );
+        assert_eq!(
+            rule_ids_for("RegExp.leftContext;", "no-legacy-features").as_slice(),
+            &["staticProperty"]
+        );
+        assert_eq!(
+            rule_ids_for("RegExp.rightContext;", "no-legacy-features").as_slice(),
+            &["staticProperty"]
+        );
+    }
+
+    #[test]
+    fn ignores_non_regexp_member_access_and_modern_apis() {
+        assert!(rule_ids_for("Foo.$1;", "no-legacy-features").is_empty());
+        assert!(rule_ids_for("RegExp.prototype;", "no-legacy-features").is_empty());
+        assert!(rule_ids_for("regexp.lastMatch;", "no-legacy-features").is_empty());
+        // `$10` is NOT one of the legacy indices ($1–$9).
+        assert!(rule_ids_for("RegExp.$10;", "no-legacy-features").is_empty());
     }
 }
 

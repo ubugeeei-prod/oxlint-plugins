@@ -68,6 +68,16 @@ const messages = Object.freeze({
   'no-useless-two-nums-quantifier': {
     unexpected: "Unexpected quantifier '{{expr}}'. Use '{{replacement}}' instead.",
   },
+  'prefer-named-capture-group': {
+    required: 'Capturing group should be converted to a named or non-capturing group.',
+  },
+  'match-any': {
+    unexpected: 'Unexpected any character class. Use `.` with the `s` flag instead.',
+  },
+  'no-legacy-features': {
+    staticProperty:
+      "Unexpected use of the legacy 'RegExp.{{expr}}' static property; it is non-standard and not safe to rely on.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -86,6 +96,10 @@ const ruleDescriptions = Object.freeze({
   'prefer-star-quantifier': 'enforce using `*` quantifier',
   'prefer-question-quantifier': 'enforce using `?` quantifier',
   'no-useless-two-nums-quantifier': 'disallow unnecessary `{n,m}` quantifier',
+  'prefer-named-capture-group': 'enforce using named capture group',
+  'match-any':
+    'enforce using `.` (with the `s` flag) instead of character classes that match any character',
+  'no-legacy-features': 'disallow legacy `RegExp` features',
 });
 
 const ruleTypes = Object.freeze({
@@ -104,6 +118,9 @@ const ruleTypes = Object.freeze({
   'prefer-star-quantifier': 'suggestion',
   'prefer-question-quantifier': 'suggestion',
   'no-useless-two-nums-quantifier': 'suggestion',
+  'prefer-named-capture-group': 'suggestion',
+  'match-any': 'suggestion',
+  'no-legacy-features': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -119,6 +136,7 @@ const recommendedRuleConfig = Object.freeze({
   'prefer-star-quantifier': 'error',
   'prefer-question-quantifier': 'error',
   'no-useless-two-nums-quantifier': 'error',
+  'no-legacy-features': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
@@ -210,7 +228,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-empty-group' ||
     ruleName === 'no-empty-alternative' ||
     ruleName === 'no-control-character' ||
-    ruleName === 'no-escape-backspace'
+    ruleName === 'no-escape-backspace' ||
+    ruleName === 'no-legacy-features'
   ) {
     return 'Possible Errors';
   }
@@ -221,7 +240,9 @@ function ruleCategory(ruleName) {
     ruleName === 'prefer-plus-quantifier' ||
     ruleName === 'prefer-star-quantifier' ||
     ruleName === 'prefer-question-quantifier' ||
-    ruleName === 'no-useless-two-nums-quantifier'
+    ruleName === 'no-useless-two-nums-quantifier' ||
+    ruleName === 'prefer-named-capture-group' ||
+    ruleName === 'match-any'
   ) {
     return 'Stylistic Issues';
   }

@@ -3,8 +3,8 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    BraceQuantifierShape, class_contains_backspace_escape, find_class_end, group_prefix,
-    is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    BraceQuantifierShape, class_contains_backspace_escape, class_matches_anything, find_class_end,
+    group_prefix, is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -51,6 +51,12 @@ pub(crate) struct PatternAnalysis {
     pub(crate) first_question_quantifier: Option<CompactString>,
     /// First `{n,n}` (with `n >= 1`) and its `{n}` replacement.
     pub(crate) first_useless_two_nums_quantifier: Option<(CompactString, CompactString)>,
+    /// At least one anonymous capturing group `(...)` (i.e. capturing but not
+    /// named) — `prefer-named-capture-group`.
+    pub(crate) has_unnamed_capturing_group: bool,
+    /// At least one `[\s\S]`/`[\d\D]`/`[\w\W]`-shaped character class —
+    /// `match-any`.
+    pub(crate) has_match_any_class: bool,
 }
 
 impl PatternAnalysis {
@@ -81,6 +87,9 @@ impl PatternAnalysis {
                         {
                             self.has_escape_backspace_in_class = true;
                         }
+                        if !self.has_match_any_class && class_matches_anything(bytes, index) {
+                            self.has_match_any_class = true;
+                        }
                         self.mark_content(&mut groups);
                         index = close + 1;
                     } else {
@@ -89,9 +98,12 @@ impl PatternAnalysis {
                     }
                 }
                 b'(' => {
-                    let (check_empty, capturing, next) = group_prefix(bytes, index);
-                    groups.push(GroupState::group(check_empty, capturing));
-                    index = next;
+                    let prefix = group_prefix(bytes, index);
+                    if prefix.capturing && !prefix.named {
+                        self.has_unnamed_capturing_group = true;
+                    }
+                    groups.push(GroupState::group(prefix.check_empty, prefix.capturing));
+                    index = prefix.next;
                 }
                 b')' => {
                     if groups.len() > 1

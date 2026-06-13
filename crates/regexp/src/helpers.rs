@@ -74,26 +74,112 @@ pub(crate) fn find_class_end(bytes: &[u8], open: usize) -> Option<usize> {
     None
 }
 
-pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> (bool, bool, usize) {
+/// Result of classifying the start of a `(` group: whether the body should be
+/// checked for emptiness, whether the group captures, whether the group is a
+/// named capture (`(?<name>...)`), and the byte index immediately after the
+/// group prefix. Lookarounds and `?:` do not capture; anonymous `(...)` and
+/// named `(?<name>...)` capture but only the latter is named.
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct GroupPrefix {
+    pub(crate) check_empty: bool,
+    pub(crate) capturing: bool,
+    pub(crate) named: bool,
+    pub(crate) next: usize,
+}
+
+pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> GroupPrefix {
     if bytes.get(open + 1) != Some(&b'?') {
-        return (true, true, open + 1);
+        return GroupPrefix {
+            check_empty: true,
+            capturing: true,
+            named: false,
+            next: open + 1,
+        };
     }
     match bytes.get(open + 2).copied() {
-        Some(b':') => (true, false, open + 3),
-        Some(b'=') | Some(b'!') => (false, false, open + 3),
+        Some(b':') => GroupPrefix {
+            check_empty: true,
+            capturing: false,
+            named: false,
+            next: open + 3,
+        },
+        Some(b'=') | Some(b'!') => GroupPrefix {
+            check_empty: false,
+            capturing: false,
+            named: false,
+            next: open + 3,
+        },
         Some(b'<') => {
             if matches!(bytes.get(open + 3), Some(b'=') | Some(b'!')) {
-                (false, false, open + 4)
+                GroupPrefix {
+                    check_empty: false,
+                    capturing: false,
+                    named: false,
+                    next: open + 4,
+                }
             } else {
                 let mut cursor = open + 3;
                 while cursor < bytes.len() && bytes[cursor] != b'>' {
                     cursor += 1;
                 }
-                (true, true, cursor.saturating_add(1).min(bytes.len()))
+                GroupPrefix {
+                    check_empty: true,
+                    capturing: true,
+                    named: true,
+                    next: cursor.saturating_add(1).min(bytes.len()),
+                }
             }
         }
-        _ => (false, false, open + 2),
+        _ => GroupPrefix {
+            check_empty: false,
+            capturing: false,
+            named: false,
+            next: open + 2,
+        },
     }
+}
+
+/// Returns `true` when the `[...]` character class at `open` consists of
+/// exactly an antipair of shorthand classes that together cover every
+/// character: `[\s\S]`, `[\d\D]`, or `[\w\W]` (in either order). Returns
+/// `false` for negated classes (`[^...]`), classes with extra elements, or
+/// any unrecognised content. The check stops at the matching `]`; `\]` inside
+/// the class is handled by reusing `find_class_end`.
+pub(crate) fn class_matches_anything(bytes: &[u8], open: usize) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let Some(end) = find_class_end(bytes, open) else {
+        return false;
+    };
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        return false;
+    }
+    let mut has_lower = [false; 3]; // s, d, w
+    let mut has_upper = [false; 3]; // S, D, W
+    let mut count = 0usize;
+    while index < end {
+        if count >= 2 {
+            return false;
+        }
+        if bytes[index] != b'\\' {
+            return false;
+        }
+        let Some(&kind) = bytes.get(index + 1) else {
+            return false;
+        };
+        match kind {
+            b's' => has_lower[0] = true,
+            b'S' => has_upper[0] = true,
+            b'd' => has_lower[1] = true,
+            b'D' => has_upper[1] = true,
+            b'w' => has_lower[2] = true,
+            b'W' => has_upper[2] = true,
+            _ => return false,
+        }
+        index += 2;
+        count += 1;
+    }
+    (0..3).any(|i| has_lower[i] && has_upper[i])
 }
 
 /// Shape of a `{...}` braced quantifier that can be rewritten as a shorter

@@ -64,6 +64,21 @@ const validCases = [
   // no-useless-two-nums-quantifier
   ['no-useless-two-nums-quantifier', 'single-bound quantifier', 'const re = /a{3}/u;\n'],
   ['no-useless-two-nums-quantifier', 'asymmetric range quantifier', 'const re = /a{2,5}/u;\n'],
+  // prefer-named-capture-group
+  ['prefer-named-capture-group', 'named capture', 'const re = /(?<name>a)/u;\n'],
+  ['prefer-named-capture-group', 'non-capturing group', 'const re = /(?:a)/u;\n'],
+  ['prefer-named-capture-group', 'lookahead', 'const re = /(?=a)/u;\n'],
+  ['prefer-named-capture-group', 'no group', 'const re = /a/u;\n'],
+  // match-any
+  ['match-any', 'plain character class', 'const re = /[a-z]/u;\n'],
+  ['match-any', 'half anti-pair', 'const re = /[\\s]/u;\n'],
+  ['match-any', 'mixed family', 'const re = /[\\s\\D]/u;\n'],
+  ['match-any', 'negated anti-pair', 'const re = /[^\\s\\S]/u;\n'],
+  // no-legacy-features
+  ['no-legacy-features', 'unrelated identifier', 'Foo.$1;\n'],
+  ['no-legacy-features', 'lowercase regexp', 'regexp.lastMatch;\n'],
+  ['no-legacy-features', 'modern prototype access', 'RegExp.prototype;\n'],
+  ['no-legacy-features', '$10 out of legacy range', 'RegExp.$10;\n'],
 ];
 
 const invalidCases = [
@@ -168,6 +183,27 @@ const invalidCases = [
     'const re = /a{3,3}/u;\n',
     ['unexpected'],
   ],
+  // prefer-named-capture-group
+  ['prefer-named-capture-group', 'anonymous capture', 'const re = /(a)/u;\n', ['required']],
+  [
+    'prefer-named-capture-group',
+    'anonymous capture with alternation',
+    'const re = /(foo|bar)/u;\n',
+    ['required'],
+  ],
+  // match-any
+  ['match-any', '\\s and \\S', 'const re = /[\\s\\S]/u;\n', ['unexpected']],
+  ['match-any', '\\d and \\D', 'const re = /[\\d\\D]/u;\n', ['unexpected']],
+  ['match-any', '\\w and \\W reversed', 'const re = /[\\W\\w]/u;\n', ['unexpected']],
+  // no-legacy-features
+  ['no-legacy-features', 'capture index $1', 'RegExp.$1;\n', ['staticProperty']],
+  ['no-legacy-features', 'capture index $9', 'RegExp.$9;\n', ['staticProperty']],
+  ['no-legacy-features', 'input alias', 'RegExp.input;\n', ['staticProperty']],
+  ['no-legacy-features', '$_ alias', 'RegExp.$_;\n', ['staticProperty']],
+  ['no-legacy-features', 'lastMatch alias', 'RegExp.lastMatch;\n', ['staticProperty']],
+  ['no-legacy-features', 'lastParen alias', 'RegExp.lastParen;\n', ['staticProperty']],
+  ['no-legacy-features', 'leftContext alias', 'RegExp.leftContext;\n', ['staticProperty']],
+  ['no-legacy-features', 'rightContext alias', 'RegExp.rightContext;\n', ['staticProperty']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
@@ -324,6 +360,20 @@ describe('regexp rules through direct Oxlint plugin adapter', () => {
         runRule('no-useless-two-nums-quantifier', 'const re = /a{3,3}/u;\n')[0],
       ),
     ).toBe("Unexpected quantifier '{3,3}'. Use '{3}' instead.");
+    expect(
+      renderMessage(
+        'prefer-named-capture-group',
+        runRule('prefer-named-capture-group', 'const re = /(a)/u;\n')[0],
+      ),
+    ).toBe('Capturing group should be converted to a named or non-capturing group.');
+    expect(renderMessage('match-any', runRule('match-any', 'const re = /[\\s\\S]/u;\n')[0])).toBe(
+      'Unexpected any character class. Use `.` with the `s` flag instead.',
+    );
+    expect(
+      renderMessage('no-legacy-features', runRule('no-legacy-features', 'RegExp.$1;\n')[0]),
+    ).toBe(
+      "Unexpected use of the legacy 'RegExp.$1' static property; it is non-standard and not safe to rely on.",
+    );
   });
 
   it('ignores non-RegExp callees with the same shape', () => {
