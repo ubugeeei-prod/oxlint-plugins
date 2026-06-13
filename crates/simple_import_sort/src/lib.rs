@@ -1,7 +1,7 @@
 #![doc = "Rust implementation of eslint-plugin-simple-import-sort rule logic."]
 
-mod shared;
 mod scanner;
+mod shared;
 mod types;
 
 #[cfg(test)]
@@ -38,12 +38,8 @@ pub fn scan_simple_import_sort(
     }
 
     // Collect all comments in source order (OXC guarantees sorted order)
-    let all_comments: SmallVec<[Comment; 32]> = parser_return
-        .program
-        .comments
-        .iter()
-        .copied()
-        .collect();
+    let all_comments: SmallVec<[Comment; 32]> =
+        parser_return.program.comments.iter().copied().collect();
 
     let line_index = LineIndex::new(source_text);
     let mut diagnostics = SmallVec::new();

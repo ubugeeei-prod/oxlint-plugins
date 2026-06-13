@@ -13,9 +13,8 @@ use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::shared::{
-    self, SourceInfo, compare, get_indentation, get_trailing_spaces,
+    self, SIDE_EFFECT_STYLE, SourceInfo, compare, get_indentation, get_trailing_spaces,
     guess_newline, import_style, print_with_sorted_specifiers,
-    SIDE_EFFECT_STYLE,
 };
 use crate::types::{Diagnostic, DiagnosticFix, LineIndex, RuleKind, SimpleImportSortOptions};
 
@@ -38,13 +37,23 @@ pub(crate) fn scan_import_chunks(
             chunk.push(decl);
         } else {
             report_import_chunk(
-                source_text, line_index, all_comments, &chunk, options, diagnostics,
+                source_text,
+                line_index,
+                all_comments,
+                &chunk,
+                options,
+                diagnostics,
             );
             chunk.clear();
         }
     }
     report_import_chunk(
-        source_text, line_index, all_comments, &chunk, options, diagnostics,
+        source_text,
+        line_index,
+        all_comments,
+        &chunk,
+        options,
+        diagnostics,
     );
 }
 
@@ -63,26 +72,20 @@ pub(crate) fn scan_export_chunks(
             Statement::ExportNamedDeclaration(decl) if is_export_from_named(decl) => {
                 // isPartOfChunk: check for grouping comment
                 let last_end = chunk.last().map(|n| n.span().end);
-                let part = export_is_part_of_chunk(
-                    source_text, all_comments, decl.span.start, last_end,
-                );
+                let part =
+                    export_is_part_of_chunk(source_text, all_comments, decl.span.start, last_end);
                 if part == ChunkPart::NewChunk {
-                    report_export_chunk(
-                        source_text, line_index, all_comments, &chunk, diagnostics,
-                    );
+                    report_export_chunk(source_text, line_index, all_comments, &chunk, diagnostics);
                     chunk.clear();
                 }
                 chunk.push(ExportNode::Named(decl));
             }
             Statement::ExportAllDeclaration(decl) => {
                 let last_end = chunk.last().map(|n| n.span().end);
-                let part = export_is_part_of_chunk(
-                    source_text, all_comments, decl.span.start, last_end,
-                );
+                let part =
+                    export_is_part_of_chunk(source_text, all_comments, decl.span.start, last_end);
                 if part == ChunkPart::NewChunk {
-                    report_export_chunk(
-                        source_text, line_index, all_comments, &chunk, diagnostics,
-                    );
+                    report_export_chunk(source_text, line_index, all_comments, &chunk, diagnostics);
                     chunk.clear();
                 }
                 chunk.push(ExportNode::All(decl));
@@ -91,28 +94,26 @@ pub(crate) fn scan_export_chunks(
             Statement::ExportNamedDeclaration(decl)
                 if decl.source.is_none() && decl.declaration.is_none() =>
             {
-                report_export_chunk(
-                    source_text, line_index, all_comments, &chunk, diagnostics,
-                );
+                report_export_chunk(source_text, line_index, all_comments, &chunk, diagnostics);
                 chunk.clear();
                 // Sort specifiers in place if >1
                 if decl.specifiers.len() > 1 {
                     report_local_export_specifiers(
-                        source_text, line_index, all_comments, decl, diagnostics,
+                        source_text,
+                        line_index,
+                        all_comments,
+                        decl,
+                        diagnostics,
                     );
                 }
             }
             _ => {
-                report_export_chunk(
-                    source_text, line_index, all_comments, &chunk, diagnostics,
-                );
+                report_export_chunk(source_text, line_index, all_comments, &chunk, diagnostics);
                 chunk.clear();
             }
         }
     }
-    report_export_chunk(
-        source_text, line_index, all_comments, &chunk, diagnostics,
-    );
+    report_export_chunk(source_text, line_index, all_comments, &chunk, diagnostics);
 }
 
 // ---------------------------------------------------------------------------
@@ -176,7 +177,10 @@ fn is_export_from_named(decl: &ExportNamedDeclaration<'_>) -> bool {
 // ---------------------------------------------------------------------------
 
 #[derive(PartialEq, Eq)]
-enum ChunkPart { Part, NewChunk }
+enum ChunkPart {
+    Part,
+    NewChunk,
+}
 
 /// Mirrors `isPartOfChunk(node, lastNode, sourceCode)` in exports.js.
 /// Returns NewChunk if there's a "grouping comment" before this node.
@@ -244,20 +248,41 @@ fn report_import_chunk(
     options: &SimpleImportSortOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 8]>,
 ) {
-    if chunk.is_empty() { return; }
+    if chunk.is_empty() {
+        return;
+    }
     let newline = guess_newline(source_text);
 
     // handleLastSemicolon
-    let last_node_end = handle_last_semicolon(source_text, chunk.last().expect("non-empty").span, all_comments);
+    let last_node_end = handle_last_semicolon(
+        source_text,
+        chunk.last().expect("non-empty").span,
+        all_comments,
+    );
 
-    let items = build_import_items(source_text, all_comments, chunk, last_node_end, options, newline);
+    let items = build_import_items(
+        source_text,
+        all_comments,
+        chunk,
+        last_node_end,
+        options,
+        newline,
+    );
 
     let sorted_items = make_sorted_import_items(&items, options);
     let sorted = print_sorted_items(&sorted_items, &items, source_text, all_comments, newline);
 
     let start = items[0].start;
     let end = items[items.len() - 1].end;
-    maybe_report_sorting(source_text, line_index, sorted, start, end, RuleKind::Imports, diagnostics);
+    maybe_report_sorting(
+        source_text,
+        line_index,
+        sorted,
+        start,
+        end,
+        RuleKind::Imports,
+        diagnostics,
+    );
 }
 
 fn build_import_items(
@@ -273,7 +298,11 @@ fn build_import_items(
 
     for (node_index, decl) in chunk.iter().enumerate() {
         let node_start = decl.span.start;
-        let node_end = if node_index == chunk_len - 1 { last_node_end } else { decl.span.end };
+        let node_end = if node_index == chunk_len - 1 {
+            last_node_end
+        } else {
+            decl.span.end
+        };
 
         // last_line for commentsBefore filter
         let last_line = if node_index == 0 {
@@ -285,18 +314,23 @@ fn build_import_items(
         let node_end_line = shared::line_of(source_text, node_end);
 
         let comments_before = shared::comments_before_node(
-            all_comments, source_text, node_start, node_start_line, last_line, node_index == 0,
+            all_comments,
+            source_text,
+            node_start,
+            node_start_line,
+            last_line,
+            node_index == 0,
         );
-        let comments_after = shared::comments_after_node(
-            all_comments, source_text, node_end, node_end_line,
-        );
+        let comments_after =
+            shared::comments_after_node(all_comments, source_text, node_end, node_end_line);
 
         // specifier spans and sort keys (only ImportSpecifier, not default/namespace)
         let spec_spans: SmallVec<[Span; 8]> = decl
             .specifiers
             .as_ref()
             .map(|specs| {
-                specs.iter()
+                specs
+                    .iter()
                     .filter_map(|s| {
                         if let ImportDeclarationSpecifier::ImportSpecifier(is) = s {
                             Some(is.span)
@@ -312,7 +346,8 @@ fn build_import_items(
             .specifiers
             .as_ref()
             .map(|specs| {
-                specs.iter()
+                specs
+                    .iter()
                     .filter_map(|s| {
                         if let ImportDeclarationSpecifier::ImportSpecifier(is) = s {
                             Some((
@@ -367,19 +402,18 @@ fn report_export_chunk(
     chunk: &[ExportNode<'_>],
     diagnostics: &mut SmallVec<[Diagnostic; 8]>,
 ) {
-    if chunk.is_empty() { return; }
+    if chunk.is_empty() {
+        return;
+    }
     let newline = guess_newline(source_text);
 
-    let last_node_end = handle_last_semicolon(
-        source_text,
-        chunk[chunk.len() - 1].span(),
-        all_comments,
-    );
+    let last_node_end =
+        handle_last_semicolon(source_text, chunk[chunk.len() - 1].span(), all_comments);
 
     let items = build_export_items(source_text, all_comments, chunk, last_node_end, newline);
 
     // sortImportExportItems – single group for exports
-    let sorted_refs = sort_import_export_items(&items);
+    let sorted_refs = sort_import_export_items(items.iter().collect());
     // Wrap in the nested structure expected by print_sorted_items
     let single_group: SmallVec<[&ImportExportItem; 8]> = sorted_refs;
     let inner: SmallVec<[SmallVec<[&ImportExportItem; 8]>; 4]> = {
@@ -397,7 +431,15 @@ fn report_export_chunk(
 
     let start = items[0].start;
     let end = items[items.len() - 1].end;
-    maybe_report_sorting(source_text, line_index, sorted, start, end, RuleKind::Exports, diagnostics);
+    maybe_report_sorting(
+        source_text,
+        line_index,
+        sorted,
+        start,
+        end,
+        RuleKind::Exports,
+        diagnostics,
+    );
 }
 
 fn build_export_items(
@@ -412,7 +454,11 @@ fn build_export_items(
 
     for (node_index, node) in chunk.iter().enumerate() {
         let node_start = node.span().start;
-        let node_end = if node_index == chunk_len - 1 { last_node_end } else { node.span().end };
+        let node_end = if node_index == chunk_len - 1 {
+            last_node_end
+        } else {
+            node.span().end
+        };
 
         let last_line = if node_index == 0 {
             shared::line_of(source_text, node_start).saturating_sub(1)
@@ -423,11 +469,15 @@ fn build_export_items(
         let node_end_line = shared::line_of(source_text, node_end);
 
         let comments_before = shared::comments_before_node(
-            all_comments, source_text, node_start, node_start_line, last_line, node_index == 0,
+            all_comments,
+            source_text,
+            node_start,
+            node_start_line,
+            last_line,
+            node_index == 0,
         );
-        let comments_after = shared::comments_after_node(
-            all_comments, source_text, node_end, node_end_line,
-        );
+        let comments_after =
+            shared::comments_after_node(all_comments, source_text, node_end, node_end_line);
 
         let orig = node.source_str();
         let kind_str = import_kind_str(node.export_kind());
@@ -449,8 +499,8 @@ fn build_export_items(
             newline,
             1u8, // getStyle: always 1 for exports
             source,
-            0,   // outer_group
-            0,   // inner_group
+            0, // outer_group
+            0, // inner_group
         );
         items.push(item);
     }
@@ -472,11 +522,13 @@ fn report_local_export_specifiers(
     let sort_keys: SmallVec<[(CompactString, CompactString, u8); 8]> = decl
         .specifiers
         .iter()
-        .map(|s| (
-            module_export_name(&s.exported),
-            module_export_name(&s.local),
-            kind_rank(s.export_kind),
-        ))
+        .map(|s| {
+            (
+                module_export_name(&s.exported),
+                module_export_name(&s.local),
+                kind_rank(s.export_kind),
+            )
+        })
         .collect();
 
     let newline = guess_newline(source_text);
@@ -492,7 +544,15 @@ fn report_local_export_specifiers(
 
     let start = decl.span.start;
     let end = decl.span.end;
-    maybe_report_sorting(source_text, line_index, sorted, start, end, RuleKind::Exports, diagnostics);
+    maybe_report_sorting(
+        source_text,
+        line_index,
+        sorted,
+        start,
+        end,
+        RuleKind::Exports,
+        diagnostics,
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -615,7 +675,9 @@ fn find_last_token_end_before(
     // Check if there's non-whitespace text between last_comment_end and offset
     // (or from the start of file if no comment)
     let check_from = last_comment_end.unwrap_or(0);
-    let prefix = source_text.get(check_from as usize..offset as usize).unwrap_or("");
+    let prefix = source_text
+        .get(check_from as usize..offset as usize)
+        .unwrap_or("");
 
     if prefix.trim_matches(|c: char| c.is_whitespace()).is_empty() {
         // No non-whitespace between last_comment and offset
@@ -662,11 +724,7 @@ fn find_first_token_start_after(
 /// If the last token of `node_span` is `;` and it's NOT on the same line as
 /// the next-to-last token, AND there's code after the `;`, adjust the node end
 /// to the next-to-last token's end (i.e. the end of the `from "..."` string).
-fn handle_last_semicolon(
-    source_text: &str,
-    node_span: Span,
-    all_comments: &[Comment],
-) -> u32 {
+fn handle_last_semicolon(source_text: &str, node_span: Span, all_comments: &[Comment]) -> u32 {
     let text = source_text
         .get(node_span.start as usize..node_span.end as usize)
         .unwrap_or("");
@@ -723,8 +781,12 @@ fn handle_last_semicolon(
 fn has_code_after(source_text: &str, offset: u32, all_comments: &[Comment]) -> bool {
     let mut cursor = offset;
     for c in all_comments {
-        if c.span.start < offset { continue; }
-        let gap = source_text.get(cursor as usize..c.span.start as usize).unwrap_or("");
+        if c.span.start < offset {
+            continue;
+        }
+        let gap = source_text
+            .get(cursor as usize..c.span.start as usize)
+            .unwrap_or("");
         if !gap.trim_matches(|ch: char| ch.is_whitespace()).is_empty() {
             return true;
         }
@@ -766,8 +828,12 @@ fn import_group(
     let mut best: Option<(usize, usize, usize)> = None;
     for (outer_index, group) in options.import_groups.iter().enumerate() {
         for (inner_index, pattern) in group.iter().enumerate() {
-            let Ok(re) = regex::Regex::new(pattern.as_str()) else { continue; };
-            let Some(m) = re.find(match_source.as_str()) else { continue; };
+            let Ok(re) = regex::Regex::new(pattern.as_str()) else {
+                continue;
+            };
+            let Some(m) = re.find(match_source.as_str()) else {
+                continue;
+            };
             let len = m.end() - m.start();
             if best.is_none_or(|(_, _, bl)| len > bl) {
                 best = Some((outer_index, inner_index, len));
@@ -797,7 +863,9 @@ fn is_package_source(s: &str) -> bool {
     let mut chars = s.chars();
     match chars.next() {
         None => false,
-        Some('@') => chars.next().is_some_and(|c| c.is_alphanumeric() || c == '_'),
+        Some('@') => chars
+            .next()
+            .is_some_and(|c| c.is_alphanumeric() || c == '_'),
         Some(c) => c.is_alphanumeric() || c == '_',
     }
 }
@@ -813,18 +881,29 @@ fn make_sorted_import_items<'a>(
     items: &'a [ImportExportItem],
     options: &SimpleImportSortOptions,
 ) -> OuterGroups<'a> {
-    let n_outer_groups = if options.import_groups.is_empty() { 5 } else { options.import_groups.len() };
+    let n_outer_groups = if options.import_groups.is_empty() {
+        5
+    } else {
+        options.import_groups.len()
+    };
     let inner_counts: SmallVec<[usize; 8]> = if options.import_groups.is_empty() {
         (0..n_outer_groups).map(|_| 1).collect()
     } else {
-        options.import_groups.iter().map(|g| g.len().max(1)).collect()
+        options
+            .import_groups
+            .iter()
+            .map(|g| g.len().max(1))
+            .collect()
     };
 
     // Build bucket grid: [outer][inner] → vec of items
-    let mut buckets: SmallVec<[SmallVec<[SmallVec<[&ImportExportItem; 8]>; 4]>; 8]> = SmallVec::new();
+    let mut buckets: SmallVec<[SmallVec<[SmallVec<[&ImportExportItem; 8]>; 4]>; 8]> =
+        SmallVec::new();
     for &ni in &inner_counts {
         let mut outer: SmallVec<[SmallVec<[&ImportExportItem; 8]>; 4]> = SmallVec::new();
-        for _ in 0..ni { outer.push(SmallVec::new()); }
+        for _ in 0..ni {
+            outer.push(SmallVec::new());
+        }
         buckets.push(outer);
     }
     let mut rest: SmallVec<[&ImportExportItem; 8]> = SmallVec::new();
@@ -847,10 +926,8 @@ fn make_sorted_import_items<'a>(
     all_outer
         .into_iter()
         .map(|outer_groups| {
-            let non_empty: SmallVec<[SmallVec<[&ImportExportItem; 8]>; 4]> = outer_groups
-                .into_iter()
-                .filter(|g| !g.is_empty())
-                .collect();
+            let non_empty: SmallVec<[SmallVec<[&ImportExportItem; 8]>; 4]> =
+                outer_groups.into_iter().filter(|g| !g.is_empty()).collect();
             non_empty
                 .into_iter()
                 .map(sort_import_export_items)
@@ -872,22 +949,36 @@ fn sort_import_export_items<'a>(
         if a.style == SIDE_EFFECT_STYLE && b.style == SIDE_EFFECT_STYLE {
             return a.index.cmp(&b.index);
         }
-        if a.style == SIDE_EFFECT_STYLE { return std::cmp::Ordering::Less; }
-        if b.style == SIDE_EFFECT_STYLE { return std::cmp::Ordering::Greater; }
+        if a.style == SIDE_EFFECT_STYLE {
+            return std::cmp::Ordering::Less;
+        }
+        if b.style == SIDE_EFFECT_STYLE {
+            return std::cmp::Ordering::Greater;
+        }
         // Compare source key
         let c = compare(&a.source.source, &b.source.source);
-        if c != 0 { return ord(c); }
+        if c != 0 {
+            return ord(c);
+        }
         let c = compare(&a.source.original_source, &b.source.original_source);
-        if c != 0 { return ord(c); }
+        if c != 0 {
+            return ord(c);
+        }
         let c = compare(&a.source.kind, &b.source.kind);
-        if c != 0 { return ord(c); }
+        if c != 0 {
+            return ord(c);
+        }
         a.style.cmp(&b.style).then(a.index.cmp(&b.index))
     });
     refs
 }
 
 fn ord(c: i32) -> std::cmp::Ordering {
-    if c < 0 { std::cmp::Ordering::Less } else { std::cmp::Ordering::Greater }
+    if c < 0 {
+        std::cmp::Ordering::Less
+    } else {
+        std::cmp::Ordering::Greater
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -911,7 +1002,11 @@ fn print_sorted_items<'a>(
             groups
                 .iter()
                 .map(|group| {
-                    group.iter().map(|item| item.code.as_str()).collect::<Vec<_>>().join(nl)
+                    group
+                        .iter()
+                        .map(|item| item.code.as_str())
+                        .collect::<Vec<_>>()
+                        .join(nl)
                 })
                 .collect::<Vec<_>>()
                 .join(nl)
@@ -958,12 +1053,16 @@ fn find_next_valid_token(
     base_line: u32,
 ) -> Option<u32> {
     for c in all_comments {
-        if c.span.start < offset { continue; }
+        if c.span.start < offset {
+            continue;
+        }
         match c.kind {
             CommentKind::Line => continue, // skip line comments
             CommentKind::SingleLineBlock | CommentKind::MultiLineBlock => {
                 let end_line = shared::line_of(source_text, c.span.end);
-                if end_line == base_line { continue; } // block comment on same line
+                if end_line == base_line {
+                    continue;
+                } // block comment on same line
             }
         }
         return Some(c.span.start);
@@ -988,7 +1087,9 @@ fn maybe_report_sorting(
     diagnostics: &mut SmallVec<[Diagnostic; 8]>,
 ) {
     let original = source_text.get(start as usize..end as usize).unwrap_or("");
-    if original == sorted.as_str() { return; }
+    if original == sorted.as_str() {
+        return;
+    }
     diagnostics.push(Diagnostic {
         rule_name: match rule_kind {
             RuleKind::Imports => "imports",
@@ -1017,9 +1118,15 @@ fn module_export_name(name: &ModuleExportName<'_>) -> CompactString {
 }
 
 pub(crate) fn kind_rank(kind: ImportOrExportKind) -> u8 {
-    match kind { ImportOrExportKind::Type => 0, ImportOrExportKind::Value => 1 }
+    match kind {
+        ImportOrExportKind::Type => 0,
+        ImportOrExportKind::Value => 1,
+    }
 }
 
 fn import_kind_str(kind: ImportOrExportKind) -> &'static str {
-    match kind { ImportOrExportKind::Type => "type", ImportOrExportKind::Value => "value" }
+    match kind {
+        ImportOrExportKind::Type => "type",
+        ImportOrExportKind::Value => "value",
+    }
 }

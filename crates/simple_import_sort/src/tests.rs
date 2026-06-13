@@ -46,7 +46,12 @@ fn sorts_export_chunks_and_local_specifiers() {
     assert_eq!(diagnostics.len(), 2);
     assert_eq!(diagnostics[0].rule_name, "exports");
     assert_eq!(
-        diagnostics[0].fix.as_ref().expect("fix").replacement.as_str(),
+        diagnostics[0]
+            .fix
+            .as_ref()
+            .expect("fix")
+            .replacement
+            .as_str(),
         ["export * from 'a';", "export { zed } from 'z';"].join("\n")
     );
     // Local export specifiers sorted: b, a as c, d → a as c, b, d
@@ -55,7 +60,12 @@ fn sorts_export_chunks_and_local_specifiers() {
     // b sorts as 'b', a as c sorts by external 'c', d sorts as 'd'
     // so sorted order: b, a as c, d
     assert_eq!(
-        diagnostics[1].fix.as_ref().expect("fix").replacement.as_str(),
+        diagnostics[1]
+            .fix
+            .as_ref()
+            .expect("fix")
+            .replacement
+            .as_str(),
         "export { b, a as c, d };"
     );
 }
@@ -68,12 +78,16 @@ fn handles_comments_after_import() {
 
     assert_eq!(diagnostics.len(), 1);
     let fix = diagnostics[0].fix.as_ref().expect("fix");
-    assert_eq!(fix.replacement.as_str(), "import x1 from \"a\" // a\nimport x2 from \"b\"");
+    assert_eq!(
+        fix.replacement.as_str(),
+        "import x1 from \"a\" // a\nimport x2 from \"b\""
+    );
 }
 
 #[test]
 fn preserves_comments_before_imports() {
-    let source = "import c from \"c\"\n// b1\n\n// b2\nimport b from \"b\"\n// a\n\nimport a from \"a\"";
+    let source =
+        "import c from \"c\"\n// b1\n\n// b2\nimport b from \"b\"\n// a\n\nimport a from \"a\"";
     let diagnostics =
         scan_simple_import_sort(source, "fixture.js", &SimpleImportSortOptions::default());
 
@@ -87,7 +101,8 @@ fn preserves_comments_before_imports() {
 
 #[test]
 fn sorts_specifiers_with_comments() {
-    let source = "import {\n  // c\n  c,\n  b, // b\n  a\n  // last\n} from \"specifiers-comments\"";
+    let source =
+        "import {\n  // c\n  c,\n  b, // b\n  a\n  // last\n} from \"specifiers-comments\"";
     let diagnostics =
         scan_simple_import_sort(source, "fixture.js", &SimpleImportSortOptions::default());
 
@@ -109,5 +124,8 @@ fn collator_handles_accents() {
     assert_eq!(diagnostics.len(), 1);
     let fix = diagnostics[0].fix.as_ref().expect("fix");
     // 'ä' is in package group; '.' is relative → different groups
-    assert_eq!(fix.replacement.as_str(), "import a from 'ä';\n\nimport b from '.';");
+    assert_eq!(
+        fix.replacement.as_str(),
+        "import a from 'ä';\n\nimport b from '.';"
+    );
 }

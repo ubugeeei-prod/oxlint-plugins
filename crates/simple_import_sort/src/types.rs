@@ -56,7 +56,12 @@ impl LineIndex {
     pub(crate) fn loc_for_span(&self, source_text: &str, span: Span) -> DiagnosticLoc {
         let (start_line, start_column) = self.position_for_offset(source_text, span.start);
         let (end_line, end_column) = self.position_for_offset(source_text, span.end);
-        DiagnosticLoc { start_line, start_column, end_line, end_column }
+        DiagnosticLoc {
+            start_line,
+            start_column,
+            end_line,
+            end_column,
+        }
     }
 
     fn position_for_offset(&self, source_text: &str, offset: u32) -> (u32, u32) {

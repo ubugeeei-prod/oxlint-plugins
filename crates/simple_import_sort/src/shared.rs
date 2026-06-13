@@ -44,22 +44,40 @@ pub(crate) struct Token {
 
 impl Token {
     pub(crate) fn spaces(s: &str) -> Self {
-        Token { kind: TokenKind::Spaces, code: CompactString::from(s) }
+        Token {
+            kind: TokenKind::Spaces,
+            code: CompactString::from(s),
+        }
     }
     pub(crate) fn newline(s: &str) -> Self {
-        Token { kind: TokenKind::Newline, code: CompactString::from(s) }
+        Token {
+            kind: TokenKind::Newline,
+            code: CompactString::from(s),
+        }
     }
     pub(crate) fn block(s: &str) -> Self {
-        Token { kind: TokenKind::Block, code: CompactString::from(s) }
+        Token {
+            kind: TokenKind::Block,
+            code: CompactString::from(s),
+        }
     }
     pub(crate) fn line(s: &str) -> Self {
-        Token { kind: TokenKind::Line, code: CompactString::from(s) }
+        Token {
+            kind: TokenKind::Line,
+            code: CompactString::from(s),
+        }
     }
     pub(crate) fn identifier(s: &str) -> Self {
-        Token { kind: TokenKind::Identifier, code: CompactString::from(s) }
+        Token {
+            kind: TokenKind::Identifier,
+            code: CompactString::from(s),
+        }
     }
     pub(crate) fn comma() -> Self {
-        Token { kind: TokenKind::Comma, code: CompactString::from(",") }
+        Token {
+            kind: TokenKind::Comma,
+            code: CompactString::from(","),
+        }
     }
 }
 
@@ -167,7 +185,8 @@ fn unicode_general_category(ch: char) -> GeneralCategory {
         || (0x1AB0..=0x1AFF).contains(&cp)  // Extended Combining
         || (0x1DC0..=0x1DFF).contains(&cp)  // Supplement
         || (0x20D0..=0x20FF).contains(&cp)  // For Symbols
-        || (0xFE20..=0xFE2F).contains(&cp)  // Half Marks
+        || (0xFE20..=0xFE2F).contains(&cp)
+    // Half Marks
     {
         GeneralCategory::NonspacingMark
     } else {
@@ -244,7 +263,13 @@ pub(crate) fn compare(a: &str, b: &str) -> i32 {
         return cmp;
     }
     // Tiebreak: code-point order on original strings
-    if a < b { -1 } else if a > b { 1 } else { 0 }
+    if a < b {
+        -1
+    } else if a > b {
+        1
+    } else {
+        0
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -373,7 +398,11 @@ pub(crate) fn print_comments_after(
     }
     let mut out = CompactString::new("");
     for (index, comment) in comments.iter().enumerate() {
-        let prev_end = if index == 0 { node_end } else { comments[index - 1].span.end };
+        let prev_end = if index == 0 {
+            node_end
+        } else {
+            comments[index - 1].span.end
+        };
         let gap = source_text
             .get(prev_end as usize..comment.span.start as usize)
             .unwrap_or("");
@@ -565,7 +594,11 @@ pub(crate) struct SpecifierItemsResult {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum State { Before, Specifier, After }
+enum State {
+    Before,
+    Specifier,
+    After,
+}
 
 fn make_empty_item() -> SpecifierItem {
     SpecifierItem {
@@ -659,25 +692,23 @@ pub(crate) fn get_specifier_items(tokens: &[Token]) -> SpecifierItemsResult {
         }
         State::Specifier => {
             // No trailing comma – separate identifier from trailing whitespace
-            let last_id_index = current
-                .specifier
-                .iter()
-                .rposition(is_identifier);
+            let last_id_index = current.specifier.iter().rposition(is_identifier);
 
-            let last_id = last_id_index.unwrap_or_else(|| {
-                current.specifier.len().saturating_sub(1)
-            });
+            let last_id =
+                last_id_index.unwrap_or_else(|| current.specifier.len().saturating_sub(1));
 
-            let sp_part: SmallVec<[Token; 4]> = current.specifier[..=last_id].iter().cloned().collect();
-            let after_part: SmallVec<[Token; 4]> = current.specifier[last_id + 1..].iter().cloned().collect();
+            let sp_part: SmallVec<[Token; 4]> =
+                current.specifier[..=last_id].iter().cloned().collect();
+            let after_part: SmallVec<[Token; 4]> =
+                current.specifier[last_id + 1..].iter().cloned().collect();
 
             // Find slice point in after_part
             let newline_idx_raw = after_part.iter().position(is_newline);
             let newline_idx = newline_idx_raw.map(|i| i + 1); // include the newline
 
-            let multiline_block_idx = after_part.iter().position(|t| {
-                is_block_comment(t) && has_newline(&t.code)
-            });
+            let multiline_block_idx = after_part
+                .iter()
+                .position(|t| is_block_comment(t) && has_newline(&t.code));
 
             let slice_index: Option<usize> = match (newline_idx, multiline_block_idx) {
                 (Some(ni), Some(mi)) => Some(ni.min(mi)),
@@ -747,7 +778,11 @@ pub(crate) fn needs_starting_newline(tokens: &[Token]) -> bool {
 // ---------------------------------------------------------------------------
 
 pub(crate) fn guess_newline(source_text: &str) -> &'static str {
-    if source_text.contains("\r\n") { "\r\n" } else { "\n" }
+    if source_text.contains("\r\n") {
+        "\r\n"
+    } else {
+        "\n"
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -787,7 +822,13 @@ pub(crate) fn tokenize_specifier_interior(
         tokens.push(Token::identifier(spec_text));
         cursor = span.end;
     }
-    scan_gap_tokens(source_text, cursor, close_brace_start, all_comments, &mut tokens);
+    scan_gap_tokens(
+        source_text,
+        cursor,
+        close_brace_start,
+        all_comments,
+        &mut tokens,
+    );
 
     tokens
 }
@@ -828,12 +869,7 @@ fn scan_gap_tokens(
 
 /// Scan raw text (no comments) between `from` and `to`, emitting commas and
 /// whitespace tokens. Whitespace is split via `parse_whitespace`.
-fn scan_gap_text(
-    source_text: &str,
-    from: u32,
-    to: u32,
-    out: &mut SmallVec<[Token; 16]>,
-) {
+fn scan_gap_text(source_text: &str, from: u32, to: u32, out: &mut SmallVec<[Token; 16]>) {
     if from >= to {
         return;
     }
@@ -911,9 +947,8 @@ pub(crate) fn print_with_sorted_specifiers(
     };
 
     let open_brace_abs = node_start + open_rel as u32; // position of `{`
-    let open_brace_end = open_brace_abs + 1;           // position after `{`
+    let open_brace_end = open_brace_abs + 1; // position after `{`
     let close_brace_start = last_spec_end + close_offset_in_after as u32; // position of `}`
-    let close_brace_end = close_brace_start + 1;        // position after `}`
 
     let open_rel_in_node = open_rel;
     let close_rel_in_node = (close_brace_start - node_start) as usize;
@@ -959,9 +994,7 @@ pub(crate) fn print_with_sorted_specifiers(
 
         // maybeNewline
         if let Some(prev) = prev_item {
-            if needs_starting_newline(&item.before)
-                && !prev.after.last().is_some_and(is_newline)
-            {
+            if needs_starting_newline(&item.before) && !prev.after.last().is_some_and(is_newline) {
                 sorted_tokens.push(Token::newline(newline));
             }
         }
@@ -1003,9 +1036,7 @@ pub(crate) fn print_with_sorted_specifiers(
 /// We scan the interior tokens backwards, skipping whitespace and comments.
 fn check_trailing_comma(source_text: &str, close_brace_start: u32) -> bool {
     // Take text up to close brace and scan backwards for non-whitespace char
-    let before = source_text
-        .get(..close_brace_start as usize)
-        .unwrap_or("");
+    let before = source_text.get(..close_brace_start as usize).unwrap_or("");
     // Skip all whitespace (incl. newlines)
     let stripped = before.trim_end_matches(|c: char| c.is_whitespace());
     // Skip any trailing block/line comment
@@ -1019,12 +1050,16 @@ fn check_trailing_comma(source_text: &str, close_brace_start: u32) -> bool {
 
 fn strip_trailing_comments_for_comma(s: &str) -> bool {
     let s = s.trim_end_matches(|c: char| c.is_whitespace());
-    if s.is_empty() { return false; }
-    if s.ends_with(',') { return true; }
+    if s.is_empty() {
+        return false;
+    }
+    if s.ends_with(',') {
+        return true;
+    }
     // Check if ends with */ (block comment end)
     if s.ends_with("*/") {
         // Find matching /*
-        if let Some(open) = s[..s.len()-1].rfind("/*") {
+        if let Some(open) = s[..s.len() - 1].rfind("/*") {
             let before_comment = s[..open].trim_end_matches(|c: char| c.is_whitespace());
             return strip_trailing_comments_for_comma(before_comment);
         }
@@ -1062,11 +1097,19 @@ pub(crate) fn sort_specifier_items_indices(
         let b = &keyed[ib];
         let c = compare(&a.0, &b.0);
         if c != 0 {
-            return if c < 0 { std::cmp::Ordering::Less } else { std::cmp::Ordering::Greater };
+            return if c < 0 {
+                std::cmp::Ordering::Less
+            } else {
+                std::cmp::Ordering::Greater
+            };
         }
         let c = compare(&a.1, &b.1);
         if c != 0 {
-            return if c < 0 { std::cmp::Ordering::Less } else { std::cmp::Ordering::Greater };
+            return if c < 0 {
+                std::cmp::Ordering::Less
+            } else {
+                std::cmp::Ordering::Greater
+            };
         }
         a.2.cmp(&b.2).then(a.3.cmp(&b.3))
     });
