@@ -38,6 +38,8 @@ describe('regexp native API', () => {
       'no-empty-string-literal',
       'no-optional-assertion',
       'require-unicode-sets-regexp',
+      'confusing-quantifier',
+      'prefer-named-replacement',
     ]);
   });
 

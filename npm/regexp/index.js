@@ -126,6 +126,14 @@ const messages = Object.freeze({
   'require-unicode-sets-regexp': {
     require: "Use the 'v' flag.",
   },
+  'confusing-quantifier': {
+    unexpected:
+      'Unexpected lazy quantifier with a minimum of zero. It always prefers the empty match first.',
+  },
+  'prefer-named-replacement': {
+    unexpected:
+      'Use a named-group replacement (`$<name>`) instead of a numbered backreference when the regular expression has named capture groups.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -167,6 +175,10 @@ const ruleDescriptions = Object.freeze({
   'no-optional-assertion':
     'disallow optional quantifiers (`?`) immediately after a lookaround assertion',
   'require-unicode-sets-regexp': 'enforce the use of the `v` flag (unicode sets mode)',
+  'confusing-quantifier':
+    'disallow lazy quantifiers (`*?`, `??`, `{0,}?`, `{0,1}?`) whose minimum is zero',
+  'prefer-named-replacement':
+    'enforce using named-group replacements (`$<name>`) when the regular expression has named captures',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -202,6 +214,8 @@ const ruleTypes = Object.freeze({
   'no-empty-string-literal': 'problem',
   'no-optional-assertion': 'problem',
   'require-unicode-sets-regexp': 'suggestion',
+  'confusing-quantifier': 'suggestion',
+  'prefer-named-replacement': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -338,7 +352,9 @@ function ruleCategory(ruleName) {
     ruleName === 'hexadecimal-escape' ||
     ruleName === 'unicode-escape' ||
     ruleName === 'no-useless-range' ||
-    ruleName === 'no-useless-character-class'
+    ruleName === 'no-useless-character-class' ||
+    ruleName === 'confusing-quantifier' ||
+    ruleName === 'prefer-named-replacement'
   ) {
     return 'Stylistic Issues';
   }

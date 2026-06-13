@@ -20,6 +20,29 @@ use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
 use crate::types::DiagnosticData;
 
+/// Returns `true` when `replacement` contains a `$N` backreference (where `N`
+/// is a single ASCII digit 1-9). Used by `prefer-named-replacement` to decide
+/// whether a string replacement is using numbered backreferences. `$$` (escaped
+/// dollar) and `$&` (whole match) are intentionally skipped.
+fn contains_numeric_backreference(replacement: &str) -> bool {
+    let bytes = replacement.as_bytes();
+    let mut index = 0;
+    while index + 1 < bytes.len() {
+        if bytes[index] == b'$' {
+            let next = bytes[index + 1];
+            if next == b'$' {
+                index += 2;
+                continue;
+            }
+            if next.is_ascii_digit() && next != b'0' {
+                return true;
+            }
+        }
+        index += 1;
+    }
+    false
+}
+
 /// Static `RegExp.*` properties that upstream `eslint-plugin-regexp/no-legacy-features`
 /// reports. Excludes special-character aliases such as `$&`, `$+`, `` $` ``, and
 /// `$'`, which cannot be accessed through plain static member syntax (those go
@@ -73,6 +96,44 @@ impl<'a> Scanner<'a> {
         }
         self.check_prefer_regexp_exec(call);
         self.check_no_missing_g_flag(call);
+        self.check_prefer_named_replacement(call);
+    }
+
+    /// `prefer-named-replacement`: when `<expr>.replace(<regexp with named
+    /// captures>, "...$N...")` mixes numbered backreferences with a regex that
+    /// has at least one named capture, the named form `$<name>` is clearer.
+    /// We only attempt the literal-regexp + literal-replacement case; dynamic
+    /// arguments are deferred.
+    fn check_prefer_named_replacement(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        let method = member.property.name.as_str();
+        if method != "replace" && method != "replaceAll" {
+            return;
+        }
+        if call.arguments.len() < 2 {
+            return;
+        }
+        let Some(arg0) = call.arguments.first().and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::RegExpLiteral(literal) = arg0.get_inner_expression() else {
+            return;
+        };
+        if !literal.regex.pattern.text.as_str().contains("(?<") {
+            return;
+        }
+        let Some(arg1) = call.arguments.get(1).and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::StringLiteral(replacement) = arg1.get_inner_expression() else {
+            return;
+        };
+        if !contains_numeric_backreference(replacement.value.as_str()) {
+            return;
+        }
+        self.report("prefer-named-replacement", "unexpected", call.span);
     }
 
     /// `no-missing-g-flag`: `<expr>.matchAll(<regexp without 'g'>)` and
@@ -514,6 +575,9 @@ impl<'a> Scanner<'a> {
         }
         if analysis.has_optional_assertion {
             self.report("no-optional-assertion", "unexpected", span);
+        }
+        if analysis.has_confusing_quantifier {
+            self.report("confusing-quantifier", "unexpected", span);
         }
     }
 }

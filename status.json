@@ -8587,19 +8587,19 @@
       },
       {
         "name": "confusing-quantifier",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule confusing-quantifier."
+        "notes": "Pattern walker addition: at `*` and `?` peek next byte for `?` (lazy modifier); for braced quantifiers reuse parse_brace_quantifier and check the Star/Question shapes when followed by `?`. `{0,5}?` and other braced forms outside the parser are intentionally deferred."
       },
       {
         "name": "control-character-escape",
@@ -9403,19 +9403,19 @@
       },
       {
         "name": "prefer-named-replacement",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-named-replacement."
+        "notes": "JS-side CallExpression check for `<expr>.replace(<regexp literal>, <string literal>)` and `replaceAll`: fire when the regex source contains a named capture marker `(?<` and the replacement string contains `$N` (1-9). `$$` is escaped and skipped. Dynamic arguments are deferred."
       },
       {
         "name": "prefer-plus-quantifier",

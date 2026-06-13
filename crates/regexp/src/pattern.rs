@@ -82,6 +82,10 @@ pub(crate) struct PatternAnalysis {
     /// (`(?=a)?`). The `?` is always meaningless because the assertion either
     /// succeeds or fails without consuming input. `no-optional-assertion`.
     pub(crate) has_optional_assertion: bool,
+    /// At least one lazy quantifier whose minimum is zero (`*?`, `??`,
+    /// `{0,N}?`, `{0,}?`). Such quantifiers always prefer the empty match and
+    /// rarely express the author's intent. `confusing-quantifier`.
+    pub(crate) has_confusing_quantifier: bool,
 }
 
 impl PatternAnalysis {
@@ -198,6 +202,15 @@ impl PatternAnalysis {
                 b'{' => {
                     if let Some((end, original, shape)) = parse_brace_quantifier(bytes, index) {
                         self.record_brace_quantifier(original, shape);
+                        // `{0,}?` and `{0,1}?` are lazy quantifiers whose
+                        // minimum is zero — `confusing-quantifier` flags them.
+                        if matches!(
+                            shape,
+                            BraceQuantifierShape::Star | BraceQuantifierShape::Question
+                        ) && bytes.get(end) == Some(&b'?')
+                        {
+                            self.has_confusing_quantifier = true;
+                        }
                         // Advance past the `}` so we do not re-scan the digits inside.
                         // Skipping the body is safe: digits are not quantifiable on
                         // their own and contain no further regexp syntax we need to
@@ -207,7 +220,19 @@ impl PatternAnalysis {
                     }
                     index += 1;
                 }
-                b'*' | b'+' | b'?' | b'}' | b'^' | b'$' => {
+                b'*' => {
+                    if bytes.get(index + 1) == Some(&b'?') {
+                        self.has_confusing_quantifier = true;
+                    }
+                    index += 1;
+                }
+                b'?' => {
+                    if bytes.get(index + 1) == Some(&b'?') {
+                        self.has_confusing_quantifier = true;
+                    }
+                    index += 1;
+                }
+                b'+' | b'}' | b'^' | b'$' => {
                     index += 1;
                 }
                 _ => {
