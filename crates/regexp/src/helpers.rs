@@ -139,6 +139,140 @@ pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> GroupPrefix {
     }
 }
 
+/// Classification of a `[...]` character class for shorthand-equivalence
+/// rules (`prefer-d`, `prefer-w`). Carries whether the class is negated so
+/// callers can pick between the lower- and upper-case shorthand.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct ShorthandClass {
+    pub(crate) negated: bool,
+}
+
+/// Returns `Some(ShorthandClass)` when the class at `open` is exactly the
+/// range `0-9` (possibly negated): the bodies of `[0-9]`, `[^0-9]`. Any extra
+/// element, malformed range, or unrecognised content yields `None`. Reuses
+/// `find_class_end` so escaped `]` inside the class is handled.
+pub(crate) fn class_is_digit_range(bytes: &[u8], open: usize) -> Option<ShorthandClass> {
+    let (negated, start, end) = class_body_bounds(bytes, open)?;
+    let body = &bytes[start..end];
+    if body == b"0-9" {
+        Some(ShorthandClass { negated })
+    } else {
+        None
+    }
+}
+
+/// Returns `Some(ShorthandClass)` when the class at `open` is exactly the
+/// word-character set in any order: ranges `a-z`, `A-Z`, `0-9`, and literal
+/// `_`. Negated forms (`[^a-zA-Z0-9_]` etc.) are also recognised. Any extra
+/// element or unrecognised content yields `None`.
+pub(crate) fn class_is_word_char_set(bytes: &[u8], open: usize) -> Option<ShorthandClass> {
+    let (negated, start, end) = class_body_bounds(bytes, open)?;
+    let mut index = start;
+    let mut saw_lower = false;
+    let mut saw_upper = false;
+    let mut saw_digit = false;
+    let mut saw_underscore = false;
+    while index < end {
+        if index + 2 < end
+            && bytes[index] == b'a'
+            && bytes[index + 1] == b'-'
+            && bytes[index + 2] == b'z'
+            && !saw_lower
+        {
+            saw_lower = true;
+            index += 3;
+        } else if index + 2 < end
+            && bytes[index] == b'A'
+            && bytes[index + 1] == b'-'
+            && bytes[index + 2] == b'Z'
+            && !saw_upper
+        {
+            saw_upper = true;
+            index += 3;
+        } else if index + 2 < end
+            && bytes[index] == b'0'
+            && bytes[index + 1] == b'-'
+            && bytes[index + 2] == b'9'
+            && !saw_digit
+        {
+            saw_digit = true;
+            index += 3;
+        } else if bytes[index] == b'_' && !saw_underscore {
+            saw_underscore = true;
+            index += 1;
+        } else {
+            return None;
+        }
+    }
+    if saw_lower && saw_upper && saw_digit && saw_underscore {
+        Some(ShorthandClass { negated })
+    } else {
+        None
+    }
+}
+
+/// Returns `(negated, body_start, body_end_exclusive)` for the `[...]` class at
+/// `open`, where the body excludes the leading `[`, the optional negation `^`,
+/// and the trailing `]`. Returns `None` if the class is unclosed.
+fn class_body_bounds(bytes: &[u8], open: usize) -> Option<(bool, usize, usize)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut start = open + 1;
+    let mut negated = false;
+    if bytes.get(start) == Some(&b'^') {
+        negated = true;
+        start += 1;
+    }
+    Some((negated, start, end))
+}
+
+/// Returns the first hexadecimal escape sequence (`\xHH`, `\uHHHH`, or
+/// `\u{H+}`) in `pattern` whose hex digits contain at least one uppercase
+/// letter `A`-`F`. Used by `letter-case` (default config: lowercase hex digits).
+pub(crate) fn first_uppercase_hex_escape(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        let next = *bytes.get(index + 1)?;
+        match next {
+            b'x' => {
+                let end = (index + 4).min(bytes.len());
+                if end - index == 4 && hex_range_has_upper(&bytes[index + 2..end]) {
+                    return Some(&pattern[index..end]);
+                }
+                index = skip_escape(bytes, index);
+            }
+            b'u' if bytes.get(index + 2) == Some(&b'{') => {
+                let mut cursor = index + 3;
+                while cursor < bytes.len() && bytes[cursor] != b'}' {
+                    cursor += 1;
+                }
+                if cursor < bytes.len() && hex_range_has_upper(&bytes[index + 3..cursor]) {
+                    return Some(&pattern[index..cursor + 1]);
+                }
+                index = cursor.saturating_add(1).min(bytes.len());
+            }
+            b'u' => {
+                let end = (index + 6).min(bytes.len());
+                if end - index == 6 && hex_range_has_upper(&bytes[index + 2..end]) {
+                    return Some(&pattern[index..end]);
+                }
+                index = skip_escape(bytes, index);
+            }
+            _ => index = skip_escape(bytes, index),
+        }
+    }
+    None
+}
+
+fn hex_range_has_upper(bytes: &[u8]) -> bool {
+    bytes.iter().any(|&byte| matches!(byte, b'A'..=b'F'))
+}
+
 /// Returns `true` when the `[...]` character class at `open` consists of
 /// exactly an antipair of shorthand classes that together cover every
 /// character: `[\s\S]`, `[\d\D]`, or `[\w\W]` (in either order). Returns

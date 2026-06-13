@@ -11,8 +11,8 @@ use oxc_span::Span;
 use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
-    duplicate_flag, first_control_character, first_octal_escape, mention_char, sorted_flags,
-    string_literal_value_with_span,
+    duplicate_flag, first_control_character, first_octal_escape, first_uppercase_hex_escape,
+    mention_char, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -298,6 +298,45 @@ impl<'a> Scanner<'a> {
         }
         if analysis.has_match_any_class {
             self.report("match-any", "unexpected", span);
+        }
+        if let Some(negated) = analysis.first_digit_class {
+            self.report_with_data(
+                "prefer-d",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(if negated {
+                        "[^0-9]"
+                    } else {
+                        "[0-9]"
+                    })),
+                    replacement: Some(CompactString::from(if negated { "\\D" } else { "\\d" })),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(negated) = analysis.first_word_class {
+            self.report_with_data(
+                "prefer-w",
+                "unexpected",
+                DiagnosticData {
+                    replacement: Some(CompactString::from(if negated { "\\W" } else { "\\w" })),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(escape) = first_uppercase_hex_escape(pattern) {
+            self.report_with_data(
+                "letter-case",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(escape)),
+                    replacement: Some(CompactString::from(escape.to_ascii_lowercase().as_str())),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
         }
     }
 }

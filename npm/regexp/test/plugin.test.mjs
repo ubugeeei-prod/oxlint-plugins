@@ -79,6 +79,17 @@ const validCases = [
   ['no-legacy-features', 'lowercase regexp', 'regexp.lastMatch;\n'],
   ['no-legacy-features', 'modern prototype access', 'RegExp.prototype;\n'],
   ['no-legacy-features', '$10 out of legacy range', 'RegExp.$10;\n'],
+  // prefer-d
+  ['prefer-d', 'shorthand already used', 'const re = /\\d/u;\n'],
+  ['prefer-d', 'subset range', 'const re = /[1-9]/u;\n'],
+  ['prefer-d', 'extra element', 'const re = /[0-9a]/u;\n'],
+  // prefer-w
+  ['prefer-w', 'shorthand already used', 'const re = /\\w/u;\n'],
+  ['prefer-w', 'missing element', 'const re = /[a-zA-Z0-9]/u;\n'],
+  // letter-case
+  ['letter-case', 'lowercase hex escape', 'const re = /\\xab/u;\n'],
+  ['letter-case', 'lowercase unicode escape', 'const re = /\\uabcd/u;\n'],
+  ['letter-case', 'decimal-only unicode escape', "const re = new RegExp('\\\\u0041', 'u');\n"],
 ];
 
 const invalidCases = [
@@ -204,6 +215,27 @@ const invalidCases = [
   ['no-legacy-features', 'lastParen alias', 'RegExp.lastParen;\n', ['staticProperty']],
   ['no-legacy-features', 'leftContext alias', 'RegExp.leftContext;\n', ['staticProperty']],
   ['no-legacy-features', 'rightContext alias', 'RegExp.rightContext;\n', ['staticProperty']],
+  // prefer-d
+  ['prefer-d', 'positive digit range', 'const re = /[0-9]/u;\n', ['unexpected']],
+  ['prefer-d', 'negated digit range', 'const re = /[^0-9]/u;\n', ['unexpected']],
+  // prefer-w
+  ['prefer-w', 'canonical order', 'const re = /[a-zA-Z0-9_]/u;\n', ['unexpected']],
+  ['prefer-w', 'reordered word chars', 'const re = /[_0-9A-Za-z]/u;\n', ['unexpected']],
+  ['prefer-w', 'negated word chars', 'const re = /[^a-zA-Z0-9_]/u;\n', ['unexpected']],
+  // letter-case
+  ['letter-case', 'uppercase \\xHH', "const re = new RegExp('\\\\xAB', 'u');\n", ['unexpected']],
+  [
+    'letter-case',
+    'uppercase \\uHHHH',
+    "const re = new RegExp('\\\\uABCD', 'u');\n",
+    ['unexpected'],
+  ],
+  [
+    'letter-case',
+    'uppercase \\u{H+}',
+    "const re = new RegExp('\\\\u{1F4A9}', 'u');\n",
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

@@ -59,6 +59,9 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-named-capture-group",
             "match-any",
             "no-legacy-features",
+            "prefer-d",
+            "prefer-w",
+            "letter-case",
         ]
     );
 }
@@ -678,6 +681,111 @@ mod no_legacy_features {
         assert!(rule_ids_for("regexp.lastMatch;", "no-legacy-features").is_empty());
         // `$10` is NOT one of the legacy indices ($1–$9).
         assert!(rule_ids_for("RegExp.$10;", "no-legacy-features").is_empty());
+    }
+}
+
+mod prefer_d {
+    use super::*;
+
+    #[test]
+    fn reports_digit_ranges_with_replacement() {
+        let data = first_data("const a = /[0-9]/u;", "prefer-d");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("[0-9]"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\d")
+        );
+
+        let data = first_data("const a = /[^0-9]/u;", "prefer-d");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("[^0-9]")
+        );
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\D")
+        );
+    }
+
+    #[test]
+    fn ignores_supersets_and_subranges() {
+        // Subset of the digit range; not equivalent to \d.
+        assert!(rule_ids_for("const a = /[1-9]/u;", "prefer-d").is_empty());
+        // Superset that includes letters; not equivalent.
+        assert!(rule_ids_for("const a = /[0-9a]/u;", "prefer-d").is_empty());
+        // Already \d; should not flag.
+        assert!(rule_ids_for("const a = /\\d/u;", "prefer-d").is_empty());
+    }
+}
+
+mod prefer_w {
+    use super::*;
+
+    #[test]
+    fn reports_word_char_set_in_any_order() {
+        assert_eq!(
+            rule_ids_for("const a = /[a-zA-Z0-9_]/u;", "prefer-w").as_slice(),
+            &["unexpected"]
+        );
+        // Reordered elements still match.
+        assert_eq!(
+            rule_ids_for("const a = /[_0-9A-Za-z]/u;", "prefer-w").as_slice(),
+            &["unexpected"]
+        );
+
+        let data = first_data("const a = /[^a-zA-Z0-9_]/u;", "prefer-w");
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\W")
+        );
+    }
+
+    #[test]
+    fn ignores_classes_missing_or_adding_elements() {
+        // Missing underscore.
+        assert!(rule_ids_for("const a = /[a-zA-Z0-9]/u;", "prefer-w").is_empty());
+        // Adds extra range.
+        assert!(rule_ids_for("const a = /[a-zA-Z0-9_-]/u;", "prefer-w").is_empty());
+        // Already \w.
+        assert!(rule_ids_for("const a = /\\w/u;", "prefer-w").is_empty());
+    }
+}
+
+mod letter_case {
+    use super::*;
+
+    #[test]
+    fn reports_uppercase_hex_escapes() {
+        let data = first_data("const a = new RegExp('\\\\xAB', 'u');", "letter-case");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("\\xAB"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\xab")
+        );
+
+        let data = first_data("const a = new RegExp('\\\\uABCD', 'u');", "letter-case");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("\\uABCD")
+        );
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\uabcd")
+        );
+
+        let data = first_data("const a = new RegExp('\\\\u{1F4A9}', 'u');", "letter-case");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("\\u{1F4A9}")
+        );
+    }
+
+    #[test]
+    fn ignores_lowercase_and_decimal_only_escapes() {
+        assert!(rule_ids_for("const a = /\\xab/u;", "letter-case").is_empty());
+        assert!(rule_ids_for("const a = /\\uabcd/u;", "letter-case").is_empty());
+        // Decimal-only digits are already lowercase-equivalent.
+        assert!(rule_ids_for("const a = new RegExp('\\\\u0041', 'u');", "letter-case").is_empty());
     }
 }
 

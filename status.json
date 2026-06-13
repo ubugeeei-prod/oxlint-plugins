@@ -8651,19 +8651,19 @@
       },
       {
         "name": "letter-case",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule letter-case."
+        "notes": "Default `letter-case` configuration: flags any `\\xHH`, `\\uHHHH`, or `\\u{H+}` escape whose hex digits contain an uppercase letter; the diagnostic carries the original escape and its lowercase replacement. Pattern-level scan; Vitest tests cover all three escape shapes and pure-decimal escapes (which stay valid)."
       },
       {
         "name": "match-any",
@@ -9323,19 +9323,19 @@
       },
       {
         "name": "prefer-d",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-d."
+        "notes": "Detects character classes that are exactly `[0-9]` or `[^0-9]` via class_is_digit_range; the diagnostic data carries both the original class and the `\\d`/`\\D` replacement. Pattern walker only; Vitest plugin tests cover the canonical, negated, subset, and extra-element forms."
       },
       {
         "name": "prefer-escape-replacement-dollar-char",
@@ -9595,19 +9595,19 @@
       },
       {
         "name": "prefer-w",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-w."
+        "notes": "Detects character classes that are exactly the four word-char elements (`a-z`, `A-Z`, `0-9`, `_`) in any order via class_is_word_char_set; covers both positive and negated forms. Pattern walker only; Vitest tests cover reordered, partial, and superset variants."
       },
       {
         "name": "require-unicode-sets-regexp",

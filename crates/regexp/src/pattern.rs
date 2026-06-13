@@ -3,8 +3,9 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    BraceQuantifierShape, class_contains_backspace_escape, class_matches_anything, find_class_end,
-    group_prefix, is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    BraceQuantifierShape, class_contains_backspace_escape, class_is_digit_range,
+    class_is_word_char_set, class_matches_anything, find_class_end, group_prefix,
+    is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -57,6 +58,13 @@ pub(crate) struct PatternAnalysis {
     /// At least one `[\s\S]`/`[\d\D]`/`[\w\W]`-shaped character class —
     /// `match-any`.
     pub(crate) has_match_any_class: bool,
+    /// First `[0-9]`-shaped class and whether it was negated. `Some(false)` →
+    /// `[0-9]` (suggest `\d`), `Some(true)` → `[^0-9]` (suggest `\D`).
+    /// `prefer-d`.
+    pub(crate) first_digit_class: Option<bool>,
+    /// First `[a-zA-Z0-9_]`-shaped class (any order) and whether it was
+    /// negated. `Some(false)` → `\w`, `Some(true)` → `\W`. `prefer-w`.
+    pub(crate) first_word_class: Option<bool>,
 }
 
 impl PatternAnalysis {
@@ -89,6 +97,16 @@ impl PatternAnalysis {
                         }
                         if !self.has_match_any_class && class_matches_anything(bytes, index) {
                             self.has_match_any_class = true;
+                        }
+                        if self.first_digit_class.is_none()
+                            && let Some(shape) = class_is_digit_range(bytes, index)
+                        {
+                            self.first_digit_class = Some(shape.negated);
+                        }
+                        if self.first_word_class.is_none()
+                            && let Some(shape) = class_is_word_char_set(bytes, index)
+                        {
+                            self.first_word_class = Some(shape.negated);
                         }
                         self.mark_content(&mut groups);
                         index = close + 1;

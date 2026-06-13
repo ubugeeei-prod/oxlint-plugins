@@ -78,6 +78,15 @@ const messages = Object.freeze({
     staticProperty:
       "Unexpected use of the legacy 'RegExp.{{expr}}' static property; it is non-standard and not safe to rely on.",
   },
+  'prefer-d': {
+    unexpected: "Unexpected character class '{{expr}}'. Use '{{replacement}}' instead.",
+  },
+  'prefer-w': {
+    unexpected: "Unexpected character class. Use '{{replacement}}' instead.",
+  },
+  'letter-case': {
+    unexpected: "Unexpected uppercase escape '{{expr}}'. Use '{{replacement}}' instead.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -100,6 +109,9 @@ const ruleDescriptions = Object.freeze({
   'match-any':
     'enforce using `.` (with the `s` flag) instead of character classes that match any character',
   'no-legacy-features': 'disallow legacy `RegExp` features',
+  'prefer-d': 'enforce using `\\d` instead of `[0-9]`',
+  'prefer-w': 'enforce using `\\w` instead of `[a-zA-Z0-9_]`',
+  'letter-case': 'enforce consistent case for escape sequences (default lowercase)',
 });
 
 const ruleTypes = Object.freeze({
@@ -121,6 +133,9 @@ const ruleTypes = Object.freeze({
   'prefer-named-capture-group': 'suggestion',
   'match-any': 'suggestion',
   'no-legacy-features': 'problem',
+  'prefer-d': 'suggestion',
+  'prefer-w': 'suggestion',
+  'letter-case': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -242,7 +257,10 @@ function ruleCategory(ruleName) {
     ruleName === 'prefer-question-quantifier' ||
     ruleName === 'no-useless-two-nums-quantifier' ||
     ruleName === 'prefer-named-capture-group' ||
-    ruleName === 'match-any'
+    ruleName === 'match-any' ||
+    ruleName === 'prefer-d' ||
+    ruleName === 'prefer-w' ||
+    ruleName === 'letter-case'
   ) {
     return 'Stylistic Issues';
   }
