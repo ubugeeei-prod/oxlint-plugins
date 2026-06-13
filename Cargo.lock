@@ -1194,6 +1194,7 @@ dependencies = [
  "oxc_span",
  "oxlint-plugins-_carton",
  "regex",
+ "unicode-normalization",
 ]
 
 [[package]]

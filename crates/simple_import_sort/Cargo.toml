@@ -15,6 +15,7 @@ oxc_parser.workspace = true
 oxc_span.workspace = true
 oxlint-plugins-carton.workspace = true
 regex.workspace = true
+unicode-normalization.workspace = true
 
 [dev-dependencies]
 insta.workspace = true

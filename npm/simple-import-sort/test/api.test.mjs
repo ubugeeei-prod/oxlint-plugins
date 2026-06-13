@@ -31,7 +31,9 @@ describe('simple-import-sort native API', () => {
           '',
           "import fs from 'node:fs';",
           '',
-          "import { alpha as renamed, beta } from 'pkg';",
+          // Token-preserving: the original second specifier had no trailing
+          // space, so the comma between the reordered specifiers carries none.
+          "import { alpha as renamed,beta } from 'pkg';",
           "import z from 'z';",
           '',
           "import local from './local';",
@@ -53,7 +55,7 @@ describe('simple-import-sort native API', () => {
     expect(diagnostics[0].fix.replacement).toBe(
       ["export * from 'a';", "export { zed } from 'z';"].join('\n'),
     );
-    expect(diagnostics[1].fix.replacement).toBe('export { b, a as c, d };');
+    expect(diagnostics[1].fix.replacement).toBe('export { b,a as c, d };');
   });
 
   it('honors custom import groups', () => {

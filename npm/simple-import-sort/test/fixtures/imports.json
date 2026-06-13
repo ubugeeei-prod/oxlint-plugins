@@ -316,13 +316,13 @@
     },
     {
       "code": "import {\n\tb,\n\ta,\n} from \"specifiers-indent-tab\"",
-      "output": "import {\n→a,\n→b,\n} from \"specifiers-indent-tab\"",
+      "output": "import {\n\ta,\n\tb,\n} from \"specifiers-indent-tab\"",
       "errors": 1,
       "parser": "js"
     },
     {
       "code": "import {\n //\n\tb,\n  a,\n\n    c,\n} from \"specifiers-indent-mixed\"",
-      "output": "import {\n  a,\n //\n→b,\n    c,\n} from \"specifiers-indent-mixed\"",
+      "output": "import {\n  a,\n //\n\tb,\n    c,\n} from \"specifiers-indent-mixed\"",
       "errors": 1,
       "parser": "js"
     },
@@ -400,7 +400,7 @@
     },
     {
       "code": "import c from \"c\"\r\n// b1\r\n\r\n// b2\r\nimport b from \"b\"\r\n// a\r\n\r\nimport a from \"a\"\r\nafter();\r",
-      "output": "// a<CR>\nimport a from \"a\"<CR>\n// b1<CR>\n// b2<CR>\nimport b from \"b\"<CR>\nimport c from \"c\"<CR>\nafter();<CR>",
+      "output": "// a\r\nimport a from \"a\"\r\n// b1\r\n// b2\r\nimport b from \"b\"\r\nimport c from \"c\"\r\nafter();\r",
       "errors": 1,
       "parser": "js"
     },
@@ -430,7 +430,7 @@
     },
     {
       "code": "      \r\n  import e from \"e\"\r\n  // b\r\n  import {\r\n    b4, b3,\r\n    b2\r\n  } from \"b\";\r\n  /* a */ import a from \"a\"; import c from \"c\"\r\n \r\n    // d\r\n    import d from \"d\"\r\n",
-      "output": "      <CR>\n  /* a */ import a from \"a\"; <CR>\n  // b<CR>\n  import {<CR>\n    b2,<CR>\nb3,<CR>\n    b4  } from \"b\";<CR>\nimport c from \"c\"<CR>\n    // d<CR>\n    import d from \"d\"<CR>\n  import e from \"e\"<CR>\n",
+      "output": "      \r\n  /* a */ import a from \"a\"; \r\n  // b\r\n  import {\r\n    b2,\r\nb3,\r\n    b4  } from \"b\";\r\nimport c from \"c\"\r\n    // d\r\n    import d from \"d\"\r\n  import e from \"e\"\r\n",
       "errors": 1,
       "parser": "js"
     },
@@ -593,7 +593,7 @@
     },
     {
       "code": "import type { ParsedPath } from 'path';\nimport type { CopyOptions } from 'fs';\n\ndeclare module 'my-module' {\n  import type { PlatformPath, ParsedPath } from 'path';\n  import { type CopyOptions } from 'fs';\n  export function normalize(p: string): string;\n  // comment\n    import \"d\"\nimport c from \"c\"; /*\n  */\timport * as b from \"b\"; // b\n}",
-      "output": "import type { CopyOptions } from 'fs';\nimport type { ParsedPath } from 'path';\n\ndeclare module 'my-module' {\n  import { type CopyOptions } from 'fs';\n  import type { ParsedPath,PlatformPath } from 'path';\n  export function normalize(p: string): string;\n  // comment\n    import \"d\"\n\n/*\n  */→import * as b from \"b\"; // b\nimport c from \"c\"; \n}",
+      "output": "import type { CopyOptions } from 'fs';\nimport type { ParsedPath } from 'path';\n\ndeclare module 'my-module' {\n  import { type CopyOptions } from 'fs';\n  import type { ParsedPath,PlatformPath } from 'path';\n  export function normalize(p: string): string;\n  // comment\n    import \"d\"\n\n/*\n  */\timport * as b from \"b\"; // b\nimport c from \"c\"; \n}",
       "errors": 3,
       "parser": "ts"
     },

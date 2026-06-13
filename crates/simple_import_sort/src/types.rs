@@ -1,10 +1,7 @@
-//! Diagnostic types, options, and chunk metadata for simple-import-sort.
+//! Public types and internal helpers for simple-import-sort.
 
 use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
-
-pub(crate) const SIDE_EFFECT_STYLE: u8 = 0;
-pub(crate) const EXPORT_STYLE: u8 = 1;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct DiagnosticLoc {
@@ -38,19 +35,6 @@ pub struct SimpleImportSortOptions {
 pub(crate) enum RuleKind {
     Imports,
     Exports,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) struct Item {
-    pub(crate) span: Span,
-    pub(crate) code: CompactString,
-    pub(crate) source_original: CompactString,
-    pub(crate) source_key: CompactString,
-    pub(crate) kind_rank: u8,
-    pub(crate) style: u8,
-    pub(crate) index: usize,
-    pub(crate) outer_group: usize,
-    pub(crate) inner_group: usize,
 }
 
 pub(crate) struct LineIndex {
