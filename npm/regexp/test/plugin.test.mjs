@@ -231,6 +231,32 @@ const invalidCases = [
   ['no-lazy-ends', 'star lazy at end', 'const re = /a*?/u;\n', ['unexpected']],
   ['no-lazy-ends', 'plus lazy at end', 'const re = /a+?/u;\n', ['unexpected']],
   ['no-lazy-ends', 'braced lazy at end', 'const re = /a{2,}?/u;\n', ['unexpected']],
+  // no-useless-dollar-replacements
+  [
+    'no-useless-dollar-replacements',
+    'dollar zero alone',
+    "str.replace(/foo/u, '$0');\n",
+    ['unexpected'],
+  ],
+  [
+    'no-useless-dollar-replacements',
+    'replaceAll variant',
+    "str.replaceAll(/foo/gu, '$0');\n",
+    ['unexpected'],
+  ],
+  // prefer-escape-replacement-dollar-char
+  [
+    'prefer-escape-replacement-dollar-char',
+    'dollar followed by space',
+    "str.replace(/a/u, 'pre $ post');\n",
+    ['unexpected'],
+  ],
+  [
+    'prefer-escape-replacement-dollar-char',
+    'trailing dollar',
+    "str.replace(/a/u, 'price$');\n",
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
