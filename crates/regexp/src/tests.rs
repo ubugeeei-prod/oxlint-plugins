@@ -833,13 +833,11 @@ fn ignores_dynamic_constructor_arguments() {
     // Non-literal pattern arguments cannot be statically analysed at all.
     assert!(ids("const a = new RegExp(pattern, 'u');").is_empty());
     assert!(ids("const a = RegExp();").is_empty());
-    // When the flags argument is non-literal we still scan the pattern and
-    // assume no `u`/`v` flag, which surfaces both `require-unicode-regexp`
-    // (needs `u` or `v`) and `require-unicode-sets-regexp` (needs `v`).
-    assert_eq!(
-        rule_names_for("const a = new RegExp('a', flags);").as_slice(),
-        &["require-unicode-regexp", "require-unicode-sets-regexp"]
-    );
+    // When the flags argument is a non-literal expression the flags cannot be
+    // statically determined, so the `u`/`v`-flag rules must stay silent (they
+    // would otherwise false-positive on `new RegExp('a', flags)`); upstream
+    // skips them in this case.
+    assert!(rule_names_for("const a = new RegExp('a', flags);").is_empty());
 }
 
 #[test]
