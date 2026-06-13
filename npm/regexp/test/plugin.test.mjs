@@ -121,6 +121,10 @@ const validCases = [
   ['prefer-character-class', 'multi-byte alt', 'const re = /(?:a|bc)/u;\n'],
   ['prefer-character-class', 'escape alt', 'const re = /(?:a|\\d)/u;\n'],
   ['prefer-character-class', 'no alternation', 'const re = /(?:a)/u;\n'],
+  // sort-alternatives
+  ['sort-alternatives', 'already sorted', 'const re = /(?:a|b|c)/u;\n'],
+  ['sort-alternatives', 'multi-byte alt', 'const re = /(?:bc|a)/u;\n'],
+  ['sort-alternatives', 'no alternation', 'const re = /(?:a)/u;\n'],
   // prefer-unicode-codepoint-escapes
   [
     'prefer-unicode-codepoint-escapes',
@@ -378,6 +382,9 @@ const invalidCases = [
     'const re = /(?:a|1|b)/u;\n',
     ['unexpected'],
   ],
+  // sort-alternatives
+  ['sort-alternatives', 'two-letter unsorted', 'const re = /(?:b|a)/u;\n', ['unexpected']],
+  ['sort-alternatives', 'three-letter unsorted', 'const re = /(?:c|a|b)/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

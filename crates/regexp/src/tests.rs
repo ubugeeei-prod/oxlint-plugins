@@ -98,6 +98,7 @@ fn exposes_initial_regexp_rule_names() {
             "no-extra-lookaround-assertions",
             "no-trivially-nested-quantifier",
             "prefer-character-class",
+            "sort-alternatives",
         ]
     );
 }
@@ -163,6 +164,41 @@ mod no_extra_lookaround_assertions {
         assert!(
             rule_ids_for("const a = /(?=(?=a)b)/u;", "no-extra-lookaround-assertions").is_empty()
         );
+    }
+}
+
+mod sort_alternatives {
+    use super::*;
+
+    #[test]
+    fn reports_out_of_order_single_literal_alts() {
+        assert_eq!(
+            rule_ids_for("const a = /(?:b|a)/u;", "sort-alternatives").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:c|a|b)/u;", "sort-alternatives").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:2|1)/u;", "sort-alternatives").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_sorted_or_unsupported_alts() {
+        // Already sorted.
+        assert!(rule_ids_for("const a = /(?:a|b)/u;", "sort-alternatives").is_empty());
+        assert!(rule_ids_for("const a = /(?:a|b|c)/u;", "sort-alternatives").is_empty());
+        // No alternation.
+        assert!(rule_ids_for("const a = /(?:a)/u;", "sort-alternatives").is_empty());
+        // Multi-byte alt — deferred.
+        assert!(rule_ids_for("const a = /(?:bc|a)/u;", "sort-alternatives").is_empty());
+        // Escape inside.
+        assert!(rule_ids_for("const a = /(?:b|\\d)/u;", "sort-alternatives").is_empty());
+        // Capturing group not in scope.
+        assert!(rule_ids_for("const a = /(b|a)/u;", "sort-alternatives").is_empty());
     }
 }
 

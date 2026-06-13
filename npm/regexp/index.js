@@ -214,6 +214,12 @@ const messages = Object.freeze({
     unexpected:
       'Non-capturing group with a quantified single-character body that is itself quantified; drop the wrapper and combine the quantifiers.',
   },
+  'prefer-character-class': {
+    unexpected: 'Alternation of single-character literals; use a character class `[abc]` instead.',
+  },
+  'sort-alternatives': {
+    unexpected: 'Single-literal alternation is not in ascending order; sort the alternatives.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -298,6 +304,9 @@ const ruleDescriptions = Object.freeze({
   'no-extra-lookaround-assertions':
     'disallow lookaround assertions whose entire body is a single nested lookaround',
   'no-trivially-nested-quantifier': 'disallow trivially nested quantifiers like `(?:X+)+`',
+  'prefer-character-class':
+    'enforce using a character class instead of alternation of single literals',
+  'sort-alternatives': 'enforce sorted single-literal alternation alternatives',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -357,6 +366,7 @@ const ruleTypes = Object.freeze({
   'no-extra-lookaround-assertions': 'suggestion',
   'no-trivially-nested-quantifier': 'suggestion',
   'prefer-character-class': 'suggestion',
+  'sort-alternatives': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -516,7 +526,9 @@ function ruleCategory(ruleName) {
     ruleName === 'sort-character-class-elements' ||
     ruleName === 'no-trivially-nested-assertion' ||
     ruleName === 'no-extra-lookaround-assertions' ||
-    ruleName === 'no-trivially-nested-quantifier'
+    ruleName === 'no-trivially-nested-quantifier' ||
+    ruleName === 'prefer-character-class' ||
+    ruleName === 'sort-alternatives'
   ) {
     return 'Stylistic Issues';
   }

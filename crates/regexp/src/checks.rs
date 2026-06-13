@@ -587,6 +587,9 @@ impl<'a> Scanner<'a> {
         if analysis.has_preferable_character_class {
             self.report("prefer-character-class", "unexpected", span);
         }
+        if analysis.has_unsorted_alternatives {
+            self.report("sort-alternatives", "unexpected", span);
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);

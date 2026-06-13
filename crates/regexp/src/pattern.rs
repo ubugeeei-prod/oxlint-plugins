@@ -41,6 +41,13 @@ pub(crate) struct GroupState {
     /// consisted of exactly one ASCII alphanumeric byte. Used by
     /// `prefer-character-class`.
     pub(crate) all_alts_single_literal: bool,
+    /// First byte of the most recently completed alternative whose body was
+    /// a single ASCII alphanumeric. `0` means no such alt has been recorded
+    /// yet. Used by `sort-alternatives` to detect out-of-order alternations.
+    pub(crate) prev_alt_first_byte: u8,
+    /// `true` while every completed single-literal alternative observed so
+    /// far has appeared in ascending byte order. `sort-alternatives`.
+    pub(crate) alts_in_order: bool,
 }
 
 impl GroupState {
@@ -57,6 +64,8 @@ impl GroupState {
             last_atom_was_lookaround: false,
             current_alt_start: 0,
             all_alts_single_literal: true,
+            prev_alt_first_byte: 0,
+            alts_in_order: true,
         }
     }
 
@@ -79,6 +88,8 @@ impl GroupState {
             last_atom_was_lookaround: false,
             current_alt_start: body_start,
             all_alts_single_literal: true,
+            prev_alt_first_byte: 0,
+            alts_in_order: true,
         }
     }
 }
@@ -179,6 +190,9 @@ pub(crate) struct PatternAnalysis {
     /// two alternatives and every alternative is exactly one ASCII
     /// alphanumeric literal byte. `prefer-character-class`.
     pub(crate) has_preferable_character_class: bool,
+    /// `(?:b|a)` — a non-capturing alternation whose single-literal alts are
+    /// not in ascending byte order. `sort-alternatives`.
+    pub(crate) has_unsorted_alternatives: bool,
 }
 
 impl PatternAnalysis {
@@ -371,6 +385,19 @@ impl PatternAnalysis {
                                 && bytes[group.current_alt_start].is_ascii_alphanumeric();
                             if group.all_alts_single_literal && final_alt_simple {
                                 self.has_preferable_character_class = true;
+                                // `sort-alternatives` only fires when every
+                                // alt was a single ASCII alphanumeric AND at
+                                // least one transition violated ascending order.
+                                let final_byte = bytes[group.current_alt_start];
+                                let mut alts_in_order = group.alts_in_order;
+                                if group.prev_alt_first_byte != 0
+                                    && final_byte < group.prev_alt_first_byte
+                                {
+                                    alts_in_order = false;
+                                }
+                                if !alts_in_order {
+                                    self.has_unsorted_alternatives = true;
+                                }
                             }
                         }
                         // Multi-byte bodies, escapes, classes, and braced
@@ -405,15 +432,28 @@ impl PatternAnalysis {
                         if !group.current_has_content {
                             self.has_empty_alternative = true;
                         }
-                        // Check the closing alternative for `prefer-character-class`:
-                        // each alt must be exactly one ASCII alphanumeric byte.
+                        // Check the closing alternative for `prefer-character-class`
+                        // and `sort-alternatives`: each alt must be exactly one
+                        // ASCII alphanumeric byte. Both rules also need
+                        // ordering checks for single-literal alts.
+                        let mut alt_first_byte: u8 = 0;
                         if group.all_alts_single_literal {
                             let alt_len = index - group.current_alt_start;
                             if alt_len != 1
                                 || !bytes[group.current_alt_start].is_ascii_alphanumeric()
                             {
                                 group.all_alts_single_literal = false;
+                            } else {
+                                alt_first_byte = bytes[group.current_alt_start];
+                                if group.prev_alt_first_byte != 0
+                                    && alt_first_byte < group.prev_alt_first_byte
+                                {
+                                    group.alts_in_order = false;
+                                }
                             }
+                        }
+                        if alt_first_byte != 0 {
+                            group.prev_alt_first_byte = alt_first_byte;
                         }
                         group.seen_pipe = true;
                         group.current_has_content = false;
