@@ -32,6 +32,15 @@ pub(crate) struct GroupState {
     /// was a lookaround group closing. Pairs with `current_alt_atom_count`
     /// to identify single-assertion bodies.
     pub(crate) last_atom_was_lookaround: bool,
+    /// Byte offset where the current alternative began. For the first
+    /// alternative this equals `body_start`; for subsequent alts it is the
+    /// position immediately after the previous `|`. Used by
+    /// `prefer-character-class` to inspect each alternative's literal shape.
+    pub(crate) current_alt_start: usize,
+    /// `true` while every alternative observed so far in this group has
+    /// consisted of exactly one ASCII alphanumeric byte. Used by
+    /// `prefer-character-class`.
+    pub(crate) all_alts_single_literal: bool,
 }
 
 impl GroupState {
@@ -46,6 +55,8 @@ impl GroupState {
             current_has_content: false,
             current_alt_atom_count: 0,
             last_atom_was_lookaround: false,
+            current_alt_start: 0,
+            all_alts_single_literal: true,
         }
     }
 
@@ -66,6 +77,8 @@ impl GroupState {
             current_has_content: false,
             current_alt_atom_count: 0,
             last_atom_was_lookaround: false,
+            current_alt_start: body_start,
+            all_alts_single_literal: true,
         }
     }
 }
@@ -158,6 +171,14 @@ pub(crate) struct PatternAnalysis {
     /// `(?=(?=...))` — a lookaround whose entire body is exactly one nested
     /// lookaround. `no-extra-lookaround-assertions`.
     pub(crate) has_extra_lookaround_assertion: bool,
+    /// `(?:X+)+` etc. — a non-capturing group whose body is a single
+    /// quantified ASCII alphanumeric atom AND is itself followed by a
+    /// quantifier. `no-trivially-nested-quantifier`.
+    pub(crate) has_trivially_nested_quantifier: bool,
+    /// `(?:a|b|c)` — a non-capturing group whose alternation has at least
+    /// two alternatives and every alternative is exactly one ASCII
+    /// alphanumeric literal byte. `prefer-character-class`.
+    pub(crate) has_preferable_character_class: bool,
 }
 
 impl PatternAnalysis {
@@ -325,6 +346,44 @@ impl PatternAnalysis {
                                 self.has_extra_lookaround_assertion = true;
                             }
                         }
+                        // `(?:X+)+` and similar: non-capturing wrapper whose
+                        // body is a single ASCII alphanumeric atom followed
+                        // by `*`/`+`/`?`, and is itself followed by a
+                        // quantifier. Both quantifiers apply to the same bare
+                        // atom so the outer wrapper carries no meaning.
+                        // `(?:a|b|c)` with all-single-literal alternatives ->
+                        // `prefer-character-class`. We tracked per-alt
+                        // single-literal shape during scanning; combined with
+                        // the final-alt check here, an alternation with at
+                        // least one `|` and every alt being a bare
+                        // alphanumeric letter/digit is reported.
+                        if group.is_non_capturing && group.seen_pipe {
+                            let alt_len = index - group.current_alt_start;
+                            let final_alt_simple = alt_len == 1
+                                && bytes[group.current_alt_start].is_ascii_alphanumeric();
+                            if group.all_alts_single_literal && final_alt_simple {
+                                self.has_preferable_character_class = true;
+                            }
+                        }
+                        // Multi-byte bodies, escapes, classes, and braced
+                        // quantifiers are deferred to keep the check sound.
+                        if group.is_non_capturing
+                            && !group.seen_pipe
+                            && index == group.body_start + 2
+                        {
+                            let body0 = bytes[group.body_start];
+                            let body1 = bytes[group.body_start + 1];
+                            let outer_q = matches!(
+                                bytes.get(index + 1).copied(),
+                                Some(b'*' | b'+' | b'?' | b'{')
+                            );
+                            if body0.is_ascii_alphanumeric()
+                                && matches!(body1, b'*' | b'+' | b'?')
+                                && outer_q
+                            {
+                                self.has_trivially_nested_quantifier = true;
+                            }
+                        }
                         if group.is_lookaround {
                             self.mark_atom_from_lookaround(&mut groups);
                         } else {
@@ -338,10 +397,21 @@ impl PatternAnalysis {
                         if !group.current_has_content {
                             self.has_empty_alternative = true;
                         }
+                        // Check the closing alternative for `prefer-character-class`:
+                        // each alt must be exactly one ASCII alphanumeric byte.
+                        if group.all_alts_single_literal {
+                            let alt_len = index - group.current_alt_start;
+                            if alt_len != 1
+                                || !bytes[group.current_alt_start].is_ascii_alphanumeric()
+                            {
+                                group.all_alts_single_literal = false;
+                            }
+                        }
                         group.seen_pipe = true;
                         group.current_has_content = false;
                         group.current_alt_atom_count = 0;
                         group.last_atom_was_lookaround = false;
+                        group.current_alt_start = index + 1;
                     }
                     index += 1;
                 }
