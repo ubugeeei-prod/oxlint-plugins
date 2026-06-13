@@ -11630,19 +11630,19 @@
       },
       {
         "name": "no-all-duplicated-branches",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-all-duplicated-branches (Sonar key S3923). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of SonarJS S3923. Rust core checks if/else-if/else chains (must have terminal else; all branch bodies compared by source text) and switch statements (must have default; all case bodies compared by source text). Head detection for if-chains reuses the shared if_chain_seen set alongside no-identical-conditions. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-alphabetical-sort",

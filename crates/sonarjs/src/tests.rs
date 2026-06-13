@@ -385,3 +385,56 @@ fn does_not_report_identical_condition_in_nested_separate_chain() {
     let diagnostics = scan("no-identical-conditions", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_all_duplicated_branches_if_else_identical() {
+    let source = "if (a) { f(); } else { f(); }";
+    let diagnostics = scan("no-all-duplicated-branches", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-all-duplicated-branches");
+    assert_eq!(diagnostics[0].message_id, "allDuplicatedBranches");
+}
+
+#[test]
+fn reports_all_duplicated_branches_if_else_if_else_identical() {
+    let source = "if (a) { f(); } else if (b) { f(); } else { f(); }";
+    let diagnostics = scan("no-all-duplicated-branches", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "allDuplicatedBranches");
+}
+
+#[test]
+fn does_not_report_all_duplicated_branches_if_else_differ() {
+    let source = "if (a) { f(); } else { g(); }";
+    let diagnostics = scan("no-all-duplicated-branches", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_all_duplicated_branches_no_terminal_else() {
+    let source = "if (a) { f(); } else if (b) { f(); }";
+    let diagnostics = scan("no-all-duplicated-branches", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_all_duplicated_branches_switch_all_identical() {
+    let source = "switch (x) { case 1: f(); break; default: f(); break; }";
+    let diagnostics = scan("no-all-duplicated-branches", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "allDuplicatedBranches");
+}
+
+#[test]
+fn does_not_report_all_duplicated_branches_switch_cases_differ() {
+    let source = "switch (x) { case 1: f(); break; default: g(); break; }";
+    let diagnostics = scan("no-all-duplicated-branches", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_all_duplicated_branches_switch_no_default() {
+    let source = "switch (x) { case 1: f(); break; case 2: f(); break; }";
+    let diagnostics = scan("no-all-duplicated-branches", source);
+    assert!(diagnostics.is_empty());
+}
