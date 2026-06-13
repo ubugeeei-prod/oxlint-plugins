@@ -74,6 +74,8 @@ fn exposes_initial_regexp_rule_names() {
             "no-empty-string-literal",
             "no-optional-assertion",
             "require-unicode-sets-regexp",
+            "confusing-quantifier",
+            "prefer-named-replacement",
         ]
     );
 }
@@ -1190,6 +1192,97 @@ mod no_empty_string_literal {
         );
         // `{}` outside a `\q` context is not the empty string literal.
         assert!(rule_ids_for("const a = /a{}/u;", "no-empty-string-literal").is_empty());
+    }
+}
+
+mod confusing_quantifier {
+    use super::*;
+
+    #[test]
+    fn reports_lazy_zero_min_quantifiers() {
+        assert_eq!(
+            rule_ids_for("const a = /a*?/u;", "confusing-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /a??/u;", "confusing-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /a{0,}?/u;", "confusing-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /a{0,1}?/u;", "confusing-quantifier").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_greedy_quantifiers_and_lazy_one_or_more() {
+        assert!(rule_ids_for("const a = /a*/u;", "confusing-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a+/u;", "confusing-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a?/u;", "confusing-quantifier").is_empty());
+        // Lazy with non-zero min — not flagged.
+        assert!(rule_ids_for("const a = /a+?/u;", "confusing-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a{1,}?/u;", "confusing-quantifier").is_empty());
+    }
+}
+
+mod prefer_named_replacement {
+    use super::*;
+
+    #[test]
+    fn reports_numbered_backreference_with_named_capture_pattern() {
+        assert_eq!(
+            rule_ids_for(
+                "str.replace(/(?<year>\\d{4})/u, '$1');",
+                "prefer-named-replacement"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+        // `replaceAll` shares the same shape.
+        assert_eq!(
+            rule_ids_for(
+                "str.replaceAll(/(?<year>\\d{4})/gu, 'year: $1');",
+                "prefer-named-replacement"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_named_replacement_unnamed_regex_and_unrelated_calls() {
+        // Named replacement form — no diagnostic.
+        assert!(
+            rule_ids_for(
+                "str.replace(/(?<year>\\d{4})/u, '$<year>');",
+                "prefer-named-replacement"
+            )
+            .is_empty()
+        );
+        // Regex has no named capture, so `$1` is the only way to refer back.
+        assert!(
+            rule_ids_for(
+                "str.replace(/(\\d{4})/u, '$1');",
+                "prefer-named-replacement"
+            )
+            .is_empty()
+        );
+        // Escaped dollar must not count as a numeric backreference.
+        assert!(
+            rule_ids_for(
+                "str.replace(/(?<year>\\d{4})/u, '$$1');",
+                "prefer-named-replacement"
+            )
+            .is_empty()
+        );
+        // Unrelated method.
+        assert!(
+            rule_ids_for("str.match(/(?<year>\\d{4})/u);", "prefer-named-replacement").is_empty()
+        );
     }
 }
 

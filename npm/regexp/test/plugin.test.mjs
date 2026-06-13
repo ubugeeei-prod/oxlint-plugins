@@ -174,6 +174,23 @@ const invalidCases = [
   // require-unicode-sets-regexp
   ['require-unicode-sets-regexp', 'u flag only', 'const re = /a/u;\n', ['require']],
   ['require-unicode-sets-regexp', 'no flags', 'const re = /a/;\n', ['require']],
+  // confusing-quantifier
+  ['confusing-quantifier', 'lazy star', 'const re = /a*?/u;\n', ['unexpected']],
+  ['confusing-quantifier', 'lazy optional', 'const re = /a??/u;\n', ['unexpected']],
+  ['confusing-quantifier', 'lazy zero-or-more brace', 'const re = /a{0,}?/u;\n', ['unexpected']],
+  // prefer-named-replacement
+  [
+    'prefer-named-replacement',
+    'numbered backref with named regex',
+    "str.replace(/(?<year>\\d{4})/u, '$1');\n",
+    ['unexpected'],
+  ],
+  [
+    'prefer-named-replacement',
+    'replaceAll variant',
+    "str.replaceAll(/(?<year>\\d{4})/gu, 'year: $1');\n",
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
