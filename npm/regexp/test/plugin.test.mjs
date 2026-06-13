@@ -158,6 +158,11 @@ const invalidCases = [
     "str.replaceAll(/foo/, 'bar');\n",
     ['unexpected'],
   ],
+  // no-useless-character-class
+  ['no-useless-character-class', 'single literal class', 'const re = /[a]/u;\n', ['unexpected']],
+  ['no-useless-character-class', 'single digit class', 'const re = /[5]/u;\n', ['unexpected']],
+  // no-empty-string-literal
+  ['no-empty-string-literal', 'empty v literal', 'const re = /[\\q{}]/v;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

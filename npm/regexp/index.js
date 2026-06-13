@@ -113,6 +113,12 @@ const messages = Object.freeze({
   'no-missing-g-flag': {
     unexpected: "`String.prototype.{{expr}}` requires a regular expression with the 'g' flag.",
   },
+  'no-useless-character-class': {
+    unexpected: "Unexpected single-character class '{{expr}}'. Use '{{replacement}}' instead.",
+  },
+  'no-empty-string-literal': {
+    unexpected: 'Unexpected empty string literal inside a character class.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -148,6 +154,9 @@ const ruleDescriptions = Object.freeze({
     'enforce `RegExp.prototype.exec` over `String.prototype.match` for non-global regexes',
   'no-missing-g-flag':
     'enforce that `String.prototype.matchAll` and `replaceAll` arguments use the `g` flag',
+  'no-useless-character-class':
+    'disallow character classes that contain only a single literal character',
+  'no-empty-string-literal': 'disallow empty string literals (`\\q{}`) inside character classes',
 });
 
 const ruleTypes = Object.freeze({
@@ -180,6 +189,8 @@ const ruleTypes = Object.freeze({
   'no-empty-lookarounds-assertion': 'problem',
   'prefer-regexp-exec': 'suggestion',
   'no-missing-g-flag': 'problem',
+  'no-useless-character-class': 'suggestion',
+  'no-empty-string-literal': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -294,7 +305,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-non-standard-flag' ||
     ruleName === 'no-invisible-character' ||
     ruleName === 'no-empty-lookarounds-assertion' ||
-    ruleName === 'no-missing-g-flag'
+    ruleName === 'no-missing-g-flag' ||
+    ruleName === 'no-empty-string-literal'
   ) {
     return 'Possible Errors';
   }
@@ -313,7 +325,8 @@ function ruleCategory(ruleName) {
     ruleName === 'letter-case' ||
     ruleName === 'hexadecimal-escape' ||
     ruleName === 'unicode-escape' ||
-    ruleName === 'no-useless-range'
+    ruleName === 'no-useless-range' ||
+    ruleName === 'no-useless-character-class'
   ) {
     return 'Stylistic Issues';
   }

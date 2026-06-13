@@ -70,6 +70,8 @@ fn exposes_initial_regexp_rule_names() {
             "no-empty-lookarounds-assertion",
             "prefer-regexp-exec",
             "no-missing-g-flag",
+            "no-useless-character-class",
+            "no-empty-string-literal",
         ]
     );
 }
@@ -1055,6 +1057,67 @@ mod no_missing_g_flag {
         // `replaceAll` accepts a string as its first argument; we must not
         // false-positive when the call is not regex-based.
         assert!(rule_ids_for("str.replaceAll('foo', 'bar');", "no-missing-g-flag").is_empty());
+    }
+}
+
+mod no_useless_character_class {
+    use super::*;
+
+    #[test]
+    fn reports_single_literal_classes() {
+        let data = first_data("const a = /[a]/u;", "no-useless-character-class");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("[a]"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("a")
+        );
+        assert_eq!(
+            rule_ids_for("const a = /[5]/u;", "no-useless-character-class").as_slice(),
+            &["unexpected"]
+        );
+        // Even followed by a quantifier the class is equivalent to the bare char.
+        assert_eq!(
+            rule_ids_for("const a = /[a]+/u;", "no-useless-character-class").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_negation_escape_and_multi_element_classes() {
+        assert!(rule_ids_for("const a = /[^a]/u;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /[\\d]/u;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /[ab]/u;", "no-useless-character-class").is_empty());
+        // `[-]` is technically one literal but `-` carries range meaning;
+        // we intentionally skip it.
+        assert!(rule_ids_for("const a = /[-]/u;", "no-useless-character-class").is_empty());
+    }
+}
+
+mod no_empty_string_literal {
+    use super::*;
+
+    #[test]
+    fn reports_empty_v_mode_string_literal() {
+        assert_eq!(
+            rule_ids_for("const a = /[\\q{}]/v;", "no-empty-string-literal").as_slice(),
+            &["unexpected"]
+        );
+        // Non-empty string literals are not flagged.
+        assert!(rule_ids_for("const a = /[\\q{ab}]/v;", "no-empty-string-literal").is_empty());
+    }
+
+    #[test]
+    fn ignores_unrelated_braced_constructs() {
+        // `\u{...}` is unrelated.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\u{41}', 'u');",
+                "no-empty-string-literal"
+            )
+            .is_empty()
+        );
+        // `{}` outside a `\q` context is not the empty string literal.
+        assert!(rule_ids_for("const a = /a{}/u;", "no-empty-string-literal").is_empty());
     }
 }
 

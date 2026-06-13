@@ -13,7 +13,8 @@ use oxlint_plugins_carton::CompactString;
 use crate::helpers::{
     duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
     first_invisible_character, first_non_standard_flag, first_octal_escape,
-    first_uppercase_hex_escape, mention_char, sorted_flags, string_literal_value_with_span,
+    first_uppercase_hex_escape, mention_char, pattern_has_empty_string_literal, sorted_flags,
+    string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -469,6 +470,26 @@ impl<'a> Scanner<'a> {
         }
         if analysis.has_empty_lookaround {
             self.report("no-empty-lookarounds-assertion", "unexpected", span);
+        }
+        if let Some(ch) = analysis.first_useless_single_literal_class {
+            let mut original = CompactString::new("[");
+            original.push(ch);
+            original.push(']');
+            let mut replacement = CompactString::new("");
+            replacement.push(ch);
+            self.report_with_data(
+                "no-useless-character-class",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(original),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if pattern_has_empty_string_literal(pattern) {
+            self.report("no-empty-string-literal", "unexpected", span);
         }
         if let Some(ch) = analysis.first_useless_range {
             let mut text = CompactString::new("");

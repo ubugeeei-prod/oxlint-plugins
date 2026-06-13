@@ -34,6 +34,8 @@ describe('regexp native API', () => {
       'no-empty-lookarounds-assertion',
       'prefer-regexp-exec',
       'no-missing-g-flag',
+      'no-useless-character-class',
+      'no-empty-string-literal',
     ]);
   });
 
