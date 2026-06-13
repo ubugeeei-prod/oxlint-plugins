@@ -1,0 +1,12 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts",
+    "noUpstreamTests": true
+  },
+  "valid": [],
+  "invalid": []
+}

@@ -1,0 +1,1707 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/type-declaration-immutability.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "type MutableSet = Set<string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type MutableMap = Map<string, string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyString = string;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyFoo = { readonly foo: number };",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyFoo = Readonly<{ foo: number }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyFoo = { readonly foo: number; readonly bar: { baz: string; }; };",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlySet = ReadonlySet<string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyMap = ReadonlyMap<string, string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepString = string;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepFoo = { readonly foo: number; readonly bar: { readonly baz: string; }; };",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepSet = ReadonlySet<string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepMap = ReadonlyMap<string, string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepSet = ReadonlySet<{ readonly foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepMap = ReadonlyMap<string, { readonly foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ImmutableString = string;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ImmutableFoo = { readonly foo: number; readonly bar: { readonly baz: string; }; };",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ImmutableSet = Readonly<ReadonlySet<{ readonly foo: string; }>>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type ImmutableMap = Readonly<ReadonlyMap<string, { readonly foo: string; }>>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type MutableFoo = { foo: number };",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type MutableFoo = { readonly foo: number; bar: { readonly baz: string; }; };",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type MutableSet = Set<{ readonly foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "type MutableMap = Map<string, { readonly foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "interface ReadonlyFoo {\n  foo: number;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreInterfaces": true
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyFoo = {\n  foo: number;\n};",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Foo"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyServer = Http2SecureServer | Http2Server | Server;",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreTypePattern": "^[A-Za-z0-9.]+(\\|[A-Za-z0-9.]+)+$"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyUploadResult = Awaited<ReturnType<Uploader['upload']>>;",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreTypePattern": "^Awaited<"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyInferredValue = z.infer<typeof schema>;",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreTypePattern": "^z\\.infer<"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepFoo = ReadonlyDeep<{ foo: { bar: string; }; }>;\ntype ReadonlyDeep<T> = T;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "type ReadonlyFoo = {\n  foo: number;\n};",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyFoo = {\n  readonly foo: number;\n  bar: {\n    baz: string;\n  };\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepFoo = {\n            readonly foo: number;\n            readonly bar: {\n              baz: string;\n            };\n          };",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ImmutableFoo = {\n            readonly foo: number;\n            readonly bar: {\n              baz: string;\n            };\n          };",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyMyArray = Array<string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepMyArray = ReadonlyArray<{ foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ImmutableMyArray = ReadonlyArray<{ readonly foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyMySet = Set<string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepMySet = ReadonlySet<{ foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ImmutableMySet = ReadonlySet<{ readonly foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyMyMap = Map<string, string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyDeepMyMap = ReadonlyMap<string, { foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ImmutableMyMap = ReadonlyMap<string, { readonly foo: string; }>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type MutableString = string;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtMost"
+        }
+      ]
+    },
+    {
+      "code": "type MutableFoo = {\n  readonly foo: number;\n};",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtMost"
+        }
+      ]
+    },
+    {
+      "code": "type MutableFoo = Readonly<{\n  foo: number;\n}>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtMost"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyFoo = { a: string };",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreTypePattern": "^z\\.infer<"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type ReadonlyFoo = string[];",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreTypePattern": "^z\\.infer<"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "interface ReadonlyFoo {\n  foo: number;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreTypePattern": ".*"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtLeast"
+        }
+      ]
+    },
+    {
+      "code": "type MutableSet = Set<string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "rules": [
+            {
+              "identifiers": [
+                "^I?Immutable.+"
+              ],
+              "immutability": "Immutable",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?ReadonlyDeep.+"
+              ],
+              "immutability": "ReadonlyDeep",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Readonly.+"
+              ],
+              "immutability": "ReadonlyShallow",
+              "comparator": "AtLeast"
+            },
+            {
+              "identifiers": [
+                "^I?Mutable.+"
+              ],
+              "immutability": "Mutable",
+              "comparator": "AtMost"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "AtMost"
+        }
+      ]
+    }
+  ]
+}

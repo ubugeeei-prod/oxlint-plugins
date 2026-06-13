@@ -1,0 +1,127 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-expression-statements.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "var x = [];\nlet y = [];\nconst z = [];",
+      "typeAware": false
+    },
+    {
+      "code": "\"use strict\";\n\"use server\";\n\"use client\";",
+      "typeAware": false
+    },
+    {
+      "code": "export function* foo() {\n  yield \"hello\";\n  return \"world\";\n}",
+      "typeAware": false
+    },
+    {
+      "code": "console.log(\"yo\");\nconsole.error(\"yo\");",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreCodePattern": "^console\\."
+        }
+      ]
+    },
+    {
+      "code": "assert(1 !== 2);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreCodePattern": "^assert"
+        }
+      ]
+    },
+    {
+      "code": "console.log(\"yo\");\nconsole.error(\"yo\");",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreVoid": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() { return Promise.resolve(); }\nfoo();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreVoid": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() { return this; }\nfoo();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreSelfReturning": true
+        }
+      ]
+    },
+    {
+      "code": "const foo = { bar() { return this; }};\nfoo.bar();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreSelfReturning": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo { bar() { return this; }};\nconst foo = new Foo();\nfoo.bar();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreSelfReturning": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "var x = [];\nx.push(1);",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "console.trace();",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreCodePattern": "^console\\.log"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "const foo = () => { return this; };\nfoo();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreSelfReturning": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    }
+  ]
+}

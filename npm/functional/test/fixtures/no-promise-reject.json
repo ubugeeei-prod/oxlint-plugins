@@ -1,0 +1,63 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-promise-reject.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function foo() {\n  return Promise.resolve(\"hello world\");\n}",
+      "typeAware": false
+    },
+    {
+      "code": "function foo() {\n  return new Promise((resolve) => {\n    resolve(\"hello world\");\n  });\n}",
+      "typeAware": false
+    },
+    {
+      "code": "async function foo() {\n  try {\n    throw new Error(\"hello world\");\n  } catch (e) {\n    console.log(e);\n  }\n}",
+      "typeAware": false
+    }
+  ],
+  "invalid": [
+    {
+      "code": "function foo() {\n  return Promise.reject(\"hello world\");\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  return new Promise((resolve, reject) => {\n    reject(\"hello world\");\n  });\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "async function foo() {\n  throw new Error(\"hello world\");\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "async function foo() {\n  try {\n    throw new Error(\"hello\");\n  } finally {\n    console.log(\"world\");\n  }\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    }
+  ]
+}
