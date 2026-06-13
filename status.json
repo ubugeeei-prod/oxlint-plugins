@@ -12254,19 +12254,19 @@
       },
       {
         "name": "no-identical-conditions",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-identical-conditions (Sonar key S1862). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of SonarJS S1862. Rust core uses chain-head detection via if_chain_seen to process each if/else-if chain exactly once; conditions compared by source text; duplicate later conditions reported. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-identical-expressions",

@@ -337,3 +337,51 @@ fn does_not_report_non_existent_operator_for_plain_assign_non_unary() {
     let diagnostics = scan("non-existent-operator", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_identical_condition_in_three_branch_chain() {
+    let source = "if (a) {} else if (b) {} else if (a) {}";
+    let diagnostics = scan("no-identical-conditions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-identical-conditions");
+    assert_eq!(diagnostics[0].message_id, "identicalConditions");
+}
+
+#[test]
+fn reports_identical_condition_in_two_branch_chain() {
+    let source = "if (a) {} else if (a) {}";
+    let diagnostics = scan("no-identical-conditions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "identicalConditions");
+}
+
+#[test]
+fn does_not_report_when_else_is_a_plain_block() {
+    let source = "if (a) {} else if (b) {} else {}";
+    let diagnostics = scan("no-identical-conditions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_standalone_if_with_no_else_if() {
+    let source = "if (a) {}";
+    let diagnostics = scan("no-identical-conditions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_one_identical_condition_in_four_branch_chain() {
+    let source = "if (a) {} else if (b) {} else if (c) {} else if (b) {}";
+    let diagnostics = scan("no-identical-conditions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "identicalConditions");
+}
+
+#[test]
+fn does_not_report_identical_condition_in_nested_separate_chain() {
+    // The inner `if (a)` is a separate chain; identical condition across
+    // different chains must NOT be reported.
+    let source = "if (a) { if (a) {} }";
+    let diagnostics = scan("no-identical-conditions", source);
+    assert!(diagnostics.is_empty());
+}

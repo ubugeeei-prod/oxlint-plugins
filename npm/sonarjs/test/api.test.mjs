@@ -11,6 +11,7 @@ const expectedRuleNames = [
   'comma-or-logical-or-case',
   'no-duplicate-in-composite',
   'non-existent-operator',
+  'no-identical-conditions',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -240,5 +241,39 @@ describe('sonarjs native API', () => {
     const source = 'let x = 0; let y = 1; x = y;';
     const diagnostics = scan('non-existent-operator', source);
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports one identical condition in an if/else-if/else-if chain', () => {
+    const source = 'if (a) {} else if (b) {} else if (a) {}';
+    const diagnostics = scan('no-identical-conditions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-identical-conditions');
+    expect(diagnostics[0].messageId).toBe('identicalConditions');
+  });
+
+  it('reports one identical condition in a two-branch if/else-if chain', () => {
+    const source = 'if (a) {} else if (a) {}';
+    const diagnostics = scan('no-identical-conditions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('identicalConditions');
+  });
+
+  it('does not report when the else branch is a plain block (no condition)', () => {
+    const source = 'if (a) {} else if (b) {} else {}';
+    const diagnostics = scan('no-identical-conditions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a standalone if with no else-if', () => {
+    const source = 'if (a) {}';
+    const diagnostics = scan('no-identical-conditions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports one identical condition in a four-branch chain', () => {
+    const source = 'if (a) {} else if (b) {} else if (c) {} else if (b) {}';
+    const diagnostics = scan('no-identical-conditions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('identicalConditions');
   });
 });
