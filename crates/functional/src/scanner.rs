@@ -56,6 +56,7 @@ impl<'a> Scanner<'a> {
         }
         let context = FunctionContext {
             in_async_function: function.r#async,
+            in_try_with_catch: false,
         };
         if let Some(body) = &function.body {
             self.scan_function_body(body, context);
@@ -70,6 +71,7 @@ impl<'a> Scanner<'a> {
         }
         let context = FunctionContext {
             in_async_function: function.r#async,
+            in_try_with_catch: false,
         };
         self.scan_function_body(&function.body, context);
     }
@@ -118,6 +120,7 @@ impl<'a> Scanner<'a> {
                     init,
                     FunctionContext {
                         in_async_function: false,
+                        in_try_with_catch: false,
                     },
                 );
             }

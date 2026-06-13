@@ -90,6 +90,37 @@ do {} while (cond);
 }
 
 #[test]
+fn no_promise_reject_matches_upstream_syntactic_behavior() {
+    let options = FunctionalOptions {
+        rule_names: ["no-promise-reject".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let count = |source: &str| scan_functional(source, "fixture.ts", &options).len();
+
+    // Reports `Promise.reject`, `new Promise` with a `reject` param, and async
+    // throws that escape (no enclosing catch).
+    assert_eq!(count("function f() { return Promise.reject('e'); }"), 1);
+    assert_eq!(
+        count("function f() { return new Promise((resolve, reject) => { reject('e'); }); }"),
+        1
+    );
+    assert_eq!(count("async function f() { throw new Error('e'); }"), 1);
+    assert_eq!(
+        count("async function f() { try { throw new Error('e'); } finally { g(); } }"),
+        1
+    );
+
+    // Does not report resolves, executors without a reject param, or async
+    // throws caught by an enclosing try/catch.
+    assert_eq!(count("function f() { return Promise.resolve('x'); }"), 0);
+    assert_eq!(count("function f() { return new Promise((resolve) => resolve('x')); }"), 0);
+    assert_eq!(
+        count("async function f() { try { throw new Error('e'); } catch (e) { g(e); } }"),
+        0
+    );
+}
+
+#[test]
 fn honors_core_options() {
     let mut options = FunctionalOptions {
         rule_names: ["no-let".into()].into_iter().collect(),
