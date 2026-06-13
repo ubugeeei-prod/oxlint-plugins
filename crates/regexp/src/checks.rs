@@ -779,6 +779,9 @@ impl<'a> Scanner<'a> {
         if analysis.has_useless_lazy {
             self.report("no-useless-lazy", "unexpected", span);
         }
+        if analysis.has_misleading_unicode_character {
+            self.report("no-misleading-unicode-character", "unexpected", span);
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);

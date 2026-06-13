@@ -105,6 +105,7 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-backreference",
             "negation",
             "no-useless-lazy",
+            "no-misleading-unicode-character",
         ]
     );
 }
@@ -2758,6 +2759,37 @@ mod no_useless_lazy {
         // intentionally not flagged by the narrow port.
         assert!(rule_ids_for("const a = /a*?/u;", "no-useless-lazy").is_empty());
         assert!(rule_ids_for("const a = /a+?/u;", "no-useless-lazy").is_empty());
+    }
+}
+
+mod no_misleading_unicode_character {
+    use super::*;
+
+    #[test]
+    fn reports_classes_containing_zwj() {
+        // ZWJ-joined family emoji inside a character class. The U+200D bytes
+        // `0xE2 0x80 0x8D` appear inside the class body, so the engine
+        // matches the ZWJ as a separate atom and the grapheme cluster cannot
+        // be matched as a unit.
+        assert_eq!(
+            rule_ids_for("const a = /[👨‍👩‍👦]/u;", "no-misleading-unicode-character").as_slice(),
+            &["unexpected"]
+        );
+        // Bare ZWJ in a class is also misleading.
+        assert_eq!(
+            rule_ids_for("const a = /[‍]/u;", "no-misleading-unicode-character").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_classes_without_zwj_bytes() {
+        // ASCII-only class.
+        assert!(rule_ids_for("const a = /[abc]/u;", "no-misleading-unicode-character").is_empty());
+        // Single-codepoint emoji without ZWJ.
+        assert!(rule_ids_for("const a = /[😀]/u;", "no-misleading-unicode-character").is_empty());
+        // ZWJ outside any class — not flagged by the narrow port.
+        assert!(rule_ids_for("const a = /a‍b/u;", "no-misleading-unicode-character").is_empty());
     }
 }
 

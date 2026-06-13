@@ -8875,19 +8875,19 @@
       },
       {
         "name": "no-misleading-unicode-character",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-misleading-unicode-character."
+        "notes": "Narrow byte-walker port that flags a character class whose body contains a raw-UTF-8 Zero Width Joiner (U+200D, bytes `0xE2 0x80 0x8D`). A ZWJ inside a class is always misleading: the engine matches it as a separate atom, so a grapheme like `👨‍👩‍👦` (man + ZWJ + woman + ZWJ + boy) cannot be matched as a single unit. Equivalent `\\u200D`, `\\u{200D}`, regional-indicator flag pairs, and other multi-codepoint grapheme shapes are intentionally deferred."
       },
       {
         "name": "no-missing-g-flag",

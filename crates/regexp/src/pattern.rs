@@ -4,12 +4,12 @@ use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
     BraceQuantifierShape, class_bracket_changes_meaning, class_contains_backspace_escape,
-    class_first_collapsible_run, class_first_duplicate_literal, class_first_obscure_range,
-    class_has_case_pair, class_has_unsorted_literal_elements, class_has_useless_range,
-    class_has_useless_string_literal, class_is_digit_range, class_is_useless_single_literal,
-    class_is_word_char_set, class_matches_anything, class_negated_shorthand_letter, find_class_end,
-    fixed_count_lazy_brace_end, group_prefix, is_zero_quantifier, parse_brace_quantifier,
-    skip_escape,
+    class_contains_zwj, class_first_collapsible_run, class_first_duplicate_literal,
+    class_first_obscure_range, class_has_case_pair, class_has_unsorted_literal_elements,
+    class_has_useless_range, class_has_useless_string_literal, class_is_digit_range,
+    class_is_useless_single_literal, class_is_word_char_set, class_matches_anything,
+    class_negated_shorthand_letter, find_class_end, fixed_count_lazy_brace_end, group_prefix,
+    is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -227,6 +227,10 @@ pub(crate) struct PatternAnalysis {
     /// modifier. The lazy modifier is a no-op because the engine always
     /// matches exactly `n` repetitions. `no-useless-lazy`.
     pub(crate) has_useless_lazy: bool,
+    /// Character class body contains a ZWJ (U+200D) in raw UTF-8, which
+    /// breaks the grapheme semantics of any ZWJ-joined sequence it might
+    /// have been intended to match. `no-misleading-unicode-character`.
+    pub(crate) has_misleading_unicode_character: bool,
 }
 
 impl PatternAnalysis {
@@ -321,6 +325,11 @@ impl PatternAnalysis {
                             && class_negated_shorthand_letter(bytes, index).is_some()
                         {
                             self.has_negation_shorthand = true;
+                        }
+                        if !self.has_misleading_unicode_character
+                            && class_contains_zwj(bytes, index)
+                        {
+                            self.has_misleading_unicode_character = true;
                         }
                         self.mark_content(&mut groups);
                         index = close + 1;
