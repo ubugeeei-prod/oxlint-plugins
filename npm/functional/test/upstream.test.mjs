@@ -4,16 +4,18 @@
 //
 // Each fixture case carries a `typeAware` flag derived from the upstream config
 // it ran under (the TypeScript `projectService` config vs the syntax-only babel
-// config). The Rust port is syntax-only, so type-aware cases cannot be replayed:
-// they are skipped and counted (logged in the parity ledger — no silent
-// truncation). Syntactic cases are checked against the rule's parity level:
+// config). Behavior depends on the rule's parity level:
 //
-//   - FULL_PARITY: valid -> no reports; invalid -> reported messageIds (and
-//     count) match the upstream-declared `errors`. A rule joins this set in its
-//     own porting PR once the Rust core emits the upstream messageIds.
-//   - otherwise (pending): the case is smoke-run — it must not throw and must
-//     return an array — which exercises the whole upstream syntactic corpus
-//     through the NAPI binding before per-rule parity assertions land.
+//   - FULL_PARITY: every upstream case is asserted (valid -> no reports;
+//     invalid -> reported messageIds and count match the upstream-declared
+//     `errors`). This includes cases that ran under the TypeScript config but
+//     need no type information (e.g. TS-only syntax). A rule joins this set in
+//     its own porting PR, once the syntax-only port handles ALL of its cases.
+//   - otherwise (pending): only the syntactic (non-`typeAware`) cases are
+//     smoke-run (must not throw, must return an array) to exercise the upstream
+//     corpus through the NAPI binding; the `typeAware` cases — which need type
+//     information the syntax-only port lacks — are skipped and counted in the
+//     parity ledger (no silent truncation).
 
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -32,6 +34,7 @@ const FULL_PARITY = new Set([
   'no-this-expressions',
   'no-try-statements',
   'no-promise-reject',
+  'prefer-property-signatures',
 ]);
 
 function runRule(ruleName, testCase) {
@@ -119,11 +122,19 @@ describe('eslint-plugin-functional upstream parity', () => {
       invalidSyntactic.length;
     const full = FULL_PARITY.has(ruleName);
 
+    // Full-parity rules assert EVERY upstream case, including TypeScript-syntax
+    // cases that need no type information (the syntax-only port handles them). A
+    // rule only joins FULL_PARITY once it handles all of its cases. Pending rules
+    // only smoke-run their syntactic cases; their type-aware cases (which need
+    // type information the syntax-only port lacks) are skipped and counted.
+    const validCases = full ? fixture.valid : validSyntactic;
+    const invalidCases = full ? fixture.invalid : invalidSyntactic;
+
     ledger.push({
       ruleName,
       parity: fixture.__generated.noUpstreamTests ? 'none' : full ? 'full' : 'smoke',
-      syntactic: validSyntactic.length + invalidSyntactic.length,
-      typeAware: typeAwareCount,
+      asserted: validCases.length + invalidCases.length,
+      skipped: full ? 0 : typeAwareCount,
     });
 
     describe(ruleName, () => {
@@ -132,12 +143,11 @@ describe('eslint-plugin-functional upstream parity', () => {
         expect(fixture.__generated.ref).toBeTruthy();
       });
 
-      // Guard against empty suites: rules whose upstream cases are entirely
-      // type-aware have no syntactic cases to register (Vitest fails on an
-      // empty describe block).
-      if (validSyntactic.length > 0) {
+      // Guard against empty suites (Vitest fails on a describe block with no
+      // tests) — e.g. a pending rule whose upstream cases are all type-aware.
+      if (validCases.length > 0) {
         describe('valid', () => {
-          validSyntactic.forEach((testCase, index) => {
+          validCases.forEach((testCase, index) => {
             it(label(testCase, index), () => {
               const reports = runRule(ruleName, testCase);
               if (full) {
@@ -150,9 +160,9 @@ describe('eslint-plugin-functional upstream parity', () => {
         });
       }
 
-      if (invalidSyntactic.length > 0) {
+      if (invalidCases.length > 0) {
         describe('invalid', () => {
-          invalidSyntactic.forEach((testCase, index) => {
+          invalidCases.forEach((testCase, index) => {
             it(label(testCase, index), () => {
               const reports = runRule(ruleName, testCase);
               if (full) {
@@ -171,7 +181,7 @@ describe('eslint-plugin-functional upstream parity', () => {
     for (const entry of ledger) {
       console.log(
         `[functional] ${entry.ruleName}: parity=${entry.parity} ` +
-          `syntactic=${entry.syntactic} type-aware-skipped=${entry.typeAware}`,
+          `asserted=${entry.asserted} type-aware-skipped=${entry.skipped}`,
       );
     }
     expect(ledger).toHaveLength(plugin.implementedFunctionalRuleNames.length);

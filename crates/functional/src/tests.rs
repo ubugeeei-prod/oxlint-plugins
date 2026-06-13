@@ -1,6 +1,31 @@
 use super::{FunctionalOptions, implemented_functional_rule_names, scan_functional};
 
 #[test]
+fn prefer_property_signatures_honors_ignore_if_readonly_wrapped() {
+    let base = || FunctionalOptions {
+        rule_names: ["prefer-property-signatures".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let count = |source: &str, options: &FunctionalOptions| {
+        scan_functional(source, "fixture.ts", options).len()
+    };
+
+    // A bare method signature is always reported.
+    assert_eq!(count("type Foo = { bar(): number };", &base()), 1);
+
+    // Wrapped in Readonly<...> with the option enabled, it is ignored; without
+    // the option it is still reported.
+    let wrapped = "type Foo = Readonly<{ bar(): number }>;";
+    assert_eq!(count(wrapped, &base()), 1);
+    let mut ignoring = base();
+    ignoring.ignore_if_readonly_wrapped = true;
+    assert_eq!(count(wrapped, &ignoring), 0);
+
+    // Property signatures are never reported.
+    assert_eq!(count("type Foo = { bar: () => number };", &base()), 0);
+}
+
+#[test]
 fn exposes_all_rule_names() {
     assert_eq!(implemented_functional_rule_names().len(), 20);
     assert!(implemented_functional_rule_names().contains(&"no-let"));

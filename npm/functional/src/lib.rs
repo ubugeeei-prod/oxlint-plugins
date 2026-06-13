@@ -26,6 +26,7 @@ mod napi_abi {
         pub allow_try_catch: Option<bool>,
         pub allow_try_finally: Option<bool>,
         pub readonly_type_mode: Option<String>,
+        pub ignore_if_readonly_wrapped: Option<bool>,
     }
 
     #[napi(object)]
@@ -87,6 +88,9 @@ mod napi_abi {
                 .filter(|value| value == "generic" || value == "keyword")
                 .map(CompactString::from)
                 .unwrap_or(default_options.readonly_type_mode),
+            ignore_if_readonly_wrapped: options
+                .ignore_if_readonly_wrapped
+                .unwrap_or(default_options.ignore_if_readonly_wrapped),
         };
 
         core::scan_functional(&source_text, &filename, &core_options)

@@ -80,12 +80,14 @@ impl<'a> Scanner<'a> {
     pub(crate) fn scan_signature(&mut self, signature: &'a TSSignature<'a>) {
         match signature {
             TSSignature::TSMethodSignature(method) => {
-                self.report(
-                    "prefer-property-signatures",
-                    "generic",
-                    "Use a property signature instead of a method signature",
-                    method.span,
-                );
+                if !(self.options.ignore_if_readonly_wrapped && self.within_readonly) {
+                    self.report(
+                        "prefer-property-signatures",
+                        "generic",
+                        "Use a property signature instead of a method signature",
+                        method.span,
+                    );
+                }
                 if let Some(return_type) = &method.return_type {
                     self.scan_return_type(return_type);
                 }
@@ -176,9 +178,16 @@ impl<'a> Scanner<'a> {
                     );
                 }
                 if let Some(arguments) = &reference.type_arguments {
+                    // Members nested (transitively) inside `Readonly<...>` count
+                    // as readonly-wrapped for `ignoreIfReadonlyWrapped`.
+                    let previously_within = self.within_readonly;
+                    if type_reference_name(reference) == Some("Readonly") {
+                        self.within_readonly = true;
+                    }
                     for ty in &arguments.params {
                         self.scan_type(ty);
                     }
+                    self.within_readonly = previously_within;
                 }
             }
             TSType::TSTypeOperatorType(operator) => {

@@ -30,6 +30,7 @@ function normalizeOptions(options) {
       raw.readonlyTypeMode === 'keyword' || raw.readonlyTypeMode === 'generic'
         ? raw.readonlyTypeMode
         : undefined,
+    ignoreIfReadonlyWrapped: raw.ignoreIfReadonlyWrapped === true,
   };
 }
 
