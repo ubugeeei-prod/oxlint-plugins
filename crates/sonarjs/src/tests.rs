@@ -791,3 +791,50 @@ fn reports_generator_without_yield_for_inner_only_when_outer_yields() {
     // inner starts at column > 0 (it is not at the start of the line)
     assert!(diagnostics[0].loc.start_column > 0);
 }
+
+#[test]
+fn reports_no_exclusive_tests_for_describe_only() {
+    let source = "describe.only('x', () => {});";
+    let diagnostics = scan("no-exclusive-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-exclusive-tests");
+    assert_eq!(diagnostics[0].message_id, "noExclusiveTests");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_exclusive_tests_for_it_only() {
+    let source = "it.only('x', () => {});";
+    let diagnostics = scan("no-exclusive-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noExclusiveTests");
+}
+
+#[test]
+fn reports_no_exclusive_tests_for_test_only() {
+    let source = "test.only('x', () => {});";
+    let diagnostics = scan("no-exclusive-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noExclusiveTests");
+}
+
+#[test]
+fn does_not_report_no_exclusive_tests_for_it_without_only() {
+    let source = "it('x', () => {});";
+    let diagnostics = scan("no-exclusive-tests", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_exclusive_tests_for_unknown_function_with_only() {
+    let source = "foo.only();";
+    let diagnostics = scan("no-exclusive-tests", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_exclusive_tests_for_describe_without_only() {
+    let source = "describe('x', () => {});";
+    let diagnostics = scan("no-exclusive-tests", source);
+    assert!(diagnostics.is_empty());
+}

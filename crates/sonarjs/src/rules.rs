@@ -10,6 +10,7 @@ mod no_collapsible_if;
 mod no_delete_var;
 mod no_duplicate_in_composite;
 mod no_empty_character_class;
+mod no_exclusive_tests;
 mod no_identical_conditions;
 mod no_identical_expressions;
 mod no_labels;
