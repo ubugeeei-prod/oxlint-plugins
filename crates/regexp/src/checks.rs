@@ -11,7 +11,8 @@ use oxc_span::Span;
 use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
-    duplicate_flag, first_control_character, first_octal_escape, mention_char, sorted_flags,
+    duplicate_flag, first_control_character, first_invisible_character, first_non_standard_flag,
+    first_octal_escape, first_uppercase_hex_escape, mention_char, sorted_flags,
     string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
@@ -137,6 +138,22 @@ impl<'a> Scanner<'a> {
         if flags.contains('u') && flags.contains('v') {
             self.report("no-invalid-regexp", "uvFlag", span);
             return;
+        }
+        if let Some(flag) = first_non_standard_flag(flags) {
+            // Reported alongside any constructor parse error below; this rule
+            // exists as its own diagnostic so users can target it independently
+            // of `no-invalid-regexp`. We intentionally do not early-return.
+            let mut flag_text = CompactString::new("");
+            flag_text.push(flag);
+            self.report_with_data(
+                "no-non-standard-flag",
+                "unexpected",
+                DiagnosticData {
+                    flag: Some(flag_text),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
         }
         if let (true, Some(message)) = (
             is_constructor,
@@ -298,6 +315,56 @@ impl<'a> Scanner<'a> {
         }
         if analysis.has_match_any_class {
             self.report("match-any", "unexpected", span);
+        }
+        if let Some(negated) = analysis.first_digit_class {
+            self.report_with_data(
+                "prefer-d",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(if negated {
+                        "[^0-9]"
+                    } else {
+                        "[0-9]"
+                    })),
+                    replacement: Some(CompactString::from(if negated { "\\D" } else { "\\d" })),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(negated) = analysis.first_word_class {
+            self.report_with_data(
+                "prefer-w",
+                "unexpected",
+                DiagnosticData {
+                    replacement: Some(CompactString::from(if negated { "\\W" } else { "\\w" })),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(ch) = first_invisible_character(pattern) {
+            self.report_with_data(
+                "no-invisible-character",
+                "unexpected",
+                DiagnosticData {
+                    char_text: Some(mention_char(ch)),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(escape) = first_uppercase_hex_escape(pattern) {
+            self.report_with_data(
+                "letter-case",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(escape)),
+                    replacement: Some(CompactString::from(escape.to_ascii_lowercase().as_str())),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
         }
     }
 }

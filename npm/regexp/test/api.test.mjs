@@ -23,6 +23,11 @@ describe('regexp native API', () => {
       'prefer-named-capture-group',
       'match-any',
       'no-legacy-features',
+      'prefer-d',
+      'prefer-w',
+      'letter-case',
+      'no-non-standard-flag',
+      'no-invisible-character',
     ]);
   });
 

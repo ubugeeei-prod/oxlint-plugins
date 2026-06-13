@@ -79,6 +79,24 @@ const validCases = [
   ['no-legacy-features', 'lowercase regexp', 'regexp.lastMatch;\n'],
   ['no-legacy-features', 'modern prototype access', 'RegExp.prototype;\n'],
   ['no-legacy-features', '$10 out of legacy range', 'RegExp.$10;\n'],
+  // prefer-d
+  ['prefer-d', 'shorthand already used', 'const re = /\\d/u;\n'],
+  ['prefer-d', 'subset range', 'const re = /[1-9]/u;\n'],
+  ['prefer-d', 'extra element', 'const re = /[0-9a]/u;\n'],
+  // prefer-w
+  ['prefer-w', 'shorthand already used', 'const re = /\\w/u;\n'],
+  ['prefer-w', 'missing element', 'const re = /[a-zA-Z0-9]/u;\n'],
+  // letter-case
+  ['letter-case', 'lowercase hex escape', 'const re = /\\xab/u;\n'],
+  ['letter-case', 'lowercase unicode escape', 'const re = /\\uabcd/u;\n'],
+  ['letter-case', 'decimal-only unicode escape', "const re = new RegExp('\\\\u0041', 'u');\n"],
+  // no-non-standard-flag
+  ['no-non-standard-flag', 'canonical flags', "const re = new RegExp('a', 'gimsuy');\n"],
+  ['no-non-standard-flag', 'no flags', 'const re = /a/;\n'],
+  // no-invisible-character
+  ['no-invisible-character', 'plain pattern', 'const re = /ab/u;\n'],
+  ['no-invisible-character', 'ascii space', 'const re = /a b/u;\n'],
+  ['no-invisible-character', 'escaped hex NBSP', "const re = new RegExp('a\\\\xa0b', 'u');\n"],
 ];
 
 const invalidCases = [
@@ -204,6 +222,37 @@ const invalidCases = [
   ['no-legacy-features', 'lastParen alias', 'RegExp.lastParen;\n', ['staticProperty']],
   ['no-legacy-features', 'leftContext alias', 'RegExp.leftContext;\n', ['staticProperty']],
   ['no-legacy-features', 'rightContext alias', 'RegExp.rightContext;\n', ['staticProperty']],
+  // prefer-d
+  ['prefer-d', 'positive digit range', 'const re = /[0-9]/u;\n', ['unexpected']],
+  ['prefer-d', 'negated digit range', 'const re = /[^0-9]/u;\n', ['unexpected']],
+  // prefer-w
+  ['prefer-w', 'canonical order', 'const re = /[a-zA-Z0-9_]/u;\n', ['unexpected']],
+  ['prefer-w', 'reordered word chars', 'const re = /[_0-9A-Za-z]/u;\n', ['unexpected']],
+  ['prefer-w', 'negated word chars', 'const re = /[^a-zA-Z0-9_]/u;\n', ['unexpected']],
+  // letter-case
+  ['letter-case', 'uppercase \\xHH', "const re = new RegExp('\\\\xAB', 'u');\n", ['unexpected']],
+  [
+    'letter-case',
+    'uppercase \\uHHHH',
+    "const re = new RegExp('\\\\uABCD', 'u');\n",
+    ['unexpected'],
+  ],
+  [
+    'letter-case',
+    'uppercase \\u{H+}',
+    "const re = new RegExp('\\\\u{1F4A9}', 'u');\n",
+    ['unexpected'],
+  ],
+  // no-non-standard-flag
+  [
+    'no-non-standard-flag',
+    'q flag is non-standard',
+    "const re = new RegExp('a', 'gq');\n",
+    ['unexpected'],
+  ],
+  // no-invisible-character — NBSP in pattern
+  ['no-invisible-character', 'nbsp in pattern', 'const re = /a\u00A0b/u;\n', ['unexpected']],
+  ['no-invisible-character', 'zwsp in pattern', 'const re = /a\u200Bb/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
