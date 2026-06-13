@@ -459,6 +459,7 @@ impl<'a> Scanner<'a> {
         );
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn check_regexp(
         &mut self,
         pattern: &str,
