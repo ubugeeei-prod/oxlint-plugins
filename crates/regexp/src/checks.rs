@@ -12,9 +12,9 @@ use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
     duplicate_flag, find_class_end, first_control_character, first_fixed_unicode_escape,
-    first_hex_x_escape, first_invisible_character, first_literal_control_character,
-    first_non_standard_flag, first_numbered_backreference_with_named_group, first_octal_escape,
-    first_surrogate_pair_escape, first_uppercase_hex_escape, first_useless_escape,
+    first_invisible_character, first_literal_control_character, first_non_standard_flag,
+    first_numbered_backreference_with_named_group, first_octal_escape, first_surrogate_pair_escape,
+    first_unicode_escape_as_hex, first_uppercase_hex_escape, first_useless_escape,
     first_useless_one_quantifier, group_prefix, mention_char, pattern_ends_with_lazy_quantifier,
     pattern_has_empty_string_literal, skip_escape, sorted_flags, string_literal_value_with_span,
 };
@@ -874,7 +874,7 @@ impl<'a> Scanner<'a> {
                 span,
             );
         }
-        if let Some((escape, replacement)) = first_hex_x_escape(pattern) {
+        if let Some((escape, replacement)) = first_unicode_escape_as_hex(pattern) {
             self.report_with_data(
                 "hexadecimal-escape",
                 "unexpected",

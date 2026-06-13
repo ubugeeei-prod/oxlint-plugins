@@ -94,7 +94,8 @@ const messages = Object.freeze({
     unexpected: 'Unexpected invisible character {{ char }}.',
   },
   'hexadecimal-escape': {
-    unexpected: "Unexpected hexadecimal escape '{{expr}}'. Use '{{replacement}}' instead.",
+    unexpected:
+      "Unexpected unicode escape '{{expr}}'. Use the hexadecimal escape '{{replacement}}' instead.",
   },
   'unicode-escape': {
     unexpected: "Unexpected fixed-width unicode escape '{{expr}}'. Use '{{replacement}}' instead.",

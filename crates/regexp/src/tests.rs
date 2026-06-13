@@ -1810,38 +1810,68 @@ mod hexadecimal_escape {
     use super::*;
 
     #[test]
-    fn reports_hex_x_escapes_with_unicode_replacement() {
-        let data = first_data(
-            "const a = new RegExp('\\\\xab', 'u');",
-            "hexadecimal-escape",
-        );
-        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("\\xab"));
+    fn reports_unicode_escapes_with_hex_replacement() {
+        // \uHHHH form whose code point is ≤ 0xFF is flagged and suggests \xHH.
+        let data = first_data("const a = /\\u000a/u;", "hexadecimal-escape");
         assert_eq!(
-            data.replacement.as_ref().map(CompactString::as_str),
-            Some("\\u{ab}")
-        );
-        // Uppercase digits are normalised in the replacement.
-        let data = first_data(
-            "const a = new RegExp('\\\\xAB', 'u');",
-            "hexadecimal-escape",
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("\\u000a")
         );
         assert_eq!(
             data.replacement.as_ref().map(CompactString::as_str),
-            Some("\\u{ab}")
+            Some("\\x0a")
+        );
+
+        // \u{H+} form with code point ≤ 0xFF is also flagged.
+        let data = first_data(
+            "const a = new RegExp('\\\\u{00000a}', 'u');",
+            "hexadecimal-escape",
+        );
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("\\u{00000a}")
+        );
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\x0a")
+        );
+
+        // «» (U+00AB, ≤ 0xFF) represented as \uHHHH is flagged → \xab.
+        let data = first_data("const a = /\\u00ab/u;", "hexadecimal-escape");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("\\u00ab")
+        );
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\xab")
         );
     }
 
     #[test]
-    fn ignores_unicode_escapes_and_unrelated_escapes() {
+    fn ignores_hex_x_escapes_and_high_code_points_and_unrelated_escapes() {
+        // \xHH is already in the correct form — not flagged.
+        assert!(rule_ids_for("const a = /\\xab/u;", "hexadecimal-escape").is_empty());
+        // \uHHHH with code point > 0xFF — not representable as \xHH, not flagged.
         assert!(rule_ids_for("const a = /\\uabcd/u;", "hexadecimal-escape").is_empty());
+        // \u{100} is code point 256 > 0xFF — not flagged.
         assert!(
             rule_ids_for(
-                "const a = new RegExp('\\\\u{ab}', 'u');",
+                "const a = new RegExp('\\\\u{100}', 'u');",
                 "hexadecimal-escape"
             )
             .is_empty()
         );
+        // Non-escape characters are never flagged.
         assert!(rule_ids_for("const a = /\\d/u;", "hexadecimal-escape").is_empty());
+        // \xHH pattern from the upstream valid fixture — no diagnostic.
+        assert!(
+            rule_ids_for(
+                "const a = /a \\x0a \\cM \\0 \u{0100} \\u{100}/u;",
+                "hexadecimal-escape"
+            )
+            .is_empty()
+        );
     }
 }
 

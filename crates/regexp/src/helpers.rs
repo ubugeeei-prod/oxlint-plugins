@@ -570,11 +570,13 @@ fn is_invisible_character(ch: char) -> bool {
     )
 }
 
-/// Returns the first `\xHH` escape sequence in `pattern` together with its
-/// `\u{HH}` replacement. Used by `hexadecimal-escape` (default config: flag
-/// hex escapes and prefer unicode-style replacements). Other escapes such as
-/// `\uHHHH`, `\u{H+}`, and `\d` are skipped via `skip_escape`.
-pub(crate) fn first_hex_x_escape(pattern: &str) -> Option<(&str, CompactString)> {
+/// Returns the first `\uHHHH` or `\u{H+}` escape sequence in `pattern` whose
+/// decoded code point is ≤ 0xFF, together with its `\xHH` replacement. Used by
+/// `hexadecimal-escape` (default `"always"` config: flag unicode escapes that
+/// can be written as `\xHH` and suggest the hexadecimal form). Code points
+/// above 0xFF are not representable as `\xHH` and are silently skipped.
+/// `\xHH` escapes (already in the correct form) are also skipped.
+pub(crate) fn first_unicode_escape_as_hex(pattern: &str) -> Option<(&str, CompactString)> {
     let bytes = pattern.as_bytes();
     let mut index = 0;
     while index < bytes.len() {
@@ -582,17 +584,44 @@ pub(crate) fn first_hex_x_escape(pattern: &str) -> Option<(&str, CompactString)>
             index += 1;
             continue;
         }
-        if bytes.get(index + 1) == Some(&b'x')
-            && index + 4 <= bytes.len()
-            && bytes[index + 2].is_ascii_hexdigit()
-            && bytes[index + 3].is_ascii_hexdigit()
-        {
-            let original = &pattern[index..index + 4];
-            let mut replacement = CompactString::new("\\u{");
-            replacement.push(bytes[index + 2].to_ascii_lowercase() as char);
-            replacement.push(bytes[index + 3].to_ascii_lowercase() as char);
-            replacement.push('}');
-            return Some((original, replacement));
+        if bytes.get(index + 1) == Some(&b'u') {
+            if bytes.get(index + 2) == Some(&b'{') {
+                // \u{H+} form
+                let mut cursor = index + 3;
+                while cursor < bytes.len() && bytes[cursor] != b'}' {
+                    cursor += 1;
+                }
+                if cursor < bytes.len() {
+                    let hex_str = &pattern[index + 3..cursor];
+                    if let Ok(code_point) = u32::from_str_radix(hex_str, 16) {
+                        if code_point <= 0xFF {
+                            let original = &pattern[index..cursor + 1];
+                            let replacement = format!("\\x{:02x}", code_point);
+                            return Some((original, CompactString::from(replacement.as_str())));
+                        }
+                    }
+                    index = cursor + 1;
+                    continue;
+                }
+                index = cursor.saturating_add(1).min(bytes.len());
+                continue;
+            }
+            // \uHHHH form (fixed 4 hex digits)
+            if index + 6 <= bytes.len()
+                && bytes[index + 2].is_ascii_hexdigit()
+                && bytes[index + 3].is_ascii_hexdigit()
+                && bytes[index + 4].is_ascii_hexdigit()
+                && bytes[index + 5].is_ascii_hexdigit()
+            {
+                let hex_str = &pattern[index + 2..index + 6];
+                if let Ok(code_point) = u32::from_str_radix(hex_str, 16) {
+                    if code_point <= 0xFF {
+                        let original = &pattern[index..index + 6];
+                        let replacement = format!("\\x{:02x}", code_point);
+                        return Some((original, CompactString::from(replacement.as_str())));
+                    }
+                }
+            }
         }
         index = skip_escape(bytes, index);
     }
