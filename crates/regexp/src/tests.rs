@@ -436,6 +436,35 @@ mod control_character_escape {
         // Plain ASCII pattern.
         assert!(rule_ids_for("const a = /abc/u;", "control-character-escape").is_empty());
     }
+
+    #[test]
+    fn ignores_named_escape_chars_in_constructor_args() {
+        // The six characters that have well-known named regex escapes (\0 \t \n
+        // \v \f \r) are valid when passed as a literal JS string escape to a
+        // RegExp constructor. In JS source `'\t'` is a string with a real tab
+        // byte (0x09), but the author used a JS escape so it is already
+        // "named". Upstream marks all of these as valid.
+        for code in [
+            "new RegExp('\t')",
+            "RegExp(\"\0\t\n\x0B\x0C\r\", \"i\")",
+        ] {
+            assert!(
+                rule_ids_for(code, "control-character-escape").is_empty(),
+                "expected no diagnostic for: {code:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn still_reports_literal_tab_in_regex_literal() {
+        // A literal tab inside a regex literal MUST be flagged — the author
+        // should write /\t/ instead of /TAB/.
+        assert_eq!(
+            rule_ids_for("/\t/", "control-character-escape").as_slice(),
+            &["unexpected"],
+            "literal tab in regex literal must be flagged"
+        );
+    }
 }
 
 mod use_ignore_case {
