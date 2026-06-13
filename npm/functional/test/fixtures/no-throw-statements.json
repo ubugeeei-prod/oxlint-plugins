@@ -1,0 +1,119 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-throw-statements.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function foo() {\n  bar();\n}",
+      "typeAware": false
+    },
+    {
+      "code": "async function foo() {\n  throw new Error();\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowToRejectPromises": true
+        }
+      ]
+    },
+    {
+      "code": "async function foo() {\n  try {\n    throw new Error(\"hello\");\n  } finally {\n    console.log(\"world\");\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowToRejectPromises": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  Promise.resolve().then(() => {\n    throw new Error();\n  });\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowToRejectPromises": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  Promise.resolve().catch(() => {\n    throw new Error();\n  });\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowToRejectPromises": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  Promise.resolve().then(() => {\n    throw new Error();\n  }, () => {\n    throw new Error();\n  });\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowToRejectPromises": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "function foo() {\n  throw 'error';\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  throw new Error();\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "async function foo() {\n  throw new Error();\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "async function foo() {\n  try {\n    throw new Error(\"hello world\");\n  } catch (e) {\n    console.log(e);\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowToRejectPromises": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "async function foo() {\n  function bar() {\n    throw new Error();\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowToRejectPromises": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    }
+  ]
+}

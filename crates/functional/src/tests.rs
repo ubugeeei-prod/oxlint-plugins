@@ -66,6 +66,30 @@ const takes = (items: string[]): void => {};
 }
 
 #[test]
+fn no_loop_statements_reports_every_loop_form_with_generic_message_id() {
+    let options = FunctionalOptions {
+        rule_names: ["no-loop-statements".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let source = r#"
+for (let i = 0; i < 1; i++) {}
+for (const k in obj) {}
+for (const v of list) {}
+while (cond) {}
+do {} while (cond);
+"#;
+    let diagnostics = scan_functional(source, "fixture.ts", &options);
+    assert_eq!(diagnostics.len(), 5);
+    for diagnostic in &diagnostics {
+        assert_eq!(diagnostic.rule_name, "no-loop-statements");
+        assert_eq!(diagnostic.message_id, "generic");
+    }
+
+    // `if` is not a loop, so nothing is reported.
+    assert!(scan_functional("if (cond) {}", "fixture.ts", &options).is_empty());
+}
+
+#[test]
 fn honors_core_options() {
     let mut options = FunctionalOptions {
         rule_names: ["no-let".into()].into_iter().collect(),

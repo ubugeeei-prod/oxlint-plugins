@@ -1,0 +1,197 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-child-process.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "child_process.exec('ls')"
+    },
+    {
+      "code": "\n    var {} = require('child_process');\n    var result = /hello/.exec(str);"
+    },
+    {
+      "code": "\n    var {} = require('node:child_process');\n    var result = /hello/.exec(str);"
+    },
+    {
+      "code": "\n    import {} from 'child_process';\n    var result = /hello/.exec(str);"
+    },
+    {
+      "code": "\n    import {} from 'node:child_process';\n    var result = /hello/.exec(str);"
+    },
+    {
+      "code": "var { spawn } = require('child_process'); spawn(str);"
+    },
+    {
+      "code": "var { spawn } = require('node:child_process'); spawn(str);"
+    },
+    {
+      "code": "import { spawn } from 'child_process'; spawn(str);"
+    },
+    {
+      "code": "import { spawn } from 'node:child_process'; spawn(str);"
+    },
+    {
+      "code": "\n    var foo = require('child_process');\n    function fn () {\n      var foo = /hello/;\n      var result = foo.exec(str);\n    }"
+    },
+    {
+      "code": "var child = require('child_process'); child.spawn(str)"
+    },
+    {
+      "code": "var child = require('node:child_process'); child.spawn(str)"
+    },
+    {
+      "code": "import child from 'child_process'; child.spawn(str)"
+    },
+    {
+      "code": "import child from 'node:child_process'; child.spawn(str)"
+    },
+    {
+      "code": "\n    var foo = require('child_process');\n    function fn () {\n      var result = foo.spawn(str);\n    }"
+    },
+    {
+      "code": "require('child_process').spawn(str)"
+    },
+    {
+      "code": "\n    function fn () {\n      require('child_process').spawn(str)\n    }"
+    },
+    {
+      "code": "\n    var child_process = require('child_process');\n    var FOO = 'ls';\n    child_process.exec(FOO);"
+    },
+    {
+      "code": "\n    import child_process from 'child_process';\n    const FOO = 'ls';\n    child_process.exec(FOO);"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "require('child_process')",
+      "errors": [
+        {
+          "message": "Found require(\"child_process\")"
+        }
+      ]
+    },
+    {
+      "code": "require('node:child_process')",
+      "errors": [
+        {
+          "message": "Found require(\"node:child_process\")"
+        }
+      ]
+    },
+    {
+      "code": "var child = require('child_process'); child.exec(com)",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument"
+        }
+      ]
+    },
+    {
+      "code": "var child = require('node:child_process'); child.exec(com)",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument"
+        }
+      ]
+    },
+    {
+      "code": "import child from 'child_process'; child.exec(com)",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument"
+        }
+      ]
+    },
+    {
+      "code": "import child from 'node:child_process'; child.exec(com)",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument"
+        }
+      ]
+    },
+    {
+      "code": "var child = sinon.stub(require('child_process')); child.exec.returns({});",
+      "errors": [
+        {
+          "message": "Found require(\"child_process\")"
+        }
+      ]
+    },
+    {
+      "code": "var child = sinon.stub(require('node:child_process')); child.exec.returns({});",
+      "errors": [
+        {
+          "message": "Found require(\"node:child_process\")"
+        }
+      ]
+    },
+    {
+      "code": "\n      var foo = require('child_process');\n      function fn () {\n        var result = foo.exec(str);\n      }",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "code": "\n      import foo from 'child_process';\n      function fn () {\n        var result = foo.exec(str);\n      }",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "code": "\n      import foo from 'node:child_process';\n      function fn () {\n        var result = foo.exec(str);\n      }",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "code": "\n      require('child_process').exec(str)",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument",
+          "line": 2
+        }
+      ]
+    },
+    {
+      "code": "\n      function fn () {\n        require('child_process').exec(str)\n      }",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument",
+          "line": 3
+        }
+      ]
+    },
+    {
+      "code": "\n      const {exec} = require('child_process');\n      exec(str)",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument",
+          "line": 3
+        }
+      ]
+    },
+    {
+      "code": "\n      const {exec} = require('node:child_process');\n      exec(str)",
+      "errors": [
+        {
+          "message": "Found child_process.exec() with non Literal first argument",
+          "line": 3
+        }
+      ]
+    }
+  ]
+}

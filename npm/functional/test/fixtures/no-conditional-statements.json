@@ -1,0 +1,180 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-conditional-statements.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function foo(i) {\n  if (i === 1) {\n    return 1;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": true
+        }
+      ]
+    },
+    {
+      "code": "for(var i = 0; i < j; i++) {\n  if (e === 1) {\n    break;\n  }\n  if (e === 2) {\n    continue;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(i) {\n  if (i === 1) {\n    throw 1;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": true
+        }
+      ]
+    },
+    {
+      "code": "declare function neverReturn(): never;\nfunction foo(i) {\n  if (i === 1) {\n    neverReturn();\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(i) {\n  if (i === 1) {\n    return 1;\n  } else {\n    return 0;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": "ifExhaustive"
+        }
+      ]
+    },
+    {
+      "code": "for(var i = 0; i < j; i++) {\n  if (e === 1) {\n    break;\n  } else {\n    continue;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": "ifExhaustive"
+        }
+      ]
+    },
+    {
+      "code": "if (import.meta.vitest) {\n  const { it, expect } = import.meta.vitest;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCodePattern": [
+            "import\\.meta\\.vitest"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "function foo(i) {\n  switch(i) {\n    case \"a\":\n      return 1;\n    case \"b\":\n      return 2;\n    default:\n      return 3;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": true
+        }
+      ]
+    },
+    {
+      "code": "label: for(var i = 0; i < j; i++) {\n  switch(i) {\n    case \"a\":\n      break label;\n    case \"b\":\n      continue;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(i) {\n  switch(i) {\n    case \"a\":\n      throw 1;\n    case \"b\":\n      throw 2;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": true
+        }
+      ]
+    },
+    {
+      "code": "declare function neverReturn(): never;\nfunction foo(i) {\n  switch(i) {\n    case \"a\":\n      neverReturn();\n    case \"b\":\n      neverReturn();\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(i) {\n  switch(i) {\n    case \"a\":\n      return 1;\n    case \"b\":\n      return 2;\n    default:\n      return 3;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": "ifExhaustive"
+        }
+      ]
+    },
+    {
+      "code": "type T = \"a\" | \"b\";\nfunction foo(i: T) {\n  switch(i) {\n    case \"a\":\n      return 1;\n    case \"b\":\n      return 2;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": "ifExhaustive"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "if (true) {\n  console.log(\"hello world\");\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "unexpectedIf"
+        }
+      ]
+    },
+    {
+      "code": "function foo(i) {\n  if (i === 1) {\n    return 1;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": "ifExhaustive"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "incompleteIf"
+        }
+      ]
+    },
+    {
+      "code": "switch(i) {\n  case \"a\":\n    console.log(\"hello\");\n  case \"b\":\n  case \"c\":\n    console.log(\"world\");\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "unexpectedSwitch"
+        }
+      ]
+    },
+    {
+      "code": "function foo(i) {\n  switch(i) {\n    case \"a\":\n      return 1;\n    case \"b\":\n      return 2;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowReturningBranches": "ifExhaustive"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "incompleteSwitch"
+        }
+      ]
+    }
+  ]
+}

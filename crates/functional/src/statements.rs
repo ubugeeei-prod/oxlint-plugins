@@ -20,6 +20,7 @@ impl<'a> Scanner<'a> {
                 ) {
                     self.report(
                         "no-expression-statements",
+                        "generic",
                         "Using expressions to cause side-effects not allowed.",
                         statement.span,
                     );
@@ -30,6 +31,7 @@ impl<'a> Scanner<'a> {
             Statement::IfStatement(statement) => {
                 self.report(
                     "no-conditional-statements",
+                    "unexpectedIf",
                     "Unexpected if, use a conditional expression (ternary operator) instead.",
                     statement.span,
                 );
@@ -42,6 +44,7 @@ impl<'a> Scanner<'a> {
             Statement::SwitchStatement(statement) => {
                 self.report(
                     "no-conditional-statements",
+                    "unexpectedSwitch",
                     "Unexpected switch, use a conditional expression instead.",
                     statement.span,
                 );
@@ -56,6 +59,7 @@ impl<'a> Scanner<'a> {
             Statement::ForStatement(statement) => {
                 self.report(
                     "no-loop-statements",
+                    "generic",
                     "Unexpected loop, use map or reduce instead.",
                     statement.span,
                 );
@@ -73,6 +77,7 @@ impl<'a> Scanner<'a> {
             Statement::ForInStatement(statement) => {
                 self.report(
                     "no-loop-statements",
+                    "generic",
                     "Unexpected loop, use map or reduce instead.",
                     statement.span,
                 );
@@ -83,6 +88,7 @@ impl<'a> Scanner<'a> {
             Statement::ForOfStatement(statement) => {
                 self.report(
                     "no-loop-statements",
+                    "generic",
                     "Unexpected loop, use map or reduce instead.",
                     statement.span,
                 );
@@ -93,6 +99,7 @@ impl<'a> Scanner<'a> {
             Statement::WhileStatement(statement) => {
                 self.report(
                     "no-loop-statements",
+                    "generic",
                     "Unexpected loop, use map or reduce instead.",
                     statement.span,
                 );
@@ -102,6 +109,7 @@ impl<'a> Scanner<'a> {
             Statement::DoWhileStatement(statement) => {
                 self.report(
                     "no-loop-statements",
+                    "generic",
                     "Unexpected loop, use map or reduce instead.",
                     statement.span,
                 );
@@ -112,12 +120,14 @@ impl<'a> Scanner<'a> {
                 if statement.handler.is_some() && !self.options.allow_try_catch {
                     self.report(
                         "no-try-statements",
+                        "catch",
                         "Unexpected try-catch, this pattern is not functional.",
                         statement.span,
                     );
                 } else if statement.finalizer.is_some() && !self.options.allow_try_finally {
                     self.report(
                         "no-try-statements",
+                        "finally",
                         "Unexpected try-finally, this pattern is not functional.",
                         statement.span,
                     );
@@ -134,6 +144,7 @@ impl<'a> Scanner<'a> {
                 if !(self.options.allow_throw_to_reject_promises && context.in_async_function) {
                     self.report(
                         "no-throw-statements",
+                        "generic",
                         "Unexpected throw, throwing exceptions is not functional.",
                         statement.span,
                     );
@@ -141,6 +152,7 @@ impl<'a> Scanner<'a> {
                 if context.in_async_function {
                     self.report(
                         "no-promise-reject",
+                        "generic",
                         "Unexpected rejection, resolve an error instead.",
                         statement.span,
                     );
@@ -243,6 +255,7 @@ impl<'a> Scanner<'a> {
         {
             self.report(
                 "no-let",
+                "generic",
                 "Unexpected let, use const instead.",
                 declaration.span,
             );
@@ -253,6 +266,7 @@ impl<'a> Scanner<'a> {
                 if is_mutable_type(&type_annotation.type_annotation) {
                     self.report(
                         "prefer-immutable-types",
+                        "parameter",
                         "Only readonly types allowed.",
                         type_annotation.span,
                     );

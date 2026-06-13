@@ -1,0 +1,2062 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/prefer-immutable-types/parameters.test.ts",
+      "tests/rules/prefer-immutable-types/return-types.test.ts",
+      "tests/rules/prefer-immutable-types/variables.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function foo(arg: boolean) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: true) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: string) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: 'bar') {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: undefined) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: readonly string[]) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { readonly foo: string }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { readonly foo: { readonly bar: number } }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Readonly<ReadonlySet<string>>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Readonly<ReadonlyMap<string, string>>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: string | number }): arg is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo(): void }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: ReadonlyArray<string>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: readonly [string, number]) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Readonly<[string, number]>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: () => void }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: ReadonlySet<string>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: ReadonlyMap<string, string>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n  constructor(\n    private readonly arg1: readonly string[],\n    public readonly arg2: readonly string[],\n    protected readonly arg3: readonly string[],\n    readonly arg4: readonly string[],\n  ) {}\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  (arg: readonly string[]): void;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  new (arg: readonly string[]): void;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: boolean) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: true) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: string) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: 'bar') {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: undefined) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: readonly string[]) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { readonly foo: string }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { readonly foo: { readonly bar: number } }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Readonly<ReadonlySet<string>>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Readonly<ReadonlyMap<string, string>>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: string | number }): arg is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo(): void }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: ReadonlyArray<string>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: readonly [string, number]) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Readonly<[string, number]>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: () => void }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: ReadonlySet<string>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: ReadonlyMap<string, string>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n  constructor(\n    private readonly arg1: readonly string[],\n    public readonly arg2: readonly string[],\n    protected readonly arg3: readonly string[],\n    readonly arg4: readonly string[],\n  ) {}\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  (arg: readonly string[]): void;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  new (arg: readonly string[]): void;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: boolean) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: true) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: string) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: 'bar') {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: undefined) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: readonly string[]) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { readonly foo: string }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { readonly foo: { readonly bar: number } }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Readonly<ReadonlySet<string>>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Readonly<ReadonlyMap<string, string>>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: string | number }): arg is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg0: { foo: string | number }, arg1: { foo: string | number }): arg0 is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": false,
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): boolean {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): true {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): string {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): 'bar' {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): undefined {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): readonly string[] {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { readonly foo: string } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { readonly foo: { readonly bar: number } } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Readonly<ReadonlySet<string>> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Readonly<ReadonlyMap<string, string>> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: string | number }): arg is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { foo(): void } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): ReadonlyArray<string> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): readonly [string, number] {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Readonly<[string, number]> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { foo: () => void } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): ReadonlySet<string> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): ReadonlyMap<string, string> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  (): readonly string[];\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  new (): readonly string[];\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): boolean {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): true {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): string {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): 'bar' {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): undefined {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): readonly string[] {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { readonly foo: string } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { readonly foo: { readonly bar: number } } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Readonly<ReadonlySet<string>> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Readonly<ReadonlyMap<string, string>> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: string | number }): arg is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { foo(): void } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): ReadonlyArray<string> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): readonly [string, number] {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Readonly<[string, number]> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { foo: () => void } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): ReadonlySet<string> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): ReadonlyMap<string, string> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  (): readonly string[];\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  new (): readonly string[];\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): boolean {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): true {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): string {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): 'bar' {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): undefined {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): readonly string[] {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { readonly foo: string } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { readonly foo: { readonly bar: number } } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Readonly<ReadonlySet<string>> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Readonly<ReadonlyMap<string, string>> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: string | number }): arg is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg0: { foo: string | number }, arg1: { foo: string | number }): arg0 is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": false,
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: boolean = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: true = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: string = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: 'bar' = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: undefined = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: readonly string[] = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { readonly foo: string } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { readonly foo: { readonly bar: number } } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Readonly<ReadonlySet<string>> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Readonly<ReadonlyMap<string, string>> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: string | number }): arg is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const [a, b] = [1, 2];",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const { a, b } = { a: 1, b: 2 };",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { foo(): void } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: ReadonlyArray<string> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: readonly [string, number] = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Readonly<[string, number]> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { foo: () => void } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: ReadonlySet<string> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: ReadonlyMap<string, string> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ]
+    },
+    {
+      "code": "const foo: boolean = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: true = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: string = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: 'bar' = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: undefined = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: readonly string[] = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { readonly foo: string } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { readonly foo: { readonly bar: number } } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Readonly<ReadonlySet<string>> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Readonly<ReadonlyMap<string, string>> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: string | number }): arg is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const [a, b] = [1, 2];",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const { a, b } = { a: 1, b: 2 };",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { foo(): void } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: ReadonlyArray<string> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: readonly [string, number] = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Readonly<[string, number]> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { foo: () => void } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: ReadonlySet<string> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: ReadonlyMap<string, string> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep"
+        }
+      ]
+    },
+    {
+      "code": "const foo: boolean = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: true = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: string = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: 'bar' = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: undefined = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: readonly string[] = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { readonly foo: string } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { readonly foo: { readonly bar: number } } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Readonly<ReadonlySet<string>> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Readonly<ReadonlyMap<string, string>> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: { foo: string | number }): arg is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const [a, b] = [1, 2];",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "const { a, b } = { a: 1, b: 2 };",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable"
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  foo: number;\n  private bar: number;\n  static baz: number;\n  private static qux: number;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreClasses": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  let foo: {\n    a: { foo: number },\n    b: string[],\n    c: { [key: string]: string[] },\n    [key: string]: any,\n  }\n};",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": {
+            "ignoreInFunctions": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "let mutableFoo: string[] = [];",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNamePattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "let fooMutable: Readonly<\n  string[]\n> = [];",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreTypePattern": "^Readonly<.+>$"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "function foo(arg: ReadonlySet<string>) {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "parameter"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: ReadonlyMap<string, string>) {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "parameter"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg1: { foo: string }, arg2: { foo: number }) {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "parameter"
+        },
+        {
+          "messageId": "parameter"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg1: { foo: string }, arg2: { foo: number }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parameter"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "parameter"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  constructor (\n    public publicProp: string,\n    protected protectedProp: string,\n    private privateProp: string,\n) { }\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "propertyImmutability"
+        },
+        {
+          "messageId": "propertyImmutability"
+        },
+        {
+          "messageId": "propertyImmutability"
+        },
+        {
+          "messageId": "propertyImmutability"
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  constructor (\n    public publicProp: string,\n    protected protectedProp: string,\n    private privateProp: string,\n) { }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "propertyModifier"
+        },
+        {
+          "messageId": "propertyModifierSuggestion"
+        },
+        {
+          "messageId": "propertyModifier"
+        },
+        {
+          "messageId": "propertyModifierSuggestion"
+        },
+        {
+          "messageId": "propertyModifier"
+        },
+        {
+          "messageId": "propertyModifierSuggestion"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg0: { foo: string | number }, arg1: { foo: string | number }): arg0 is { foo: number } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parameter"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Array<string>) {}\nfunction foo(arg: string[]) {}\nfunction foo(arg: Set<string>) {}\nfunction foo(arg: Map<string, string>) {}\nfunction foo(arg: ReadonlyArray<string>) {}\nfunction foo(arg: readonly string[]) {}\nfunction foo(arg: ReadonlySet<string>) {}\nfunction foo(arg: ReadonlyMap<string, string>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyShallow"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg1: { foo: string }) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "ReadonlyDeep",
+          "suggestions": {
+            "ReadonlyDeep": [
+              [
+                {
+                  "pattern": "^(?!ReadonlyDeep)(?:Readonly<(.+)>|(.+))$",
+                  "replace": "ReadonlyDeep<$1$2>"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "function foo(arg: Array<string>) {}\nfunction foo(arg: string[]) {}\nfunction foo(arg: Set<string>) {}\nfunction foo(arg: Map<string, string>) {}\nfunction foo(arg: ReadonlyArray<string>) {}\nfunction foo(arg: readonly string[]) {}\nfunction foo(arg: ReadonlySet<string>) {}\nfunction foo(arg: ReadonlyMap<string, string>) {}",
+      "typeAware": true,
+      "options": [
+        {
+          "parameters": "Immutable",
+          "fixer": {
+            "Immutable": [
+              {
+                "pattern": "^(?:Readonly)?(Set|Map)<(.+)>$",
+                "replace": "Readonly<Readonly$1<$2>>"
+              }
+            ]
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): ReadonlySet<string> {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "returnType"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): ReadonlyMap<string, string> {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "returnType"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { foo: string } {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "returnType"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { foo: string } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "returnType"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Array<string> {}\nfunction foo(): string[] {}\nfunction foo(): Set<string> {}\nfunction foo(): Map<string, string> {}\nfunction foo(): ReadonlyArray<string> {}\nfunction foo(): readonly string[] {}\nfunction foo(): ReadonlySet<string> {}\nfunction foo(): ReadonlyMap<string, string> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyShallow"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): { foo: string } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "ReadonlyDeep",
+          "suggestions": {
+            "ReadonlyDeep": [
+              [
+                {
+                  "pattern": "^(?!ReadonlyDeep)(?:Readonly<(.+)>|(.+))$",
+                  "replace": "ReadonlyDeep<$1$2>"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "function foo(): Array<string> {}\nfunction foo(): string[] {}\nfunction foo(): Set<string> {}\nfunction foo(): Map<string, string> {}\nfunction foo(): ReadonlyArray<string> {}\nfunction foo(): readonly string[] {}\nfunction foo(): ReadonlySet<string> {}\nfunction foo(): ReadonlyMap<string, string> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "returnTypes": "Immutable",
+          "fixer": {
+            "Immutable": [
+              {
+                "pattern": "^(?:Readonly)?(Set|Map)<(.+)>$",
+                "replace": "Readonly<Readonly$1<$2>>"
+              }
+            ]
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: ReadonlySet<string> = {} as any;",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "variable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: ReadonlyMap<string, string> = {} as any;",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "variable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { foo: string } = {} as any;",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "variable"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { foo: string } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Array<string> = {} as any;\nconst foo: string[] = {} as any;\nconst foo: Set<string> = {} as any;\nconst foo: Map<string, string> = {} as any;\nconst foo: ReadonlyArray<string> = {} as any;\nconst foo: readonly string[] = {} as any;\nconst foo: ReadonlySet<string> = {} as any;\nconst foo: ReadonlyMap<string, string> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyShallow"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  readonly foo: { foo: number };\n  private readonly bar: { foo: number };\n  static readonly baz: { foo: number };\n  private static readonly qux: { foo: number };\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "propertyImmutability"
+        },
+        {
+          "messageId": "propertyImmutability"
+        },
+        {
+          "messageId": "propertyImmutability"
+        },
+        {
+          "messageId": "propertyImmutability"
+        }
+      ]
+    },
+    {
+      "code": "const foo: { foo: string } = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "ReadonlyDeep",
+          "suggestions": {
+            "ReadonlyDeep": [
+              [
+                {
+                  "pattern": "^(?!ReadonlyDeep)(?:Readonly<(.+)>|(.+))$",
+                  "replace": "ReadonlyDeep<$1$2>"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        }
+      ]
+    },
+    {
+      "code": "const foo: Array<string> = {} as any;\nconst foo: string[] = {} as any;\nconst foo: Set<string> = {} as any;\nconst foo: Map<string, string> = {} as any;\nconst foo: ReadonlyArray<string> = {} as any;\nconst foo: readonly string[] = {} as any;\nconst foo: ReadonlySet<string> = {} as any;\nconst foo: ReadonlyMap<string, string> = {} as any;",
+      "typeAware": true,
+      "options": [
+        {
+          "variables": "Immutable",
+          "fixer": {
+            "Immutable": [
+              {
+                "pattern": "^(?:Readonly)?(Set|Map)<(.+)>$",
+                "replace": "Readonly<Readonly$1<$2>>"
+              }
+            ]
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "variable"
+        }
+      ]
+    }
+  ]
+}

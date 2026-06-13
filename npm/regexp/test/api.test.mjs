@@ -60,6 +60,8 @@ describe('regexp native API', () => {
       'sort-character-class-elements',
       'no-trivially-nested-assertion',
       'no-extra-lookaround-assertions',
+      'no-trivially-nested-quantifier',
+      'prefer-character-class',
     ]);
   });
 

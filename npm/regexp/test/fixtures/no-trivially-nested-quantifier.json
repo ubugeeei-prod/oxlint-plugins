@@ -1,0 +1,198 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-trivially-nested-quantifier.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-trivially-nested-quantifier.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/(a?)+/"
+    },
+    {
+      "code": "/(?:a{2})+/"
+    },
+    {
+      "code": "/(?:a{3,4})+/"
+    },
+    {
+      "code": "/(?:a+?)+/"
+    },
+    {
+      "code": "/(?:[\\q{a}])+/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(?:a?)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "These two quantifiers are trivially nested and can be replaced with '*'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/a*/"
+    },
+    {
+      "code": "/(?:a{1,2})*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "These two quantifiers are trivially nested and can be replaced with '*'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/a*/"
+    },
+    {
+      "code": "/(?:a{1,2})+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "These two quantifiers are trivially nested and can be replaced with '+'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/a+/"
+    },
+    {
+      "code": "/(?:a{1,2}){3,4}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "These two quantifiers are trivially nested and can be replaced with '{3,8}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 17
+        }
+      ],
+      "output": "/a{3,8}/"
+    },
+    {
+      "code": "/(?:a{2,}){4}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "These two quantifiers are trivially nested and can be replaced with '{8,}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/a{8,}/"
+    },
+    {
+      "code": "/(?:a{4,}){5}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "These two quantifiers are trivially nested and can be replaced with '{20,}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/a{20,}/"
+    },
+    {
+      "code": "/(?:a{3}){4}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "These two quantifiers are trivially nested and can be replaced with '{12}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/a{12}/"
+    },
+    {
+      "code": "/(?:a+|b)*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This nested quantifier can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": "/(?:a|b)*/"
+    },
+    {
+      "code": "/(?:a?|b)*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This nested quantifier can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": "/(?:a|b)*/"
+    },
+    {
+      "code": "/(?:a{0,4}|b)*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This nested quantifier can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 11
+        }
+      ],
+      "output": "/(?:a|b)*/"
+    },
+    {
+      "code": "/(?:a{0,4}|b)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This nested quantifier can be simplified to '?'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 11
+        }
+      ],
+      "output": "/(?:a?|b)+/"
+    },
+    {
+      "code": "/(?:a{0,4}?|b)+?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This nested quantifier can be simplified to '?'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?:a??|b)+?/"
+    },
+    {
+      "code": "/(?:[\\q{a}]+)+/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "These two quantifiers are trivially nested and can be replaced with '+'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 15
+        }
+      ],
+      "output": "/[\\q{a}]+/v"
+    }
+  ]
+}

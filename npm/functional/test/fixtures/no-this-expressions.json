@@ -1,0 +1,28 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-this-expressions.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function foo() {\n  bar();\n}",
+      "typeAware": false
+    }
+  ],
+  "invalid": [
+    {
+      "code": "function foo() {\n  this.bar();\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    }
+  ]
+}

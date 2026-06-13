@@ -51,6 +51,9 @@ pub struct DiagnosticLoc {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Diagnostic {
     pub rule_name: &'static str,
+    /// The upstream eslint-plugin-functional messageId for this diagnostic, so
+    /// the JS wrapper can report it and the upstream replay suite can assert it.
+    pub message_id: &'static str,
     pub message: CompactString,
     pub loc: DiagnosticLoc,
 }

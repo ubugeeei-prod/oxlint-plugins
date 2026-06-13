@@ -1,0 +1,139 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/prefer-tacit.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function foo(x) {\n  f(x);\n}",
+      "typeAware": true
+    },
+    {
+      "code": "const foo = function (x) {\n  f(x);\n};",
+      "typeAware": true
+    },
+    {
+      "code": "const foo = (x) => {\n  f(x);\n};",
+      "typeAware": true
+    },
+    {
+      "code": "function f(x, y) {}\nconst foo = x => f(x);",
+      "typeAware": true
+    },
+    {
+      "code": "const a = ['1', '2'];\na.map((x) => Number.parseInt(x));",
+      "typeAware": true
+    },
+    {
+      "code": "function f(x, y = 1) {}\nconst foo = x => f(x);",
+      "typeAware": true
+    },
+    {
+      "code": "function f(x: number, y?: nunber) {}\nconst foo = x => f(x);",
+      "typeAware": true
+    },
+    {
+      "code": "function f(x) {}\nconst foo = f<number>;",
+      "typeAware": true
+    },
+    {
+      "code": "const foo = () => {\n  const getBar = () => 1;\n  const setBar = (value: number) => {};\n  return {\n    get baz() {\n      return getBar();\n    },\n    set baz(value) {\n      setBar(value);\n    },\n  };\n};",
+      "typeAware": true
+    },
+    {
+      "code": "declare const a: { b(arg: string): string; };\nfunction foo(x) { return a.b(x); }",
+      "typeAware": true,
+      "options": [
+        {
+          "checkMemberExpressions": false
+        }
+      ]
+    },
+    {
+      "code": "[''].filter(str => /a/.test(str))",
+      "typeAware": true,
+      "options": [
+        {
+          "checkMemberExpressions": false
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "function f(x) {}\nconst foo = x => f(x);",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
+        }
+      ]
+    },
+    {
+      "code": "const foo = [1, 2, 3].map(x => Boolean(x));",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
+        }
+      ]
+    },
+    {
+      "code": "function f<T>(x: T): T {}\nfunction foo(x) { return f<number>(x); }",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
+        }
+      ]
+    },
+    {
+      "code": "declare const a: { b(arg: string): string; };\nfunction foo(x) { return a.b(x); }",
+      "typeAware": true,
+      "options": [
+        {
+          "checkMemberExpressions": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
+        }
+      ]
+    },
+    {
+      "code": "[''].filter(str => /a/.test(str))",
+      "typeAware": true,
+      "options": [
+        {
+          "checkMemberExpressions": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
+        }
+      ]
+    }
+  ]
+}

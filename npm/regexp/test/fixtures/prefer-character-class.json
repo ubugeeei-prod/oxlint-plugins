@@ -1,0 +1,610 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-character-class.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-character-class.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/regexp/"
+    },
+    {
+      "code": "/[regexp]/"
+    },
+    {
+      "code": "/reg|exp/"
+    },
+    {
+      "code": "/(?:a|b)/"
+    },
+    {
+      "code": "/(?:a|b|c\\b)/"
+    },
+    {
+      "code": "/(?:[ab]|c\\b)/"
+    },
+    {
+      "code": "/(?:[ab]|cd)/"
+    },
+    {
+      "code": "/(?:[ab]|(c))/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a|b|c|\\d/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[abc\\d]/"
+    },
+    {
+      "code": "/(a|b|c|\\d)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 11
+        }
+      ],
+      "output": "/([abc\\d])/"
+    },
+    {
+      "code": "/(?:a|b|c|\\d)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 13
+        }
+      ],
+      "output": "/(?:[abc\\d])/"
+    },
+    {
+      "code": "/(?=a|b|c|\\d)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 13
+        }
+      ],
+      "output": "/(?=[abc\\d])/"
+    },
+    {
+      "code": "/(?<=a|b|c|\\d)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 14
+        }
+      ],
+      "output": "/(?<=[abc\\d])/"
+    },
+    {
+      "code": "/a|b|c|\\d|[d-f]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[abc\\dd-f]/"
+    },
+    {
+      "code": "/a|-|c|\\d|c|[-d-f]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 19
+        }
+      ],
+      "output": "/[a\\-c\\dc\\-d-f]/"
+    },
+    {
+      "code": "/a|[.]|c|\\d|c|[-d-f]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 21
+        }
+      ],
+      "output": "/[a.c\\dc\\-d-f]/"
+    },
+    {
+      "code": "const s = \"a|b|\\\\d|c\"\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 21
+        }
+      ],
+      "output": "const s = \"[ab\\\\dc]\"\n            new RegExp(s)"
+    },
+    {
+      "code": "const s = \"a|b|\"+\"c\"\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a|b|c/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[abc]/"
+    },
+    {
+      "code": "/]|a|b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[\\]ab]/"
+    },
+    {
+      "code": "/-|a|c/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[\\-ac]/"
+    },
+    {
+      "code": "/a|-|c/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[a\\-c]/"
+    },
+    {
+      "code": "/a|[-]|c/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[a\\-c]/"
+    },
+    {
+      "code": "/(?:a|b|c)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(?:[abc])/"
+    },
+    {
+      "code": "/(a|b|c)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": "/([abc])/"
+    },
+    {
+      "code": "/(?<name>a|b|c)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 15
+        }
+      ],
+      "output": "/(?<name>[abc])/"
+    },
+    {
+      "code": "/(?:a|b|c|d\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(?:[abc]|d\\b)/"
+    },
+    {
+      "code": "/(?:a|b\\b|[c]|d)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 16
+        }
+      ],
+      "output": "/(?:[acd]|b\\b)/"
+    },
+    {
+      "code": "/(?:a|\\w|\\s|[\"'])/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 17
+        }
+      ],
+      "output": "/(?:[a\\w\\s\"'])/"
+    },
+    {
+      "code": "/(?:\\w|-|\\+|\\*|\\/)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 18
+        }
+      ],
+      "output": "/(?:[\\w\\-\\+\\*\\/])+/"
+    },
+    {
+      "code": "/(?=a|b|c)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(?=[abc])/"
+    },
+    {
+      "code": "/(?!a|b|c)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(?![abc])/"
+    },
+    {
+      "code": "/(?<=a|b|c)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 11
+        }
+      ],
+      "output": "/(?<=[abc])/"
+    },
+    {
+      "code": "/(?<!a|b|c)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 11
+        }
+      ],
+      "output": "/(?<![abc])/"
+    },
+    {
+      "code": "/(?=a|b|c|dd|e)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 15
+        }
+      ],
+      "output": "/(?=[abce]|dd)/"
+    },
+    {
+      "code": "/(?!a|b|c|dd|e)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 15
+        }
+      ],
+      "output": "/(?![abce]|dd)/"
+    },
+    {
+      "code": "/(?<=a|b|c|dd|e)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 16
+        }
+      ],
+      "output": "/(?<=[abce]|dd)/"
+    },
+    {
+      "code": "/(?<!a|b|c|dd|e)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 16
+        }
+      ],
+      "output": "/(?<![abce]|dd)/"
+    },
+    {
+      "code": "/[abc]|d/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[abcd]/"
+    },
+    {
+      "code": "/[abc]|d|ee/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[abcd]|ee/"
+    },
+    {
+      "code": "/(?:a|\\w|b\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 9
+        }
+      ],
+      "output": "/(?:[a\\w]|b\\b)/"
+    },
+    {
+      "code": "/(?:\\w|a|b\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 9
+        }
+      ],
+      "output": "/(?:[\\wa]|b\\b)/"
+    },
+    {
+      "code": "/(?:\\w|b\\b|a)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 13
+        }
+      ],
+      "output": "/(?:[\\wa]|b\\b)/"
+    },
+    {
+      "code": "/(?:\\s|\\S|b\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(?:[\\s\\S]|b\\b)/"
+    },
+    {
+      "code": "/(?:\\w|\\D|b\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(?:[\\w\\D]|b\\b)/"
+    },
+    {
+      "code": "/(?:\\w|\\W|b\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(?:[\\w\\W]|b\\b)/"
+    },
+    {
+      "code": "/--?|-=|\\+\\+?|\\+=|!=?|~|\\*\\*?|\\*=|\\/=?|%=?|<<=?|>>=?|<=?|>=?|==?|&&?|&=|\\^=?|\\|\\|?|\\|=|\\?|:/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 23,
+          "endColumn": 92
+        }
+      ],
+      "output": "/--?|-=|\\+\\+?|\\+=|!=?|[~\\?:]|\\*\\*?|\\*=|\\/=?|%=?|<<=?|>>=?|<=?|>=?|==?|&&?|&=|\\^=?|\\|\\|?|\\|=/"
+    },
+    {
+      "code": "/--?|\\+\\+?|!=?=?|<=?|>=?|==?=?|&&|\\|\\|?|\\?|\\*|\\/|~|\\^|%/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 41,
+          "endColumn": 56
+        }
+      ],
+      "output": "/--?|\\+\\+?|!=?=?|<=?|>=?|==?=?|&&|\\|\\|?|[\\?\\*\\/~\\^%]/"
+    },
+    {
+      "code": "/1|2|3|[\\w--\\d]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[123[\\w--\\d]]/v"
+    },
+    {
+      "code": "/1|&|&|[\\w--\\d]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[1\\&&[\\w--\\d]]/v"
+    },
+    {
+      "code": "/1|~|~|[\\w--\\d]|[\\q{abc}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[1\\~~[\\w--\\d]]|[\\q{abc}]/v"
+    },
+    {
+      "code": "/foo|bar|a|b|c|baz/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected the disjunction of single element alternatives. Use character class '[...]' instead.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 15
+        }
+      ],
+      "output": "/foo|bar|[abc]|baz/"
+    }
+  ]
+}

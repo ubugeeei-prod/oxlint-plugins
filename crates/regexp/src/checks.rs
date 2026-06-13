@@ -561,6 +561,12 @@ impl<'a> Scanner<'a> {
         if analysis.has_extra_lookaround_assertion {
             self.report("no-extra-lookaround-assertions", "unexpected", span);
         }
+        if analysis.has_trivially_nested_quantifier {
+            self.report("no-trivially-nested-quantifier", "unexpected", span);
+        }
+        if analysis.has_preferable_character_class {
+            self.report("prefer-character-class", "unexpected", span);
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);
