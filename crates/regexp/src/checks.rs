@@ -206,7 +206,7 @@ impl<'a> Scanner<'a> {
     }
 
     pub(crate) fn check_call_expression(&mut self, call: &'a CallExpression<'a>) {
-        if call.callee.is_specific_id("RegExp") {
+        if self.is_global_regexp_callee(&call.callee) {
             self.check_regexp_constructor(call.span, &call.arguments);
         }
         self.check_prefer_regexp_exec(call);
@@ -412,7 +412,7 @@ impl<'a> Scanner<'a> {
     }
 
     pub(crate) fn check_new_expression(&mut self, new_expression: &'a NewExpression<'a>) {
-        if new_expression.callee.is_specific_id("RegExp") {
+        if self.is_global_regexp_callee(&new_expression.callee) {
             self.check_regexp_constructor(new_expression.span, &new_expression.arguments);
         }
     }

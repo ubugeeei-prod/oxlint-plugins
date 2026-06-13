@@ -13,6 +13,7 @@ mod tests;
 
 use oxc_allocator::Allocator;
 use oxc_parser::Parser;
+use oxc_semantic::SemanticBuilder;
 use oxc_span::SourceType;
 use oxlint_plugins_carton::SmallVec;
 
@@ -99,10 +100,18 @@ pub fn scan_regexp(source_text: &str, filename: &str) -> SmallVec<[Diagnostic; 1
         return SmallVec::new();
     }
 
+    let semantic_return = SemanticBuilder::new().build(&parser_return.program);
+    if !semantic_return.errors.is_empty() {
+        return SmallVec::new();
+    }
+    let semantic = semantic_return.semantic;
+    let scoping = semantic.scoping();
+
     let mut scanner = Scanner {
         source_text,
         line_index: LineIndex::new(source_text),
         diagnostics: SmallVec::new(),
+        scoping,
     };
     scanner.scan_program(&parser_return.program.body);
     scanner.diagnostics

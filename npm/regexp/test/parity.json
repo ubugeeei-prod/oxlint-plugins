@@ -17,10 +17,6 @@
       "level": "off",
       "reason": "Flags $1 referring to an unnamed group, which has no named-replacement alternative."
     },
-    "require-unicode-regexp": {
-      "level": "off",
-      "reason": "Non-literal constructor flags are now skipped, but the shadowed-global case (e.g. function f(RegExp) { return new RegExp('foo') }) still false-positives — needs scope analysis to know RegExp is not the global."
-    },
     "use-ignore-case": {
       "level": "off",
       "reason": "Flags case-pair classes like /[aA]a/ where adding the i flag would alter other literals in the pattern."
