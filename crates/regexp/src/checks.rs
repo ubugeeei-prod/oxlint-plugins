@@ -805,15 +805,25 @@ impl<'a> Scanner<'a> {
             );
         }
         if let Some(ch) = first_invisible_character(pattern) {
-            self.report_with_data(
-                "no-invisible-character",
-                "unexpected",
-                DiagnosticData {
-                    char_text: Some(mention_char(ch)),
-                    ..DiagnosticData::default()
-                },
-                span,
-            );
+            // When the pattern comes from a RegExp constructor argument, the six
+            // characters with well-known named JS string escapes (\0 \t \n \v \f \r)
+            // are delivered as literal bytes by the JS escape (e.g. '\t' → U+0009).
+            // Upstream marks these valid (new RegExp('\t') is accepted), so suppress
+            // here. For regex literals ALL invisible characters must be flagged.
+            // Known gap: hex-escaped constructor args like new RegExp('\x09') still
+            // reach us as the literal char and would be suppressed — acceptable.
+            let named_escape = matches!(ch, '\0' | '\t'..='\r');
+            if !(is_constructor && named_escape) {
+                self.report_with_data(
+                    "no-invisible-character",
+                    "unexpected",
+                    DiagnosticData {
+                        char_text: Some(mention_char(ch)),
+                        ..DiagnosticData::default()
+                    },
+                    span,
+                );
+            }
         }
         if let Some(escape) = first_uppercase_hex_escape(pattern) {
             self.report_with_data(

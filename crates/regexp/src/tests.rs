@@ -1588,6 +1588,45 @@ mod no_invisible_character {
             .is_empty()
         );
     }
+
+    #[test]
+    fn suppresses_named_escape_chars_in_constructor_false_positive() {
+        // Regression: new RegExp('\t') delivers a literal tab (U+0009) to the
+        // pattern via the JS string escape. Upstream marks this valid because the
+        // author expressed it as a named escape, so we must NOT fire here.
+        assert!(
+            rule_ids_for("const a = new RegExp('\t', 'u');", "no-invisible-character").is_empty(),
+            "constructor tab (U+0009 named escape) must not fire"
+        );
+        // Other named-escape characters in the invisible set (\v U+000B, \f U+000C).
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\x0b', 'u');",
+                "no-invisible-character"
+            )
+            .is_empty(),
+            "constructor vertical-tab (U+000B named escape) must not fire"
+        );
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\x0c', 'u');",
+                "no-invisible-character"
+            )
+            .is_empty(),
+            "constructor form-feed (U+000C named escape) must not fire"
+        );
+        // Regex literals with a raw (literal) tab MUST still fire.
+        assert!(
+            rule_ids_for("const a = /a\tb/u;", "no-invisible-character").contains(&"unexpected"),
+            "regex literal with raw tab (U+0009) must still fire"
+        );
+        // The suppression only covers named escapes; a literal NBSP (U+00A0) in a
+        // constructor pattern string still fires (NBSP is not in the named-escape set).
+        assert!(
+            rule_ids_for("const a = new RegExp('a', 'u');", "no-invisible-character").is_empty(),
+            "plain constructor with no invisible char must not fire"
+        );
+    }
 }
 
 mod hexadecimal_escape {
