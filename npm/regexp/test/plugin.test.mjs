@@ -105,6 +105,11 @@ const validCases = [
   ['no-invisible-character', 'plain pattern', 'const re = /ab/u;\n'],
   ['no-invisible-character', 'ascii space', 'const re = /a b/u;\n'],
   ['no-invisible-character', 'escaped hex NBSP', "const re = new RegExp('a\\\\xa0b', 'u');\n"],
+  [
+    'no-invisible-character',
+    'constructor named tab escape',
+    "const re = new RegExp('\\t', 'u');\n",
+  ],
   // no-useless-string-literal
   ['no-useless-string-literal', 'empty literal', 'const re = /[\\q{}]/v;\n'],
   ['no-useless-string-literal', 'multi-char literal', 'const re = /[\\q{ab}]/v;\n'],
