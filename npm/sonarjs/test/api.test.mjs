@@ -24,6 +24,7 @@ const expectedRuleNames = [
   'no-built-in-override',
   'class-prototype',
   'max-switch-cases',
+  'max-union-size',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -762,5 +763,38 @@ describe('sonarjs native API', () => {
     const source = 'switch (x) { case 1: break; case 2: break; default: break; }';
     const diagnostics = scan('max-switch-cases', source);
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports max-union-size for a union type with 4 members', () => {
+    const source = 'type T = A | B | C | D;';
+    const diagnostics = scan('max-union-size', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('max-union-size');
+    expect(diagnostics[0].messageId).toBe('maxUnionSize');
+  });
+
+  it('does not report max-union-size for a union type with exactly 3 members (at threshold)', () => {
+    const source = 'type T = A | B | C;';
+    const diagnostics = scan('max-union-size', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report max-union-size for a union type with 2 members', () => {
+    const source = 'type T = A | B;';
+    const diagnostics = scan('max-union-size', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report max-union-size for a single type alias (not a union)', () => {
+    const source = 'type T = A;';
+    const diagnostics = scan('max-union-size', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports max-union-size for a union in a variable type annotation with 5 members', () => {
+    const source = 'let x: A | B | C | D | E;';
+    const diagnostics = scan('max-union-size', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('maxUnionSize');
   });
 });

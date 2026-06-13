@@ -11566,19 +11566,19 @@
       },
       {
         "name": "max-union-size",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule max-union-size (Sonar key S4622). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S4622). Reports a TypeScript union type whose direct member count exceeds 3. Threshold is fixed at the SonarJS default of 3 (MAX_UNION_SIZE); per-rule options infrastructure for configurability is a follow-up task. Each TSUnionType node is counted per-node — nested parenthesized unions are not flattened. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "misplaced-loop-counter",

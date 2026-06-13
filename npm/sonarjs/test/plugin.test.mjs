@@ -115,6 +115,7 @@ describe('sonarjs plugin shape', () => {
       'no-built-in-override',
       'class-prototype',
       'max-switch-cases',
+      'max-union-size',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -137,6 +138,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-built-in-override']).toBe('object');
     expect(typeof plugin.rules['class-prototype']).toBe('object');
     expect(typeof plugin.rules['max-switch-cases']).toBe('object');
+    expect(typeof plugin.rules['max-union-size']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -159,6 +161,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-built-in-override']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/class-prototype']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/max-switch-cases']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/max-union-size']).toBe('error');
   });
 });
 
@@ -312,6 +315,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('max-switch-cases', big);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('maxSwitchCases');
+  });
+
+  it('reports max-union-size for a union type with 4 members through the adapter', () => {
+    const source = 'type T = A | B | C | D;';
+    const reports = runRule('max-union-size', source, { filename: 'sample.ts' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('maxUnionSize');
   });
 });
 
@@ -521,5 +531,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(max-switch-cases)');
+  });
+
+  it('reports max-union-size through the CLI', () => {
+    const source = 'type T = A | B | C | D;';
+    const result = runOxlint('max-union-size', source, 'sample.ts');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(max-union-size)');
   });
 });

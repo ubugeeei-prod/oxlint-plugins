@@ -137,6 +137,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_ts_union_type(&mut self, it: &TSUnionType<'a>) {
         self.check_no_duplicate_in_composite(&it.types);
+        self.check_max_union_size(it);
         walk::walk_ts_union_type(self, it);
     }
 
