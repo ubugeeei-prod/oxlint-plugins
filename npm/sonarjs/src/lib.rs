@@ -107,7 +107,9 @@ mod napi_abi {
             |values| {
                 values
                     .into_iter()
-                    .filter(|value| core::implemented_sonarjs_rule_names().contains(&value.as_str()))
+                    .filter(|value| {
+                        core::implemented_sonarjs_rule_names().contains(&value.as_str())
+                    })
                     .map(CompactString::from)
                     .collect()
             },
