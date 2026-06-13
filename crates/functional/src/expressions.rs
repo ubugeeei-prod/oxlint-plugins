@@ -71,6 +71,11 @@ impl<'a> Scanner<'a> {
                     expression.span,
                 );
             }
+            Expression::YieldExpression(expression) => {
+                if let Some(argument) = &expression.argument {
+                    self.scan_expression(argument, context);
+                }
+            }
             Expression::ArrowFunctionExpression(function) => {
                 self.scan_arrow_function(function, FunctionParamMeta::default());
             }
@@ -209,15 +214,11 @@ impl<'a> Scanner<'a> {
     }
 
     pub(crate) fn scan_property_key(&mut self, key: &'a PropertyKey<'a>, context: FunctionContext) {
-        match key {
-            PropertyKey::StaticMemberExpression(member) => {
-                self.scan_static_member_expression(member, context);
-            }
-            PropertyKey::ComputedMemberExpression(member) => {
-                self.scan_computed_member_expression(member, context);
-            }
-            PropertyKey::CallExpression(call) => self.scan_call_expression(call, context),
-            _ => {}
+        // A computed key can be any expression (`{ [this.k]: v }`, `[fn()]() {}`);
+        // route every expression-kind key through `scan_expression` so nested
+        // `this`/calls/etc. are not missed. Identifier keys carry no expression.
+        if let Some(expression) = key.as_expression() {
+            self.scan_expression(expression, context);
         }
     }
 

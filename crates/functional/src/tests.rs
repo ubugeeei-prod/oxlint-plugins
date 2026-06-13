@@ -546,3 +546,41 @@ fn no_try_statements_reports_catch_and_finally_independently() {
     // allowFinally leaves only the catch diagnostic.
     assert_eq!(ids(&allow_finally), ["catch"]);
 }
+
+#[test]
+fn concise_arrow_body_is_not_an_expression_statement() {
+    let options = FunctionalOptions {
+        rule_names: ["no-expression-statements".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let count =
+        |source: &str, opts: &FunctionalOptions| scan_functional(source, "fixture.ts", opts).len();
+
+    // A concise arrow body is a bare expression, not a statement: upstream does
+    // not flag it (oxc stores it as a synthetic ExpressionStatement).
+    assert_eq!(count("const f = () => effect();", &options), 0);
+    // A block-body arrow whose body is a real expression statement is flagged.
+    assert_eq!(count("const g = () => { effect(); };", &options), 1);
+}
+
+#[test]
+fn traverses_nested_scopes_for_this_and_let() {
+    // no-this-expressions inside a yield argument and a computed class key.
+    let this_opts = FunctionalOptions {
+        rule_names: ["no-this-expressions".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let count =
+        |source: &str, opts: &FunctionalOptions| scan_functional(source, "fixture.ts", opts).len();
+
+    assert_eq!(count("function* g() { yield this.value; }", &this_opts), 1);
+    assert_eq!(count("class C { [this.k]() {} }", &this_opts), 1);
+
+    // no-let inside a namespace body and a labeled statement.
+    let let_opts = FunctionalOptions {
+        rule_names: ["no-let".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    assert_eq!(count("namespace N { let x = 1; }", &let_opts), 1);
+    assert_eq!(count("outer: { let y = 1; }", &let_opts), 1);
+}
