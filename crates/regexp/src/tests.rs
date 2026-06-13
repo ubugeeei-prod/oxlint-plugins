@@ -1941,6 +1941,18 @@ mod no_dupe_characters_character_class {
             .is_empty()
         );
     }
+
+    #[test]
+    fn ignores_v_mode_string_disjunctions() {
+        // Multiple \q{...} constructs must not be seen as duplicate `{` literals.
+        assert!(
+            rule_ids_for(
+                "const a = /[\\q{a}\\q{ab}\\q{abc}]/v;",
+                "no-dupe-characters-character-class"
+            )
+            .is_empty()
+        );
+    }
 }
 
 mod prefer_range {
