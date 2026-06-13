@@ -8,6 +8,7 @@ const expectedRuleNames = [
   'no-nested-conditional',
   'no-collapsible-if',
   'no-redundant-boolean',
+  'comma-or-logical-or-case',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -137,6 +138,32 @@ describe('sonarjs native API', () => {
 
   it('does not report a ternary with non-boolean branches', () => {
     const diagnostics = scan('no-redundant-boolean', 'c ? a : b');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports a logical-OR expression as a case label', () => {
+    const source = 'switch (x) { case 1 || 2: break; }';
+    const diagnostics = scan('comma-or-logical-or-case', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('commaOrLogicalOrInCase');
+  });
+
+  it('reports a comma/sequence expression as a case label', () => {
+    const source = 'switch (x) { case (1, 2): break; }';
+    const diagnostics = scan('comma-or-logical-or-case', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('commaOrLogicalOrInCase');
+  });
+
+  it('does not report a plain case label or default', () => {
+    const source = 'switch (x) { case 1: break; default: break; }';
+    const diagnostics = scan('comma-or-logical-or-case', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a logical-AND expression as a case label', () => {
+    const source = 'switch (x) { case 1 && 2: break; }';
+    const diagnostics = scan('comma-or-logical-or-case', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

@@ -32,6 +32,10 @@ const messages = Object.freeze({
   'no-redundant-boolean': {
     redundantBoolean: 'Remove this redundant boolean literal.',
   },
+  'comma-or-logical-or-case': {
+    commaOrLogicalOrInCase:
+      "This 'case' label uses '||' or ',', which does not compare against multiple values as it appears to.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -40,6 +44,7 @@ const ruleDescriptions = Object.freeze({
   'no-nested-conditional': 'Disallow nested conditional (ternary) expressions',
   'no-collapsible-if': 'Disallow collapsible if statements that should be merged',
   'no-redundant-boolean': 'Disallow redundant boolean literals in expressions',
+  'comma-or-logical-or-case': "Disallow '||' or ',' expressions as switch case labels",
 });
 
 const ruleTypes = Object.freeze({
@@ -48,6 +53,7 @@ const ruleTypes = Object.freeze({
   'no-nested-conditional': 'suggestion',
   'no-collapsible-if': 'suggestion',
   'no-redundant-boolean': 'suggestion',
+  'comma-or-logical-or-case': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -56,6 +62,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-nested-conditional': 'error',
   'no-collapsible-if': 'error',
   'no-redundant-boolean': 'error',
+  'comma-or-logical-or-case': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
