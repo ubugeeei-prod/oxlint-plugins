@@ -30,14 +30,26 @@ const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), 'fixtures');
 // Rules whose syntax-only port has reached full upstream parity. Populated one
 // entry per porting PR. See the file header for what "full parity" asserts.
 const FULL_PARITY = new Set([
+  'functional-parameters',
+  'immutable-data',
   'no-class-inheritance',
   'no-classes',
+  'no-conditional-statements',
+  'no-expression-statements',
   'no-let',
   'no-loop-statements',
+  'no-mixed-types',
   'no-promise-reject',
+  'no-return-void',
   'no-this-expressions',
+  'no-throw-statements',
   'no-try-statements',
+  'prefer-immutable-types',
   'prefer-property-signatures',
+  'prefer-readonly-type',
+  'prefer-tacit',
+  'readonly-type',
+  'type-declaration-immutability',
 ]);
 
 function runRule(ruleName, testCase) {
