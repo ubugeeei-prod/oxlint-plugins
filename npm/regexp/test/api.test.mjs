@@ -44,6 +44,10 @@ describe('regexp native API', () => {
       'prefer-unicode-codepoint-escapes',
       'no-dupe-characters-character-class',
       'prefer-range',
+      'no-useless-escape',
+      'no-useless-quantifier',
+      'prefer-named-backreference',
+      'no-useless-flag',
     ]);
   });
 
@@ -58,10 +62,12 @@ describe('regexp native API', () => {
     );
 
     expect(diagnostics.map((diagnostic) => [diagnostic.ruleName, diagnostic.messageId])).toEqual([
-      // /[]/mi — flag style + pattern checks all fire.
+      // /[]/mi — flag style + pattern checks all fire. The `m` flag is also
+      // useless because the pattern has no unescaped `^` or `$`.
       ['sort-flags', 'sortFlags'],
       ['require-unicode-regexp', 'require'],
       ['require-unicode-sets-regexp', 'require'],
+      ['no-useless-flag', 'unexpected'],
       ['no-empty-character-class', 'empty'],
       // new RegExp('[', 'u') — constructor parse error short-circuits the flag-style checks.
       ['no-invalid-regexp', 'error'],
@@ -76,7 +82,7 @@ describe('regexp native API', () => {
       flags: 'mi',
       sortedFlags: 'im',
     });
-    expect(diagnostics[6].data.charText).toBe('U+0001');
+    expect(diagnostics[7].data.charText).toBe('U+0001');
   });
 
   it('returns LSP-shaped locations from Rust', () => {
@@ -96,10 +102,11 @@ describe('regexp native API', () => {
 
   it('returns no diagnostics for clean sources', () => {
     // Sources that use the `v` flag stay quiet because `require-unicode-sets-regexp`
-    // is the only flag-style rule that targets that flag specifically; everything
-    // else needs an unrelated pattern issue.
+    // is the only flag-style rule that targets that flag specifically; the other
+    // flags must also avoid `no-useless-flag` — `s` needs an unescaped `.`, `m`
+    // needs `^` or `$`, so we keep the flag set narrow.
     expect(scanRegexp('const re = /a+/v;\n', 'fixture.js')).toEqual([]);
-    expect(scanRegexp("const re = new RegExp('a', 'gimsv');\n", 'fixture.js')).toEqual([]);
+    expect(scanRegexp("const re = new RegExp('a', 'giv');\n", 'fixture.js')).toEqual([]);
   });
 
   it('returns no diagnostics when the source fails to parse', () => {
