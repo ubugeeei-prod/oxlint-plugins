@@ -610,6 +610,13 @@ pub(crate) fn first_fixed_unicode_escape(pattern: &str) -> Option<(&str, Compact
             && bytes[index + 4].is_ascii_hexdigit()
             && bytes[index + 5].is_ascii_hexdigit()
         {
+            // Surrogate halves (U+D800..=U+DFFF) belong to surrogate pairs handled
+            // by `prefer-unicode-codepoint-escapes`; skip them here.
+            let value = read_fixed_hex4(&bytes[index + 2..index + 6]).unwrap_or(0);
+            if (0xD800..=0xDFFF).contains(&value) {
+                index = skip_escape(bytes, index);
+                continue;
+            }
             let original = &pattern[index..index + 6];
             let mut replacement = CompactString::new("\\u{");
             for offset in 2..6 {
