@@ -170,14 +170,22 @@ impl<'a> Scanner<'a> {
     pub(crate) fn class_is_ignored(&self, class: &Class<'a>) -> bool {
         if let Some(id) = &class.id {
             let name = id.name.as_str();
-            if self.ignore_identifier_regexes.iter().any(|re| re.is_match(name)) {
+            if self
+                .ignore_identifier_regexes
+                .iter()
+                .any(|re| re.is_match(name))
+            {
                 return true;
             }
         }
         if !self.ignore_code_regexes.is_empty() {
             let span = class.span;
             let code = &self.source_text[span.start as usize..span.end as usize];
-            if self.ignore_code_regexes.iter().any(|re| re.is_match(code)) {
+            if self
+                .ignore_code_regexes
+                .iter()
+                .any(|re| re.is_match(code))
+            {
                 return true;
             }
         }
