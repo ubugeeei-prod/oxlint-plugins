@@ -36,6 +36,9 @@ const messages = Object.freeze({
     commaOrLogicalOrInCase:
       "This 'case' label uses '||' or ',', which does not compare against multiple values as it appears to.",
   },
+  'no-duplicate-in-composite': {
+    duplicateType: 'Remove this duplicated type or replace with another one.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -45,6 +48,8 @@ const ruleDescriptions = Object.freeze({
   'no-collapsible-if': 'Disallow collapsible if statements that should be merged',
   'no-redundant-boolean': 'Disallow redundant boolean literals in expressions',
   'comma-or-logical-or-case': "Disallow '||' or ',' expressions as switch case labels",
+  'no-duplicate-in-composite':
+    'Disallow duplicate type members in TypeScript union or intersection types',
 });
 
 const ruleTypes = Object.freeze({
@@ -54,6 +59,7 @@ const ruleTypes = Object.freeze({
   'no-collapsible-if': 'suggestion',
   'no-redundant-boolean': 'suggestion',
   'comma-or-logical-or-case': 'suggestion',
+  'no-duplicate-in-composite': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -63,6 +69,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-collapsible-if': 'error',
   'no-redundant-boolean': 'error',
   'comma-or-logical-or-case': 'error',
+  'no-duplicate-in-composite': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

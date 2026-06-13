@@ -253,3 +253,41 @@ fn does_not_report_logical_and_as_case_label() {
     let diagnostics = scan("comma-or-logical-or-case", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_duplicate_type_in_union() {
+    let source = "type T = A | B | A;";
+    let diagnostics = scan("no-duplicate-in-composite", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-duplicate-in-composite");
+    assert_eq!(diagnostics[0].message_id, "duplicateType");
+}
+
+#[test]
+fn reports_duplicate_type_in_intersection() {
+    let source = "type T = A & B & A;";
+    let diagnostics = scan("no-duplicate-in-composite", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "duplicateType");
+}
+
+#[test]
+fn does_not_report_union_with_all_unique_members() {
+    let source = "type T = A | B | C;";
+    let diagnostics = scan("no-duplicate-in-composite", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_intersection_with_all_unique_members() {
+    let source = "type T = A & B;";
+    let diagnostics = scan("no-duplicate-in-composite", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_two_diagnostics_for_triple_duplicate_in_union() {
+    let source = "type T = A | A | A;";
+    let diagnostics = scan("no-duplicate-in-composite", source);
+    assert_eq!(diagnostics.len(), 2);
+}
