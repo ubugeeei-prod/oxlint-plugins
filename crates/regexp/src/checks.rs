@@ -258,6 +258,7 @@ impl<'a> Scanner<'a> {
             self.check_regexp_constructor(call.span, &call.arguments);
         }
         self.check_prefer_regexp_exec(call);
+        self.check_prefer_regexp_test(call);
         self.check_no_missing_g_flag(call);
         self.check_prefer_named_replacement(call);
         self.check_no_useless_dollar_replacements(call);
@@ -454,6 +455,76 @@ impl<'a> Scanner<'a> {
             },
             call.span,
         );
+    }
+
+    /// `prefer-regexp-test` (narrow form): flag `.exec()` / `.match()` calls
+    /// whose result is only consumed as a boolean, recommending `RegExp#test`
+    /// instead.
+    ///
+    /// Narrow constraints (no type-tracker available):
+    ///
+    /// * For `.exec()`: the receiver must NOT be a statically-known string
+    ///   value.  A string receiver means it is `String.prototype.exec` (which
+    ///   does not exist as a regexp method), so flagging it would be a false
+    ///   positive.  The check is purely structural: if `receiver_is_known_string`
+    ///   returns `true` we skip.
+    ///
+    /// * For `.match()`: the receiver MUST be a statically-known string value
+    ///   (to confirm this is `String.prototype.match`, not `RegExp[@@match]`),
+    ///   and the single argument must be a RegExp literal that does NOT have the
+    ///   `g` flag (a `g`-flagged `.match()` returns all matches as an array and
+    ///   is not equivalent to `.test()`).
+    ///
+    /// Both variants are only reported when `self.in_boolean_ctx` is `true` —
+    /// i.e. the call's result is provably consumed as a boolean (the test of an
+    /// `if`/`while`/ternary, the operand of `!`, the argument to `Boolean()`,
+    /// one side of `&&`/`||`, or a `=== null` / `!== null` comparison).
+    fn check_prefer_regexp_test(&mut self, call: &'a CallExpression<'a>) {
+        if !self.in_boolean_ctx {
+            return;
+        }
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        let method = member.property.name.as_str();
+
+        if method == "exec" {
+            if call.arguments.len() != 1 {
+                return;
+            }
+            // Skip when the receiver is a known string — that would be
+            // `String.prototype.exec` (no-op / wrong receiver), not
+            // `RegExp.prototype.exec`.
+            if self.receiver_is_known_string(&member.object) {
+                return;
+            }
+            self.report("prefer-regexp-test", "disallow", call.span);
+        } else if method == "match" {
+            if call.arguments.len() != 1 {
+                return;
+            }
+            // The receiver must be a known string so we know this is
+            // `String.prototype.match` (not `RegExp[@@match]`).
+            if !self.receiver_is_known_string(&member.object) {
+                return;
+            }
+            // The argument must be a RegExp literal without the `g` flag.
+            let Some(argument) = call.arguments.first().and_then(Argument::as_expression) else {
+                return;
+            };
+            let Expression::RegExpLiteral(literal) = argument.get_inner_expression() else {
+                return;
+            };
+            let flags = literal
+                .raw
+                .as_ref()
+                .and_then(|raw| raw.as_str().rsplit_once('/').map(|(_, flags)| flags))
+                .unwrap_or("");
+            if flags.contains('g') {
+                return;
+            }
+            self.report("prefer-regexp-test", "disallow", call.span);
+        }
     }
 
     /// `prefer-regexp-exec`: flag `<expr>.match(<regexp literal without 'g'>)`

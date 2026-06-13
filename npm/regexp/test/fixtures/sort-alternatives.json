@@ -1,0 +1,352 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/sort-alternatives.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/sort-alternatives.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\b(?:a|\\d+|c|b)\\b/"
+    },
+    {
+      "code": "/\\b(?:\\^|c|b)\\b/"
+    },
+    {
+      "code": "/^(?:a|ab)a/u"
+    },
+    {
+      "code": "/^(?:a|ab)c/u"
+    },
+    {
+      "code": "/^(?:deg|g?rad|turn)\\b/"
+    },
+    {
+      "code": "/\\b(?:sample|(?:un)?stable)\\b/u"
+    },
+    {
+      "code": "/\\b(?:sharpen|(?:spatial|temporal)soften)\\b/u"
+    },
+    {
+      "code": "/\\b(x?Rec|RequestOptionsPage)\\b/"
+    },
+    {
+      "code": "/\\b([ft]|false|true)\\b/"
+    },
+    {
+      "code": "/\\b(a+b|a+c)\\b/"
+    },
+    {
+      "code": " /[\\q{blue|green|red}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/c|b|a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a|b|c/"
+    },
+    {
+      "code": "/c|bb|a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/a|bb|c/"
+    },
+    {
+      "code": "/\\b(?:c|b|a)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 12
+        }
+      ],
+      "output": "/\\b(?:a|b|c)\\b/"
+    },
+    {
+      "code": "/\\b(?:A|a|C|c|B|b)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 18
+        }
+      ],
+      "output": "/\\b(?:A|B|C|a|b|c)\\b/"
+    },
+    {
+      "code": "/\\b(?:aa|aA|aB|ab)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 15
+        }
+      ],
+      "output": "/\\b(?:aA|aB|aa|ab)\\b/"
+    },
+    {
+      "code": "/\\b(?:A|a|C|c|B|b)\\b/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 18
+        }
+      ],
+      "output": "/\\b(?:A|a|B|b|C|c)\\b/i"
+    },
+    {
+      "code": "/\\b(?:a|A|c|C|b|B)\\b/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 18
+        }
+      ],
+      "output": "/\\b(?:A|a|B|b|C|c)\\b/i"
+    },
+    {
+      "code": "/\\b(?:aa|aA|aB|ab)\\b/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 12
+        }
+      ],
+      "output": "/\\b(?:aA|aa|aB|ab)\\b/i"
+    },
+    {
+      "code": "/\\b(?:1|2|4|8|16|32|64|128|256|0)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 33
+        }
+      ],
+      "output": "/\\b(?:0|1|2|4|8|16|32|64|128|256)\\b/"
+    },
+    {
+      "code": "/\\b(?:[Nn]umber|[Ss]tring|[Bb]oolean|Function|any|mixed|null|void)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 46
+        }
+      ],
+      "output": "/\\b(?:[Bb]oolean|Function|[Nn]umber|[Ss]tring|any|mixed|null|void)\\b/"
+    },
+    {
+      "code": "/_(?:SERVER|GET|POST|FILES|REQUEST|SESSION|ENV|COOKIE)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 54
+        }
+      ],
+      "output": "/_(?:COOKIE|ENV|FILES|GET|POST|REQUEST|SERVER|SESSION)\\b/"
+    },
+    {
+      "code": "/\\b[ui](?:128|16|32|64|8|size)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 25
+        }
+      ],
+      "output": "/\\b[ui](?:8|16|32|64|128|size)\\b/"
+    },
+    {
+      "code": "/\\((?:TM|R|C)\\)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 13
+        }
+      ],
+      "output": "/\\((?:C|R|TM)\\)/"
+    },
+    {
+      "code": "/\\b(?:\\^|c|b|a)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 15
+        }
+      ],
+      "output": "/\\b(?:\\^|a|b|c)\\b/"
+    },
+    {
+      "code": "/\\b(?:green|gr[ae]y)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 20
+        }
+      ],
+      "output": "/\\b(?:gr[ae]y|green)\\b/"
+    },
+    {
+      "code": "/\\b(?:(?:script|source)_foo|sample)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 35
+        }
+      ],
+      "output": "/\\b(?:sample|(?:script|source)_foo)\\b/"
+    },
+    {
+      "code": "/[\\q{red|green|blue}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The string alternatives can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 20
+        }
+      ],
+      "output": "/[\\q{blue|green|red}]/v"
+    },
+    {
+      "code": "/(?:c|[\\q{red|green|blue}]|a)/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 29
+        },
+        {
+          "message": "The string alternatives can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 25
+        }
+      ],
+      "output": "/(?:a|[\\q{blue|green|red}]|c)/v"
+    },
+    {
+      "code": "/[\\q{ac|ab|aa}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The string alternatives can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[\\q{aa|ab|ac}]/v"
+    },
+    {
+      "code": "/(?:b|[a-b])/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?:[a-b]|b)/v"
+    },
+    {
+      "code": "/\\b(?:a[\\q{bd}]|abc)\\b/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 20
+        }
+      ],
+      "output": "/\\b(?:abc|a[\\q{bd}])\\b/v"
+    },
+    {
+      "code": "/\\b(?:abb|[\\q{a|aba}]bb)\\b/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 24
+        }
+      ],
+      "output": "/\\b(?:[\\q{a|aba}]bb|abb)\\b/v"
+    },
+    {
+      "code": "/\\b(?:c|b_|[\\q{b|da}]_|b_2)\\b/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternatives of this group can be sorted without affecting the regex.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 27
+        }
+      ],
+      "output": "/\\b(?:b_|[\\q{b|da}]_|b_2|c)\\b/v"
+    }
+  ]
+}

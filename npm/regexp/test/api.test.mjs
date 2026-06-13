@@ -33,6 +33,7 @@ describe('regexp native API', () => {
       'no-useless-range',
       'no-empty-lookarounds-assertion',
       'prefer-regexp-exec',
+      'prefer-regexp-test',
       'no-missing-g-flag',
       'no-useless-character-class',
       'no-empty-string-literal',

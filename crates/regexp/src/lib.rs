@@ -24,7 +24,7 @@ use crate::usage::collect_whole_pattern_regex_spans;
 
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticLoc};
 
-pub const RULE_NAMES: [&str; 65] = [
+pub const RULE_NAMES: [&str; 66] = [
     "no-invalid-regexp",
     "no-empty-character-class",
     "no-empty-group",
@@ -53,6 +53,7 @@ pub const RULE_NAMES: [&str; 65] = [
     "no-useless-range",
     "no-empty-lookarounds-assertion",
     "prefer-regexp-exec",
+    "prefer-regexp-test",
     "no-missing-g-flag",
     "no-useless-character-class",
     "no-empty-string-literal",
@@ -126,6 +127,7 @@ pub fn scan_regexp(source_text: &str, filename: &str) -> SmallVec<[Diagnostic; 1
         scoping,
         nodes,
         whole_pattern_regex_spans,
+        in_boolean_ctx: false,
     };
     scanner.scan_program(&parser_return.program.body);
     scanner.diagnostics

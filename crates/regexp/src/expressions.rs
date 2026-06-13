@@ -15,8 +15,22 @@ impl<'a> Scanner<'a> {
             Expression::CallExpression(call) => {
                 self.check_call_expression(call);
                 self.scan_expression(&call.callee);
-                for argument in &call.arguments {
-                    self.scan_argument(argument);
+                // `Boolean(expr)` places the first argument in a boolean context.
+                let is_boolean_call = matches!(
+                    call.callee.get_inner_expression(),
+                    Expression::Identifier(id) if id.name == "Boolean"
+                ) && call.arguments.len() == 1;
+                if is_boolean_call {
+                    let prev = self.in_boolean_ctx;
+                    self.in_boolean_ctx = true;
+                    for argument in &call.arguments {
+                        self.scan_argument(argument);
+                    }
+                    self.in_boolean_ctx = prev;
+                } else {
+                    for argument in &call.arguments {
+                        self.scan_argument(argument);
+                    }
                 }
             }
             Expression::NewExpression(new_expression) => {
@@ -39,15 +53,36 @@ impl<'a> Scanner<'a> {
                 self.scan_expression(&member.expression);
             }
             Expression::BinaryExpression(binary) => {
-                self.scan_expression(&binary.left);
-                self.scan_expression(&binary.right);
+                // `expr === null` / `expr !== null` put `expr` in a boolean
+                // context for `prefer-regexp-test`: the call result is only
+                // consumed as a truthy/falsy boolean check.
+                let is_null_literal = |e: &Expression| matches!(e, Expression::NullLiteral(_));
+                let is_strict_null_cmp = (binary.operator.as_str() == "==="
+                    || binary.operator.as_str() == "!==")
+                    && (is_null_literal(&binary.right) || is_null_literal(&binary.left));
+                if is_strict_null_cmp {
+                    let prev = self.in_boolean_ctx;
+                    self.in_boolean_ctx = true;
+                    self.scan_expression(&binary.left);
+                    self.scan_expression(&binary.right);
+                    self.in_boolean_ctx = prev;
+                } else {
+                    self.scan_expression(&binary.left);
+                    self.scan_expression(&binary.right);
+                }
             }
             Expression::LogicalExpression(logical) => {
+                // `&&` and `||` propagate the enclosing boolean context to both
+                // operands: `if (a && b.exec(s)) {}` — both `a` and `b.exec(s)`
+                // are in a boolean context.
                 self.scan_expression(&logical.left);
                 self.scan_expression(&logical.right);
             }
             Expression::ConditionalExpression(conditional) => {
+                let prev = self.in_boolean_ctx;
+                self.in_boolean_ctx = true;
                 self.scan_expression(&conditional.test);
+                self.in_boolean_ctx = prev;
                 self.scan_expression(&conditional.consequent);
                 self.scan_expression(&conditional.alternate);
             }
@@ -104,7 +139,17 @@ impl<'a> Scanner<'a> {
             Expression::AwaitExpression(await_expression) => {
                 self.scan_expression(&await_expression.argument);
             }
-            Expression::UnaryExpression(unary) => self.scan_expression(&unary.argument),
+            Expression::UnaryExpression(unary) => {
+                // `!expr` places `expr` in a boolean context.
+                if unary.operator.as_str() == "!" {
+                    let prev = self.in_boolean_ctx;
+                    self.in_boolean_ctx = true;
+                    self.scan_expression(&unary.argument);
+                    self.in_boolean_ctx = prev;
+                } else {
+                    self.scan_expression(&unary.argument);
+                }
+            }
             Expression::UpdateExpression(_) => {}
             Expression::YieldExpression(yield_expression) => {
                 if let Some(argument) = &yield_expression.argument {

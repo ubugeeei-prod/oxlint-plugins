@@ -9515,19 +9515,19 @@
       },
       {
         "name": "prefer-regexp-test",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-regexp-test."
+        "notes": "Narrow-form port: flags `.exec()` calls in boolean context when the receiver is not a known string, and `.match(<regexp literal>)` calls in boolean context when the receiver is a known string and the argument has no `g` flag. Boolean contexts detected: if/while/do-while/for tests, `!`, `Boolean()`, `&&`/`||`, ternary test, `=== null` / `!== null` comparisons."
       },
       {
         "name": "prefer-result-array-groups",

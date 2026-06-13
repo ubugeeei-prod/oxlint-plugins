@@ -1,0 +1,223 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-lazy.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-lazy.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a*?/"
+    },
+    {
+      "code": "/a+?/"
+    },
+    {
+      "code": "/a{4,}?/"
+    },
+    {
+      "code": "/a{2,4}?/"
+    },
+    {
+      "code": "/a{2,2}/"
+    },
+    {
+      "code": "/a{3}/"
+    },
+    {
+      "code": "/a+?b*/"
+    },
+    {
+      "code": "/[\\s\\S]+?bar/"
+    },
+    {
+      "code": "/a??a?/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a{1}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a{1}/"
+    },
+    {
+      "code": "/a{1}?/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a{1}/v"
+    },
+    {
+      "code": "/a{4}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a{4}/"
+    },
+    {
+      "code": "/a{2,2}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": "/a{2,2}/"
+    },
+    {
+      "code": "const s = \"\\\\d{1}?\"\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier.",
+          "line": 1,
+          "column": 18,
+          "endColumn": 19
+        }
+      ],
+      "output": "const s = \"\\\\d{1}\"\n            new RegExp(s)"
+    },
+    {
+      "code": "const s = \"\\\\d\"+\"{1}?\"\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier.",
+          "line": 1,
+          "column": 21,
+          "endColumn": 22
+        }
+      ],
+      "output": "const s = \"\\\\d\"+\"{1}\"\n            new RegExp(s)"
+    },
+    {
+      "code": "/a+?b+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier. The quantifier is effectively possessive, so it doesn't matter whether it is greedy or not.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/a+b+/"
+    },
+    {
+      "code": "/[\\q{aa|ab}]+?b+/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier. The quantifier is effectively possessive, so it doesn't matter whether it is greedy or not.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 15
+        }
+      ],
+      "output": "/[\\q{aa|ab}]+b+/v"
+    },
+    {
+      "code": "/a*?b+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier. The quantifier is effectively possessive, so it doesn't matter whether it is greedy or not.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/a*b+/"
+    },
+    {
+      "code": "/(?:a|cd)+?(?:b+|zzz)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier. The quantifier is effectively possessive, so it doesn't matter whether it is greedy or not.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?:a|cd)+(?:b+|zzz)/"
+    },
+    {
+      "code": "/\\b\\w+?(?=\\W)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier. The quantifier is effectively possessive, so it doesn't matter whether it is greedy or not.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\b\\w+(?=\\W)/"
+    },
+    {
+      "code": "/\\b\\w+?(?!\\w)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier. The quantifier is effectively possessive, so it doesn't matter whether it is greedy or not.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\b\\w+(?!\\w)/"
+    },
+    {
+      "code": "/\\b\\w+?\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier. The quantifier is effectively possessive, so it doesn't matter whether it is greedy or not.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\b\\w+\\b/"
+    },
+    {
+      "code": "/\\b\\w+?$/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-greedy constant quantifier. The quantifier is effectively possessive, so it doesn't matter whether it is greedy or not.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\b\\w+$/"
+    }
+  ]
+}

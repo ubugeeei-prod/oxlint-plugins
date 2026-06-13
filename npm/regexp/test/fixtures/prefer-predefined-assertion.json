@@ -1,0 +1,176 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-predefined-assertion.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-predefined-assertion.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a(?=\\W)/"
+    },
+    {
+      "code": "/a(?=\\W)/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a(?=\\w)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a negated word boundary assertion ('\\B').",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/a\\B/"
+    },
+    {
+      "code": "/a(?!\\w)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a word boundary assertion ('\\b').",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/a\\b/"
+    },
+    {
+      "code": "/(?<=\\w)a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a negated word boundary assertion ('\\B').",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/\\Ba/"
+    },
+    {
+      "code": "/(?<!\\w)a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a word boundary assertion ('\\b').",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/\\ba/"
+    },
+    {
+      "code": "/a(?=\\W)./",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a word boundary assertion ('\\b').",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/a\\b./"
+    },
+    {
+      "code": "/a(?!\\W)./",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a negated word boundary assertion ('\\B').",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/a\\B./"
+    },
+    {
+      "code": "/.(?<=\\W)a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a word boundary assertion ('\\b').",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        }
+      ],
+      "output": "/.\\ba/"
+    },
+    {
+      "code": "/.(?<!\\W)a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a negated word boundary assertion ('\\B').",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        }
+      ],
+      "output": "/.\\Ba/"
+    },
+    {
+      "code": "/.(?<!\\W)a/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a negated word boundary assertion ('\\B').",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        }
+      ],
+      "output": "/.\\Ba/v"
+    },
+    {
+      "code": "/a+(?!\\w)(?:\\s|bc+)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with a word boundary assertion ('\\b').",
+          "line": 1,
+          "column": 4,
+          "endColumn": 10
+        }
+      ],
+      "output": "/a+\\b(?:\\s|bc+)+/"
+    },
+    {
+      "code": "/(?!.)(?![^])/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with an edge assertion ('$').",
+          "line": 1,
+          "column": 7,
+          "endColumn": 14
+        }
+      ],
+      "output": "/(?!.)$/"
+    },
+    {
+      "code": "/(?<!.)(?<![^])/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround assertion can be replaced with an edge assertion ('^').",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/^(?<![^])/m"
+    }
+  ]
+}

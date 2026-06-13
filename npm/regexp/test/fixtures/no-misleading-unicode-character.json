@@ -1,0 +1,114 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-misleading-unicode-character.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-misleading-unicode-character.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[👍]/u"
+    },
+    {
+      "code": "/👍+/u"
+    },
+    {
+      "code": "/[\\uD83D\\uDC4D]/u"
+    },
+    {
+      "code": "/[\\u{1F44D}]/u"
+    },
+    {
+      "code": "/❇️/"
+    },
+    {
+      "code": "/Á/"
+    },
+    {
+      "code": "/[❇]/"
+    },
+    {
+      "code": "/🇯🇵/"
+    },
+    {
+      "code": "/[JP]/"
+    },
+    {
+      "code": "/👨‍👩‍👦/"
+    },
+    {
+      "code": "/[\ud83d]/"
+    },
+    {
+      "code": "/[\udc4d]/"
+    },
+    {
+      "code": "/[\ud83d]/u"
+    },
+    {
+      "code": "/[\udc4d]/u"
+    },
+    {
+      "code": "/[́]/"
+    },
+    {
+      "code": "/[️]/"
+    },
+    {
+      "code": "/[́]/u"
+    },
+    {
+      "code": "/[️]/u"
+    },
+    {
+      "code": "/[🏻]/u"
+    },
+    {
+      "code": "/[🇯]/u"
+    },
+    {
+      "code": "/[🇵]/u"
+    },
+    {
+      "code": "/[‍]/"
+    },
+    {
+      "code": "/[‍]/u"
+    },
+    {
+      "code": "/[\\uD83D\\uDC4D]/"
+    },
+    {
+      "code": "var r = /[👍]/v"
+    },
+    {
+      "code": "var r = /^[\\q{👶🏻}]$/v"
+    },
+    {
+      "code": "var r = /[🇯\\q{abc}🇵]/v"
+    },
+    {
+      "code": "var r = /[🇯[A]🇵]/v"
+    },
+    {
+      "code": "var r = /[🇯[A--B]🇵]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[👍]foo/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The character(s) '👍' are all represented using multiple char codes. Use the `u` flag.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    }
+  ]
+}

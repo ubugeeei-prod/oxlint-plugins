@@ -27,6 +27,13 @@ pub(crate) struct Scanner<'a> {
     /// are eligible for `no-lazy-ends` diagnostics; bare / exported / partial
     /// usages are excluded, matching upstream `ignorePartial: true` semantics.
     pub(crate) whole_pattern_regex_spans: FastHashSet<u32>,
+    /// Tracks whether the expression currently being scanned is in a boolean
+    /// context — i.e. its result is consumed as a boolean (e.g. the test of an
+    /// `if`/`while`/ternary, the operand of `!`, the argument to `Boolean()`,
+    /// or one side of `&&`/`||` whose outer result is itself boolean).  Used by
+    /// `prefer-regexp-test` to determine whether a `.exec()` or `.match()` call
+    /// result is only ever used as a boolean value.
+    pub(crate) in_boolean_ctx: bool,
 }
 
 impl<'a> Scanner<'a> {
