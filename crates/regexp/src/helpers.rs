@@ -611,6 +611,71 @@ pub(crate) fn first_fixed_unicode_escape(pattern: &str) -> Option<(&str, Compact
     None
 }
 
+/// Returns `Some(ch)` when the `[...]` class at `open` is exactly `[X]` for a
+/// regular ASCII literal `X`. Negated classes, escaped contents, ranges,
+/// nested classes, and bodies of length other than one are intentionally
+/// ignored — they need more analysis to know the class is truly equivalent
+/// to the bare character. Used by `no-useless-character-class`.
+pub(crate) fn class_is_useless_single_literal(bytes: &[u8], open: usize) -> Option<char> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let start = open + 1;
+    if bytes.get(start) == Some(&b'^') {
+        return None;
+    }
+    if end - start != 1 {
+        return None;
+    }
+    let byte = bytes[start];
+    // Reject anything that would carry extra regex meaning by itself, anything
+    // non-ASCII (multi-byte chars are fine in principle but reading them as a
+    // single byte is incorrect), and anything that would change the surrounding
+    // pattern if extracted from the class context.
+    if !byte.is_ascii()
+        || matches!(
+            byte,
+            b'\\'
+                | b'-'
+                | b'['
+                | b']'
+                | b'^'
+                | b'$'
+                | b'.'
+                | b'|'
+                | b'('
+                | b')'
+                | b'*'
+                | b'+'
+                | b'?'
+                | b'{'
+                | b'}'
+        )
+    {
+        return None;
+    }
+    Some(byte as char)
+}
+
+/// Returns `true` when `pattern` contains the literal sequence `\q{}` — an
+/// empty string literal inside a class. The `\q{...}` syntax is only valid in
+/// `v`-flag patterns, so its presence implies `v`-mode without us needing to
+/// inspect the flags here. Used by `no-empty-string-literal`.
+pub(crate) fn pattern_has_empty_string_literal(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index + 3 < bytes.len() {
+        if bytes[index] == b'\\'
+            && bytes[index + 1] == b'q'
+            && bytes[index + 2] == b'{'
+            && bytes[index + 3] == b'}'
+        {
+            return true;
+        }
+        index += 1;
+    }
+    false
+}
+
 /// Returns `true` when the `[...]` class at `open` contains at least one
 /// `X-X` range whose start and end byte are literal ASCII characters that
 /// match exactly. Used by `no-useless-range`. Escaped or compound ranges
