@@ -189,7 +189,7 @@ function stringOrStringArraySchema() {
 }
 
 function schemaForRule(ruleName) {
-  if (ruleName === 'no-classes') {
+  if (ruleName === 'no-classes' || ruleName === 'no-class-inheritance') {
     return [
       {
         type: 'object',
@@ -292,6 +292,10 @@ function diagnosticsForContext(context, options) {
   return diagnostics;
 }
 
+function classRuleUsesIgnorePatterns(ruleName) {
+  return ruleName === 'no-classes' || ruleName === 'no-class-inheritance';
+}
+
 function scanOptionsForRule(context, ruleName) {
   const raw = context.options?.[0];
   const options = raw && typeof raw === 'object' ? raw : {};
@@ -309,9 +313,12 @@ function scanOptionsForRule(context, ruleName) {
       ruleName === 'readonly-type' && (raw === 'keyword' || raw === 'generic') ? raw : undefined,
     ignoreIfReadonlyWrapped:
       ruleName === 'prefer-property-signatures' && options.ignoreIfReadonlyWrapped === true,
-    ignoreIdentifierPattern:
-      ruleName === 'no-classes' ? options.ignoreIdentifierPattern : undefined,
-    ignoreCodePattern: ruleName === 'no-classes' ? options.ignoreCodePattern : undefined,
+    ignoreIdentifierPattern: classRuleUsesIgnorePatterns(ruleName)
+      ? options.ignoreIdentifierPattern
+      : undefined,
+    ignoreCodePattern: classRuleUsesIgnorePatterns(ruleName)
+      ? options.ignoreCodePattern
+      : undefined,
   };
 }
 

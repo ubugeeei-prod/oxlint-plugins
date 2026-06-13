@@ -53,10 +53,6 @@
       "level": "off",
       "reason": "Flags $1 referring to an unnamed group, which has no named-replacement alternative."
     },
-    "prefer-unicode-codepoint-escapes": {
-      "level": "off",
-      "reason": "Flags surrogate escapes without the u flag (e.g. /\\ud83d\\ude00/) where no codepoint escape applies."
-    },
     "require-unicode-regexp": {
       "level": "off",
       "reason": "Flags constructors whose flags are an unknown variable (e.g. new RegExp('', flags))."

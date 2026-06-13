@@ -188,6 +188,40 @@ fn no_classes_honors_ignore_patterns() {
 }
 
 #[test]
+fn no_class_inheritance_reports_abstract_and_extends() {
+    let options = FunctionalOptions {
+        rule_names: ["no-class-inheritance".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let message_ids = |source: &str| -> Vec<&'static str> {
+        let mut ids: Vec<&'static str> = scan_functional(source, "fixture.ts", &options)
+            .iter()
+            .map(|diagnostic| diagnostic.message_id)
+            .collect();
+        ids.sort_unstable();
+        ids
+    };
+
+    assert!(message_ids("class Foo {}").is_empty());
+    assert_eq!(message_ids("class Foo extends Bar {}"), ["extends"]);
+    assert_eq!(message_ids("abstract class Foo {}"), ["abstract"]);
+    assert_eq!(
+        message_ids("abstract class Foo extends Bar {}"),
+        ["abstract", "extends"]
+    );
+
+    // Ignore patterns suppress both reports.
+    let ignoring = FunctionalOptions {
+        rule_names: ["no-class-inheritance".into()].into_iter().collect(),
+        ignore_identifier_pattern: ["^Foo$".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    assert!(
+        scan_functional("abstract class Foo extends Bar {}", "fixture.ts", &ignoring).is_empty()
+    );
+}
+
+#[test]
 fn honors_core_options() {
     let mut options = FunctionalOptions {
         rule_names: ["no-let".into()].into_iter().collect(),
