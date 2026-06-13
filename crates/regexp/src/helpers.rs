@@ -82,6 +82,39 @@ pub(crate) fn find_class_end(bytes: &[u8], open: usize) -> Option<usize> {
     None
 }
 
+/// Like `find_class_end`, but also tracks nested `[...]` brackets so that it
+/// correctly locates the closing `]` of a v-mode character class that contains
+/// set-operation operands such as `[\w--[ab]]` or `[\w&&b]`. In v-mode,
+/// `[...]` inside a character class is a nested class (a set operand), not a
+/// literal `[`; this variant accounts for that extra nesting depth.
+///
+/// For non-nested classes (the common case) the result is identical to
+/// `find_class_end`. Use this variant only when v-mode nesting is possible —
+/// in particular, in the top-level pattern scan loop and in helpers that are
+/// called on outer v-mode classes.
+pub(crate) fn find_class_end_nested(bytes: &[u8], open: usize) -> Option<usize> {
+    let mut index = open + 1;
+    let mut depth: usize = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                depth += 1;
+                index += 1;
+            }
+            b']' => {
+                if depth == 0 {
+                    return Some(index);
+                }
+                depth -= 1;
+                index += 1;
+            }
+            _ => index += 1,
+        }
+    }
+    None
+}
+
 /// Result of classifying the start of a `(` group: whether the body should be
 /// checked for emptiness, whether the group captures, whether the group is a
 /// named capture (`(?<name>...)`), and the byte index immediately after the
@@ -1322,7 +1355,10 @@ pub(crate) fn class_has_useless_string_literal(bytes: &[u8], open: usize) -> Opt
 /// the stack so the check has no allocation.
 pub(crate) fn class_first_duplicate_literal(bytes: &[u8], open: usize) -> Option<u8> {
     debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
-    let end = find_class_end(bytes, open)?;
+    // Use the depth-aware variant so that v-mode nested classes such as
+    // `[\w--[ab]]` or `[\w&&b]` are correctly bounded: the closing `]` of the
+    // outermost class is returned, not the first `]` of an inner operand.
+    let end = find_class_end_nested(bytes, open)?;
     let mut index = open + 1;
     if bytes.get(index) == Some(&b'^') {
         index += 1;
@@ -1332,6 +1368,19 @@ pub(crate) fn class_first_duplicate_literal(bytes: &[u8], open: usize) -> Option
     while index < end {
         if bytes[index] == b'\\' {
             index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        // In v-mode a `[` that is not the opening bracket of this class starts
+        // a nested class (a set-operation operand such as `[\w--[ab]]`).  Skip
+        // the entire nested class so that its inner bytes are not mistakenly
+        // counted as outer-class members — analogous to the existing `\q{...}`
+        // skip performed by `skip_escape`.
+        if bytes[index] == b'[' {
+            if let Some(nested_end) = find_class_end_nested(bytes, index) {
+                index = nested_end + 1;
+            } else {
+                index += 1;
+            }
             continue;
         }
         if index + 2 < end && bytes[index + 1] == b'-' {

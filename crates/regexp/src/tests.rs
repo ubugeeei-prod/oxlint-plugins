@@ -2621,6 +2621,25 @@ mod no_dupe_characters_character_class {
             .is_empty()
         );
     }
+
+    #[test]
+    fn ignores_v_mode_nested_class_set_operations() {
+        // Nested [...] in v-mode are set operands; their inner bytes must not be
+        // treated as outer-class members (false-positive regression).
+        assert!(
+            rule_ids_for(
+                "const a = /[\\q{a}\\q{ab}\\q{abc}[\\w--[ab]][\\w&&b]]/v;",
+                "no-dupe-characters-character-class"
+            )
+            .is_empty(),
+            "nested v-mode classes must not produce a false duplicate"
+        );
+        // Flat classes with real duplicates must still be reported.
+        assert!(
+            !rule_ids_for("const a = /[aab]/u;", "no-dupe-characters-character-class").is_empty(),
+            "flat /[aab]/u must still report a duplicate"
+        );
+    }
 }
 
 mod prefer_range {

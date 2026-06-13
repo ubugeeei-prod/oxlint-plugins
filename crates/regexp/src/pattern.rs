@@ -8,8 +8,8 @@ use crate::helpers::{
     class_first_obscure_range, class_has_case_pair, class_has_unsorted_literal_elements,
     class_has_useless_range, class_has_useless_string_literal, class_is_digit_range,
     class_is_useless_single_literal, class_is_word_char_set, class_matches_anything,
-    class_negated_shorthand_letter, find_class_end, fixed_count_lazy_brace_end, group_prefix,
-    is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    class_negated_shorthand_letter, find_class_end_nested, fixed_count_lazy_brace_end,
+    group_prefix, is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -259,7 +259,10 @@ impl PatternAnalysis {
                     index = skip_escape(bytes, index);
                 }
                 b'[' => {
-                    let close = find_class_end(bytes, index);
+                    // Use the depth-aware variant so that v-mode nested classes
+                    // (set-operation operands such as `[\w--[ab]]`) are not
+                    // mistaken for the closing `]` of the outer class.
+                    let close = find_class_end_nested(bytes, index);
                     if let Some(close) = close {
                         if close == index + 1 {
                             self.has_empty_character_class = true;
