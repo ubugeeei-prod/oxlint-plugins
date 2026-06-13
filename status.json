@@ -8971,19 +8971,19 @@
       },
       {
         "name": "no-standalone-backslash",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-standalone-backslash."
+        "notes": "Narrow form: scans for `\\c[non-letter]` sequences (the control-character escape `\\cX` requires an ASCII letter after `\\c`; any other character, or end-of-pattern, is a standalone backslash). Only fires without the `u`/`v` flag (with those flags the pattern is already a parse error caught by no-invalid-regexp)."
       },
       {
         "name": "no-super-linear-backtracking",

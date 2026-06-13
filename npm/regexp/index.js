@@ -251,6 +251,10 @@ const messages = Object.freeze({
     unexpected:
       'Character class contains a ZWJ (U+200D) and matches it as a separate atom; ZWJ-joined sequences cannot be matched as a single grapheme this way.',
   },
+  'no-standalone-backslash': {
+    unexpected:
+      "Unexpected standalone backslash (`\\`). It looks like an escape sequence, but it's a single `\\` character pattern.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -351,6 +355,9 @@ const ruleDescriptions = Object.freeze({
   negation:
     'enforce use of equivalent shorthand for negated character classes containing a single predefined shorthand',
   'no-useless-lazy': 'disallow lazy modifiers on fixed-count brace quantifiers (`{n}?`, `{n,n}?`)',
+  'no-misleading-unicode-character':
+    'disallow character classes that contain a ZWJ (U+200D) and match it as a separate atom',
+  'no-standalone-backslash': 'disallow standalone backslashes (`\\`)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -419,6 +426,7 @@ const ruleTypes = Object.freeze({
   negation: 'suggestion',
   'no-useless-lazy': 'suggestion',
   'no-misleading-unicode-character': 'problem',
+  'no-standalone-backslash': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({

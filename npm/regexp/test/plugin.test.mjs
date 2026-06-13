@@ -180,6 +180,13 @@ const validCases = [
     'surrogate half \\uHHHH',
     "const re = new RegExp('\\\\ud83d\\\\ude00', 'u');\n",
   ],
+  // no-standalone-backslash
+  ['no-standalone-backslash', 'valid control escape \\cX', 'const re = /\\cX/;\n'],
+  [
+    'no-standalone-backslash',
+    'v-mode valid control escapes',
+    'const re = /[[\\cA-\\cZ]--\\cX]/v;\n',
+  ],
 ];
 
 const invalidCases = [
@@ -493,6 +500,10 @@ const invalidCases = [
     ['unexpected'],
   ],
   ['no-misleading-unicode-character', 'bare zwj in class', 'const re = /[‍]/u;\n', ['unexpected']],
+  // no-standalone-backslash
+  ['no-standalone-backslash', '\\c at end of pattern', 'const re = /\\c/;\n', ['unexpected']],
+  ['no-standalone-backslash', '\\c followed by digit', 'const re = /\\c1/;\n', ['unexpected']],
+  ['no-standalone-backslash', '\\c inside class', 'const re = /[\\c]/;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

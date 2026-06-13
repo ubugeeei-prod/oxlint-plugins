@@ -1763,6 +1763,67 @@ pub(crate) fn class_contains_zwj(bytes: &[u8], open: usize) -> bool {
     body.windows(3).any(|w| w == [0xE2, 0x80, 0x8D])
 }
 
+/// Returns `true` when the pattern contains a standalone backslash — a `\c`
+/// sequence where `c` is NOT an ASCII letter (so `\cX` would be a control
+/// character escape only when `X ∈ [A-Za-z]`).  In non-`u`/non-`v` mode the
+/// engine silently treats `\cX` (non-letter X) as a literal backslash, which
+/// is almost certainly unintentional.  The check covers both top-level patterns
+/// and the inside of character classes.  Used by `no-standalone-backslash`.
+pub(crate) fn has_standalone_backslash(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'[' => {
+                // Walk inside the character class. We still need to detect
+                // `\c[non-letter]` here (e.g. `/[\c]/` is invalid). Use the
+                // simple (non-nested) class scanner; v-mode nested classes will
+                // be handled conservatively — the outer `[` is processed here
+                // and any inner `[...]` content is also scanned via the
+                // recursive character loop.
+                index += 1;
+                while index < bytes.len() {
+                    match bytes[index] {
+                        b'\\' => {
+                            if let Some(&next) = bytes.get(index + 1) {
+                                if next == b'c' {
+                                    let after = bytes.get(index + 2).copied();
+                                    if !after.is_some_and(|b| b.is_ascii_alphabetic()) {
+                                        return true;
+                                    }
+                                }
+                                index = skip_escape(bytes, index);
+                            } else {
+                                index += 1;
+                            }
+                        }
+                        b']' => {
+                            index += 1;
+                            break;
+                        }
+                        _ => index += 1,
+                    }
+                }
+            }
+            b'\\' => {
+                if let Some(&next) = bytes.get(index + 1) {
+                    if next == b'c' {
+                        let after = bytes.get(index + 2).copied();
+                        if !after.is_some_and(|b| b.is_ascii_alphabetic()) {
+                            return true;
+                        }
+                    }
+                    index = skip_escape(bytes, index);
+                } else {
+                    index += 1;
+                }
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
 pub(crate) fn mention_char(ch: char) -> CompactString {
     let mut text = CompactString::new("U+");
     let code = ch as u32;

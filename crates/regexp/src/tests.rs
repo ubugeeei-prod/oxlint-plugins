@@ -107,8 +107,49 @@ fn exposes_initial_regexp_rule_names() {
             "negation",
             "no-useless-lazy",
             "no-misleading-unicode-character",
+            "no-standalone-backslash",
         ]
     );
+}
+
+mod no_standalone_backslash {
+    use super::*;
+
+    #[test]
+    fn reports_standalone_backslash() {
+        // `\c` at end of pattern — no control letter follows
+        assert_eq!(
+            rule_ids_for(r"const a = /\c/;", "no-standalone-backslash").as_slice(),
+            &["unexpected"]
+        );
+        // `\c` followed by a digit — not a valid control-char escape
+        assert_eq!(
+            rule_ids_for(r"const a = /\c1/;", "no-standalone-backslash").as_slice(),
+            &["unexpected"]
+        );
+        // `\c` followed by `-` — not a letter
+        assert_eq!(
+            rule_ids_for(r"const a = /\c-/;", "no-standalone-backslash").as_slice(),
+            &["unexpected"]
+        );
+        // `\c` inside a character class before `]`
+        assert_eq!(
+            rule_ids_for(r"const a = /[\c]/;", "no-standalone-backslash").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_valid_control_char_escapes() {
+        // `\cX` where X is an uppercase letter — valid control-char escape
+        assert!(rule_ids_for(r"const a = /\cX/;", "no-standalone-backslash").is_empty());
+        // `\cA` through `\cZ` in a v-mode class
+        assert!(
+            rule_ids_for(r"const a = /[[\cA-\cZ]--\cX]/v;", "no-standalone-backslash").is_empty()
+        );
+        // Lowercase control letters are also valid
+        assert!(rule_ids_for(r"const a = /\ca/;", "no-standalone-backslash").is_empty());
+    }
 }
 
 mod no_useless_backreference {
