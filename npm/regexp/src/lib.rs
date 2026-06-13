@@ -22,6 +22,7 @@ mod napi_abi {
         pub sorted_flags: Option<String>,
         pub expr: Option<String>,
         pub char_text: Option<String>,
+        pub replacement: Option<String>,
     }
 
     #[napi(object)]
@@ -72,6 +73,10 @@ mod napi_abi {
                     char_text: diagnostic
                         .data
                         .char_text
+                        .map(|value| value.as_str().to_owned()),
+                    replacement: diagnostic
+                        .data
+                        .replacement
                         .map(|value| value.as_str().to_owned()),
                 },
                 loc: DiagnosticLoc {

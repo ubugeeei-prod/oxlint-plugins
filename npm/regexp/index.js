@@ -52,6 +52,21 @@ const messages = Object.freeze({
   'require-unicode-regexp': {
     require: "Use the 'u' flag.",
   },
+  'no-escape-backspace': {
+    unexpected: "Unexpected '\\b' inside a character class. Use '\\x08' to match the backspace character.",
+  },
+  'prefer-plus-quantifier': {
+    unexpected: "Unexpected quantifier '{{expr}}'. Use '+' instead.",
+  },
+  'prefer-star-quantifier': {
+    unexpected: "Unexpected quantifier '{{expr}}'. Use '*' instead.",
+  },
+  'prefer-question-quantifier': {
+    unexpected: "Unexpected quantifier '{{expr}}'. Use '?' instead.",
+  },
+  'no-useless-two-nums-quantifier': {
+    unexpected: "Unexpected quantifier '{{expr}}'. Use '{{replacement}}' instead.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -65,6 +80,11 @@ const ruleDescriptions = Object.freeze({
   'no-control-character': 'disallow control characters',
   'sort-flags': 'require regex flags to be sorted',
   'require-unicode-regexp': 'enforce the use of the `u` flag',
+  'no-escape-backspace': 'disallow escape backspace (`[\\b]`)',
+  'prefer-plus-quantifier': 'enforce using `+` quantifier',
+  'prefer-star-quantifier': 'enforce using `*` quantifier',
+  'prefer-question-quantifier': 'enforce using `?` quantifier',
+  'no-useless-two-nums-quantifier': 'disallow unnecessary `{n,m}` quantifier',
 });
 
 const ruleTypes = Object.freeze({
@@ -78,6 +98,11 @@ const ruleTypes = Object.freeze({
   'no-control-character': 'suggestion',
   'sort-flags': 'suggestion',
   'require-unicode-regexp': 'suggestion',
+  'no-escape-backspace': 'suggestion',
+  'prefer-plus-quantifier': 'suggestion',
+  'prefer-star-quantifier': 'suggestion',
+  'prefer-question-quantifier': 'suggestion',
+  'no-useless-two-nums-quantifier': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -88,6 +113,11 @@ const recommendedRuleConfig = Object.freeze({
   'no-empty-alternative': 'warn',
   'no-zero-quantifier': 'error',
   'sort-flags': 'error',
+  'no-escape-backspace': 'error',
+  'prefer-plus-quantifier': 'error',
+  'prefer-star-quantifier': 'error',
+  'prefer-question-quantifier': 'error',
+  'no-useless-two-nums-quantifier': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
@@ -178,11 +208,20 @@ function ruleCategory(ruleName) {
     ruleName === 'no-empty-character-class' ||
     ruleName === 'no-empty-group' ||
     ruleName === 'no-empty-alternative' ||
-    ruleName === 'no-control-character'
+    ruleName === 'no-control-character' ||
+    ruleName === 'no-escape-backspace'
   ) {
     return 'Possible Errors';
   }
   if (ruleName === 'sort-flags') {
+    return 'Stylistic Issues';
+  }
+  if (
+    ruleName === 'prefer-plus-quantifier' ||
+    ruleName === 'prefer-star-quantifier' ||
+    ruleName === 'prefer-question-quantifier' ||
+    ruleName === 'no-useless-two-nums-quantifier'
+  ) {
     return 'Stylistic Issues';
   }
   return 'Best Practices';
