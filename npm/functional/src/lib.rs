@@ -27,6 +27,8 @@ mod napi_abi {
         pub allow_try_finally: Option<bool>,
         pub readonly_type_mode: Option<String>,
         pub ignore_if_readonly_wrapped: Option<bool>,
+        pub ignore_identifier_pattern: Option<Vec<String>>,
+        pub ignore_code_pattern: Option<Vec<String>>,
     }
 
     #[napi(object)]
@@ -91,6 +93,8 @@ mod napi_abi {
             ignore_if_readonly_wrapped: options
                 .ignore_if_readonly_wrapped
                 .unwrap_or(default_options.ignore_if_readonly_wrapped),
+            ignore_identifier_pattern: compact_pattern_list(options.ignore_identifier_pattern),
+            ignore_code_pattern: compact_pattern_list(options.ignore_code_pattern),
         };
 
         core::scan_functional(&source_text, &filename, &core_options)
@@ -106,6 +110,14 @@ mod napi_abi {
                     end_column: diagnostic.loc.end_column,
                 },
             })
+            .collect()
+    }
+
+    fn compact_pattern_list(values: Option<Vec<String>>) -> SmallVec<[CompactString; 4]> {
+        values
+            .unwrap_or_default()
+            .into_iter()
+            .map(CompactString::from)
             .collect()
     }
 

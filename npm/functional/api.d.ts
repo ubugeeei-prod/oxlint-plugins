@@ -22,6 +22,8 @@ export type FunctionalScanOptions = {
   allowTryFinally?: boolean;
   readonlyTypeMode?: 'generic' | 'keyword';
   ignoreIfReadonlyWrapped?: boolean;
+  ignoreIdentifierPattern?: string | string[];
+  ignoreCodePattern?: string | string[];
 };
 
 export function implementedFunctionalRuleNames(): string[];

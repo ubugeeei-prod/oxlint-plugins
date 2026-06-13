@@ -149,6 +149,45 @@ fn no_promise_reject_matches_upstream_syntactic_behavior() {
 }
 
 #[test]
+fn no_classes_honors_ignore_patterns() {
+    let base_options = FunctionalOptions {
+        rule_names: ["no-classes".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+
+    // Plain class reports 1 diagnostic.
+    let diagnostics = scan_functional("class Foo {}", "fixture.ts", &base_options);
+    assert_eq!(diagnostics.len(), 1);
+
+    // ignoreIdentifierPattern matching the class name suppresses the report.
+    let id_pattern_options = FunctionalOptions {
+        rule_names: ["no-classes".into()].into_iter().collect(),
+        ignore_identifier_pattern: ["^Foo$".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let diagnostics = scan_functional("class Foo {}", "fixture.ts", &id_pattern_options);
+    assert_eq!(diagnostics.len(), 0);
+
+    // ignoreCodePattern matching the class source text suppresses the report.
+    let code_pattern_options = FunctionalOptions {
+        rule_names: ["no-classes".into()].into_iter().collect(),
+        ignore_code_pattern: ["class Foo".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let diagnostics = scan_functional("class Foo {}", "fixture.ts", &code_pattern_options);
+    assert_eq!(diagnostics.len(), 0);
+
+    // A non-matching identifier pattern still reports 1 diagnostic.
+    let non_matching_options = FunctionalOptions {
+        rule_names: ["no-classes".into()].into_iter().collect(),
+        ignore_identifier_pattern: ["^Bar$".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let diagnostics = scan_functional("class Foo {}", "fixture.ts", &non_matching_options);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
 fn honors_core_options() {
     let mut options = FunctionalOptions {
         rule_names: ["no-let".into()].into_iter().collect(),
