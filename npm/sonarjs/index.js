@@ -94,6 +94,10 @@ const messages = Object.freeze({
     maxUnionSize:
       'This union type has too many members; consider refactoring into a named type or interface.',
   },
+  'elseif-without-else': {
+    elseifWithoutElse:
+      "Add a final 'else' clause to this 'if … else if' chain to handle the remaining cases explicitly.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -133,6 +137,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow switch statements with more than 30 case/default clauses (threshold fixed at default 30; configurability is a follow-up)',
   'max-union-size':
     'Disallow union types with more than 3 members (threshold fixed at default 3; configurability is a follow-up; each TSUnionType node is counted per-node)',
+  'elseif-without-else':
+    "Require a final 'else' clause when an 'if … else if' chain is present, to explicitly handle the remaining case",
 });
 
 const ruleTypes = Object.freeze({
@@ -158,6 +164,7 @@ const ruleTypes = Object.freeze({
   'class-prototype': 'suggestion',
   'max-switch-cases': 'suggestion',
   'max-union-size': 'suggestion',
+  'elseif-without-else': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -183,6 +190,7 @@ const recommendedRuleConfig = Object.freeze({
   'class-prototype': 'error',
   'max-switch-cases': 'error',
   'max-union-size': 'error',
+  'elseif-without-else': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
