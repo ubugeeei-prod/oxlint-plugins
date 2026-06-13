@@ -6,6 +6,7 @@ mod class_prototype;
 mod comma_or_logical_or_case;
 mod constructor_for_side_effects;
 mod generator_without_yield;
+mod max_switch_cases;
 mod no_all_duplicated_branches;
 mod no_built_in_override;
 mod no_collapsible_if;
