@@ -14,9 +14,7 @@ use crate::tags::{
     IGNORED_ATTRIBUTIFY_ATTRIBUTES, find_tag_end, is_attr_name_part, is_identifier_part,
     is_identifier_start, skip_attribute_value,
 };
-use crate::types::{
-    Diagnostic, DiagnosticFix, LineIndex, LiteralSpan, ReportData, UnocssOptions,
-};
+use crate::types::{Diagnostic, DiagnosticFix, LineIndex, LiteralSpan, ReportData, UnocssOptions};
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,

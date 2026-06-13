@@ -1,7 +1,9 @@
 //! Expression-level traversal for the regexp scanner. Split from the
 //! statement-level walker in `traversal.rs` to keep each file focused.
 
-use oxc_ast::ast::{Argument, AssignmentTarget, ChainElement, Expression, ObjectPropertyKind, PropertyKey};
+use oxc_ast::ast::{
+    Argument, AssignmentTarget, ChainElement, Expression, ObjectPropertyKind, PropertyKey,
+};
 
 use crate::helpers::array_element_expression;
 use crate::scanner::Scanner;

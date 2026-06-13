@@ -18,9 +18,7 @@ use regex::Regex;
 use crate::scanner::Scanner;
 use crate::types::LineIndex;
 
-pub use crate::types::{
-    BlocklistEntry, Diagnostic, DiagnosticFix, DiagnosticLoc, UnocssOptions,
-};
+pub use crate::types::{BlocklistEntry, Diagnostic, DiagnosticFix, DiagnosticLoc, UnocssOptions};
 
 pub const RULE_NAMES: [&str; 4] = [
     "blocklist",

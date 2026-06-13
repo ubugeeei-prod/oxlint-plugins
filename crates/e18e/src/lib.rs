@@ -24,10 +24,10 @@ use oxlint_plugins_carton::SmallVec;
 
 use crate::helpers::ban_dependency_diagnostic;
 use crate::scanner::Scanner;
+pub(crate) use crate::types::LineIndex;
 pub use crate::types::{
     BanDependency, Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, E18eOptions,
 };
-pub(crate) use crate::types::LineIndex;
 
 pub const RULE_NAMES: [&str; 25] = [
     "prefer-array-at",

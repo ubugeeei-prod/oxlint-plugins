@@ -6,7 +6,10 @@ pub(crate) fn span_for(index: usize, len: usize) -> Span {
     Span::new(index as u32, (index + len) as u32)
 }
 
-pub(crate) fn find_all<'a>(source_text: &'a str, pattern: &'a str) -> impl Iterator<Item = usize> + 'a {
+pub(crate) fn find_all<'a>(
+    source_text: &'a str,
+    pattern: &'a str,
+) -> impl Iterator<Item = usize> + 'a {
     source_text.match_indices(pattern).map(|(index, _)| index)
 }
 

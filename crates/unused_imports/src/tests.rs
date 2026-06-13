@@ -17,8 +17,7 @@ fn apply_first_fix(source: &str, filename: &str) -> CompactString {
 
 #[test]
 fn removes_unused_named_import() {
-    let source =
-        "import x from \"package\";\nimport { a, b } from \"./utils\";\nconst c = b(x);\n";
+    let source = "import x from \"package\";\nimport { a, b } from \"./utils\";\nconst c = b(x);\n";
     let diagnostics = scan_unused_imports(source, "file.js", &UnusedImportsOptions::default());
     assert_eq!(diagnostics[0].rule_name, "no-unused-imports");
     assert_eq!(diagnostics[0].message, "'a' is defined but never used.");

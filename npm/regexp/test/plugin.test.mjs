@@ -12,36 +12,111 @@ const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const workspaceRoot = resolve(packageRoot, '../..');
 
 const validCases = [
+  // no-invalid-regexp
   ['no-invalid-regexp', 'valid constructor', "new RegExp('a+', 'u');\n"],
-  ['no-empty-character-class', 'non-empty class', 'const re = /[a]/u;\n'],
-  ['no-empty-group', 'non-empty group', 'const re = /(?:a)/u;\n'],
-  ['no-empty-capturing-group', 'non-empty capture', 'const re = /(a)/u;\n'],
-  ['no-empty-alternative', 'no empty alternative', 'const re = /a|b/u;\n'],
+  ['no-invalid-regexp', 'all valid flags', "new RegExp('a', 'gimsu');\n"],
+  ['no-invalid-regexp', 'unicode set flag', "new RegExp('[a]', 'v');\n"],
+  // no-empty-character-class
+  ['no-empty-character-class', 'single-char class', 'const re = /[a]/u;\n'],
+  ['no-empty-character-class', 'negated empty-looking class', 'const re = /[^]/u;\n'],
+  ['no-empty-character-class', 'class containing escaped bracket', 'const re = /[\\]]/u;\n'],
+  // no-empty-group
+  ['no-empty-group', 'non-capturing group with content', 'const re = /(?:a)/u;\n'],
+  ['no-empty-group', 'empty lookahead is allowed', 'const re = /(?=a)/u;\n'],
+  ['no-empty-group', 'empty negative lookahead is allowed', 'const re = /(?!a)/u;\n'],
+  // no-empty-capturing-group
+  ['no-empty-capturing-group', 'capture with content', 'const re = /(a)/u;\n'],
+  ['no-empty-capturing-group', 'named capture with content', 'const re = /(?<name>a)/u;\n'],
+  // no-empty-alternative
+  ['no-empty-alternative', 'simple alternation', 'const re = /a|b/u;\n'],
+  ['no-empty-alternative', 'alternation inside group', 'const re = /(?:a|b|c)/u;\n'],
+  // no-zero-quantifier
   ['no-zero-quantifier', 'positive quantifier', 'const re = /a{1}/u;\n'],
+  ['no-zero-quantifier', 'open upper bound', 'const re = /a{0,}/u;\n'],
+  ['no-zero-quantifier', 'positive range', 'const re = /a{2,5}/u;\n'],
+  // no-octal
   ['no-octal', 'nul escape only', 'const re = /\\0/u;\n'],
-  ['no-control-character', 'named control escape', 'const re = /\\t/u;\n'],
+  ['no-octal', 'nul followed by 8 (not octal)', 'const re = /\\08/u;\n'],
+  // no-control-character
+  ['no-control-character', 'named tab escape', 'const re = /\\t/u;\n'],
+  ['no-control-character', 'named newline escape', 'const re = /\\n/u;\n'],
+  ['no-control-character', 'printable hex escape', "const re = new RegExp('\\\\u0041', 'u');\n"],
+  // sort-flags
   ['sort-flags', 'sorted flags', 'const re = /a/im;\n'],
+  ['sort-flags', 'no flags', 'const re = /a/;\n'],
+  ['sort-flags', 'single flag', 'const re = /a/u;\n'],
+  // require-unicode-regexp
   ['require-unicode-regexp', 'unicode flag', 'const re = /a/u;\n'],
+  ['require-unicode-regexp', 'unicode set flag', 'const re = /a/v;\n'],
+  ['require-unicode-regexp', 'unicode with other flags', 'const re = /a/gu;\n'],
 ];
 
 const invalidCases = [
-  ['no-invalid-regexp', 'invalid constructor pattern', "new RegExp('[', 'u');\n", ['error']],
+  // no-invalid-regexp
+  ['no-invalid-regexp', 'unclosed character class', "new RegExp('[', 'u');\n", ['error']],
+  ['no-invalid-regexp', 'unclosed group', "new RegExp('(?:', 'u');\n", ['error']],
   ['no-invalid-regexp', 'duplicate flags', "new RegExp('a', 'gg');\n", ['duplicateFlag']],
-  ['no-invalid-regexp', 'u and v flags', "new RegExp('a', 'uv');\n", ['uvFlag']],
-  ['no-empty-character-class', 'empty character class', 'const re = /[]/u;\n', ['empty']],
-  ['no-empty-group', 'empty group', 'const re = /(?:)/u;\n', ['unexpected']],
-  ['no-empty-capturing-group', 'empty capturing group', 'const re = /()/u;\n', ['unexpected']],
+  ['no-invalid-regexp', 'duplicate i flags', "new RegExp('a', 'ii');\n", ['duplicateFlag']],
+  ['no-invalid-regexp', 'u and v flags together', "new RegExp('a', 'uv');\n", ['uvFlag']],
+  ['no-invalid-regexp', 'v and u flags together', "new RegExp('a', 'vu');\n", ['uvFlag']],
+  // no-empty-character-class
+  ['no-empty-character-class', 'standalone empty class', 'const re = /[]/u;\n', ['empty']],
+  ['no-empty-character-class', 'empty class between chars', 'const re = /abc[]def/u;\n', ['empty']],
+  [
+    'no-empty-character-class',
+    'empty class via constructor',
+    "const re = new RegExp('[]', 'u');\n",
+    ['empty'],
+  ],
+  // no-empty-group
+  ['no-empty-group', 'empty non-capturing group', 'const re = /(?:)/u;\n', ['unexpected']],
+  ['no-empty-group', 'empty group between chars', 'const re = /a(?:)b/u;\n', ['unexpected']],
+  // no-empty-capturing-group
+  ['no-empty-capturing-group', 'empty capture', 'const re = /()/u;\n', ['unexpected']],
+  ['no-empty-capturing-group', 'empty named capture', 'const re = /(?<name>)/u;\n', ['unexpected']],
+  // no-empty-alternative
   ['no-empty-alternative', 'trailing empty alternative', 'const re = /a|/u;\n', ['empty']],
+  ['no-empty-alternative', 'leading empty alternative', 'const re = /|a/u;\n', ['empty']],
+  ['no-empty-alternative', 'middle empty alternative', 'const re = /a||b/u;\n', ['empty']],
+  ['no-empty-alternative', 'empty alternative in group', 'const re = /(?:a|)/u;\n', ['empty']],
+  // no-zero-quantifier
   ['no-zero-quantifier', 'zero quantifier', 'const re = /a{0}/u;\n', ['unexpected']],
-  ['no-octal', 'octal escape', 'const re = /\\07/u;\n', ['unexpected']],
+  ['no-zero-quantifier', 'zero,zero quantifier', 'const re = /a{0,0}/u;\n', ['unexpected']],
+  ['no-zero-quantifier', 'zero quantifier on group', 'const re = /(?:abc){0}/u;\n', ['unexpected']],
+  // no-octal
+  ['no-octal', 'two-digit octal escape', 'const re = /\\07/u;\n', ['unexpected']],
+  ['no-octal', 'three-digit octal escape', 'const re = /\\012/u;\n', ['unexpected']],
+  // no-control-character
   [
     'no-control-character',
     'hex escaped control character',
     "const re = new RegExp('\\\\x01', 'u');\n",
     ['unexpected'],
   ],
+  [
+    'no-control-character',
+    'unicode escaped control character',
+    "const re = new RegExp('\\\\u0002', 'u');\n",
+    ['unexpected'],
+  ],
+  [
+    'no-control-character',
+    'curly unicode control character',
+    "const re = new RegExp('\\\\u{3}', 'u');\n",
+    ['unexpected'],
+  ],
+  // sort-flags
   ['sort-flags', 'unsorted flags', 'const re = /a/mi;\n', ['sortFlags']],
-  ['require-unicode-regexp', 'missing unicode flag', 'const re = /a/;\n', ['require']],
+  ['sort-flags', 'unsorted unicode flag', 'const re = /a/ug;\n', ['sortFlags']],
+  // require-unicode-regexp
+  ['require-unicode-regexp', 'no flags', 'const re = /a/;\n', ['require']],
+  ['require-unicode-regexp', 'only g flag', 'const re = /a/g;\n', ['require']],
+  [
+    'require-unicode-regexp',
+    'constructor without flags',
+    "const re = new RegExp('a');\n",
+    ['require'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
@@ -168,6 +243,28 @@ describe('regexp rules through direct Oxlint plugin adapter', () => {
         runRule('no-control-character', "const re = new RegExp('\\\\x01', 'u');\n")[0],
       ),
     ).toBe('Unexpected control character U+0001.');
+    expect(
+      renderMessage(
+        'no-invalid-regexp',
+        runRule('no-invalid-regexp', "new RegExp('a', 'gg');\n")[0],
+      ),
+    ).toBe('Duplicate g flag.');
+  });
+
+  it('ignores non-RegExp callees with the same shape', () => {
+    expect(runRule('no-empty-character-class', "new Foo('[]', 'u');\n")).toEqual([]);
+    expect(runRule('no-invalid-regexp', "Bar('[', 'u');\n")).toEqual([]);
+  });
+
+  it('does not crash when constructor arguments are non-literal', () => {
+    expect(runRule('no-empty-character-class', "new RegExp(pattern, 'u');\n")).toEqual([]);
+    expect(runRule('no-invalid-regexp', 'new RegExp();\n')).toEqual([]);
+  });
+
+  it('reports each literal in a source independently', () => {
+    const reports = runRule('no-empty-character-class', 'const a = /[]/u; const b = /[]/u;\n');
+    expect(reports).toHaveLength(2);
+    expect(reports.every((report) => report.messageId === 'empty')).toBe(true);
   });
 });
 

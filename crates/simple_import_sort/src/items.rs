@@ -8,8 +8,8 @@ use oxlint_plugins_carton::CompactString;
 use regex::Regex;
 
 use crate::scanner::span_text;
-use crate::specifiers::sort_import_specifiers_in_code;
 use crate::specifiers::sort_export_specifiers_in_code;
+use crate::specifiers::sort_import_specifiers_in_code;
 use crate::types::{EXPORT_STYLE, Item, SIDE_EFFECT_STYLE, SimpleImportSortOptions};
 
 pub(crate) fn item_from_import(
