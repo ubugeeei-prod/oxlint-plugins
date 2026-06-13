@@ -45,6 +45,8 @@ type Manifest = {
 
 type RawCase = Record<string, unknown> | string;
 type CapturedRun = { name: string; valid: RawCase[]; invalid: RawCase[] };
+type NormalizedCase = Record<string, unknown>;
+type RuleBucket = { valid: NormalizedCase[]; invalid: NormalizedCase[] };
 
 const ROOT = process.cwd();
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -84,7 +86,7 @@ const tempDir = mkdtempSync(join(tmpdir(), 'security-sync-'));
 registerStubHooks();
 
 // rule name -> { valid, invalid } accumulated across every test file / run.
-const grouped = new Map<string, { valid: Record<string, unknown>[]; invalid: Record<string, unknown>[] }>();
+const grouped = new Map<string, RuleBucket>();
 for (const rule of portedRules) {
   grouped.set(rule, { valid: [], invalid: [] });
 }
