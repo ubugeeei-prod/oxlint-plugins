@@ -104,7 +104,10 @@ fn does_not_report_flat_conditional() {
 
 #[test]
 fn reports_two_diagnostics_for_doubly_nested_conditional() {
-    let diagnostics = scan("no-nested-conditional", "const x = a ? (b ? c : d) : (e ? f : g);");
+    let diagnostics = scan(
+        "no-nested-conditional",
+        "const x = a ? (b ? c : d) : (e ? f : g);",
+    );
     assert_eq!(diagnostics.len(), 2);
 }
 
