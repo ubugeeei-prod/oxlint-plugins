@@ -6,12 +6,12 @@ use oxc_syntax::operator::BinaryOperator;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    argument_is_literal, contains_timing_keyword, expression_type, fs_argument_indices,
-    is_dangerous_bidi, is_unsafe_regex, join_usize, source_line_at, static_member_property,
-    string_literal_value, BUFFER_READ_METHODS, BUFFER_WRITE_METHODS,
+    BUFFER_READ_METHODS, BUFFER_WRITE_METHODS, argument_is_literal, contains_timing_keyword,
+    expression_type, fs_argument_indices, is_dangerous_bidi, is_unsafe_regex, join_usize,
+    source_line_at, static_member_property, string_literal_value,
 };
 use crate::scanner::Scanner;
-use crate::{DiagnosticData, ParentKind, CHILD_PROCESS_PACKAGES, FS_PACKAGES};
+use crate::{CHILD_PROCESS_PACKAGES, DiagnosticData, FS_PACKAGES, ParentKind};
 
 impl<'a> Scanner<'a> {
     pub(crate) fn check_call_expression(
@@ -228,11 +228,7 @@ impl<'a> Scanner<'a> {
         self.report("detect-object-injection", message_id, span);
     }
 
-    pub(crate) fn check_possible_timing_attack(
-        &mut self,
-        span: Span,
-        test: &'a Expression<'a>,
-    ) {
+    pub(crate) fn check_possible_timing_attack(&mut self, span: Span, test: &'a Expression<'a>) {
         let Expression::BinaryExpression(binary) = test.get_inner_expression() else {
             return;
         };

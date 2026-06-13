@@ -10,11 +10,7 @@ use crate::helpers::{ExprContext, expression_body};
 use crate::scanner::Scanner;
 
 impl<'a> Scanner<'a> {
-    pub(crate) fn scan_expression(
-        &mut self,
-        expression: &'a Expression<'a>,
-        context: ExprContext,
-    ) {
+    pub(crate) fn scan_expression(&mut self, expression: &'a Expression<'a>, context: ExprContext) {
         match expression.get_inner_expression() {
             Expression::CallExpression(call) => {
                 self.check_call_expression(call, context);

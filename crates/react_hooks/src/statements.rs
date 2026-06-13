@@ -154,10 +154,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    pub(crate) fn scan_variable_declaration(
-        &mut self,
-        declaration: &'a VariableDeclaration<'a>,
-    ) {
+    pub(crate) fn scan_variable_declaration(&mut self, declaration: &'a VariableDeclaration<'a>) {
         for declarator in &declaration.declarations {
             let name = binding_pattern_name(&declarator.id);
             if let Some(init) = &declarator.init {

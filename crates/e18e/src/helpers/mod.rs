@@ -7,8 +7,8 @@ mod comparisons;
 mod constants;
 mod literals;
 
-use oxc_ast::ast::Expression;
 use oxc_ast::ast::CallExpression;
+use oxc_ast::ast::Expression;
 use oxc_span::Span;
 
 use crate::{BanDependency, Diagnostic, DiagnosticData, LineIndex};

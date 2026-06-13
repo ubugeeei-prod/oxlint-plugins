@@ -2,9 +2,7 @@
 
 use oxc_ast::ast::*;
 
-use crate::helpers::{
-    assignment_target_name, function_name, is_component_callback_callee,
-};
+use crate::helpers::{assignment_target_name, function_name, is_component_callback_callee};
 use crate::scanner::Scanner;
 
 impl<'a> Scanner<'a> {

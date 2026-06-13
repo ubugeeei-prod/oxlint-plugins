@@ -12,10 +12,7 @@ use crate::{
 };
 
 impl<'a> Scanner<'a> {
-    pub(crate) fn require_package_name(
-        &self,
-        call: &'a CallExpression<'a>,
-    ) -> Option<&'a str> {
+    pub(crate) fn require_package_name(&self, call: &'a CallExpression<'a>) -> Option<&'a str> {
         if !call.callee.is_specific_id("require") {
             return None;
         }

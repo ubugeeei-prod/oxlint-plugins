@@ -22,12 +22,7 @@ pub(crate) struct Scanner<'a> {
 }
 
 impl<'a> Scanner<'a> {
-    pub(crate) fn report(
-        &mut self,
-        rule_name: &'static str,
-        message: &'static str,
-        span: Span,
-    ) {
+    pub(crate) fn report(&mut self, rule_name: &'static str, message: &'static str, span: Span) {
         if self.options.has_rule(rule_name) {
             self.diagnostics.push(Diagnostic {
                 rule_name,

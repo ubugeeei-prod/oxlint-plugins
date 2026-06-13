@@ -1,8 +1,8 @@
 //! Statement-level AST traversal for the e18e scanner.
 
 use oxc_ast::ast::{
-    ClassElement, Declaration, ForStatementInit, ForStatementLeft, Function, FunctionBody,
-    Statement, Class,
+    Class, ClassElement, Declaration, ForStatementInit, ForStatementLeft, Function, FunctionBody,
+    Statement,
 };
 
 use crate::helpers::ExprContext;

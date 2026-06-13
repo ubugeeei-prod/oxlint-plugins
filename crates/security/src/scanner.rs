@@ -51,12 +51,7 @@ impl<'a> Scanner<'a> {
             .find_map(|scope| scope.bindings.get(name))
     }
 
-    pub(crate) fn report(
-        &mut self,
-        rule_name: &'static str,
-        message_id: &'static str,
-        span: Span,
-    ) {
+    pub(crate) fn report(&mut self, rule_name: &'static str, message_id: &'static str, span: Span) {
         self.report_with_data(rule_name, message_id, DiagnosticData::default(), span);
     }
 

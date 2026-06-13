@@ -2,9 +2,11 @@
 
 use oxc_ast::ast::*;
 
-use crate::helpers::{assignment_target_is_member, is_identifier_expression, is_mutating_call, is_static_call};
-use crate::scanner::Scanner;
 use crate::FunctionContext;
+use crate::helpers::{
+    assignment_target_is_member, is_identifier_expression, is_mutating_call, is_static_call,
+};
+use crate::scanner::Scanner;
 
 impl<'a> Scanner<'a> {
     pub(crate) fn scan_expression(
@@ -195,11 +197,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    pub(crate) fn scan_property_key(
-        &mut self,
-        key: &'a PropertyKey<'a>,
-        context: FunctionContext,
-    ) {
+    pub(crate) fn scan_property_key(&mut self, key: &'a PropertyKey<'a>, context: FunctionContext) {
         match key {
             PropertyKey::StaticMemberExpression(member) => {
                 self.scan_static_member_expression(member, context);

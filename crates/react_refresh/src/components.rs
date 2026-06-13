@@ -128,10 +128,7 @@ impl Scanner<'_> {
         self.is_valid_hoc(name).then_some(name)
     }
 
-    fn get_hoc_name_from_expression<'a>(
-        &self,
-        expression: &'a Expression<'a>,
-    ) -> Option<&'a str> {
+    fn get_hoc_name_from_expression<'a>(&self, expression: &'a Expression<'a>) -> Option<&'a str> {
         match expression.get_inner_expression() {
             Expression::CallExpression(call) => self.get_call_hoc_name(call),
             Expression::StaticMemberExpression(member) => {

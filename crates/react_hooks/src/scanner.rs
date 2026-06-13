@@ -12,7 +12,10 @@ use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{method_name, object_is_pascal_case_identifier};
-use crate::{Diagnostic, DiagnosticData, FunctionFrame, HookCall, LineIndex, is_hook_name, is_react_component_name};
+use crate::{
+    Diagnostic, DiagnosticData, FunctionFrame, HookCall, LineIndex, is_hook_name,
+    is_react_component_name,
+};
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,

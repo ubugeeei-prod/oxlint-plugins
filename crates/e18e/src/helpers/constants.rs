@@ -1,9 +1,7 @@
 //! Constant-expression detection, copy-pattern recognition, and spread-leak
 //! analysis used across e18e rules.
 
-use oxc_ast::ast::{
-    Argument, ArrayExpressionElement, Expression, ObjectPropertyKind, Statement,
-};
+use oxc_ast::ast::{Argument, ArrayExpressionElement, Expression, ObjectPropertyKind, Statement};
 
 use crate::helpers::ast::{expression_body, static_member_callee};
 

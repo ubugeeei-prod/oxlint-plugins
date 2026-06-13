@@ -2,16 +2,12 @@
 
 use oxc_ast::ast::*;
 
+use crate::ParentKind;
 use crate::helpers::{array_element_expression, is_unsafe_regex};
 use crate::scanner::Scanner;
-use crate::ParentKind;
 
 impl<'a> Scanner<'a> {
-    pub(crate) fn scan_expression(
-        &mut self,
-        expression: &'a Expression<'a>,
-        parent: ParentKind,
-    ) {
+    pub(crate) fn scan_expression(&mut self, expression: &'a Expression<'a>, parent: ParentKind) {
         match expression.get_inner_expression() {
             Expression::CallExpression(call) => {
                 self.check_call_expression(call, parent);

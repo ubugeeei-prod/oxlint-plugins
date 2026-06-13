@@ -2,9 +2,9 @@
 
 use oxc_ast::ast::*;
 
+use crate::ContextKind;
 use crate::helpers::is_suite_config_call;
 use crate::scanner::Scanner;
-use crate::ContextKind;
 
 impl<'a> Scanner<'a> {
     pub(crate) fn scan_expression(&mut self, expression: &'a Expression<'a>, context: ContextKind) {

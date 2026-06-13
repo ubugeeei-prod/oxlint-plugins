@@ -3,7 +3,9 @@
 use oxc_ast::ast::*;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
-use crate::helpers::{is_interesting_package, module_export_name, small_path, INTERESTING_PACKAGES};
+use crate::helpers::{
+    INTERESTING_PACKAGES, is_interesting_package, module_export_name, small_path,
+};
 use crate::scanner::Scanner;
 use crate::{AccessPath, Binding, ParentKind};
 

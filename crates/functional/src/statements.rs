@@ -2,12 +2,16 @@
 
 use oxc_ast::ast::*;
 
+use crate::FunctionContext;
 use crate::helpers::is_mutable_type;
 use crate::scanner::Scanner;
-use crate::FunctionContext;
 
 impl<'a> Scanner<'a> {
-    pub(crate) fn scan_statement(&mut self, statement: &'a Statement<'a>, context: FunctionContext) {
+    pub(crate) fn scan_statement(
+        &mut self,
+        statement: &'a Statement<'a>,
+        context: FunctionContext,
+    ) {
         match statement {
             Statement::ExpressionStatement(statement) => {
                 if !matches!(

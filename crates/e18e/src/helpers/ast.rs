@@ -1,8 +1,8 @@
 //! AST-shape navigation helpers: callee inspection, structural matches.
 
 use oxc_ast::ast::{
-    ArrayExpression, ArrayExpressionElement, CallExpression, Expression, FunctionBody, NewExpression,
-    ObjectPropertyKind, PropertyKey, Statement,
+    ArrayExpression, ArrayExpressionElement, CallExpression, Expression, FunctionBody,
+    NewExpression, ObjectPropertyKind, PropertyKey, Statement,
 };
 
 pub(crate) fn static_member_callee<'a>(
