@@ -94,8 +94,74 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-quantifier",
             "no-useless-string-literal",
             "sort-character-class-elements",
+            "no-trivially-nested-assertion",
+            "no-extra-lookaround-assertions",
         ]
     );
+}
+
+mod no_trivially_nested_assertion {
+    use super::*;
+
+    #[test]
+    fn reports_non_cap_wrapping_only_lookaround() {
+        assert_eq!(
+            rule_ids_for("const a = /(?:(?=a))/u;", "no-trivially-nested-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:(?!b))/u;", "no-trivially-nested-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:(?<=c))/u;", "no-trivially-nested-assertion").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_non_cap_with_other_content_or_unrelated_groups() {
+        // Lookaround + extra content — wrapper carries that content.
+        assert!(
+            rule_ids_for("const a = /(?:(?=a)b)/u;", "no-trivially-nested-assertion").is_empty()
+        );
+        // Plain literal body — handled by other rules, not this one.
+        assert!(rule_ids_for("const a = /(?:a)/u;", "no-trivially-nested-assertion").is_empty());
+        // Capturing group — not in scope.
+        assert!(rule_ids_for("const a = /((?=a))/u;", "no-trivially-nested-assertion").is_empty());
+        // Lookaround alone at top level — not nested.
+        assert!(rule_ids_for("const a = /(?=a)/u;", "no-trivially-nested-assertion").is_empty());
+    }
+}
+
+mod no_extra_lookaround_assertions {
+    use super::*;
+
+    #[test]
+    fn reports_lookaround_wrapping_only_another_lookaround() {
+        assert_eq!(
+            rule_ids_for("const a = /(?=(?=a))/u;", "no-extra-lookaround-assertions").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?<!(?!b))/u;", "no-extra-lookaround-assertions").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_unrelated_shapes() {
+        // Lookaround with literal body — fine.
+        assert!(rule_ids_for("const a = /(?=ab)/u;", "no-extra-lookaround-assertions").is_empty());
+        // Non-cap wrapping a lookaround is the other rule's job.
+        assert!(
+            rule_ids_for("const a = /(?:(?=a))/u;", "no-extra-lookaround-assertions").is_empty()
+        );
+        // Lookaround followed by more content.
+        assert!(
+            rule_ids_for("const a = /(?=(?=a)b)/u;", "no-extra-lookaround-assertions").is_empty()
+        );
+    }
 }
 
 mod no_useless_string_literal {

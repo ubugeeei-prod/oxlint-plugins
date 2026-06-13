@@ -22,6 +22,16 @@ pub(crate) struct GroupState {
     pub(crate) body_start: usize,
     pub(crate) seen_pipe: bool,
     pub(crate) current_has_content: bool,
+    /// Number of top-level atoms in the current alternative. Each literal
+    /// character, escape, character class, or completed nested group counts
+    /// as one atom. Reset by `|`. Used to detect "body is exactly one
+    /// nested group" cases (`no-trivially-nested-assertion` and
+    /// `no-extra-lookaround-assertions`).
+    pub(crate) current_alt_atom_count: u32,
+    /// `true` if the most recently completed atom in the current alternative
+    /// was a lookaround group closing. Pairs with `current_alt_atom_count`
+    /// to identify single-assertion bodies.
+    pub(crate) last_atom_was_lookaround: bool,
 }
 
 impl GroupState {
@@ -34,6 +44,8 @@ impl GroupState {
             body_start: 0,
             seen_pipe: false,
             current_has_content: false,
+            current_alt_atom_count: 0,
+            last_atom_was_lookaround: false,
         }
     }
 
@@ -52,6 +64,8 @@ impl GroupState {
             body_start,
             seen_pipe: false,
             current_has_content: false,
+            current_alt_atom_count: 0,
+            last_atom_was_lookaround: false,
         }
     }
 }
@@ -138,6 +152,12 @@ pub(crate) struct PatternAnalysis {
     /// At least one `[...]` class whose body is all-alphanumeric-literal but
     /// out of sorted order. `sort-character-class-elements`.
     pub(crate) has_unsorted_class_elements: bool,
+    /// `(?:(?=...))` — a non-capturing group whose entire body is exactly
+    /// one nested lookaround. `no-trivially-nested-assertion`.
+    pub(crate) has_trivially_nested_assertion: bool,
+    /// `(?=(?=...))` — a lookaround whose entire body is exactly one nested
+    /// lookaround. `no-extra-lookaround-assertions`.
+    pub(crate) has_extra_lookaround_assertion: bool,
 }
 
 impl PatternAnalysis {
@@ -287,7 +307,29 @@ impl PatternAnalysis {
                                 }
                             }
                         }
-                        self.mark_content(&mut groups);
+                        // Bodies that consist of exactly one nested lookaround
+                        // atom (and nothing else) are reported as trivially
+                        // nested. `no-trivially-nested-assertion` targets the
+                        // `(?:` outer wrapper, `no-extra-lookaround-assertions`
+                        // targets the `(?=` / `(?!` / `(?<=` / `(?<!` outer
+                        // wrapper. Both require: no `|` seen, atom_count == 1,
+                        // and the single atom was itself a lookaround.
+                        if !group.seen_pipe
+                            && group.current_alt_atom_count == 1
+                            && group.last_atom_was_lookaround
+                        {
+                            if group.is_non_capturing {
+                                self.has_trivially_nested_assertion = true;
+                            }
+                            if group.is_lookaround {
+                                self.has_extra_lookaround_assertion = true;
+                            }
+                        }
+                        if group.is_lookaround {
+                            self.mark_atom_from_lookaround(&mut groups);
+                        } else {
+                            self.mark_content(&mut groups);
+                        }
                     }
                     index += 1;
                 }
@@ -298,6 +340,8 @@ impl PatternAnalysis {
                         }
                         group.seen_pipe = true;
                         group.current_has_content = false;
+                        group.current_alt_atom_count = 0;
+                        group.last_atom_was_lookaround = false;
                     }
                     index += 1;
                 }
@@ -397,6 +441,16 @@ impl PatternAnalysis {
     fn mark_content(&self, groups: &mut SmallVec<[GroupState; 8]>) {
         if let Some(group) = groups.last_mut() {
             group.current_has_content = true;
+            group.current_alt_atom_count = group.current_alt_atom_count.saturating_add(1);
+            group.last_atom_was_lookaround = false;
+        }
+    }
+
+    fn mark_atom_from_lookaround(&self, groups: &mut SmallVec<[GroupState; 8]>) {
+        if let Some(group) = groups.last_mut() {
+            group.current_has_content = true;
+            group.current_alt_atom_count = group.current_alt_atom_count.saturating_add(1);
+            group.last_atom_was_lookaround = true;
         }
     }
 }

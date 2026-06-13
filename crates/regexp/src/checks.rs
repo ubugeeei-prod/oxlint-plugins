@@ -555,6 +555,12 @@ impl<'a> Scanner<'a> {
         if analysis.has_unsorted_class_elements {
             self.report("sort-character-class-elements", "unexpected", span);
         }
+        if analysis.has_trivially_nested_assertion {
+            self.report("no-trivially-nested-assertion", "unexpected", span);
+        }
+        if analysis.has_extra_lookaround_assertion {
+            self.report("no-extra-lookaround-assertions", "unexpected", span);
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);

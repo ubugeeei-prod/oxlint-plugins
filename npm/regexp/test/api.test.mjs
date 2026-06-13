@@ -58,6 +58,8 @@ describe('regexp native API', () => {
       'prefer-quantifier',
       'no-useless-string-literal',
       'sort-character-class-elements',
+      'no-trivially-nested-assertion',
+      'no-extra-lookaround-assertions',
     ]);
   });
 
