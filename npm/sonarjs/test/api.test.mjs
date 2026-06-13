@@ -13,6 +13,7 @@ const expectedRuleNames = [
   'non-existent-operator',
   'no-identical-conditions',
   'no-all-duplicated-branches',
+  'no-identical-expressions',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -321,6 +322,99 @@ describe('sonarjs native API', () => {
   it('does not report no-all-duplicated-branches for a switch without a default case', () => {
     const source = 'switch (x) { case 1: f(); break; case 2: f(); break; }';
     const diagnostics = scan('no-all-duplicated-branches', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-identical-expressions for a === a', () => {
+    const source = 'a === a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-identical-expressions');
+    expect(diagnostics[0].messageId).toBe('identicalExpressions');
+  });
+
+  it('reports no-identical-expressions for b !== b', () => {
+    const source = 'b !== b';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('identicalExpressions');
+  });
+
+  it('reports no-identical-expressions for x < x', () => {
+    const source = 'x < x';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('identicalExpressions');
+  });
+
+  it('reports no-identical-expressions for a && a', () => {
+    const source = 'a && a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('identicalExpressions');
+  });
+
+  it('reports no-identical-expressions for a || a', () => {
+    const source = 'a || a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('identicalExpressions');
+  });
+
+  it('reports no-identical-expressions for a & a (bitwise AND)', () => {
+    const source = 'a & a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('identicalExpressions');
+  });
+
+  it('reports no-identical-expressions for a - a (subtraction)', () => {
+    const source = 'a - a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('identicalExpressions');
+  });
+
+  it('reports no-identical-expressions for a / a (division)', () => {
+    const source = 'a / a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('identicalExpressions');
+  });
+
+  it('does not report no-identical-expressions for a === b (different operands)', () => {
+    const source = 'a === b';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-identical-expressions for a + a (addition is excluded)', () => {
+    const source = 'a + a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-identical-expressions for a * a (multiplication is excluded)', () => {
+    const source = 'a * a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-identical-expressions for a << a (left-shift is excluded)', () => {
+    const source = 'a << a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-identical-expressions for a ?? a (nullish coalescing is excluded)', () => {
+    const source = 'a ?? a';
+    const diagnostics = scan('no-identical-expressions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-identical-expressions for a.b === a.c (different member access)', () => {
+    const source = 'a.b === a.c';
+    const diagnostics = scan('no-identical-expressions', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
