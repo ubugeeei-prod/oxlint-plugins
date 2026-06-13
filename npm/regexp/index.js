@@ -142,6 +142,27 @@ const messages = Object.freeze({
     unexpected:
       "Unexpected surrogate-pair escape '{{expr}}'. Use the unicode code-point escape '{{replacement}}' instead.",
   },
+  'no-dupe-characters-character-class': {
+    unexpected: "Duplicate character '{{expr}}' in a character class.",
+  },
+  'prefer-range': {
+    unexpected: "Unexpected consecutive characters '{{expr}}'. Use '{{replacement}}' instead.",
+  },
+  'no-useless-escape': {
+    unexpected:
+      "Unnecessary escape '{{expr}}'. Use '{{replacement}}' instead — the character has no special meaning here.",
+  },
+  'no-useless-quantifier': {
+    unexpected: "Unexpected quantifier '{{expr}}' that matches exactly once and can be removed.",
+  },
+  'prefer-named-backreference': {
+    unexpected:
+      "Numbered backreference '{{expr}}' is used alongside a named capture group; prefer a named backreference `\\k<name>`.",
+  },
+  'no-useless-flag': {
+    unexpected:
+      "Unexpected useless flag '{{flag}}'; the pattern does not use the syntax this flag affects.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -191,6 +212,16 @@ const ruleDescriptions = Object.freeze({
     'disallow character class ranges that cross ASCII category boundaries (digits/uppercase/lowercase)',
   'prefer-unicode-codepoint-escapes':
     'enforce using `\\u{H+}` over surrogate-pair `\\uHHHH\\uHHHH` escapes',
+  'no-dupe-characters-character-class':
+    'disallow duplicate literal characters in a character class',
+  'prefer-range': 'enforce using a range (`a-c`) instead of three or more consecutive characters',
+  'no-useless-escape': 'disallow escape sequences that have no effect on the matched character',
+  'no-useless-quantifier':
+    'disallow `{1}` and `{1,1}` quantifiers (they match exactly once and can be removed)',
+  'prefer-named-backreference':
+    'enforce using named backreferences (`\\k<name>`) when the pattern has named capture groups',
+  'no-useless-flag':
+    'disallow regular-expression flags that have no effect on the pattern (narrow: `s` without `.`, `m` without `^`/`$`)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -230,6 +261,12 @@ const ruleTypes = Object.freeze({
   'prefer-named-replacement': 'suggestion',
   'no-obscure-range': 'suggestion',
   'prefer-unicode-codepoint-escapes': 'suggestion',
+  'no-dupe-characters-character-class': 'problem',
+  'prefer-range': 'suggestion',
+  'no-useless-escape': 'suggestion',
+  'no-useless-quantifier': 'suggestion',
+  'prefer-named-backreference': 'suggestion',
+  'no-useless-flag': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -346,7 +383,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-empty-lookarounds-assertion' ||
     ruleName === 'no-missing-g-flag' ||
     ruleName === 'no-empty-string-literal' ||
-    ruleName === 'no-optional-assertion'
+    ruleName === 'no-optional-assertion' ||
+    ruleName === 'no-dupe-characters-character-class'
   ) {
     return 'Possible Errors';
   }
@@ -370,7 +408,12 @@ function ruleCategory(ruleName) {
     ruleName === 'confusing-quantifier' ||
     ruleName === 'prefer-named-replacement' ||
     ruleName === 'no-obscure-range' ||
-    ruleName === 'prefer-unicode-codepoint-escapes'
+    ruleName === 'prefer-unicode-codepoint-escapes' ||
+    ruleName === 'prefer-range' ||
+    ruleName === 'no-useless-escape' ||
+    ruleName === 'no-useless-quantifier' ||
+    ruleName === 'prefer-named-backreference' ||
+    ruleName === 'no-useless-flag'
   ) {
     return 'Stylistic Issues';
   }

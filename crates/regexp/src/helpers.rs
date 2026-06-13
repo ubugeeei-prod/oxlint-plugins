@@ -766,6 +766,220 @@ fn append_lower_hex(target: &mut CompactString, mut value: u32) {
     }
 }
 
+/// Returns `Some(original)` when the pattern contains a literal `{1}` or
+/// `{1,1}` quantifier at the top level. Such quantifiers are no-ops; the
+/// referenced atom matches itself exactly once anyway. Class context is
+/// skipped because `{` and `1` are literal characters inside `[...]`. Used by
+/// `no-useless-quantifier`.
+pub(crate) fn first_useless_one_quantifier(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        if bytes[index] == b'{' && bytes.get(index + 1) == Some(&b'1') {
+            if bytes.get(index + 2) == Some(&b'}') {
+                return Some(&pattern[index..index + 3]);
+            }
+            if bytes.get(index + 2) == Some(&b',')
+                && bytes.get(index + 3) == Some(&b'1')
+                && bytes.get(index + 4) == Some(&b'}')
+            {
+                return Some(&pattern[index..index + 5]);
+            }
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some(text)` for the first numbered backreference `\N` (N in 1-9)
+/// inside `pattern` when the same pattern contains at least one named capture
+/// group `(?<name>...)`. Numbered backreferences alongside named groups are
+/// the canonical case for `prefer-named-backreference`. Backreferences inside
+/// classes are skipped because they are literal characters there.
+pub(crate) fn first_numbered_backreference_with_named_group(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    if !pattern.contains("(?<") {
+        return None;
+    }
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] == b'\\'
+            && let Some(&next) = bytes.get(index + 1)
+            && matches!(next, b'1'..=b'9')
+        {
+            return Some(&pattern[index..index + 2]);
+        }
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some(byte)` for the first escape `\X` in `pattern` where `X` is
+/// a character that is never special in a regular expression (not in a
+/// character class either), so the `\` is useless. Stays narrow on purpose:
+/// only flags a curated list of punctuation that has no escape semantics
+/// (`:`, `;`, `,`, `=`, `!`, `#`, `@`, `<`, `>`, `&`, `_`, `%`, `~`, `'`,
+/// `"`, `/`). Walks the pattern with the existing class-skipping logic so
+/// escapes inside `[...]` (where `]` and `-` carry extra meaning) are not
+/// considered. Used by `no-useless-escape`.
+pub(crate) fn first_useless_escape(pattern: &str) -> Option<u8> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            // Skip the entire character class — the rules for "useless" inside
+            // a class differ, and we conservatively defer them.
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        if let Some(&next) = bytes.get(index + 1)
+            && is_pointlessly_escaped(next)
+        {
+            return Some(next);
+        }
+        index = skip_escape(bytes, index).max(index + 1);
+    }
+    None
+}
+
+fn is_pointlessly_escaped(byte: u8) -> bool {
+    matches!(
+        byte,
+        b':' | b';'
+            | b','
+            | b'='
+            | b'!'
+            | b'#'
+            | b'@'
+            | b'<'
+            | b'>'
+            | b'&'
+            | b'_'
+            | b'%'
+            | b'~'
+            | b'\''
+            | b'"'
+            | b'/'
+    )
+}
+
+/// Returns `Some(byte)` for the first ASCII literal byte that appears more
+/// than once in the `[...]` class at `open`. Escapes, ranges, and nested
+/// classes are intentionally skipped — comparing them for equivalence needs
+/// decoding we have not implemented yet. Used by
+/// `no-dupe-characters-character-class`. Keeps a small fixed-size bitmap on
+/// the stack so the check has no allocation.
+pub(crate) fn class_first_duplicate_literal(bytes: &[u8], open: usize) -> Option<u8> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    // 16 bytes covers all 128 ASCII bit slots.
+    let mut seen = [0u8; 16];
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            // Skip the entire range — `a-c` does not mean three repeats of
+            // any character, and the helper deliberately ignores ranges.
+            index += 3;
+            continue;
+        }
+        let byte = bytes[index];
+        if byte.is_ascii() {
+            let bit = byte as usize;
+            let slot = bit / 8;
+            let mask = 1u8 << (bit % 8);
+            if seen[slot] & mask != 0 {
+                return Some(byte);
+            }
+            seen[slot] |= mask;
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some((start, end))` when the `[...]` class at `open` contains
+/// three or more consecutive ASCII characters (digits, lower-case, or
+/// upper-case letters) at the top level — these collapse into the equivalent
+/// range `start-end`. Used by `prefer-range`. Escapes and existing ranges
+/// are intentionally skipped to keep the check conservative.
+pub(crate) fn class_first_collapsible_run(bytes: &[u8], open: usize) -> Option<(char, char)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            index += 3;
+            continue;
+        }
+        if is_collapsible_run_byte(bytes[index]) {
+            let start = bytes[index];
+            let mut run_end = start;
+            let mut cursor = index + 1;
+            while cursor < end
+                && bytes[cursor] == run_end + 1
+                && is_collapsible_run_byte(bytes[cursor])
+            {
+                run_end = bytes[cursor];
+                cursor += 1;
+            }
+            if run_end >= start + 2 {
+                return Some((start as char, run_end as char));
+            }
+            index = cursor.max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    None
+}
+
+fn is_collapsible_run_byte(byte: u8) -> bool {
+    matches!(byte, b'0'..=b'9' | b'a'..=b'z' | b'A'..=b'Z')
+}
+
 /// Returns `Some(ch)` when the `[...]` class at `open` is exactly `[X]` for a
 /// regular ASCII literal `X`. Negated classes, escaped contents, ranges,
 /// nested classes, and bodies of length other than one are intentionally

@@ -3,10 +3,11 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    BraceQuantifierShape, class_contains_backspace_escape, class_first_obscure_range,
-    class_has_useless_range, class_is_digit_range, class_is_useless_single_literal,
-    class_is_word_char_set, class_matches_anything, find_class_end, group_prefix,
-    is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    BraceQuantifierShape, class_contains_backspace_escape, class_first_collapsible_run,
+    class_first_duplicate_literal, class_first_obscure_range, class_has_useless_range,
+    class_is_digit_range, class_is_useless_single_literal, class_is_word_char_set,
+    class_matches_anything, find_class_end, group_prefix, is_zero_quantifier,
+    parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -90,6 +91,20 @@ pub(crate) struct PatternAnalysis {
     /// (e.g. `A-z`). The captured chars are the original endpoints.
     /// `no-obscure-range`.
     pub(crate) first_obscure_range: Option<(char, char)>,
+    /// First ASCII literal that appears more than once inside the same
+    /// `[...]` class. `no-dupe-characters-character-class`.
+    pub(crate) first_dupe_class_literal: Option<char>,
+    /// First run of three or more consecutive ASCII letters/digits inside the
+    /// same `[...]` class. `prefer-range`.
+    pub(crate) first_collapsible_run: Option<(char, char)>,
+    /// The pattern contains at least one unescaped `.` outside a character
+    /// class. Used by `no-useless-flag` to decide whether the `s` flag has
+    /// any effect.
+    pub(crate) has_unescaped_dot: bool,
+    /// The pattern contains at least one unescaped `^` or `$` outside a
+    /// character class. Used by `no-useless-flag` to decide whether the `m`
+    /// flag has any effect.
+    pub(crate) has_unescaped_anchor: bool,
 }
 
 impl PatternAnalysis {
@@ -147,6 +162,16 @@ impl PatternAnalysis {
                             && let Some(range) = class_first_obscure_range(bytes, index)
                         {
                             self.first_obscure_range = Some(range);
+                        }
+                        if self.first_dupe_class_literal.is_none()
+                            && let Some(byte) = class_first_duplicate_literal(bytes, index)
+                        {
+                            self.first_dupe_class_literal = Some(byte as char);
+                        }
+                        if self.first_collapsible_run.is_none()
+                            && let Some(run) = class_first_collapsible_run(bytes, index)
+                        {
+                            self.first_collapsible_run = Some(run);
                         }
                         self.mark_content(&mut groups);
                         index = close + 1;
@@ -241,7 +266,16 @@ impl PatternAnalysis {
                     }
                     index += 1;
                 }
-                b'+' | b'}' | b'^' | b'$' => {
+                b'^' | b'$' => {
+                    self.has_unescaped_anchor = true;
+                    index += 1;
+                }
+                b'+' | b'}' => {
+                    index += 1;
+                }
+                b'.' => {
+                    self.has_unescaped_dot = true;
+                    self.mark_content(&mut groups);
                     index += 1;
                 }
                 _ => {
