@@ -106,12 +106,14 @@ pub fn scan_regexp(source_text: &str, filename: &str) -> SmallVec<[Diagnostic; 1
     }
     let semantic = semantic_return.semantic;
     let scoping = semantic.scoping();
+    let nodes = semantic.nodes();
 
     let mut scanner = Scanner {
         source_text,
         line_index: LineIndex::new(source_text),
         diagnostics: SmallVec::new(),
         scoping,
+        nodes,
     };
     scanner.scan_program(&parser_return.program.body);
     scanner.diagnostics

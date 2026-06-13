@@ -341,12 +341,24 @@ impl<'a> Scanner<'a> {
     /// engine requires the global flag). Flag the literal-regexp case
     /// statically; constructor calls are deferred for the same type-info
     /// reason as `prefer-regexp-exec`.
+    ///
+    /// Only reports when the receiver is statically known to be a string
+    /// (string literal, no-expression template literal, or a variable
+    /// initialised with one of those). An unknown/free receiver (e.g.
+    /// `unknown.replaceAll(/foo/, 'bar')`) is left unreported because it may
+    /// not be a `String` and therefore may not enforce the `g` flag at all.
     fn check_no_missing_g_flag(&mut self, call: &'a CallExpression<'a>) {
         let Expression::StaticMemberExpression(member) = &call.callee else {
             return;
         };
         let method = member.property.name.as_str();
         if method != "matchAll" && method != "replaceAll" {
+            return;
+        }
+        // Only report when the receiver is a known string value.  An unknown
+        // receiver (free variable, call result, etc.) might not be a String
+        // at all, so we must not enforce the `g` flag.
+        if !self.receiver_is_known_string(&member.object) {
             return;
         }
         if call.arguments.is_empty() {

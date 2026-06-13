@@ -2072,29 +2072,69 @@ mod no_missing_g_flag {
 
     #[test]
     fn reports_match_all_and_replace_all_without_g() {
-        let data = first_data("str.matchAll(/foo/u);", "no-missing-g-flag");
+        // String-literal receiver → must report.
+        let data = first_data("'abc'.matchAll(/foo/u);", "no-missing-g-flag");
         assert_eq!(
             data.expr.as_ref().map(CompactString::as_str),
             Some("matchAll")
         );
-        let data = first_data("str.replaceAll(/foo/, 'bar');", "no-missing-g-flag");
+        let data = first_data("'abc'.replaceAll(/foo/, 'bar');", "no-missing-g-flag");
         assert_eq!(
             data.expr.as_ref().map(CompactString::as_str),
             Some("replaceAll")
+        );
+        // `const s = 'foo'` → s is a known string → must report.
+        let data = first_data(
+            "const s = 'foo'; s.replaceAll(/foo/, 'bar');",
+            "no-missing-g-flag",
+        );
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("replaceAll")
+        );
+        // `const s = 'foo'` → s is a known string → must report for matchAll.
+        let data = first_data("const s = 'foo'; s.matchAll(/foo/);", "no-missing-g-flag");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("matchAll")
         );
     }
 
     #[test]
     fn ignores_global_regexps_and_unrelated_calls() {
-        assert!(rule_ids_for("str.matchAll(/foo/g);", "no-missing-g-flag").is_empty());
-        assert!(rule_ids_for("str.replaceAll(/foo/gu, 'bar');", "no-missing-g-flag").is_empty());
+        // Global flag already present.
+        assert!(rule_ids_for("'abc'.matchAll(/foo/g);", "no-missing-g-flag").is_empty());
+        assert!(rule_ids_for("'abc'.replaceAll(/foo/gu, 'bar');", "no-missing-g-flag").is_empty());
         // Non-literal argument — flags cannot be determined statically.
-        assert!(rule_ids_for("str.matchAll(pattern);", "no-missing-g-flag").is_empty());
+        assert!(rule_ids_for("'abc'.matchAll(pattern);", "no-missing-g-flag").is_empty());
         // Unrelated method.
-        assert!(rule_ids_for("str.match(/foo/u);", "no-missing-g-flag").is_empty());
+        assert!(rule_ids_for("'abc'.match(/foo/u);", "no-missing-g-flag").is_empty());
         // `replaceAll` accepts a string as its first argument; we must not
         // false-positive when the call is not regex-based.
-        assert!(rule_ids_for("str.replaceAll('foo', 'bar');", "no-missing-g-flag").is_empty());
+        assert!(rule_ids_for("'abc'.replaceAll('foo', 'bar');", "no-missing-g-flag").is_empty());
+    }
+
+    #[test]
+    fn ignores_unknown_receiver() {
+        // A free/unresolved variable is not a known string — must NOT report.
+        assert!(rule_ids_for("unknown.replaceAll(/foo/, 'bar');", "no-missing-g-flag").is_empty());
+        assert!(rule_ids_for("unknown.matchAll(/foo/);", "no-missing-g-flag").is_empty());
+        // A call result is also not a known string.
+        assert!(rule_ids_for("getStr().replaceAll(/foo/, 'bar');", "no-missing-g-flag").is_empty());
+        // A member expression receiver is not a known string.
+        assert!(rule_ids_for("obj.str.replaceAll(/foo/, 'bar');", "no-missing-g-flag").is_empty());
+    }
+
+    #[test]
+    fn reports_string_literal_and_const_string_receivers() {
+        // Regression: string-literal receiver fires.
+        assert!(!rule_ids_for("'abc'.replaceAll(/foo/, 'bar');", "no-missing-g-flag").is_empty());
+        // Regression: const-string receiver fires.
+        assert!(
+            !rule_ids_for("const s = 'abc'; s.matchAll(/foo/);", "no-missing-g-flag").is_empty()
+        );
+        // Regression: free receiver does NOT fire.
+        assert!(rule_ids_for("unknown.replaceAll(/foo/, 'bar');", "no-missing-g-flag").is_empty());
     }
 }
 
