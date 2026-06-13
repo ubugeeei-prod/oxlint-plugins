@@ -21,6 +21,7 @@ impl<'a> Scanner<'a> {
         }
         self.report(
             "prefer-tacit",
+            "generic",
             "Potentially unnecessary function wrapper.",
             function.span,
         );
@@ -35,6 +36,7 @@ impl<'a> Scanner<'a> {
         {
             self.report(
                 "no-mixed-types",
+                "generic",
                 "Only the same kind of members allowed in types.",
                 declaration.span,
             );
@@ -42,6 +44,7 @@ impl<'a> Scanner<'a> {
         if is_mutable_type(&declaration.type_annotation) {
             self.report(
                 "type-declaration-immutability",
+                "AtLeast",
                 "This type declaration contains mutable members.",
                 declaration.span,
             );
@@ -56,6 +59,7 @@ impl<'a> Scanner<'a> {
         if has_mixed_signatures(&declaration.body.body) {
             self.report(
                 "no-mixed-types",
+                "generic",
                 "Only the same kind of members allowed in types.",
                 declaration.span,
             );
@@ -63,6 +67,7 @@ impl<'a> Scanner<'a> {
         if interface_has_mutable_members(&declaration.body.body) {
             self.report(
                 "type-declaration-immutability",
+                "AtLeast",
                 "This type declaration contains mutable members.",
                 declaration.span,
             );
@@ -77,6 +82,7 @@ impl<'a> Scanner<'a> {
             TSSignature::TSMethodSignature(method) => {
                 self.report(
                     "prefer-property-signatures",
+                    "generic",
                     "Use a property signature instead of a method signature",
                     method.span,
                 );
@@ -88,6 +94,7 @@ impl<'a> Scanner<'a> {
                 if property.readonly && self.options.readonly_type_mode == "generic" {
                     self.report(
                         "readonly-type",
+                        "generic",
                         "Readonly type using 'readonly' keyword is forbidden. Use 'Readonly<T>' instead.",
                         property.span,
                     );
@@ -95,6 +102,7 @@ impl<'a> Scanner<'a> {
                 if !property.readonly {
                     self.report(
                         "prefer-readonly-type",
+                        "property",
                         "A readonly modifier is required.",
                         property.span,
                     );
@@ -107,6 +115,7 @@ impl<'a> Scanner<'a> {
                 if !signature.readonly {
                     self.report(
                         "prefer-readonly-type",
+                        "property",
                         "A readonly modifier is required.",
                         signature.span,
                     );
@@ -131,11 +140,13 @@ impl<'a> Scanner<'a> {
             TSType::TSArrayType(array) => {
                 self.report(
                     "prefer-readonly-type",
+                    "array",
                     "Only readonly arrays allowed.",
                     array.span,
                 );
                 self.report(
                     "prefer-immutable-types",
+                    "parameter",
                     "Only readonly types allowed.",
                     array.span,
                 );
@@ -144,6 +155,7 @@ impl<'a> Scanner<'a> {
             TSType::TSTupleType(tuple) => {
                 self.report(
                     "prefer-readonly-type",
+                    "tuple",
                     "Only readonly tuples allowed.",
                     tuple.span,
                 );
@@ -152,11 +164,13 @@ impl<'a> Scanner<'a> {
                 if type_reference_name(reference).is_some_and(is_mutable_collection_name) {
                     self.report(
                         "prefer-readonly-type",
+                        "type",
                         "Only readonly types allowed.",
                         reference.span,
                     );
                     self.report(
                         "prefer-immutable-types",
+                        "parameter",
                         "Only readonly types allowed.",
                         reference.span,
                     );
@@ -174,6 +188,7 @@ impl<'a> Scanner<'a> {
                 if has_mixed_signatures(&literal.members) {
                     self.report(
                         "no-mixed-types",
+                        "generic",
                         "Only the same kind of members allowed in types.",
                         literal.span,
                     );
@@ -207,6 +222,7 @@ impl<'a> Scanner<'a> {
             if self.options.readonly_type_mode == "keyword" {
                 self.report(
                     "readonly-type",
+                    "keyword",
                     "Readonly type using 'Readonly<T>' is forbidden. Use 'readonly' keyword instead.",
                     operator.span,
                 );

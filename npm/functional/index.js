@@ -62,6 +62,58 @@ const recommendedRuleConfig = Object.freeze({
   'type-declaration-immutability': 'error',
 });
 
+// Upstream eslint-plugin-functional messageIds per rule. The Rust core tags
+// each diagnostic with its messageId; the wrapper reports it (rendered through
+// the `{{message}}` template so the displayed text stays our own copy and no
+// upstream message strings are vendored). The upstream replay suite asserts
+// these ids.
+const ruleMessageIds = Object.freeze({
+  'functional-parameters': [
+    'restParam',
+    'arguments',
+    'paramCountAtLeastOne',
+    'paramCountExactlyOne',
+  ],
+  'immutable-data': ['generic', 'object', 'array', 'map', 'set'],
+  'no-class-inheritance': ['abstract', 'extends'],
+  'no-classes': ['generic'],
+  'no-conditional-statements': [
+    'incompleteBranch',
+    'incompleteIf',
+    'incompleteSwitch',
+    'unexpectedIf',
+    'unexpectedSwitch',
+  ],
+  'no-expression-statements': ['generic'],
+  'no-let': ['generic'],
+  'no-loop-statements': ['generic'],
+  'no-mixed-types': ['generic'],
+  'no-promise-reject': ['generic'],
+  'no-return-void': ['generic'],
+  'no-this-expressions': ['generic'],
+  'no-throw-statements': ['generic'],
+  'no-try-statements': ['catch', 'finally'],
+  'prefer-immutable-types': [
+    'parameter',
+    'returnType',
+    'variable',
+    'propertyImmutability',
+    'propertyModifier',
+    'propertyModifierSuggestion',
+    'userDefined',
+  ],
+  'prefer-property-signatures': ['generic'],
+  'prefer-readonly-type': ['array', 'implicit', 'property', 'tuple', 'type'],
+  'prefer-tacit': ['generic', 'genericSuggestion'],
+  'readonly-type': ['generic', 'keyword'],
+  'type-declaration-immutability': ['Less', 'AtLeast', 'Exactly', 'AtMost', 'More', 'userDefined'],
+});
+
+function messagesForRule(ruleName) {
+  const ids = ruleMessageIds[ruleName] ?? ['generic'];
+  return Object.fromEntries(ids.map((messageId) => [messageId, '{{message}}']));
+}
+
 const implementedRuleNames = Object.freeze(implementedFunctionalRuleNames());
 const rules = Object.freeze(
   Object.fromEntries(
@@ -115,9 +167,7 @@ function createFunctionalRule(ruleName) {
         recommended: recommendedRuleConfig[ruleName] !== 'off',
         url: `${DOCS_BASE}#${ruleName}`,
       },
-      messages: {
-        unexpected: '{{message}}',
-      },
+      messages: messagesForRule(ruleName),
       schema: schemaForRule(ruleName),
     },
     createOnce(context) {
@@ -244,7 +294,7 @@ function sourceTextForContext(context) {
 
 function reportDiagnostic(context, diagnostic) {
   context.report({
-    messageId: 'unexpected',
+    messageId: diagnostic.messageId,
     data: {
       message: diagnostic.message,
     },

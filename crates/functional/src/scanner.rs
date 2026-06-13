@@ -22,10 +22,17 @@ pub(crate) struct Scanner<'a> {
 }
 
 impl<'a> Scanner<'a> {
-    pub(crate) fn report(&mut self, rule_name: &'static str, message: &'static str, span: Span) {
+    pub(crate) fn report(
+        &mut self,
+        rule_name: &'static str,
+        message_id: &'static str,
+        message: &'static str,
+        span: Span,
+    ) {
         if self.options.has_rule(rule_name) {
             self.diagnostics.push(Diagnostic {
                 rule_name,
+                message_id,
                 message: message.into(),
                 loc: self.line_index.loc_for_span(self.source_text, span),
             });
@@ -71,6 +78,7 @@ impl<'a> Scanner<'a> {
         if params.items.is_empty() && params.rest.is_none() {
             self.report(
                 "functional-parameters",
+                "paramCountAtLeastOne",
                 "Functions must have at least one parameter.",
                 span,
             );
@@ -80,6 +88,7 @@ impl<'a> Scanner<'a> {
         {
             self.report(
                 "functional-parameters",
+                "restParam",
                 "Unexpected rest parameter. Use a regular parameter of type array instead.",
                 rest.span,
             );
@@ -90,6 +99,7 @@ impl<'a> Scanner<'a> {
                 if is_mutable_type(&type_annotation.type_annotation) {
                     self.report(
                         "prefer-immutable-types",
+                        "parameter",
                         "Only readonly types allowed.",
                         type_annotation.span,
                     );
@@ -98,6 +108,7 @@ impl<'a> Scanner<'a> {
             if param.readonly {
                 self.report(
                     "readonly-type",
+                    "generic",
                     "Readonly type using 'readonly' keyword is forbidden. Use 'Readonly<T>' instead.",
                     param.span,
                 );
@@ -122,6 +133,7 @@ impl<'a> Scanner<'a> {
             TSType::TSVoidKeyword(_) => {
                 self.report(
                     "no-return-void",
+                    "generic",
                     "Function must return a value.",
                     return_type.span,
                 );
@@ -129,6 +141,7 @@ impl<'a> Scanner<'a> {
             TSType::TSNullKeyword(_) => {
                 self.report(
                     "no-return-void",
+                    "generic",
                     "Function must return a value.",
                     return_type.span,
                 );
@@ -136,6 +149,7 @@ impl<'a> Scanner<'a> {
             TSType::TSUndefinedKeyword(_) => {
                 self.report(
                     "no-return-void",
+                    "generic",
                     "Function must return a value.",
                     return_type.span,
                 );
@@ -148,12 +162,14 @@ impl<'a> Scanner<'a> {
     pub(crate) fn scan_class(&mut self, class: &'a Class<'a>, context: FunctionContext) {
         self.report(
             "no-classes",
+            "generic",
             "Unexpected class, use functions not classes.",
             class.span,
         );
         if class.super_class.is_some() {
             self.report(
                 "no-class-inheritance",
+                "extends",
                 "Unexpected class inheritance.",
                 class.span,
             );
@@ -171,6 +187,7 @@ impl<'a> Scanner<'a> {
                         if is_mutable_type(&type_annotation.type_annotation) && !property.readonly {
                             self.report(
                                 "prefer-readonly-type",
+                                "property",
                                 "A readonly modifier is required.",
                                 property.span,
                             );
@@ -189,6 +206,7 @@ impl<'a> Scanner<'a> {
                     if !signature.readonly {
                         self.report(
                             "prefer-readonly-type",
+                            "property",
                             "A readonly modifier is required.",
                             signature.span,
                         );
