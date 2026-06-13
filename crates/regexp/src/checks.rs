@@ -16,7 +16,8 @@ use crate::helpers::{
     first_numbered_backreference_with_named_group, first_octal_escape, first_surrogate_pair_escape,
     first_unicode_escape_as_hex, first_uppercase_hex_escape, first_useless_escape,
     first_useless_one_quantifier, group_prefix, mention_char, pattern_ends_with_lazy_quantifier,
-    pattern_has_empty_string_literal, skip_escape, sorted_flags, string_literal_value_with_span,
+    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags,
+    string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -698,7 +699,10 @@ impl<'a> Scanner<'a> {
                 span,
             );
         }
-        if analysis.has_case_pair_class && !flags.contains('i') {
+        if analysis.has_case_pair_class
+            && !flags.contains('i')
+            && pattern_is_safe_to_add_i_flag(pattern, flags)
+        {
             self.report("use-ignore-case", "unexpected", span);
         }
         if analysis.has_useless_non_capturing_group {

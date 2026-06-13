@@ -8,10 +8,6 @@
     "no-lazy-ends": {
       "level": "off",
       "reason": "Flags lazy quantifiers like /a??/ and /a{3}?/ that upstream treats as valid."
-    },
-    "use-ignore-case": {
-      "level": "off",
-      "reason": "Flags case-pair classes like /[aA]a/ where adding the i flag would alter other literals in the pattern."
     }
   }
 }
