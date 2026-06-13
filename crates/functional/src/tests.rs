@@ -498,7 +498,10 @@ fn no_throw_statements_honors_allow_to_reject_promises() {
     assert_eq!(finally_throw, 0);
 
     // A caught throw and a nested non-async throw still report.
-    let caught = count("async function f() { try { throw e; } catch (x) { g(); } }", &allow);
+    let caught = count(
+        "async function f() { try { throw e; } catch (x) { g(); } }",
+        &allow,
+    );
     assert_eq!(caught, 1);
     let nested = count("async function f() { function g() { throw e; } }", &allow);
     assert_eq!(nested, 1);
