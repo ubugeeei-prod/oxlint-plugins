@@ -455,11 +455,17 @@ fn no_mixed_types_reports_once_and_honors_options() {
         check_type_literals: false,
         ..FunctionalOptions::default()
     };
-    assert_eq!(count("type Foo = { bar: string; baz(): number };", &no_literals), 0);
+    assert_eq!(
+        count("type Foo = { bar: string; baz(): number };", &no_literals),
+        0
+    );
     let no_ifaces = FunctionalOptions {
         rule_names: ["no-mixed-types".into()].into_iter().collect(),
         check_interfaces: false,
         ..FunctionalOptions::default()
     };
-    assert_eq!(count("interface Foo { bar: string; baz(): number }", &no_ifaces), 0);
+    assert_eq!(
+        count("interface Foo { bar: string; baz(): number }", &no_ifaces),
+        0
+    );
 }
