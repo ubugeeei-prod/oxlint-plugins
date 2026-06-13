@@ -187,6 +187,10 @@ const messages = Object.freeze({
     unexpected:
       "Unexpected single-character string literal '{{expr}}'. Use '{{replacement}}' instead.",
   },
+  'no-useless-non-capturing-group': {
+    unexpected:
+      'Unexpected non-capturing group with a single literal body; remove the `(?:` ... `)` wrapper.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -258,6 +262,8 @@ const ruleDescriptions = Object.freeze({
     'enforce escaping literal control characters in regular-expression patterns',
   'grapheme-string-literal':
     'disallow single-character `\\q{X}` string literals in v-mode character classes',
+  'no-useless-non-capturing-group':
+    'disallow non-capturing groups that wrap a single literal character without a quantifier',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -309,6 +315,7 @@ const ruleTypes = Object.freeze({
   'use-ignore-case': 'suggestion',
   'control-character-escape': 'problem',
   'grapheme-string-literal': 'suggestion',
+  'no-useless-non-capturing-group': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -461,7 +468,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-useless-flag' ||
     ruleName === 'prefer-escape-replacement-dollar-char' ||
     ruleName === 'use-ignore-case' ||
-    ruleName === 'grapheme-string-literal'
+    ruleName === 'grapheme-string-literal' ||
+    ruleName === 'no-useless-non-capturing-group'
   ) {
     return 'Stylistic Issues';
   }

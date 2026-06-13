@@ -90,8 +90,51 @@ fn exposes_initial_regexp_rule_names() {
             "use-ignore-case",
             "control-character-escape",
             "grapheme-string-literal",
+            "no-useless-non-capturing-group",
         ]
     );
+}
+
+mod no_useless_non_capturing_group {
+    use super::*;
+
+    #[test]
+    fn reports_single_literal_body_without_quantifier() {
+        assert_eq!(
+            rule_ids_for("const a = /(?:a)/u;", "no-useless-non-capturing-group").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for(
+                "const a = /pre(?:b)post/u;",
+                "no-useless-non-capturing-group"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+        // Digits also collapse the same way.
+        assert_eq!(
+            rule_ids_for("const a = /(?:5)/u;", "no-useless-non-capturing-group").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_multi_atom_alternation_quantifier_and_capture_groups() {
+        // Multi-byte body — bare equivalence is not obvious without atom analysis.
+        assert!(rule_ids_for("const a = /(?:abc)/u;", "no-useless-non-capturing-group").is_empty());
+        // Followed by quantifier — the group is the quantified unit.
+        assert!(rule_ids_for("const a = /(?:a)+/u;", "no-useless-non-capturing-group").is_empty());
+        assert!(
+            rule_ids_for("const a = /(?:a){3}/u;", "no-useless-non-capturing-group").is_empty()
+        );
+        // Capturing group — not non-capturing.
+        assert!(rule_ids_for("const a = /(a)/u;", "no-useless-non-capturing-group").is_empty());
+        // Alternation present — not eligible for the narrow form.
+        assert!(rule_ids_for("const a = /(?:a|b)/u;", "no-useless-non-capturing-group").is_empty());
+        // Escape inside body — deferred.
+        assert!(rule_ids_for("const a = /(?:\\d)/u;", "no-useless-non-capturing-group").is_empty());
+    }
 }
 
 mod grapheme_string_literal {

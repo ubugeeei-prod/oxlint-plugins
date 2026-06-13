@@ -9179,19 +9179,19 @@
       },
       {
         "name": "no-useless-non-capturing-group",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-non-capturing-group."
+        "notes": "GroupPrefix gains is_non_capturing, GroupState tracks body_start. At close `)`, when the group is non-capturing, has no `|` seen, and contains exactly one ASCII alphanumeric byte (and the following byte is not a quantifier), the wrapper is reported as useless. Multi-byte bodies, escapes, classes, nested groups, and quantified groups are intentionally deferred."
       },
       {
         "name": "no-useless-quantifier",

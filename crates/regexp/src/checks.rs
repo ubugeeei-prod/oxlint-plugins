@@ -514,6 +514,9 @@ impl<'a> Scanner<'a> {
         if analysis.has_case_pair_class && !flags.contains('i') {
             self.report("use-ignore-case", "unexpected", span);
         }
+        if analysis.has_useless_non_capturing_group {
+            self.report("no-useless-non-capturing-group", "unexpected", span);
+        }
         if let Some(ch) = analysis.first_useless_string_literal {
             let mut original = CompactString::new("\\q{");
             original.push(ch);
