@@ -90,6 +90,10 @@ const messages = Object.freeze({
   'max-switch-cases': {
     maxSwitchCases: 'This switch has too many cases; consider a lookup table or polymorphism.',
   },
+  'max-union-size': {
+    maxUnionSize:
+      'This union type has too many members; consider refactoring into a named type or interface.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -127,6 +131,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow assigning methods or properties to a constructor prototype; use class syntax instead',
   'max-switch-cases':
     'Disallow switch statements with more than 30 case/default clauses (threshold fixed at default 30; configurability is a follow-up)',
+  'max-union-size':
+    'Disallow union types with more than 3 members (threshold fixed at default 3; configurability is a follow-up; each TSUnionType node is counted per-node)',
 });
 
 const ruleTypes = Object.freeze({
@@ -151,6 +157,7 @@ const ruleTypes = Object.freeze({
   'no-built-in-override': 'problem',
   'class-prototype': 'suggestion',
   'max-switch-cases': 'suggestion',
+  'max-union-size': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -175,6 +182,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-built-in-override': 'error',
   'class-prototype': 'error',
   'max-switch-cases': 'error',
+  'max-union-size': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -958,3 +958,42 @@ fn does_not_report_max_switch_cases_for_exactly_30_cases() {
     let diagnostics = scan("max-switch-cases", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_max_union_size_for_four_member_union() {
+    let source = "type T = A | B | C | D;";
+    let diagnostics = scan("max-union-size", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "max-union-size");
+    assert_eq!(diagnostics[0].message_id, "maxUnionSize");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn does_not_report_max_union_size_for_three_member_union_at_threshold() {
+    let source = "type T = A | B | C;";
+    let diagnostics = scan("max-union-size", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_max_union_size_for_two_member_union() {
+    let source = "type T = A | B;";
+    let diagnostics = scan("max-union-size", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_max_union_size_for_single_type_alias() {
+    let source = "type T = A;";
+    let diagnostics = scan("max-union-size", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_max_union_size_for_union_in_variable_annotation() {
+    let source = "let x: A | B | C | D | E;";
+    let diagnostics = scan("max-union-size", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "maxUnionSize");
+}
