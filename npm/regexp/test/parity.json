@@ -1,10 +1,6 @@
 {
   "_doc": "Per-rule upstream-parity enforcement level for the synced eslint-plugin-regexp fixtures (see test/upstream.test.mjs). Levels: 'off' = quarantined; the rule's behavior diverges from upstream defaults, so its valid and invalid cases are skipped until the port is fixed (the reason is the parity-debt backlog entry). 'valid' (the default for any rule not listed here) = every upstream VALID case must emit zero diagnostics for the rule (soundness). 'full' = 'valid' plus invalid-case COUNT parity (same number of diagnostics per case as upstream). Diagnostic message text and span are intentionally NOT asserted: the port rewords messages and may flag a different span (e.g. the whole literal) than upstream by design; the recorded fixture locations are reference data for a future strict-location pass.",
   "rules": {
-    "control-character-escape": {
-      "level": "off",
-      "reason": "Over-reports literal whitespace such as \\t/\\n that upstream does not treat as control characters (e.g. new RegExp('\\t'))."
-    },
     "hexadecimal-escape": {
       "level": "off",
       "reason": "Diverges on mixed escape forms under the u flag (e.g. /a \\x0a \\cM \\0 \\u0100 \\u{100}/u)."
