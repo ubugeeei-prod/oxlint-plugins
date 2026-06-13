@@ -96,6 +96,7 @@ fn exposes_initial_regexp_rule_names() {
             "sort-character-class-elements",
             "no-trivially-nested-assertion",
             "no-extra-lookaround-assertions",
+            "no-trivially-nested-quantifier",
         ]
     );
 }
@@ -160,6 +161,49 @@ mod no_extra_lookaround_assertions {
         // Lookaround followed by more content.
         assert!(
             rule_ids_for("const a = /(?=(?=a)b)/u;", "no-extra-lookaround-assertions").is_empty()
+        );
+    }
+}
+
+mod no_trivially_nested_quantifier {
+    use super::*;
+
+    #[test]
+    fn reports_non_cap_with_quantified_atom_body_and_outer_quantifier() {
+        assert_eq!(
+            rule_ids_for("const a = /(?:a+)+/u;", "no-trivially-nested-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:b*)*/u;", "no-trivially-nested-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:c?)+/u;", "no-trivially-nested-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        // Braced outer quantifier also counts.
+        assert_eq!(
+            rule_ids_for("const a = /(?:a+){2}/u;", "no-trivially-nested-quantifier").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_unrelated_group_shapes() {
+        // No outer quantifier — handled by other rules.
+        assert!(rule_ids_for("const a = /(?:a+)/u;", "no-trivially-nested-quantifier").is_empty());
+        // Inner has no quantifier.
+        assert!(rule_ids_for("const a = /(?:a)+/u;", "no-trivially-nested-quantifier").is_empty());
+        // Multi-byte body — deferred.
+        assert!(
+            rule_ids_for("const a = /(?:ab+)+/u;", "no-trivially-nested-quantifier").is_empty()
+        );
+        // Capturing group.
+        assert!(rule_ids_for("const a = /(a+)+/u;", "no-trivially-nested-quantifier").is_empty());
+        // Alternation in body.
+        assert!(
+            rule_ids_for("const a = /(?:a+|b)+/u;", "no-trivially-nested-quantifier").is_empty()
         );
     }
 }

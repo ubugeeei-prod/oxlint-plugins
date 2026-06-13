@@ -9035,19 +9035,19 @@
       },
       {
         "name": "no-trivially-nested-quantifier",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-trivially-nested-quantifier."
+        "notes": "Reuses GroupState.body_start tracker plus a narrow byte-shape check at close: when a non-capturing group has body of exactly two bytes (ASCII alphanumeric + */+/?) AND the byte after the close paren is itself a quantifier, the wrapper is redundant. Multi-byte bodies, escapes, classes, and braced inner quantifiers are deferred."
       },
       {
         "name": "no-unused-capturing-group",

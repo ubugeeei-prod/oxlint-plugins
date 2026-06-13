@@ -210,6 +210,10 @@ const messages = Object.freeze({
     unexpected:
       'Lookaround assertion whose body is exactly one nested lookaround; drop the outer assertion.',
   },
+  'no-trivially-nested-quantifier': {
+    unexpected:
+      'Non-capturing group with a quantified single-character body that is itself quantified; drop the wrapper and combine the quantifiers.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -293,6 +297,7 @@ const ruleDescriptions = Object.freeze({
     'disallow non-capturing groups whose entire body is a single lookaround assertion',
   'no-extra-lookaround-assertions':
     'disallow lookaround assertions whose entire body is a single nested lookaround',
+  'no-trivially-nested-quantifier': 'disallow trivially nested quantifiers like `(?:X+)+`',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -350,6 +355,7 @@ const ruleTypes = Object.freeze({
   'sort-character-class-elements': 'suggestion',
   'no-trivially-nested-assertion': 'suggestion',
   'no-extra-lookaround-assertions': 'suggestion',
+  'no-trivially-nested-quantifier': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -508,7 +514,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-useless-string-literal' ||
     ruleName === 'sort-character-class-elements' ||
     ruleName === 'no-trivially-nested-assertion' ||
-    ruleName === 'no-extra-lookaround-assertions'
+    ruleName === 'no-extra-lookaround-assertions' ||
+    ruleName === 'no-trivially-nested-quantifier'
   ) {
     return 'Stylistic Issues';
   }

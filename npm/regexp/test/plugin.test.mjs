@@ -110,6 +110,10 @@ const validCases = [
   // no-extra-lookaround-assertions
   ['no-extra-lookaround-assertions', 'lookaround with literal body', 'const re = /(?=a)/u;\n'],
   ['no-extra-lookaround-assertions', 'non-cap wrapping lookaround', 'const re = /(?:(?=a))/u;\n'],
+  // no-trivially-nested-quantifier
+  ['no-trivially-nested-quantifier', 'no outer quantifier', 'const re = /(?:a+)/u;\n'],
+  ['no-trivially-nested-quantifier', 'no inner quantifier', 'const re = /(?:a)+/u;\n'],
+  ['no-trivially-nested-quantifier', 'multi-byte body', 'const re = /(?:ab+)+/u;\n'],
 ];
 
 const invalidCases = [
@@ -332,6 +336,19 @@ const invalidCases = [
     'no-extra-lookaround-assertions',
     'nested negative lookbehind',
     'const re = /(?<!(?!b))/u;\n',
+    ['unexpected'],
+  ],
+  // no-trivially-nested-quantifier
+  [
+    'no-trivially-nested-quantifier',
+    'plus inside plus',
+    'const re = /(?:a+)+/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-trivially-nested-quantifier',
+    'star inside star',
+    'const re = /(?:b*)*/u;\n',
     ['unexpected'],
   ],
 ];

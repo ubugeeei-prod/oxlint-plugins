@@ -158,6 +158,10 @@ pub(crate) struct PatternAnalysis {
     /// `(?=(?=...))` — a lookaround whose entire body is exactly one nested
     /// lookaround. `no-extra-lookaround-assertions`.
     pub(crate) has_extra_lookaround_assertion: bool,
+    /// `(?:X+)+` etc. — a non-capturing group whose body is a single
+    /// quantified ASCII alphanumeric atom AND is itself followed by a
+    /// quantifier. `no-trivially-nested-quantifier`.
+    pub(crate) has_trivially_nested_quantifier: bool,
 }
 
 impl PatternAnalysis {
@@ -323,6 +327,30 @@ impl PatternAnalysis {
                             }
                             if group.is_lookaround {
                                 self.has_extra_lookaround_assertion = true;
+                            }
+                        }
+                        // `(?:X+)+` and similar: non-capturing wrapper whose
+                        // body is a single ASCII alphanumeric atom followed
+                        // by `*`/`+`/`?`, and is itself followed by a
+                        // quantifier. Both quantifiers apply to the same bare
+                        // atom so the outer wrapper carries no meaning.
+                        // Multi-byte bodies, escapes, classes, and braced
+                        // quantifiers are deferred to keep the check sound.
+                        if group.is_non_capturing
+                            && !group.seen_pipe
+                            && index == group.body_start + 2
+                        {
+                            let body0 = bytes[group.body_start];
+                            let body1 = bytes[group.body_start + 1];
+                            let outer_q = matches!(
+                                bytes.get(index + 1).copied(),
+                                Some(b'*' | b'+' | b'?' | b'{')
+                            );
+                            if body0.is_ascii_alphanumeric()
+                                && matches!(body1, b'*' | b'+' | b'?')
+                                && outer_q
+                            {
+                                self.has_trivially_nested_quantifier = true;
                             }
                         }
                         if group.is_lookaround {
