@@ -7,6 +7,7 @@ export type FunctionalDiagnosticLoc = {
 
 export type FunctionalDiagnostic = {
   ruleName: string;
+  messageId: string;
   message: string;
   loc: FunctionalDiagnosticLoc;
 };

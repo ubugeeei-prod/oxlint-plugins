@@ -41,6 +41,7 @@ mod napi_abi {
     #[derive(Clone, Debug)]
     pub struct Diagnostic {
         pub rule_name: String,
+        pub message_id: String,
         pub message: String,
         pub loc: DiagnosticLoc,
     }
@@ -92,6 +93,7 @@ mod napi_abi {
             .into_iter()
             .map(|diagnostic| Diagnostic {
                 rule_name: diagnostic.rule_name.to_owned(),
+                message_id: diagnostic.message_id.to_owned(),
                 message: diagnostic.message.into_string(),
                 loc: DiagnosticLoc {
                     start_line: diagnostic.loc.start_line,

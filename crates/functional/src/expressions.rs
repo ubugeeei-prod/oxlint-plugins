@@ -19,6 +19,7 @@ impl<'a> Scanner<'a> {
                 if identifier.name == "arguments" && !self.options.allow_arguments_keyword {
                     self.report(
                         "functional-parameters",
+                        "arguments",
                         "Unexpected use of `arguments`. Use regular function arguments instead.",
                         identifier.span,
                     );
@@ -27,6 +28,7 @@ impl<'a> Scanner<'a> {
             Expression::ThisExpression(expression) => {
                 self.report(
                     "no-this-expressions",
+                    "generic",
                     "Unexpected this, use functions not classes.",
                     expression.span,
                 );
@@ -52,6 +54,7 @@ impl<'a> Scanner<'a> {
             Expression::UpdateExpression(expression) => {
                 self.report(
                     "immutable-data",
+                    "generic",
                     "Modifying an existing object/array is not allowed.",
                     expression.span,
                 );
@@ -218,6 +221,7 @@ impl<'a> Scanner<'a> {
         if assignment_target_is_member(&expression.left) {
             self.report(
                 "immutable-data",
+                "generic",
                 "Modifying an existing object/array is not allowed.",
                 expression.span,
             );
@@ -282,6 +286,7 @@ impl<'a> Scanner<'a> {
         if is_static_call(call, "Promise", "reject") {
             self.report(
                 "no-promise-reject",
+                "generic",
                 "Unexpected rejection, resolve an error instead.",
                 call.span,
             );
@@ -289,6 +294,7 @@ impl<'a> Scanner<'a> {
         if is_mutating_call(call) {
             self.report(
                 "immutable-data",
+                "generic",
                 "Modifying an existing object/array is not allowed.",
                 call.span,
             );
@@ -309,6 +315,7 @@ impl<'a> Scanner<'a> {
         {
             self.report(
                 "no-promise-reject",
+                "generic",
                 "Unexpected rejection, resolve an error instead.",
                 expression.span,
             );
