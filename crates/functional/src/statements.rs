@@ -118,6 +118,9 @@ impl<'a> Scanner<'a> {
                 self.scan_expression(&statement.test, context);
             }
             Statement::TryStatement(statement) => {
+                // Upstream checks the catch handler and the finalizer
+                // independently, so a `try/catch/finally` with both disallowed
+                // reports both (not just the first).
                 if statement.handler.is_some() && !self.options.allow_try_catch {
                     self.report(
                         "no-try-statements",
@@ -125,7 +128,8 @@ impl<'a> Scanner<'a> {
                         "Unexpected try-catch, this pattern is not functional.",
                         statement.span,
                     );
-                } else if statement.finalizer.is_some() && !self.options.allow_try_finally {
+                }
+                if statement.finalizer.is_some() && !self.options.allow_try_finally {
                     self.report(
                         "no-try-statements",
                         "finally",
