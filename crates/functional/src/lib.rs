@@ -95,6 +95,10 @@ pub struct FunctionalOptions {
     /// Extracted method names from `ignorePrefixSelector` patterns of the form
     /// `CallExpression[callee.property.name='NAME']`.
     pub ignore_prefix_selector_names: SmallVec<[CompactString; 4]>,
+    /// no-mixed-types: check `interface` declarations (default: true).
+    pub check_interfaces: bool,
+    /// no-mixed-types: check object type literals (default: true).
+    pub check_type_literals: bool,
 }
 
 impl Default for FunctionalOptions {
@@ -120,6 +124,8 @@ impl Default for FunctionalOptions {
             enforce_count_ignore_getters_setters: true,
             enforce_count_ignore_lambda: false,
             ignore_prefix_selector_names: SmallVec::new(),
+            check_interfaces: true,
+            check_type_literals: true,
         }
     }
 }

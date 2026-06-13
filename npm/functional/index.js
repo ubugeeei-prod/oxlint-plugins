@@ -281,6 +281,18 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'no-mixed-types') {
+    return [
+      {
+        type: 'object',
+        properties: {
+          checkInterfaces: { type: 'boolean' },
+          checkTypeLiterals: { type: 'boolean' },
+        },
+        additionalProperties: false,
+      },
+    ];
+  }
   return [];
 }
 
@@ -429,6 +441,9 @@ function scanOptionsForRule(context, ruleName) {
     enforceCountIgnoreGettersSetters,
     enforceCountIgnoreLambda,
     ignorePrefixSelectorNames,
+    checkInterfaces: ruleName === 'no-mixed-types' ? options.checkInterfaces !== false : undefined,
+    checkTypeLiterals:
+      ruleName === 'no-mixed-types' ? options.checkTypeLiterals !== false : undefined,
   };
 }
 

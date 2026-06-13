@@ -429,3 +429,37 @@ fn reports_expressions_in_argument_position() {
         1
     );
 }
+
+#[test]
+fn no_mixed_types_reports_once_and_honors_options() {
+    let options = FunctionalOptions {
+        rule_names: ["no-mixed-types".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let count =
+        |source: &str, opts: &FunctionalOptions| scan_functional(source, "fixture.ts", opts).len();
+
+    // A type alias mixing a property and a method is reported exactly once
+    // (not double-counted by both the alias and the type-literal visitor).
+    let alias = count("type Foo = { bar: string; baz(): number };", &options);
+    assert_eq!(alias, 1);
+    let iface = count("interface Foo { bar: string; baz(): number }", &options);
+    assert_eq!(iface, 1);
+    // Same-kind members are not reported.
+    let same = count("type Foo = { bar: string; baz: number };", &options);
+    assert_eq!(same, 0);
+
+    // checkTypeLiterals / checkInterfaces: false skip their declaration kind.
+    let no_literals = FunctionalOptions {
+        rule_names: ["no-mixed-types".into()].into_iter().collect(),
+        check_type_literals: false,
+        ..FunctionalOptions::default()
+    };
+    assert_eq!(count("type Foo = { bar: string; baz(): number };", &no_literals), 0);
+    let no_ifaces = FunctionalOptions {
+        rule_names: ["no-mixed-types".into()].into_iter().collect(),
+        check_interfaces: false,
+        ..FunctionalOptions::default()
+    };
+    assert_eq!(count("interface Foo { bar: string; baz(): number }", &no_ifaces), 0);
+}
