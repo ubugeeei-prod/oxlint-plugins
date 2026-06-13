@@ -29,6 +29,7 @@ const expectedRuleNames = [
   'no-case-label-in-switch',
   'for-in',
   'prefer-while',
+  'no-small-switch',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -942,6 +943,48 @@ describe('sonarjs native API', () => {
   it('does not report prefer-while when for loop has both init and update', () => {
     const source = 'for (let i = 0; i < 10; i++) {}';
     const diagnostics = scan('prefer-while', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-small-switch for a switch with one case clause', () => {
+    const source = 'switch (x) { case 1: break; }';
+    const diagnostics = scan('no-small-switch', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-small-switch');
+    expect(diagnostics[0].messageId).toBe('smallSwitch');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+  });
+
+  it('reports no-small-switch for a switch with one case and a default', () => {
+    const source = 'switch (x) { case 1: break; default: break; }';
+    const diagnostics = scan('no-small-switch', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('smallSwitch');
+  });
+
+  it('reports no-small-switch for a switch with only a default clause', () => {
+    const source = 'switch (x) { default: break; }';
+    const diagnostics = scan('no-small-switch', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('smallSwitch');
+  });
+
+  it('reports no-small-switch for an empty switch', () => {
+    const source = 'switch (x) {}';
+    const diagnostics = scan('no-small-switch', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('smallSwitch');
+  });
+
+  it('does not report no-small-switch for a switch with two case clauses', () => {
+    const source = 'switch (x) { case 1: break; case 2: break; }';
+    const diagnostics = scan('no-small-switch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-small-switch for a switch with two cases and a default', () => {
+    const source = 'switch (x) { case 1: break; case 2: break; default: break; }';
+    const diagnostics = scan('no-small-switch', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

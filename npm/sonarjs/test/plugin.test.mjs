@@ -120,6 +120,7 @@ describe('sonarjs plugin shape', () => {
       'no-case-label-in-switch',
       'for-in',
       'prefer-while',
+      'no-small-switch',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -147,6 +148,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-case-label-in-switch']).toBe('object');
     expect(typeof plugin.rules['for-in']).toBe('object');
     expect(typeof plugin.rules['prefer-while']).toBe('object');
+    expect(typeof plugin.rules['no-small-switch']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -174,6 +176,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-case-label-in-switch']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/for-in']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-while']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-small-switch']).toBe('error');
   });
 });
 
@@ -621,5 +624,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(prefer-while)');
+  });
+
+  it('reports no-small-switch for a switch with one case through the adapter', () => {
+    const source = 'switch (x) { case 1: break; }';
+    const reports = runRule('no-small-switch', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('smallSwitch');
+  });
+
+  it('reports no-small-switch through the CLI', () => {
+    const source = 'switch (x) { case 1: break; }';
+    const result = runOxlint('no-small-switch', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-small-switch)');
   });
 });

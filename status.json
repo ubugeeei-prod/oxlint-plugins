@@ -13006,19 +13006,19 @@
       },
       {
         "name": "no-small-switch",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-small-switch (Sonar key S1301). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (S1301). Counts SwitchCase entries with test.is_some() only; default clause (test is None) is excluded from the count. Reports the switch keyword span when real-case count < 2. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-sonar-comments",
