@@ -483,6 +483,66 @@ pub(crate) fn first_octal_escape(pattern: &str) -> Option<&str> {
     None
 }
 
+/// Returns the first non-standard flag character in `flags` (i.e. one that is
+/// not part of the canonical set `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y`).
+/// Used by `no-non-standard-flag`. ASCII-only by design; non-ASCII bytes are
+/// also reported because they cannot be valid flags.
+pub(crate) fn first_non_standard_flag(flags: &str) -> Option<char> {
+    flags
+        .chars()
+        .find(|&ch| !matches!(ch, 'd' | 'g' | 'i' | 'm' | 's' | 'u' | 'v' | 'y'))
+}
+
+/// Returns the first literal invisible character in `pattern` that the
+/// `no-invisible-character` rule recognises. Escaped sequences (`\u00A0`,
+/// `\xA0`, `\u{1680}`) are intentionally skipped: the rule targets characters
+/// that look like whitespace to a reader but are not the ASCII space, not
+/// well-defined hex escapes.
+pub(crate) fn first_invisible_character(pattern: &str) -> Option<char> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        // Decode one UTF-8 scalar starting at `index`.
+        let ch = pattern[index..].chars().next()?;
+        if is_invisible_character(ch) {
+            return Some(ch);
+        }
+        index += ch.len_utf8();
+    }
+    None
+}
+
+/// Curated set of "invisible" characters reported by `no-invisible-character`.
+/// The set covers ECMAScript whitespace beyond U+0020 plus the zero-width
+/// joiners, the line/paragraph separators, BOM, and the most common space
+/// look-alikes that are commonly pasted accidentally.
+fn is_invisible_character(ch: char) -> bool {
+    matches!(
+        ch,
+        '\u{0009}'  // CHARACTER TABULATION (tab)
+        | '\u{000B}' // LINE TABULATION (vertical tab)
+        | '\u{000C}' // FORM FEED
+        | '\u{0085}' // NEXT LINE
+        | '\u{00A0}' // NO-BREAK SPACE
+        | '\u{1680}' // OGHAM SPACE MARK
+        | '\u{2000}'
+            ..='\u{200A}' // various spaces
+        | '\u{2028}' // LINE SEPARATOR
+        | '\u{2029}' // PARAGRAPH SEPARATOR
+        | '\u{202F}' // NARROW NO-BREAK SPACE
+        | '\u{205F}' // MEDIUM MATHEMATICAL SPACE
+        | '\u{3000}' // IDEOGRAPHIC SPACE
+        | '\u{200B}' // ZERO WIDTH SPACE
+        | '\u{200C}' // ZERO WIDTH NON-JOINER
+        | '\u{200D}' // ZERO WIDTH JOINER
+        | '\u{FEFF}' // ZERO WIDTH NO-BREAK SPACE (BOM)
+    )
+}
+
 pub(crate) fn first_control_character(pattern: &str) -> Option<char> {
     let bytes = pattern.as_bytes();
     let mut index = 0;
