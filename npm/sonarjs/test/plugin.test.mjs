@@ -104,6 +104,7 @@ describe('sonarjs plugin shape', () => {
       'non-existent-operator',
       'no-identical-conditions',
       'no-all-duplicated-branches',
+      'no-identical-expressions',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -115,6 +116,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['non-existent-operator']).toBe('object');
     expect(typeof plugin.rules['no-identical-conditions']).toBe('object');
     expect(typeof plugin.rules['no-all-duplicated-branches']).toBe('object');
+    expect(typeof plugin.rules['no-identical-expressions']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -126,6 +128,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/non-existent-operator']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-identical-conditions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-all-duplicated-branches']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-identical-expressions']).toBe('error');
   });
 });
 
@@ -201,6 +204,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('no-all-duplicated-branches', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('allDuplicatedBranches');
+  });
+
+  it('reports no-identical-expressions through the adapter', () => {
+    const source = 'a === a';
+    const reports = runRule('no-identical-expressions', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('identicalExpressions');
   });
 });
 
@@ -299,5 +309,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-all-duplicated-branches)');
+  });
+
+  it('reports no-identical-expressions through the CLI', () => {
+    const source = 'a === a';
+    const result = runOxlint('no-identical-expressions', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-identical-expressions)');
   });
 });

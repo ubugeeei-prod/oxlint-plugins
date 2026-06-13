@@ -3,8 +3,8 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, ConditionalExpression, IfStatement, SwitchCase,
-    SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
+    AssignmentExpression, BinaryExpression, ConditionalExpression, IfStatement, LogicalExpression,
+    SwitchCase, SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -84,7 +84,13 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_binary_expression(&mut self, it: &BinaryExpression<'a>) {
         self.check_no_redundant_boolean_binary(it);
+        self.check_no_identical_expressions_binary(it);
         walk::walk_binary_expression(self, it);
+    }
+
+    fn visit_logical_expression(&mut self, it: &LogicalExpression<'a>) {
+        self.check_no_identical_expressions_logical(it);
+        walk::walk_logical_expression(self, it);
     }
 
     fn visit_unary_expression(&mut self, it: &UnaryExpression<'a>) {

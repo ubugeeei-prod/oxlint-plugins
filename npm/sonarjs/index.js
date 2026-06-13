@@ -51,6 +51,10 @@ const messages = Object.freeze({
     allDuplicatedBranches:
       'Remove this conditional structure or edit its code blocks so that they are not all the same.',
   },
+  'no-identical-expressions': {
+    identicalExpressions:
+      'Identical sub-expressions on both sides of this operator make the result constant or redundant.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -68,6 +72,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow duplicate conditions in the same if/else-if chain (dead branch)',
   'no-all-duplicated-branches':
     'Disallow conditional structures where every branch has the same implementation',
+  'no-identical-expressions':
+    'Disallow identical sub-expressions on both sides of binary or logical operators where the result is constant or redundant',
 });
 
 const ruleTypes = Object.freeze({
@@ -81,6 +87,7 @@ const ruleTypes = Object.freeze({
   'non-existent-operator': 'problem',
   'no-identical-conditions': 'problem',
   'no-all-duplicated-branches': 'problem',
+  'no-identical-expressions': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -94,6 +101,7 @@ const recommendedRuleConfig = Object.freeze({
   'non-existent-operator': 'error',
   'no-identical-conditions': 'error',
   'no-all-duplicated-branches': 'error',
+  'no-identical-expressions': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

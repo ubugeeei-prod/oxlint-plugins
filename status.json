@@ -12270,19 +12270,19 @@
       },
       {
         "name": "no-identical-expressions",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-identical-expressions (Sonar key S1764). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of SonarJS S1764. Rust core checks BinaryExpression (comparison, bitwise, arithmetic operators) and LogicalExpression (&&, ||) for textually identical left/right operands; excluded operators (+, *, **, <<, >>, >>>, ??, instanceof, in) are documented in the rule. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-identical-functions",

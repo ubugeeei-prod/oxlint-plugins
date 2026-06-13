@@ -438,3 +438,110 @@ fn does_not_report_all_duplicated_branches_switch_no_default() {
     let diagnostics = scan("no-all-duplicated-branches", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_identical_expressions_strict_equality() {
+    let source = "a === a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-identical-expressions");
+    assert_eq!(diagnostics[0].message_id, "identicalExpressions");
+}
+
+#[test]
+fn reports_identical_expressions_strict_inequality() {
+    let source = "b !== b";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "identicalExpressions");
+}
+
+#[test]
+fn reports_identical_expressions_less_than() {
+    let source = "x < x";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "identicalExpressions");
+}
+
+#[test]
+fn reports_identical_expressions_logical_and() {
+    let source = "a && a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "identicalExpressions");
+}
+
+#[test]
+fn reports_identical_expressions_logical_or() {
+    let source = "a || a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "identicalExpressions");
+}
+
+#[test]
+fn reports_identical_expressions_bitwise_and() {
+    let source = "a & a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "identicalExpressions");
+}
+
+#[test]
+fn reports_identical_expressions_subtraction() {
+    let source = "a - a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "identicalExpressions");
+}
+
+#[test]
+fn reports_identical_expressions_division() {
+    let source = "a / a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "identicalExpressions");
+}
+
+#[test]
+fn does_not_report_identical_expressions_different_operands() {
+    let source = "a === b";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_identical_expressions_addition_excluded() {
+    let source = "a + a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_identical_expressions_multiplication_excluded() {
+    let source = "a * a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_identical_expressions_left_shift_excluded() {
+    let source = "a << a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_identical_expressions_nullish_coalescing_excluded() {
+    let source = "a ?? a";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_identical_expressions_different_member_access() {
+    let source = "a.b === a.c";
+    let diagnostics = scan("no-identical-expressions", source);
+    assert!(diagnostics.is_empty());
+}
