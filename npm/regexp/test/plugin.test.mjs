@@ -97,6 +97,13 @@ const validCases = [
   ['no-invisible-character', 'plain pattern', 'const re = /ab/u;\n'],
   ['no-invisible-character', 'ascii space', 'const re = /a b/u;\n'],
   ['no-invisible-character', 'escaped hex NBSP', "const re = new RegExp('a\\\\xa0b', 'u');\n"],
+  // no-useless-string-literal
+  ['no-useless-string-literal', 'empty literal', 'const re = /[\\q{}]/v;\n'],
+  ['no-useless-string-literal', 'multi-char literal', 'const re = /[\\q{ab}]/v;\n'],
+  // sort-character-class-elements
+  ['sort-character-class-elements', 'sorted class', 'const re = /[ab]/u;\n'],
+  ['sort-character-class-elements', 'class with escape', 'const re = /[a\\d]/u;\n'],
+  ['sort-character-class-elements', 'class with range', 'const re = /[a-z]/u;\n'],
 ];
 
 const invalidCases = [
@@ -285,6 +292,16 @@ const invalidCases = [
   // prefer-quantifier
   ['prefer-quantifier', 'braced quantifier', 'const re = /(?:a){3}/u;\n', ['unexpected']],
   ['prefer-quantifier', 'plus quantifier', 'const re = /(?:a)+/u;\n', ['unexpected']],
+  // no-useless-string-literal
+  ['no-useless-string-literal', 'single-char body', 'const re = /[\\q{a}]/v;\n', ['unexpected']],
+  // sort-character-class-elements
+  ['sort-character-class-elements', 'reversed letters', 'const re = /[ba]/u;\n', ['unexpected']],
+  [
+    'sort-character-class-elements',
+    'mixed digits and letters',
+    'const re = /[b1a]/u;\n',
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

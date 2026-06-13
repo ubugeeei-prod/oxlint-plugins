@@ -997,6 +997,43 @@ pub(crate) fn class_has_case_pair(bytes: &[u8], open: usize) -> bool {
 /// useless. Used by `grapheme-string-literal`. Multi-character string
 /// literals (`\q{ab}`, `\q{}`) and non-ASCII bodies are deferred — the bare
 /// equivalent depends on grapheme analysis we have not implemented.
+///
+/// Returns `true` when the `[...]` class at `open` is composed exclusively of
+/// distinct ASCII alphanumeric byte literals AND those bytes appear out of
+/// sorted order. Classes containing escapes, ranges, the `^` negation, or
+/// non-alphanumeric literals are deferred (the sort order semantics get
+/// hairy across categories). Used by `sort-character-class-elements`.
+pub(crate) fn class_has_unsorted_literal_elements(bytes: &[u8], open: usize) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let Some(end) = find_class_end(bytes, open) else {
+        return false;
+    };
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        return false;
+    }
+    let mut prev: u8 = 0;
+    let mut unsorted = false;
+    while index < end {
+        let byte = bytes[index];
+        if byte == b'\\' {
+            return false;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            return false;
+        }
+        if !byte.is_ascii_alphanumeric() {
+            return false;
+        }
+        if byte < prev {
+            unsorted = true;
+        }
+        prev = byte;
+        index += 1;
+    }
+    unsorted
+}
+
 pub(crate) fn class_has_useless_string_literal(bytes: &[u8], open: usize) -> Option<u8> {
     debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
     let end = find_class_end(bytes, open)?;

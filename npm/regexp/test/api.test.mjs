@@ -56,6 +56,8 @@ describe('regexp native API', () => {
       'grapheme-string-literal',
       'no-useless-non-capturing-group',
       'prefer-quantifier',
+      'no-useless-string-literal',
+      'sort-character-class-elements',
     ]);
   });
 

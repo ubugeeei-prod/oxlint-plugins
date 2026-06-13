@@ -5,9 +5,10 @@ use oxlint_plugins_carton::{CompactString, SmallVec};
 use crate::helpers::{
     BraceQuantifierShape, class_contains_backspace_escape, class_first_collapsible_run,
     class_first_duplicate_literal, class_first_obscure_range, class_has_case_pair,
-    class_has_useless_range, class_has_useless_string_literal, class_is_digit_range,
-    class_is_useless_single_literal, class_is_word_char_set, class_matches_anything,
-    find_class_end, group_prefix, is_zero_quantifier, parse_brace_quantifier, skip_escape,
+    class_has_unsorted_literal_elements, class_has_useless_range, class_has_useless_string_literal,
+    class_is_digit_range, class_is_useless_single_literal, class_is_word_char_set,
+    class_matches_anything, find_class_end, group_prefix, is_zero_quantifier,
+    parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -134,6 +135,9 @@ pub(crate) struct PatternAnalysis {
     /// the wrapper is unnecessary because the quantifier could apply to the
     /// bare atom. `prefer-quantifier`.
     pub(crate) has_preferable_quantifier_group: bool,
+    /// At least one `[...]` class whose body is all-alphanumeric-literal but
+    /// out of sorted order. `sort-character-class-elements`.
+    pub(crate) has_unsorted_class_elements: bool,
 }
 
 impl PatternAnalysis {
@@ -194,6 +198,11 @@ impl PatternAnalysis {
                         }
                         if !self.has_case_pair_class && class_has_case_pair(bytes, index) {
                             self.has_case_pair_class = true;
+                        }
+                        if !self.has_unsorted_class_elements
+                            && class_has_unsorted_literal_elements(bytes, index)
+                        {
+                            self.has_unsorted_class_elements = true;
                         }
                         if self.first_useless_string_literal.is_none()
                             && let Some(byte) = class_has_useless_string_literal(bytes, index)

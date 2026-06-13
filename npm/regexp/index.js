@@ -195,6 +195,13 @@ const messages = Object.freeze({
     unexpected:
       'Apply the quantifier directly to the single-character body instead of wrapping it in a non-capturing group.',
   },
+  'no-useless-string-literal': {
+    unexpected:
+      "Unexpected single-character string literal '{{expr}}'. Drop the `\\q{...}` wrapper and use '{{replacement}}' instead.",
+  },
+  'sort-character-class-elements': {
+    unexpected: 'Character class elements are not sorted; reorder them lexicographically.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -270,6 +277,10 @@ const ruleDescriptions = Object.freeze({
     'disallow non-capturing groups that wrap a single literal character without a quantifier',
   'prefer-quantifier':
     'apply quantifiers directly to single-character atoms instead of wrapping them in a non-capturing group',
+  'no-useless-string-literal':
+    'disallow string literals in v-mode classes when a bare character would do',
+  'sort-character-class-elements':
+    'enforce sorted character class elements when the body is all literal alphanumerics',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -323,6 +334,8 @@ const ruleTypes = Object.freeze({
   'grapheme-string-literal': 'suggestion',
   'no-useless-non-capturing-group': 'suggestion',
   'prefer-quantifier': 'suggestion',
+  'no-useless-string-literal': 'suggestion',
+  'sort-character-class-elements': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -477,7 +490,9 @@ function ruleCategory(ruleName) {
     ruleName === 'use-ignore-case' ||
     ruleName === 'grapheme-string-literal' ||
     ruleName === 'no-useless-non-capturing-group' ||
-    ruleName === 'prefer-quantifier'
+    ruleName === 'prefer-quantifier' ||
+    ruleName === 'no-useless-string-literal' ||
+    ruleName === 'sort-character-class-elements'
   ) {
     return 'Stylistic Issues';
   }
