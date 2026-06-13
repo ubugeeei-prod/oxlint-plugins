@@ -511,6 +511,9 @@ impl<'a> Scanner<'a> {
                 span,
             );
         }
+        if analysis.has_case_pair_class && !flags.contains('i') {
+            self.report("use-ignore-case", "unexpected", span);
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);
