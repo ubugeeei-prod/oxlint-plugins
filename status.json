@@ -9307,19 +9307,19 @@
       },
       {
         "name": "prefer-character-class",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-character-class."
+        "notes": "GroupState tracks current_alt_start (byte offset of the alternative being parsed) and all_alts_single_literal (a running bool). At each | and at close ), the current alternative is inspected: alt_len must be 1 AND that byte must be ASCII alphanumeric. When the non-capturing group has seen at least one | and the flag is still true, prefer-character-class fires. Escapes, classes, groups, and multi-byte alts are deferred."
       },
       {
         "name": "prefer-d",

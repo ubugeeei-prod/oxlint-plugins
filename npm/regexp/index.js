@@ -356,6 +356,7 @@ const ruleTypes = Object.freeze({
   'no-trivially-nested-assertion': 'suggestion',
   'no-extra-lookaround-assertions': 'suggestion',
   'no-trivially-nested-quantifier': 'suggestion',
+  'prefer-character-class': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({

@@ -97,6 +97,7 @@ fn exposes_initial_regexp_rule_names() {
             "no-trivially-nested-assertion",
             "no-extra-lookaround-assertions",
             "no-trivially-nested-quantifier",
+            "prefer-character-class",
         ]
     );
 }
@@ -162,6 +163,41 @@ mod no_extra_lookaround_assertions {
         assert!(
             rule_ids_for("const a = /(?=(?=a)b)/u;", "no-extra-lookaround-assertions").is_empty()
         );
+    }
+}
+
+mod prefer_character_class {
+    use super::*;
+
+    #[test]
+    fn reports_non_cap_alternation_of_single_literals() {
+        assert_eq!(
+            rule_ids_for("const a = /(?:a|b)/u;", "prefer-character-class").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:a|b|c)/u;", "prefer-character-class").as_slice(),
+            &["unexpected"]
+        );
+        // Digits and letters mix is fine — both alphanumeric.
+        assert_eq!(
+            rule_ids_for("const a = /(?:a|1|b)/u;", "prefer-character-class").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_alts_with_multi_byte_or_escapes_or_groups() {
+        // Multi-byte alt.
+        assert!(rule_ids_for("const a = /(?:a|bc)/u;", "prefer-character-class").is_empty());
+        // Escape inside.
+        assert!(rule_ids_for("const a = /(?:a|\\d)/u;", "prefer-character-class").is_empty());
+        // Class inside.
+        assert!(rule_ids_for("const a = /(?:a|[b])/u;", "prefer-character-class").is_empty());
+        // No alternation.
+        assert!(rule_ids_for("const a = /(?:a)/u;", "prefer-character-class").is_empty());
+        // Capturing group.
+        assert!(rule_ids_for("const a = /(a|b)/u;", "prefer-character-class").is_empty());
     }
 }
 

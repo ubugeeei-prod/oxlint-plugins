@@ -61,6 +61,7 @@ describe('regexp native API', () => {
       'no-trivially-nested-assertion',
       'no-extra-lookaround-assertions',
       'no-trivially-nested-quantifier',
+      'prefer-character-class',
     ]);
   });
 

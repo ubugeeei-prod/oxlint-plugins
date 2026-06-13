@@ -114,6 +114,10 @@ const validCases = [
   ['no-trivially-nested-quantifier', 'no outer quantifier', 'const re = /(?:a+)/u;\n'],
   ['no-trivially-nested-quantifier', 'no inner quantifier', 'const re = /(?:a)+/u;\n'],
   ['no-trivially-nested-quantifier', 'multi-byte body', 'const re = /(?:ab+)+/u;\n'],
+  // prefer-character-class
+  ['prefer-character-class', 'multi-byte alt', 'const re = /(?:a|bc)/u;\n'],
+  ['prefer-character-class', 'escape alt', 'const re = /(?:a|\\d)/u;\n'],
+  ['prefer-character-class', 'no alternation', 'const re = /(?:a)/u;\n'],
 ];
 
 const invalidCases = [
@@ -349,6 +353,14 @@ const invalidCases = [
     'no-trivially-nested-quantifier',
     'star inside star',
     'const re = /(?:b*)*/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-character-class
+  ['prefer-character-class', 'two letters', 'const re = /(?:a|b)/u;\n', ['unexpected']],
+  [
+    'prefer-character-class',
+    'mixed letters and digits',
+    'const re = /(?:a|1|b)/u;\n',
     ['unexpected'],
   ],
 ];
