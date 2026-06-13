@@ -3,8 +3,8 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, ConditionalExpression, ExpressionStatement,
-    Function, IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral,
+    AssignmentExpression, BinaryExpression, ConditionalExpression, ExpressionStatement, Function,
+    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral,
     SwitchCase, SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
     YieldExpression,
 };
