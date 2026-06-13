@@ -6,6 +6,7 @@ const expectedRuleNames = [
   'no-nested-template-literals',
   'no-nested-switch',
   'no-nested-conditional',
+  'no-collapsible-if',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -73,6 +74,29 @@ describe('sonarjs native API', () => {
     const diagnostics = scanSonarjs('const x = `outer ${`inner`}`;', 'sample.ts', {
       ruleNames: [],
     });
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports a collapsible if when the outer if contains only a nested if', () => {
+    const diagnostics = scan('no-collapsible-if', 'if (a) { if (b) {} }');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-collapsible-if');
+    expect(diagnostics[0].messageId).toBe('collapsibleIf');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+  });
+
+  it('does not report when the outer if has an else clause', () => {
+    const diagnostics = scan('no-collapsible-if', 'if (a) { if (b) {} } else {}');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the inner if has an else clause', () => {
+    const diagnostics = scan('no-collapsible-if', 'if (a) { if (b) {} else {} }');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the block contains more than one statement', () => {
+    const diagnostics = scan('no-collapsible-if', 'if (a) { if (b) {} doSomething(); }');
     expect(diagnostics).toHaveLength(0);
   });
 });

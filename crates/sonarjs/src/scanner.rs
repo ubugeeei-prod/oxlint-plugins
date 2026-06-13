@@ -2,7 +2,7 @@
 //! sonarjs port. Traversal uses the Oxc visitor so every node is reached; each
 //! `check_*` rule body lives under [`crate::rules`].
 
-use oxc_ast::ast::{ConditionalExpression, SwitchStatement, TemplateLiteral};
+use oxc_ast::ast::{ConditionalExpression, IfStatement, SwitchStatement, TemplateLiteral};
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
 use oxlint_plugins_carton::SmallVec;
@@ -68,5 +68,10 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.conditional_depth += 1;
         walk::walk_conditional_expression(self, it);
         self.conditional_depth -= 1;
+    }
+
+    fn visit_if_statement(&mut self, it: &IfStatement<'a>) {
+        self.check_no_collapsible_if(it);
+        walk::walk_if_statement(self, it);
     }
 }
