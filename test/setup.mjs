@@ -92,6 +92,10 @@ const nativePackages = [
     name: '@oxlint-plugins/oxlint-plugin-storybook',
     binding: 'npm/storybook/native.js',
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-unocss',
+    binding: 'npm/unocss/native.js',
+  },
 ];
 
 function lockPathFor(pkg) {
