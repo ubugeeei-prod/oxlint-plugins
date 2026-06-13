@@ -277,7 +277,7 @@ const invalidCases = [
   [
     'no-useless-dollar-replacements',
     'replaceAll variant dollar zero nine in eight-group pattern',
-    "\"abc\".replaceAll(/()()(()())()()(.)/gu, '$09');\n",
+    '"abc".replaceAll(/()()(()())()()(.)/gu, \'$09\');\n',
     ['unexpected'],
   ],
   // prefer-escape-replacement-dollar-char
