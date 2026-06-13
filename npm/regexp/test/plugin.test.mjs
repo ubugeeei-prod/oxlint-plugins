@@ -267,6 +267,13 @@ const invalidCases = [
     "const re = new RegExp('\\x01', 'u');\n",
     ['unexpected'],
   ],
+  // grapheme-string-literal
+  [
+    'grapheme-string-literal',
+    'single-char string literal',
+    'const re = /[\\q{a}]/v;\n',
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

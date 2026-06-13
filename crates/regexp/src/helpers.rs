@@ -984,6 +984,39 @@ pub(crate) fn class_has_case_pair(bytes: &[u8], open: usize) -> bool {
     (0..26).any(|i| has_lower[i] && has_upper[i])
 }
 
+/// Returns `Some(byte)` when the `[...]` class at `open` contains a `\q{X}`
+/// string literal whose body is exactly one ASCII char. Such literals are
+/// equivalent to the bare character in v-mode, so the `\q{}` wrapper is
+/// useless. Used by `grapheme-string-literal`. Multi-character string
+/// literals (`\q{ab}`, `\q{}`) and non-ASCII bodies are deferred — the bare
+/// equivalent depends on grapheme analysis we have not implemented.
+pub(crate) fn class_has_useless_string_literal(bytes: &[u8], open: usize) -> Option<u8> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    while index + 4 < end {
+        if bytes[index] == b'\\' && bytes[index + 1] == b'q' && bytes[index + 2] == b'{' {
+            let mut cursor = index + 3;
+            while cursor < end && bytes[cursor] != b'}' {
+                cursor += 1;
+            }
+            if cursor < end {
+                let inner = &bytes[index + 3..cursor];
+                if inner.len() == 1 {
+                    let ch = inner[0];
+                    if ch.is_ascii_alphanumeric() {
+                        return Some(ch);
+                    }
+                }
+                index = cursor + 1;
+                continue;
+            }
+        }
+        index += 1;
+    }
+    None
+}
+
 /// Returns `Some(byte)` for the first ASCII literal byte that appears more
 /// than once in the `[...]` class at `open`. Escapes, ranges, and nested
 /// classes are intentionally skipped — comparing them for equivalence needs

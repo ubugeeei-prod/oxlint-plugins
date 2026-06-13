@@ -89,8 +89,41 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-escape-replacement-dollar-char",
             "use-ignore-case",
             "control-character-escape",
+            "grapheme-string-literal",
         ]
     );
+}
+
+mod grapheme_string_literal {
+    use super::*;
+
+    #[test]
+    fn reports_single_character_string_literals_in_v_classes() {
+        let data = first_data("const a = /[\\q{a}]/v;", "grapheme-string-literal");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("\\q{a}")
+        );
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("a")
+        );
+        // Digits collapse the same way.
+        assert_eq!(
+            rule_ids_for("const a = /[\\q{5}]/v;", "grapheme-string-literal").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_empty_and_multi_character_string_literals() {
+        // Empty string literal is no-empty-string-literal's job.
+        assert!(rule_ids_for("const a = /[\\q{}]/v;", "grapheme-string-literal").is_empty());
+        // Two-character grapheme — needs grapheme analysis we don't do here.
+        assert!(rule_ids_for("const a = /[\\q{ab}]/v;", "grapheme-string-literal").is_empty());
+        // Plain character class.
+        assert!(rule_ids_for("const a = /[ab]/v;", "grapheme-string-literal").is_empty());
+    }
 }
 
 mod control_character_escape {

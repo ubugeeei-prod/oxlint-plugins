@@ -514,6 +514,23 @@ impl<'a> Scanner<'a> {
         if analysis.has_case_pair_class && !flags.contains('i') {
             self.report("use-ignore-case", "unexpected", span);
         }
+        if let Some(ch) = analysis.first_useless_string_literal {
+            let mut original = CompactString::new("\\q{");
+            original.push(ch);
+            original.push('}');
+            let mut replacement = CompactString::new("");
+            replacement.push(ch);
+            self.report_with_data(
+                "grapheme-string-literal",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(original),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
 
         if analysis.has_empty_character_class {
             self.report("no-empty-character-class", "empty", span);

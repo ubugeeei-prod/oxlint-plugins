@@ -8619,19 +8619,19 @@
       },
       {
         "name": "grapheme-string-literal",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule grapheme-string-literal."
+        "notes": "Class-level scan via class_has_useless_string_literal: walks the v-mode `[...]` body for `\\q{X}` literals whose body is exactly one ASCII alphanumeric character; that wraps a single bare char to no effect. Empty literals (`\\q{}`) stay with no-empty-string-literal; multi-character literals are deferred (they need grapheme analysis)."
       },
       {
         "name": "hexadecimal-escape",

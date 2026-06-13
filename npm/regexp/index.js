@@ -183,6 +183,10 @@ const messages = Object.freeze({
     unexpected:
       'Unexpected literal control character {{ char }} in the pattern; use a `\\xHH` or `\\uHHHH` escape sequence instead.',
   },
+  'grapheme-string-literal': {
+    unexpected:
+      "Unexpected single-character string literal '{{expr}}'. Use '{{replacement}}' instead.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -252,6 +256,8 @@ const ruleDescriptions = Object.freeze({
     'enforce the `i` flag when a character class mixes lower- and upper-case letters',
   'control-character-escape':
     'enforce escaping literal control characters in regular-expression patterns',
+  'grapheme-string-literal':
+    'disallow single-character `\\q{X}` string literals in v-mode character classes',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -302,6 +308,7 @@ const ruleTypes = Object.freeze({
   'prefer-escape-replacement-dollar-char': 'suggestion',
   'use-ignore-case': 'suggestion',
   'control-character-escape': 'problem',
+  'grapheme-string-literal': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -453,7 +460,8 @@ function ruleCategory(ruleName) {
     ruleName === 'prefer-named-backreference' ||
     ruleName === 'no-useless-flag' ||
     ruleName === 'prefer-escape-replacement-dollar-char' ||
-    ruleName === 'use-ignore-case'
+    ruleName === 'use-ignore-case' ||
+    ruleName === 'grapheme-string-literal'
   ) {
     return 'Stylistic Issues';
   }
