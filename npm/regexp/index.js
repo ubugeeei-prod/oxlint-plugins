@@ -175,6 +175,10 @@ const messages = Object.freeze({
     unexpected:
       "Use '$$' to escape a literal '$' in the replacement string; a stray '$' is almost always a typo.",
   },
+  'use-ignore-case': {
+    unexpected:
+      "Character class mixes lower- and upper-case forms of the same letter; add the 'i' flag instead.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -240,6 +244,8 @@ const ruleDescriptions = Object.freeze({
     'disallow `$0` in replacement strings (capture groups start at 1; `$0` is always literal)',
   'prefer-escape-replacement-dollar-char':
     'enforce escaping a literal `$` as `$$` in replacement strings',
+  'use-ignore-case':
+    'enforce the `i` flag when a character class mixes lower- and upper-case letters',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -288,6 +294,7 @@ const ruleTypes = Object.freeze({
   'no-lazy-ends': 'problem',
   'no-useless-dollar-replacements': 'problem',
   'prefer-escape-replacement-dollar-char': 'suggestion',
+  'use-ignore-case': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -437,7 +444,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-useless-quantifier' ||
     ruleName === 'prefer-named-backreference' ||
     ruleName === 'no-useless-flag' ||
-    ruleName === 'prefer-escape-replacement-dollar-char'
+    ruleName === 'prefer-escape-replacement-dollar-char' ||
+    ruleName === 'use-ignore-case'
   ) {
     return 'Stylistic Issues';
   }

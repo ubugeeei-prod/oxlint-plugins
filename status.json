@@ -9723,19 +9723,19 @@
       },
       {
         "name": "use-ignore-case",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule use-ignore-case."
+        "notes": "Class-level scan via class_has_case_pair: 26x2 on-stack ASCII bitmaps collect lower/upper letter occurrences within each character class. Reports when any letter has both forms present in the same class AND the regex flags string does not contain `i`. Ranges and escapes are skipped to keep the check sound."
       }
     ]
   },

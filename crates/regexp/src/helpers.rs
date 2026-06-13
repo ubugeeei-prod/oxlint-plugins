@@ -947,6 +947,43 @@ fn is_pointlessly_escaped(byte: u8) -> bool {
     )
 }
 
+/// Returns `true` when the `[...]` class at `open` contains both the lower-
+/// and upper-case form of at least one ASCII letter (e.g. `[aA]` or
+/// `[abcABC]`). Such pairs could be expressed more concisely with the `i`
+/// flag, which is what `use-ignore-case` recommends. Escaped contents and
+/// ranges are deliberately skipped so the check stays sound (no false
+/// positives on `[\w]` or `[a-z]`).
+pub(crate) fn class_has_case_pair(bytes: &[u8], open: usize) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let Some(end) = find_class_end(bytes, open) else {
+        return false;
+    };
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    let mut has_lower = [false; 26];
+    let mut has_upper = [false; 26];
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            index += 3;
+            continue;
+        }
+        let byte = bytes[index];
+        if byte.is_ascii_lowercase() {
+            has_lower[(byte - b'a') as usize] = true;
+        } else if byte.is_ascii_uppercase() {
+            has_upper[(byte - b'A') as usize] = true;
+        }
+        index += 1;
+    }
+    (0..26).any(|i| has_lower[i] && has_upper[i])
+}
+
 /// Returns `Some(byte)` for the first ASCII literal byte that appears more
 /// than once in the `[...]` class at `open`. Escapes, ranges, and nested
 /// classes are intentionally skipped — comparing them for equivalence needs

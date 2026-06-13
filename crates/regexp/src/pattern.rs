@@ -4,10 +4,10 @@ use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
     BraceQuantifierShape, class_contains_backspace_escape, class_first_collapsible_run,
-    class_first_duplicate_literal, class_first_obscure_range, class_has_useless_range,
-    class_is_digit_range, class_is_useless_single_literal, class_is_word_char_set,
-    class_matches_anything, find_class_end, group_prefix, is_zero_quantifier,
-    parse_brace_quantifier, skip_escape,
+    class_first_duplicate_literal, class_first_obscure_range, class_has_case_pair,
+    class_has_useless_range, class_is_digit_range, class_is_useless_single_literal,
+    class_is_word_char_set, class_matches_anything, find_class_end, group_prefix,
+    is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -105,6 +105,9 @@ pub(crate) struct PatternAnalysis {
     /// character class. Used by `no-useless-flag` to decide whether the `m`
     /// flag has any effect.
     pub(crate) has_unescaped_anchor: bool,
+    /// At least one character class contains both the lower- and upper-case
+    /// form of an ASCII letter (e.g. `[aA]`). `use-ignore-case`.
+    pub(crate) has_case_pair_class: bool,
 }
 
 impl PatternAnalysis {
@@ -162,6 +165,9 @@ impl PatternAnalysis {
                             && let Some(range) = class_first_obscure_range(bytes, index)
                         {
                             self.first_obscure_range = Some(range);
+                        }
+                        if !self.has_case_pair_class && class_has_case_pair(bytes, index) {
+                            self.has_case_pair_class = true;
                         }
                         if self.first_dupe_class_literal.is_none()
                             && let Some(byte) = class_first_duplicate_literal(bytes, index)

@@ -87,8 +87,37 @@ fn exposes_initial_regexp_rule_names() {
             "no-lazy-ends",
             "no-useless-dollar-replacements",
             "prefer-escape-replacement-dollar-char",
+            "use-ignore-case",
         ]
     );
+}
+
+mod use_ignore_case {
+    use super::*;
+
+    #[test]
+    fn reports_case_pair_classes_without_i_flag() {
+        assert_eq!(
+            rule_ids_for("const a = /[aA]/u;", "use-ignore-case").as_slice(),
+            &["unexpected"]
+        );
+        // Multi-pair class.
+        assert_eq!(
+            rule_ids_for("const a = /[aAbB]/u;", "use-ignore-case").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_when_i_flag_is_present_or_pair_absent() {
+        // `i` flag is already on — the case pair is intentional or the rule is satisfied.
+        assert!(rule_ids_for("const a = /[aA]/iu;", "use-ignore-case").is_empty());
+        // Only lowercase or only uppercase — no case pair.
+        assert!(rule_ids_for("const a = /[abc]/u;", "use-ignore-case").is_empty());
+        // Ranges and escapes are intentionally skipped.
+        assert!(rule_ids_for("const a = /[a-z]/u;", "use-ignore-case").is_empty());
+        assert!(rule_ids_for("const a = /[\\w]/u;", "use-ignore-case").is_empty());
+    }
 }
 
 mod prefer_escape_replacement_dollar_char {
