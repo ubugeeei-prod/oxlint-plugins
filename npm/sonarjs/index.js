@@ -83,6 +83,10 @@ const messages = Object.freeze({
   'no-built-in-override': {
     noBuiltInOverride: 'Do not override or shadow a built-in object or function.',
   },
+  'class-prototype': {
+    classPrototype:
+      'Define this on a class using method syntax instead of assigning to the prototype.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -116,6 +120,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow .only on test-runner functions (describe, it, test, etc.) that would disable all other tests',
   'no-built-in-override':
     'Disallow overriding or shadowing standard ECMAScript built-in global objects and functions',
+  'class-prototype':
+    'Disallow assigning methods or properties to a constructor prototype; use class syntax instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -138,6 +144,7 @@ const ruleTypes = Object.freeze({
   'generator-without-yield': 'problem',
   'no-exclusive-tests': 'problem',
   'no-built-in-override': 'problem',
+  'class-prototype': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -160,6 +167,7 @@ const recommendedRuleConfig = Object.freeze({
   'generator-without-yield': 'error',
   'no-exclusive-tests': 'error',
   'no-built-in-override': 'error',
+  'class-prototype': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

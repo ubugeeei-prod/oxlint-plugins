@@ -22,6 +22,7 @@ const expectedRuleNames = [
   'generator-without-yield',
   'no-exclusive-tests',
   'no-built-in-override',
+  'class-prototype',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -711,6 +712,39 @@ describe('sonarjs native API', () => {
   it('does not report no-built-in-override for a member assignment to foo.Object', () => {
     const source = 'foo.Object = 1;';
     const diagnostics = scan('no-built-in-override', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports class-prototype for Foo.prototype.bar = function () {}', () => {
+    const source = 'Foo.prototype.bar = function () {};';
+    const diagnostics = scan('class-prototype', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('class-prototype');
+    expect(diagnostics[0].messageId).toBe('classPrototype');
+  });
+
+  it('reports class-prototype for Foo.prototype.baz = 1', () => {
+    const source = 'Foo.prototype.baz = 1;';
+    const diagnostics = scan('class-prototype', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('classPrototype');
+  });
+
+  it('does not report class-prototype for Foo.prototype = {} (no member after prototype)', () => {
+    const source = 'Foo.prototype = {};';
+    const diagnostics = scan('class-prototype', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report class-prototype for foo.bar = 1 (no prototype in chain)', () => {
+    const source = 'foo.bar = 1;';
+    const diagnostics = scan('class-prototype', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report class-prototype for obj.prototype (read, not assignment)', () => {
+    const source = 'obj.prototype;';
+    const diagnostics = scan('class-prototype', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

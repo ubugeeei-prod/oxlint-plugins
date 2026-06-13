@@ -2,6 +2,7 @@
 //! one `check_*` method to [`crate::scanner::Scanner`].
 
 mod arguments_usage;
+mod class_prototype;
 mod comma_or_logical_or_case;
 mod constructor_for_side_effects;
 mod generator_without_yield;

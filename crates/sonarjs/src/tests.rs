@@ -884,3 +884,51 @@ fn does_not_report_no_built_in_override_for_member_assignment_foo_object() {
     let diagnostics = scan("no-built-in-override", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_class_prototype_for_method_assignment() {
+    let source = "Foo.prototype.bar = function () {};";
+    let diagnostics = scan("class-prototype", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "class-prototype");
+    assert_eq!(diagnostics[0].message_id, "classPrototype");
+}
+
+#[test]
+fn reports_class_prototype_for_property_assignment() {
+    let source = "Foo.prototype.baz = 1;";
+    let diagnostics = scan("class-prototype", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "classPrototype");
+}
+
+#[test]
+fn reports_class_prototype_for_chained_prototype_assignment() {
+    let source = "a.b.prototype.c = x;";
+    let diagnostics = scan("class-prototype", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "classPrototype");
+}
+
+#[test]
+fn does_not_report_class_prototype_for_prototype_itself_assignment() {
+    // LHS is Foo.prototype — the property IS prototype; no .member after it
+    let source = "Foo.prototype = {};";
+    let diagnostics = scan("class-prototype", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_class_prototype_for_plain_member_assignment() {
+    let source = "foo.bar = 1;";
+    let diagnostics = scan("class-prototype", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_class_prototype_for_read_expression() {
+    // Reading Foo.prototype (not an assignment) — no AssignmentExpression
+    let source = "obj.prototype;";
+    let diagnostics = scan("class-prototype", source);
+    assert!(diagnostics.is_empty());
+}
