@@ -194,6 +194,10 @@ const BLOCK_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("insertSpace", "Insert a space."),
     ("removeSpace", "Remove the whitespace."),
 ];
+const PADDED_BLOCKS_MESSAGES: &[(&str, &str)] = &[
+    ("missingPadBlock", "Block must be padded by blank lines."),
+    ("extraPadBlock", "Block must not be padded by blank lines."),
+];
 const SPACE_BEFORE_BLOCKS_MESSAGES: &[(&str, &str)] = &[
     ("missingSpace", "Missing space before opening brace."),
     ("unexpectedSpace", "Unexpected space before opening brace."),
@@ -305,6 +309,45 @@ const SWITCH_COLON_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("insertSpace", "Insert a space."),
     ("removeSpace", "Remove the whitespace."),
 ];
+const KEY_SPACING_MESSAGES: &[(&str, &str)] = &[
+    ("extraKey", "Extra space after key."),
+    ("extraValue", "Extra space before value."),
+    ("missingKey", "Missing space after key."),
+    ("missingValue", "Missing space before value."),
+    ("insertSpace", "Insert a space."),
+    ("removeSpace", "Remove the whitespace."),
+];
+const QUOTE_PROPS_MESSAGES: &[(&str, &str)] = &[
+    (
+        "requireQuotesDueToReservedWord",
+        "Properties should be quoted because one key is a reserved word.",
+    ),
+    (
+        "inconsistentlyQuotedProperty",
+        "Inconsistently quoted property found.",
+    ),
+    (
+        "unnecessarilyQuotedProperty",
+        "Unnecessarily quoted property found.",
+    ),
+    (
+        "unquotedReservedProperty",
+        "Unquoted reserved word used as key.",
+    ),
+    (
+        "unquotedNumericProperty",
+        "Unquoted number literal used as key.",
+    ),
+    ("unquotedPropertyFound", "Unquoted property found."),
+    (
+        "redundantQuoting",
+        "Properties should not be quoted as all quotes are redundant.",
+    ),
+    ("quoteKey", "Quote property key."),
+    ("unquoteKey", "Remove quotes from property key."),
+];
+const MAX_STATEMENTS_PER_LINE_MESSAGES: &[(&str, &str)] =
+    &[("exceed", "This line has too many statements.")];
 const NO_EXTRA_SEMI_MESSAGES: &[(&str, &str)] = &[
     ("unexpected", "Unnecessary semicolon."),
     ("removeSemi", "Remove the semicolon."),
@@ -516,6 +559,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: BLOCK_SPACING_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "padded-blocks",
+        docs_description: "Require or disallow padding within blocks.",
+        messages: PADDED_BLOCKS_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "space-before-blocks",
         docs_description: "Enforce consistent spacing before opening braces of blocks.",
         messages: SPACE_BEFORE_BLOCKS_MESSAGES,
@@ -566,6 +614,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: MAX_LEN_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "max-statements-per-line",
+        docs_description: "Enforce a maximum number of statements allowed per line.",
+        messages: MAX_STATEMENTS_PER_LINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "semi-style",
         docs_description: "Enforce location of semicolons.",
         messages: SEMI_STYLE_MESSAGES,
@@ -584,6 +637,16 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         name: "switch-colon-spacing",
         docs_description: "Enforce spacing around colons of switch statements.",
         messages: SWITCH_COLON_SPACING_MESSAGES,
+    },
+    StylisticRuleDefinition {
+        name: "key-spacing",
+        docs_description: "Enforce consistent spacing between property keys and values.",
+        messages: KEY_SPACING_MESSAGES,
+    },
+    StylisticRuleDefinition {
+        name: "quote-props",
+        docs_description: "Require quotes around object property names.",
+        messages: QUOTE_PROPS_MESSAGES,
     },
     StylisticRuleDefinition {
         name: "no-extra-semi",
@@ -638,6 +701,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "array-bracket-spacing",
     "computed-property-spacing",
     "block-spacing",
+    "padded-blocks",
     "space-before-blocks",
     "function-call-spacing",
     "space-before-function-paren",
@@ -647,10 +711,13 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "generator-star-spacing",
     "comma-dangle",
     "space-infix-ops",
+    "max-statements-per-line",
     "semi-style",
     "comma-style",
     "arrow-parens",
     "switch-colon-spacing",
+    "key-spacing",
+    "quote-props",
     "no-extra-semi",
     "new-parens",
     "space-unary-ops",
@@ -795,6 +862,7 @@ fn run_token_rule(
             context_rules::check_computed_property_spacing(scan, options, diagnostics)
         }
         "block-spacing" => context_rules::check_block_spacing(scan, options, diagnostics),
+        "padded-blocks" => context_rules::check_padded_blocks(scan, options, diagnostics),
         "space-before-blocks" => {
             context_rules::check_space_before_blocks(scan, options, diagnostics)
         }
@@ -816,12 +884,17 @@ fn run_token_rule(
         }
         "comma-dangle" => context_rules::check_comma_dangle(scan, options, diagnostics),
         "space-infix-ops" => context_rules::check_space_infix_ops(scan, options, diagnostics),
+        "max-statements-per-line" => {
+            context_rules::check_max_statements_per_line(scan, options, diagnostics)
+        }
         "semi-style" => context_rules::check_semi_style(scan, options, diagnostics),
         "comma-style" => context_rules::check_comma_style(scan, options, diagnostics),
         "arrow-parens" => context_rules::check_arrow_parens(scan, options, diagnostics),
         "switch-colon-spacing" => {
             context_rules::check_switch_colon_spacing(scan, options, diagnostics)
         }
+        "key-spacing" => context_rules::check_key_spacing(scan, options, diagnostics),
+        "quote-props" => context_rules::check_quote_props(scan, options, diagnostics),
         "no-extra-semi" => context_rules::check_no_extra_semi(scan, options, diagnostics),
         "new-parens" => context_rules::check_new_parens(scan, options, diagnostics),
         "space-unary-ops" => context_rules::check_space_unary_ops(scan, options, diagnostics),

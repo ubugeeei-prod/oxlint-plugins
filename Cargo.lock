@@ -777,6 +777,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-angular-eslint"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-angular-eslint",
+]
+
+[[package]]
 name = "oxlint-plugin-cypress"
 version = "0.0.0"
 dependencies = [
@@ -810,6 +820,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-eslint-markdown"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-eslint-markdown",
+]
+
+[[package]]
 name = "oxlint-plugin-mocha"
 version = "0.0.0"
 dependencies = [
@@ -839,6 +860,16 @@ dependencies = [
  "napi-build",
  "napi-derive",
  "oxlint-plugins-perfectionist",
+]
+
+[[package]]
+name = "oxlint-plugin-playwright"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-playwright",
 ]
 
 [[package]]
@@ -907,6 +938,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-testing-library"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-testing-library",
+]
+
+[[package]]
 name = "oxlint-plugin-unused-imports"
 version = "0.0.0"
 dependencies = [
@@ -926,6 +968,17 @@ dependencies = [
  "ghost-cell",
  "rustc-hash",
  "smallvec",
+]
+
+[[package]]
+name = "oxlint-plugins-angular-eslint"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+ "regex",
 ]
 
 [[package]]
@@ -963,6 +1016,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugins-eslint-markdown"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxlint-plugins-_carton",
+ "regex",
+]
+
+[[package]]
 name = "oxlint-plugins-mocha"
 version = "0.0.0"
 dependencies = [
@@ -977,6 +1039,17 @@ dependencies = [
 
 [[package]]
 name = "oxlint-plugins-perfectionist"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+ "regex",
+]
+
+[[package]]
+name = "oxlint-plugins-playwright"
 version = "0.0.0"
 dependencies = [
  "oxc_allocator",
@@ -1058,6 +1131,16 @@ dependencies = [
  "phf",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "oxlint-plugins-testing-library"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
 ]
 
 [[package]]

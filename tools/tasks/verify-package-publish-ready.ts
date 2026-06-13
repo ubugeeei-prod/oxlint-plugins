@@ -10,6 +10,11 @@ type PackageToPack = {
 
 const packages: PackageToPack[] = [
   {
+    name: '@oxlint-plugins/oxlint-plugin-angular-eslint',
+    dir: 'npm/angular-eslint',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-type-aware',
     dir: 'npm/type-aware',
     requiredFiles: ['dist/index.mjs', 'dist/index.d.mts'],
@@ -27,6 +32,11 @@ const packages: PackageToPack[] = [
   {
     name: '@oxlint-plugins/oxlint-plugin-eslint-comments',
     dir: 'npm/eslint-comments',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-eslint-markdown',
+    dir: 'npm/eslint-markdown',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
@@ -55,6 +65,11 @@ const packages: PackageToPack[] = [
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-playwright',
+    dir: 'npm/playwright',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-simple-import-sort',
     dir: 'npm/simple-import-sort',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
@@ -77,6 +92,11 @@ const packages: PackageToPack[] = [
   {
     name: '@oxlint-plugins/oxlint-plugin-perfectionist',
     dir: 'npm/perfectionist',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-testing-library',
+    dir: 'npm/testing-library',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
 ];

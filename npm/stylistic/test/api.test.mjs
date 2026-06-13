@@ -6,6 +6,7 @@ describe('stylistic native API', () => {
   it('exposes native stylistic rule metadata', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-trailing-spaces');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('quote-props');
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -29,5 +30,36 @@ describe('stylistic native API', () => {
       'no-multiple-empty-lines',
     ]);
     expect(diagnostics[1].suggestions?.[0]?.fixes[0]?.replacementText).toBe("'value'");
+  });
+
+  it('runs additional context-backed rules through one native call', () => {
+    const diagnostics = runNativeStylisticLint(
+      'const o = {foo :1}; const a = 1; const b = 2;\nif (x) {\n  y();\n}\n',
+      {
+        rules: [
+          { name: 'key-spacing', options: [] },
+          { name: 'quote-props', options: [] },
+          { name: 'max-statements-per-line', options: [] },
+          { name: 'padded-blocks', options: [] },
+        ],
+      },
+    );
+
+    expect(diagnostics.map((diagnostic) => diagnostic.ruleName)).toEqual([
+      'key-spacing',
+      'key-spacing',
+      'quote-props',
+      'max-statements-per-line',
+      'padded-blocks',
+      'padded-blocks',
+    ]);
+    expect(diagnostics.map((diagnostic) => diagnostic.messageId)).toEqual([
+      'extraKey',
+      'missingValue',
+      'unquotedPropertyFound',
+      'exceed',
+      'missingPadBlock',
+      'missingPadBlock',
+    ]);
   });
 });
