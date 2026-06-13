@@ -47,23 +47,7 @@ impl<'a> Scanner<'a> {
                 }
             }
             Statement::SwitchStatement(statement) => {
-                let allowed = self.options.allow_returning_branches
-                    && self.switch_all_cases_return(&statement.cases);
-                if !allowed {
-                    self.report(
-                        "no-conditional-statements",
-                        "unexpectedSwitch",
-                        "Unexpected switch, use a conditional expression instead.",
-                        statement.span,
-                    );
-                }
-                self.scan_expression(&statement.discriminant, context);
-                for case in &statement.cases {
-                    if let Some(test) = &case.test {
-                        self.scan_expression(test, context);
-                    }
-                    self.scan_statement_list(&case.consequent, context);
-                }
+                self.scan_switch(statement, context, None);
             }
             Statement::ForStatement(statement) => {
                 self.report(
@@ -205,7 +189,14 @@ impl<'a> Scanner<'a> {
             }
             Statement::ClassDeclaration(class) => self.scan_class(class, context),
             Statement::LabeledStatement(labeled) => {
-                self.scan_statement(&labeled.body, context);
+                // A `break <label>` that targets the switch's own enclosing label
+                // merely exits the switch, so the label must be known when
+                // deciding whether a case is "returning".
+                if let Statement::SwitchStatement(switch) = &labeled.body {
+                    self.scan_switch(switch, context, Some(labeled.label.name.as_str()));
+                } else {
+                    self.scan_statement(&labeled.body, context);
+                }
             }
             Statement::TSModuleDeclaration(module) => {
                 self.scan_ts_module_declaration(module, context);
@@ -303,15 +294,24 @@ impl<'a> Scanner<'a> {
     }
 
     /// A statement that, inside a `switch` case, counts as a returning branch
-    /// (upstream `isSwitchReturningBranch`): a nested `switch`, return, throw, a
-    /// *labeled* break (an unlabeled break only exits the switch), or continue.
-    fn is_switch_returning_branch(&self, statement: &Statement<'a>) -> bool {
+    /// (upstream `isSwitchReturningBranch`): a nested `switch`, return, throw, or
+    /// continue. A break counts only when it carries a label that targets some
+    /// construct *outside* this switch; an unlabeled break — or one targeting the
+    /// switch's own enclosing label (`switch_label`) — merely exits the switch.
+    fn is_switch_returning_branch(
+        &self,
+        statement: &Statement<'a>,
+        switch_label: Option<&str>,
+    ) -> bool {
         match statement {
             Statement::SwitchStatement(_)
             | Statement::ReturnStatement(_)
             | Statement::ThrowStatement(_)
             | Statement::ContinueStatement(_) => true,
-            Statement::BreakStatement(break_statement) => break_statement.label.is_some(),
+            Statement::BreakStatement(break_statement) => match &break_statement.label {
+                Some(label) => switch_label != Some(label.name.as_str()),
+                None => false,
+            },
             _ => false,
         }
     }
@@ -347,7 +347,13 @@ impl<'a> Scanner<'a> {
     /// A `switch` is "returning" when every non-empty case contains a returning
     /// statement (empty fall-through cases are allowed). Mirrors upstream
     /// `getSwitchViolations`; `never`-typed cases need type information.
-    fn switch_all_cases_return(&self, cases: &[SwitchCase<'a>]) -> bool {
+    /// `switch_label` is the label of the statement directly wrapping the switch,
+    /// if any (used to discount a `break <own-label>`).
+    fn switch_all_cases_return(
+        &self,
+        cases: &[SwitchCase<'a>],
+        switch_label: Option<&str>,
+    ) -> bool {
         for case in cases {
             if case.consequent.is_empty() {
                 continue;
@@ -355,7 +361,7 @@ impl<'a> Scanner<'a> {
             if case
                 .consequent
                 .iter()
-                .any(|stmt| self.is_switch_returning_branch(stmt))
+                .any(|stmt| self.is_switch_returning_branch(stmt, switch_label))
             {
                 continue;
             }
@@ -368,13 +374,40 @@ impl<'a> Scanner<'a> {
                 && block
                     .body
                     .iter()
-                    .any(|stmt| self.is_switch_returning_branch(stmt))
+                    .any(|stmt| self.is_switch_returning_branch(stmt, switch_label))
             {
                 continue;
             }
             return false;
         }
         true
+    }
+
+    /// Report and traverse a `switch`. `switch_label` is the label of the
+    /// statement directly wrapping it, if any.
+    fn scan_switch(
+        &mut self,
+        statement: &'a SwitchStatement<'a>,
+        context: FunctionContext,
+        switch_label: Option<&str>,
+    ) {
+        let allowed = self.options.allow_returning_branches
+            && self.switch_all_cases_return(&statement.cases, switch_label);
+        if !allowed {
+            self.report(
+                "no-conditional-statements",
+                "unexpectedSwitch",
+                "Unexpected switch, use a conditional expression instead.",
+                statement.span,
+            );
+        }
+        self.scan_expression(&statement.discriminant, context);
+        for case in &statement.cases {
+            if let Some(test) = &case.test {
+                self.scan_expression(test, context);
+            }
+            self.scan_statement_list(&case.consequent, context);
+        }
     }
 
     fn scan_for_init(&mut self, init: &'a ForStatementInit<'a>, context: FunctionContext) {
