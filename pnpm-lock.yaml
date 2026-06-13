@@ -116,6 +116,12 @@ importers:
         specifier: 'catalog:'
         version: 1.68.0
 
+  npm/regexp:
+    dependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.68.0
+
   npm/security:
     dependencies:
       '@oxlint/plugins':

@@ -864,6 +864,183 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-regexp",
+    "directory": "npm/regexp",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-regexp",
+      "version": "3.1.0",
+      "repository": "https://github.com/ota-meshi/eslint-plugin-regexp",
+      "license": "MIT"
+    },
+    "status": "in-progress",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "no-invalid-regexp",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc RegExp constructor and flag validation port of eslint-plugin-regexp/no-invalid-regexp; duplicate flags, incompatible u/v flags, and constructor parse errors covered in Vitest."
+      },
+      {
+        "name": "no-empty-character-class",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust pattern scanner port of eslint-plugin-regexp/no-empty-character-class for empty character classes in literals and static RegExp constructors."
+      },
+      {
+        "name": "no-empty-group",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust pattern scanner port of eslint-plugin-regexp/no-empty-group for empty capturing and non-capturing groups."
+      },
+      {
+        "name": "no-empty-capturing-group",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust pattern scanner port of eslint-plugin-regexp/no-empty-capturing-group for empty capturing groups."
+      },
+      {
+        "name": "no-empty-alternative",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust pattern scanner port of eslint-plugin-regexp/no-empty-alternative for leading, trailing, and adjacent empty alternatives."
+      },
+      {
+        "name": "no-zero-quantifier",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust pattern scanner port of eslint-plugin-regexp/no-zero-quantifier for {0} and {0,0} quantifiers."
+      },
+      {
+        "name": "no-octal",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust pattern scanner port of eslint-plugin-regexp/no-octal for octal escape sequences beginning with \\0."
+      },
+      {
+        "name": "no-control-character",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust pattern scanner port of eslint-plugin-regexp/no-control-character for raw, escaped, or constructor-decoded control characters."
+      },
+      {
+        "name": "sort-flags",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc flag scanner port of eslint-plugin-regexp/sort-flags for RegExp literals and static RegExp constructors."
+      },
+      {
+        "name": "require-unicode-regexp",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc flag scanner port of eslint-plugin-regexp/require-unicode-regexp for regexps missing u or v flags."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-security",
     "directory": "npm/security",
     "version": "0.0.0",

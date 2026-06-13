@@ -843,6 +843,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-regexp"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-regexp",
+]
+
+[[package]]
 name = "oxlint-plugin-security"
 version = "0.0.0"
 dependencies = [
@@ -963,6 +973,18 @@ dependencies = [
  "oxc_allocator",
  "oxc_ast",
  "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+]
+
+[[package]]
+name = "oxlint-plugins-regexp"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_regular_expression",
  "oxc_span",
  "oxlint-plugins-_carton",
 ]
