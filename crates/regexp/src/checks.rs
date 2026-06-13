@@ -12,8 +12,9 @@ use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
     duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
-    first_invisible_character, first_non_standard_flag, first_octal_escape,
-    first_surrogate_pair_escape, first_uppercase_hex_escape, first_useless_escape, mention_char,
+    first_invisible_character, first_non_standard_flag,
+    first_numbered_backreference_with_named_group, first_octal_escape, first_surrogate_pair_escape,
+    first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, mention_char,
     pattern_has_empty_string_literal, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
@@ -625,6 +626,28 @@ impl<'a> Scanner<'a> {
                 DiagnosticData {
                     expr: Some(original),
                     replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(text) = first_useless_one_quantifier(pattern) {
+            self.report_with_data(
+                "no-useless-quantifier",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(text)),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(text) = first_numbered_backreference_with_named_group(pattern) {
+            self.report_with_data(
+                "prefer-named-backreference",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(text)),
                     ..DiagnosticData::default()
                 },
                 span,

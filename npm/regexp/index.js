@@ -152,6 +152,13 @@ const messages = Object.freeze({
     unexpected:
       "Unnecessary escape '{{expr}}'. Use '{{replacement}}' instead — the character has no special meaning here.",
   },
+  'no-useless-quantifier': {
+    unexpected: "Unexpected quantifier '{{expr}}' that matches exactly once and can be removed.",
+  },
+  'prefer-named-backreference': {
+    unexpected:
+      "Numbered backreference '{{expr}}' is used alongside a named capture group; prefer a named backreference `\\k<name>`.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -205,6 +212,10 @@ const ruleDescriptions = Object.freeze({
     'disallow duplicate literal characters in a character class',
   'prefer-range': 'enforce using a range (`a-c`) instead of three or more consecutive characters',
   'no-useless-escape': 'disallow escape sequences that have no effect on the matched character',
+  'no-useless-quantifier':
+    'disallow `{1}` and `{1,1}` quantifiers (they match exactly once and can be removed)',
+  'prefer-named-backreference':
+    'enforce using named backreferences (`\\k<name>`) when the pattern has named capture groups',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -247,6 +258,8 @@ const ruleTypes = Object.freeze({
   'no-dupe-characters-character-class': 'problem',
   'prefer-range': 'suggestion',
   'no-useless-escape': 'suggestion',
+  'no-useless-quantifier': 'suggestion',
+  'prefer-named-backreference': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -390,7 +403,9 @@ function ruleCategory(ruleName) {
     ruleName === 'no-obscure-range' ||
     ruleName === 'prefer-unicode-codepoint-escapes' ||
     ruleName === 'prefer-range' ||
-    ruleName === 'no-useless-escape'
+    ruleName === 'no-useless-escape' ||
+    ruleName === 'no-useless-quantifier' ||
+    ruleName === 'prefer-named-backreference'
   ) {
     return 'Stylistic Issues';
   }
