@@ -14,7 +14,8 @@ describe('stylistic plugin meta contract', () => {
   });
 
   it('exposes the same rule names through the meta API and the rules object', () => {
-    expect([...ruleNames].sort()).toEqual([...Object.keys(plugin.rules)].sort());
+    const byName = (a, b) => a.localeCompare(b);
+    expect([...ruleNames].sort(byName)).toEqual(Object.keys(plugin.rules).sort(byName));
   });
 
   it('exposes a stable, frozen rule-name list', () => {
@@ -54,18 +55,21 @@ describe('stylistic plugin meta contract', () => {
     }
   });
 
-  it.each(ruleNames)('rule %s exposes a createOnce factory returning a Program listener', (ruleName) => {
-    const rule = plugin.rules[ruleName];
-    expect(typeof rule.createOnce).toBe('function');
+  it.each(ruleNames)(
+    'rule %s exposes a createOnce factory returning a Program listener',
+    (ruleName) => {
+      const rule = plugin.rules[ruleName];
+      expect(typeof rule.createOnce).toBe('function');
 
-    const context = {
-      options: [],
-      sourceCode: { text: '', getText: () => '' },
-      report: () => {},
-    };
-    const visitor = rule.createOnce(context);
-    expect(typeof visitor.Program).toBe('function');
-  });
+      const context = {
+        options: [],
+        sourceCode: { text: '', getText: () => '' },
+        report: () => {},
+      };
+      const visitor = rule.createOnce(context);
+      expect(typeof visitor.Program).toBe('function');
+    },
+  );
 
   it('exposes the recommended config enabling every implemented rule', () => {
     const recommended = plugin.configs.recommended;

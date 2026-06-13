@@ -232,9 +232,9 @@ describe('no-forbidden-identifiers plugin shape', () => {
 
   it('exposes a recommended config that enables the rule as error', () => {
     expect(plugin.configs.recommended.plugins).toContain('no-forbidden-identifiers');
-    expect(plugin.configs.recommended.rules['no-forbidden-identifiers/no-forbidden-identifiers']).toBe(
-      'error',
-    );
+    expect(
+      plugin.configs.recommended.rules['no-forbidden-identifiers/no-forbidden-identifiers'],
+    ).toBe('error');
   });
 
   it('exports both default and CommonJS surfaces equivalently', () => {
