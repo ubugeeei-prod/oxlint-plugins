@@ -1,0 +1,237 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/match-any.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/match-any.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[\\s\\S]/"
+    },
+    {
+      "code": "/./s"
+    },
+    {
+      "code": "/./"
+    },
+    {
+      "code": "/[\\s\\d]/"
+    },
+    {
+      "code": "/\\S\\s/"
+    },
+    {
+      "code": "/[\\1-\\uFFFF]/"
+    },
+    {
+      "code": "/[^\\S\\s]/"
+    },
+    {
+      "code": "/[^\\d\\D]/"
+    },
+    {
+      "code": "/[^\\D\\d]/"
+    },
+    {
+      "code": "/[^\\w\\W]/"
+    },
+    {
+      "code": "/[^\\W\\w]/"
+    },
+    {
+      "code": "/[^\\0-\\uFFFF]/"
+    },
+    {
+      "code": "/[^\\p{ASCII}\\P{ASCII}]/u"
+    },
+    {
+      "code": "/[^\\P{ASCII}\\p{ASCII}]/u"
+    },
+    {
+      "code": "/[^\\s\\S\\0-\\uFFFF]/"
+    },
+    {
+      "code": "/[\\S\\s\\q{abc}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[\\S\\s]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\S\\s]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/[\\s\\S]/"
+    },
+    {
+      "code": "/[\\S\\s]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\S\\s]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/[\\s\\S]/v"
+    },
+    {
+      "code": "/[\\S\\s\\q{a|b|c}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\S\\s\\q{a|b|c}]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 17
+        }
+      ],
+      "output": "/[\\s\\S]/v"
+    },
+    {
+      "code": "/[[\\S\\s\\q{abc}]--\\q{abc}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[[\\S\\s\\q{abc}]--\\q{abc}]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 26
+        }
+      ],
+      "output": "/[\\s\\S]/v"
+    },
+    {
+      "code": "/[^]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[^]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/[\\s\\S]/"
+    },
+    {
+      "code": "/[\\d\\D]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\d\\D]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/[\\s\\S]/"
+    },
+    {
+      "code": "/[\\0-\\uFFFF]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\0-\\uFFFF]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[\\s\\S]/"
+    },
+    {
+      "code": "/[\\s\\S][\\S\\s][^]./s",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\S\\s]' to match any character.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 14
+        },
+        {
+          "message": "Unexpected using '[^]' to match any character.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 17
+        }
+      ],
+      "output": "/[\\s\\S][\\s\\S][\\s\\S]./s"
+    },
+    {
+      "code": "/[\\p{ASCII}\\P{ASCII}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\p{ASCII}\\P{ASCII}]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 22
+        }
+      ],
+      "output": "/[\\s\\S]/u"
+    },
+    {
+      "code": "/[\\p{Script=Hiragana}\\P{Script=Hiragana}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\p{Script=Hiragana}\\P{Script=Hiragana}]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 42
+        }
+      ],
+      "output": "/[\\s\\S]/u"
+    },
+    {
+      "code": "/[\\s\\S\\0-\\uFFFF]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\s\\S\\0-\\uFFFF]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 17
+        }
+      ],
+      "output": "/[\\s\\S]/"
+    },
+    {
+      "code": "/[\\w\\D]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\w\\D]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/[\\s\\S]/"
+    },
+    {
+      "code": "/[\\P{ASCII}\\w\\0-AZ-\\xFF]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected using '[\\P{ASCII}\\w\\0-AZ-\\xFF]' to match any character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 25
+        }
+      ],
+      "output": "/[\\s\\S]/u"
+    }
+  ]
+}

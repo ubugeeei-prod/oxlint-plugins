@@ -1,0 +1,426 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-character-class.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-character-class.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/regexp/"
+    },
+    {
+      "code": "/[^a]/"
+    },
+    {
+      "code": "/[^\\d]/"
+    },
+    {
+      "code": "/[\\s\\S]/"
+    },
+    {
+      "code": "/[a-z]/"
+    },
+    {
+      "code": "/[=]/ // ignore"
+    },
+    {
+      "code": "/[\\b]/ // backspace"
+    },
+    {
+      "code": "/(,)[\\1]/ // back reference escape"
+    },
+    {
+      "code": "/(,)(,)(,)(,)(,) (,)(,)(,)(,)(,) (,)[\\7]/ // back reference escape"
+    },
+    {
+      "code": "/(,)(,)(,)(,)(,) (,)(,)(,)(,)(,) (,)[\\11]/ // back reference escape"
+    },
+    {
+      "code": "/\\0/"
+    },
+    {
+      "code": "/\\1[0]/"
+    },
+    {
+      "code": "/\\0[1]/"
+    },
+    {
+      "code": "/a{[0]}/"
+    },
+    {
+      "code": "/a{123[0]}/"
+    },
+    {
+      "code": "/\\xF[F]/"
+    },
+    {
+      "code": "/\\xf[f]/"
+    },
+    {
+      "code": "/\\x4[4]/"
+    },
+    {
+      "code": "/\\uF[F]FF/"
+    },
+    {
+      "code": "/\\uf[f]ff/"
+    },
+    {
+      "code": "/\\u4[4]44/"
+    },
+    {
+      "code": "/\\c[M]/"
+    },
+    {
+      "code": "/\\c[A]/"
+    },
+    {
+      "code": "/\\c[Z]/"
+    },
+    {
+      "code": "/\\c[m]/"
+    },
+    {
+      "code": "/[\\q{abc}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[a]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/a/"
+    },
+    {
+      "code": "/[a-a]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character class range. Can remove brackets and range.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a/"
+    },
+    {
+      "code": "/[\\d]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character class escape. Can remove brackets.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": "/\\d/"
+    },
+    {
+      "code": "/(,)[\\0]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 9
+        }
+      ],
+      "output": "/(,)\\0/"
+    },
+    {
+      "code": "/(,)[\\01]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 10
+        }
+      ],
+      "output": "/(,)\\01/"
+    },
+    {
+      "code": "/[[\\^]A]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[\\^A]/v"
+    },
+    {
+      "code": "/[[A]--[B]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[A--B]/v"
+    },
+    {
+      "code": "/[A[&]&B]/v; /[A&&[&]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 7
+        },
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 19,
+          "endColumn": 22
+        }
+      ],
+      "output": "/[A\\&&B]/v; /[A&&\\&]/v"
+    },
+    {
+      "code": "/[A[&-&]&B]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character class range. Can remove brackets and range.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[A\\&&B]/v"
+    },
+    {
+      "code": "/[[&]&&[&]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected character class with one character. Can remove brackets.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[\\&&&\\&]/v"
+    },
+    {
+      "code": "/[[abc]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character class. Can remove brackets.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        },
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": "/[abc]/v"
+    },
+    {
+      "code": "/[[A&&B]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character class. Can remove brackets.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[A&&B]/v"
+    },
+    {
+      "code": "/[[\\q{abc}]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character class. Can remove brackets.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        },
+        {
+          "message": "Unexpected character class with one string literal. Can remove brackets.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[\\q{abc}]/v"
+    },
+    {
+      "code": "/[[^\\w&&\\d]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class with one character class. Can remove brackets.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[^\\w&&\\d]/v"
+    },
+    {
+      "code": "/[^[abc]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[^abc]/v"
+    },
+    {
+      "code": "/[^[abc]d]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[^abcd]/v"
+    },
+    {
+      "code": "/[[abc][def]ghi]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        },
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[abcdefghi]/v"
+    },
+    {
+      "code": "/[abc[def]ghi]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[abcdefghi]/v"
+    },
+    {
+      "code": "/[[abc&]&[&bd]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        },
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 15
+        }
+      ],
+      "output": "/[abc\\&&\\&bd]/v"
+    },
+    {
+      "code": "/[[abc!-&]&[&-1bd]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 11
+        },
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 19
+        }
+      ],
+      "output": "/[abc!-\\&&\\&-1bd]/v"
+    },
+    {
+      "code": "/[[]^]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": "/\\^/v"
+    },
+    {
+      "code": "/[&[]&]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary nesting character class. Can remove brackets.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[&\\&]/v"
+    }
+  ]
+}

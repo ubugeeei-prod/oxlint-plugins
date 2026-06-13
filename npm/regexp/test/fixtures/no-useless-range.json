@@ -1,0 +1,225 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-range.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-range.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[a]/"
+    },
+    {
+      "code": "/[ab]/"
+    },
+    {
+      "code": "/[a-c]/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[a-a]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[a]/"
+    },
+    {
+      "code": "/[a-a]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[a]/v"
+    },
+    {
+      "code": "/[a-b]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[ab]/"
+    },
+    {
+      "code": "/[a-b]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[ab]/v"
+    },
+    {
+      "code": "/[a-a-c-c]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[a\\-c]/"
+    },
+    {
+      "code": "/[a-abc]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[abc]/"
+    },
+    {
+      "code": "\n            const s = \"[a-a-c]\"\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 2,
+          "column": 25,
+          "endColumn": 28
+        }
+      ],
+      "output": "\n            const s = \"[a\\\\-c]\"\n            new RegExp(s)"
+    },
+    {
+      "code": "\n            const s = \"[a-\"+\"a]\"\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 2,
+          "column": 23,
+          "endColumn": 33
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            /[,--b]/;\n            /[a-a-z]/;\n            /[a-a--z]/;\n            /[\\c-d]/;\n            /[\\x6-7]/;\n            /[\\u002-3]/;\n            /[A-\\u004-5]/;\n            ",
+      "errorCount": 7,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 2,
+          "column": 15,
+          "endColumn": 18
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 3,
+          "column": 15,
+          "endColumn": 18
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 4,
+          "column": 15,
+          "endColumn": 18
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 5,
+          "column": 16,
+          "endColumn": 19
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 6,
+          "column": 17,
+          "endColumn": 20
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 7,
+          "column": 19,
+          "endColumn": 22
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 8,
+          "column": 21,
+          "endColumn": 24
+        }
+      ],
+      "output": "\n            /[,\\-b]/;\n            /[a\\-z]/;\n            /[a\\--z]/;\n            /[\\c-d]/;\n            /[\\x6-7]/;\n            /[\\u002-3]/;\n            /[A-\\u004-5]/;\n            "
+    },
+    {
+      "code": "\n            /[,-\\-b]/;\n            /[c-d]/;\n            /[x6-7]/;\n            /[\\x 6-7]/;\n            /[u002-3]/;\n            /[\\u 002-3]/;\n            ",
+      "errorCount": 6,
+      "errors": [
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 2,
+          "column": 15,
+          "endColumn": 19
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 3,
+          "column": 15,
+          "endColumn": 18
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 4,
+          "column": 16,
+          "endColumn": 19
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 5,
+          "column": 18,
+          "endColumn": 21
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 6,
+          "column": 18,
+          "endColumn": 21
+        },
+        {
+          "message": "Unexpected unnecessary character ranges. The hyphen is unnecessary.",
+          "line": 7,
+          "column": 20,
+          "endColumn": 23
+        }
+      ],
+      "output": "\n            /[,\\-b]/;\n            /[cd]/;\n            /[x67]/;\n            /[\\x 67]/;\n            /[u0023]/;\n            /[\\u 0023]/;\n            "
+    }
+  ]
+}

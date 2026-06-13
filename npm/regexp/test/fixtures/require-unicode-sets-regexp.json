@@ -1,0 +1,368 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/require-unicode-sets-regexp.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/require-unicode-sets-regexp.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/a/v"
+    },
+    {
+      "code": "/[\\p{ASCII}]/iu",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[\\p{ASCII}]/iv"
+    },
+    {
+      "code": "/[[]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[^\\P{Lowercase_Letter}]/giu",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 26,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[^\\P{ASCII}]/iu",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\P{ASCII}]/iu",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a&&b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a!!b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a##b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a$$b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a%%b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a**b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a++b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a,,b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a..b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a::b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a;;b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a<<b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a==b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a>>b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a??b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a@@b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a^^b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a``b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a~~b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[+--b]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'v' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    }
+  ]
+}

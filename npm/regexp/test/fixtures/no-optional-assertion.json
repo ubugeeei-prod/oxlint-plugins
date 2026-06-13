@@ -1,0 +1,129 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-optional-assertion.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-optional-assertion.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/fo(?:o\\b)?/"
+    },
+    {
+      "code": "/(?:a|(\\b|-){2})?/"
+    },
+    {
+      "code": "/(?:a|(?:\\b|a)+)?/"
+    },
+    {
+      "code": "/fo(?:o\\b)/"
+    },
+    {
+      "code": "/fo(?:o\\b){1}/"
+    },
+    {
+      "code": "/(?:(?=[\\q{a}]))/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(?:\\b|(?=a))?/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "This assertion effectively optional and does not change the pattern. Either remove the assertion or change the parent quantifier '?'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        },
+        {
+          "message": "This assertion effectively optional and does not change the pattern. Either remove the assertion or change the parent quantifier '?'.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:\\b|a)?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This assertion effectively optional and does not change the pattern. Either remove the assertion or change the parent quantifier '?'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:^|a)*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This assertion effectively optional and does not change the pattern. Either remove the assertion or change the parent quantifier '*'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:((?:(\\b|a)))|b)?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This assertion effectively optional and does not change the pattern. Either remove the assertion or change the parent quantifier '?'.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:((?:(\\b|a)))|b)*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This assertion effectively optional and does not change the pattern. Either remove the assertion or change the parent quantifier '*'.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/((\\b)+){0,}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This assertion effectively optional and does not change the pattern. Either remove the assertion or change the parent quantifier '{0,}'.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:(?=[\\q{a}]))?/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This assertion effectively optional and does not change the pattern. Either remove the assertion or change the parent quantifier '?'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    }
+  ]
+}

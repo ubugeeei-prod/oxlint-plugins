@@ -1,0 +1,150 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-string-literal.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-string-literal.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[\\q{abc}]/v"
+    },
+    {
+      "code": "/[\\q{ab|}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[\\q{a}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[a]/v"
+    },
+    {
+      "code": "/[\\q{a|bc}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[a\\q{bc}]/v"
+    },
+    {
+      "code": "/[\\q{ab|c}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[c\\q{ab}]/v"
+    },
+    {
+      "code": "/[\\q{ab|c|de}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[c\\q{ab|de}]/v"
+    },
+    {
+      "code": "/[a\\q{ab|\\-}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[a\\-\\q{ab}]/v"
+    },
+    {
+      "code": "/[\\q{ab|^}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[\\^\\q{ab}]/v"
+    },
+    {
+      "code": "/[\\q{ab|c}&&\\q{ab}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[[c\\q{ab}]&&\\q{ab}]/v"
+    },
+    {
+      "code": "/[A&&\\q{&}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[A&&\\&]/v"
+    },
+    {
+      "code": "/[\\q{&}&&A]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[\\&&&A]/v"
+    },
+    {
+      "code": "/[A&&\\q{^|ab}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected string disjunction of single character.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[A&&[\\^\\q{ab}]]/v"
+    }
+  ]
+}

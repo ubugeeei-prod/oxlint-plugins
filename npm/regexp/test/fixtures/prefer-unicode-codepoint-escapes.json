@@ -1,0 +1,113 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-unicode-codepoint-escapes.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-unicode-codepoint-escapes.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/regexp/u"
+    },
+    {
+      "code": "/\\ud83d\\ude00/"
+    },
+    {
+      "code": "/[\\ud83d\\ude00]/"
+    },
+    {
+      "code": "/\\u{1f600}/u"
+    },
+    {
+      "code": "/😀/u"
+    },
+    {
+      "code": "/\\u{1f600}/v"
+    },
+    {
+      "code": "/😀/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/\\ud83d\\ude00/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use Unicode codepoint escapes instead of Unicode escapes using surrogate pairs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/\\u{1f600}/u"
+    },
+    {
+      "code": "/[\\ud83d\\ude00]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use Unicode codepoint escapes instead of Unicode escapes using surrogate pairs.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 15
+        }
+      ],
+      "output": "/[\\u{1f600}]/u"
+    },
+    {
+      "code": "/\\uD83D\\uDE00/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use Unicode codepoint escapes instead of Unicode escapes using surrogate pairs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/\\u{1F600}/u"
+    },
+    {
+      "code": "\n            const s = \"\\\\ud83d\\\\ude00\"\n            new RegExp(s, 'u')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use Unicode codepoint escapes instead of Unicode escapes using surrogate pairs.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 38
+        }
+      ],
+      "output": "\n            const s = \"\\\\u{1f600}\"\n            new RegExp(s, 'u')\n            "
+    },
+    {
+      "code": "\n            const s = \"\\\\ud83d\"+\"\\\\ude00\"\n            new RegExp(s, 'u')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use Unicode codepoint escapes instead of Unicode escapes using surrogate pairs.",
+          "line": 2,
+          "column": 23,
+          "endColumn": 42
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\ud83d\\ude00/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use Unicode codepoint escapes instead of Unicode escapes using surrogate pairs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/\\u{1f600}/v"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-empty-group.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-empty-group.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/(a)/"
+    },
+    {
+      "code": "/(a|)/"
+    },
+    {
+      "code": "/(?:a|)/"
+    },
+    {
+      "code": "/(?:a|[\\q{}])/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/()/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty group.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty group.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty group.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty group.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    }
+  ]
+}

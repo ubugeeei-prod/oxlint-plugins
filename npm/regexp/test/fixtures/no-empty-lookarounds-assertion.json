@@ -1,0 +1,242 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-empty-lookarounds-assertion.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-empty-lookarounds-assertion.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/x(?=y)/"
+    },
+    {
+      "code": "/x(?!y)/"
+    },
+    {
+      "code": "/(?<=y)x/"
+    },
+    {
+      "code": "/(?<!y)x/"
+    },
+    {
+      "code": "/(^)x/"
+    },
+    {
+      "code": "/x($)/"
+    },
+    {
+      "code": "/(?=(?=.).*)/"
+    },
+    {
+      "code": "/(?=$|a)/"
+    },
+    {
+      "code": "/(?=\\ba*\\b)/"
+    },
+    {
+      "code": "/b?r(#*)\"(?:[^\"]|\"(?!\\1))*\"\\1/"
+    },
+    {
+      "code": "/x(?=[\\q{a}])/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/x(?=)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookahead. It will trivially accept all inputs.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/x(?!)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookahead. It will trivially reject all inputs.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<=)x/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookbehind. It will trivially accept all inputs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<!)x/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookbehind. It will trivially reject all inputs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/x(?=|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookahead. It will trivially accept all inputs.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/x(?!|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookahead. It will trivially reject all inputs.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<=|)x/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookbehind. It will trivially accept all inputs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<!|)x/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookbehind. It will trivially reject all inputs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/x(?=y|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookahead. It will trivially accept all inputs.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/x(?!y|)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookahead. It will trivially reject all inputs.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<=y|)x/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookbehind. It will trivially accept all inputs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<!y|)x/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookbehind. It will trivially reject all inputs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=a*)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookahead. It will trivially accept all inputs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=a|b*)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookahead. It will trivially accept all inputs.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/x(?=[\\q{}])/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty lookahead. It will trivially accept all inputs.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    }
+  ]
+}

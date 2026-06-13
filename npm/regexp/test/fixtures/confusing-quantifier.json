@@ -1,0 +1,71 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/confusing-quantifier.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/confusing-quantifier.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a+/"
+    },
+    {
+      "code": "/a?/"
+    },
+    {
+      "code": "/(a|b?)*/"
+    },
+    {
+      "code": "/(a?){0,3}/"
+    },
+    {
+      "code": "/(a|\\b)+/"
+    },
+    {
+      "code": "/[\\q{a|b}]+/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(a?){5}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This quantifier is confusing because its minimum is 5 but it can match the empty string. Maybe replace it with `{0,5}` to reflect that it can match the empty string?",
+          "line": 1,
+          "column": 6,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:a?b*|c+){4}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This quantifier is confusing because its minimum is 4 but it can match the empty string. Maybe replace it with `{0,4}` to reflect that it can match the empty string?",
+          "line": 1,
+          "column": 13,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{a|}]+/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This quantifier is confusing because its minimum is 1 but it can match the empty string. Maybe replace it with `*` to reflect that it can match the empty string?",
+          "line": 1,
+          "column": 10,
+          "endColumn": 11
+        }
+      ],
+      "output": null
+    }
+  ]
+}

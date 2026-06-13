@@ -1,0 +1,128 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-escape-replacement-dollar-char.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-escape-replacement-dollar-char.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "'€1,234'.replace(/€/, '$$'); // \"$1,234\""
+    },
+    {
+      "code": "'abc'.foo(/./, '$');"
+    },
+    {
+      "code": "'abc'.replace(/./, $);"
+    },
+    {
+      "code": "'abc'.replace(foo, '$');"
+    },
+    {
+      "code": "foo.replace(/./, '$');"
+    },
+    {
+      "code": "'abc'.replace(/./, '$&$&');"
+    },
+    {
+      "code": "'abc'.replace(/./, \"$`$'\");"
+    },
+    {
+      "code": "'abc'.replace(/(.)/, '$1');"
+    },
+    {
+      "code": "'abc'.replace(/(?<foo>.)/, '$<foo>');"
+    },
+    {
+      "code": "'€1,234'.replace(/[\\q{€}]/v, '$$'); // \"$1,234\""
+    }
+  ],
+  "invalid": [
+    {
+      "code": "'€1,234'.replace(/€/, '$'); // \"$1,234\"",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected replacement `$` character without escaping. Use `$$` instead.",
+          "line": 1,
+          "column": 24,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "'€1,234'.replace(/€/v, '$'); // \"$1,234\"",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected replacement `$` character without escaping. Use `$$` instead.",
+          "line": 1,
+          "column": 25,
+          "endColumn": 26
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "'€1,234'.replaceAll(/€/, '$'); // \"$1,234\"",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected replacement `$` character without escaping. Use `$$` instead.",
+          "line": 1,
+          "column": 27,
+          "endColumn": 28
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "'abc'.replace(/./, '$ $$ $');",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected replacement `$` character without escaping. Use `$$` instead.",
+          "line": 1,
+          "column": 21,
+          "endColumn": 22
+        },
+        {
+          "message": "Unexpected replacement `$` character without escaping. Use `$$` instead.",
+          "line": 1,
+          "column": 26,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "'abc'.replace(/(?<foo>.)/, '$<foo');",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected replacement `$` character without escaping. Use `$$` instead.",
+          "line": 1,
+          "column": 29,
+          "endColumn": 30
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "'€1,234'.replace(/[\\q{€}]/v, '$'); // \"$1,234\"",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected replacement `$` character without escaping. Use `$$` instead.",
+          "line": 1,
+          "column": 31,
+          "endColumn": 32
+        }
+      ],
+      "output": null
+    }
+  ]
+}

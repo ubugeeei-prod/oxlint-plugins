@@ -1,0 +1,165 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/use-ignore-case.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/use-ignore-case.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/regexp/"
+    },
+    {
+      "code": "/[aA]/i"
+    },
+    {
+      "code": "/[aA]a/"
+    },
+    {
+      "code": "/[aAb]/"
+    },
+    {
+      "code": "/[aaaa]/"
+    },
+    {
+      "code": "/regexp/u"
+    },
+    {
+      "code": "/[aA]/iu"
+    },
+    {
+      "code": "/[aA]a/u"
+    },
+    {
+      "code": "/[aAb]/u"
+    },
+    {
+      "code": "/[aaaa]/u"
+    },
+    {
+      "code": "/\\b[aA]/u"
+    },
+    {
+      "code": "/[a-zA-Z]/u"
+    },
+    {
+      "code": "/regexp/v"
+    },
+    {
+      "code": "/[aA]/iv"
+    },
+    {
+      "code": "/[aA]a/v"
+    },
+    {
+      "code": "/[aAb]/v"
+    },
+    {
+      "code": "/[aaaa]/v"
+    },
+    {
+      "code": "/\\b[aA]/v"
+    },
+    {
+      "code": "/[a-zA-Z]/v"
+    },
+    {
+      "code": "/[a-zA-Z]/.source"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[a-zA-Z]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The character class(es) '[a-zA-Z]' can be simplified using the `i` flag.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[a-z]/i"
+    },
+    {
+      "code": "/[aA][aA][aA][aA][aA]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The character class(es) '[aA]', '[aA]', '[aA]', '[aA]', '[aA]' can be simplified using the `i` flag.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 23
+        }
+      ],
+      "output": "/[a][a][a][a][a]/i"
+    },
+    {
+      "code": "/[aA]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The character class(es) '[aA]' can be simplified using the `i` flag.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": "/[a]/iu"
+    },
+    {
+      "code": "/[aA]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The character class(es) '[aA]' can be simplified using the `i` flag.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": "/[a]/iv"
+    },
+    {
+      "code": "/\\b0[xX][a-fA-F0-9]+\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The character class(es) '[xX]', '[a-fA-F0-9]' can be simplified using the `i` flag.",
+          "line": 1,
+          "column": 23,
+          "endColumn": 24
+        }
+      ],
+      "output": "/\\b0[x][a-f0-9]+\\b/i"
+    },
+    {
+      "code": "RegExp(\"[a-zA-Z]\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The character class(es) '[a-zA-Z]' can be simplified using the `i` flag.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "RegExp(\"[a-z]\", \"i\")"
+    },
+    {
+      "code": "/[\\q{a|A}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The character class(es) '[\\q{a|A}]' can be simplified using the `i` flag.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[\\q{a}]/iv"
+    }
+  ]
+}

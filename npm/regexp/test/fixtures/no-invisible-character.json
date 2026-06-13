@@ -1,0 +1,419 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-invisible-character.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-invisible-character.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a/"
+    },
+    {
+      "code": "/ /"
+    },
+    {
+      "code": "/[a]/"
+    },
+    {
+      "code": "/[ ]/"
+    },
+    {
+      "code": "/\\t/"
+    },
+    {
+      "code": "new RegExp('\\t')"
+    },
+    {
+      "code": "\n        const a = '' + '\t';\n        new RegExp(a)"
+    },
+    {
+      "code": "new RegExp(' ')"
+    },
+    {
+      "code": "new RegExp('a')"
+    },
+    {
+      "code": "new RegExp('[ ]')"
+    },
+    {
+      "code": "/[\\q{\\t}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/ /",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected invisible character. Use '\\xa0' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": "/\\xa0/"
+    },
+    {
+      "code": "/[\t]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected invisible character. Use '\\t' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": "/[\\t]/"
+    },
+    {
+      "code": "/[\t  ᠎             　﻿​]/",
+      "errorCount": 21,
+      "errors": [
+        {
+          "message": "Unexpected invisible character. Use '\\t' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\xa0' instead.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u1680' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u180e' instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2000' instead.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2001' instead.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2002' instead.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2003' instead.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 11
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2004' instead.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 12
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2005' instead.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 13
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2006' instead.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 14
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2007' instead.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 15
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2008' instead.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 16
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2009' instead.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 17
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u200a' instead.",
+          "line": 1,
+          "column": 17,
+          "endColumn": 18
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u202f' instead.",
+          "line": 1,
+          "column": 18,
+          "endColumn": 19
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u205f' instead.",
+          "line": 1,
+          "column": 19,
+          "endColumn": 20
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u3000' instead.",
+          "line": 1,
+          "column": 20,
+          "endColumn": 21
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\ufeff' instead.",
+          "line": 1,
+          "column": 21,
+          "endColumn": 22
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\x85' instead.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 23
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u200b' instead.",
+          "line": 1,
+          "column": 23,
+          "endColumn": 24
+        }
+      ],
+      "output": "/[\\t\\xa0\\u1680\\u180e\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u202f\\u205f\\u3000\\ufeff\\x85\\u200b]/"
+    },
+    {
+      "code": "/[\\t \\u1680᠎\\u2000 \\u2002 \\u2004 \\u2006 \\u2008 \\u200a \\u205f　\\ufeff\\u200b]/",
+      "errorCount": 10,
+      "errors": [
+        {
+          "message": "Unexpected invisible character. Use '\\xa0' instead.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u180e' instead.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 13
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2001' instead.",
+          "line": 1,
+          "column": 19,
+          "endColumn": 20
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2003' instead.",
+          "line": 1,
+          "column": 26,
+          "endColumn": 27
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2005' instead.",
+          "line": 1,
+          "column": 33,
+          "endColumn": 34
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2007' instead.",
+          "line": 1,
+          "column": 40,
+          "endColumn": 41
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2009' instead.",
+          "line": 1,
+          "column": 47,
+          "endColumn": 48
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u202f' instead.",
+          "line": 1,
+          "column": 54,
+          "endColumn": 55
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u3000' instead.",
+          "line": 1,
+          "column": 61,
+          "endColumn": 62
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\x85' instead.",
+          "line": 1,
+          "column": 68,
+          "endColumn": 69
+        }
+      ],
+      "output": "/[\\t\\xa0\\u1680\\u180e\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u202f\\u205f\\u3000\\ufeff\\x85\\u200b]/"
+    },
+    {
+      "code": "new RegExp('\t  ᠎             　﻿​')",
+      "errorCount": 21,
+      "errors": [
+        {
+          "message": "Unexpected invisible character. Use '\\t' instead.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 14
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\xa0' instead.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 15
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u1680' instead.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 16
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u180e' instead.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 17
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2000' instead.",
+          "line": 1,
+          "column": 17,
+          "endColumn": 18
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2001' instead.",
+          "line": 1,
+          "column": 18,
+          "endColumn": 19
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2002' instead.",
+          "line": 1,
+          "column": 19,
+          "endColumn": 20
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2003' instead.",
+          "line": 1,
+          "column": 20,
+          "endColumn": 21
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2004' instead.",
+          "line": 1,
+          "column": 21,
+          "endColumn": 22
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2005' instead.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 23
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2006' instead.",
+          "line": 1,
+          "column": 23,
+          "endColumn": 24
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2007' instead.",
+          "line": 1,
+          "column": 24,
+          "endColumn": 25
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2008' instead.",
+          "line": 1,
+          "column": 25,
+          "endColumn": 26
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u2009' instead.",
+          "line": 1,
+          "column": 26,
+          "endColumn": 27
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u200a' instead.",
+          "line": 1,
+          "column": 27,
+          "endColumn": 28
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u202f' instead.",
+          "line": 1,
+          "column": 28,
+          "endColumn": 29
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u205f' instead.",
+          "line": 1,
+          "column": 29,
+          "endColumn": 30
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u3000' instead.",
+          "line": 1,
+          "column": 30,
+          "endColumn": 31
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\ufeff' instead.",
+          "line": 1,
+          "column": 31,
+          "endColumn": 32
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\x85' instead.",
+          "line": 1,
+          "column": 32,
+          "endColumn": 33
+        },
+        {
+          "message": "Unexpected invisible character. Use '\\u200b' instead.",
+          "line": 1,
+          "column": 33,
+          "endColumn": 34
+        }
+      ],
+      "output": "new RegExp('\\t\\xa0\\u1680\\u180e\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u202f\\u205f\\u3000\\ufeff\\x85\\u200b')"
+    },
+    {
+      "code": "/[\\q{\t}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected invisible character. Use '\\t' instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[\\q{\\t}]/v"
+    }
+  ]
+}

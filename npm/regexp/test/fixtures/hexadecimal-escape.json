@@ -1,0 +1,42 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/hexadecimal-escape.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/hexadecimal-escape.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a \\x0a \\cM \\0 \\u0100 \\u{100}/u"
+    },
+    {
+      "code": "/\\7/"
+    },
+    {
+      "code": "/\\cA \\cB \\cM/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/\\u000a \\u{00000a}/u",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Expected hexadecimal escape ('\\x0a'), but unicode escape ('\\u000a') is used.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        },
+        {
+          "message": "Expected hexadecimal escape ('\\x0a'), but unicode code point escape ('\\u{00000a}') is used.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 19
+        }
+      ],
+      "output": "/\\x0a \\x0a/u"
+    }
+  ]
+}

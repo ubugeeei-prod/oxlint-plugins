@@ -1,0 +1,304 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-range.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-range.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[a]/"
+    },
+    {
+      "code": "/[ab]/"
+    },
+    {
+      "code": "/[abc]/"
+    },
+    {
+      "code": "/[a-b]/"
+    },
+    {
+      "code": "/[a-c]/"
+    },
+    {
+      "code": "/[a-d]/"
+    },
+    {
+      "code": "/[0-9]/"
+    },
+    {
+      "code": "/[A-Z]/"
+    },
+    {
+      "code": "/[a-zA-ZZ-a]/"
+    },
+    {
+      "code": "/[ !\"#$]/"
+    },
+    {
+      "code": "/[ -$]/"
+    },
+    {
+      "code": "/[ -$]/"
+    },
+    {
+      "code": "/[ -$]/"
+    },
+    {
+      "code": "/[\\q{a|b|c|d|e|f|abcdef}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[abcd]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-d' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[a-d]/"
+    },
+    {
+      "code": "/[ABCD abcd]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'A-D' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-d' instead.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[A-D a-d]/"
+    },
+    {
+      "code": "/[ABCD abcd]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'A-D' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-d' instead.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[A-D a-d]/v"
+    },
+    {
+      "code": "/[abc-f]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-f' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": "/[a-f]/"
+    },
+    {
+      "code": "/[a-cd-f]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-f' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[a-f]/"
+    },
+    {
+      "code": "/[d-fa-c]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-f' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[a-f]/"
+    },
+    {
+      "code": "/[abc_d-f]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-f' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-f' instead.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[a-f_]/"
+    },
+    {
+      "code": "/[abc_d-f_h-j_k-m]/",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-f' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-f' instead.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 10
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'h-m' instead.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 14
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'h-m' instead.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[a-f__h-m_]/"
+    },
+    {
+      "code": "/[a-d_d-f_h-k_j-m]/",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-f' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'a-f' instead.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 10
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'h-m' instead.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 14
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use 'h-m' instead.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[a-f__h-m_]/"
+    },
+    {
+      "code": "/[0-2\\d3-4]/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use '0-4' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use '0-4' instead.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[0-4\\d]/"
+    },
+    {
+      "code": "/[3-4560-2]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use '0-6' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[0-6]/"
+    },
+    {
+      "code": "const s = \"[0-23-4\\\\d]\"\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use '0-4' instead.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 19
+        }
+      ],
+      "output": "const s = \"[0-4\\\\d]\"\n            new RegExp(s)"
+    },
+    {
+      "code": "const s = \"[0-23\" + \"-4\\\\d]\"\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use '0-4' instead.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[😀😁😂😃😄 😆😇😈😉😊]/u",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected multiple adjacent characters. Use '😀-😄' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 13
+        },
+        {
+          "message": "Unexpected multiple adjacent characters. Use '😆-😊' instead.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 24
+        }
+      ],
+      "output": "/[😀-😄 😆-😊]/u"
+    }
+  ]
+}

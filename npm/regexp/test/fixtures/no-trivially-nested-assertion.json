@@ -1,0 +1,347 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-trivially-nested-assertion.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-trivially-nested-assertion.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/(?=(?=a)b)/"
+    },
+    {
+      "code": "/(?!$)/"
+    },
+    {
+      "code": "/(?<!$)/"
+    },
+    {
+      "code": "/(?!^)/"
+    },
+    {
+      "code": "/(?<!^)/"
+    },
+    {
+      "code": "/(?!(?!(a)))/"
+    },
+    {
+      "code": "/(?=[\\q{$}])/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(?=$)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/$/"
+    },
+    {
+      "code": "/(?=^)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/^/"
+    },
+    {
+      "code": "/(?<=$)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/$/"
+    },
+    {
+      "code": "/(?<=^)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/^/"
+    },
+    {
+      "code": "/(?=\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\b/"
+    },
+    {
+      "code": "/(?!\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\B/"
+    },
+    {
+      "code": "/(?<=\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/\\b/"
+    },
+    {
+      "code": "/(?<!\\b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/\\B/"
+    },
+    {
+      "code": "/(?=(?=a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "/(?=a)/"
+    },
+    {
+      "code": "/(?=(?!a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "/(?!a)/"
+    },
+    {
+      "code": "/(?=(?<=a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?<=a)/"
+    },
+    {
+      "code": "/(?=(?<!a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?<!a)/"
+    },
+    {
+      "code": "/(?!(?=a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "/(?!a)/"
+    },
+    {
+      "code": "/(?!(?!a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "/(?=a)/"
+    },
+    {
+      "code": "/(?!(?<=a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?<!a)/"
+    },
+    {
+      "code": "/(?!(?<!a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?<=a)/"
+    },
+    {
+      "code": "/(?<=(?=a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?=a)/"
+    },
+    {
+      "code": "/(?<=(?!a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?!a)/"
+    },
+    {
+      "code": "/(?<=(?<=a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/(?<=a)/"
+    },
+    {
+      "code": "/(?<=(?<!a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/(?<!a)/"
+    },
+    {
+      "code": "/(?<!(?=a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?!a)/"
+    },
+    {
+      "code": "/(?<!(?!a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(?=a)/"
+    },
+    {
+      "code": "/(?<!(?<=a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/(?<!a)/"
+    },
+    {
+      "code": "/(?<!(?<!a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected trivially nested assertion.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/(?<=a)/"
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-missing-g-flag.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-missing-g-flag.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n        const s = 'foo'\n        const ret = s.replaceAll(/foo/g, 'bar')\n        "
+    },
+    {
+      "code": "\n        const s = 'foo'\n        const ret = s.matchAll(/foo/g)\n        "
+    },
+    {
+      "code": "\n        const s = 'foo'\n        const ret = s.replaceAll(new RegExp('foo', 'g'), 'bar')\n        "
+    },
+    {
+      "code": "\n        const s = 'foo'\n        const ret = s.matchAll(new RegExp('foo', 'g'))\n        "
+    },
+    {
+      "code": "\n        const s = 'foo'\n        const ret = s.replace(/foo/, 'bar')\n        "
+    },
+    {
+      "code": "\n        const s = 'foo'\n        const ret = s.match(/foo/)\n        "
+    },
+    {
+      "code": "\n        const s = 'foo'\n        const ret = s.replaceAll('bar', /foo/)\n        "
+    },
+    {
+      "code": "\n        const ret = /foo/.replaceAll(p, 'bar')\n        "
+    },
+    {
+      "code": "\n        const ret = unknown.replaceAll(/foo/, 'bar')\n        "
+    },
+    {
+      "code": "\n        const s = 'foo'\n        const ret = s.replaceAll(new RegExp('foo', unknown), 'bar')\n        "
+    },
+    {
+      "code": "\n        const s = 'foo'\n        const ret = s.replaceAll(/[\\q{foo}]/gv, 'bar')\n        "
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n            const s = 'foo'\n            const ret = s.replaceAll(/foo/, 'bar')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The pattern given to the argument of `String#replaceAll()` requires the `g` flag, but is missing it.",
+          "line": 3,
+          "column": 38,
+          "endColumn": 43
+        }
+      ],
+      "output": "\n            const s = 'foo'\n            const ret = s.replaceAll(/foo/g, 'bar')\n            "
+    },
+    {
+      "code": "\n            const s = 'foo'\n            const ret = s.matchAll(/foo/)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The pattern given to the argument of `String#matchAll()` requires the `g` flag, but is missing it.",
+          "line": 3,
+          "column": 36,
+          "endColumn": 41
+        }
+      ],
+      "output": "\n            const s = 'foo'\n            const ret = s.matchAll(/foo/g)\n            "
+    },
+    {
+      "code": "\n            const s = 'foo'\n            const ret = s.replaceAll(new RegExp('foo'), 'bar')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The pattern given to the argument of `String#replaceAll()` requires the `g` flag, but is missing it.",
+          "line": 3,
+          "column": 38,
+          "endColumn": 55
+        }
+      ],
+      "output": "\n            const s = 'foo'\n            const ret = s.replaceAll(new RegExp('foo', \"g\"), 'bar')\n            "
+    },
+    {
+      "code": "\n            const s = 'foo'\n            const ret = s.matchAll(new RegExp('foo'))\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The pattern given to the argument of `String#matchAll()` requires the `g` flag, but is missing it.",
+          "line": 3,
+          "column": 36,
+          "endColumn": 53
+        }
+      ],
+      "output": "\n            const s = 'foo'\n            const ret = s.matchAll(new RegExp('foo', \"g\"))\n            "
+    },
+    {
+      "code": "\n            const s = 'foo'\n            const ret = s.matchAll(new RegExp(foo))\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The pattern given to the argument of `String#matchAll()` requires the `g` flag, but is missing it.",
+          "line": 3,
+          "column": 36,
+          "endColumn": 51
+        }
+      ],
+      "output": "\n            const s = 'foo'\n            const ret = s.matchAll(new RegExp(foo, \"g\"))\n            "
+    },
+    {
+      "code": "\n            const s = 'foo'\n            const ret = s.matchAll(new RegExp('{', 'u'))\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The pattern given to the argument of `String#matchAll()` requires the `g` flag, but is missing it.",
+          "line": 3,
+          "column": 36,
+          "endColumn": 56
+        }
+      ],
+      "output": "\n            const s = 'foo'\n            const ret = s.matchAll(new RegExp('{', 'ug'))\n            "
+    },
+    {
+      "code": "\n            const p = /foo/\n            const s = 'foo'\n            const ret = s.replaceAll(p, 'bar')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The pattern given to the argument of `String#replaceAll()` requires the `g` flag, but is missing it.",
+          "line": 4,
+          "column": 38,
+          "endColumn": 39
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const s = 'foo'\n            const flag = 'i'\n            const ret = s.replaceAll(new RegExp('foo', flag), 'bar')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The pattern given to the argument of `String#replaceAll()` requires the `g` flag, but is missing it.",
+          "line": 4,
+          "column": 38,
+          "endColumn": 61
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const s = 'foo'\n            const f = { flag: 'i' }\n            const ret = s.replaceAll(new RegExp('foo', f.flag), 'bar')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The pattern given to the argument of `String#replaceAll()` requires the `g` flag, but is missing it.",
+          "line": 4,
+          "column": 38,
+          "endColumn": 63
+        }
+      ],
+      "output": null
+    }
+  ]
+}

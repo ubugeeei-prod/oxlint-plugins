@@ -1,0 +1,241 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-control-character.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-control-character.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/x1f/"
+    },
+    {
+      "code": "/\\\\x1f/"
+    },
+    {
+      "code": "new RegExp('x1f')"
+    },
+    {
+      "code": "RegExp('x1f')"
+    },
+    {
+      "code": "new RegExp('[')"
+    },
+    {
+      "code": "RegExp('[')"
+    },
+    {
+      "code": "new (function foo(){})('\\x1f')"
+    },
+    {
+      "code": "new RegExp('\\n')"
+    },
+    {
+      "code": "new RegExp('\\\\n')"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/\\x1f/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\\\\\x1f\\\\x1e/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 4,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\\\\\x1fFOO\\\\x00/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 4,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/FOO\\\\\\x1fFOO\\\\x1f/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 7,
+          "endColumn": 11
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "new RegExp('\\x1f\\x1e')",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 13,
+          "endColumn": 17
+        },
+        {
+          "message": "Unexpected control character '\\x1e' (U+001e).",
+          "line": 1,
+          "column": 17,
+          "endColumn": 21
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "new RegExp('\\x1fFOO\\x00')",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 13,
+          "endColumn": 17
+        },
+        {
+          "message": "Unexpected control character '\\x00' (U+0000).",
+          "line": 1,
+          "column": 20,
+          "endColumn": 24
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "new RegExp('FOO\\x1fFOO\\x1f')",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 16,
+          "endColumn": 20
+        },
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 23,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp('\\x1f')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 9,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp('\\\\x1f')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 9,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp('\\\\\\x1f')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 9,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp('\\x0a')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\n' (U+000a).",
+          "line": 1,
+          "column": 9,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp('\\\\x0a')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x0a' (U+000a).",
+          "line": 1,
+          "column": 9,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp('\\\\\\x0a')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\n' (U+000a).",
+          "line": 1,
+          "column": 9,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{\\x1f}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected control character '\\x1f' (U+001f).",
+          "line": 1,
+          "column": 6,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    }
+  ]
+}
