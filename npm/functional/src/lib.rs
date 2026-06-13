@@ -44,6 +44,8 @@ mod napi_abi {
         pub check_interfaces: Option<bool>,
         /// no-mixed-types: check object type literals (default: true).
         pub check_type_literals: Option<bool>,
+        /// no-conditional-statements: allowReturningBranches: true (default: false).
+        pub allow_returning_branches: Option<bool>,
     }
 
     #[napi(object)]
@@ -138,6 +140,9 @@ mod napi_abi {
             check_type_literals: options
                 .check_type_literals
                 .unwrap_or(default_options.check_type_literals),
+            allow_returning_branches: options
+                .allow_returning_branches
+                .unwrap_or(default_options.allow_returning_branches),
         };
 
         core::scan_functional(&source_text, &filename, &core_options)

@@ -584,3 +584,41 @@ fn traverses_nested_scopes_for_this_and_let() {
     assert_eq!(count("namespace N { let x = 1; }", &let_opts), 1);
     assert_eq!(count("outer: { let y = 1; }", &let_opts), 1);
 }
+
+#[test]
+fn no_conditional_statements_allow_returning_branches() {
+    let base = FunctionalOptions {
+        rule_names: ["no-conditional-statements".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let allow = FunctionalOptions {
+        rule_names: ["no-conditional-statements".into()].into_iter().collect(),
+        allow_returning_branches: true,
+        ..FunctionalOptions::default()
+    };
+    let count =
+        |source: &str, opts: &FunctionalOptions| scan_functional(source, "fixture.ts", opts).len();
+
+    let if_returns = "function f(i) { if (i) { return 1; } }";
+    let if_throws = "function f(i) { if (i) { throw e; } }";
+    let if_not_returning = "function f(i) { if (i) { g(); } }";
+    let if_else_returns = "function f(i) { if (i) { return 1; } else { return 0; } }";
+    let if_else_partial = "function f(i) { if (i) { return 1; } else { g(); } }";
+    let switch_returns = "function f(i) { switch (i) { case 1: return 1; default: return 2; } }";
+    let switch_partial = "function f(i) { switch (i) { case 1: g(); default: return 2; } }";
+
+    // Default: every if/switch is reported.
+    assert_eq!(count(if_returns, &base), 1);
+
+    // allowReturningBranches: an if whose branches all end in return/throw is
+    // allowed; one with a non-returning branch is still reported.
+    assert_eq!(count(if_returns, &allow), 0);
+    assert_eq!(count(if_throws, &allow), 0);
+    assert_eq!(count(if_not_returning, &allow), 1);
+    assert_eq!(count(if_else_returns, &allow), 0);
+    assert_eq!(count(if_else_partial, &allow), 1);
+
+    // switch: allowed only when every case is returning (fall-through inherits).
+    assert_eq!(count(switch_returns, &allow), 0);
+    assert_eq!(count(switch_partial, &allow), 1);
+}

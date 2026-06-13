@@ -255,6 +255,22 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'no-conditional-statements') {
+    return [
+      {
+        type: 'object',
+        properties: {
+          // `true` is honored syntactically; `"ifExhaustive"` is accepted but
+          // needs type information, so it falls back to flagging conditionals.
+          allowReturningBranches: {
+            oneOf: [{ type: 'boolean' }, { type: 'string', enum: ['ifExhaustive'] }],
+          },
+          ignoreCodePattern: stringOrStringArraySchema(),
+        },
+        additionalProperties: true,
+      },
+    ];
+  }
   if (ruleName === 'no-try-statements') {
     return [
       {
@@ -423,6 +439,9 @@ function scanOptionsForRule(context, ruleName) {
       ruleName === 'no-throw-statements' && options.allowToRejectPromises === true,
     allowTryCatch: ruleName === 'no-try-statements' && options.allowCatch === true,
     allowTryFinally: ruleName === 'no-try-statements' && options.allowFinally === true,
+    // Only the boolean `true` form is modeled; `"ifExhaustive"` needs types.
+    allowReturningBranches:
+      ruleName === 'no-conditional-statements' && options.allowReturningBranches === true,
     readonlyTypeMode:
       ruleName === 'readonly-type' && (raw === 'keyword' || raw === 'generic') ? raw : undefined,
     ignoreIfReadonlyWrapped:
