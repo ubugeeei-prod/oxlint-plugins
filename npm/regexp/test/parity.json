@@ -1,4 +1,9 @@
 {
   "_doc": "Per-rule upstream-parity enforcement level for the synced eslint-plugin-regexp fixtures (see test/upstream.test.mjs). Levels: 'off' = quarantined; the rule's behavior diverges from upstream defaults, so its valid and invalid cases are skipped until the port is fixed (the reason is the parity-debt backlog entry). 'valid' (the default for any rule not listed here) = every upstream VALID case must emit zero diagnostics for the rule (soundness). 'full' = 'valid' plus invalid-case COUNT parity (same number of diagnostics per case as upstream). Diagnostic message text and span are intentionally NOT asserted: the port rewords messages and may flag a different span (e.g. the whole literal) than upstream by design; the recorded fixture locations are reference data for a future strict-location pass.",
-  "rules": {}
+  "rules": {
+    "no-misleading-unicode-character": {
+      "level": "off",
+      "reason": "Over-reports multi-code-point characters such as ZWJ sequences (e.g. /[‍]/) — needs full grapheme/code-point analysis to match upstream."
+    }
+  }
 }
