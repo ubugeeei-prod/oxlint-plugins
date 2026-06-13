@@ -8939,19 +8939,19 @@
       },
       {
         "name": "no-optional-assertion",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-optional-assertion."
+        "notes": "GroupPrefix gains is_lookaround so the closing paren handler can peek the next byte: if a lookaround is followed by `?`, it is reported. Other quantifiers on assertions are syntax errors in the regexp parser anyway, so we only target the `?` case explicitly."
       },
       {
         "name": "no-potentially-useless-backreference",
@@ -9611,19 +9611,19 @@
       },
       {
         "name": "require-unicode-sets-regexp",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule require-unicode-sets-regexp."
+        "notes": "Flag-level check that mirrors require-unicode-regexp but specifically requires the `v` (unicode sets) flag rather than `u` or `v`. Patterns that only carry `u` still fire this rule when it is enabled."
       },
       {
         "name": "simplify-set-operations",

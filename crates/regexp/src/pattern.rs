@@ -78,6 +78,10 @@ pub(crate) struct PatternAnalysis {
     /// First single-literal class `[X]` and the bare character it could be
     /// replaced with. `no-useless-character-class`.
     pub(crate) first_useless_single_literal_class: Option<char>,
+    /// At least one lookaround assertion followed by an optional `?` quantifier
+    /// (`(?=a)?`). The `?` is always meaningless because the assertion either
+    /// succeeds or fails without consuming input. `no-optional-assertion`.
+    pub(crate) has_optional_assertion: bool,
 }
 
 impl PatternAnalysis {
@@ -165,6 +169,13 @@ impl PatternAnalysis {
                         }
                         if group.is_lookaround && !group.seen_pipe && !group.current_has_content {
                             self.has_empty_lookaround = true;
+                        }
+                        // `(?=...)?` and friends: a `?` immediately after the
+                        // closing paren of a lookaround makes the assertion
+                        // optional, which is always meaningless because the
+                        // assertion does not consume input.
+                        if group.is_lookaround && bytes.get(index + 1) == Some(&b'?') {
+                            self.has_optional_assertion = true;
                         }
                         self.mark_content(&mut groups);
                     }

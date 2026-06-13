@@ -297,6 +297,9 @@ impl<'a> Scanner<'a> {
         if !flags.contains('u') && !flags.contains('v') {
             self.report("require-unicode-regexp", "require", span);
         }
+        if !flags.contains('v') {
+            self.report("require-unicode-sets-regexp", "require", span);
+        }
     }
 
     fn check_pattern_rules(&mut self, pattern: &str, span: Span) {
@@ -508,6 +511,9 @@ impl<'a> Scanner<'a> {
                 },
                 span,
             );
+        }
+        if analysis.has_optional_assertion {
+            self.report("no-optional-assertion", "unexpected", span);
         }
     }
 }

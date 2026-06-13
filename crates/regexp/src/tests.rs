@@ -72,8 +72,79 @@ fn exposes_initial_regexp_rule_names() {
             "no-missing-g-flag",
             "no-useless-character-class",
             "no-empty-string-literal",
+            "no-optional-assertion",
+            "require-unicode-sets-regexp",
         ]
     );
+}
+
+mod no_optional_assertion {
+    use super::*;
+
+    #[test]
+    fn reports_question_after_each_lookaround_shape() {
+        assert_eq!(
+            rule_ids_for("const a = /(?=a)?/u;", "no-optional-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?!a)?/u;", "no-optional-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?<=a)?/u;", "no-optional-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?<!a)?/u;", "no-optional-assertion").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_assertions_without_quantifier_and_non_assertion_optionals() {
+        assert!(rule_ids_for("const a = /(?=a)/u;", "no-optional-assertion").is_empty());
+        // `?` after a non-lookaround group must not fire this rule.
+        assert!(rule_ids_for("const a = /(?:a)?/u;", "no-optional-assertion").is_empty());
+        assert!(rule_ids_for("const a = /(a)?/u;", "no-optional-assertion").is_empty());
+    }
+}
+
+mod require_unicode_sets_regexp {
+    use super::*;
+
+    #[test]
+    fn reports_missing_v_flag() {
+        assert_eq!(
+            rule_ids_for("const a = /a/u;", "require-unicode-sets-regexp").as_slice(),
+            &["require"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /a/;", "require-unicode-sets-regexp").as_slice(),
+            &["require"]
+        );
+        assert_eq!(
+            rule_ids_for(
+                "const a = new RegExp('a', 'gimsu');",
+                "require-unicode-sets-regexp"
+            )
+            .as_slice(),
+            &["require"]
+        );
+    }
+
+    #[test]
+    fn accepts_patterns_with_v_flag() {
+        assert!(rule_ids_for("const a = /a/v;", "require-unicode-sets-regexp").is_empty());
+        assert!(rule_ids_for("const a = /a/gv;", "require-unicode-sets-regexp").is_empty());
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('a', 'v');",
+                "require-unicode-sets-regexp"
+            )
+            .is_empty()
+        );
+    }
 }
 
 #[test]
@@ -89,10 +160,11 @@ fn ignores_dynamic_constructor_arguments() {
     assert!(ids("const a = new RegExp(pattern, 'u');").is_empty());
     assert!(ids("const a = RegExp();").is_empty());
     // When the flags argument is non-literal we still scan the pattern and
-    // assume no `u`/`v` flag, which surfaces `require-unicode-regexp` only.
+    // assume no `u`/`v` flag, which surfaces both `require-unicode-regexp`
+    // (needs `u` or `v`) and `require-unicode-sets-regexp` (needs `v`).
     assert_eq!(
         rule_names_for("const a = new RegExp('a', flags);").as_slice(),
-        &["require-unicode-regexp"]
+        &["require-unicode-regexp", "require-unicode-sets-regexp"]
     );
 }
 
@@ -1142,8 +1214,15 @@ fn reports_multiple_rules_for_a_single_regex() {
 
 #[test]
 fn reports_each_literal_independently() {
+    // The `u`-only flags trigger `require-unicode-sets-regexp` once per literal
+    // alongside the pattern-specific diagnostics.
     assert_eq!(
         rule_names_for("const a = /[]/u; const b = /a|/u;").as_slice(),
-        &["no-empty-character-class", "no-empty-alternative"]
+        &[
+            "require-unicode-sets-regexp",
+            "no-empty-character-class",
+            "require-unicode-sets-regexp",
+            "no-empty-alternative",
+        ]
     );
 }

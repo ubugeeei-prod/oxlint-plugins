@@ -163,6 +163,17 @@ const invalidCases = [
   ['no-useless-character-class', 'single digit class', 'const re = /[5]/u;\n', ['unexpected']],
   // no-empty-string-literal
   ['no-empty-string-literal', 'empty v literal', 'const re = /[\\q{}]/v;\n', ['unexpected']],
+  // no-optional-assertion
+  [
+    'no-optional-assertion',
+    'optional positive lookahead',
+    'const re = /(?=a)?/u;\n',
+    ['unexpected'],
+  ],
+  ['no-optional-assertion', 'optional lookbehind', 'const re = /(?<=a)?/u;\n', ['unexpected']],
+  // require-unicode-sets-regexp
+  ['require-unicode-sets-regexp', 'u flag only', 'const re = /a/u;\n', ['require']],
+  ['require-unicode-sets-regexp', 'no flags', 'const re = /a/;\n', ['require']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

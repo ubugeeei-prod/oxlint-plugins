@@ -119,6 +119,13 @@ const messages = Object.freeze({
   'no-empty-string-literal': {
     unexpected: 'Unexpected empty string literal inside a character class.',
   },
+  'no-optional-assertion': {
+    unexpected:
+      'Unexpected optional lookaround assertion; an assertion does not consume input, so the `?` is meaningless.',
+  },
+  'require-unicode-sets-regexp': {
+    require: "Use the 'v' flag.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -157,8 +164,10 @@ const ruleDescriptions = Object.freeze({
   'no-useless-character-class':
     'disallow character classes that contain only a single literal character',
   'no-empty-string-literal': 'disallow empty string literals (`\\q{}`) inside character classes',
+  'no-optional-assertion':
+    'disallow optional quantifiers (`?`) immediately after a lookaround assertion',
+  'require-unicode-sets-regexp': 'enforce the use of the `v` flag (unicode sets mode)',
 });
-
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
   'no-empty-character-class': 'suggestion',
@@ -191,6 +200,8 @@ const ruleTypes = Object.freeze({
   'no-missing-g-flag': 'problem',
   'no-useless-character-class': 'suggestion',
   'no-empty-string-literal': 'problem',
+  'no-optional-assertion': 'problem',
+  'require-unicode-sets-regexp': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -306,7 +317,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-invisible-character' ||
     ruleName === 'no-empty-lookarounds-assertion' ||
     ruleName === 'no-missing-g-flag' ||
-    ruleName === 'no-empty-string-literal'
+    ruleName === 'no-empty-string-literal' ||
+    ruleName === 'no-optional-assertion'
   ) {
     return 'Possible Errors';
   }
