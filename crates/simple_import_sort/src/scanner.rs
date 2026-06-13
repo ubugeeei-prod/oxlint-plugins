@@ -220,8 +220,6 @@ fn export_is_part_of_chunk(
 // ---------------------------------------------------------------------------
 
 struct ImportExportItem {
-    /// Potentially-adjusted node span (after handleLastSemicolon)
-    node_start: u32,
     node_end: u32,
     /// Full text: indentation + commentsBefore + sortedNode + commentsAfter + trailingSpaces
     code: CompactString,
@@ -421,7 +419,7 @@ fn report_export_chunk(
         v.push(single_group);
         v
     };
-    let outer: SmallVec<[SmallVec<[SmallVec<[&ImportExportItem; 8]>; 4]>; 8]> = {
+    let outer: OuterGroups<'_> = {
         let mut v = SmallVec::new();
         v.push(inner);
         v
@@ -639,7 +637,6 @@ fn build_item(
     let _ = node_end_line; // used by caller for comments_after_node, not here
 
     ImportExportItem {
-        node_start,
         node_end,
         code,
         start: extended_start,
@@ -669,7 +666,7 @@ fn find_last_token_end_before(
     let last_comment_end: Option<u32> = all_comments
         .iter()
         .filter(|c| c.span.end <= offset)
-        .last()
+        .next_back()
         .map(|c| c.span.end);
 
     // Check if there's non-whitespace text between last_comment_end and offset
@@ -897,8 +894,7 @@ fn make_sorted_import_items<'a>(
     };
 
     // Build bucket grid: [outer][inner] → vec of items
-    let mut buckets: SmallVec<[SmallVec<[SmallVec<[&ImportExportItem; 8]>; 4]>; 8]> =
-        SmallVec::new();
+    let mut buckets: OuterGroups<'_> = SmallVec::new();
     for &ni in &inner_counts {
         let mut outer: SmallVec<[SmallVec<[&ImportExportItem; 8]>; 4]> = SmallVec::new();
         for _ in 0..ni {
@@ -941,9 +937,9 @@ fn make_sorted_import_items<'a>(
 // sortImportExportItems (shared.js)
 // ---------------------------------------------------------------------------
 
-fn sort_import_export_items<'a>(
-    mut refs: SmallVec<[&'a ImportExportItem; 8]>,
-) -> SmallVec<[&'a ImportExportItem; 8]> {
+fn sort_import_export_items(
+    mut refs: SmallVec<[&ImportExportItem; 8]>,
+) -> SmallVec<[&ImportExportItem; 8]> {
     refs.sort_by(|a, b| {
         // Side-effects: keep relative order, sort first
         if a.style == SIDE_EFFECT_STYLE && b.style == SIDE_EFFECT_STYLE {
@@ -994,27 +990,38 @@ fn print_sorted_items<'a>(
 ) -> CompactString {
     // Build sorted string: groups within outer joined by newline, outers by double newline
     let nl = newline;
-    let double_nl = format!("{}{}", nl, nl);
+    let double_nl = {
+        let mut s = CompactString::new("");
+        s.push_str(nl);
+        s.push_str(nl);
+        s
+    };
 
-    let sorted = sorted_items
-        .iter()
-        .map(|groups| {
-            groups
-                .iter()
-                .map(|group| {
-                    group
-                        .iter()
-                        .map(|item| item.code.as_str())
-                        .collect::<Vec<_>>()
-                        .join(nl)
-                })
-                .collect::<Vec<_>>()
-                .join(nl)
-        })
-        .collect::<Vec<_>>()
-        .join(&double_nl);
+    let mut sorted = CompactString::new("");
+    let mut first_outer = true;
+    for groups in sorted_items.iter() {
+        if !first_outer {
+            sorted.push_str(double_nl.as_str());
+        }
+        first_outer = false;
+        let mut first_inner = true;
+        for group in groups.iter() {
+            if !first_inner {
+                sorted.push_str(nl);
+            }
+            first_inner = false;
+            let mut first_item = true;
+            for item in group.iter() {
+                if !first_item {
+                    sorted.push_str(nl);
+                }
+                first_item = false;
+                sorted.push_str(item.code.as_str());
+            }
+        }
+    }
 
-    let mut result = CompactString::from(sorted.as_str());
+    let mut result = sorted;
 
     // Edge case: if last sorted item needs_newline and there's code on the same
     // line as the last original item, add a newline.
@@ -1023,20 +1030,20 @@ fn print_sorted_items<'a>(
         .flat_map(|groups| groups.iter().flat_map(|g| g.iter().copied()))
         .collect();
 
-    if let (Some(last_sorted), Some(last_original)) = (flat_sorted.last(), original_items.last()) {
-        if last_sorted.needs_newline {
-            let lo_end = last_original.node_end;
-            let lo_end_line = shared::line_of(source_text, lo_end);
+    if let (Some(last_sorted), Some(last_original)) = (flat_sorted.last(), original_items.last())
+        && last_sorted.needs_newline
+    {
+        let lo_end = last_original.node_end;
+        let lo_end_line = shared::line_of(source_text, lo_end);
 
-            // Find first token after lo that is NOT a line comment and NOT a
-            // block comment ending on the same line as lo
-            let next = find_next_valid_token(source_text, all_comments, lo_end, lo_end_line);
+        // Find first token after lo that is NOT a line comment and NOT a
+        // block comment ending on the same line as lo
+        let next = find_next_valid_token(source_text, all_comments, lo_end, lo_end_line);
 
-            if let Some(next_start) = next {
-                if shared::line_of(source_text, next_start) == lo_end_line {
-                    result.push_str(newline);
-                }
-            }
+        if let Some(next_start) = next
+            && shared::line_of(source_text, next_start) == lo_end_line
+        {
+            result.push_str(newline);
         }
     }
 

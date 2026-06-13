@@ -196,10 +196,9 @@ fn unicode_general_category(ch: char) -> GeneralCategory {
 
 /// Base-level fold: lowercase + strip combining marks (NFD → drop Mn category).
 /// Implements `sensitivity: "base"` from `Intl.Collator`.
-fn base_fold(s: &str) -> String {
-    let nfd: String = s.nfd().collect();
-    let mut out = String::with_capacity(nfd.len());
-    for ch in nfd.chars() {
+fn base_fold(s: &str) -> CompactString {
+    let mut out = CompactString::new("");
+    for ch in s.nfd() {
         if unicode_general_category(ch) == GeneralCategory::NonspacingMark {
             continue;
         }
@@ -516,7 +515,7 @@ pub(crate) struct SourceInfo {
 
 /// Mirrors the character substitutions in `getSource` / upstream `source` key.
 pub(crate) fn source_sort_key(source: &str) -> CompactString {
-    let mut s = source.to_owned();
+    let mut s = CompactString::from(source);
     // ^[./]*\.$ → append /
     if s.chars().all(|c| c == '.' || c == '/') && s.ends_with('.') {
         s.push('/');
@@ -566,11 +565,11 @@ fn has_open_brace_specifiers(source_text: &str, decl: &ImportDeclaration<'_>) ->
     let text = source_text
         .get(decl.span.start as usize..decl.span.end as usize)
         .unwrap_or("");
-    if let Some(open) = text.find('{') {
-        if let Some(close_offset) = text[open..].find('}') {
-            let between = &text[open + 1..open + close_offset];
-            return between.trim().is_empty();
-        }
+    if let Some(open) = text.find('{')
+        && let Some(close_offset) = text[open..].find('}')
+    {
+        let between = &text[open + 1..open + close_offset];
+        return between.trim().is_empty();
     }
     false
 }
@@ -874,7 +873,7 @@ fn scan_gap_text(source_text: &str, from: u32, to: u32, out: &mut SmallVec<[Toke
         return;
     }
     let text = source_text.get(from as usize..to as usize).unwrap_or("");
-    let mut pending = String::new();
+    let mut pending = CompactString::new("");
     for ch in text.chars() {
         if ch == ',' {
             if !pending.is_empty() {
@@ -978,8 +977,11 @@ pub(crate) fn print_with_sorted_specifiers(
 
     let sorted_indices = sort_specifier_items_indices(&keyed);
 
-    // Determine trailing comma: check if the token just before `}` is `,`
-    let has_trailing_comma = check_trailing_comma(source_text, close_brace_start);
+    // Determine trailing comma. Upstream checks whether the token before `}` is
+    // a comma; equivalently, the last specifier item ended in the `after` state,
+    // which the state machine records as `had_comma` on that final item. This is
+    // robust to line/block comments between the comma and `}`.
+    let has_trailing_comma = items_result.items.last().is_some_and(|item| item.had_comma);
 
     let last_index = sorted_indices.len() - 1;
     let mut sorted_tokens: SmallVec<[Token; 32]> = SmallVec::new();
@@ -993,10 +995,11 @@ pub(crate) fn print_with_sorted_specifiers(
         };
 
         // maybeNewline
-        if let Some(prev) = prev_item {
-            if needs_starting_newline(&item.before) && !prev.after.last().is_some_and(is_newline) {
-                sorted_tokens.push(Token::newline(newline));
-            }
+        if let Some(prev) = prev_item
+            && needs_starting_newline(&item.before)
+            && !prev.after.last().is_some_and(is_newline)
+        {
+            sorted_tokens.push(Token::newline(newline));
         }
 
         sorted_tokens.extend(item.before.iter().cloned());
@@ -1028,43 +1031,6 @@ pub(crate) fn print_with_sorted_specifiers(
     out.push_str(&print_tokens(&items_result.after));
     out.push_str(&node_text[close_rel_in_node..]); // from `}` onwards
     out
-}
-
-/// Check if the token just before `close_brace_start` is a comma.
-/// Check if the last real token before `}` (at close_brace_start) is a comma.
-/// Mirrors `isPunctuator(sourceCode.getTokenBefore(allTokens[closeBraceIndex]), ",")`.
-/// We scan the interior tokens backwards, skipping whitespace and comments.
-fn check_trailing_comma(source_text: &str, close_brace_start: u32) -> bool {
-    // Take text up to close brace and scan backwards for non-whitespace char
-    let before = source_text.get(..close_brace_start as usize).unwrap_or("");
-    // Skip all whitespace (incl. newlines)
-    let stripped = before.trim_end_matches(|c: char| c.is_whitespace());
-    // Skip any trailing block/line comment
-    // We need to handle: "b, /* comment */\n" → find `,`
-    // Simple approach: iterate over interior tokens in reverse
-    // But that's expensive. Instead, use a simpler scan.
-    // If the last non-whitespace chars are `*/`, we have a block comment.
-    // Recursively strip comments.
-    strip_trailing_comments_for_comma(stripped)
-}
-
-fn strip_trailing_comments_for_comma(s: &str) -> bool {
-    let s = s.trim_end_matches(|c: char| c.is_whitespace());
-    if s.is_empty() {
-        return false;
-    }
-    if s.ends_with(',') {
-        return true;
-    }
-    // Check if ends with */ (block comment end)
-    if s.ends_with("*/") {
-        // Find matching /*
-        if let Some(open) = s[..s.len() - 1].rfind("/*") {
-            let before_comment = s[..open].trim_end_matches(|c: char| c.is_whitespace());
-            return strip_trailing_comments_for_comma(before_comment);
-        }
-    }
-    false
 }
 
 /// Trim after tokens for the last specifier when it had a comma but now doesn't.
