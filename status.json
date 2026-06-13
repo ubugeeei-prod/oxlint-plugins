@@ -3783,6 +3783,487 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-testing-library",
+    "directory": "npm/testing-library",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-testing-library",
+      "version": "7.16.2",
+      "repository": "https://github.com/testing-library/eslint-plugin-testing-library",
+      "license": "MIT"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "await-async-events",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/await-async-events; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "await-async-queries",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/await-async-queries; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "await-async-utils",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/await-async-utils; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "consistent-data-testid",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/consistent-data-testid; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-await-sync-events",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-await-sync-events; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-await-sync-queries",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-await-sync-queries; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-container",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-container; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-debugging-utils",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-debugging-utils; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-dom-import",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-dom-import; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-global-regexp-flag-in-query",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-global-regexp-flag-in-query; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-manual-cleanup",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-manual-cleanup; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-node-access",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-node-access; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-promise-in-fire-event",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-promise-in-fire-event; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-render-in-lifecycle",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-render-in-lifecycle; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-test-id-queries",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-test-id-queries; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-unnecessary-act",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-unnecessary-act; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-wait-for-multiple-assertions",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-wait-for-multiple-assertions; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-wait-for-side-effects",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-wait-for-side-effects; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "no-wait-for-snapshot",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/no-wait-for-snapshot; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-explicit-assert",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/prefer-explicit-assert; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-find-by",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/prefer-find-by; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-implicit-assert",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/prefer-implicit-assert; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-presence-queries",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/prefer-presence-queries; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-query-by-disappearance",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/prefer-query-by-disappearance; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-query-matchers",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/prefer-query-matchers; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-screen-queries",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/prefer-screen-queries; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-user-event",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/prefer-user-event; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "prefer-user-event-setup",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/prefer-user-event-setup; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      },
+      {
+        "name": "render-result-naming-convention",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-testing-library/render-result-naming-convention; focused invalid cases are covered in Rust unit tests, Vitest, and oxlint jsPlugins."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-unused-imports",
     "directory": "npm/unused-imports",
     "version": "0.0.0",
