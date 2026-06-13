@@ -10041,7 +10041,7 @@
       "repository": "https://github.com/SonarSource/SonarJS",
       "license": "LGPL-3.0-only"
     },
-    "status": "pending",
+    "status": "in-progress",
     "typeAware": false,
     "rules": [
       {
@@ -12702,19 +12702,19 @@
       },
       {
         "name": "no-nested-template-literals",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-nested-template-literals (Sonar key S4624). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of upstream rule no-nested-template-literals (Sonar key S4624). Reports a template literal nested in another template literal's interpolations. SonarJS upstream is LGPL-3.0; implemented from observed behavior only — no upstream source, fixtures, tests, or messages were copied."
       },
       {
         "name": "no-os-command-from-path",

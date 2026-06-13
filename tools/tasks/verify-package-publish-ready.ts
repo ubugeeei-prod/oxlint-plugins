@@ -119,6 +119,11 @@ const packages: PackageToPack[] = [
     dir: 'npm/unocss',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-sonarjs',
+    dir: 'npm/sonarjs',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
 ];
 
 for (const pkg of packages) {

@@ -1,0 +1,173 @@
+'use strict';
+
+// Oxlint plugin port of eslint-plugin-sonarjs (upstream is LGPL-3.0).
+// Clean-room implementation: behaviour is reproduced from public RSPEC docs and
+// observed output only. The JavaScript layer adapts Oxlint's ESLint-compatible
+// plugin API; parsing and rule checks run in Rust through Oxc. Message strings
+// live here (independently authored), not in the Rust core.
+
+const { eslintCompatPlugin } = require('@oxlint/plugins');
+const { implementedSonarjsRuleNames, scanSonarjs } = require('./api.js');
+
+const PLUGIN_NAME = 'sonarjs';
+const DOCS_BASE = 'https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs';
+const diagnosticsCache = new WeakMap();
+
+const messages = Object.freeze({
+  'no-nested-template-literals': {
+    nestedTemplateLiteral:
+      'Do not nest template literals. Extract the inner template literal into a separate variable.',
+  },
+});
+
+const ruleDescriptions = Object.freeze({
+  'no-nested-template-literals': 'Disallow nested template literals',
+});
+
+const ruleTypes = Object.freeze({
+  'no-nested-template-literals': 'suggestion',
+});
+
+const recommendedRuleConfig = Object.freeze({
+  'no-nested-template-literals': 'error',
+});
+
+const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
+const rules = Object.freeze(
+  Object.fromEntries(
+    implementedRuleNames.map((ruleName) => [ruleName, createSonarjsRule(ruleName)]),
+  ),
+);
+
+const plugin = eslintCompatPlugin({
+  meta: {
+    name: PLUGIN_NAME,
+    version: '0.0.0',
+  },
+  rules,
+  rulesConfig: Object.fromEntries(implementedRuleNames.map((ruleName) => [ruleName, 0])),
+  configs: {
+    recommended: configFromRuleConfig('recommended', recommendedRuleConfig),
+  },
+});
+
+plugin.implementedSonarjsRuleNames = implementedRuleNames;
+plugin.scanSonarjs = scanSonarjs;
+
+function configFromRuleConfig(name, ruleConfig) {
+  return {
+    name: `${PLUGIN_NAME}/${name}`,
+    plugins: [PLUGIN_NAME],
+    rules: Object.fromEntries(
+      Object.entries(ruleConfig).map(([ruleName, config]) => [
+        `${PLUGIN_NAME}/${ruleName}`,
+        config,
+      ]),
+    ),
+  };
+}
+
+function createSonarjsRule(ruleName) {
+  return {
+    meta: {
+      type: ruleTypes[ruleName],
+      docs: {
+        description: ruleDescriptions[ruleName],
+        recommended: recommendedRuleConfig[ruleName] !== undefined,
+        url: `${DOCS_BASE}#${ruleName}`,
+      },
+      messages: messages[ruleName],
+      schema: [],
+    },
+    createOnce(context) {
+      return {
+        Program() {
+          for (const diagnostic of diagnosticsForRule(context, ruleName)) {
+            reportDiagnostic(context, diagnostic);
+          }
+        },
+      };
+    },
+  };
+}
+
+function diagnosticsForRule(context, ruleName) {
+  return diagnosticsForContext(context, { ruleNames: [ruleName] }).filter(
+    (diagnostic) => diagnostic.ruleName === ruleName,
+  );
+}
+
+function diagnosticsForContext(context, options) {
+  const sourceCode = context.sourceCode ?? context.getSourceCode?.() ?? {};
+  const sourceText = sourceTextForContext(context);
+  const filename = context.filename ?? context.getFilename?.() ?? 'file.js';
+  const key = JSON.stringify(options);
+  let sourceCache = diagnosticsCache.get(sourceCode);
+
+  if (!sourceCache) {
+    sourceCache = new Map();
+    diagnosticsCache.set(sourceCode, sourceCache);
+  }
+
+  const cached = sourceCache.get(key);
+  if (cached && cached.sourceText === sourceText && cached.filename === filename) {
+    return cached.diagnostics;
+  }
+
+  const diagnostics = scanSonarjs(sourceText, filename, options);
+  sourceCache.set(key, { sourceText, filename, diagnostics });
+  return diagnostics;
+}
+
+function sourceTextForContext(context) {
+  const sourceCode = context.sourceCode ?? context.getSourceCode?.() ?? {};
+  if (typeof sourceCode.getText === 'function') {
+    return sourceCode.getText();
+  }
+  if (typeof sourceCode.text === 'string') {
+    return sourceCode.text;
+  }
+  return '';
+}
+
+function reportDiagnostic(context, diagnostic) {
+  const report = {
+    messageId: diagnostic.messageId,
+    data: compactData(diagnostic.data),
+    loc: {
+      start: {
+        line: diagnostic.loc.startLine,
+        column: diagnostic.loc.startColumn,
+      },
+      end: {
+        line: diagnostic.loc.endLine,
+        column: diagnostic.loc.endColumn,
+      },
+    },
+  };
+
+  if (diagnostic.fix) {
+    report.fix = (fixer) =>
+      fixer.replaceTextRange(
+        [diagnostic.fix.start, diagnostic.fix.end],
+        diagnostic.fix.replacement,
+      );
+  }
+
+  context.report(report);
+}
+
+function compactData(data) {
+  const out = {};
+  for (const [key, value] of Object.entries(data || {})) {
+    if (value != null) {
+      out[key] = value;
+    }
+  }
+  return out;
+}
+
+module.exports = plugin;
+module.exports.default = plugin;
+module.exports.implementedSonarjsRuleNames = implementedRuleNames;
+module.exports.scanSonarjs = scanSonarjs;
