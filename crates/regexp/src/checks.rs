@@ -172,7 +172,10 @@ impl<'a> Scanner<'a> {
             return;
         }
         // Only fire when the receiver is a string literal.
-        if !matches!(member.object.get_inner_expression(), Expression::StringLiteral(_)) {
+        if !matches!(
+            member.object.get_inner_expression(),
+            Expression::StringLiteral(_)
+        ) {
             return;
         }
         // Only fire when the first argument is a regex literal.
