@@ -1,0 +1,201 @@
+//! Regexp-specific diagnostic checks: literals, constructors, flags, and
+//! pattern-level rules. These methods are reached through the AST traversal in
+//! `traversal.rs` and rely on helpers in `helpers.rs` / `pattern.rs`.
+
+use oxc_allocator::Allocator;
+use oxc_ast::ast::{Argument, CallExpression, NewExpression, RegExpLiteral};
+use oxc_regular_expression::{ConstructorParser, Options as RegExpOptions};
+use oxc_span::Span;
+use oxlint_plugins_carton::CompactString;
+
+use crate::helpers::{
+    duplicate_flag, first_control_character, first_octal_escape, mention_char, sorted_flags,
+    string_literal_value_with_span,
+};
+use crate::pattern::PatternAnalysis;
+use crate::scanner::Scanner;
+use crate::types::DiagnosticData;
+
+impl<'a> Scanner<'a> {
+    pub(crate) fn check_call_expression(&mut self, call: &'a CallExpression<'a>) {
+        if call.callee.is_specific_id("RegExp") {
+            self.check_regexp_constructor(call.span, &call.arguments);
+        }
+    }
+
+    pub(crate) fn check_new_expression(&mut self, new_expression: &'a NewExpression<'a>) {
+        if new_expression.callee.is_specific_id("RegExp") {
+            self.check_regexp_constructor(new_expression.span, &new_expression.arguments);
+        }
+    }
+
+    pub(crate) fn check_regexp_literal(&mut self, literal: &'a RegExpLiteral<'a>) {
+        let pattern = literal.regex.pattern.text.as_str();
+        let flags = literal
+            .raw
+            .as_ref()
+            .and_then(|raw| raw.as_str().rsplit_once('/').map(|(_, flags)| flags))
+            .unwrap_or("");
+        self.check_regexp(pattern, flags, literal.span, false, None, None);
+    }
+
+    fn check_regexp_constructor(
+        &mut self,
+        span: Span,
+        arguments: &'a oxc_allocator::Vec<'a, Argument<'a>>,
+    ) {
+        let Some(pattern_argument) = arguments.first().and_then(Argument::as_expression) else {
+            return;
+        };
+        let Some((pattern, pattern_span)) = string_literal_value_with_span(pattern_argument) else {
+            return;
+        };
+        let flags = arguments
+            .get(1)
+            .and_then(Argument::as_expression)
+            .and_then(string_literal_value_with_span);
+        let flags_value = flags.map_or("", |(value, _)| value);
+        self.check_regexp(
+            pattern,
+            flags_value,
+            span,
+            true,
+            Some(pattern_span),
+            flags.map(|(_, span)| span),
+        );
+    }
+
+    fn check_regexp(
+        &mut self,
+        pattern: &str,
+        flags: &str,
+        span: Span,
+        is_constructor: bool,
+        pattern_span: Option<Span>,
+        flags_span: Option<Span>,
+    ) {
+        if let Some(flag) = duplicate_flag(flags) {
+            self.report_with_data(
+                "no-invalid-regexp",
+                "duplicateFlag",
+                DiagnosticData {
+                    flag: Some(CompactString::from(flag)),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+            return;
+        }
+        if flags.contains('u') && flags.contains('v') {
+            self.report("no-invalid-regexp", "uvFlag", span);
+            return;
+        }
+        if let (true, Some(message)) = (
+            is_constructor,
+            self.constructor_parse_error(pattern_span, flags_span),
+        ) {
+            self.report_with_data(
+                "no-invalid-regexp",
+                "error",
+                DiagnosticData {
+                    message: Some(message),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+            return;
+        }
+
+        self.check_flag_style(flags, span);
+        self.check_pattern_rules(pattern, span);
+    }
+
+    #[allow(
+        clippy::disallowed_methods,
+        reason = "Oxc regexp parser exposes display text; this allocation is only diagnostic data."
+    )]
+    fn constructor_parse_error(
+        &self,
+        pattern_span: Option<Span>,
+        flags_span: Option<Span>,
+    ) -> Option<CompactString> {
+        let pattern_span = pattern_span?;
+        let allocator = Allocator::default();
+        let parsed = ConstructorParser::new(
+            &allocator,
+            pattern_span.source_text(self.source_text),
+            flags_span.map(|span| span.source_text(self.source_text)),
+            RegExpOptions {
+                pattern_span_offset: pattern_span.start,
+                flags_span_offset: flags_span.map_or(0, |span| span.start),
+            },
+        )
+        .parse();
+        match parsed {
+            Ok(_) => None,
+            Err(error) => Some(CompactString::from(error.to_string().as_str())),
+        }
+    }
+
+    fn check_flag_style(&mut self, flags: &str, span: Span) {
+        let sorted_flags = sorted_flags(flags);
+        if flags != sorted_flags.as_str() {
+            self.report_with_data(
+                "sort-flags",
+                "sortFlags",
+                DiagnosticData {
+                    flags: Some(CompactString::from(flags)),
+                    sorted_flags: Some(sorted_flags),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if !flags.contains('u') && !flags.contains('v') {
+            self.report("require-unicode-regexp", "require", span);
+        }
+    }
+
+    fn check_pattern_rules(&mut self, pattern: &str, span: Span) {
+        let mut analysis = PatternAnalysis::new();
+        analysis.scan(pattern);
+
+        if analysis.has_empty_character_class {
+            self.report("no-empty-character-class", "empty", span);
+        }
+        if analysis.has_empty_group {
+            self.report("no-empty-group", "unexpected", span);
+        }
+        if analysis.has_empty_capturing_group {
+            self.report("no-empty-capturing-group", "unexpected", span);
+        }
+        if analysis.has_empty_alternative {
+            self.report("no-empty-alternative", "empty", span);
+        }
+        if analysis.has_zero_quantifier {
+            self.report("no-zero-quantifier", "unexpected", span);
+        }
+        if let Some(escape) = first_octal_escape(pattern) {
+            self.report_with_data(
+                "no-octal",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(escape)),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(ch) = first_control_character(pattern) {
+            self.report_with_data(
+                "no-control-character",
+                "unexpected",
+                DiagnosticData {
+                    char_text: Some(mention_char(ch)),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+    }
+}
