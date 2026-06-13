@@ -17,6 +17,8 @@ use crate::helpers::{
 pub(crate) struct GroupState {
     pub(crate) check_empty: bool,
     pub(crate) capturing: bool,
+    /// 1-based capture group number (0 for non-capturing groups).
+    pub(crate) capture_number: u32,
     pub(crate) is_lookaround: bool,
     pub(crate) is_non_capturing: bool,
     /// Byte offset of the body start (after the prefix). Used by
@@ -62,6 +64,7 @@ impl GroupState {
         Self {
             check_empty: false,
             capturing: false,
+            capture_number: 0,
             is_lookaround: false,
             is_non_capturing: false,
             body_start: 0,
@@ -80,6 +83,7 @@ impl GroupState {
     fn group(
         check_empty: bool,
         capturing: bool,
+        capture_number: u32,
         is_lookaround: bool,
         is_non_capturing: bool,
         body_start: usize,
@@ -87,6 +91,7 @@ impl GroupState {
         Self {
             check_empty,
             capturing,
+            capture_number,
             is_lookaround,
             is_non_capturing,
             body_start,
@@ -232,6 +237,16 @@ pub(crate) struct PatternAnalysis {
     /// breaks the grapheme semantics of any ZWJ-joined sequence it might
     /// have been intended to match. `no-misleading-unicode-character`.
     pub(crate) has_misleading_unicode_character: bool,
+    /// Bitmask of capturing-group indices (1-based, bits 1..=31) whose closing
+    /// `)` is immediately followed by `?` or `*` — meaning the group's capture
+    /// may be absent at match time. Used by `no-potentially-useless-backreference`
+    /// to detect `\N` that references such an optionally-quantified group.
+    pub(crate) optionally_quantified_groups: u32,
+    /// `true` when a backreference `\N` targets a capturing group that was
+    /// preceded by `?` or `*` (so the group may not have matched). Only the
+    /// clear syntactic case is flagged; alternative branches are deferred.
+    /// `no-potentially-useless-backreference`.
+    pub(crate) has_potentially_useless_backreference: bool,
 }
 
 impl PatternAnalysis {
@@ -260,6 +275,17 @@ impl PatternAnalysis {
                         let n = u32::from(next - b'0');
                         if n > self.capture_count {
                             self.has_useless_backreference = true;
+                        }
+                        // `no-potentially-useless-backreference`: flag \N when
+                        // group N (already opened, so n <= capture_count) is
+                        // directly followed by `?` or `*` in the pattern. Only
+                        // the first 31 groups are tracked (bitmask width).
+                        if n >= 1
+                            && n <= self.capture_count
+                            && n <= 31
+                            && self.optionally_quantified_groups & (1 << n) != 0
+                        {
+                            self.has_potentially_useless_backreference = true;
                         }
                     }
                     self.mark_content(&mut groups);
@@ -365,9 +391,15 @@ impl PatternAnalysis {
                     if prefix.capturing {
                         self.capture_count = self.capture_count.saturating_add(1);
                     }
+                    let capture_number = if prefix.capturing {
+                        self.capture_count
+                    } else {
+                        0
+                    };
                     groups.push(GroupState::group(
                         prefix.check_empty,
                         prefix.capturing,
+                        capture_number,
                         prefix.is_lookaround,
                         prefix.is_non_capturing,
                         prefix.next,
@@ -389,6 +421,17 @@ impl PatternAnalysis {
                         }
                         if group.is_lookaround && !group.seen_pipe && !group.current_has_content {
                             self.has_empty_lookaround = true;
+                        }
+                        // `no-potentially-useless-backreference`: record which
+                        // capturing groups are directly followed by `?` or `*`.
+                        // Only track groups 1..=31 (bitmask width). The check
+                        // uses index+1 because `index` currently points at `)`.
+                        if group.capturing
+                            && group.capture_number >= 1
+                            && group.capture_number <= 31
+                            && matches!(bytes.get(index + 1).copied(), Some(b'?') | Some(b'*'))
+                        {
+                            self.optionally_quantified_groups |= 1 << group.capture_number;
                         }
                         // `(?=...)?` and friends: a `?` immediately after the
                         // closing paren of a lookaround makes the assertion
