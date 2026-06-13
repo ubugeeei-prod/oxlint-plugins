@@ -146,6 +146,10 @@ const validCases = [
   ['optimal-lookaround-quantifier', 'required match plus', 'const re = /(?=a+)/u;\n'],
   ['optimal-lookaround-quantifier', 'bare atom', 'const re = /(?=a)/u;\n'],
   ['optimal-lookaround-quantifier', 'non-cap group', 'const re = /(?:a*)/u;\n'],
+  // no-dupe-disjunctions
+  ['no-dupe-disjunctions', 'distinct alts', 'const re = /(?:a|b)/u;\n'],
+  ['no-dupe-disjunctions', 'multi-byte alt', 'const re = /(?:abc|abc)/u;\n'],
+  ['no-dupe-disjunctions', 'no alternation', 'const re = /(?:a)/u;\n'],
   // prefer-unicode-codepoint-escapes
   [
     'prefer-unicode-codepoint-escapes',
@@ -424,6 +428,14 @@ const invalidCases = [
     'optimal-lookaround-quantifier',
     'question inside lookbehind',
     'const re = /(?<=b?)/u;\n',
+    ['unexpected'],
+  ],
+  // no-dupe-disjunctions
+  ['no-dupe-disjunctions', 'two-letter duplicate', 'const re = /(?:a|a)/u;\n', ['unexpected']],
+  [
+    'no-dupe-disjunctions',
+    'three-letter duplicate at end',
+    'const re = /(?:a|b|b)/u;\n',
     ['unexpected'],
   ],
 ];
