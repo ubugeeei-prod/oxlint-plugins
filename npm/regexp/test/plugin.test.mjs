@@ -41,6 +41,8 @@ const validCases = [
   ['no-control-character', 'named tab escape', 'const re = /\\t/u;\n'],
   ['no-control-character', 'named newline escape', 'const re = /\\n/u;\n'],
   ['no-control-character', 'printable hex escape', "const re = new RegExp('\\\\u0041', 'u');\n"],
+  // control-character-escape
+  ['control-character-escape', 'named tab in constructor arg', "new RegExp('\\t');\n"],
   // sort-flags
   ['sort-flags', 'sorted flags', 'const re = /a/im;\n'],
   ['sort-flags', 'no flags', 'const re = /a/;\n'],
@@ -74,6 +76,7 @@ const validCases = [
   ['match-any', 'half anti-pair', 'const re = /[\\s]/u;\n'],
   ['match-any', 'mixed family', 'const re = /[\\s\\D]/u;\n'],
   ['match-any', 'negated anti-pair', 'const re = /[^\\s\\S]/u;\n'],
+  ['match-any', 'canonical \\s\\S form', 'const re = /[\\s\\S]/u;\n'],
   // no-legacy-features
   ['no-legacy-features', 'unrelated identifier', 'Foo.$1;\n'],
   ['no-legacy-features', 'lowercase regexp', 'regexp.lastMatch;\n'],
@@ -118,6 +121,11 @@ const validCases = [
   ['prefer-character-class', 'multi-byte alt', 'const re = /(?:a|bc)/u;\n'],
   ['prefer-character-class', 'escape alt', 'const re = /(?:a|\\d)/u;\n'],
   ['prefer-character-class', 'no alternation', 'const re = /(?:a)/u;\n'],
+  [
+    'unicode-escape',
+    'surrogate half \\uHHHH',
+    "const re = new RegExp('\\\\ud83d\\\\ude00', 'u');\n",
+  ],
 ];
 
 const invalidCases = [
@@ -525,7 +533,7 @@ describe('regexp rules through direct Oxlint plugin adapter', () => {
         runRule('prefer-named-capture-group', 'const re = /(a)/u;\n')[0],
       ),
     ).toBe('Capturing group should be converted to a named or non-capturing group.');
-    expect(renderMessage('match-any', runRule('match-any', 'const re = /[\\s\\S]/u;\n')[0])).toBe(
+    expect(renderMessage('match-any', runRule('match-any', 'const re = /[\\S\\s]/u;\n')[0])).toBe(
       'Unexpected any character class. Use `.` with the `s` flag instead.',
     );
     expect(

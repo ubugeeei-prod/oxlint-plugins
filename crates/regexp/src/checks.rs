@@ -424,7 +424,7 @@ impl<'a> Scanner<'a> {
         }
 
         self.check_flag_style(flags, span);
-        self.check_pattern_rules(pattern, flags, span);
+        self.check_pattern_rules(pattern, flags, span, is_constructor);
     }
 
     #[allow(
@@ -476,7 +476,13 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn check_pattern_rules(&mut self, pattern: &str, flags: &str, span: Span) {
+    fn check_pattern_rules(
+        &mut self,
+        pattern: &str,
+        flags: &str,
+        span: Span,
+        is_constructor: bool,
+    ) {
         let mut analysis = PatternAnalysis::new();
         analysis.scan(pattern);
 
@@ -606,15 +612,29 @@ impl<'a> Scanner<'a> {
             );
         }
         if let Some(ch) = first_literal_control_character(pattern) {
-            self.report_with_data(
-                "control-character-escape",
-                "unexpected",
-                DiagnosticData {
-                    char_text: Some(mention_char(ch)),
-                    ..DiagnosticData::default()
-                },
-                span,
-            );
+            // When the pattern comes from a RegExp constructor argument (not a
+            // regex literal), the six characters that have well-known named
+            // regex escapes (\0 \t \n \v \f \r) are written as JS string
+            // escape sequences by the author (e.g. '\t') and are already
+            // conceptually "named". Flagging them here would produce false
+            // positives — upstream marks `new RegExp('\t')` as valid.
+            // For regex literals, ALL literal control characters must be
+            // escaped, because the author could have written \t instead of a
+            // raw tab inside /.../.
+            // The named-escape set is \0 (U+0000) and \t \n \v \f \r
+            // (U+0009..=U+000D, contiguous).
+            let named_escape = matches!(ch, '\0' | '\t'..='\r');
+            if !(is_constructor && named_escape) {
+                self.report_with_data(
+                    "control-character-escape",
+                    "unexpected",
+                    DiagnosticData {
+                        char_text: Some(mention_char(ch)),
+                        ..DiagnosticData::default()
+                    },
+                    span,
+                );
+            }
         }
         if analysis.has_escape_backspace_in_class {
             self.report("no-escape-backspace", "unexpected", span);

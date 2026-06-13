@@ -58,6 +58,14 @@ pub(crate) fn skip_escape(bytes: &[u8], index: usize) -> usize {
         }
         b'u' => (index + 6).min(bytes.len()),
         b'x' => (index + 4).min(bytes.len()),
+        // v-mode string disjunction: \q{...} — skip past the closing `}`.
+        b'q' if index + 2 < bytes.len() && bytes[index + 2] == b'{' => {
+            let mut cursor = index + 3;
+            while cursor < bytes.len() && bytes[cursor] != b'}' {
+                cursor += 1;
+            }
+            cursor.saturating_add(1).min(bytes.len())
+        }
         _ => (index + 2).min(bytes.len()),
     }
 }
@@ -300,6 +308,11 @@ pub(crate) fn class_matches_anything(bytes: &[u8], open: usize) -> bool {
     };
     let mut index = open + 1;
     if bytes.get(index) == Some(&b'^') {
+        return false;
+    }
+    // `[\s\S]` is the canonical form the rule itself recommends — treat it as valid.
+    let body = &bytes[open + 1..end];
+    if body == b"\\s\\S" {
         return false;
     }
     let mut has_lower = [false; 3]; // s, d, w
@@ -605,6 +618,13 @@ pub(crate) fn first_fixed_unicode_escape(pattern: &str) -> Option<(&str, Compact
             && bytes[index + 4].is_ascii_hexdigit()
             && bytes[index + 5].is_ascii_hexdigit()
         {
+            // Surrogate halves (U+D800..=U+DFFF) belong to surrogate pairs handled
+            // by `prefer-unicode-codepoint-escapes`; skip them here.
+            let value = read_fixed_hex4(&bytes[index + 2..index + 6]).unwrap_or(0);
+            if (0xD800..=0xDFFF).contains(&value) {
+                index = skip_escape(bytes, index);
+                continue;
+            }
             let original = &pattern[index..index + 6];
             let mut replacement = CompactString::new("\\u{");
             for offset in 2..6 {
@@ -933,6 +953,10 @@ pub(crate) fn first_useless_escape(pattern: &str) -> Option<u8> {
     None
 }
 
+// Note: `/` is intentionally absent. Escaping the forward slash in a regex
+// literal (`/\//`) is necessary — an unescaped `/` would terminate the literal
+// — so upstream `no-useless-escape` treats `\/` as a required, non-useless
+// escape.
 fn is_pointlessly_escaped(byte: u8) -> bool {
     matches!(
         byte,
@@ -950,7 +974,6 @@ fn is_pointlessly_escaped(byte: u8) -> bool {
             | b'~'
             | b'\''
             | b'"'
-            | b'/'
     )
 }
 

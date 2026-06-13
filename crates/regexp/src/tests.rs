@@ -436,6 +436,32 @@ mod control_character_escape {
         // Plain ASCII pattern.
         assert!(rule_ids_for("const a = /abc/u;", "control-character-escape").is_empty());
     }
+
+    #[test]
+    fn ignores_named_escape_chars_in_constructor_args() {
+        // The six characters that have well-known named regex escapes (\0 \t \n
+        // \v \f \r) are valid when passed as a literal JS string escape to a
+        // RegExp constructor. In JS source `'\t'` is a string with a real tab
+        // byte (0x09), but the author used a JS escape so it is already
+        // "named". Upstream marks all of these as valid.
+        for code in ["new RegExp('\t')", "RegExp(\"\0\t\n\x0B\x0C\r\", \"i\")"] {
+            assert!(
+                rule_ids_for(code, "control-character-escape").is_empty(),
+                "expected no diagnostic for: {code:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn still_reports_literal_tab_in_regex_literal() {
+        // A literal tab inside a regex literal MUST be flagged — the author
+        // should write /\t/ instead of /TAB/.
+        assert_eq!(
+            rule_ids_for("/\t/", "control-character-escape").as_slice(),
+            &["unexpected"],
+            "literal tab in regex literal must be flagged"
+        );
+    }
 }
 
 mod use_ignore_case {
@@ -1244,10 +1270,8 @@ mod match_any {
 
     #[test]
     fn reports_anti_pair_character_classes() {
-        assert_eq!(
-            rule_ids_for("const a = /[\\s\\S]/u;", "match-any").as_slice(),
-            &["unexpected"]
-        );
+        // `[\s\S]` is the canonical recommended form — it is valid.
+        assert!(rule_ids_for("const a = /[\\s\\S]/u;", "match-any").is_empty());
         assert_eq!(
             rule_ids_for("const a = /[\\d\\D]/u;", "match-any").as_slice(),
             &["unexpected"]
@@ -1274,6 +1298,16 @@ mod match_any {
         assert!(rule_ids_for("const a = /[\\s\\Sa]/u;", "match-any").is_empty());
         // Negated classes never match anything; do not flag.
         assert!(rule_ids_for("const a = /[^\\s\\S]/u;", "match-any").is_empty());
+        // The canonical `[\s\S]` is the recommended form; only the reverse and other families are flagged.
+        assert!(rule_ids_for("const a = /[\\s\\S]/u;", "match-any").is_empty());
+    }
+
+    #[test]
+    fn reversed_order_still_reports() {
+        assert_eq!(
+            rule_ids_for("const a = /[\\S\\s]/u;", "match-any").as_slice(),
+            &["unexpected"]
+        );
     }
 }
 
@@ -1572,6 +1606,18 @@ mod unicode_escape {
         );
         assert!(rule_ids_for("const a = /\\xab/u;", "unicode-escape").is_empty());
         assert!(rule_ids_for("const a = /\\d/u;", "unicode-escape").is_empty());
+    }
+
+    #[test]
+    fn ignores_surrogate_halves() {
+        // Surrogate halves belong to `prefer-unicode-codepoint-escapes`, not here.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\ud83d\\\\ude00', 'u');",
+                "unicode-escape"
+            )
+            .is_empty()
+        );
     }
 }
 
@@ -1941,6 +1987,18 @@ mod no_dupe_characters_character_class {
             .is_empty()
         );
     }
+
+    #[test]
+    fn ignores_v_mode_string_disjunctions() {
+        // Multiple \q{...} constructs must not be seen as duplicate `{` literals.
+        assert!(
+            rule_ids_for(
+                "const a = /[\\q{a}\\q{ab}\\q{abc}]/v;",
+                "no-dupe-characters-character-class"
+            )
+            .is_empty()
+        );
+    }
 }
 
 mod prefer_range {
@@ -2004,6 +2062,8 @@ mod no_useless_escape {
         assert!(rule_ids_for("const a = /\\./u;", "no-useless-escape").is_empty());
         // Inside a character class — deferred to keep the check sound.
         assert!(rule_ids_for("const a = /[\\:]/u;", "no-useless-escape").is_empty());
+        // Escaping the literal delimiter is required, not useless.
+        assert!(rule_ids_for("const a = /\\//u;", "no-useless-escape").is_empty());
     }
 }
 

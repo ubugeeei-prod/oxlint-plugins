@@ -68,6 +68,9 @@ pub struct FunctionalOptions {
     pub allow_try_catch: bool,
     pub allow_try_finally: bool,
     pub readonly_type_mode: CompactString,
+    pub ignore_if_readonly_wrapped: bool,
+    pub ignore_identifier_pattern: SmallVec<[CompactString; 4]>,
+    pub ignore_code_pattern: SmallVec<[CompactString; 4]>,
 }
 
 impl Default for FunctionalOptions {
@@ -84,6 +87,9 @@ impl Default for FunctionalOptions {
             allow_try_catch: false,
             allow_try_finally: false,
             readonly_type_mode: "generic".into(),
+            ignore_if_readonly_wrapped: false,
+            ignore_identifier_pattern: SmallVec::new(),
+            ignore_code_pattern: SmallVec::new(),
         }
     }
 }
@@ -137,10 +143,21 @@ impl LineIndex {
 #[derive(Clone, Copy)]
 pub(crate) struct FunctionContext {
     pub(crate) in_async_function: bool,
+    /// True when the current statement is inside the `try` block of a
+    /// `try`/`catch` (a thrown value would be caught, so an async `throw` here is
+    /// not a promise rejection). Reset at each function boundary.
+    pub(crate) in_try_with_catch: bool,
 }
 
 pub fn implemented_functional_rule_names() -> &'static [&'static str] {
     &RULE_NAMES
+}
+
+fn compile_patterns(patterns: &[CompactString]) -> SmallVec<[regex::Regex; 4]> {
+    patterns
+        .iter()
+        .filter_map(|pattern| regex::Regex::new(pattern).ok())
+        .collect()
 }
 
 pub fn scan_functional(
@@ -162,11 +179,15 @@ pub fn scan_functional(
         line_index: LineIndex::new(source_text),
         diagnostics: SmallVec::new(),
         options,
+        within_readonly: false,
+        ignore_identifier_regexes: compile_patterns(&options.ignore_identifier_pattern),
+        ignore_code_regexes: compile_patterns(&options.ignore_code_pattern),
     };
     scanner.scan_statement_list(
         &parser_return.program.body,
         FunctionContext {
             in_async_function: false,
+            in_try_with_catch: false,
         },
     );
     scanner.diagnostics
