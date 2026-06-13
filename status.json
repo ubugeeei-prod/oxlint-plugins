@@ -9275,19 +9275,19 @@
       },
       {
         "name": "optimal-lookaround-quantifier",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule optimal-lookaround-quantifier."
+        "notes": "Reuses GroupState.body_start. At close of a lookaround group, when no | has been seen and the body is exactly 2 bytes (ASCII alphanumeric + * or ?), the inner quantifier accepts the empty match so the assertion always succeeds. + (one-or-more) is excluded; multi-byte bodies and escapes are deferred."
       },
       {
         "name": "optimal-quantifier-concatenation",

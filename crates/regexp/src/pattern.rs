@@ -204,6 +204,10 @@ pub(crate) struct PatternAnalysis {
     /// `^` or `$` anchor. Such lookarounds are equivalent to the anchor
     /// itself. `prefer-predefined-assertion`.
     pub(crate) has_preferable_predefined_assertion: bool,
+    /// `(?=X*)` / `(?=X?)` — a lookaround whose body always succeeds
+    /// because the inner quantifier accepts the empty match.
+    /// `optimal-lookaround-quantifier`.
+    pub(crate) has_suboptimal_lookaround_quantifier: bool,
 }
 
 impl PatternAnalysis {
@@ -340,6 +344,20 @@ impl PatternAnalysis {
                             let byte = bytes[group.body_start];
                             if matches!(byte, b'^' | b'$') {
                                 self.has_preferable_predefined_assertion = true;
+                            }
+                        }
+                        // `(?=X*)` / `(?=X?)`: lookaround body is exactly one
+                        // quantified atom whose quantifier accepts the empty
+                        // match, so the assertion always succeeds. Narrow:
+                        // body is 2 bytes — ASCII alphanumeric followed by
+                        // `*` or `?`. `(?=X+)` is excluded because it
+                        // requires a non-empty match.
+                        if group.is_lookaround && !group.seen_pipe && index == group.body_start + 2
+                        {
+                            let body0 = bytes[group.body_start];
+                            let body1 = bytes[group.body_start + 1];
+                            if body0.is_ascii_alphanumeric() && matches!(body1, b'*' | b'?') {
+                                self.has_suboptimal_lookaround_quantifier = true;
                             }
                         }
                         // `(?:X)` with a single ASCII-alphanumeric body. The

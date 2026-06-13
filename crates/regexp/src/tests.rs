@@ -100,8 +100,41 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-character-class",
             "sort-alternatives",
             "prefer-predefined-assertion",
+            "optimal-lookaround-quantifier",
         ]
     );
+}
+
+mod optimal_lookaround_quantifier {
+    use super::*;
+
+    #[test]
+    fn reports_lookarounds_with_always_matching_body() {
+        assert_eq!(
+            rule_ids_for("const a = /(?=a*)/u;", "optimal-lookaround-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?<=b?)/u;", "optimal-lookaround-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?!c*)/u;", "optimal-lookaround-quantifier").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_required_match_bodies_and_non_lookarounds() {
+        // `+` requires a non-empty match.
+        assert!(rule_ids_for("const a = /(?=a+)/u;", "optimal-lookaround-quantifier").is_empty());
+        // Bare atom — no quantifier.
+        assert!(rule_ids_for("const a = /(?=a)/u;", "optimal-lookaround-quantifier").is_empty());
+        // Multi-byte body — deferred.
+        assert!(rule_ids_for("const a = /(?=ab*)/u;", "optimal-lookaround-quantifier").is_empty());
+        // Non-cap group is a different rule.
+        assert!(rule_ids_for("const a = /(?:a*)/u;", "optimal-lookaround-quantifier").is_empty());
+    }
 }
 
 mod prefer_predefined_assertion {
