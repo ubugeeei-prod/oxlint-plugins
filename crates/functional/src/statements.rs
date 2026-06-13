@@ -30,8 +30,8 @@ impl<'a> Scanner<'a> {
             }
             Statement::BlockStatement(block) => self.scan_statement_list(&block.body, context),
             Statement::IfStatement(statement) => {
-                let allowed = self.options.allow_returning_branches
-                    && self.if_all_branches_return(statement);
+                let allowed =
+                    self.options.allow_returning_branches && self.if_all_branches_return(statement);
                 if !allowed {
                     self.report(
                         "no-conditional-statements",
