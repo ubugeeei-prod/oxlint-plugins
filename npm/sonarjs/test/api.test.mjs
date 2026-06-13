@@ -19,6 +19,7 @@ const expectedRuleNames = [
   'no-delete-var',
   'constructor-for-side-effects',
   'no-empty-character-class',
+  'generator-without-yield',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -585,5 +586,49 @@ describe('sonarjs native API', () => {
     const source = 'const r = /[a[]/;';
     const diagnostics = scan('no-empty-character-class', source);
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports generator-without-yield for a generator that only returns', () => {
+    const source = 'function* g() { return 1; }';
+    const diagnostics = scan('generator-without-yield', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('generator-without-yield');
+    expect(diagnostics[0].messageId).toBe('generatorWithoutYield');
+  });
+
+  it('reports generator-without-yield for a generator with an empty body', () => {
+    const source = 'function* g() {}';
+    const diagnostics = scan('generator-without-yield', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('generatorWithoutYield');
+  });
+
+  it('does not report generator-without-yield when the generator yields', () => {
+    const source = 'function* g() { yield 1; }';
+    const diagnostics = scan('generator-without-yield', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report generator-without-yield for a regular function', () => {
+    const source = 'function g() { return 1; }';
+    const diagnostics = scan('generator-without-yield', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports generator-without-yield for outer only when inner generator yields', () => {
+    const source = 'function* outer() { function* inner() { yield 1; } }';
+    const diagnostics = scan('generator-without-yield', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('generatorWithoutYield');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+    expect(diagnostics[0].loc.startColumn).toBe(0);
+  });
+
+  it('reports generator-without-yield for inner only when outer generator yields', () => {
+    const source = 'function* outer() { yield 1; function* inner() {} }';
+    const diagnostics = scan('generator-without-yield', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('generatorWithoutYield');
+    expect(diagnostics[0].loc.startColumn).toBeGreaterThan(0);
   });
 });

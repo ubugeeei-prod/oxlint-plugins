@@ -73,6 +73,10 @@ const messages = Object.freeze({
     emptyCharacterClass:
       'This empty character class [] can never match, so this regular expression will never match anything.',
   },
+  'generator-without-yield': {
+    generatorWithoutYield:
+      "This generator contains no 'yield'; either add a 'yield' or convert it to a regular function.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -100,6 +104,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow using new solely for side effects without capturing or using the constructed object',
   'no-empty-character-class':
     'Disallow empty character classes in regular expression literals, which can never match',
+  'generator-without-yield':
+    "Disallow generator functions that contain no 'yield' expression and therefore behave like plain functions",
 });
 
 const ruleTypes = Object.freeze({
@@ -119,6 +125,7 @@ const ruleTypes = Object.freeze({
   'no-delete-var': 'problem',
   'constructor-for-side-effects': 'problem',
   'no-empty-character-class': 'problem',
+  'generator-without-yield': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -138,6 +145,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-delete-var': 'error',
   'constructor-for-side-effects': 'error',
   'no-empty-character-class': 'error',
+  'generator-without-yield': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

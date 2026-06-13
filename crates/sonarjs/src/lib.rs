@@ -22,7 +22,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 16] = [
+pub const RULE_NAMES: [&str; 17] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -39,6 +39,7 @@ pub const RULE_NAMES: [&str; 16] = [
     "no-delete-var",
     "constructor-for-side-effects",
     "no-empty-character-class",
+    "generator-without-yield",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -71,6 +72,7 @@ pub fn scan_sonarjs(
         switch_depth: 0,
         conditional_depth: 0,
         if_chain_seen: SmallVec::new(),
+        generator_yield_stack: SmallVec::new(),
     };
     scanner.visit_program(&parser_return.program);
     scanner.diagnostics

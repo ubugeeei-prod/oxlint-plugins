@@ -11310,19 +11310,19 @@
       },
       {
         "name": "generator-without-yield",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule generator-without-yield (Sonar key S3531). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S3531). Uses a SmallVec<[bool; 8]> generator frame stack in the Oxc visitor: a frame is pushed on entry to each generator function with a body and marked true if any yield is visited; the frame is popped on exit and the generator is reported when the frame is still false. Yield correctly attributes to the nearest enclosing generator because yield cannot cross a non-generator function boundary (SyntaxError). Async generators (async function*) are included. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "hardcoded-secret-signatures",

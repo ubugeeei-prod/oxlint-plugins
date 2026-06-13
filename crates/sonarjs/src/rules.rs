@@ -4,6 +4,7 @@
 mod arguments_usage;
 mod comma_or_logical_or_case;
 mod constructor_for_side_effects;
+mod generator_without_yield;
 mod no_all_duplicated_branches;
 mod no_collapsible_if;
 mod no_delete_var;

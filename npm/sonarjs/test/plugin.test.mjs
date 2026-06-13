@@ -110,6 +110,7 @@ describe('sonarjs plugin shape', () => {
       'no-delete-var',
       'constructor-for-side-effects',
       'no-empty-character-class',
+      'generator-without-yield',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -127,6 +128,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-delete-var']).toBe('object');
     expect(typeof plugin.rules['constructor-for-side-effects']).toBe('object');
     expect(typeof plugin.rules['no-empty-character-class']).toBe('object');
+    expect(typeof plugin.rules['generator-without-yield']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -144,6 +146,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-delete-var']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/constructor-for-side-effects']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-character-class']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/generator-without-yield']).toBe('error');
   });
 });
 
@@ -261,6 +264,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('no-empty-character-class', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('emptyCharacterClass');
+  });
+
+  it('reports generator-without-yield through the adapter', () => {
+    const source = 'function* g() { return 1; }';
+    const reports = runRule('generator-without-yield', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('generatorWithoutYield');
   });
 });
 
@@ -419,5 +429,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-character-class)');
+  });
+
+  it('reports generator-without-yield through the CLI', () => {
+    const source = 'function* g() { return 1; }';
+    const result = runOxlint('generator-without-yield', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(generator-without-yield)');
   });
 });
