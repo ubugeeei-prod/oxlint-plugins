@@ -324,7 +324,10 @@ impl<'a> Scanner<'a> {
             return true;
         }
         if let Statement::BlockStatement(block) = branch {
-            return block.body.iter().any(|stmt| self.is_if_returning_branch(stmt));
+            return block
+                .body
+                .iter()
+                .any(|stmt| self.is_if_returning_branch(stmt));
         }
         false
     }
