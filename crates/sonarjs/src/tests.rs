@@ -221,3 +221,35 @@ fn does_not_report_ternary_with_non_boolean_branches() {
     let diagnostics = scan("no-redundant-boolean", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_logical_or_as_case_label() {
+    let source = "switch (x) { case 1 || 2: break; }";
+    let diagnostics = scan("comma-or-logical-or-case", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "comma-or-logical-or-case");
+    assert_eq!(diagnostics[0].message_id, "commaOrLogicalOrInCase");
+}
+
+#[test]
+fn reports_sequence_expression_as_case_label() {
+    let source = "switch (x) { case (1, 2): break; }";
+    let diagnostics = scan("comma-or-logical-or-case", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "comma-or-logical-or-case");
+    assert_eq!(diagnostics[0].message_id, "commaOrLogicalOrInCase");
+}
+
+#[test]
+fn does_not_report_plain_case_or_default() {
+    let source = "switch (x) { case 1: break; default: break; }";
+    let diagnostics = scan("comma-or-logical-or-case", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_logical_and_as_case_label() {
+    let source = "switch (x) { case 1 && 2: break; }";
+    let diagnostics = scan("comma-or-logical-or-case", source);
+    assert!(diagnostics.is_empty());
+}

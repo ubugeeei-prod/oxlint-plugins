@@ -3,8 +3,8 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    BinaryExpression, ConditionalExpression, IfStatement, SwitchStatement, TemplateLiteral,
-    UnaryExpression,
+    BinaryExpression, ConditionalExpression, IfStatement, SwitchCase, SwitchStatement,
+    TemplateLiteral, UnaryExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -64,6 +64,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.switch_depth += 1;
         walk::walk_switch_statement(self, it);
         self.switch_depth -= 1;
+    }
+
+    fn visit_switch_case(&mut self, it: &SwitchCase<'a>) {
+        self.check_comma_or_logical_or_case(it);
+        walk::walk_switch_case(self, it);
     }
 
     fn visit_binary_expression(&mut self, it: &BinaryExpression<'a>) {
