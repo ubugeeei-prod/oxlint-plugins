@@ -467,11 +467,11 @@ impl<'a> Scanner<'a> {
         is_constructor: bool,
         pattern_span: Option<Span>,
         flags_span: Option<Span>,
-        /// `true` when this is a constructor call and the flags argument is a
-        /// non-literal expression (identifier, binary, member, etc.).  In that
-        /// case we cannot statically determine the flags, so the
-        /// `require-unicode-regexp` and `require-unicode-sets-regexp` checks
-        /// must be skipped to avoid false positives.
+        // `true` when this is a constructor call and the flags argument is a
+        // non-literal expression (identifier, binary, member, etc.). In that
+        // case we cannot statically determine the flags, so the
+        // `require-unicode-regexp` and `require-unicode-sets-regexp` checks
+        // are skipped to avoid false positives.
         flags_is_non_literal: bool,
     ) {
         if let Some(flag) = duplicate_flag(flags) {
