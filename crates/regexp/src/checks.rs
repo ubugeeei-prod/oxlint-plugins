@@ -883,17 +883,19 @@ impl<'a> Scanner<'a> {
                 span,
             );
         }
-        if let Some((escape, replacement)) = first_surrogate_pair_escape(pattern) {
-            self.report_with_data(
-                "prefer-unicode-codepoint-escapes",
-                "unexpected",
-                DiagnosticData {
-                    expr: Some(CompactString::from(escape)),
-                    replacement: Some(replacement),
-                    ..DiagnosticData::default()
-                },
-                span,
-            );
+        if flags.contains('u') || flags.contains('v') {
+            if let Some((escape, replacement)) = first_surrogate_pair_escape(pattern) {
+                self.report_with_data(
+                    "prefer-unicode-codepoint-escapes",
+                    "unexpected",
+                    DiagnosticData {
+                        expr: Some(CompactString::from(escape)),
+                        replacement: Some(replacement),
+                        ..DiagnosticData::default()
+                    },
+                    span,
+                );
+            }
         }
     }
 }

@@ -118,6 +118,12 @@ const validCases = [
   ['prefer-character-class', 'multi-byte alt', 'const re = /(?:a|bc)/u;\n'],
   ['prefer-character-class', 'escape alt', 'const re = /(?:a|\\d)/u;\n'],
   ['prefer-character-class', 'no alternation', 'const re = /(?:a)/u;\n'],
+  // prefer-unicode-codepoint-escapes
+  [
+    'prefer-unicode-codepoint-escapes',
+    'surrogate pair without u flag',
+    "const re = new RegExp('\\\\uD83D\\\\uDE00');\n",
+  ],
 ];
 
 const invalidCases = [
