@@ -12,7 +12,7 @@ use oxc_ast::ast::{
 use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
-use crate::helpers::{expression_body, ExprContext};
+use crate::helpers::{ExprContext, expression_body};
 use crate::{Diagnostic, DiagnosticData, DiagnosticFix, E18eOptions, LineIndex};
 
 pub(crate) struct Scanner<'a> {
@@ -470,7 +470,11 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    pub(crate) fn check_call_expression(&mut self, call: &'a CallExpression<'a>, context: ExprContext) {
+    pub(crate) fn check_call_expression(
+        &mut self,
+        call: &'a CallExpression<'a>,
+        context: ExprContext,
+    ) {
         self.check_ban_dependency_require(call);
         self.check_prefer_exponentiation(call);
         self.check_prefer_object_has_own(call);
@@ -510,7 +514,10 @@ impl<'a> Scanner<'a> {
         self.check_prefer_array_at(member);
     }
 
-    pub(crate) fn check_binary_expression(&mut self, binary: &'a oxc_ast::ast::BinaryExpression<'a>) {
+    pub(crate) fn check_binary_expression(
+        &mut self,
+        binary: &'a oxc_ast::ast::BinaryExpression<'a>,
+    ) {
         self.check_prefer_includes_binary(binary);
         self.check_no_indexof_equality(binary);
         self.check_prefer_array_some_binary(binary);

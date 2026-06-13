@@ -31,7 +31,11 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    pub(crate) fn scan_statement_list(&mut self, statements: &'a [Statement<'a>], context: FunctionContext) {
+    pub(crate) fn scan_statement_list(
+        &mut self,
+        statements: &'a [Statement<'a>],
+        context: FunctionContext,
+    ) {
         for statement in statements {
             self.scan_statement(statement, context);
         }

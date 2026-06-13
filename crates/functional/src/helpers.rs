@@ -20,7 +20,11 @@ pub(crate) fn is_identifier_expression(expression: &Expression<'_>, name: &str) 
     matches!(expression.get_inner_expression(), Expression::Identifier(identifier) if identifier.name == name)
 }
 
-pub(crate) fn is_static_call(call: &CallExpression<'_>, object_name: &str, method_name: &str) -> bool {
+pub(crate) fn is_static_call(
+    call: &CallExpression<'_>,
+    object_name: &str,
+    method_name: &str,
+) -> bool {
     let Expression::StaticMemberExpression(member) = call.callee.get_inner_expression() else {
         return false;
     };
@@ -127,7 +131,9 @@ pub(crate) fn interface_has_mutable_members(signatures: &[TSSignature<'_>]) -> b
     })
 }
 
-pub(crate) fn single_returned_call<'a>(body: &'a FunctionBody<'a>) -> Option<&'a CallExpression<'a>> {
+pub(crate) fn single_returned_call<'a>(
+    body: &'a FunctionBody<'a>,
+) -> Option<&'a CallExpression<'a>> {
     if body.statements.len() != 1 {
         return None;
     }
@@ -149,7 +155,10 @@ pub(crate) fn single_returned_call<'a>(body: &'a FunctionBody<'a>) -> Option<&'a
     }
 }
 
-pub(crate) fn call_arguments_match_params(call: &CallExpression<'_>, params: &FormalParameters<'_>) -> bool {
+pub(crate) fn call_arguments_match_params(
+    call: &CallExpression<'_>,
+    params: &FormalParameters<'_>,
+) -> bool {
     if call.arguments.len() != params.items.len() {
         return false;
     }

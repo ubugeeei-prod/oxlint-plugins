@@ -35,8 +35,7 @@ pub(crate) const FS_PACKAGES: [&str; 5] = [
     "node:fs/promises",
     "fs-extra",
 ];
-pub(crate) const PATH_PACKAGES: [&str; 4] =
-    ["path", "node:path", "path/posix", "node:path/posix"];
+pub(crate) const PATH_PACKAGES: [&str; 4] = ["path", "node:path", "path/posix", "node:path/posix"];
 pub(crate) const URL_PACKAGES: [&str; 2] = ["url", "node:url"];
 pub(crate) const PATH_CONSTRUCTION_METHODS: [&str; 8] = [
     "basename",

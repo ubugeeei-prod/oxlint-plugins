@@ -19,7 +19,9 @@ pub(crate) fn call_static_member_name<'a>(call: &'a CallExpression<'a>) -> Optio
     }
 }
 
-pub(crate) fn call_static_member_object<'a>(call: &'a CallExpression<'a>) -> Option<&'a Expression<'a>> {
+pub(crate) fn call_static_member_object<'a>(
+    call: &'a CallExpression<'a>,
+) -> Option<&'a Expression<'a>> {
     match call.callee.get_inner_expression() {
         Expression::StaticMemberExpression(member) => Some(&member.object),
         _ => None,
@@ -47,7 +49,9 @@ pub(crate) fn callee_identifier_name<'a>(call: &'a CallExpression<'a>) -> Option
     }
 }
 
-pub(crate) fn cypress_command_names<'a>(call: &'a CallExpression<'a>) -> Option<(&'a str, &'a str)> {
+pub(crate) fn cypress_command_names<'a>(
+    call: &'a CallExpression<'a>,
+) -> Option<(&'a str, &'a str)> {
     let mut names = SmallVec::<[&'a str; 8]>::new();
     collect_cypress_command_names(call, &mut names)?;
     let first = *names.first()?;

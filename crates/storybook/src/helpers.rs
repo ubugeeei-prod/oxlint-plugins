@@ -15,7 +15,7 @@ use oxc_ast::ast::{
 use oxc_span::{GetSpan, Span};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
-use crate::{Descriptor, StoryFilters, FUNCTIONS_TO_AWAIT};
+use crate::{Descriptor, FUNCTIONS_TO_AWAIT, StoryFilters};
 
 pub(crate) fn component_name_from_filename(filename: &str) -> Option<CompactString> {
     let basename = Path::new(filename).file_name()?.to_str()?;
@@ -105,7 +105,10 @@ pub(crate) fn string_literal_value<'a>(expression: &'a Expression<'a>) -> Option
     }
 }
 
-pub(crate) fn raw_string_literal<'a>(source_text: &'a str, expression: &Expression<'_>) -> Option<&'a str> {
+pub(crate) fn raw_string_literal<'a>(
+    source_text: &'a str,
+    expression: &Expression<'_>,
+) -> Option<&'a str> {
     if string_literal_value(expression).is_some() {
         Some(source_slice(source_text, expression.span()))
     } else {
@@ -151,7 +154,9 @@ pub(crate) fn import_has_default_specifier(declaration: &ImportDeclaration<'_>) 
     })
 }
 
-pub(crate) fn renderer_framework_suggestions(package_name: &str) -> Option<(&'static str, &'static str)> {
+pub(crate) fn renderer_framework_suggestions(
+    package_name: &str,
+) -> Option<(&'static str, &'static str)> {
     match package_name {
         "@storybook/html" => Some((
             "@storybook/html",
@@ -199,7 +204,9 @@ pub(crate) fn static_member_property_name<'a>(expression: &'a Expression<'a>) ->
     }
 }
 
-pub(crate) fn assignment_static_member<'a>(target: &'a AssignmentTarget<'a>) -> Option<(&'a str, &'a str)> {
+pub(crate) fn assignment_static_member<'a>(
+    target: &'a AssignmentTarget<'a>,
+) -> Option<(&'a str, &'a str)> {
     let AssignmentTarget::StaticMemberExpression(member) = target else {
         return None;
     };

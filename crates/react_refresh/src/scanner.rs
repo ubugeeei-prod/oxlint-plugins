@@ -12,8 +12,8 @@ use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::*;
 use crate::{
-    is_constant_export_expression_kind, is_react_component_name, ComponentCheck, Diagnostic,
-    LineIndex, NamedSpan, OnlyExportComponentsOptions, ScanState, DEFAULT_HOCS,
+    ComponentCheck, DEFAULT_HOCS, Diagnostic, LineIndex, NamedSpan, OnlyExportComponentsOptions,
+    ScanState, is_constant_export_expression_kind, is_react_component_name,
 };
 
 pub(crate) struct Scanner<'a> {

@@ -11,7 +11,10 @@ use oxc_span::{GetSpan, Span};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::*;
-use crate::{is_hook_name, is_react_component_name, Diagnostic, DiagnosticData, FunctionFrame, HookCall, LineIndex};
+use crate::{
+    Diagnostic, DiagnosticData, FunctionFrame, HookCall, LineIndex, is_hook_name,
+    is_react_component_name,
+};
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,

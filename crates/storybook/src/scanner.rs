@@ -19,9 +19,9 @@ use oxlint_plugins_carton::{CompactString, FastHashMap, SmallVec};
 
 use crate::helpers::*;
 use crate::{
-    Descriptor, Diagnostic, DiagnosticData, DiagnosticFix, FunctionFrame, LineIndex,
-    MetaResolution, NamedExport, ParentKind, StorybookOptions, StoryFilters, VariableInfo,
-    FUNCTIONS_TO_AWAIT,
+    Descriptor, Diagnostic, DiagnosticData, DiagnosticFix, FUNCTIONS_TO_AWAIT, FunctionFrame,
+    LineIndex, MetaResolution, NamedExport, ParentKind, StoryFilters, StorybookOptions,
+    VariableInfo,
 };
 
 pub(crate) struct Scanner<'a> {
