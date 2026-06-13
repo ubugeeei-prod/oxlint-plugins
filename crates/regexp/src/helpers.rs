@@ -1167,6 +1167,22 @@ pub(crate) fn class_has_useless_range(bytes: &[u8], open: usize) -> Option<char>
     None
 }
 
+/// Returns the first raw control character (`U+0000`-`U+001F` or `U+007F`)
+/// that appears literally in `pattern`. Unlike `first_control_character` this
+/// helper does NOT decode escape sequences — `\x01` as a four-character escape
+/// is returned `None` because the control character is not present in the
+/// pattern bytes themselves. Used by `control-character-escape`, which targets
+/// only the literal occurrences and asks the author to use an escape form.
+pub(crate) fn first_literal_control_character(pattern: &str) -> Option<char> {
+    for ch in pattern.chars() {
+        let code = ch as u32;
+        if code < 0x20 || code == 0x7f {
+            return Some(ch);
+        }
+    }
+    None
+}
+
 pub(crate) fn first_control_character(pattern: &str) -> Option<char> {
     let bytes = pattern.as_bytes();
     let mut index = 0;

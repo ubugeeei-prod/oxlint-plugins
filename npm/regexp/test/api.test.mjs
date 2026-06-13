@@ -52,6 +52,7 @@ describe('regexp native API', () => {
       'no-useless-dollar-replacements',
       'prefer-escape-replacement-dollar-char',
       'use-ignore-case',
+      'control-character-escape',
     ]);
   });
 

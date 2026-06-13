@@ -12,7 +12,7 @@ use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
     duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
-    first_invisible_character, first_non_standard_flag,
+    first_invisible_character, first_literal_control_character, first_non_standard_flag,
     first_numbered_backreference_with_named_group, first_octal_escape, first_surrogate_pair_escape,
     first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, mention_char,
     pattern_ends_with_lazy_quantifier, pattern_has_empty_string_literal, sorted_flags,
@@ -544,6 +544,17 @@ impl<'a> Scanner<'a> {
         if let Some(ch) = first_control_character(pattern) {
             self.report_with_data(
                 "no-control-character",
+                "unexpected",
+                DiagnosticData {
+                    char_text: Some(mention_char(ch)),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(ch) = first_literal_control_character(pattern) {
+            self.report_with_data(
+                "control-character-escape",
                 "unexpected",
                 DiagnosticData {
                     char_text: Some(mention_char(ch)),

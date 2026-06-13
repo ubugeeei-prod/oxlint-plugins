@@ -179,6 +179,10 @@ const messages = Object.freeze({
     unexpected:
       "Character class mixes lower- and upper-case forms of the same letter; add the 'i' flag instead.",
   },
+  'control-character-escape': {
+    unexpected:
+      'Unexpected literal control character {{ char }} in the pattern; use a `\\xHH` or `\\uHHHH` escape sequence instead.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -246,6 +250,8 @@ const ruleDescriptions = Object.freeze({
     'enforce escaping a literal `$` as `$$` in replacement strings',
   'use-ignore-case':
     'enforce the `i` flag when a character class mixes lower- and upper-case letters',
+  'control-character-escape':
+    'enforce escaping literal control characters in regular-expression patterns',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -295,6 +301,7 @@ const ruleTypes = Object.freeze({
   'no-useless-dollar-replacements': 'problem',
   'prefer-escape-replacement-dollar-char': 'suggestion',
   'use-ignore-case': 'suggestion',
+  'control-character-escape': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -414,7 +421,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-optional-assertion' ||
     ruleName === 'no-dupe-characters-character-class' ||
     ruleName === 'no-lazy-ends' ||
-    ruleName === 'no-useless-dollar-replacements'
+    ruleName === 'no-useless-dollar-replacements' ||
+    ruleName === 'control-character-escape'
   ) {
     return 'Possible Errors';
   }

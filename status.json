@@ -8603,19 +8603,19 @@
       },
       {
         "name": "control-character-escape",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule control-character-escape."
+        "notes": "Pattern-level scan via first_literal_control_character: walks the pattern chars and reports the first raw character with code point < 0x20 or 0x7F (i.e. an actual control byte). Unlike no-control-character, this helper does NOT decode escape sequences — `\\xHH` reaching the regex engine as four characters is not flagged, only literal control bytes that landed in the pattern via a host-language escape like `\\u0001` in a JS string literal."
       },
       {
         "name": "grapheme-string-literal",
