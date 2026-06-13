@@ -23,6 +23,7 @@ function normalizeOptions(options) {
     allowRestParameter: raw.allowRestParameter === true,
     allowArgumentsKeyword: raw.allowArgumentsKeyword === true,
     allowLetInForLoopInit: raw.allowLetInForLoopInit === true,
+    allowInFunctions: raw.allowInFunctions === true,
     allowThrowToRejectPromises: raw.allowThrowToRejectPromises === true,
     allowTryCatch: raw.allowTryCatch === true,
     allowTryFinally: raw.allowTryFinally === true,

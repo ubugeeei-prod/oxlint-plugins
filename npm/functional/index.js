@@ -219,6 +219,8 @@ function schemaForRule(ruleName) {
         type: 'object',
         properties: {
           allowInForLoopInit: { type: 'boolean' },
+          allowInFunctions: { type: 'boolean' },
+          ignoreIdentifierPattern: stringOrStringArraySchema(),
         },
         additionalProperties: true,
       },
@@ -305,6 +307,7 @@ function scanOptionsForRule(context, ruleName) {
     allowArgumentsKeyword:
       ruleName === 'functional-parameters' && options.allowArgumentsKeyword === true,
     allowLetInForLoopInit: ruleName === 'no-let' && options.allowInForLoopInit === true,
+    allowInFunctions: ruleName === 'no-let' && options.allowInFunctions === true,
     allowThrowToRejectPromises:
       ruleName === 'no-throw-statements' && options.allowToRejectPromises === true,
     allowTryCatch: ruleName === 'no-try-statements' && options.allowCatch === true,
@@ -313,9 +316,10 @@ function scanOptionsForRule(context, ruleName) {
       ruleName === 'readonly-type' && (raw === 'keyword' || raw === 'generic') ? raw : undefined,
     ignoreIfReadonlyWrapped:
       ruleName === 'prefer-property-signatures' && options.ignoreIfReadonlyWrapped === true,
-    ignoreIdentifierPattern: classRuleUsesIgnorePatterns(ruleName)
-      ? options.ignoreIdentifierPattern
-      : undefined,
+    ignoreIdentifierPattern:
+      classRuleUsesIgnorePatterns(ruleName) || ruleName === 'no-let'
+        ? options.ignoreIdentifierPattern
+        : undefined,
     ignoreCodePattern: classRuleUsesIgnorePatterns(ruleName)
       ? options.ignoreCodePattern
       : undefined,

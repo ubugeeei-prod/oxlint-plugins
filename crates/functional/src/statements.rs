@@ -252,6 +252,21 @@ impl<'a> Scanner<'a> {
         }
     }
 
+    fn declaration_identifiers_ignored(&self, declaration: &VariableDeclaration<'a>) -> bool {
+        if self.ignore_identifier_regexes.is_empty() {
+            return false;
+        }
+        for declarator in &declaration.declarations {
+            let BindingPattern::BindingIdentifier(id) = &declarator.id else {
+                return false;
+            };
+            if !self.matches_ignore_identifier(id.name.as_str()) {
+                return false;
+            }
+        }
+        true
+    }
+
     fn scan_variable_declaration(
         &mut self,
         declaration: &'a VariableDeclaration<'a>,
@@ -260,6 +275,8 @@ impl<'a> Scanner<'a> {
     ) {
         if declaration.kind == VariableDeclarationKind::Let
             && !(in_for_init && self.options.allow_let_in_for_loop_init)
+            && !(self.options.allow_in_functions && context.in_function)
+            && !self.declaration_identifiers_ignored(declaration)
         {
             self.report(
                 "no-let",

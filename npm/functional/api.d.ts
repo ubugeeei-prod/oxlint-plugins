@@ -17,6 +17,7 @@ export type FunctionalScanOptions = {
   allowRestParameter?: boolean;
   allowArgumentsKeyword?: boolean;
   allowLetInForLoopInit?: boolean;
+  allowInFunctions?: boolean;
   allowThrowToRejectPromises?: boolean;
   allowTryCatch?: boolean;
   allowTryFinally?: boolean;
