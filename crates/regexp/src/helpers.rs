@@ -1105,6 +1105,91 @@ pub(crate) fn class_has_case_pair(bytes: &[u8], open: usize) -> bool {
     (0..26).any(|i| has_lower[i] && has_upper[i])
 }
 
+/// Returns `true` when adding the `i` flag to the pattern would be
+/// equivalent — i.e. every ASCII letter in the pattern is already covered
+/// by a case-pair inside a character class, so flipping to case-insensitive
+/// mode changes nothing outside those classes.
+///
+/// The check is intentionally conservative (may return `false` when it could
+/// theoretically return `true`) so it never produces false positives:
+///
+/// - A bare ASCII letter outside a class makes the pattern case-variant
+///   (`/[aA]a/` → the bare `a` would also match `A` with `i`).
+/// - A `\b`/`\B` escape when the `u` or `v` flag is active is case-variant:
+///   Unicode word-boundary matching depends on the case of adjacent
+///   characters, so adding `i` can change whether `\b` fires.
+/// - A character class whose literal ASCII letters are not fully case-paired
+///   (e.g. `[aAb]` — `b` has no `B`) is case-variant.
+/// - Ranges, non-ASCII chars, escape sequences, and non-letter literals are
+///   conservatively treated as non-case-variant and are ignored.
+///
+/// Used by `use-ignore-case` to suppress the diagnostic when adding `/i`
+/// would change the set of strings matched by the rest of the pattern.
+pub(crate) fn pattern_is_safe_to_add_i_flag(pattern: &str, flags: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let unicode = flags.contains('u') || flags.contains('v');
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => {
+                // \b and \B (word boundaries) are case-variant in Unicode mode.
+                if unicode && matches!(bytes.get(index + 1).copied(), Some(b'b') | Some(b'B')) {
+                    return false;
+                }
+                index = skip_escape(bytes, index);
+            }
+            b'[' => {
+                let Some(end) = find_class_end(bytes, index) else {
+                    return false;
+                };
+                // Check that every literal ASCII letter inside the class has
+                // its opposite-case counterpart also present literally.
+                // Ranges and escape sequences are skipped (conservative).
+                let mut inner = index + 1;
+                if bytes.get(inner) == Some(&b'^') {
+                    inner += 1;
+                }
+                let mut has_lower = [false; 26];
+                let mut has_upper = [false; 26];
+                let mut i2 = inner;
+                while i2 < end {
+                    if bytes[i2] == b'\\' {
+                        i2 = skip_escape(bytes, i2).min(end);
+                        continue;
+                    }
+                    if i2 + 2 < end && bytes[i2 + 1] == b'-' {
+                        // range: skip all three bytes; don't record endpoints
+                        i2 += 3;
+                        continue;
+                    }
+                    let byte = bytes[i2];
+                    if byte.is_ascii_lowercase() {
+                        has_lower[(byte - b'a') as usize] = true;
+                    } else if byte.is_ascii_uppercase() {
+                        has_upper[(byte - b'A') as usize] = true;
+                    }
+                    i2 += 1;
+                }
+                // If any literal letter is unpaired, adding `i` changes the class.
+                for k in 0..26usize {
+                    if (has_lower[k] || has_upper[k]) && !(has_lower[k] && has_upper[k]) {
+                        return false;
+                    }
+                }
+                index = end + 1;
+            }
+            b => {
+                // Bare ASCII letter outside a class → case-variant.
+                if b.is_ascii_alphabetic() {
+                    return false;
+                }
+                index += 1;
+            }
+        }
+    }
+    true
+}
+
 /// Returns `Some(byte)` when the `[...]` class at `open` contains a `\q{X}`
 /// string literal whose body is exactly one ASCII char. Such literals are
 /// equivalent to the bare character in v-mode, so the `\q{}` wrapper is

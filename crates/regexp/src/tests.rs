@@ -658,6 +658,7 @@ mod use_ignore_case {
 
     #[test]
     fn reports_case_pair_classes_without_i_flag() {
+        // Bare case-pair class: every letter in the pattern is covered by a pair.
         assert_eq!(
             rule_ids_for("const a = /[aA]/u;", "use-ignore-case").as_slice(),
             &["unexpected"]
@@ -665,6 +666,16 @@ mod use_ignore_case {
         // Multi-pair class.
         assert_eq!(
             rule_ids_for("const a = /[aAbB]/u;", "use-ignore-case").as_slice(),
+            &["unexpected"]
+        );
+        // v-mode bare case-pair class.
+        assert_eq!(
+            rule_ids_for("const a = /[aA]/v;", "use-ignore-case").as_slice(),
+            &["unexpected"]
+        );
+        // Multiple case-pair classes, no bare letters.
+        assert_eq!(
+            rule_ids_for("const a = /[aA][aA][aA]/u;", "use-ignore-case").as_slice(),
             &["unexpected"]
         );
     }
@@ -678,6 +689,24 @@ mod use_ignore_case {
         // Ranges and escapes are intentionally skipped.
         assert!(rule_ids_for("const a = /[a-z]/u;", "use-ignore-case").is_empty());
         assert!(rule_ids_for("const a = /[\\w]/u;", "use-ignore-case").is_empty());
+    }
+
+    #[test]
+    fn regression_does_not_fire_when_adding_i_would_change_behavior() {
+        // Bare `a` outside the class: adding /i would also make the bare `a`
+        // match uppercase `A`, changing the set of strings matched.
+        assert!(rule_ids_for("const a = /[aA]a/u;", "use-ignore-case").is_empty());
+        assert!(rule_ids_for("const a = /[aA]a/v;", "use-ignore-case").is_empty());
+        assert!(rule_ids_for("const a = /[aA]a/;", "use-ignore-case").is_empty());
+        // Class with unpaired `b`: adding /i would make `b` match `B` too.
+        assert!(rule_ids_for("const a = /[aAb]/u;", "use-ignore-case").is_empty());
+        assert!(rule_ids_for("const a = /[aAb]/v;", "use-ignore-case").is_empty());
+        assert!(rule_ids_for("const a = /[aAb]/;", "use-ignore-case").is_empty());
+        // `\b` (word boundary) in Unicode mode is case-variant: its matching
+        // depends on whether adjacent characters are cased, so adding /i changes
+        // where the boundary fires.
+        assert!(rule_ids_for("const a = /\\b[aA]/u;", "use-ignore-case").is_empty());
+        assert!(rule_ids_for("const a = /\\b[aA]/v;", "use-ignore-case").is_empty());
     }
 }
 
