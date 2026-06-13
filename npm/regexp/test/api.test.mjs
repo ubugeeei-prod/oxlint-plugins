@@ -15,6 +15,14 @@ describe('regexp native API', () => {
       'no-control-character',
       'sort-flags',
       'require-unicode-regexp',
+      'no-escape-backspace',
+      'prefer-plus-quantifier',
+      'prefer-star-quantifier',
+      'prefer-question-quantifier',
+      'no-useless-two-nums-quantifier',
+      'prefer-named-capture-group',
+      'match-any',
+      'no-legacy-features',
     ]);
   });
 
