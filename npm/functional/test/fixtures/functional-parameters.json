@@ -1,0 +1,348 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/functional-parameters.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "var foo = {\n  arguments: 2\n};\nfoo.arguments = 3",
+      "typeAware": false
+    },
+    {
+      "code": "(function() {\n  console.log(\"hello world\");\n})();",
+      "typeAware": false
+    },
+    {
+      "code": "(() => {\n  console.log(\"hello world\");\n})();",
+      "typeAware": false
+    },
+    {
+      "code": "function foo([bar, ...baz]) {\n  console.log(bar, baz);\n}",
+      "typeAware": false
+    },
+    {
+      "code": "function foo(bar) {\n  console.log(bar);\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "atLeastOne"
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar, baz) {\n  console.log(bar, baz);\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "atLeastOne"
+        }
+      ]
+    },
+    {
+      "code": "const foo = {\n  get bar() {\n    return \"baz\";\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": {
+            "count": "atLeastOne",
+            "ignoreGettersAndSetters": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "const foo = {\n  set bar(baz) {\n    this.baz = baz;\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": {
+            "count": "atLeastOne",
+            "ignoreGettersAndSetters": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar) {\n  console.log(bar);\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "exactlyOne"
+        }
+      ]
+    },
+    {
+      "code": "const foo = {\n  get bar() {\n    return \"baz\";\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": {
+            "count": "exactlyOne",
+            "ignoreGettersAndSetters": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "const foo = {\n  set bar(baz) {\n    this.baz = baz;\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": {
+            "count": "exactlyOne",
+            "ignoreGettersAndSetters": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo(param) {}\nfoo(function () {});",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": {
+            "ignoreLambdaExpression": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo(param) {}\nfoo(() => 1);",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": {
+            "ignoreLambdaExpression": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "(() => {\n  console.log(\"hello world\");\n})();",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": {
+            "count": "atLeastOne",
+            "ignoreIIFE": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo(...bar) {\n  console.log(bar);\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^foo"
+        }
+      ]
+    },
+    {
+      "code": "const baz = {\n  foo(...bar) {\n    console.log(bar);\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^foo"
+        }
+      ]
+    },
+    {
+      "code": "[1, 2, 3].reduce(\n  function(carry, current) {\n    return carry + current;\n  },\n  0\n);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignorePrefixSelector": "CallExpression[callee.property.name='reduce']",
+          "enforceParameterCount": "exactlyOne"
+        }
+      ]
+    },
+    {
+      "code": "[1, 2, 3].map(\n  function(element, index) {\n    return element + index;\n  },\n  0\n);",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "exactlyOne",
+          "ignorePrefixSelector": "CallExpression[callee.property.name='map']"
+        }
+      ]
+    },
+    {
+      "code": "[1, 2, 3]\n  .map(\n    function(element, index) {\n      return element + index;\n    }\n  )\n  .reduce(\n    function(carry, current) {\n      return carry + current;\n    },\n    0\n  );",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "exactlyOne",
+          "ignorePrefixSelector": [
+            "CallExpression[callee.property.name='reduce']",
+            "CallExpression[callee.property.name='map']"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "[1, 2, 3].reduce(\n  (carry, current) => carry + current,\n  0\n);",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "exactlyOne",
+          "ignorePrefixSelector": "CallExpression[callee.property.name='reduce']"
+        }
+      ]
+    },
+    {
+      "code": "[1, 2, 3].map(\n  (element, index) => element + index,\n  0\n);",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "exactlyOne",
+          "ignorePrefixSelector": "CallExpression[callee.property.name='map']"
+        }
+      ]
+    },
+    {
+      "code": "[1, 2, 3]\n  .map(\n    (element, index) => element + index\n  )\n  .reduce(\n    (carry, current) => carry + current, 0\n  );",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "exactlyOne",
+          "ignorePrefixSelector": [
+            "CallExpression[callee.property.name='reduce']",
+            "CallExpression[callee.property.name='map']"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "function foo(...bar: string[]) {\n  console.log(bar);\n}",
+      "typeAware": true
+    },
+    {
+      "code": "function foo(bar: string[]) {\n  console.log(arguments);\n}",
+      "typeAware": true
+    },
+    {
+      "code": "function foo(...bar: string[]) {\n  console.log(bar);\n}",
+      "typeAware": true
+    },
+    {
+      "code": "function foo(bar: string[]) {\n  console.log(arguments);\n}",
+      "typeAware": true
+    }
+  ],
+  "invalid": [
+    {
+      "code": "function foo(...bar) {\n  console.log(bar);\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "restParam"
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar) {\n  console.log(arguments);\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "arguments"
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  console.log(\"hello world\");\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "atLeastOne"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "paramCountAtLeastOne"
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar, baz) {\n  console.log(bar, baz);\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "exactlyOne"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "paramCountExactlyOne"
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  console.log(\"hello world\");\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": "exactlyOne"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "paramCountExactlyOne"
+        }
+      ]
+    },
+    {
+      "code": "function foo() {}",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": {
+            "count": "atLeastOne",
+            "ignoreLambdaExpression": true
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "paramCountAtLeastOne"
+        }
+      ]
+    },
+    {
+      "code": "(() => {\n  console.log(\"hello world\");\n})();",
+      "typeAware": false,
+      "options": [
+        {
+          "enforceParameterCount": {
+            "count": "atLeastOne",
+            "ignoreIIFE": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "paramCountAtLeastOne"
+        }
+      ]
+    },
+    {
+      "code": "function foo(...bar) {\n  console.log(bar);\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^bar"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "restParam"
+        }
+      ]
+    }
+  ]
+}

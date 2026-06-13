@@ -1,0 +1,73 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-loop-statements.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "if (true) {\n  console.log(\"hello world\");\n}",
+      "typeAware": false
+    }
+  ],
+  "invalid": [
+    {
+      "code": "while (true) {\n  console.log(\"hello world\");\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "do {\n  console.log(\"hello world\");\n} while (true);",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "for (let i = 0; i < 10; i++) {\n  console.log(\"hello world\");\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "for (let i in []) {\n  console.log(\"hello world\");\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "for (let i of []) {\n  console.log(\"hello world\");\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "for await (let i of []) {\n  console.log(\"hello world\");\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    }
+  ]
+}

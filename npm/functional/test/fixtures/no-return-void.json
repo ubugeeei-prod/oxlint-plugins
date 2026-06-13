@@ -1,0 +1,162 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-return-void.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function foo(bar: number): number {\n  return bar + 1;\n}",
+      "typeAware": true
+    },
+    {
+      "code": "function foo(bar: number) {\n  return bar + 1;\n}",
+      "typeAware": true
+    },
+    {
+      "code": "function foo(bar: number): null {\n  return null;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowNull": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number) {\n  return null;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowNull": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number): undefined {\n  return undefined;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowUndefined": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number) {\n  return undefined;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowUndefined": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number) {\n  console.log(bar);\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreInferredTypes": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number) {\n  return null;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreInferredTypes": true,
+          "allowNull": false
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number) {\n  return undefined;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreInferredTypes": true,
+          "allowUndefined": false
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "function foo(bar: number): void {\n  console.log(bar);\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number) {\n  console.log(bar);\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number): null {\n  return null;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowNull": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number) {\n  return null;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowNull": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number): undefined {\n  return undefined;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowUndefined": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: number) {\n  return undefined;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowUndefined": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    }
+  ]
+}

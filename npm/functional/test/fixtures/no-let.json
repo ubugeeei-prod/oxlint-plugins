@@ -1,0 +1,438 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-let.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function foo() {\n  let x;\n  let y = 0;\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowInFunctions": true
+        }
+      ]
+    },
+    {
+      "code": "const foo = () => {\n  let x;\n  let y = 0;\n};",
+      "typeAware": false,
+      "options": [
+        {
+          "allowInFunctions": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n  foo() {\n    let x;\n    let y = 0;\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowInFunctions": true
+        }
+      ]
+    },
+    {
+      "code": "for (let x = 0; x < 1; x++);",
+      "typeAware": false,
+      "options": [
+        {
+          "allowInForLoopInit": true
+        }
+      ]
+    },
+    {
+      "code": "let mutable;\nlet mutableX",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "let mutable = 0;\nlet mutableX = 0",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "for (let mutableX = 0; x < 1; x++);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "for (let mutableX in {});",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "for (let mutableX of []);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  let mutableX;\n  let mutableY = 0;\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "const foo = () => {\n  let mutableX;\n  let mutableY = 0;\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n  foo() {\n    let mutableX;\n    let mutableY = 0;\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "let Mutable;\nlet xMutable;",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ]
+    },
+    {
+      "code": "let Mutable = 0;\nlet xMutable = 0;",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ]
+    },
+    {
+      "code": "for (let xMutable = 0; xMutable < 1; xMutable++);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ]
+    },
+    {
+      "code": "for (let xMutable in {});",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ]
+    },
+    {
+      "code": "for (let xMutable of []);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  let xMutable;\n  let yMutable = 0;\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ]
+    },
+    {
+      "code": "const foo = () => {\n  let xMutable;\n  let yMutable = 0;\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n  foo() {\n    let xMutable;\n    let yMutable = 0;\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "let x;\n\nfunction foo() {\n  let y;\n  let z = 0;\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "let x;\nlet y = 0;",
+      "typeAware": false,
+      "options": [
+        {
+          "allowInFunctions": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "let x;\nlet y = 0;",
+      "typeAware": false,
+      "options": [
+        {
+          "allowInFunctions": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "let x;\nlet y = 0;",
+      "typeAware": false,
+      "options": [
+        {
+          "allowInFunctions": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "let x;\nlet y = 0;",
+      "typeAware": false,
+      "options": [
+        {
+          "allowInFunctions": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "let immutable;\nlet immutableX;",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "let immutable = 0;\nlet immutableX = 0;",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "for (let immutableX = 0; immutableX < 1; immutableX++);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "for (let immutableX in {});",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "for (let immutableX of []);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "function foo() {\n  let immutableX;\n  let immutableY = 0;\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "const foo = () => {\n  let immutableX;\n  let immutableY = 0;\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "class Foo {\n  foo() {\n    let immutableX;\n    let immutableY = 0;\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^mutable"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "let Immutable;\nlet xImmutable;",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "let Immutable = 0;\nlet xImmutable = 0;",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "for (let xImmutable = 0; x < 1; x++);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "for (let xImmutable in {});",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "for (let xImmutable of []);",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "function foo() {\n  let xImmutable;\n  let yImmutable = 0;\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "const foo = () => {\n  let xImmutable;\n  let yImmutable = 0;\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "code": "class Foo {\n  foo() {\n    let xImmutable;\n    let yImmutable = 0;\n  }\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "Mutable$"
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

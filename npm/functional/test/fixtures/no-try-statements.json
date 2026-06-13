@@ -1,0 +1,86 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-try-statements.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "foo();",
+      "typeAware": false
+    },
+    {
+      "code": "try {\n  foo();\n} catch (e) {\n  console.log(e);\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowCatch": true
+        }
+      ]
+    },
+    {
+      "code": "try {\n  foo();\n} finally {\n  console.log(\"world\");\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowFinally": true
+        }
+      ]
+    },
+    {
+      "code": "try {\n  foo();\n} catch (e) {\n  console.log(e);\n} finally {\n  console.log(\"world\");\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowCatch": true,
+          "allowFinally": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "try {\n  foo();\n} catch (e) {\n  console.log(e);\n}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "catch"
+        }
+      ]
+    },
+    {
+      "code": "try {\n  foo();\n} catch (e) {\n  console.log(e);\n} finally {\n  console.log(\"world\");\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowCatch": true,
+          "allowFinally": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "finally"
+        }
+      ]
+    },
+    {
+      "code": "try {\n  foo();\n} catch (e) {\n  console.log(e);\n} finally {\n  console.log(\"world\");\n}",
+      "typeAware": false,
+      "options": [
+        {
+          "allowCatch": false,
+          "allowFinally": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "catch"
+        }
+      ]
+    }
+  ]
+}
