@@ -56,4 +56,30 @@ describe('regexp native API', () => {
       },
     });
   });
+
+  it('returns no diagnostics for clean sources', () => {
+    expect(scanRegexp('const re = /a+/u;\n', 'fixture.js')).toEqual([]);
+    expect(scanRegexp("const re = new RegExp('a', 'gimsu');\n", 'fixture.js')).toEqual([]);
+  });
+
+  it('returns no diagnostics when the source fails to parse', () => {
+    // Parser failure must not surface phantom diagnostics.
+    expect(scanRegexp('const = ;', 'fixture.js')).toEqual([]);
+  });
+
+  it('reports each literal separately', () => {
+    const diagnostics = scanRegexp('const a = /[]/u; const b = /a|/u;\n', 'fixture.js');
+    expect(diagnostics.map((diagnostic) => diagnostic.ruleName)).toEqual([
+      'no-empty-character-class',
+      'no-empty-alternative',
+    ]);
+    expect(diagnostics[0].loc.startLine).toBe(1);
+    expect(diagnostics[1].loc.startLine).toBe(1);
+    expect(diagnostics[1].loc.startColumn).toBeGreaterThan(diagnostics[0].loc.startColumn);
+  });
+
+  it('ignores callers that are not RegExp', () => {
+    expect(scanRegexp("new Foo('[]', 'u');\n", 'fixture.js')).toEqual([]);
+    expect(scanRegexp("Bar('[', 'u');\n", 'fixture.js')).toEqual([]);
+  });
 });
