@@ -224,6 +224,9 @@ const invalidCases = [
     'const re = /(?<year>\\d{4})-\\1/u;\n',
     ['unexpected'],
   ],
+  // no-useless-flag
+  ['no-useless-flag', 's without dot', "const re = new RegExp('abc', 's');\n", ['unexpected']],
+  ['no-useless-flag', 'm without anchor', "const re = new RegExp('abc', 'm');\n", ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

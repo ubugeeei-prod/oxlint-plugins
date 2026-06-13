@@ -83,8 +83,35 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-escape",
             "no-useless-quantifier",
             "prefer-named-backreference",
+            "no-useless-flag",
         ]
     );
+}
+
+mod no_useless_flag {
+    use super::*;
+
+    #[test]
+    fn reports_s_flag_on_dotless_patterns() {
+        let data = first_data("const a = new RegExp('abc', 's');", "no-useless-flag");
+        assert_eq!(data.flag.as_ref().map(CompactString::as_str), Some("s"));
+    }
+
+    #[test]
+    fn reports_m_flag_on_anchorless_patterns() {
+        let data = first_data("const a = new RegExp('abc', 'm');", "no-useless-flag");
+        assert_eq!(data.flag.as_ref().map(CompactString::as_str), Some("m"));
+    }
+
+    #[test]
+    fn accepts_flag_when_pattern_uses_the_corresponding_syntax() {
+        // `.` makes the `s` flag meaningful.
+        assert!(rule_ids_for("const a = new RegExp('a.b', 's');", "no-useless-flag").is_empty());
+        // `^` makes the `m` flag meaningful.
+        assert!(rule_ids_for("const a = new RegExp('^abc', 'm');", "no-useless-flag").is_empty());
+        // `$` at end activates the `m` flag.
+        assert!(rule_ids_for("const a = new RegExp('abc$', 'm');", "no-useless-flag").is_empty());
+    }
 }
 
 mod no_optional_assertion {
