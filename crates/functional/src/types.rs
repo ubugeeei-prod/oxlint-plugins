@@ -31,16 +31,8 @@ impl<'a> Scanner<'a> {
         &mut self,
         declaration: &'a TSTypeAliasDeclaration<'a>,
     ) {
-        if let TSType::TSTypeLiteral(type_literal) = &declaration.type_annotation
-            && has_mixed_signatures(&type_literal.members)
-        {
-            self.report(
-                "no-mixed-types",
-                "generic",
-                "Only the same kind of members allowed in types.",
-                declaration.span,
-            );
-        }
+        // no-mixed-types for the aliased type literal is reported by `scan_type`
+        // (a type alias is a type literal); reporting here too would double-count.
         if is_mutable_type(&declaration.type_annotation) {
             self.report(
                 "type-declaration-immutability",
@@ -56,7 +48,7 @@ impl<'a> Scanner<'a> {
         &mut self,
         declaration: &'a TSInterfaceDeclaration<'a>,
     ) {
-        if has_mixed_signatures(&declaration.body.body) {
+        if self.options.check_interfaces && has_mixed_signatures(&declaration.body.body) {
             self.report(
                 "no-mixed-types",
                 "generic",
@@ -194,7 +186,7 @@ impl<'a> Scanner<'a> {
                 self.scan_type_operator(operator);
             }
             TSType::TSTypeLiteral(literal) => {
-                if has_mixed_signatures(&literal.members) {
+                if self.options.check_type_literals && has_mixed_signatures(&literal.members) {
                     self.report(
                         "no-mixed-types",
                         "generic",

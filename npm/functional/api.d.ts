@@ -30,6 +30,8 @@ export type FunctionalScanOptions = {
   enforceCountIgnoreGettersSetters?: boolean;
   enforceCountIgnoreLambda?: boolean;
   ignorePrefixSelectorNames?: string[];
+  checkInterfaces?: boolean;
+  checkTypeLiterals?: boolean;
 };
 
 export function implementedFunctionalRuleNames(): string[];

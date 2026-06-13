@@ -45,6 +45,9 @@ function normalizeOptions(options) {
     enforceCountIgnoreLambda:
       typeof raw.enforceCountIgnoreLambda === 'boolean' ? raw.enforceCountIgnoreLambda : undefined,
     ignorePrefixSelectorNames: normalizeStringList(raw.ignorePrefixSelectorNames),
+    checkInterfaces: typeof raw.checkInterfaces === 'boolean' ? raw.checkInterfaces : undefined,
+    checkTypeLiterals:
+      typeof raw.checkTypeLiterals === 'boolean' ? raw.checkTypeLiterals : undefined,
   };
 }
 

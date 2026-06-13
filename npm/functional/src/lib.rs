@@ -40,6 +40,10 @@ mod napi_abi {
         pub enforce_count_ignore_lambda: Option<bool>,
         /// Extracted method-name strings from ignorePrefixSelector patterns.
         pub ignore_prefix_selector_names: Option<Vec<String>>,
+        /// no-mixed-types: check interfaces (default: true).
+        pub check_interfaces: Option<bool>,
+        /// no-mixed-types: check object type literals (default: true).
+        pub check_type_literals: Option<bool>,
     }
 
     #[napi(object)]
@@ -128,6 +132,12 @@ mod napi_abi {
             ignore_prefix_selector_names: compact_pattern_list(
                 options.ignore_prefix_selector_names,
             ),
+            check_interfaces: options
+                .check_interfaces
+                .unwrap_or(default_options.check_interfaces),
+            check_type_literals: options
+                .check_type_literals
+                .unwrap_or(default_options.check_type_literals),
         };
 
         core::scan_functional(&source_text, &filename, &core_options)

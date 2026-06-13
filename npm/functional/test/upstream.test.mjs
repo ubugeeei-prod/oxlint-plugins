@@ -35,6 +35,7 @@ const FULL_PARITY = new Set([
   'no-classes',
   'no-let',
   'no-loop-statements',
+  'no-mixed-types',
   'no-promise-reject',
   'no-this-expressions',
   'no-try-statements',
