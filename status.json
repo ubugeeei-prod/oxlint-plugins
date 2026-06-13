@@ -8763,19 +8763,19 @@
       },
       {
         "name": "no-empty-string-literal",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-empty-string-literal."
+        "notes": "Substring scan via pattern_has_empty_string_literal: the `\\q{}` syntax is only legal in `v`-flag patterns, so seeing the literal sequence implies v-mode without needing a flag check."
       },
       {
         "name": "no-escape-backspace",
@@ -9099,19 +9099,19 @@
       },
       {
         "name": "no-useless-character-class",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-character-class."
+        "notes": "Class-level scan via class_is_useless_single_literal flags `[X]` where the body is exactly one ASCII literal with no regex meaning of its own; negation, escapes, ranges, and multi-element classes are deferred to keep the check sound (no false positives)."
       },
       {
         "name": "no-useless-dollar-replacements",
