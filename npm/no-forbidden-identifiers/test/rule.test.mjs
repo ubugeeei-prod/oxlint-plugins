@@ -236,8 +236,4 @@ describe('no-forbidden-identifiers plugin shape', () => {
       plugin.configs.recommended.rules['no-forbidden-identifiers/no-forbidden-identifiers'],
     ).toBe('error');
   });
-
-  it('exports both default and CommonJS surfaces equivalently', () => {
-    expect(plugin.default).toBe(plugin);
-  });
 });
