@@ -310,10 +310,10 @@ const invalidCases = [
   // no-useless-flag
   ['no-useless-flag', 's without dot', "const re = new RegExp('abc', 's');\n", ['unexpected']],
   ['no-useless-flag', 'm without anchor', "const re = new RegExp('abc', 'm');\n", ['unexpected']],
-  // no-lazy-ends
-  ['no-lazy-ends', 'star lazy at end', 'const re = /a*?/u;\n', ['unexpected']],
-  ['no-lazy-ends', 'plus lazy at end', 'const re = /a+?/u;\n', ['unexpected']],
-  ['no-lazy-ends', 'braced lazy at end', 'const re = /a{2,}?/u;\n', ['unexpected']],
+  // no-lazy-ends (only fires when the regex is used as a whole pattern)
+  ['no-lazy-ends', 'star lazy at end', '/a*?/u.test(str)\n', ['unexpected']],
+  ['no-lazy-ends', 'plus lazy at end', '/a+?/u.test(str)\n', ['unexpected']],
+  ['no-lazy-ends', 'braced lazy at end', '/a{2,}?/u.test(str)\n', ['unexpected']],
   // no-useless-dollar-replacements
   [
     'no-useless-dollar-replacements',

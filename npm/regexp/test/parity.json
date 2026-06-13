@@ -4,10 +4,6 @@
     "no-dupe-characters-character-class": {
       "level": "off",
       "reason": "False duplicate in nested v-mode classes / set operations, e.g. /[\\q{a}\\q{ab}\\q{abc}[\\w--[ab]][\\w&&b]]/v. The \\q{...} body is now skipped (so simple cases pass), but nested [...] operands still need set-aware handling."
-    },
-    "no-lazy-ends": {
-      "level": "off",
-      "reason": "Flags lazy quantifiers like /a??/ and /a{3}?/ that upstream treats as valid."
     }
   }
 }
