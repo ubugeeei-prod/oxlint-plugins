@@ -104,6 +104,7 @@ fn exposes_initial_regexp_rule_names() {
             "no-dupe-disjunctions",
             "no-useless-backreference",
             "negation",
+            "no-useless-lazy",
         ]
     );
 }
@@ -2690,6 +2691,44 @@ mod negation {
         assert!(rule_ids_for("const a = /[^\\b]/u;", "negation").is_empty());
         // No character class at all.
         assert!(rule_ids_for("const a = /abc/u;", "negation").is_empty());
+    }
+}
+
+mod no_useless_lazy {
+    use super::*;
+
+    #[test]
+    fn reports_fixed_count_lazy_quantifiers() {
+        // `{n}?` form.
+        assert_eq!(
+            rule_ids_for("const a = /a{3}?/u;", "no-useless-lazy").as_slice(),
+            &["unexpected"]
+        );
+        // `{n,n}?` form with the same min and max.
+        assert_eq!(
+            rule_ids_for("const a = /a{2,2}?/u;", "no-useless-lazy").as_slice(),
+            &["unexpected"]
+        );
+        // `{0}?` — degenerate fixed count but still a useless lazy
+        // modifier on a fixed-count quantifier.
+        assert_eq!(
+            rule_ids_for("const a = /a{0}?/u;", "no-useless-lazy").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_non_fixed_count_lazy_quantifiers() {
+        // Different min and max — lazy is meaningful.
+        assert!(rule_ids_for("const a = /a{2,5}?/u;", "no-useless-lazy").is_empty());
+        // `{0,}?` is a lazy star — not fixed-count.
+        assert!(rule_ids_for("const a = /a{0,}?/u;", "no-useless-lazy").is_empty());
+        // Plain greedy fixed-count quantifier — no `?`.
+        assert!(rule_ids_for("const a = /a{3}/u;", "no-useless-lazy").is_empty());
+        // `*?`, `+?`, `??` are non-brace lazy quantifiers and are
+        // intentionally not flagged by the narrow port.
+        assert!(rule_ids_for("const a = /a*?/u;", "no-useless-lazy").is_empty());
+        assert!(rule_ids_for("const a = /a+?/u;", "no-useless-lazy").is_empty());
     }
 }
 

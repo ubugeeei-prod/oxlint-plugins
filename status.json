@@ -9163,19 +9163,19 @@
       },
       {
         "name": "no-useless-lazy",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-lazy."
+        "notes": "Narrow byte-walker port that detects fixed-count brace quantifiers `{n}` and `{n,n}` followed by a lazy `?` modifier. On a fixed-count quantifier the lazy flag is a no-op because the engine always matches exactly `n` repetitions. Other useless-lazy shapes (lazy quantifier whose body matches the empty string, or lazy quantifier followed by an assertion that is already satisfied) need a real regex AST and are intentionally deferred."
       },
       {
         "name": "no-useless-non-capturing-group",

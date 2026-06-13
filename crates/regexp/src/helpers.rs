@@ -487,6 +487,54 @@ pub(crate) fn is_zero_quantifier(bytes: &[u8], open: usize) -> bool {
     std::str::from_utf8(&bytes[second_start..cursor]).unwrap_or("") == "0"
 }
 
+/// If the regex starting at `open` (which must be `{`) is a fixed-count
+/// brace quantifier `{n}` or `{n,n}` (n >= 0) immediately followed by a
+/// lazy `?` modifier, returns the position right after the `?`. Returns
+/// `None` otherwise (including for any well-formed but non-fixed-count
+/// brace and for malformed input).
+///
+/// A lazy modifier on a fixed-count quantifier is a no-op because the engine
+/// always matches exactly `n` repetitions; `no-useless-lazy` flags this
+/// shape. Other useless-lazy forms (lazy quantifier whose body matches the
+/// empty string, or lazy quantifier followed by a satisfied assertion) need a
+/// real regex AST and are intentionally deferred.
+pub(crate) fn fixed_count_lazy_brace_end(bytes: &[u8], open: usize) -> Option<usize> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'{'));
+    let mut cursor = open + 1;
+    let first_start = cursor;
+    while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+        cursor += 1;
+    }
+    if cursor == first_start {
+        return None;
+    }
+    let first = bytes.get(first_start..cursor)?;
+    let body_end = match bytes.get(cursor).copied()? {
+        b'}' => cursor + 1,
+        b',' => {
+            cursor += 1;
+            let second_start = cursor;
+            while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+                cursor += 1;
+            }
+            if bytes.get(cursor) != Some(&b'}') || cursor == second_start {
+                return None;
+            }
+            let second = bytes.get(second_start..cursor)?;
+            if second != first {
+                return None;
+            }
+            cursor + 1
+        }
+        _ => return None,
+    };
+    if bytes.get(body_end) == Some(&b'?') {
+        Some(body_end + 1)
+    } else {
+        None
+    }
+}
+
 pub(crate) fn first_octal_escape(pattern: &str) -> Option<&str> {
     let bytes = pattern.as_bytes();
     let mut index = 0;

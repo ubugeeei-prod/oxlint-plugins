@@ -68,6 +68,7 @@ describe('regexp native API', () => {
       'no-dupe-disjunctions',
       'no-useless-backreference',
       'negation',
+      'no-useless-lazy',
     ]);
   });
 
