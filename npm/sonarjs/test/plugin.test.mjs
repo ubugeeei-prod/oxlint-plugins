@@ -100,6 +100,7 @@ describe('sonarjs plugin shape', () => {
       'no-collapsible-if',
       'no-redundant-boolean',
       'comma-or-logical-or-case',
+      'no-duplicate-in-composite',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -107,6 +108,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-collapsible-if']).toBe('object');
     expect(typeof plugin.rules['no-redundant-boolean']).toBe('object');
     expect(typeof plugin.rules['comma-or-logical-or-case']).toBe('object');
+    expect(typeof plugin.rules['no-duplicate-in-composite']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -114,6 +116,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-collapsible-if']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-redundant-boolean']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/comma-or-logical-or-case']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-duplicate-in-composite']).toBe('error');
   });
 });
 
@@ -160,6 +163,14 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('comma-or-logical-or-case', 'switch (x) { case 1 || 2: break; }');
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('commaOrLogicalOrInCase');
+  });
+
+  it('reports a duplicate type in a union through the adapter', () => {
+    const reports = runRule('no-duplicate-in-composite', 'type T = A | B | A;', {
+      filename: 'sample.ts',
+    });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('duplicateType');
   });
 });
 
@@ -219,5 +230,14 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(comma-or-logical-or-case)');
+  });
+
+  it('reports no-duplicate-in-composite through the CLI', () => {
+    const result = runOxlint('no-duplicate-in-composite', 'type T = A | B | A;', 'sample.ts');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-duplicate-in-composite)');
   });
 });

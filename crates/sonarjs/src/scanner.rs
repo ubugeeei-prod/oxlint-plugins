@@ -4,7 +4,7 @@
 
 use oxc_ast::ast::{
     BinaryExpression, ConditionalExpression, IfStatement, SwitchCase, SwitchStatement,
-    TemplateLiteral, UnaryExpression,
+    TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -23,6 +23,12 @@ pub(crate) struct Scanner<'a> {
     pub(crate) switch_depth: u32,
     /// Number of conditional (ternary) expressions currently open on the traversal stack.
     pub(crate) conditional_depth: u32,
+}
+
+impl<'a> Scanner<'a> {
+    pub(crate) fn text(&self, span: Span) -> &'a str {
+        &self.source_text[span.start as usize..span.end as usize]
+    }
 }
 
 impl Scanner<'_> {
@@ -92,5 +98,15 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_if_statement(&mut self, it: &IfStatement<'a>) {
         self.check_no_collapsible_if(it);
         walk::walk_if_statement(self, it);
+    }
+
+    fn visit_ts_union_type(&mut self, it: &TSUnionType<'a>) {
+        self.check_no_duplicate_in_composite(&it.types);
+        walk::walk_ts_union_type(self, it);
+    }
+
+    fn visit_ts_intersection_type(&mut self, it: &TSIntersectionType<'a>) {
+        self.check_no_duplicate_in_composite(&it.types);
+        walk::walk_ts_intersection_type(self, it);
     }
 }

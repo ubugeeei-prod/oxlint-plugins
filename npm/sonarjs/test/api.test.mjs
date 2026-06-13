@@ -9,6 +9,7 @@ const expectedRuleNames = [
   'no-collapsible-if',
   'no-redundant-boolean',
   'comma-or-logical-or-case',
+  'no-duplicate-in-composite',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -165,5 +166,38 @@ describe('sonarjs native API', () => {
     const source = 'switch (x) { case 1 && 2: break; }';
     const diagnostics = scan('comma-or-logical-or-case', source);
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports a duplicate type in a union type', () => {
+    const source = 'type T = A | B | A;';
+    const diagnostics = scan('no-duplicate-in-composite', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('duplicateType');
+  });
+
+  it('reports a duplicate type in an intersection type', () => {
+    const source = 'type T = A & B & A;';
+    const diagnostics = scan('no-duplicate-in-composite', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('duplicateType');
+  });
+
+  it('does not report a union type with all unique members', () => {
+    const source = 'type T = A | B | C;';
+    const diagnostics = scan('no-duplicate-in-composite', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an intersection type with all unique members', () => {
+    const source = 'type T = A & B;';
+    const diagnostics = scan('no-duplicate-in-composite', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports one diagnostic for a union with a repeated primitive type', () => {
+    const source = 'type T = string | string | number;';
+    const diagnostics = scan('no-duplicate-in-composite', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('duplicateType');
   });
 });
