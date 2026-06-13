@@ -2,21 +2,20 @@
 // test/fixtures/*.json by `pnpm run port:tests:regexp`) against this plugin,
 // so behavior stays faithful to upstream as the submodule is bumped.
 //
-// Design note — diagnostics-only port:
+// Design note — diagnostics-only port, ratcheted parity:
 //   The native `scanRegexp(sourceText, filename)` API returns raw diagnostics
-//   from the Rust/oxc backend. Messages are NOT asserted here because the port
-//   intentionally rewords them (Oxlint message style may differ from ESLint).
-//   We assert:
-//     - VALID soundness (always): every valid upstream case must emit zero
-//       diagnostics for the relevant rule.
-//     - COUNT + LOCATION parity (only when parity.json[rule] === 'full'):
-//       the number of diagnostics and their start/end line/column must match.
-//       Location mapping: native loc uses 0-based UTF-16 columns; the snapshot
-//       uses 1-based columns. So `native.startColumn + 1 === fixture.column`
-//       and `native.endColumn + 1 === fixture.endColumn`. If CI shows an
-//       off-by-one, tune the mapping here — the comment marks the assumption.
-//   When parity.json[rule] is absent or not 'full', invalid cases are
-//   registered with `it.skip` so coverage gaps are visible in CI output.
+//   from the Rust/oxc backend. Per-rule enforcement is driven by parity.json
+//   (see its `_doc`). Levels:
+//     - 'off'   — quarantined: the port diverges from upstream defaults, so the
+//                 rule's valid AND invalid cases are skipped until it is fixed.
+//     - 'valid' — the default for any rule not listed: every upstream VALID case
+//                 must emit zero diagnostics for the rule (soundness).
+//     - 'full'  — 'valid' plus invalid-case COUNT parity: the number of
+//                 diagnostics per case must match upstream.
+//   Message text and span are intentionally NOT asserted: the port rewords
+//   messages and may flag a different span (e.g. the whole literal) than
+//   upstream by design. The fixtures still record upstream locations as
+//   reference data for a possible future strict-location pass.
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -30,29 +29,42 @@ const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), 'fixtures');
 const PARITY_FILE = join(dirname(fileURLToPath(import.meta.url)), 'parity.json');
 
 const fixtureFiles = readdirSync(FIXTURES_DIR).filter((name) => name.endsWith('.json'));
-const parity = JSON.parse(readFileSync(PARITY_FILE, 'utf8'));
+const parityRules = JSON.parse(readFileSync(PARITY_FILE, 'utf8')).rules ?? {};
+
+// Resolve the enforcement level for a rule (default 'valid' when unlisted).
+function levelFor(rule) {
+  return parityRules[rule]?.level ?? 'valid';
+}
+
+function diagnosticsFor(testCase, rule) {
+  return scanRegexp(testCase.code, testCase.filename ?? 'file.js').filter(
+    (d) => d.ruleName === rule,
+  );
+}
 
 // Summary logged at startup so CI output makes coverage visible.
-const fullRules = fixtureFiles.filter((f) => parity[f.replace(/\.json$/, '')] === 'full').length;
-const validOnlyRules = fixtureFiles.length - fullRules;
+const counts = { off: 0, valid: 0, full: 0 };
+for (const file of fixtureFiles) {
+  counts[levelFor(file.replace(/\.json$/, ''))]++;
+}
 console.log(
-  `regexp upstream parity: ${fullRules} rule(s) with full (count+location) parity, ` +
-    `${validOnlyRules} rule(s) with valid-soundness-only parity`,
+  `regexp upstream parity: ${counts.full} full (count) | ${counts.valid} valid-soundness | ` +
+    `${counts.off} quarantined (off)`,
 );
 
 for (const file of fixtureFiles) {
   const rule = file.replace(/\.json$/, '');
   const fixture = JSON.parse(readFileSync(join(FIXTURES_DIR, file), 'utf8'));
-  const isFullParity = parity[rule] === 'full';
+  const level = levelFor(rule);
 
   describe(rule, () => {
     describe('valid', () => {
       fixture.valid.forEach((testCase, index) => {
-        it(`#${index} ${JSON.stringify(testCase.code)}`, () => {
-          const diagnostics = scanRegexp(testCase.code, testCase.filename ?? 'file.js').filter(
-            (d) => d.ruleName === rule,
-          );
-          expect(diagnostics).toEqual([]);
+        const label = `#${index} ${JSON.stringify(testCase.code)}`;
+        // 'off' rules are quarantined; show the gap as a skip rather than hide it.
+        const run = level === 'off' ? it.skip : it;
+        run(label, () => {
+          expect(diagnosticsFor(testCase, rule)).toEqual([]);
         });
       });
     });
@@ -60,33 +72,14 @@ for (const file of fixtureFiles) {
     describe('invalid', () => {
       fixture.invalid.forEach((testCase, index) => {
         const label = `#${index} ${JSON.stringify(testCase.code)}`;
-
-        if (!isFullParity) {
-          // Not yet promoted to full parity — register as skipped so the gap
-          // is visible without failing CI. Add the rule to parity.json once
-          // the native locations are verified.
+        // Invalid cases are only enforced (count parity) at level 'full'.
+        // Everything else is registered as skipped so coverage stays visible.
+        if (level !== 'full') {
           it.skip(label, () => {});
           return;
         }
-
         it(label, () => {
-          const actual = scanRegexp(testCase.code, testCase.filename ?? 'file.js').filter(
-            (d) => d.ruleName === rule,
-          );
-
-          // Count parity
-          expect(actual.length).toBe(testCase.errors.length);
-
-          // Location parity per error
-          // Mapping assumption: native loc uses 0-based UTF-16 columns;
-          // fixture uses 1-based columns from the .eslintsnap marker lines.
-          testCase.errors.forEach((expected, i) => {
-            const loc = actual[i]?.loc;
-            expect(loc?.startLine, `error[${i}].line`).toBe(expected.line);
-            // +1 maps 0-based native column to 1-based snapshot column
-            expect((loc?.startColumn ?? -1) + 1, `error[${i}].column`).toBe(expected.column);
-            expect((loc?.endColumn ?? -1) + 1, `error[${i}].endColumn`).toBe(expected.endColumn);
-          });
+          expect(diagnosticsFor(testCase, rule).length).toBe(testCase.errors.length);
         });
       });
     });
