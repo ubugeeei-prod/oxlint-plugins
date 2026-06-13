@@ -19,6 +19,9 @@ pub(crate) struct Scanner<'a> {
     pub(crate) line_index: LineIndex,
     pub(crate) diagnostics: SmallVec<[Diagnostic; 32]>,
     pub(crate) options: &'a FunctionalOptions,
+    /// True while traversing the type arguments of a `Readonly<...>` reference,
+    /// so `prefer-property-signatures` can honor `ignoreIfReadonlyWrapped`.
+    pub(crate) within_readonly: bool,
 }
 
 impl<'a> Scanner<'a> {

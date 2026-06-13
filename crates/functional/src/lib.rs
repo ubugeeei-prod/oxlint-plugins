@@ -68,6 +68,7 @@ pub struct FunctionalOptions {
     pub allow_try_catch: bool,
     pub allow_try_finally: bool,
     pub readonly_type_mode: CompactString,
+    pub ignore_if_readonly_wrapped: bool,
 }
 
 impl Default for FunctionalOptions {
@@ -84,6 +85,7 @@ impl Default for FunctionalOptions {
             allow_try_catch: false,
             allow_try_finally: false,
             readonly_type_mode: "generic".into(),
+            ignore_if_readonly_wrapped: false,
         }
     }
 }
@@ -166,6 +168,7 @@ pub fn scan_functional(
         line_index: LineIndex::new(source_text),
         diagnostics: SmallVec::new(),
         options,
+        within_readonly: false,
     };
     scanner.scan_statement_list(
         &parser_return.program.body,

@@ -232,6 +232,17 @@ function schemaForRule(ruleName) {
   if (ruleName === 'readonly-type') {
     return [{ type: 'string', enum: ['generic', 'keyword'] }];
   }
+  if (ruleName === 'prefer-property-signatures') {
+    return [
+      {
+        type: 'object',
+        properties: {
+          ignoreIfReadonlyWrapped: { type: 'boolean' },
+        },
+        additionalProperties: false,
+      },
+    ];
+  }
   return [];
 }
 
@@ -278,6 +289,8 @@ function scanOptionsForRule(context, ruleName) {
     allowTryFinally: ruleName === 'no-try-statements' && options.allowFinally === true,
     readonlyTypeMode:
       ruleName === 'readonly-type' && (raw === 'keyword' || raw === 'generic') ? raw : undefined,
+    ignoreIfReadonlyWrapped:
+      ruleName === 'prefer-property-signatures' && options.ignoreIfReadonlyWrapped === true,
   };
 }
 
