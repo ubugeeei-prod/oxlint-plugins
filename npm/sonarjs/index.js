@@ -87,6 +87,9 @@ const messages = Object.freeze({
     classPrototype:
       'Define this on a class using method syntax instead of assigning to the prototype.',
   },
+  'max-switch-cases': {
+    maxSwitchCases: 'This switch has too many cases; consider a lookup table or polymorphism.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -122,6 +125,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow overriding or shadowing standard ECMAScript built-in global objects and functions',
   'class-prototype':
     'Disallow assigning methods or properties to a constructor prototype; use class syntax instead',
+  'max-switch-cases':
+    'Disallow switch statements with more than 30 case/default clauses (threshold fixed at default 30; configurability is a follow-up)',
 });
 
 const ruleTypes = Object.freeze({
@@ -145,6 +150,7 @@ const ruleTypes = Object.freeze({
   'no-exclusive-tests': 'problem',
   'no-built-in-override': 'problem',
   'class-prototype': 'suggestion',
+  'max-switch-cases': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -168,6 +174,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-exclusive-tests': 'error',
   'no-built-in-override': 'error',
   'class-prototype': 'error',
+  'max-switch-cases': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

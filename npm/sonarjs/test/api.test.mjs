@@ -23,6 +23,7 @@ const expectedRuleNames = [
   'no-exclusive-tests',
   'no-built-in-override',
   'class-prototype',
+  'max-switch-cases',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -745,6 +746,21 @@ describe('sonarjs native API', () => {
   it('does not report class-prototype for obj.prototype (read, not assignment)', () => {
     const source = 'obj.prototype;';
     const diagnostics = scan('class-prototype', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports max-switch-cases for a switch with 31 cases (exceeds 30)', () => {
+    const big =
+      'switch (x) {' + Array.from({ length: 31 }, (_, i) => `case ${i}: break;`).join('') + '}';
+    const diagnostics = scan('max-switch-cases', big);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('max-switch-cases');
+    expect(diagnostics[0].messageId).toBe('maxSwitchCases');
+  });
+
+  it('does not report max-switch-cases for a small switch with 3 cases', () => {
+    const source = 'switch (x) { case 1: break; case 2: break; default: break; }';
+    const diagnostics = scan('max-switch-cases', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

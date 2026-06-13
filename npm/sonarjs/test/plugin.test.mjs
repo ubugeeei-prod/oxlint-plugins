@@ -114,6 +114,7 @@ describe('sonarjs plugin shape', () => {
       'no-exclusive-tests',
       'no-built-in-override',
       'class-prototype',
+      'max-switch-cases',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -135,6 +136,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-exclusive-tests']).toBe('object');
     expect(typeof plugin.rules['no-built-in-override']).toBe('object');
     expect(typeof plugin.rules['class-prototype']).toBe('object');
+    expect(typeof plugin.rules['max-switch-cases']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -156,6 +158,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-exclusive-tests']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-built-in-override']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/class-prototype']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/max-switch-cases']).toBe('error');
   });
 });
 
@@ -301,6 +304,14 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('class-prototype', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('classPrototype');
+  });
+
+  it('reports max-switch-cases for a switch with 31 cases through the adapter', () => {
+    const big =
+      'switch (x) {' + Array.from({ length: 31 }, (_, i) => `case ${i}: break;`).join('') + '}';
+    const reports = runRule('max-switch-cases', big);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('maxSwitchCases');
   });
 });
 
@@ -499,5 +510,16 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(class-prototype)');
+  });
+
+  it('reports max-switch-cases through the CLI', () => {
+    const big =
+      'switch (x) {' + Array.from({ length: 31 }, (_, i) => `case ${i}: break;`).join('') + '}';
+    const result = runOxlint('max-switch-cases', big);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(max-switch-cases)');
   });
 });
