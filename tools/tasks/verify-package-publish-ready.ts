@@ -30,8 +30,18 @@ const packages: PackageToPack[] = [
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-eslint-markdown',
+    dir: 'npm/eslint-markdown',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-react-refresh',
     dir: 'npm/react-refresh',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-regexp',
+    dir: 'npm/regexp',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
@@ -55,6 +65,11 @@ const packages: PackageToPack[] = [
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-playwright',
+    dir: 'npm/playwright',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-simple-import-sort',
     dir: 'npm/simple-import-sort',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
@@ -72,6 +87,11 @@ const packages: PackageToPack[] = [
   {
     name: '@oxlint-plugins/oxlint-plugin-stylistic',
     dir: 'npm/stylistic',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-testing-library',
+    dir: 'npm/testing-library',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
 ];

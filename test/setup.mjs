@@ -25,6 +25,10 @@ const nativePackages = [
     binding: 'npm/eslint-comments/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-eslint-markdown',
+    binding: 'npm/eslint-markdown/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-security',
     binding: 'npm/security/native.js',
   },
@@ -45,12 +49,24 @@ const nativePackages = [
     binding: 'npm/stylistic/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-testing-library',
+    binding: 'npm/testing-library/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-react-refresh',
     binding: 'npm/react-refresh/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-regexp',
+    binding: 'npm/regexp/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-mocha',
     binding: 'npm/mocha/native.js',
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-playwright',
+    binding: 'npm/playwright/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-simple-import-sort',

@@ -810,6 +810,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-eslint-markdown"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-eslint-markdown",
+]
+
+[[package]]
 name = "oxlint-plugin-functional"
 version = "0.0.0"
 dependencies = [
@@ -843,6 +854,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-playwright"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-playwright",
+]
+
+[[package]]
 name = "oxlint-plugin-react-refresh"
 version = "0.0.0"
 dependencies = [
@@ -851,6 +872,16 @@ dependencies = [
  "napi-derive",
  "oxlint-plugins-_carton",
  "oxlint-plugins-react-refresh",
+]
+
+[[package]]
+name = "oxlint-plugin-regexp"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-regexp",
 ]
 
 [[package]]
@@ -895,6 +926,17 @@ dependencies = [
  "napi-derive",
  "oxlint-plugins-stylistic",
  "serde_json",
+]
+
+[[package]]
+name = "oxlint-plugin-testing-library"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-testing-library",
 ]
 
 [[package]]
@@ -954,6 +996,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugins-eslint-markdown"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxlint-plugins-_carton",
+ "regex",
+]
+
+[[package]]
 name = "oxlint-plugins-functional"
 version = "0.0.0"
 dependencies = [
@@ -979,6 +1030,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugins-playwright"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+ "regex",
+]
+
+[[package]]
 name = "oxlint-plugins-react-refresh"
 version = "0.0.0"
 dependencies = [
@@ -986,6 +1048,18 @@ dependencies = [
  "oxc_allocator",
  "oxc_ast",
  "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
+]
+
+[[package]]
+name = "oxlint-plugins-regexp"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_regular_expression",
  "oxc_span",
  "oxlint-plugins-_carton",
 ]
@@ -1038,6 +1112,16 @@ dependencies = [
  "phf",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "oxlint-plugins-testing-library"
+version = "0.0.0"
+dependencies = [
+ "oxc_allocator",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
 ]
 
 [[package]]
