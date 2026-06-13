@@ -25,6 +25,11 @@ export type FunctionalScanOptions = {
   ignoreIfReadonlyWrapped?: boolean;
   ignoreIdentifierPattern?: string | string[];
   ignoreCodePattern?: string | string[];
+  enforceParameterCount?: 'off' | 'atLeastOne' | 'exactlyOne';
+  enforceCountIgnoreIife?: boolean;
+  enforceCountIgnoreGettersSetters?: boolean;
+  enforceCountIgnoreLambda?: boolean;
+  ignorePrefixSelectorNames?: string[];
 };
 
 export function implementedFunctionalRuleNames(): string[];

@@ -405,3 +405,27 @@ fn honors_core_options() {
         .is_empty()
     );
 }
+
+#[test]
+fn reports_expressions_in_argument_position() {
+    // no-this-expressions fires for `this` passed as a call argument.
+    let this_options = FunctionalOptions {
+        rule_names: ["no-this-expressions".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    assert_eq!(
+        scan_functional("foo(this);", "fixture.ts", &this_options).len(),
+        1
+    );
+
+    // no-promise-reject fires for a rejecting `new Promise` in argument position.
+    let reject_options = FunctionalOptions {
+        rule_names: ["no-promise-reject".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let source = "foo(new Promise((resolve, reject) => reject('e')));";
+    assert_eq!(
+        scan_functional(source, "fixture.ts", &reject_options).len(),
+        1
+    );
+}
