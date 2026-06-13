@@ -171,6 +171,17 @@ impl<'a> Scanner<'a> {
         if method != "replace" && method != "replaceAll" {
             return;
         }
+        // Only fire when the receiver is a string literal.
+        if !matches!(member.object.get_inner_expression(), Expression::StringLiteral(_)) {
+            return;
+        }
+        // Only fire when the first argument is a regex literal.
+        let Some(arg0) = call.arguments.first().and_then(Argument::as_expression) else {
+            return;
+        };
+        if !matches!(arg0.get_inner_expression(), Expression::RegExpLiteral(_)) {
+            return;
+        }
         let Some(arg1) = call.arguments.get(1).and_then(Argument::as_expression) else {
             return;
         };

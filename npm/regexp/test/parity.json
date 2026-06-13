@@ -41,10 +41,6 @@
       "level": "off",
       "reason": "Flags single-character alternations like /(?:a|b)/ that upstream allows by default."
     },
-    "prefer-escape-replacement-dollar-char": {
-      "level": "off",
-      "reason": "Flags a lone trailing $ in a replacement string that upstream treats as valid."
-    },
     "prefer-named-backreference": {
       "level": "off",
       "reason": "Flags \\1 referring to an unnamed group, which has no named-backreference alternative."

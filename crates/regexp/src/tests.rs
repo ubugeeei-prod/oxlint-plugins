@@ -499,7 +499,7 @@ mod prefer_escape_replacement_dollar_char {
     fn reports_dollar_followed_by_invalid_char() {
         assert_eq!(
             rule_ids_for(
-                "str.replace(/foo/u, 'pre $ post');",
+                "'str'.replace(/foo/u, 'pre $ post');",
                 "prefer-escape-replacement-dollar-char"
             )
             .as_slice(),
@@ -508,7 +508,7 @@ mod prefer_escape_replacement_dollar_char {
         // Trailing dollar.
         assert_eq!(
             rule_ids_for(
-                "str.replace(/foo/u, 'price$');",
+                "'str'.replace(/foo/u, 'price$');",
                 "prefer-escape-replacement-dollar-char"
             )
             .as_slice(),
@@ -520,21 +520,21 @@ mod prefer_escape_replacement_dollar_char {
     fn accepts_valid_references_and_escaped_dollars() {
         assert!(
             rule_ids_for(
-                "str.replace(/(a)/u, '$1');",
+                "'str'.replace(/(a)/u, '$1');",
                 "prefer-escape-replacement-dollar-char"
             )
             .is_empty()
         );
         assert!(
             rule_ids_for(
-                "str.replace(/a/u, '$$');",
+                "'str'.replace(/a/u, '$$');",
                 "prefer-escape-replacement-dollar-char"
             )
             .is_empty()
         );
         assert!(
             rule_ids_for(
-                "str.replace(/a/u, '$&');",
+                "'str'.replace(/a/u, '$&');",
                 "prefer-escape-replacement-dollar-char"
             )
             .is_empty()
@@ -542,7 +542,23 @@ mod prefer_escape_replacement_dollar_char {
         // No dollar at all.
         assert!(
             rule_ids_for(
-                "str.replace(/a/u, 'bar');",
+                "'str'.replace(/a/u, 'bar');",
+                "prefer-escape-replacement-dollar-char"
+            )
+            .is_empty()
+        );
+        // Non-string-literal receiver: should not report.
+        assert!(
+            rule_ids_for(
+                "foo.replace(/./, '$');",
+                "prefer-escape-replacement-dollar-char"
+            )
+            .is_empty()
+        );
+        // Non-regex first argument: should not report.
+        assert!(
+            rule_ids_for(
+                "'abc'.replace(foo, '$');",
                 "prefer-escape-replacement-dollar-char"
             )
             .is_empty()
