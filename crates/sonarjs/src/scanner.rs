@@ -3,10 +3,10 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, ConditionalExpression, ExpressionStatement, Function,
-    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral,
-    StaticMemberExpression, SwitchCase, SwitchStatement, TSIntersectionType, TSUnionType,
-    TemplateLiteral, UnaryExpression, YieldExpression,
+    AssignmentExpression, BinaryExpression, BindingIdentifier, ConditionalExpression,
+    ExpressionStatement, Function, IdentifierReference, IfStatement, LabeledStatement,
+    LogicalExpression, RegExpLiteral, StaticMemberExpression, SwitchCase, SwitchStatement,
+    TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -122,8 +122,14 @@ impl<'a> Visit<'a> for Scanner<'a> {
         walk::walk_if_statement(self, it);
     }
 
+    fn visit_binding_identifier(&mut self, it: &BindingIdentifier<'a>) {
+        self.check_no_built_in_override_binding(it);
+        walk::walk_binding_identifier(self, it);
+    }
+
     fn visit_assignment_expression(&mut self, it: &AssignmentExpression<'a>) {
         self.check_non_existent_operator(it);
+        self.check_no_built_in_override_assignment(it);
         walk::walk_assignment_expression(self, it);
     }
 

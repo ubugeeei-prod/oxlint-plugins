@@ -838,3 +838,49 @@ fn does_not_report_no_exclusive_tests_for_describe_without_only() {
     let diagnostics = scan("no-exclusive-tests", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_built_in_override_for_let_declaration_shadowing_object() {
+    let source = "let Object = 1;";
+    let diagnostics = scan("no-built-in-override", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-built-in-override");
+    assert_eq!(diagnostics[0].message_id, "noBuiltInOverride");
+}
+
+#[test]
+fn reports_no_built_in_override_for_simple_assignment_to_array() {
+    let source = "Array = 2;";
+    let diagnostics = scan("no-built-in-override", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noBuiltInOverride");
+}
+
+#[test]
+fn reports_no_built_in_override_for_function_declaration_named_map() {
+    let source = "function Map() {}";
+    let diagnostics = scan("no-built-in-override", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noBuiltInOverride");
+}
+
+#[test]
+fn does_not_report_no_built_in_override_for_member_expression_assignment() {
+    let source = "Math.PI = 3;";
+    let diagnostics = scan("no-built-in-override", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_built_in_override_for_non_builtin_variable() {
+    let source = "let obj = 1;";
+    let diagnostics = scan("no-built-in-override", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_built_in_override_for_member_assignment_foo_object() {
+    let source = "foo.Object = 1;";
+    let diagnostics = scan("no-built-in-override", source);
+    assert!(diagnostics.is_empty());
+}
