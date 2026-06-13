@@ -11,7 +11,7 @@ use oxc_ast::ast::{
 };
 use oxc_span::GetSpan;
 
-use crate::{is_react_component_name, ComponentCheck, NamedSpan};
+use crate::{ComponentCheck, NamedSpan, is_react_component_name};
 
 pub(crate) fn component_check_for_name(name: &str) -> ComponentCheck {
     if is_react_component_name(name) {
@@ -35,7 +35,9 @@ pub(crate) fn identifier_reference<'a>(identifier: &IdentifierReference<'a>) -> 
     }
 }
 
-pub(crate) fn binding_pattern_identifier<'a>(pattern: &BindingPattern<'a>) -> Option<NamedSpan<'a>> {
+pub(crate) fn binding_pattern_identifier<'a>(
+    pattern: &BindingPattern<'a>,
+) -> Option<NamedSpan<'a>> {
     match pattern {
         BindingPattern::BindingIdentifier(identifier) => Some(binding_identifier(identifier)),
         _ => None,

@@ -5,9 +5,7 @@
     reason = "Helpers share the react-hooks AST import surface; not every helper uses every type."
 )]
 
-use oxc_ast::ast::{
-    AssignmentTarget, BindingPattern, Expression, Function, PropertyKey,
-};
+use oxc_ast::ast::{AssignmentTarget, BindingPattern, Expression, Function, PropertyKey};
 
 use crate::is_react_component_name;
 

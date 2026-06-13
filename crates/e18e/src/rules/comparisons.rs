@@ -7,31 +7,34 @@
 )]
 
 use oxc_ast::ast::{
-    Argument, ArrayExpressionElement, CallExpression, Expression, ImportDeclaration,
-    NewExpression, ObjectPropertyKind, Statement,
+    Argument, ArrayExpressionElement, CallExpression, Expression, ImportDeclaration, NewExpression,
+    ObjectPropertyKind, Statement,
 };
 use oxc_span::{GetSpan, Span};
 use oxc_syntax::operator::{AssignmentOperator, BinaryOperator, UnaryOperator};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    ban_dependency_diagnostic, binary_index_of_comparison, callee_path, constant_callback_value,
-    copy_pattern_optional, copy_pattern_source, expression_body, expression_contains_spread,
-    find_call_or_filter_length, find_or_filter_comparison, format_timer_replacement,
-    function_body_contains_spread, includes_negation_for_constant, is_constant_expression,
-    is_method_call, is_new_date_no_args, is_null_literal, is_null_or_undefined, is_number_literal,
-    is_plain_regex_text, is_regex_expression, is_safe_from_code_point_arg,
-    is_simple_inline_element, is_static_call, is_timer_call, is_undefined_constant,
-    is_undefined_identifier, normalize_operator, nullish_check, numeric_literal_value,
-    object_length_value, property_key_name, return_boolean, simple_regex_equivalent,
-    single_expression_statement, single_spread_element, statement_contains_spread,
-    static_member_callee, static_regexp_args, ExprContext, SomeSource,
+    ExprContext, SomeSource, ban_dependency_diagnostic, binary_index_of_comparison, callee_path,
+    constant_callback_value, copy_pattern_optional, copy_pattern_source, expression_body,
+    expression_contains_spread, find_call_or_filter_length, find_or_filter_comparison,
+    format_timer_replacement, function_body_contains_spread, includes_negation_for_constant,
+    is_constant_expression, is_method_call, is_new_date_no_args, is_null_literal,
+    is_null_or_undefined, is_number_literal, is_plain_regex_text, is_regex_expression,
+    is_safe_from_code_point_arg, is_simple_inline_element, is_static_call, is_timer_call,
+    is_undefined_constant, is_undefined_identifier, normalize_operator, nullish_check,
+    numeric_literal_value, object_length_value, property_key_name, return_boolean,
+    simple_regex_equivalent, single_expression_statement, single_spread_element,
+    statement_contains_spread, static_member_callee, static_regexp_args,
 };
 use crate::scanner::Scanner;
 use crate::{BanDependency, Diagnostic, DiagnosticData, DiagnosticFix};
 
 impl<'a> Scanner<'a> {
-    pub(crate) fn check_prefer_includes_binary(&mut self, binary: &'a oxc_ast::ast::BinaryExpression<'a>) {
+    pub(crate) fn check_prefer_includes_binary(
+        &mut self,
+        binary: &'a oxc_ast::ast::BinaryExpression<'a>,
+    ) {
         let Some((index_call, constant, reversed)) =
             binary_index_of_comparison(&binary.left, &binary.right)
         else {
@@ -44,7 +47,10 @@ impl<'a> Scanner<'a> {
         self.report_index_of_as_includes(binary.span, index_call, should_negate);
     }
 
-    pub(crate) fn check_prefer_includes_unary(&mut self, unary: &'a oxc_ast::ast::UnaryExpression<'a>) {
+    pub(crate) fn check_prefer_includes_unary(
+        &mut self,
+        unary: &'a oxc_ast::ast::UnaryExpression<'a>,
+    ) {
         if unary.operator == UnaryOperator::BitwiseNot {
             if let Expression::CallExpression(call) = unary.argument.get_inner_expression() {
                 if is_method_call(call, "indexOf") {
@@ -88,7 +94,10 @@ impl<'a> Scanner<'a> {
         self.report_with_fix("prefer-includes", "preferIncludes", span, replacement);
     }
 
-    pub(crate) fn check_no_indexof_equality(&mut self, binary: &'a oxc_ast::ast::BinaryExpression<'a>) {
+    pub(crate) fn check_no_indexof_equality(
+        &mut self,
+        binary: &'a oxc_ast::ast::BinaryExpression<'a>,
+    ) {
         if !matches!(
             binary.operator,
             BinaryOperator::Equality | BinaryOperator::StrictEquality
@@ -177,7 +186,10 @@ impl<'a> Scanner<'a> {
         );
     }
 
-    pub(crate) fn check_prefer_nullish_assignment(&mut self, statement: &'a oxc_ast::ast::IfStatement<'a>) {
+    pub(crate) fn check_prefer_nullish_assignment(
+        &mut self,
+        statement: &'a oxc_ast::ast::IfStatement<'a>,
+    ) {
         if statement.alternate.is_some() {
             return;
         }

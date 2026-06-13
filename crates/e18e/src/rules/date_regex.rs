@@ -7,25 +7,25 @@
 )]
 
 use oxc_ast::ast::{
-    Argument, ArrayExpressionElement, CallExpression, Expression, ImportDeclaration,
-    NewExpression, ObjectPropertyKind, Statement,
+    Argument, ArrayExpressionElement, CallExpression, Expression, ImportDeclaration, NewExpression,
+    ObjectPropertyKind, Statement,
 };
 use oxc_span::{GetSpan, Span};
 use oxc_syntax::operator::{AssignmentOperator, BinaryOperator, UnaryOperator};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    ban_dependency_diagnostic, binary_index_of_comparison, callee_path, constant_callback_value,
-    copy_pattern_optional, copy_pattern_source, expression_body, expression_contains_spread,
-    find_call_or_filter_length, find_or_filter_comparison, format_timer_replacement,
-    function_body_contains_spread, includes_negation_for_constant, is_constant_expression,
-    is_method_call, is_new_date_no_args, is_null_literal, is_null_or_undefined, is_number_literal,
-    is_plain_regex_text, is_regex_expression, is_safe_from_code_point_arg,
-    is_simple_inline_element, is_static_call, is_timer_call, is_undefined_constant,
-    is_undefined_identifier, normalize_operator, nullish_check, numeric_literal_value,
-    object_length_value, property_key_name, return_boolean, simple_regex_equivalent,
-    single_expression_statement, single_spread_element, statement_contains_spread,
-    static_member_callee, static_regexp_args, ExprContext, SomeSource,
+    ExprContext, SomeSource, ban_dependency_diagnostic, binary_index_of_comparison, callee_path,
+    constant_callback_value, copy_pattern_optional, copy_pattern_source, expression_body,
+    expression_contains_spread, find_call_or_filter_length, find_or_filter_comparison,
+    format_timer_replacement, function_body_contains_spread, includes_negation_for_constant,
+    is_constant_expression, is_method_call, is_new_date_no_args, is_null_literal,
+    is_null_or_undefined, is_number_literal, is_plain_regex_text, is_regex_expression,
+    is_safe_from_code_point_arg, is_simple_inline_element, is_static_call, is_timer_call,
+    is_undefined_constant, is_undefined_identifier, normalize_operator, nullish_check,
+    numeric_literal_value, object_length_value, property_key_name, return_boolean,
+    simple_regex_equivalent, single_expression_statement, single_spread_element,
+    statement_contains_spread, static_member_callee, static_regexp_args,
 };
 use crate::scanner::Scanner;
 use crate::{BanDependency, Diagnostic, DiagnosticData, DiagnosticFix};
@@ -64,7 +64,10 @@ impl<'a> Scanner<'a> {
 
     pub(crate) fn check_prefer_date_now_new(&mut self, _new_expression: &'a NewExpression<'a>) {}
 
-    pub(crate) fn check_prefer_date_now_unary(&mut self, unary: &'a oxc_ast::ast::UnaryExpression<'a>) {
+    pub(crate) fn check_prefer_date_now_unary(
+        &mut self,
+        unary: &'a oxc_ast::ast::UnaryExpression<'a>,
+    ) {
         if unary.operator != UnaryOperator::UnaryPlus {
             return;
         }
@@ -76,7 +79,11 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    pub(crate) fn check_prefer_regex_test(&mut self, call: &'a CallExpression<'a>, context: ExprContext) {
+    pub(crate) fn check_prefer_regex_test(
+        &mut self,
+        call: &'a CallExpression<'a>,
+        context: ExprContext,
+    ) {
         if context != ExprContext::Boolean {
             return;
         }

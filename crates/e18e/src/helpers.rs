@@ -58,14 +58,20 @@ pub(crate) fn ban_dependency_diagnostic(
     }
 }
 
-pub(crate) fn static_member_callee<'a>(call: &'a CallExpression<'a>) -> Option<(&'a Expression<'a>, &'a str)> {
+pub(crate) fn static_member_callee<'a>(
+    call: &'a CallExpression<'a>,
+) -> Option<(&'a Expression<'a>, &'a str)> {
     let Expression::StaticMemberExpression(member) = call.callee.get_inner_expression() else {
         return None;
     };
     Some((&member.object, member.property.name.as_str()))
 }
 
-pub(crate) fn is_static_call(call: &CallExpression<'_>, object_name: &str, property_name: &str) -> bool {
+pub(crate) fn is_static_call(
+    call: &CallExpression<'_>,
+    object_name: &str,
+    property_name: &str,
+) -> bool {
     let Some((object, property)) = static_member_callee(call) else {
         return false;
     };
@@ -137,7 +143,9 @@ pub(crate) fn property_key_name<'a>(key: &'a PropertyKey<'a>) -> Option<&'a str>
     }
 }
 
-pub(crate) fn constant_callback_value<'a>(expression: &'a Expression<'a>) -> Option<&'a Expression<'a>> {
+pub(crate) fn constant_callback_value<'a>(
+    expression: &'a Expression<'a>,
+) -> Option<&'a Expression<'a>> {
     match expression.get_inner_expression() {
         Expression::ArrowFunctionExpression(function) if function.params.items.is_empty() => {
             if function.expression {
@@ -200,7 +208,9 @@ pub(crate) fn is_constant_expression(expression: &Expression<'_>) -> bool {
     }
 }
 
-pub(crate) fn copy_pattern_source<'a>(expression: &'a Expression<'a>) -> Option<&'a Expression<'a>> {
+pub(crate) fn copy_pattern_source<'a>(
+    expression: &'a Expression<'a>,
+) -> Option<&'a Expression<'a>> {
     match expression.get_inner_expression() {
         Expression::ArrayExpression(array) => {
             single_spread_element(array).map(|spread| &spread.argument)
@@ -475,7 +485,12 @@ pub(crate) fn is_timer_call(call: &CallExpression<'_>) -> bool {
     }
 }
 
-pub(crate) fn format_timer_replacement(timer: &str, callee: &str, delay: &str, args: &[String]) -> String {
+pub(crate) fn format_timer_replacement(
+    timer: &str,
+    callee: &str,
+    delay: &str,
+    args: &[String],
+) -> String {
     if args.is_empty() {
         format!("{timer}({callee}, {delay})")
     } else {
@@ -483,7 +498,9 @@ pub(crate) fn format_timer_replacement(timer: &str, callee: &str, delay: &str, a
     }
 }
 
-pub(crate) fn simple_regex_equivalent(regex_text: &str) -> Option<(&'static str, &'static str, String)> {
+pub(crate) fn simple_regex_equivalent(
+    regex_text: &str,
+) -> Option<(&'static str, &'static str, String)> {
     let inner = regex_text.strip_prefix('/')?;
     let pattern_end = inner.rfind('/')?;
     let (pattern, flags) = inner.split_at(pattern_end);

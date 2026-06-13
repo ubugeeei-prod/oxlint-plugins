@@ -18,8 +18,8 @@ use oxlint_plugins_carton::{CompactString, FastHashMap, SmallVec};
 
 use crate::helpers::*;
 use crate::{
-    Diagnostic, DiagnosticFix, LineIndex, ParentKind, Scope, ValueKind, ALLOW_AND_AFTER,
-    ASSERTION_COMMANDS, ASSIGNMENT_ALLOWED_COMMANDS, FORCE_ACTION_COMMANDS, UNSAFE_CHAIN_ACTIONS,
+    ALLOW_AND_AFTER, ASSERTION_COMMANDS, ASSIGNMENT_ALLOWED_COMMANDS, Diagnostic, DiagnosticFix,
+    FORCE_ACTION_COMMANDS, LineIndex, ParentKind, Scope, UNSAFE_CHAIN_ACTIONS, ValueKind,
 };
 
 pub(crate) struct Scanner<'a> {

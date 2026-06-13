@@ -12,9 +12,9 @@ use oxlint_plugins_carton::{CompactString, FastHashMap, SmallVec};
 
 use crate::helpers::*;
 use crate::{
-    AccessPath, Binding, Diagnostic, DiagnosticData, LineIndex, ParentKind, Scope,
-    CHILD_PROCESS_PACKAGES, FS_PACKAGES, PATH_CONSTRUCTION_METHODS, PATH_PACKAGES,
-    PATH_STATIC_MEMBERS, TIMING_KEYWORDS, URL_PACKAGES,
+    AccessPath, Binding, CHILD_PROCESS_PACKAGES, Diagnostic, DiagnosticData, FS_PACKAGES,
+    LineIndex, PATH_CONSTRUCTION_METHODS, PATH_PACKAGES, PATH_STATIC_MEMBERS, ParentKind, Scope,
+    TIMING_KEYWORDS, URL_PACKAGES,
 };
 
 pub(crate) struct Scanner<'a> {
