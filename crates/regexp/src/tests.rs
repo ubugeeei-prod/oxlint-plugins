@@ -2001,6 +2001,8 @@ mod no_useless_escape {
         assert!(rule_ids_for("const a = /\\./u;", "no-useless-escape").is_empty());
         // Inside a character class — deferred to keep the check sound.
         assert!(rule_ids_for("const a = /[\\:]/u;", "no-useless-escape").is_empty());
+        // Escaping the literal delimiter is required, not useless.
+        assert!(rule_ids_for("const a = /\\//u;", "no-useless-escape").is_empty());
     }
 }
 

@@ -41,10 +41,6 @@
       "level": "off",
       "reason": "Flags $0 in String#replaceAll where it is a literal substitution, not a useless backreference."
     },
-    "no-useless-escape": {
-      "level": "off",
-      "reason": "Flags required escapes such as /\\// — escaping '/' inside a regex literal is necessary."
-    },
     "no-useless-non-capturing-group": {
       "level": "off",
       "reason": "Flags non-capturing groups that disambiguate adjacent tokens, e.g. /\\1(?:0)/, /{(?:2)}/."
