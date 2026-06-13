@@ -583,3 +583,33 @@ fn does_not_report_arguments_usage_for_plain_function() {
     let diagnostics = scan("arguments-usage", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_labels_for_labeled_loop() {
+    let source = "loop: for (;;) { break loop; }";
+    let diagnostics = scan("no-labels", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-labels");
+    assert_eq!(diagnostics[0].message_id, "noLabels");
+}
+
+#[test]
+fn reports_no_labels_for_two_nested_labeled_loops() {
+    let source = "outer: for (;;) { inner: for (;;) { break outer; } }";
+    let diagnostics = scan("no-labels", source);
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
+fn does_not_report_no_labels_for_unlabeled_loop() {
+    let source = "for (;;) { break; }";
+    let diagnostics = scan("no-labels", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_labels_for_plain_variable_declaration() {
+    let source = "const x = 1;";
+    let diagnostics = scan("no-labels", source);
+    assert!(diagnostics.is_empty());
+}

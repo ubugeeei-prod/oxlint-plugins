@@ -58,6 +58,9 @@ const messages = Object.freeze({
   'arguments-usage': {
     argumentsUsage: "Use the rest parameter syntax (...args) instead of the 'arguments' object.",
   },
+  'no-labels': {
+    noLabels: 'Remove this label and refactor the code to use structured control flow instead.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -78,6 +81,7 @@ const ruleDescriptions = Object.freeze({
   'no-identical-expressions':
     'Disallow identical sub-expressions on both sides of binary or logical operators where the result is constant or redundant',
   'arguments-usage': "Disallow use of the 'arguments' object; use rest parameters instead",
+  'no-labels': 'Disallow labeled statements; use structured control flow instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -93,6 +97,7 @@ const ruleTypes = Object.freeze({
   'no-all-duplicated-branches': 'problem',
   'no-identical-expressions': 'problem',
   'arguments-usage': 'suggestion',
+  'no-labels': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -108,6 +113,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-all-duplicated-branches': 'error',
   'no-identical-expressions': 'error',
   'arguments-usage': 'error',
+  'no-labels': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

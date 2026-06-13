@@ -12526,19 +12526,19 @@
       },
       {
         "name": "no-labels",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-labels (Sonar key S1119). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of no-labels (Sonar key S1119). Flags every LabeledStatement unconditionally via visit_labeled_statement; reports stmt.label.span. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-literal-call",

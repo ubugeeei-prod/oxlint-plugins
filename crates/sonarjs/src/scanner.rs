@@ -4,8 +4,8 @@
 
 use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, ConditionalExpression, IdentifierReference,
-    IfStatement, LogicalExpression, SwitchCase, SwitchStatement, TSIntersectionType, TSUnionType,
-    TemplateLiteral, UnaryExpression,
+    IfStatement, LabeledStatement, LogicalExpression, SwitchCase, SwitchStatement,
+    TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -132,5 +132,10 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_identifier_reference(&mut self, it: &IdentifierReference<'a>) {
         self.check_arguments_usage(it);
         walk::walk_identifier_reference(self, it);
+    }
+
+    fn visit_labeled_statement(&mut self, it: &LabeledStatement<'a>) {
+        self.check_no_labels(it);
+        walk::walk_labeled_statement(self, it);
     }
 }
