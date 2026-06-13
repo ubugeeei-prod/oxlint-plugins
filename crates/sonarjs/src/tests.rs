@@ -651,3 +651,41 @@ fn does_not_report_no_delete_var_for_plain_variable_declaration() {
     let diagnostics = scan("no-delete-var", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_constructor_for_side_effects_new_with_parens() {
+    let source = "new Foo();";
+    let diagnostics = scan("constructor-for-side-effects", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "constructor-for-side-effects");
+    assert_eq!(diagnostics[0].message_id, "constructorForSideEffects");
+}
+
+#[test]
+fn reports_constructor_for_side_effects_new_without_parens() {
+    let source = "new Foo;";
+    let diagnostics = scan("constructor-for-side-effects", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "constructorForSideEffects");
+}
+
+#[test]
+fn does_not_report_constructor_for_side_effects_when_result_assigned() {
+    let source = "const x = new Foo();";
+    let diagnostics = scan("constructor-for-side-effects", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_constructor_for_side_effects_when_result_used_as_receiver() {
+    let source = "new Foo().bar();";
+    let diagnostics = scan("constructor-for-side-effects", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_constructor_for_side_effects_for_plain_call_statement() {
+    let source = "foo();";
+    let diagnostics = scan("constructor-for-side-effects", source);
+    assert!(diagnostics.is_empty());
+}
