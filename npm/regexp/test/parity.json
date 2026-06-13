@@ -9,10 +9,6 @@
       "level": "off",
       "reason": "Flags lazy quantifiers like /a??/ and /a{3}?/ that upstream treats as valid."
     },
-    "no-missing-g-flag": {
-      "level": "off",
-      "reason": "Flags replaceAll on an unknown receiver where upstream only reports a known string receiver."
-    },
     "prefer-named-replacement": {
       "level": "off",
       "reason": "Flags $1 referring to an unnamed group, which has no named-replacement alternative."
