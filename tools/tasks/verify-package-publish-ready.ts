@@ -10,6 +10,11 @@ type PackageToPack = {
 
 const packages: PackageToPack[] = [
   {
+    name: '@oxlint-plugins/oxlint-plugin-angular-eslint',
+    dir: 'npm/angular-eslint',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-type-aware',
     dir: 'npm/type-aware',
     requiredFiles: ['dist/index.mjs', 'dist/index.d.mts'],
