@@ -76,6 +76,8 @@ fn exposes_initial_regexp_rule_names() {
             "require-unicode-sets-regexp",
             "confusing-quantifier",
             "prefer-named-replacement",
+            "no-obscure-range",
+            "prefer-unicode-codepoint-escapes",
         ]
     );
 }
@@ -1282,6 +1284,69 @@ mod prefer_named_replacement {
         // Unrelated method.
         assert!(
             rule_ids_for("str.match(/(?<year>\\d{4})/u);", "prefer-named-replacement").is_empty()
+        );
+    }
+}
+
+mod no_obscure_range {
+    use super::*;
+
+    #[test]
+    fn reports_boundary_crossing_ranges() {
+        let data = first_data("const a = /[A-z]/u;", "no-obscure-range");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("A-z"));
+        assert_eq!(
+            rule_ids_for("const a = /[0-A]/u;", "no-obscure-range").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_canonical_within_category_ranges() {
+        assert!(rule_ids_for("const a = /[a-z]/u;", "no-obscure-range").is_empty());
+        assert!(rule_ids_for("const a = /[A-Z]/u;", "no-obscure-range").is_empty());
+        assert!(rule_ids_for("const a = /[0-9]/u;", "no-obscure-range").is_empty());
+        // Escaped endpoints are skipped — we cannot easily reason about them.
+        assert!(rule_ids_for("const a = /[\\x41-z]/u;", "no-obscure-range").is_empty());
+    }
+}
+
+mod prefer_unicode_codepoint_escapes {
+    use super::*;
+
+    #[test]
+    fn reports_surrogate_pairs() {
+        let data = first_data(
+            "const a = new RegExp('\\\\uD83D\\\\uDE00', 'u');",
+            "prefer-unicode-codepoint-escapes",
+        );
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("\\uD83D\\uDE00")
+        );
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\u{1f600}")
+        );
+    }
+
+    #[test]
+    fn ignores_non_surrogate_pairs_and_codepoint_escapes() {
+        // Two BMP unicode escapes are unrelated.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\u0041\\\\u0042', 'u');",
+                "prefer-unicode-codepoint-escapes"
+            )
+            .is_empty()
+        );
+        // Already the codepoint form.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\u{1F600}', 'u');",
+                "prefer-unicode-codepoint-escapes"
+            )
+            .is_empty()
         );
     }
 }

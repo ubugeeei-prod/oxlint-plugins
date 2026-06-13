@@ -3,10 +3,10 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    BraceQuantifierShape, class_contains_backspace_escape, class_has_useless_range,
-    class_is_digit_range, class_is_useless_single_literal, class_is_word_char_set,
-    class_matches_anything, find_class_end, group_prefix, is_zero_quantifier,
-    parse_brace_quantifier, skip_escape,
+    BraceQuantifierShape, class_contains_backspace_escape, class_first_obscure_range,
+    class_has_useless_range, class_is_digit_range, class_is_useless_single_literal,
+    class_is_word_char_set, class_matches_anything, find_class_end, group_prefix,
+    is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -86,6 +86,10 @@ pub(crate) struct PatternAnalysis {
     /// `{0,N}?`, `{0,}?`). Such quantifiers always prefer the empty match and
     /// rarely express the author's intent. `confusing-quantifier`.
     pub(crate) has_confusing_quantifier: bool,
+    /// First `X-Y` range whose endpoints cross ASCII character categories
+    /// (e.g. `A-z`). The captured chars are the original endpoints.
+    /// `no-obscure-range`.
+    pub(crate) first_obscure_range: Option<(char, char)>,
 }
 
 impl PatternAnalysis {
@@ -138,6 +142,11 @@ impl PatternAnalysis {
                             && let Some(ch) = class_is_useless_single_literal(bytes, index)
                         {
                             self.first_useless_single_literal_class = Some(ch);
+                        }
+                        if self.first_obscure_range.is_none()
+                            && let Some(range) = class_first_obscure_range(bytes, index)
+                        {
+                            self.first_obscure_range = Some(range);
                         }
                         self.mark_content(&mut groups);
                         index = close + 1;

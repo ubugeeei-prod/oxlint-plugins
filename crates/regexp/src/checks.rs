@@ -13,8 +13,8 @@ use oxlint_plugins_carton::CompactString;
 use crate::helpers::{
     duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
     first_invisible_character, first_non_standard_flag, first_octal_escape,
-    first_uppercase_hex_escape, mention_char, pattern_has_empty_string_literal, sorted_flags,
-    string_literal_value_with_span,
+    first_surrogate_pair_escape, first_uppercase_hex_escape, mention_char,
+    pattern_has_empty_string_literal, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -578,6 +578,33 @@ impl<'a> Scanner<'a> {
         }
         if analysis.has_confusing_quantifier {
             self.report("confusing-quantifier", "unexpected", span);
+        }
+        if let Some((start, end)) = analysis.first_obscure_range {
+            let mut text = CompactString::new("");
+            text.push(start);
+            text.push('-');
+            text.push(end);
+            self.report_with_data(
+                "no-obscure-range",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(text),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some((escape, replacement)) = first_surrogate_pair_escape(pattern) {
+            self.report_with_data(
+                "prefer-unicode-codepoint-escapes",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(CompactString::from(escape)),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
         }
     }
 }

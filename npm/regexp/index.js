@@ -134,6 +134,14 @@ const messages = Object.freeze({
     unexpected:
       'Use a named-group replacement (`$<name>`) instead of a numbered backreference when the regular expression has named capture groups.',
   },
+  'no-obscure-range': {
+    unexpected:
+      "Unexpected character class range '{{expr}}' crosses character category boundaries.",
+  },
+  'prefer-unicode-codepoint-escapes': {
+    unexpected:
+      "Unexpected surrogate-pair escape '{{expr}}'. Use the unicode code-point escape '{{replacement}}' instead.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -179,6 +187,10 @@ const ruleDescriptions = Object.freeze({
     'disallow lazy quantifiers (`*?`, `??`, `{0,}?`, `{0,1}?`) whose minimum is zero',
   'prefer-named-replacement':
     'enforce using named-group replacements (`$<name>`) when the regular expression has named captures',
+  'no-obscure-range':
+    'disallow character class ranges that cross ASCII category boundaries (digits/uppercase/lowercase)',
+  'prefer-unicode-codepoint-escapes':
+    'enforce using `\\u{H+}` over surrogate-pair `\\uHHHH\\uHHHH` escapes',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -216,6 +228,8 @@ const ruleTypes = Object.freeze({
   'require-unicode-sets-regexp': 'suggestion',
   'confusing-quantifier': 'suggestion',
   'prefer-named-replacement': 'suggestion',
+  'no-obscure-range': 'suggestion',
+  'prefer-unicode-codepoint-escapes': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -354,7 +368,9 @@ function ruleCategory(ruleName) {
     ruleName === 'no-useless-range' ||
     ruleName === 'no-useless-character-class' ||
     ruleName === 'confusing-quantifier' ||
-    ruleName === 'prefer-named-replacement'
+    ruleName === 'prefer-named-replacement' ||
+    ruleName === 'no-obscure-range' ||
+    ruleName === 'prefer-unicode-codepoint-escapes'
   ) {
     return 'Stylistic Issues';
   }

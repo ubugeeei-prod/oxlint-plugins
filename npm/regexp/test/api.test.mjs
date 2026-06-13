@@ -40,6 +40,8 @@ describe('regexp native API', () => {
       'require-unicode-sets-regexp',
       'confusing-quantifier',
       'prefer-named-replacement',
+      'no-obscure-range',
+      'prefer-unicode-codepoint-escapes',
     ]);
   });
 

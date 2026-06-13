@@ -611,6 +611,161 @@ pub(crate) fn first_fixed_unicode_escape(pattern: &str) -> Option<(&str, Compact
     None
 }
 
+/// Returns `Some((start, end))` when the `[...]` class at `open` contains at
+/// least one `X-Y` range whose endpoints cross ASCII character categories
+/// (digit/uppercase letter/lowercase letter/other). Such ranges almost always
+/// sweep up unexpected characters in the gaps between categories (the
+/// canonical example is `[A-z]`, which includes `[\]^_` and `` ` ``). Used by
+/// `no-obscure-range`. Escaped or compound endpoints are intentionally
+/// ignored so the check stays sound (no false positives).
+pub(crate) fn class_first_obscure_range(bytes: &[u8], open: usize) -> Option<(char, char)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    while index + 2 < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if bytes[index + 1] != b'-' {
+            index += 1;
+            continue;
+        }
+        if bytes[index + 2] == b'\\' || bytes[index + 2] == b']' {
+            // Skip escaped or end-of-class endpoints; equivalence is hard to
+            // judge without decoding the escape.
+            index += 1;
+            continue;
+        }
+        let start_byte = bytes[index];
+        let end_byte = bytes[index + 2];
+        if start_byte.is_ascii() && end_byte.is_ascii() && is_obscure_range(start_byte, end_byte) {
+            return Some((start_byte as char, end_byte as char));
+        }
+        index += 3;
+    }
+    None
+}
+
+fn is_obscure_range(start: u8, end: u8) -> bool {
+    if start > end {
+        return false;
+    }
+    let start_category = ascii_category(start);
+    let end_category = ascii_category(end);
+    // A range stays within one of the canonical categories (digits or
+    // lowercase letters or uppercase letters) — that is fine. Anything else
+    // crosses a boundary and is flagged.
+    !matches!(
+        (start_category, end_category),
+        (AsciiCategory::Digit, AsciiCategory::Digit)
+            | (AsciiCategory::Lowercase, AsciiCategory::Lowercase)
+            | (AsciiCategory::Uppercase, AsciiCategory::Uppercase)
+    ) && (start_category != AsciiCategory::Other || end_category != AsciiCategory::Other)
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum AsciiCategory {
+    Digit,
+    Lowercase,
+    Uppercase,
+    Other,
+}
+
+fn ascii_category(byte: u8) -> AsciiCategory {
+    match byte {
+        b'0'..=b'9' => AsciiCategory::Digit,
+        b'a'..=b'z' => AsciiCategory::Lowercase,
+        b'A'..=b'Z' => AsciiCategory::Uppercase,
+        _ => AsciiCategory::Other,
+    }
+}
+
+/// Returns the first surrogate-pair escape sequence `\uHHHH\uHHHH` in
+/// `pattern` together with its `\u{CODEPOINT}` replacement (hex digits in
+/// lower case). Used by `prefer-unicode-codepoint-escapes`. Unrelated
+/// adjacent `\uHHHH` escapes (where the pair is not a valid surrogate pair)
+/// are skipped.
+pub(crate) fn first_surrogate_pair_escape(pattern: &str) -> Option<(&str, CompactString)> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index + 12 <= bytes.len() {
+        if bytes[index] != b'\\' || bytes[index + 1] != b'u' {
+            index += 1;
+            continue;
+        }
+        let Some(high) = read_fixed_hex4(&bytes[index + 2..index + 6]) else {
+            index = skip_escape(bytes, index);
+            continue;
+        };
+        if !(0xD800..=0xDBFF).contains(&high) {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        if bytes[index + 6] != b'\\' || bytes[index + 7] != b'u' {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        let Some(low) = read_fixed_hex4(&bytes[index + 8..index + 12]) else {
+            index = skip_escape(bytes, index);
+            continue;
+        };
+        if !(0xDC00..=0xDFFF).contains(&low) {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        let original = &pattern[index..index + 12];
+        let codepoint = ((high - 0xD800) << 10) + (low - 0xDC00) + 0x10000;
+        let mut replacement = CompactString::new("\\u{");
+        append_lower_hex(&mut replacement, codepoint);
+        replacement.push('}');
+        return Some((original, replacement));
+    }
+    None
+}
+
+fn read_fixed_hex4(bytes: &[u8]) -> Option<u32> {
+    if bytes.len() < 4 {
+        return None;
+    }
+    let mut value: u32 = 0;
+    for byte in bytes.iter().take(4) {
+        let digit = match byte {
+            b'0'..=b'9' => byte - b'0',
+            b'a'..=b'f' => byte - b'a' + 10,
+            b'A'..=b'F' => byte - b'A' + 10,
+            _ => return None,
+        };
+        value = value * 16 + u32::from(digit);
+    }
+    Some(value)
+}
+
+fn append_lower_hex(target: &mut CompactString, mut value: u32) {
+    if value == 0 {
+        target.push('0');
+        return;
+    }
+    let mut buf = [0u8; 8];
+    let mut cursor = buf.len();
+    while value > 0 {
+        cursor -= 1;
+        let digit = (value & 0xf) as u8;
+        buf[cursor] = if digit < 10 {
+            b'0' + digit
+        } else {
+            b'a' + digit - 10
+        };
+        value >>= 4;
+    }
+    if let Ok(text) = std::str::from_utf8(&buf[cursor..]) {
+        target.push_str(text);
+    }
+}
+
 /// Returns `Some(ch)` when the `[...]` class at `open` is exactly `[X]` for a
 /// regular ASCII literal `X`. Negated classes, escaped contents, ranges,
 /// nested classes, and bodies of length other than one are intentionally

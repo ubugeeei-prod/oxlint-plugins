@@ -8923,19 +8923,19 @@
       },
       {
         "name": "no-obscure-range",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-obscure-range."
+        "notes": "Class-level scan via class_first_obscure_range flags `X-Y` ranges whose endpoints cross ASCII category boundaries (digit / uppercase / lowercase / other). Escaped endpoints are skipped because their equivalence is hard to judge without decoding. The check stays sound (no false positives on within-category ranges)."
       },
       {
         "name": "no-optional-assertion",
@@ -9579,19 +9579,19 @@
       },
       {
         "name": "prefer-unicode-codepoint-escapes",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-unicode-codepoint-escapes."
+        "notes": "Pattern-level scan via first_surrogate_pair_escape detects `\\uHHHH\\uHHHH` pairs where the first hex is a high surrogate (D800-DBFF) and the second a low surrogate (DC00-DFFF). The diagnostic carries the original pair and the `\\u{H+}` codepoint replacement."
       },
       {
         "name": "prefer-w",
