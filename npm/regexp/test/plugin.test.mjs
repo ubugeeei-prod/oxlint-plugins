@@ -41,6 +41,8 @@ const validCases = [
   ['no-control-character', 'named tab escape', 'const re = /\\t/u;\n'],
   ['no-control-character', 'named newline escape', 'const re = /\\n/u;\n'],
   ['no-control-character', 'printable hex escape', "const re = new RegExp('\\\\u0041', 'u');\n"],
+  // control-character-escape
+  ['control-character-escape', 'named tab in constructor arg', "new RegExp('\\t');\n"],
   // sort-flags
   ['sort-flags', 'sorted flags', 'const re = /a/im;\n'],
   ['sort-flags', 'no flags', 'const re = /a/;\n'],
