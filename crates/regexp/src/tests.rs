@@ -1150,6 +1150,40 @@ mod no_control_character {
             .is_empty()
         );
     }
+
+    #[test]
+    fn suppresses_named_escape_chars_in_constructor_false_positive() {
+        // Regression: new RegExp('\n') delivers a literal newline (U+000A) to
+        // the pattern via the JS string escape. Upstream marks this valid because
+        // the author expressed it as a named escape, so we must NOT fire here.
+        assert!(
+            rule_ids_for("const a = new RegExp('\n', 'u');", "no-control-character").is_empty(),
+            "constructor newline (U+000A named escape) must not fire"
+        );
+        // Same for the other named-escape control characters.
+        assert!(
+            rule_ids_for("const a = new RegExp('\t', 'u');", "no-control-character").is_empty(),
+            "constructor tab (U+0009 named escape) must not fire"
+        );
+        assert!(
+            rule_ids_for("const a = new RegExp('\r', 'u');", "no-control-character").is_empty(),
+            "constructor carriage-return (U+000D named escape) must not fire"
+        );
+        // Regex literals with a raw control character MUST still fire.
+        assert!(
+            rule_ids_for("const a = /a\x01b/u;", "no-control-character").contains(&"unexpected"),
+            "regex literal raw SOH (U+0001) must still fire"
+        );
+        // Constructor with a hex-escaped non-named control char still fires.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\x01', 'u');",
+                "no-control-character"
+            )
+            .contains(&"unexpected"),
+            "constructor hex escape \\x01 must still fire"
+        );
+    }
 }
 
 mod sort_flags {

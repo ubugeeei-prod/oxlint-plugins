@@ -691,15 +691,25 @@ impl<'a> Scanner<'a> {
             );
         }
         if let Some(ch) = first_control_character(pattern) {
-            self.report_with_data(
-                "no-control-character",
-                "unexpected",
-                DiagnosticData {
-                    char_text: Some(mention_char(ch)),
-                    ..DiagnosticData::default()
-                },
-                span,
-            );
+            // When the pattern comes from a RegExp constructor argument, the six
+            // characters with well-known named JS string escapes (\0 \t \n \v \f \r)
+            // are delivered as literal bytes by the JS escape (e.g. '\n' → U+000A).
+            // Upstream marks these valid (new RegExp('\n') is accepted), so suppress
+            // here. For regex literals ALL control characters must be flagged.
+            // Known gap: hex-escaped constructor args like new RegExp('\x0a') still
+            // reach us as the literal char and would be suppressed — acceptable.
+            let named_escape = matches!(ch, '\0' | '\t'..='\r');
+            if !(is_constructor && named_escape) {
+                self.report_with_data(
+                    "no-control-character",
+                    "unexpected",
+                    DiagnosticData {
+                        char_text: Some(mention_char(ch)),
+                        ..DiagnosticData::default()
+                    },
+                    span,
+                );
+            }
         }
         if let Some(ch) = first_literal_control_character(pattern) {
             // When the pattern comes from a RegExp constructor argument (not a
