@@ -12,7 +12,10 @@ use oxc_span::Span;
 use oxlint_plugins_carton::SmallVec;
 
 use crate::helpers::is_mutable_type;
-use crate::{Diagnostic, FunctionContext, FunctionalOptions, LineIndex};
+use crate::{
+    Diagnostic, EnforceParameterCount, FunctionContext, FunctionParamMeta, FunctionalOptions,
+    LineIndex,
+};
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,
@@ -54,8 +57,12 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    pub(crate) fn scan_function(&mut self, function: &'a Function<'a>) {
-        self.scan_function_parameters(&function.params, function.span);
+    pub(crate) fn scan_function(
+        &mut self,
+        function: &'a Function<'a>,
+        meta: FunctionParamMeta<'a>,
+    ) {
+        self.scan_function_parameters(&function.params, function.span, meta);
         if let Some(return_type) = &function.return_type {
             self.scan_return_type(return_type);
         }
@@ -69,8 +76,12 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    pub(crate) fn scan_arrow_function(&mut self, function: &'a ArrowFunctionExpression<'a>) {
-        self.scan_function_parameters(&function.params, function.span);
+    pub(crate) fn scan_arrow_function(
+        &mut self,
+        function: &'a ArrowFunctionExpression<'a>,
+        meta: FunctionParamMeta<'a>,
+    ) {
+        self.scan_function_parameters(&function.params, function.span, meta);
         self.check_prefer_tacit(function);
         if let Some(return_type) = &function.return_type {
             self.scan_return_type(return_type);
@@ -83,25 +94,83 @@ impl<'a> Scanner<'a> {
         self.scan_function_body(&function.body, context);
     }
 
-    fn scan_function_parameters(&mut self, params: &'a FormalParameters<'a>, span: Span) {
-        if params.items.is_empty() && params.rest.is_none() {
-            self.report(
-                "functional-parameters",
-                "paramCountAtLeastOne",
-                "Functions must have at least one parameter.",
-                span,
-            );
+    fn function_is_ignored_by_prefix_selector(&self, meta: &FunctionParamMeta<'a>) -> bool {
+        if self.options.ignore_prefix_selector_names.is_empty() {
+            return false;
         }
-        if let Some(rest) = &params.rest
-            && !self.options.allow_rest_parameter
-        {
-            self.report(
-                "functional-parameters",
-                "restParam",
-                "Unexpected rest parameter. Use a regular parameter of type array instead.",
-                rest.span,
-            );
+        let prop = match meta.enclosing_call_property {
+            Some(p) => p,
+            None => return false,
+        };
+        for name in &self.options.ignore_prefix_selector_names {
+            if name == prop {
+                return true;
+            }
         }
+        false
+    }
+
+    fn scan_function_parameters(
+        &mut self,
+        params: &'a FormalParameters<'a>,
+        span: Span,
+        meta: FunctionParamMeta<'a>,
+    ) {
+        // Check ignoreIdentifierPattern — if the function name matches, skip all
+        // functional-parameters checks for this function.
+        let name_is_ignored = match meta.name {
+            Some(name) => self.matches_ignore_identifier(name),
+            None => false,
+        };
+        let prefix_selector_ignored = self.function_is_ignored_by_prefix_selector(&meta);
+        let is_ignored = name_is_ignored || prefix_selector_ignored;
+
+        if !is_ignored {
+            if let Some(rest) = &params.rest {
+                let allow_rest = self.options.allow_rest_parameter;
+                if !allow_rest {
+                    self.report(
+                        "functional-parameters",
+                        "restParam",
+                        "Unexpected rest parameter. Use a regular parameter of type array instead.",
+                        rest.span,
+                    );
+                }
+            }
+
+            // Parameter count enforcement.
+            let enforce = self.options.enforce_parameter_count;
+            if enforce != EnforceParameterCount::Off {
+                // Determine whether to skip the count check.
+                let skip_iife = meta.is_iife && self.options.enforce_count_ignore_iife;
+                let skip_getter_setter =
+                    meta.is_getter_setter && self.options.enforce_count_ignore_getters_setters;
+                let skip_lambda = meta.is_lambda_arg && self.options.enforce_count_ignore_lambda;
+                let skip_count = skip_iife || skip_getter_setter || skip_lambda;
+
+                if !skip_count {
+                    // Upstream counts node.params.length which includes the rest element.
+                    let param_count = params.items.len()
+                        + if params.rest.is_some() { 1 } else { 0 };
+                    if enforce == EnforceParameterCount::AtLeastOne && param_count == 0 {
+                        self.report(
+                            "functional-parameters",
+                            "paramCountAtLeastOne",
+                            "Functions must have at least one parameter.",
+                            span,
+                        );
+                    } else if enforce == EnforceParameterCount::ExactlyOne && param_count != 1 {
+                        self.report(
+                            "functional-parameters",
+                            "paramCountExactlyOne",
+                            "Functions must have exactly one parameter.",
+                            span,
+                        );
+                    }
+                }
+            }
+        }
+
         for param in &params.items {
             if let Some(type_annotation) = &param.type_annotation {
                 self.scan_type(&type_annotation.type_annotation);
@@ -231,7 +300,28 @@ impl<'a> Scanner<'a> {
         for element in &class.body.body {
             match element {
                 ClassElement::StaticBlock(block) => self.scan_statement_list(&block.body, context),
-                ClassElement::MethodDefinition(method) => self.scan_function(&method.value),
+                ClassElement::MethodDefinition(method) => {
+                    let is_getter_setter = matches!(
+                        method.kind,
+                        MethodDefinitionKind::Get | MethodDefinitionKind::Set
+                    );
+                    // Extract the static identifier name from the method key so that
+                    // `ignoreIdentifierPattern` can match it.
+                    let method_name: Option<&'a str> =
+                        if let PropertyKey::StaticIdentifier(id) = &method.key {
+                            Some(id.name.as_str())
+                        } else if let PropertyKey::StringLiteral(lit) = &method.key {
+                            Some(lit.value.as_str())
+                        } else {
+                            None
+                        };
+                    let meta = FunctionParamMeta {
+                        name: method_name,
+                        is_getter_setter,
+                        ..FunctionParamMeta::default()
+                    };
+                    self.scan_function(&method.value, meta);
+                }
                 ClassElement::PropertyDefinition(property) => {
                     if let Some(type_annotation) = &property.type_annotation {
                         self.scan_type(&type_annotation.type_annotation);
