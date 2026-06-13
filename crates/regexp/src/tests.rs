@@ -91,8 +91,45 @@ fn exposes_initial_regexp_rule_names() {
             "control-character-escape",
             "grapheme-string-literal",
             "no-useless-non-capturing-group",
+            "prefer-quantifier",
         ]
     );
+}
+
+mod prefer_quantifier {
+    use super::*;
+
+    #[test]
+    fn reports_single_body_groups_followed_by_quantifier() {
+        assert_eq!(
+            rule_ids_for("const a = /(?:a){3}/u;", "prefer-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:a)+/u;", "prefer-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:a)*/u;", "prefer-quantifier").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?:a)?/u;", "prefer-quantifier").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_unrelated_group_shapes() {
+        // No quantifier follows — no-useless-non-capturing-group's job.
+        assert!(rule_ids_for("const a = /(?:a)/u;", "prefer-quantifier").is_empty());
+        // Multi-byte body — `ab{3}` would change semantics, so the wrapper is needed.
+        assert!(rule_ids_for("const a = /(?:ab){3}/u;", "prefer-quantifier").is_empty());
+        // Capturing group is intentional and outside this rule.
+        assert!(rule_ids_for("const a = /(a){3}/u;", "prefer-quantifier").is_empty());
+        // Alternation body.
+        assert!(rule_ids_for("const a = /(?:a|b){3}/u;", "prefer-quantifier").is_empty());
+    }
 }
 
 mod no_useless_non_capturing_group {
