@@ -182,7 +182,11 @@ const validCases = [
   ],
   // no-standalone-backslash
   ['no-standalone-backslash', 'valid control escape \\cX', 'const re = /\\cX/;\n'],
-  ['no-standalone-backslash', 'v-mode valid control escapes', 'const re = /[[\\cA-\\cZ]--\\cX]/v;\n'],
+  [
+    'no-standalone-backslash',
+    'v-mode valid control escapes',
+    'const re = /[[\\cA-\\cZ]--\\cX]/v;\n',
+  ],
 ];
 
 const invalidCases = [

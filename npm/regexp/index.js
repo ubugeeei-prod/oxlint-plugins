@@ -357,7 +357,7 @@ const ruleDescriptions = Object.freeze({
   'no-useless-lazy': 'disallow lazy modifiers on fixed-count brace quantifiers (`{n}?`, `{n,n}?`)',
   'no-misleading-unicode-character':
     'disallow character classes that contain a ZWJ (U+200D) and match it as a separate atom',
-  'no-standalone-backslash': "disallow standalone backslashes (`\\`)",
+  'no-standalone-backslash': 'disallow standalone backslashes (`\\`)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
