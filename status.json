@@ -8827,19 +8827,19 @@
       },
       {
         "name": "no-lazy-ends",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-lazy-ends."
+        "notes": "Pattern-level scan via pattern_ends_with_lazy_quantifier: walks the pattern from the right end to detect `*?`, `+?`, `??`, or `{n,m}?` at the very end. Escaped quantifier characters (`\\*?`) are excluded via a backslash-parity check; patterns ending in `$` or other anchors after the lazy quantifier are not flagged."
       },
       {
         "name": "no-legacy-features",
@@ -9115,19 +9115,19 @@
       },
       {
         "name": "no-useless-dollar-replacements",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-dollar-replacements."
+        "notes": "JS-side CallExpression check on `<expr>.replace(<regex>, <string>)` / `replaceAll`. Scans the literal replacement string for a `$0` token (skipping `$$`); `$0` is never a valid backreference because capture groups start at 1, so the dollar-zero is always interpreted as a literal `$0` and almost always a typo. Dynamic replacement arguments are deferred."
       },
       {
         "name": "no-useless-escape",
@@ -9339,19 +9339,19 @@
       },
       {
         "name": "prefer-escape-replacement-dollar-char",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-escape-replacement-dollar-char."
+        "notes": "JS-side CallExpression check on <expr>.replace / replaceAll. Scans the literal replacement string and reports the first '$' that is NOT followed by a valid replacement-reference char (digit, '&', \"'\", '`', '<', '$'). The '$$' escape is the canonical form for a literal dollar."
       },
       {
         "name": "prefer-lookaround",

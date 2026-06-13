@@ -163,6 +163,18 @@ const messages = Object.freeze({
     unexpected:
       "Unexpected useless flag '{{flag}}'; the pattern does not use the syntax this flag affects.",
   },
+  'no-lazy-ends': {
+    unexpected:
+      'Unexpected lazy quantifier at the end of the pattern; it will always prefer to match nothing.',
+  },
+  'no-useless-dollar-replacements': {
+    unexpected:
+      "Unexpected '\\$0' in replacement string; `$0` is not a valid backreference (capture groups start at 1).",
+  },
+  'prefer-escape-replacement-dollar-char': {
+    unexpected:
+      "Use '$$' to escape a literal '$' in the replacement string; a stray '$' is almost always a typo.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -222,6 +234,12 @@ const ruleDescriptions = Object.freeze({
     'enforce using named backreferences (`\\k<name>`) when the pattern has named capture groups',
   'no-useless-flag':
     'disallow regular-expression flags that have no effect on the pattern (narrow: `s` without `.`, `m` without `^`/`$`)',
+  'no-lazy-ends':
+    'disallow lazy quantifiers at the very end of a pattern (they prefer to match nothing)',
+  'no-useless-dollar-replacements':
+    'disallow `$0` in replacement strings (capture groups start at 1; `$0` is always literal)',
+  'prefer-escape-replacement-dollar-char':
+    'enforce escaping a literal `$` as `$$` in replacement strings',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -267,6 +285,9 @@ const ruleTypes = Object.freeze({
   'no-useless-quantifier': 'suggestion',
   'prefer-named-backreference': 'suggestion',
   'no-useless-flag': 'suggestion',
+  'no-lazy-ends': 'problem',
+  'no-useless-dollar-replacements': 'problem',
+  'prefer-escape-replacement-dollar-char': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -384,7 +405,9 @@ function ruleCategory(ruleName) {
     ruleName === 'no-missing-g-flag' ||
     ruleName === 'no-empty-string-literal' ||
     ruleName === 'no-optional-assertion' ||
-    ruleName === 'no-dupe-characters-character-class'
+    ruleName === 'no-dupe-characters-character-class' ||
+    ruleName === 'no-lazy-ends' ||
+    ruleName === 'no-useless-dollar-replacements'
   ) {
     return 'Possible Errors';
   }
@@ -413,7 +436,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-useless-escape' ||
     ruleName === 'no-useless-quantifier' ||
     ruleName === 'prefer-named-backreference' ||
-    ruleName === 'no-useless-flag'
+    ruleName === 'no-useless-flag' ||
+    ruleName === 'prefer-escape-replacement-dollar-char'
   ) {
     return 'Stylistic Issues';
   }

@@ -15,11 +15,66 @@ use crate::helpers::{
     first_invisible_character, first_non_standard_flag,
     first_numbered_backreference_with_named_group, first_octal_escape, first_surrogate_pair_escape,
     first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, mention_char,
-    pattern_has_empty_string_literal, sorted_flags, string_literal_value_with_span,
+    pattern_ends_with_lazy_quantifier, pattern_has_empty_string_literal, sorted_flags,
+    string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
 use crate::types::DiagnosticData;
+
+/// Returns `true` when `replacement` contains a `$` that is followed by a
+/// character outside the valid replacement-reference set: digit, `&`, `'`,
+/// `` ` ``, `<` (named-group reference), `$` (escaped dollar). A trailing `$`
+/// at the very end of the string also counts. Used by
+/// `prefer-escape-replacement-dollar-char`.
+fn replacement_has_lone_dollar(replacement: &str) -> bool {
+    let bytes = replacement.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] != b'$' {
+            index += 1;
+            continue;
+        }
+        let Some(&next) = bytes.get(index + 1) else {
+            return true;
+        };
+        if next == b'$' {
+            index += 2;
+            continue;
+        }
+        if next.is_ascii_digit() || matches!(next, b'&' | b'\'' | b'`' | b'<') {
+            index += 2;
+            continue;
+        }
+        return true;
+    }
+    false
+}
+
+/// Returns `true` when `replacement` contains a literal `$0` token that is not
+/// part of a longer numeric backreference like `$01`. JS `String.prototype.replace`
+/// never accepts `$0` as a capture reference, so this is almost always a typo.
+/// `$$` (escaped dollar) is skipped.
+fn replacement_contains_dollar_zero(replacement: &str) -> bool {
+    let bytes = replacement.as_bytes();
+    let mut index = 0;
+    while index + 1 < bytes.len() {
+        if bytes[index] == b'$' {
+            let next = bytes[index + 1];
+            if next == b'$' {
+                index += 2;
+                continue;
+            }
+            if next == b'0' {
+                // `$0` is bad unless it is the prefix of `$01`-`$09` which are
+                // also nonsensical (no group zero) — flag those too.
+                return true;
+            }
+        }
+        index += 1;
+    }
+    false
+}
 
 /// Returns `true` when `replacement` contains a `$N` backreference (where `N`
 /// is a single ASCII digit 1-9). Used by `prefer-named-replacement` to decide
@@ -98,6 +153,63 @@ impl<'a> Scanner<'a> {
         self.check_prefer_regexp_exec(call);
         self.check_no_missing_g_flag(call);
         self.check_prefer_named_replacement(call);
+        self.check_no_useless_dollar_replacements(call);
+        self.check_prefer_escape_replacement_dollar_char(call);
+    }
+
+    /// `prefer-escape-replacement-dollar-char`: in JS replacement strings a
+    /// literal `$` should be written as `$$` to avoid being mistaken for a
+    /// pattern reference. The reverse — `$` followed by an unrecognised char —
+    /// is already a literal at runtime but is almost always a copy-paste bug.
+    /// Flag any `$` in a literal replacement string that is followed by a char
+    /// outside the valid reference set (digit, `&`, `'`, `` ` ``, `<`, `$`).
+    fn check_prefer_escape_replacement_dollar_char(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        let method = member.property.name.as_str();
+        if method != "replace" && method != "replaceAll" {
+            return;
+        }
+        let Some(arg1) = call.arguments.get(1).and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::StringLiteral(replacement) = arg1.get_inner_expression() else {
+            return;
+        };
+        if !replacement_has_lone_dollar(replacement.value.as_str()) {
+            return;
+        }
+        self.report(
+            "prefer-escape-replacement-dollar-char",
+            "unexpected",
+            call.span,
+        );
+    }
+
+    /// `no-useless-dollar-replacements`: in JavaScript replacement strings the
+    /// `$N` syntax references the Nth capture group. `$0` is never a valid
+    /// backreference (groups start at 1) so it is always interpreted as a
+    /// literal `$0` — usually a typo. Flag the literal-replacement case;
+    /// dynamic arguments are deferred.
+    fn check_no_useless_dollar_replacements(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        let method = member.property.name.as_str();
+        if method != "replace" && method != "replaceAll" {
+            return;
+        }
+        let Some(arg1) = call.arguments.get(1).and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::StringLiteral(replacement) = arg1.get_inner_expression() else {
+            return;
+        };
+        if !replacement_contains_dollar_zero(replacement.value.as_str()) {
+            return;
+        }
+        self.report("no-useless-dollar-replacements", "unexpected", call.span);
     }
 
     /// `prefer-named-replacement`: when `<expr>.replace(<regexp with named
@@ -662,6 +774,9 @@ impl<'a> Scanner<'a> {
                 },
                 span,
             );
+        }
+        if pattern_ends_with_lazy_quantifier(pattern) {
+            self.report("no-lazy-ends", "unexpected", span);
         }
         if let Some(text) = first_useless_one_quantifier(pattern) {
             self.report_with_data(
