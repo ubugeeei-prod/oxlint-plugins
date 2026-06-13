@@ -48,6 +48,11 @@ pub(crate) struct GroupState {
     /// `true` while every completed single-literal alternative observed so
     /// far has appeared in ascending byte order. `sort-alternatives`.
     pub(crate) alts_in_order: bool,
+    /// Number of `|` separators seen so far in this group. Total number of
+    /// alternatives = `pipe_count + 1`. Used by `prefer-character-class` to
+    /// enforce the upstream default of `minAlternatives: 3` (i.e. at least
+    /// two `|` separators).
+    pub(crate) pipe_count: u32,
 }
 
 impl GroupState {
@@ -66,6 +71,7 @@ impl GroupState {
             all_alts_single_literal: true,
             prev_alt_first_byte: 0,
             alts_in_order: true,
+            pipe_count: 0,
         }
     }
 
@@ -90,6 +96,7 @@ impl GroupState {
             all_alts_single_literal: true,
             prev_alt_first_byte: 0,
             alts_in_order: true,
+            pipe_count: 0,
         }
     }
 }
@@ -393,17 +400,24 @@ impl PatternAnalysis {
                         // `prefer-character-class`. We tracked per-alt
                         // single-literal shape during scanning; combined with
                         // the final-alt check here, an alternation with at
-                        // least one `|` and every alt being a bare
-                        // alphanumeric letter/digit is reported.
+                        // least two `|` separators (i.e. ≥ 3 total alts) and
+                        // every alt being a bare alphanumeric letter/digit is
+                        // reported. The threshold of 3 matches upstream's
+                        // default `minAlternatives` option.
+                        //
+                        // `sort-alternatives` shares the same single-literal
+                        // tracking but fires for ≥ 2 alts (pipe_count ≥ 1).
                         if group.is_non_capturing && group.seen_pipe {
                             let alt_len = index - group.current_alt_start;
                             let final_alt_simple = alt_len == 1
                                 && bytes[group.current_alt_start].is_ascii_alphanumeric();
                             if group.all_alts_single_literal && final_alt_simple {
-                                self.has_preferable_character_class = true;
-                                // `sort-alternatives` only fires when every
-                                // alt was a single ASCII alphanumeric AND at
-                                // least one transition violated ascending order.
+                                // `prefer-character-class` requires ≥ 3 alternatives.
+                                if group.pipe_count >= 2 {
+                                    self.has_preferable_character_class = true;
+                                }
+                                // `sort-alternatives` fires for ≥ 2 alternatives
+                                // when at least one transition violated ascending order.
                                 let final_byte = bytes[group.current_alt_start];
                                 let mut alts_in_order = group.alts_in_order;
                                 if group.prev_alt_first_byte != 0
@@ -472,6 +486,7 @@ impl PatternAnalysis {
                             group.prev_alt_first_byte = alt_first_byte;
                         }
                         group.seen_pipe = true;
+                        group.pipe_count = group.pipe_count.saturating_add(1);
                         group.current_has_content = false;
                         group.current_alt_atom_count = 0;
                         group.last_atom_was_lookaround = false;
