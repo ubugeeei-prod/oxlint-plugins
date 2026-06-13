@@ -63,6 +63,7 @@ describe('regexp native API', () => {
       'no-trivially-nested-quantifier',
       'prefer-character-class',
       'sort-alternatives',
+      'prefer-predefined-assertion',
     ]);
   });
 

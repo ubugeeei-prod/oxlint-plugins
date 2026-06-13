@@ -21,7 +21,7 @@ use crate::types::LineIndex;
 
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticLoc};
 
-pub const RULE_NAMES: [&str; 58] = [
+pub const RULE_NAMES: [&str; 59] = [
     "no-invalid-regexp",
     "no-empty-character-class",
     "no-empty-group",
@@ -80,6 +80,7 @@ pub const RULE_NAMES: [&str; 58] = [
     "no-trivially-nested-quantifier",
     "prefer-character-class",
     "sort-alternatives",
+    "prefer-predefined-assertion",
 ];
 
 pub fn implemented_regexp_rule_names() -> &'static [&'static str] {

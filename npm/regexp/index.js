@@ -367,6 +367,7 @@ const ruleTypes = Object.freeze({
   'no-trivially-nested-quantifier': 'suggestion',
   'prefer-character-class': 'suggestion',
   'sort-alternatives': 'suggestion',
+  'prefer-predefined-assertion': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
