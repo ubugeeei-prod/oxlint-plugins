@@ -41,8 +41,11 @@ pub(crate) const RULE_NAME: &str = "prefer-default-last";
 
 impl Scanner<'_> {
     pub(crate) fn check_prefer_default_last(&mut self, switch: &SwitchStatement<'_>) {
-        let Some((pos, default_case)) =
-            switch.cases.iter().enumerate().find(|(_, c)| c.test.is_none())
+        let Some((pos, default_case)) = switch
+            .cases
+            .iter()
+            .enumerate()
+            .find(|(_, c)| c.test.is_none())
         else {
             return;
         };
