@@ -444,10 +444,7 @@ mod control_character_escape {
         // RegExp constructor. In JS source `'\t'` is a string with a real tab
         // byte (0x09), but the author used a JS escape so it is already
         // "named". Upstream marks all of these as valid.
-        for code in [
-            "new RegExp('\t')",
-            "RegExp(\"\0\t\n\x0B\x0C\r\", \"i\")",
-        ] {
+        for code in ["new RegExp('\t')", "RegExp(\"\0\t\n\x0B\x0C\r\", \"i\")"] {
             assert!(
                 rule_ids_for(code, "control-character-escape").is_empty(),
                 "expected no diagnostic for: {code:?}"

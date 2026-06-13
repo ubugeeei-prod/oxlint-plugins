@@ -476,7 +476,13 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn check_pattern_rules(&mut self, pattern: &str, flags: &str, span: Span, is_constructor: bool) {
+    fn check_pattern_rules(
+        &mut self,
+        pattern: &str,
+        flags: &str,
+        span: Span,
+        is_constructor: bool,
+    ) {
         let mut analysis = PatternAnalysis::new();
         analysis.scan(pattern);
 
