@@ -7,6 +7,7 @@ members = [
   "crates/eslint_comments",
   "crates/eslint_json",
   "crates/eslint_markdown",
+  "crates/functional",
   "crates/mocha",
   "crates/playwright",
   "crates/react_hooks",
@@ -24,6 +25,7 @@ members = [
   "npm/eslint-comments",
   "npm/eslint-json",
   "npm/eslint-markdown",
+  "npm/functional",
   "npm/mocha",
   "npm/no-forbidden-identifiers",
   "npm/playwright",
@@ -69,6 +71,7 @@ oxlint-plugins-e18e = { path = "crates/e18e", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
 oxlint-plugins-eslint-json = { path = "crates/eslint_json", version = "0.0.0" }
 oxlint-plugins-eslint-markdown = { path = "crates/eslint_markdown", version = "0.0.0" }
+oxlint-plugins-functional = { path = "crates/functional", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
 oxlint-plugins-playwright = { path = "crates/playwright", version = "0.0.0" }
 oxlint-plugins-react-hooks = { path = "crates/react_hooks", version = "0.0.0" }
