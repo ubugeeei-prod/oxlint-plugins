@@ -22,7 +22,7 @@ impl<'a> Scanner<'a> {
         let mut duplicates: SmallVec<[Span; 4]> = SmallVec::new();
         for member in types {
             let t = self.text(member.span());
-            if seen.iter().any(|s| *s == t) {
+            if seen.contains(&t) {
                 duplicates.push(member.span());
             } else {
                 seen.push(t);
