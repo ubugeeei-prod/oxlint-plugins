@@ -35,6 +35,11 @@ const packages: PackageToPack[] = [
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-eslint-json',
+    dir: 'npm/eslint-json',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-eslint-markdown',
     dir: 'npm/eslint-markdown',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
@@ -47,6 +52,11 @@ const packages: PackageToPack[] = [
   {
     name: '@oxlint-plugins/oxlint-plugin-regexp',
     dir: 'npm/regexp',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-react-hooks',
+    dir: 'npm/react-hooks',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {

@@ -514,6 +514,119 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-eslint-json",
+    "directory": "npm/eslint-json",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "@eslint/json",
+      "version": "2.0.0",
+      "repository": "https://github.com/eslint/json",
+      "license": "Apache-2.0"
+    },
+    "status": "ported",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "no-duplicate-keys",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-duplicate-keys; duplicate string and JSON5-style keys are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+      },
+      {
+        "name": "no-empty-keys",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-empty-keys; empty quoted keys are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+      },
+      {
+        "name": "no-unnormalized-keys",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-unnormalized-keys; NFC/NFKD options and safe key fixes are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+      },
+      {
+        "name": "no-unsafe-values",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-unsafe-values; unsafe integers, infinity, underflow-to-zero, subnormal numbers, and lone surrogates are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+      },
+      {
+        "name": "sort-keys",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/sort-keys; direction, case sensitivity, natural ordering, minKeys, and blank-line grouping are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+      },
+      {
+        "name": "top-level-interop",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/top-level-interop; scalar top-level values are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers",
     "directory": "npm/no-forbidden-identifiers",
     "version": "0.0.0",
@@ -1965,6 +2078,39 @@
           "oxlintIntegration": true
         },
         "notes": "Rust/Oxc Cypress command-chain port of eslint-plugin-cypress/unsafe-to-chain-command; built-in unsafe commands and custom methods option covered in Vitest and Oxlint jsPlugins CLI."
+      }
+    ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-react-hooks",
+    "directory": "npm/react-hooks",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-react-hooks",
+      "version": "7.1.1",
+      "repository": "https://github.com/facebook/react",
+      "license": "MIT"
+    },
+    "status": "in-progress",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "rules-of-hooks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc scope and control-flow port of eslint-plugin-react-hooks/rules-of-hooks; covers component and hook scopes, memo/forwardRef callbacks, loops, conditionals, early returns, async functions, class methods, nested callbacks, top-level calls, and React use() try/catch handling."
       }
     ]
   },

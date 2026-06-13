@@ -1,0 +1,30 @@
+[package]
+name = "oxlint-plugin-react-hooks"
+description = "Rust-backed oxlint plugin port of eslint-plugin-react-hooks."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "oxlint_plugin_react_hooks"
+
+[dependencies]
+napi.workspace = true
+napi-derive.workspace = true
+oxlint-plugins-react-hooks.workspace = true
+
+[build-dependencies]
+napi-build.workspace = true
+
+[lints.rust]
+unused_must_use = "deny"
+
+[lints.clippy]
+dbg_macro = "deny"
+disallowed_types = "warn"
+todo = "deny"
+unwrap_used = "deny"

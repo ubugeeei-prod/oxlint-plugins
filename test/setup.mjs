@@ -29,6 +29,10 @@ const nativePackages = [
     binding: 'npm/eslint-comments/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-eslint-json',
+    binding: 'npm/eslint-json/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-eslint-markdown',
     binding: 'npm/eslint-markdown/native.js',
   },
@@ -59,6 +63,10 @@ const nativePackages = [
   {
     name: '@oxlint-plugins/oxlint-plugin-regexp',
     binding: 'npm/regexp/native.js',
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-react-hooks',
+    binding: 'npm/react-hooks/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-mocha',
