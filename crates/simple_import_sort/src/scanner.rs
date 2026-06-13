@@ -10,7 +10,8 @@ use oxlint_plugins_carton::{CompactString, SmallVec};
 use crate::items::{item_from_all_export, item_from_import, item_from_named_export};
 use crate::specifiers::sort_export_specifiers_in_code;
 use crate::types::{
-    Diagnostic, DiagnosticFix, Item, LineIndex, RuleKind, SIDE_EFFECT_STYLE, SimpleImportSortOptions,
+    Diagnostic, DiagnosticFix, Item, LineIndex, RuleKind, SIDE_EFFECT_STYLE,
+    SimpleImportSortOptions,
 };
 
 pub(crate) fn scan_import_chunks(

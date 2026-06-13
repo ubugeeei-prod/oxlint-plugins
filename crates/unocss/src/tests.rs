@@ -1,8 +1,6 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
-use crate::{
-    BlocklistEntry, UnocssOptions, implemented_unocss_rule_names, scan_unocss,
-};
+use crate::{BlocklistEntry, UnocssOptions, implemented_unocss_rule_names, scan_unocss};
 
 #[test]
 fn exposes_all_rule_names() {

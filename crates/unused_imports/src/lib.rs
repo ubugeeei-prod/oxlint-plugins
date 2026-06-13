@@ -17,9 +17,7 @@ use crate::fixers::{is_used_in_jsdoc, unused_message};
 use crate::scanner::{collect_import_bindings, report_unused_imports, should_report_unused_symbol};
 use crate::types::{ImportBinding, LineIndex, SpanKey};
 
-pub use crate::types::{
-    Diagnostic, DiagnosticFix, DiagnosticLoc, UnusedImportsOptions,
-};
+pub use crate::types::{Diagnostic, DiagnosticFix, DiagnosticLoc, UnusedImportsOptions};
 
 pub const RULE_NAMES: [&str; 2] = ["no-unused-imports", "no-unused-vars"];
 
