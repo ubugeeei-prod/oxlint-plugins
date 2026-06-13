@@ -2083,6 +2083,22 @@
         "notes": "Port of Corsa's native stylistic scanner rule block-spacing; source-wide Rust scan exposed through NAPI."
       },
       {
+        "name": "padded-blocks",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule padded-blocks; source-wide Rust scan exposed through NAPI."
+      },
+      {
         "name": "space-before-blocks",
         "status": "ported",
         "published": false,
@@ -2243,6 +2259,22 @@
         "notes": "Port of Corsa's native stylistic scanner rule max-len; source-wide Rust scan exposed through NAPI."
       },
       {
+        "name": "max-statements-per-line",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule max-statements-per-line; source-wide Rust scan exposed through NAPI."
+      },
+      {
         "name": "semi-style",
         "status": "ported",
         "published": false,
@@ -2305,6 +2337,38 @@
           "oxlintIntegration": false
         },
         "notes": "Port of Corsa's native stylistic scanner rule switch-colon-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "key-spacing",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule key-spacing; source-wide Rust scan exposed through NAPI."
+      },
+      {
+        "name": "quote-props",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Port of Corsa's native stylistic scanner rule quote-props; source-wide Rust scan exposed through NAPI."
       },
       {
         "name": "no-extra-semi",
