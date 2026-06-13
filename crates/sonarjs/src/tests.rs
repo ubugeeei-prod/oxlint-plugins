@@ -689,3 +689,51 @@ fn does_not_report_constructor_for_side_effects_for_plain_call_statement() {
     let diagnostics = scan("constructor-for-side-effects", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_empty_character_class_between_other_chars() {
+    let source = "const r = /a[]b/;";
+    let diagnostics = scan("no-empty-character-class", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-empty-character-class");
+    assert_eq!(diagnostics[0].message_id, "emptyCharacterClass");
+}
+
+#[test]
+fn reports_no_empty_character_class_whole_pattern() {
+    let source = "const r = /[]/;";
+    let diagnostics = scan("no-empty-character-class", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyCharacterClass");
+}
+
+#[test]
+fn does_not_report_no_empty_character_class_for_non_empty_class() {
+    let source = "const r = /[abc]/;";
+    let diagnostics = scan("no-empty-character-class", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_character_class_for_negated_empty_class() {
+    // [^] is a valid JS regex that matches any single character — NOT empty
+    let source = "const r = /[^]/;";
+    let diagnostics = scan("no-empty-character-class", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_character_class_for_escaped_brackets() {
+    // /a\[\]b/ in source: the pattern is a\[\]b — escaped brackets, no class
+    let source = "const r = /a\\[\\]b/;";
+    let diagnostics = scan("no-empty-character-class", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_character_class_for_literal_bracket_in_class() {
+    // /[a[]/ — class content is `a[`, closed by the first `]`; no empty class
+    let source = "const r = /[a[]/;";
+    let diagnostics = scan("no-empty-character-class", source);
+    assert!(diagnostics.is_empty());
+}

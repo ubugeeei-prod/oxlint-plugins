@@ -109,6 +109,7 @@ describe('sonarjs plugin shape', () => {
       'no-labels',
       'no-delete-var',
       'constructor-for-side-effects',
+      'no-empty-character-class',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -125,6 +126,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-labels']).toBe('object');
     expect(typeof plugin.rules['no-delete-var']).toBe('object');
     expect(typeof plugin.rules['constructor-for-side-effects']).toBe('object');
+    expect(typeof plugin.rules['no-empty-character-class']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -141,6 +143,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-labels']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-delete-var']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/constructor-for-side-effects']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-empty-character-class']).toBe('error');
   });
 });
 
@@ -251,6 +254,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('constructor-for-side-effects', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('constructorForSideEffects');
+  });
+
+  it('reports no-empty-character-class through the adapter', () => {
+    const source = 'const r = /a[]b/;';
+    const reports = runRule('no-empty-character-class', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyCharacterClass');
   });
 });
 
@@ -399,5 +409,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(constructor-for-side-effects)');
+  });
+
+  it('reports no-empty-character-class through the CLI', () => {
+    const source = 'const r = /a[]b/;';
+    const result = runOxlint('no-empty-character-class', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-character-class)');
   });
 });
