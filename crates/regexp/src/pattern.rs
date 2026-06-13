@@ -320,7 +320,14 @@ impl PatternAnalysis {
                             let next = bytes.get(index + 1).copied();
                             let followed_by_quantifier =
                                 matches!(next, Some(b'*' | b'+' | b'?' | b'{'));
-                            if byte.is_ascii_alphanumeric() {
+                            // `body_start` is three bytes past the opening `(`,
+                            // so the `(` of `(?:` sits at `body_start - 3`.
+                            let open_pos = group.body_start.saturating_sub(3);
+                            if byte.is_ascii_alphanumeric()
+                                && !non_capturing_group_removal_would_change_meaning(
+                                    bytes, open_pos, byte,
+                                )
+                            {
                                 if followed_by_quantifier {
                                     self.has_preferable_quantifier_group = true;
                                 } else {
@@ -523,6 +530,126 @@ impl PatternAnalysis {
             group.last_atom_was_lookaround = true;
         }
     }
+}
+
+/// Returns `true` when removing the `(?:BYTE)` group whose opening `(` sits at
+/// `open_pos` inside `bytes` would change the regex meaning by merging `inner`
+/// with the token that immediately precedes the group.
+///
+/// The checks cover the following hazardous contexts:
+///
+/// * `\(?:X)` — bare backslash; removal creates a new escape sequence `\X`.
+/// * `\N(?:D)` — digit after `\`; removal extends a backref or octal escape
+///   (`\1(?:0)` → `\10`).
+/// * `\x(?:H)` / `\xH(?:H)` — hex escape needs exactly two hex digits.
+/// * `\u(?:H)` / … / `\uHHH(?:H)` — unicode escape needs four hex digits.
+/// * `\c(?:A)` — control escape `\cX` requires a letter.
+/// * `{(?:D)` / `{N,(?:D)` — digit inside a brace quantifier body.
+fn non_capturing_group_removal_would_change_meaning(
+    bytes: &[u8],
+    open_pos: usize,
+    inner: u8,
+) -> bool {
+    // Inside a `{...}` brace quantifier: `{(?:D)` or `{N,(?:D)}`.
+    // Scan backward past digits and commas; if we hit `{`, the inner digit
+    // would become part of the quantifier body and change its meaning.
+    if inner.is_ascii_digit() && open_pos > 0 {
+        let mut scan = open_pos - 1;
+        loop {
+            let b = bytes[scan];
+            if b == b'{' {
+                return true;
+            }
+            if b != b',' && !b.is_ascii_digit() {
+                break;
+            }
+            if scan == 0 {
+                break;
+            }
+            scan -= 1;
+        }
+    }
+
+    if open_pos == 0 {
+        return false;
+    }
+    let p1 = bytes[open_pos - 1];
+
+    // Direct backslash immediately before `(?:`.
+    if p1 == b'\\' {
+        return true;
+    }
+
+    if open_pos < 2 {
+        return false;
+    }
+    let p2 = bytes[open_pos - 2];
+
+    // `\N(?:D)` — backslash + digit before the group; inner digit would extend
+    // a backref (`\1(?:0)` → `\10`) or octal (`\0(?:1)` → `\01`).
+    if p2 == b'\\' && p1.is_ascii_digit() && inner.is_ascii_digit() {
+        return true;
+    }
+
+    // `\x(?:H)` — `\x` needs two hex digits; inner hex digit completes it.
+    if p2 == b'\\' && p1 == b'x' && inner.is_ascii_hexdigit() {
+        return true;
+    }
+
+    // `\u(?:H)` — `\u` needs four hex digits; inner hex digit starts filling them.
+    if p2 == b'\\' && p1 == b'u' && inner.is_ascii_hexdigit() {
+        return true;
+    }
+
+    // `\c(?:A)` — control escape; inner letter would form `\cA`.
+    if p2 == b'\\' && p1 == b'c' && inner.is_ascii_alphabetic() {
+        return true;
+    }
+
+    if open_pos < 3 {
+        return false;
+    }
+    let p3 = bytes[open_pos - 3];
+
+    // `\xH(?:H)` — one hex digit already consumed after `\x`.
+    if p3 == b'\\' && p2 == b'x' && p1.is_ascii_hexdigit() && inner.is_ascii_hexdigit() {
+        return true;
+    }
+
+    // `\uH(?:H)` — one hex digit after `\u`, three more needed.
+    if p3 == b'\\' && p2 == b'u' && p1.is_ascii_hexdigit() && inner.is_ascii_hexdigit() {
+        return true;
+    }
+
+    if open_pos < 4 {
+        return false;
+    }
+    let p4 = bytes[open_pos - 4];
+
+    // `\uHH(?:H)` — two hex digits after `\u`.
+    if p4 == b'\\' && p3 == b'u' && p2.is_ascii_hexdigit() && p1.is_ascii_hexdigit()
+        && inner.is_ascii_hexdigit()
+    {
+        return true;
+    }
+
+    if open_pos < 5 {
+        return false;
+    }
+    let p5 = bytes[open_pos - 5];
+
+    // `\uHHH(?:H)` — three hex digits after `\u`.
+    if p5 == b'\\'
+        && p4 == b'u'
+        && p3.is_ascii_hexdigit()
+        && p2.is_ascii_hexdigit()
+        && p1.is_ascii_hexdigit()
+        && inner.is_ascii_hexdigit()
+    {
+        return true;
+    }
+
+    false
 }
 
 /// Append the decimal representation of `value` to `target` without allocating

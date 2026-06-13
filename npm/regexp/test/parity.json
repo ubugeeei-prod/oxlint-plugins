@@ -33,10 +33,6 @@
       "level": "off",
       "reason": "Flags $0 in String#replaceAll where it is a literal substitution, not a useless backreference."
     },
-    "no-useless-non-capturing-group": {
-      "level": "off",
-      "reason": "Flags non-capturing groups that disambiguate adjacent tokens, e.g. /\\1(?:0)/, /{(?:2)}/."
-    },
     "prefer-character-class": {
       "level": "off",
       "reason": "Flags single-character alternations like /(?:a|b)/ that upstream allows by default."
