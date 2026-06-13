@@ -191,6 +191,42 @@ const invalidCases = [
     "str.replaceAll(/(?<year>\\d{4})/gu, 'year: $1');\n",
     ['unexpected'],
   ],
+  // no-obscure-range
+  ['no-obscure-range', 'A-z range', 'const re = /[A-z]/u;\n', ['unexpected']],
+  ['no-obscure-range', '0-A range', 'const re = /[0-A]/u;\n', ['unexpected']],
+  // prefer-unicode-codepoint-escapes
+  [
+    'prefer-unicode-codepoint-escapes',
+    'surrogate pair',
+    "const re = new RegExp('\\\\uD83D\\\\uDE00', 'u');\n",
+    ['unexpected'],
+  ],
+  // no-dupe-characters-character-class
+  [
+    'no-dupe-characters-character-class',
+    'literal duplicate',
+    'const re = /[aab]/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-range
+  ['prefer-range', 'three consecutive letters', 'const re = /[abc]/u;\n', ['unexpected']],
+  ['prefer-range', 'five consecutive digits', 'const re = /[12345]/u;\n', ['unexpected']],
+  // no-useless-escape
+  ['no-useless-escape', 'escaped colon', 'const re = /\\:/u;\n', ['unexpected']],
+  ['no-useless-escape', 'escaped at sign', 'const re = /a\\@b/u;\n', ['unexpected']],
+  // no-useless-quantifier
+  ['no-useless-quantifier', 'a{1}', 'const re = /a{1}/u;\n', ['unexpected']],
+  ['no-useless-quantifier', 'a{1,1}', 'const re = /a{1,1}/u;\n', ['unexpected']],
+  // prefer-named-backreference
+  [
+    'prefer-named-backreference',
+    'mixed numbered backref',
+    'const re = /(?<year>\\d{4})-\\1/u;\n',
+    ['unexpected'],
+  ],
+  // no-useless-flag
+  ['no-useless-flag', 's without dot', "const re = new RegExp('abc', 's');\n", ['unexpected']],
+  ['no-useless-flag', 'm without anchor', "const re = new RegExp('abc', 'm');\n", ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

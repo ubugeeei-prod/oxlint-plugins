@@ -76,8 +76,42 @@ fn exposes_initial_regexp_rule_names() {
             "require-unicode-sets-regexp",
             "confusing-quantifier",
             "prefer-named-replacement",
+            "no-obscure-range",
+            "prefer-unicode-codepoint-escapes",
+            "no-dupe-characters-character-class",
+            "prefer-range",
+            "no-useless-escape",
+            "no-useless-quantifier",
+            "prefer-named-backreference",
+            "no-useless-flag",
         ]
     );
+}
+
+mod no_useless_flag {
+    use super::*;
+
+    #[test]
+    fn reports_s_flag_on_dotless_patterns() {
+        let data = first_data("const a = new RegExp('abc', 's');", "no-useless-flag");
+        assert_eq!(data.flag.as_ref().map(CompactString::as_str), Some("s"));
+    }
+
+    #[test]
+    fn reports_m_flag_on_anchorless_patterns() {
+        let data = first_data("const a = new RegExp('abc', 'm');", "no-useless-flag");
+        assert_eq!(data.flag.as_ref().map(CompactString::as_str), Some("m"));
+    }
+
+    #[test]
+    fn accepts_flag_when_pattern_uses_the_corresponding_syntax() {
+        // `.` makes the `s` flag meaningful.
+        assert!(rule_ids_for("const a = new RegExp('a.b', 's');", "no-useless-flag").is_empty());
+        // `^` makes the `m` flag meaningful.
+        assert!(rule_ids_for("const a = new RegExp('^abc', 'm');", "no-useless-flag").is_empty());
+        // `$` at end activates the `m` flag.
+        assert!(rule_ids_for("const a = new RegExp('abc$', 'm');", "no-useless-flag").is_empty());
+    }
 }
 
 mod no_optional_assertion {
@@ -1282,6 +1316,209 @@ mod prefer_named_replacement {
         // Unrelated method.
         assert!(
             rule_ids_for("str.match(/(?<year>\\d{4})/u);", "prefer-named-replacement").is_empty()
+        );
+    }
+}
+
+mod no_obscure_range {
+    use super::*;
+
+    #[test]
+    fn reports_boundary_crossing_ranges() {
+        let data = first_data("const a = /[A-z]/u;", "no-obscure-range");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("A-z"));
+        assert_eq!(
+            rule_ids_for("const a = /[0-A]/u;", "no-obscure-range").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_canonical_within_category_ranges() {
+        assert!(rule_ids_for("const a = /[a-z]/u;", "no-obscure-range").is_empty());
+        assert!(rule_ids_for("const a = /[A-Z]/u;", "no-obscure-range").is_empty());
+        assert!(rule_ids_for("const a = /[0-9]/u;", "no-obscure-range").is_empty());
+        // Escaped endpoints are skipped — we cannot easily reason about them.
+        assert!(rule_ids_for("const a = /[\\x41-z]/u;", "no-obscure-range").is_empty());
+    }
+}
+
+mod prefer_unicode_codepoint_escapes {
+    use super::*;
+
+    #[test]
+    fn reports_surrogate_pairs() {
+        let data = first_data(
+            "const a = new RegExp('\\\\uD83D\\\\uDE00', 'u');",
+            "prefer-unicode-codepoint-escapes",
+        );
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("\\uD83D\\uDE00")
+        );
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("\\u{1f600}")
+        );
+    }
+
+    #[test]
+    fn ignores_non_surrogate_pairs_and_codepoint_escapes() {
+        // Two BMP unicode escapes are unrelated.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\u0041\\\\u0042', 'u');",
+                "prefer-unicode-codepoint-escapes"
+            )
+            .is_empty()
+        );
+        // Already the codepoint form.
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\u{1F600}', 'u');",
+                "prefer-unicode-codepoint-escapes"
+            )
+            .is_empty()
+        );
+    }
+}
+
+mod no_dupe_characters_character_class {
+    use super::*;
+
+    #[test]
+    fn reports_duplicate_literal_characters() {
+        let data = first_data("const a = /[aab]/u;", "no-dupe-characters-character-class");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("a"));
+        // Reordered or with surrounding chars still reports.
+        assert_eq!(
+            rule_ids_for("const a = /[xaya]/u;", "no-dupe-characters-character-class").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_unique_literals_ranges_and_escapes() {
+        assert!(
+            rule_ids_for("const a = /[abc]/u;", "no-dupe-characters-character-class").is_empty()
+        );
+        // Range `a-c` is not a duplicate of `a`.
+        assert!(
+            rule_ids_for("const a = /[a-c]/u;", "no-dupe-characters-character-class").is_empty()
+        );
+        // Escapes are skipped; `\\d\\d` is not flagged.
+        assert!(
+            rule_ids_for(
+                "const a = /[\\d\\d]/u;",
+                "no-dupe-characters-character-class"
+            )
+            .is_empty()
+        );
+    }
+}
+
+mod prefer_range {
+    use super::*;
+
+    #[test]
+    fn reports_three_or_more_consecutive_literals() {
+        let data = first_data("const a = /[abc]/u;", "prefer-range");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("abc"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some("a-c")
+        );
+        // Digits collapse just like letters.
+        assert_eq!(
+            rule_ids_for("const a = /[12345]/u;", "prefer-range").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_short_runs_and_existing_ranges() {
+        assert!(rule_ids_for("const a = /[ab]/u;", "prefer-range").is_empty());
+        // A range already covers the chars; no further reduction needed.
+        assert!(rule_ids_for("const a = /[a-c]/u;", "prefer-range").is_empty());
+        // Non-consecutive bytes break the run.
+        assert!(rule_ids_for("const a = /[acd]/u;", "prefer-range").is_empty());
+    }
+}
+
+mod no_useless_escape {
+    use super::*;
+
+    #[test]
+    fn reports_pointless_escapes_outside_classes() {
+        let data = first_data("const a = /\\:/u;", "no-useless-escape");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("\\:"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some(":")
+        );
+        // Other punctuation variants.
+        assert_eq!(
+            rule_ids_for("const a = /a\\@b/u;", "no-useless-escape").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /\\#/u;", "no-useless-escape").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_known_escape_sequences_and_class_contents() {
+        // Real escapes are untouched.
+        assert!(rule_ids_for("const a = /\\d/u;", "no-useless-escape").is_empty());
+        assert!(rule_ids_for("const a = /\\b/u;", "no-useless-escape").is_empty());
+        assert!(rule_ids_for("const a = /\\./u;", "no-useless-escape").is_empty());
+        // Inside a character class — deferred to keep the check sound.
+        assert!(rule_ids_for("const a = /[\\:]/u;", "no-useless-escape").is_empty());
+    }
+}
+
+mod no_useless_quantifier {
+    use super::*;
+
+    #[test]
+    fn reports_one_braced_quantifiers() {
+        let data = first_data("const a = /a{1}/u;", "no-useless-quantifier");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("{1}"));
+        let data = first_data("const a = /a{1,1}/u;", "no-useless-quantifier");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("{1,1}"));
+    }
+
+    #[test]
+    fn ignores_other_quantifiers_and_class_contexts() {
+        assert!(rule_ids_for("const a = /a{2}/u;", "no-useless-quantifier").is_empty());
+        assert!(rule_ids_for("const a = /a{1,3}/u;", "no-useless-quantifier").is_empty());
+        // `{1}` inside a class is literal characters, not a quantifier.
+        assert!(rule_ids_for("const a = /[{1}]/u;", "no-useless-quantifier").is_empty());
+    }
+}
+
+mod prefer_named_backreference {
+    use super::*;
+
+    #[test]
+    fn reports_numbered_backreference_alongside_named_capture() {
+        let data = first_data(
+            "const a = /(?<year>\\d{4})-\\1/u;",
+            "prefer-named-backreference",
+        );
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("\\1"));
+    }
+
+    #[test]
+    fn ignores_numbered_backref_without_named_group_and_class_contents() {
+        // No named capture in the pattern — \1 is the only way to refer back.
+        assert!(
+            rule_ids_for("const a = /(\\d{4})-\\1/u;", "prefer-named-backreference").is_empty()
+        );
+        // \1 inside a character class is literal, not a backreference.
+        assert!(
+            rule_ids_for("const a = /(?<n>a)[\\1b]/u;", "prefer-named-backreference").is_empty()
         );
     }
 }

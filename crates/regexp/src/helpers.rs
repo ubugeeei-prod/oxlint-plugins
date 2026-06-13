@@ -611,6 +611,375 @@ pub(crate) fn first_fixed_unicode_escape(pattern: &str) -> Option<(&str, Compact
     None
 }
 
+/// Returns `Some((start, end))` when the `[...]` class at `open` contains at
+/// least one `X-Y` range whose endpoints cross ASCII character categories
+/// (digit/uppercase letter/lowercase letter/other). Such ranges almost always
+/// sweep up unexpected characters in the gaps between categories (the
+/// canonical example is `[A-z]`, which includes `[\]^_` and `` ` ``). Used by
+/// `no-obscure-range`. Escaped or compound endpoints are intentionally
+/// ignored so the check stays sound (no false positives).
+pub(crate) fn class_first_obscure_range(bytes: &[u8], open: usize) -> Option<(char, char)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    while index + 2 < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if bytes[index + 1] != b'-' {
+            index += 1;
+            continue;
+        }
+        if bytes[index + 2] == b'\\' || bytes[index + 2] == b']' {
+            // Skip escaped or end-of-class endpoints; equivalence is hard to
+            // judge without decoding the escape.
+            index += 1;
+            continue;
+        }
+        let start_byte = bytes[index];
+        let end_byte = bytes[index + 2];
+        if start_byte.is_ascii() && end_byte.is_ascii() && is_obscure_range(start_byte, end_byte) {
+            return Some((start_byte as char, end_byte as char));
+        }
+        index += 3;
+    }
+    None
+}
+
+fn is_obscure_range(start: u8, end: u8) -> bool {
+    if start > end {
+        return false;
+    }
+    let start_category = ascii_category(start);
+    let end_category = ascii_category(end);
+    // A range stays within one of the canonical categories (digits or
+    // lowercase letters or uppercase letters) — that is fine. Anything else
+    // crosses a boundary and is flagged.
+    !matches!(
+        (start_category, end_category),
+        (AsciiCategory::Digit, AsciiCategory::Digit)
+            | (AsciiCategory::Lowercase, AsciiCategory::Lowercase)
+            | (AsciiCategory::Uppercase, AsciiCategory::Uppercase)
+    ) && (start_category != AsciiCategory::Other || end_category != AsciiCategory::Other)
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum AsciiCategory {
+    Digit,
+    Lowercase,
+    Uppercase,
+    Other,
+}
+
+fn ascii_category(byte: u8) -> AsciiCategory {
+    match byte {
+        b'0'..=b'9' => AsciiCategory::Digit,
+        b'a'..=b'z' => AsciiCategory::Lowercase,
+        b'A'..=b'Z' => AsciiCategory::Uppercase,
+        _ => AsciiCategory::Other,
+    }
+}
+
+/// Returns the first surrogate-pair escape sequence `\uHHHH\uHHHH` in
+/// `pattern` together with its `\u{CODEPOINT}` replacement (hex digits in
+/// lower case). Used by `prefer-unicode-codepoint-escapes`. Unrelated
+/// adjacent `\uHHHH` escapes (where the pair is not a valid surrogate pair)
+/// are skipped.
+pub(crate) fn first_surrogate_pair_escape(pattern: &str) -> Option<(&str, CompactString)> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index + 12 <= bytes.len() {
+        if bytes[index] != b'\\' || bytes[index + 1] != b'u' {
+            index += 1;
+            continue;
+        }
+        let Some(high) = read_fixed_hex4(&bytes[index + 2..index + 6]) else {
+            index = skip_escape(bytes, index);
+            continue;
+        };
+        if !(0xD800..=0xDBFF).contains(&high) {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        if bytes[index + 6] != b'\\' || bytes[index + 7] != b'u' {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        let Some(low) = read_fixed_hex4(&bytes[index + 8..index + 12]) else {
+            index = skip_escape(bytes, index);
+            continue;
+        };
+        if !(0xDC00..=0xDFFF).contains(&low) {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        let original = &pattern[index..index + 12];
+        let codepoint = ((high - 0xD800) << 10) + (low - 0xDC00) + 0x10000;
+        let mut replacement = CompactString::new("\\u{");
+        append_lower_hex(&mut replacement, codepoint);
+        replacement.push('}');
+        return Some((original, replacement));
+    }
+    None
+}
+
+fn read_fixed_hex4(bytes: &[u8]) -> Option<u32> {
+    if bytes.len() < 4 {
+        return None;
+    }
+    let mut value: u32 = 0;
+    for byte in bytes.iter().take(4) {
+        let digit = match byte {
+            b'0'..=b'9' => byte - b'0',
+            b'a'..=b'f' => byte - b'a' + 10,
+            b'A'..=b'F' => byte - b'A' + 10,
+            _ => return None,
+        };
+        value = value * 16 + u32::from(digit);
+    }
+    Some(value)
+}
+
+fn append_lower_hex(target: &mut CompactString, mut value: u32) {
+    if value == 0 {
+        target.push('0');
+        return;
+    }
+    let mut buf = [0u8; 8];
+    let mut cursor = buf.len();
+    while value > 0 {
+        cursor -= 1;
+        let digit = (value & 0xf) as u8;
+        buf[cursor] = if digit < 10 {
+            b'0' + digit
+        } else {
+            b'a' + digit - 10
+        };
+        value >>= 4;
+    }
+    if let Ok(text) = std::str::from_utf8(&buf[cursor..]) {
+        target.push_str(text);
+    }
+}
+
+/// Returns `Some(original)` when the pattern contains a literal `{1}` or
+/// `{1,1}` quantifier at the top level. Such quantifiers are no-ops; the
+/// referenced atom matches itself exactly once anyway. Class context is
+/// skipped because `{` and `1` are literal characters inside `[...]`. Used by
+/// `no-useless-quantifier`.
+pub(crate) fn first_useless_one_quantifier(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        if bytes[index] == b'{' && bytes.get(index + 1) == Some(&b'1') {
+            if bytes.get(index + 2) == Some(&b'}') {
+                return Some(&pattern[index..index + 3]);
+            }
+            if bytes.get(index + 2) == Some(&b',')
+                && bytes.get(index + 3) == Some(&b'1')
+                && bytes.get(index + 4) == Some(&b'}')
+            {
+                return Some(&pattern[index..index + 5]);
+            }
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some(text)` for the first numbered backreference `\N` (N in 1-9)
+/// inside `pattern` when the same pattern contains at least one named capture
+/// group `(?<name>...)`. Numbered backreferences alongside named groups are
+/// the canonical case for `prefer-named-backreference`. Backreferences inside
+/// classes are skipped because they are literal characters there.
+pub(crate) fn first_numbered_backreference_with_named_group(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    if !pattern.contains("(?<") {
+        return None;
+    }
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] == b'\\'
+            && let Some(&next) = bytes.get(index + 1)
+            && matches!(next, b'1'..=b'9')
+        {
+            return Some(&pattern[index..index + 2]);
+        }
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some(byte)` for the first escape `\X` in `pattern` where `X` is
+/// a character that is never special in a regular expression (not in a
+/// character class either), so the `\` is useless. Stays narrow on purpose:
+/// only flags a curated list of punctuation that has no escape semantics
+/// (`:`, `;`, `,`, `=`, `!`, `#`, `@`, `<`, `>`, `&`, `_`, `%`, `~`, `'`,
+/// `"`, `/`). Walks the pattern with the existing class-skipping logic so
+/// escapes inside `[...]` (where `]` and `-` carry extra meaning) are not
+/// considered. Used by `no-useless-escape`.
+pub(crate) fn first_useless_escape(pattern: &str) -> Option<u8> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            // Skip the entire character class — the rules for "useless" inside
+            // a class differ, and we conservatively defer them.
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        if let Some(&next) = bytes.get(index + 1)
+            && is_pointlessly_escaped(next)
+        {
+            return Some(next);
+        }
+        index = skip_escape(bytes, index).max(index + 1);
+    }
+    None
+}
+
+fn is_pointlessly_escaped(byte: u8) -> bool {
+    matches!(
+        byte,
+        b':' | b';'
+            | b','
+            | b'='
+            | b'!'
+            | b'#'
+            | b'@'
+            | b'<'
+            | b'>'
+            | b'&'
+            | b'_'
+            | b'%'
+            | b'~'
+            | b'\''
+            | b'"'
+            | b'/'
+    )
+}
+
+/// Returns `Some(byte)` for the first ASCII literal byte that appears more
+/// than once in the `[...]` class at `open`. Escapes, ranges, and nested
+/// classes are intentionally skipped — comparing them for equivalence needs
+/// decoding we have not implemented yet. Used by
+/// `no-dupe-characters-character-class`. Keeps a small fixed-size bitmap on
+/// the stack so the check has no allocation.
+pub(crate) fn class_first_duplicate_literal(bytes: &[u8], open: usize) -> Option<u8> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    // 16 bytes covers all 128 ASCII bit slots.
+    let mut seen = [0u8; 16];
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            // Skip the entire range — `a-c` does not mean three repeats of
+            // any character, and the helper deliberately ignores ranges.
+            index += 3;
+            continue;
+        }
+        let byte = bytes[index];
+        if byte.is_ascii() {
+            let bit = byte as usize;
+            let slot = bit / 8;
+            let mask = 1u8 << (bit % 8);
+            if seen[slot] & mask != 0 {
+                return Some(byte);
+            }
+            seen[slot] |= mask;
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some((start, end))` when the `[...]` class at `open` contains
+/// three or more consecutive ASCII characters (digits, lower-case, or
+/// upper-case letters) at the top level — these collapse into the equivalent
+/// range `start-end`. Used by `prefer-range`. Escapes and existing ranges
+/// are intentionally skipped to keep the check conservative.
+pub(crate) fn class_first_collapsible_run(bytes: &[u8], open: usize) -> Option<(char, char)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            index += 3;
+            continue;
+        }
+        if is_collapsible_run_byte(bytes[index]) {
+            let start = bytes[index];
+            let mut run_end = start;
+            let mut cursor = index + 1;
+            while cursor < end
+                && bytes[cursor] == run_end + 1
+                && is_collapsible_run_byte(bytes[cursor])
+            {
+                run_end = bytes[cursor];
+                cursor += 1;
+            }
+            if run_end >= start + 2 {
+                return Some((start as char, run_end as char));
+            }
+            index = cursor.max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    None
+}
+
+fn is_collapsible_run_byte(byte: u8) -> bool {
+    matches!(byte, b'0'..=b'9' | b'a'..=b'z' | b'A'..=b'Z')
+}
+
 /// Returns `Some(ch)` when the `[...]` class at `open` is exactly `[X]` for a
 /// regular ASCII literal `X`. Negated classes, escaped contents, ranges,
 /// nested classes, and bodies of length other than one are intentionally
