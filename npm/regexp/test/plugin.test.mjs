@@ -175,14 +175,14 @@ const invalidCases = [
   // hexadecimal-escape
   [
     'hexadecimal-escape',
-    'lowercase \\xHH',
-    "const re = new RegExp('\\\\xab', 'u');\n",
+    '\\uHHHH with code point ≤ 0xFF',
+    "const re = new RegExp('\\\\u000a', 'u');\n",
     ['unexpected'],
   ],
   [
     'hexadecimal-escape',
-    'uppercase \\xHH still flagged',
-    "const re = new RegExp('\\\\xAB', 'u');\n",
+    '\\u{H+} with code point ≤ 0xFF',
+    "const re = new RegExp('\\\\u{ab}', 'u');\n",
     ['unexpected'],
   ],
   // unicode-escape

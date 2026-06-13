@@ -89,11 +89,11 @@ describe('regexp native API', () => {
       // new RegExp('[', 'u') — constructor parse error short-circuits the flag-style checks.
       ['no-invalid-regexp', 'error'],
       // new RegExp('\\x01', 'u') — u is present so require-unicode-sets-regexp fires
-      // alongside the control-character diagnostic and `hexadecimal-escape` (the
-      // `\xHH` escape is independently flagged regardless of the character value).
+      // alongside the control-character diagnostic. `hexadecimal-escape` does NOT fire
+      // because `\x01` is already in the correct hexadecimal form; only unicode escapes
+      // (e.g. `` or `\u{1}`) whose code point is ≤ 0xFF would be flagged.
       ['require-unicode-sets-regexp', 'require'],
       ['no-control-character', 'unexpected'],
-      ['hexadecimal-escape', 'unexpected'],
     ]);
     expect(diagnostics[0].data).toMatchObject({
       flags: 'mi',
