@@ -104,6 +104,12 @@ const validCases = [
   ['sort-character-class-elements', 'sorted class', 'const re = /[ab]/u;\n'],
   ['sort-character-class-elements', 'class with escape', 'const re = /[a\\d]/u;\n'],
   ['sort-character-class-elements', 'class with range', 'const re = /[a-z]/u;\n'],
+  // no-trivially-nested-assertion
+  ['no-trivially-nested-assertion', 'non-cap with literal body', 'const re = /(?:a)/u;\n'],
+  ['no-trivially-nested-assertion', 'lookaround at top level', 'const re = /(?=a)/u;\n'],
+  // no-extra-lookaround-assertions
+  ['no-extra-lookaround-assertions', 'lookaround with literal body', 'const re = /(?=a)/u;\n'],
+  ['no-extra-lookaround-assertions', 'non-cap wrapping lookaround', 'const re = /(?:(?=a))/u;\n'],
 ];
 
 const invalidCases = [
@@ -300,6 +306,32 @@ const invalidCases = [
     'sort-character-class-elements',
     'mixed digits and letters',
     'const re = /[b1a]/u;\n',
+    ['unexpected'],
+  ],
+  // no-trivially-nested-assertion
+  [
+    'no-trivially-nested-assertion',
+    'non-cap wrapping lookahead',
+    'const re = /(?:(?=a))/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-trivially-nested-assertion',
+    'non-cap wrapping lookbehind',
+    'const re = /(?:(?<=a))/u;\n',
+    ['unexpected'],
+  ],
+  // no-extra-lookaround-assertions
+  [
+    'no-extra-lookaround-assertions',
+    'nested positive lookahead',
+    'const re = /(?=(?=a))/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-extra-lookaround-assertions',
+    'nested negative lookbehind',
+    'const re = /(?<!(?!b))/u;\n',
     ['unexpected'],
   ],
 ];

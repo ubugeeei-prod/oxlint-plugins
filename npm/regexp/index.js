@@ -202,6 +202,14 @@ const messages = Object.freeze({
   'sort-character-class-elements': {
     unexpected: 'Character class elements are not sorted; reorder them lexicographically.',
   },
+  'no-trivially-nested-assertion': {
+    unexpected:
+      'Non-capturing group whose body is exactly one lookaround assertion; drop the `(?:` ... `)` wrapper.',
+  },
+  'no-extra-lookaround-assertions': {
+    unexpected:
+      'Lookaround assertion whose body is exactly one nested lookaround; drop the outer assertion.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -281,6 +289,10 @@ const ruleDescriptions = Object.freeze({
     'disallow string literals in v-mode classes when a bare character would do',
   'sort-character-class-elements':
     'enforce sorted character class elements when the body is all literal alphanumerics',
+  'no-trivially-nested-assertion':
+    'disallow non-capturing groups whose entire body is a single lookaround assertion',
+  'no-extra-lookaround-assertions':
+    'disallow lookaround assertions whose entire body is a single nested lookaround',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -336,6 +348,8 @@ const ruleTypes = Object.freeze({
   'prefer-quantifier': 'suggestion',
   'no-useless-string-literal': 'suggestion',
   'sort-character-class-elements': 'suggestion',
+  'no-trivially-nested-assertion': 'suggestion',
+  'no-extra-lookaround-assertions': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -492,7 +506,9 @@ function ruleCategory(ruleName) {
     ruleName === 'no-useless-non-capturing-group' ||
     ruleName === 'prefer-quantifier' ||
     ruleName === 'no-useless-string-literal' ||
-    ruleName === 'sort-character-class-elements'
+    ruleName === 'sort-character-class-elements' ||
+    ruleName === 'no-trivially-nested-assertion' ||
+    ruleName === 'no-extra-lookaround-assertions'
   ) {
     return 'Stylistic Issues';
   }

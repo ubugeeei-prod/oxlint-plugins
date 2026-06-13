@@ -8795,19 +8795,19 @@
       },
       {
         "name": "no-extra-lookaround-assertions",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-extra-lookaround-assertions."
+        "notes": "Same atom-count tracker as no-trivially-nested-assertion, but targets lookaround wrappers: at close of a `(?=` / `(?!` / `(?<=` / `(?<!` group whose body is exactly one nested lookaround atom, the outer assertion is reported as redundant."
       },
       {
         "name": "no-invisible-character",
@@ -9019,19 +9019,19 @@
       },
       {
         "name": "no-trivially-nested-assertion",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-trivially-nested-assertion."
+        "notes": "GroupState gains per-alternative atom_count and last_atom_was_lookaround. At close `)`, when a non-capturing group has not seen `|`, its body is exactly one atom, AND that atom was a lookaround close, the wrapper is reported as trivially nested."
       },
       {
         "name": "no-trivially-nested-quantifier",
