@@ -80,6 +80,7 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-unicode-codepoint-escapes",
             "no-dupe-characters-character-class",
             "prefer-range",
+            "no-useless-escape",
         ]
     );
 }
@@ -1412,6 +1413,39 @@ mod prefer_range {
         assert!(rule_ids_for("const a = /[a-c]/u;", "prefer-range").is_empty());
         // Non-consecutive bytes break the run.
         assert!(rule_ids_for("const a = /[acd]/u;", "prefer-range").is_empty());
+    }
+}
+
+mod no_useless_escape {
+    use super::*;
+
+    #[test]
+    fn reports_pointless_escapes_outside_classes() {
+        let data = first_data("const a = /\\:/u;", "no-useless-escape");
+        assert_eq!(data.expr.as_ref().map(CompactString::as_str), Some("\\:"));
+        assert_eq!(
+            data.replacement.as_ref().map(CompactString::as_str),
+            Some(":")
+        );
+        // Other punctuation variants.
+        assert_eq!(
+            rule_ids_for("const a = /a\\@b/u;", "no-useless-escape").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /\\#/u;", "no-useless-escape").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_known_escape_sequences_and_class_contents() {
+        // Real escapes are untouched.
+        assert!(rule_ids_for("const a = /\\d/u;", "no-useless-escape").is_empty());
+        assert!(rule_ids_for("const a = /\\b/u;", "no-useless-escape").is_empty());
+        assert!(rule_ids_for("const a = /\\./u;", "no-useless-escape").is_empty());
+        // Inside a character class — deferred to keep the check sound.
+        assert!(rule_ids_for("const a = /[\\:]/u;", "no-useless-escape").is_empty());
     }
 }
 

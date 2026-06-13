@@ -766,6 +766,62 @@ fn append_lower_hex(target: &mut CompactString, mut value: u32) {
     }
 }
 
+/// Returns `Some(byte)` for the first escape `\X` in `pattern` where `X` is
+/// a character that is never special in a regular expression (not in a
+/// character class either), so the `\` is useless. Stays narrow on purpose:
+/// only flags a curated list of punctuation that has no escape semantics
+/// (`:`, `;`, `,`, `=`, `!`, `#`, `@`, `<`, `>`, `&`, `_`, `%`, `~`, `'`,
+/// `"`, `/`). Walks the pattern with the existing class-skipping logic so
+/// escapes inside `[...]` (where `]` and `-` carry extra meaning) are not
+/// considered. Used by `no-useless-escape`.
+pub(crate) fn first_useless_escape(pattern: &str) -> Option<u8> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            // Skip the entire character class — the rules for "useless" inside
+            // a class differ, and we conservatively defer them.
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        if let Some(&next) = bytes.get(index + 1)
+            && is_pointlessly_escaped(next)
+        {
+            return Some(next);
+        }
+        index = skip_escape(bytes, index).max(index + 1);
+    }
+    None
+}
+
+fn is_pointlessly_escaped(byte: u8) -> bool {
+    matches!(
+        byte,
+        b':' | b';'
+            | b','
+            | b'='
+            | b'!'
+            | b'#'
+            | b'@'
+            | b'<'
+            | b'>'
+            | b'&'
+            | b'_'
+            | b'%'
+            | b'~'
+            | b'\''
+            | b'"'
+            | b'/'
+    )
+}
+
 /// Returns `Some(byte)` for the first ASCII literal byte that appears more
 /// than once in the `[...]` class at `open`. Escapes, ranges, and nested
 /// classes are intentionally skipped — comparing them for equivalence needs

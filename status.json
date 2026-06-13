@@ -9131,19 +9131,19 @@
       },
       {
         "name": "no-useless-escape",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-escape."
+        "notes": "Pattern-level scan via first_useless_escape: walks the pattern bytes, skips any [...] class via find_class_end, and reports the first \\X where X is in a curated list of punctuation chars that have no special meaning at top level (colon/semicolon/comma/equals/bang/hash/at/lt/gt/ampersand/underscore/percent/tilde/quote/dquote/slash). Known escape sequences and escapes inside classes are deferred."
       },
       {
         "name": "no-useless-flag",

@@ -44,6 +44,7 @@ describe('regexp native API', () => {
       'prefer-unicode-codepoint-escapes',
       'no-dupe-characters-character-class',
       'prefer-range',
+      'no-useless-escape',
     ]);
   });
 

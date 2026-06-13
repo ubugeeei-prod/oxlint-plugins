@@ -211,6 +211,9 @@ const invalidCases = [
   // prefer-range
   ['prefer-range', 'three consecutive letters', 'const re = /[abc]/u;\n', ['unexpected']],
   ['prefer-range', 'five consecutive digits', 'const re = /[12345]/u;\n', ['unexpected']],
+  // no-useless-escape
+  ['no-useless-escape', 'escaped colon', 'const re = /\\:/u;\n', ['unexpected']],
+  ['no-useless-escape', 'escaped at sign', 'const re = /a\\@b/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

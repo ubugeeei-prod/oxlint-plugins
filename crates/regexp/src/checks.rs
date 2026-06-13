@@ -13,7 +13,7 @@ use oxlint_plugins_carton::CompactString;
 use crate::helpers::{
     duplicate_flag, first_control_character, first_fixed_unicode_escape, first_hex_x_escape,
     first_invisible_character, first_non_standard_flag, first_octal_escape,
-    first_surrogate_pair_escape, first_uppercase_hex_escape, mention_char,
+    first_surrogate_pair_escape, first_uppercase_hex_escape, first_useless_escape, mention_char,
     pattern_has_empty_string_literal, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
@@ -624,6 +624,22 @@ impl<'a> Scanner<'a> {
                 "unexpected",
                 DiagnosticData {
                     expr: Some(original),
+                    replacement: Some(replacement),
+                    ..DiagnosticData::default()
+                },
+                span,
+            );
+        }
+        if let Some(byte) = first_useless_escape(pattern) {
+            let mut text = CompactString::new("\\");
+            text.push(byte as char);
+            let mut replacement = CompactString::new("");
+            replacement.push(byte as char);
+            self.report_with_data(
+                "no-useless-escape",
+                "unexpected",
+                DiagnosticData {
+                    expr: Some(text),
                     replacement: Some(replacement),
                     ..DiagnosticData::default()
                 },

@@ -148,6 +148,10 @@ const messages = Object.freeze({
   'prefer-range': {
     unexpected: "Unexpected consecutive characters '{{expr}}'. Use '{{replacement}}' instead.",
   },
+  'no-useless-escape': {
+    unexpected:
+      "Unnecessary escape '{{expr}}'. Use '{{replacement}}' instead — the character has no special meaning here.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -200,6 +204,7 @@ const ruleDescriptions = Object.freeze({
   'no-dupe-characters-character-class':
     'disallow duplicate literal characters in a character class',
   'prefer-range': 'enforce using a range (`a-c`) instead of three or more consecutive characters',
+  'no-useless-escape': 'disallow escape sequences that have no effect on the matched character',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -241,6 +246,7 @@ const ruleTypes = Object.freeze({
   'prefer-unicode-codepoint-escapes': 'suggestion',
   'no-dupe-characters-character-class': 'problem',
   'prefer-range': 'suggestion',
+  'no-useless-escape': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -383,7 +389,8 @@ function ruleCategory(ruleName) {
     ruleName === 'prefer-named-replacement' ||
     ruleName === 'no-obscure-range' ||
     ruleName === 'prefer-unicode-codepoint-escapes' ||
-    ruleName === 'prefer-range'
+    ruleName === 'prefer-range' ||
+    ruleName === 'no-useless-escape'
   ) {
     return 'Stylistic Issues';
   }
