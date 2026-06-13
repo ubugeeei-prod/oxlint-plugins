@@ -49,6 +49,7 @@
     "new": "node tools/tasks/new-port-prompt.ts",
     "port:releases": "node tools/tasks/check-upstream-releases.ts",
     "port:rules": "node tools/tasks/enumerate-port-rules.ts",
+    "port:status": "node tools/tasks/sync-status-from-port-targets.ts",
     "port:tests:eslint-comments": "node tools/tasks/sync-eslint-comments-tests.ts",
     "profile": "node tools/tasks/profile.ts",
     "release": "node tools/tasks/release.ts",

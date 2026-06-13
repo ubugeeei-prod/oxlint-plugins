@@ -1,0 +1,46 @@
+{
+  "name": "@oxlint-plugins/oxlint-plugin-sonarjs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rust-backed oxlint plugin port of eslint-plugin-sonarjs (clean-room scaffold; upstream is LGPL-3.0 and must not be copied).",
+  "keywords": [
+    "code-quality",
+    "oxlint",
+    "oxlint-plugin",
+    "rust",
+    "sonar",
+    "sonarjs"
+  ],
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
+    "directory": "npm/sonarjs"
+  },
+  "files": [
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

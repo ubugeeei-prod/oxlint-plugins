@@ -1,0 +1,45 @@
+{
+  "name": "@oxlint-plugins/oxlint-plugin-react",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rust-backed oxlint plugin port of eslint-plugin-react (scaffold; rules listed as pending in status.json).",
+  "keywords": [
+    "eslint-plugin-react",
+    "oxlint",
+    "oxlint-plugin",
+    "react",
+    "rust"
+  ],
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
+    "directory": "npm/react"
+  },
+  "files": [
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

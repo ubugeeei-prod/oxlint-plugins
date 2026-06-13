@@ -1,0 +1,46 @@
+{
+  "name": "@oxlint-plugins/oxlint-plugin-typescript-eslint",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rust-backed oxlint plugin port of @typescript-eslint/eslint-plugin (scaffold; rules listed as pending in status.json).",
+  "keywords": [
+    "oxlint",
+    "oxlint-plugin",
+    "rust",
+    "type-aware",
+    "typescript",
+    "typescript-eslint"
+  ],
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
+    "directory": "npm/typescript-eslint"
+  },
+  "files": [
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

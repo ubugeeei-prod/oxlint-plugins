@@ -1,0 +1,46 @@
+{
+  "name": "@oxlint-plugins/oxlint-plugin-postgresql",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rust-backed oxlint plugin port of eslint-plugin-postgresql (scaffold; rules listed as pending in status.json).",
+  "keywords": [
+    "eslint-plugin-postgresql",
+    "oxlint",
+    "oxlint-plugin",
+    "postgresql",
+    "rust",
+    "sql"
+  ],
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
+    "directory": "npm/postgresql"
+  },
+  "files": [
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
