@@ -788,6 +788,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-e18e"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-e18e",
+]
+
+[[package]]
 name = "oxlint-plugin-eslint-comments"
 version = "0.0.0"
 dependencies = [
@@ -865,6 +876,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-storybook"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-storybook",
+]
+
+[[package]]
 name = "oxlint-plugin-stylistic"
 version = "0.0.0"
 dependencies = [
@@ -906,6 +928,19 @@ dependencies = [
  "oxc_ast",
  "oxc_parser",
  "oxc_span",
+ "oxlint-plugins-_carton",
+]
+
+[[package]]
+name = "oxlint-plugins-e18e"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_span",
+ "oxc_syntax",
  "oxlint-plugins-_carton",
 ]
 
@@ -979,6 +1014,18 @@ dependencies = [
  "oxc_span",
  "oxlint-plugins-_carton",
  "regex",
+]
+
+[[package]]
+name = "oxlint-plugins-storybook"
+version = "0.0.0"
+dependencies = [
+ "insta",
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_parser",
+ "oxc_span",
+ "oxlint-plugins-_carton",
 ]
 
 [[package]]

@@ -2,15 +2,18 @@
 members = [
   "crates/_carton",
   "crates/cypress",
+  "crates/e18e",
   "crates/eslint_comments",
   "crates/functional",
   "crates/mocha",
   "crates/react_refresh",
   "crates/security",
   "crates/simple_import_sort",
+  "crates/storybook",
   "crates/stylistic",
   "crates/unused_imports",
   "npm/cypress",
+  "npm/e18e",
   "npm/eslint-comments",
   "npm/functional",
   "npm/mocha",
@@ -18,6 +21,7 @@ members = [
   "npm/react-refresh",
   "npm/security",
   "npm/simple-import-sort",
+  "npm/storybook",
   "npm/stylistic",
   "npm/unused-imports",
 ]
@@ -47,12 +51,14 @@ oxc_span = "0.135.0"
 oxc_syntax = "0.135.0"
 oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_carton", version = "0.0.0" }
 oxlint-plugins-cypress = { path = "crates/cypress", version = "0.0.0" }
+oxlint-plugins-e18e = { path = "crates/e18e", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
 oxlint-plugins-functional = { path = "crates/functional", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
 oxlint-plugins-simple-import-sort = { path = "crates/simple_import_sort", version = "0.0.0" }
+oxlint-plugins-storybook = { path = "crates/storybook", version = "0.0.0" }
 oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
 oxlint-plugins-unused-imports = { path = "crates/unused_imports", version = "0.0.0" }
 regex = "1.12.2"
