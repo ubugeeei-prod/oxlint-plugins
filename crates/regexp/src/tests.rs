@@ -1771,6 +1771,36 @@ mod no_useless_character_class {
         // we intentionally skip it.
         assert!(rule_ids_for("const a = /[-]/u;", "no-useless-character-class").is_empty());
     }
+
+    #[test]
+    fn ignores_equals_sign_class() {
+        // `[=]` is exempted upstream to avoid confusion with POSIX equivalence classes.
+        assert!(rule_ids_for("const a = /[=]/;", "no-useless-character-class").is_empty());
+    }
+
+    #[test]
+    fn ignores_classes_that_disambiguate_adjacent_tokens() {
+        // `\1[0]` — removing brackets makes `\10` (different back-reference).
+        assert!(rule_ids_for("const a = /\\1[0]/;", "no-useless-character-class").is_empty());
+        // `\0[1]` — removing brackets makes `\01` (octal escape).
+        assert!(rule_ids_for("const a = /\\0[1]/;", "no-useless-character-class").is_empty());
+        // `{[0]}` / `{123[0]}` — bracket is inside a quantifier body.
+        assert!(rule_ids_for("const a = /a{[0]}/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /a{123[0]}/;", "no-useless-character-class").is_empty());
+        // `\c[M]` — removing brackets produces `\cM` (control-M escape).
+        assert!(rule_ids_for("const a = /\\c[M]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\c[A]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\c[Z]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\c[m]/;", "no-useless-character-class").is_empty());
+        // `\xF[F]` — removing brackets completes `\xFF` hex escape.
+        assert!(rule_ids_for("const a = /\\xF[F]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\xf[f]/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\x4[4]/;", "no-useless-character-class").is_empty());
+        // `\uF[F]FF` — removing brackets supplies the second digit of `￿`.
+        assert!(rule_ids_for("const a = /\\uF[F]FF/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\uf[f]ff/;", "no-useless-character-class").is_empty());
+        assert!(rule_ids_for("const a = /\\u4[4]44/;", "no-useless-character-class").is_empty());
+    }
 }
 
 mod no_empty_string_literal {

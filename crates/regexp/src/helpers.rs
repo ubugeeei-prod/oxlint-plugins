@@ -1194,6 +1194,9 @@ pub(crate) fn class_is_useless_single_literal(bytes: &[u8], open: usize) -> Opti
     // non-ASCII (multi-byte chars are fine in principle but reading them as a
     // single byte is incorrect), and anything that would change the surrounding
     // pattern if extracted from the class context.
+    // `=` is also excluded: upstream exempts `[=]` because in some legacy regex
+    // flavours `[=X=]` is a POSIX equivalence class; keeping the brackets avoids
+    // accidental meaning changes and upstream explicitly allows it.
     if !byte.is_ascii()
         || matches!(
             byte,
@@ -1212,11 +1215,79 @@ pub(crate) fn class_is_useless_single_literal(bytes: &[u8], open: usize) -> Opti
                 | b'?'
                 | b'{'
                 | b'}'
+                | b'='
         )
     {
         return None;
     }
     Some(byte as char)
+}
+
+/// Returns `true` when removing the `[...]` brackets around the single
+/// character at `open` would change the meaning of the surrounding pattern.
+/// This guards `no-useless-character-class` from false positives in cases
+/// where the class character is syntactically significant in context:
+///
+/// - `\c[X]` — removing brackets produces `\cX` (a control-character escape).
+/// - `\xH[X]` — removing brackets completes a `\xHX` hex escape.
+/// - `\uH[X]` — removing brackets supplies the second digit of a `\uHXXX` unicode escape.
+/// - `\N[D]` (N = 1–9, D = digit) — removing brackets makes `\ND`, a multi-digit
+///   back-reference that refers to a different group.
+/// - `\0[D]` (D = octal digit 0–7) — removing brackets makes `\0D`, an octal escape.
+/// - `{digits[D]` — the bracket is inside a `{n}` quantifier body; removing
+///   brackets makes the quantifier literal (e.g. `a{[0]}` → `a{0}`).
+///
+/// `class_char` is the single byte inside `[...]` (already validated as ASCII
+/// and not inherently special by `class_is_useless_single_literal`).
+pub(crate) fn class_bracket_changes_meaning(bytes: &[u8], open: usize, class_char: u8) -> bool {
+    // \c[X] → \cX control-character escape (X must be an ASCII letter).
+    if open >= 2
+        && bytes[open - 1] == b'c'
+        && bytes[open - 2] == b'\\'
+        && class_char.is_ascii_alphabetic()
+    {
+        return true;
+    }
+    // \xH[X] → \xHX or \uH[X] → \uHX... — completing a hex/unicode escape.
+    if open >= 3
+        && bytes[open - 3] == b'\\'
+        && matches!(bytes[open - 2], b'x' | b'u')
+        && bytes[open - 1].is_ascii_hexdigit()
+        && class_char.is_ascii_hexdigit()
+    {
+        return true;
+    }
+    // \N[D] (N in 1–9, D a digit) → \ND multi-digit back-reference.
+    if open >= 2
+        && bytes[open - 2] == b'\\'
+        && matches!(bytes[open - 1], b'1'..=b'9')
+        && class_char.is_ascii_digit()
+    {
+        return true;
+    }
+    // \0[D] (D an octal digit 0–7) → \0D octal escape.
+    if open >= 2
+        && bytes[open - 2] == b'\\'
+        && bytes[open - 1] == b'0'
+        && matches!(class_char, b'0'..=b'7')
+    {
+        return true;
+    }
+    // {digits[D] — bracket is inside a `{n}` quantifier body.
+    // Walk backwards over ASCII digits; if we reach an unescaped `{` the
+    // bracket is inside a quantifier and removing it would change the meaning.
+    let mut p = open;
+    while p > 0 {
+        p -= 1;
+        if bytes[p].is_ascii_digit() {
+            continue;
+        }
+        if bytes[p] == b'{' && !(p > 0 && bytes[p - 1] == b'\\') {
+            return true;
+        }
+        break;
+    }
+    false
 }
 
 /// Returns `true` when `pattern` contains the literal sequence `\q{}` — an

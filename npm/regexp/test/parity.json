@@ -25,10 +25,6 @@
       "level": "off",
       "reason": "Flags replaceAll on an unknown receiver where upstream only reports a known string receiver."
     },
-    "no-useless-character-class": {
-      "level": "off",
-      "reason": "Flags single-char classes that disambiguate adjacent tokens, e.g. /\\1[0]/, /a{123[0]}/, /\\c[M]/."
-    },
     "no-useless-dollar-replacements": {
       "level": "off",
       "reason": "Flags $0 in String#replaceAll where it is a literal substitution, not a useless backreference."
