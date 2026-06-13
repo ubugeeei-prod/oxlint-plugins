@@ -18,18 +18,25 @@ const messages = Object.freeze({
     nestedTemplateLiteral:
       'Do not nest template literals. Extract the inner template literal into a separate variable.',
   },
+  'no-nested-switch': {
+    nestedSwitch:
+      'Do not nest switch statements. Extract the nested switch into a separate function.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
   'no-nested-template-literals': 'Disallow nested template literals',
+  'no-nested-switch': 'Disallow nested switch statements',
 });
 
 const ruleTypes = Object.freeze({
   'no-nested-template-literals': 'suggestion',
+  'no-nested-switch': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
   'no-nested-template-literals': 'error',
+  'no-nested-switch': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

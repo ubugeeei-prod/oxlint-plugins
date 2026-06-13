@@ -49,6 +49,36 @@ fn reports_each_nested_level() {
 }
 
 #[test]
+fn reports_switch_nested_in_another_switch() {
+    let source = "switch (a) {\n  case 1:\n    switch (b) {\n      case 2:\n        break;\n    }\n    break;\n}";
+    let diagnostics = scan("no-nested-switch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-nested-switch");
+    assert_eq!(diagnostics[0].message_id, "nestedSwitch");
+    assert_eq!(diagnostics[0].loc.start_line, 3);
+}
+
+#[test]
+fn does_not_report_single_switch() {
+    let diagnostics = scan("no-nested-switch", "switch (a) {\n  case 1:\n    break;\n}");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_sequential_switches() {
+    let source = "switch (a) {\n  default:\n    break;\n}\nswitch (b) {\n  default:\n    break;\n}";
+    let diagnostics = scan("no-nested-switch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_each_inner_switch_of_doubly_nested() {
+    let source = "switch (a) {\n  case 1:\n    switch (b) {\n      case 2:\n        switch (c) {\n          case 3:\n            break;\n        }\n    }\n}";
+    let diagnostics = scan("no-nested-switch", source);
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
 fn disabled_rule_reports_nothing() {
     let options = SonarjsOptions {
         rule_names: SmallVec::new(),
