@@ -16,6 +16,7 @@ members = [
   "crates/regexp",
   "crates/security",
   "crates/simple_import_sort",
+  "crates/sonarjs",
   "crates/storybook",
   "crates/stylistic",
   "crates/testing_library",
@@ -37,6 +38,7 @@ members = [
   "npm/regexp",
   "npm/security",
   "npm/simple-import-sort",
+  "npm/sonarjs",
   "npm/storybook",
   "npm/stylistic",
   "npm/testing-library",
@@ -63,6 +65,7 @@ napi-build = "2.3.2"
 napi-derive = "3.5.6"
 oxc_allocator = "0.135.0"
 oxc_ast = "0.135.0"
+oxc_ast_visit = "0.135.0"
 oxc_parser = "0.135.0"
 oxc_regular_expression = "0.135.0"
 oxc_semantic = "0.135.0"
@@ -84,6 +87,7 @@ oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0
 oxlint-plugins-regexp = { path = "crates/regexp", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
 oxlint-plugins-simple-import-sort = { path = "crates/simple_import_sort", version = "0.0.0" }
+oxlint-plugins-sonarjs = { path = "crates/sonarjs", version = "0.0.0" }
 oxlint-plugins-storybook = { path = "crates/storybook", version = "0.0.0" }
 oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
 oxlint-plugins-testing-library = { path = "crates/testing_library", version = "0.0.0" }

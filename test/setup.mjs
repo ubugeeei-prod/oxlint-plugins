@@ -100,6 +100,10 @@ const nativePackages = [
     name: '@oxlint-plugins/oxlint-plugin-unocss',
     binding: 'npm/unocss/native.js',
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-sonarjs',
+    binding: 'npm/sonarjs/native.js',
+  },
 ];
 
 function lockPathFor(pkg) {
