@@ -99,7 +99,18 @@ impl<'a> Scanner<'a> {
             in_function: true,
             in_promise_handler: meta_is_promise_handler(&meta),
         };
-        self.scan_function_body(&function.body, context);
+        if function.expression {
+            // A concise arrow body `() => expr` is stored by oxc as a single
+            // synthetic `ExpressionStatement`; scanning it as a statement would
+            // wrongly fire `no-expression-statements` (upstream's ESTree model
+            // represents the body as a bare expression, never a statement).
+            // Scan the expression directly instead.
+            if let Some(expression) = function.get_expression() {
+                self.scan_expression(expression, context);
+            }
+        } else {
+            self.scan_function_body(&function.body, context);
+        }
     }
 
     fn function_is_ignored_by_prefix_selector(&self, meta: &FunctionParamMeta<'a>) -> bool {
@@ -313,6 +324,9 @@ impl<'a> Scanner<'a> {
             match element {
                 ClassElement::StaticBlock(block) => self.scan_statement_list(&block.body, context),
                 ClassElement::MethodDefinition(method) => {
+                    if method.computed {
+                        self.scan_property_key(&method.key, context);
+                    }
                     let is_getter_setter = matches!(
                         method.kind,
                         MethodDefinitionKind::Get | MethodDefinitionKind::Set
@@ -325,6 +339,9 @@ impl<'a> Scanner<'a> {
                     self.scan_function(&method.value, meta);
                 }
                 ClassElement::PropertyDefinition(property) => {
+                    if property.computed {
+                        self.scan_property_key(&property.key, context);
+                    }
                     if let Some(type_annotation) = &property.type_annotation {
                         self.scan_type(&type_annotation.type_annotation);
                         if is_mutable_type(&type_annotation.type_annotation) && !property.readonly {

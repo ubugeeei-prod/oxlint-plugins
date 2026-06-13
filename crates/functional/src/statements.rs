@@ -196,6 +196,12 @@ impl<'a> Scanner<'a> {
                 self.scan_function(function, meta);
             }
             Statement::ClassDeclaration(class) => self.scan_class(class, context),
+            Statement::LabeledStatement(labeled) => {
+                self.scan_statement(&labeled.body, context);
+            }
+            Statement::TSModuleDeclaration(module) => {
+                self.scan_ts_module_declaration(module, context);
+            }
             Statement::TSTypeAliasDeclaration(declaration) => {
                 self.scan_type_alias_declaration(declaration);
             }
@@ -243,6 +249,9 @@ impl<'a> Scanner<'a> {
                 self.scan_function(function, meta);
             }
             Declaration::ClassDeclaration(class) => self.scan_class(class, context),
+            Declaration::TSModuleDeclaration(module) => {
+                self.scan_ts_module_declaration(module, context);
+            }
             Declaration::TSTypeAliasDeclaration(declaration) => {
                 self.scan_type_alias_declaration(declaration);
             }
@@ -250,6 +259,24 @@ impl<'a> Scanner<'a> {
                 self.scan_interface_declaration(declaration);
             }
             _ => {}
+        }
+    }
+
+    /// Traverse the body of a `namespace`/`module` declaration so rules still
+    /// fire on its nested statements (the body is otherwise skipped).
+    fn scan_ts_module_declaration(
+        &mut self,
+        module: &'a TSModuleDeclaration<'a>,
+        context: FunctionContext,
+    ) {
+        match &module.body {
+            Some(TSModuleDeclarationBody::TSModuleBlock(block)) => {
+                self.scan_statement_list(&block.body, context);
+            }
+            Some(TSModuleDeclarationBody::TSModuleDeclaration(inner)) => {
+                self.scan_ts_module_declaration(inner, context);
+            }
+            None => {}
         }
     }
 
