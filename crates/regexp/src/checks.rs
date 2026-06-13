@@ -71,6 +71,50 @@ impl<'a> Scanner<'a> {
             self.check_regexp_constructor(call.span, &call.arguments);
         }
         self.check_prefer_regexp_exec(call);
+        self.check_no_missing_g_flag(call);
+    }
+
+    /// `no-missing-g-flag`: `<expr>.matchAll(<regexp without 'g'>)` and
+    /// `<expr>.replaceAll(<regexp without 'g'>, ...)` throw at runtime (the
+    /// engine requires the global flag). Flag the literal-regexp case
+    /// statically; constructor calls are deferred for the same type-info
+    /// reason as `prefer-regexp-exec`.
+    fn check_no_missing_g_flag(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        let method = member.property.name.as_str();
+        if method != "matchAll" && method != "replaceAll" {
+            return;
+        }
+        if call.arguments.is_empty() {
+            return;
+        }
+        let Some(argument) = call.arguments.first().and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::RegExpLiteral(literal) = argument.get_inner_expression() else {
+            return;
+        };
+        let flags = literal
+            .raw
+            .as_ref()
+            .and_then(|raw| raw.as_str().rsplit_once('/').map(|(_, flags)| flags))
+            .unwrap_or("");
+        if flags.contains('g') {
+            return;
+        }
+        let mut method_text = CompactString::new("");
+        method_text.push_str(method);
+        self.report_with_data(
+            "no-missing-g-flag",
+            "unexpected",
+            DiagnosticData {
+                expr: Some(method_text),
+                ..DiagnosticData::default()
+            },
+            call.span,
+        );
     }
 
     /// `prefer-regexp-exec`: flag `<expr>.match(<regexp literal without 'g'>)`

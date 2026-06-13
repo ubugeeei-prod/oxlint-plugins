@@ -8891,19 +8891,19 @@
       },
       {
         "name": "no-missing-g-flag",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-missing-g-flag."
+        "notes": "JS-side CallExpression check on `<expr>.matchAll(...)` and `<expr>.replaceAll(...)` where the first argument is a RegExp literal without the `g` flag. RegExp constructor calls are deferred (need type information)."
       },
       {
         "name": "no-non-standard-flag",

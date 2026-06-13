@@ -69,6 +69,7 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-range",
             "no-empty-lookarounds-assertion",
             "prefer-regexp-exec",
+            "no-missing-g-flag",
         ]
     );
 }
@@ -1023,6 +1024,37 @@ mod prefer_regexp_exec {
         assert!(rule_ids_for("str.match(pattern);", "prefer-regexp-exec").is_empty());
         // Different method name.
         assert!(rule_ids_for("str.replace(/foo/u, 'bar');", "prefer-regexp-exec").is_empty());
+    }
+}
+
+mod no_missing_g_flag {
+    use super::*;
+
+    #[test]
+    fn reports_match_all_and_replace_all_without_g() {
+        let data = first_data("str.matchAll(/foo/u);", "no-missing-g-flag");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("matchAll")
+        );
+        let data = first_data("str.replaceAll(/foo/, 'bar');", "no-missing-g-flag");
+        assert_eq!(
+            data.expr.as_ref().map(CompactString::as_str),
+            Some("replaceAll")
+        );
+    }
+
+    #[test]
+    fn ignores_global_regexps_and_unrelated_calls() {
+        assert!(rule_ids_for("str.matchAll(/foo/g);", "no-missing-g-flag").is_empty());
+        assert!(rule_ids_for("str.replaceAll(/foo/gu, 'bar');", "no-missing-g-flag").is_empty());
+        // Non-literal argument — flags cannot be determined statically.
+        assert!(rule_ids_for("str.matchAll(pattern);", "no-missing-g-flag").is_empty());
+        // Unrelated method.
+        assert!(rule_ids_for("str.match(/foo/u);", "no-missing-g-flag").is_empty());
+        // `replaceAll` accepts a string as its first argument; we must not
+        // false-positive when the call is not regex-based.
+        assert!(rule_ids_for("str.replaceAll('foo', 'bar');", "no-missing-g-flag").is_empty());
     }
 }
 

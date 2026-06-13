@@ -33,6 +33,7 @@ describe('regexp native API', () => {
       'no-useless-range',
       'no-empty-lookarounds-assertion',
       'prefer-regexp-exec',
+      'no-missing-g-flag',
     ]);
   });
 

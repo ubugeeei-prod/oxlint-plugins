@@ -110,6 +110,9 @@ const messages = Object.freeze({
     unexpected:
       'Use `RegExp.prototype.exec` instead of `String.prototype.match` for non-global regular expressions.',
   },
+  'no-missing-g-flag': {
+    unexpected: "`String.prototype.{{expr}}` requires a regular expression with the 'g' flag.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -143,6 +146,8 @@ const ruleDescriptions = Object.freeze({
   'no-empty-lookarounds-assertion': 'disallow lookaround assertions with an empty body',
   'prefer-regexp-exec':
     'enforce `RegExp.prototype.exec` over `String.prototype.match` for non-global regexes',
+  'no-missing-g-flag':
+    'enforce that `String.prototype.matchAll` and `replaceAll` arguments use the `g` flag',
 });
 
 const ruleTypes = Object.freeze({
@@ -174,6 +179,7 @@ const ruleTypes = Object.freeze({
   'no-useless-range': 'suggestion',
   'no-empty-lookarounds-assertion': 'problem',
   'prefer-regexp-exec': 'suggestion',
+  'no-missing-g-flag': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -287,7 +293,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-legacy-features' ||
     ruleName === 'no-non-standard-flag' ||
     ruleName === 'no-invisible-character' ||
-    ruleName === 'no-empty-lookarounds-assertion'
+    ruleName === 'no-empty-lookarounds-assertion' ||
+    ruleName === 'no-missing-g-flag'
   ) {
     return 'Possible Errors';
   }

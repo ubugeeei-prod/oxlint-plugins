@@ -150,6 +150,14 @@ const invalidCases = [
   // prefer-regexp-exec
   ['prefer-regexp-exec', 'match with non-global literal', 'str.match(/foo/u);\n', ['unexpected']],
   ['prefer-regexp-exec', 'member-chained receiver', 'obj.prop.match(/bar/);\n', ['unexpected']],
+  // no-missing-g-flag
+  ['no-missing-g-flag', 'matchAll without g', 'str.matchAll(/foo/u);\n', ['unexpected']],
+  [
+    'no-missing-g-flag',
+    'replaceAll regex without g',
+    "str.replaceAll(/foo/, 'bar');\n",
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
