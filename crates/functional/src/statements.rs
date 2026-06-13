@@ -288,59 +288,90 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    /// Whether a branch statement guarantees an abrupt completion (return,
-    /// throw, break, or continue) — the syntactic basis of `no-conditional-
-    /// statements`' `allowReturningBranches: true`. A `never`-returning call
-    /// would also count upstream, but that needs type information.
-    fn branch_is_returning(&self, statement: &Statement<'a>) -> bool {
+    /// A statement that, inside an `if`, counts as a returning branch (upstream
+    /// `isIfReturningBranch`): a nested `if` (checked on its own), return,
+    /// throw, break, or continue.
+    fn is_if_returning_branch(&self, statement: &Statement<'a>) -> bool {
+        matches!(
+            statement,
+            Statement::IfStatement(_)
+                | Statement::ReturnStatement(_)
+                | Statement::ThrowStatement(_)
+                | Statement::BreakStatement(_)
+                | Statement::ContinueStatement(_)
+        )
+    }
+
+    /// A statement that, inside a `switch` case, counts as a returning branch
+    /// (upstream `isSwitchReturningBranch`): a nested `switch`, return, throw, a
+    /// *labeled* break (an unlabeled break only exits the switch), or continue.
+    fn is_switch_returning_branch(&self, statement: &Statement<'a>) -> bool {
         match statement {
-            Statement::ReturnStatement(_)
+            Statement::SwitchStatement(_)
+            | Statement::ReturnStatement(_)
             | Statement::ThrowStatement(_)
-            | Statement::BreakStatement(_)
             | Statement::ContinueStatement(_) => true,
-            Statement::BlockStatement(block) => block
-                .body
-                .last()
-                .is_some_and(|last| self.branch_is_returning(last)),
-            Statement::IfStatement(inner) => inner.alternate.as_ref().is_some_and(|alternate| {
-                self.branch_is_returning(&inner.consequent) && self.branch_is_returning(alternate)
-            }),
+            Statement::BreakStatement(break_statement) => break_statement.label.is_some(),
             _ => false,
         }
+    }
+
+    /// An `if` branch (consequent/alternate) is returning when it is directly a
+    /// returning statement or a block whose body contains one. A `never`-typed
+    /// expression also counts upstream, but that needs type information.
+    fn if_branch_returns(&self, branch: &Statement<'a>) -> bool {
+        if self.is_if_returning_branch(branch) {
+            return true;
+        }
+        if let Statement::BlockStatement(block) = branch {
+            return block.body.iter().any(|stmt| self.is_if_returning_branch(stmt));
+        }
+        false
     }
 
     /// An `if` is "returning" when its consequent is returning and, if present,
     /// its alternate is too (an `if` without `else` only needs the consequent).
     fn if_all_branches_return(&self, statement: &IfStatement<'a>) -> bool {
-        if !self.branch_is_returning(&statement.consequent) {
+        if !self.if_branch_returns(&statement.consequent) {
             return false;
         }
         match &statement.alternate {
-            Some(alternate) => self.branch_is_returning(alternate),
+            Some(alternate) => self.if_branch_returns(alternate),
             None => true,
         }
     }
 
-    /// A `switch` is "returning" when every case is returning. Empty
-    /// (fall-through) cases inherit the returning status of the case they fall
-    /// into, so cases are walked bottom-up.
+    /// A `switch` is "returning" when every non-empty case contains a returning
+    /// statement (empty fall-through cases are allowed). Mirrors upstream
+    /// `getSwitchViolations`; `never`-typed cases need type information.
     fn switch_all_cases_return(&self, cases: &[SwitchCase<'a>]) -> bool {
-        if cases.is_empty() {
+        for case in cases {
+            if case.consequent.is_empty() {
+                continue;
+            }
+            if case
+                .consequent
+                .iter()
+                .any(|stmt| self.is_switch_returning_branch(stmt))
+            {
+                continue;
+            }
+            let all_blocks = case
+                .consequent
+                .iter()
+                .all(|stmt| matches!(stmt, Statement::BlockStatement(_)));
+            if all_blocks
+                && let Some(Statement::BlockStatement(block)) = case.consequent.last()
+                && block
+                    .body
+                    .iter()
+                    .any(|stmt| self.is_switch_returning_branch(stmt))
+            {
+                continue;
+            }
             return false;
         }
-        let mut following_returns = false;
-        for case in cases.iter().rev() {
-            if !case.consequent.is_empty() {
-                following_returns = case
-                    .consequent
-                    .last()
-                    .is_some_and(|last| self.branch_is_returning(last));
-            }
-            if !following_returns {
-                return false;
-            }
-        }
-        following_returns
+        true
     }
 
     fn scan_for_init(&mut self, init: &'a ForStatementInit<'a>, context: FunctionContext) {

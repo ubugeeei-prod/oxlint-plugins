@@ -606,6 +606,9 @@ fn no_conditional_statements_allow_returning_branches() {
     let if_else_partial = "function f(i) { if (i) { return 1; } else { g(); } }";
     let switch_returns = "function f(i) { switch (i) { case 1: return 1; default: return 2; } }";
     let switch_partial = "function f(i) { switch (i) { case 1: g(); default: return 2; } }";
+    let switch_fallthrough = "function f(i) { switch (i) { case 1: case 2: return 1; } }";
+    let switch_break = "function f(i) { switch (i) { case 1: g(); break; default: return 2; } }";
+    let if_break_loop = "for (;;) { if (i) { break; } }";
 
     // Default: every if/switch is reported.
     assert_eq!(count(if_returns, &base), 1);
@@ -618,7 +621,12 @@ fn no_conditional_statements_allow_returning_branches() {
     assert_eq!(count(if_else_returns, &allow), 0);
     assert_eq!(count(if_else_partial, &allow), 1);
 
-    // switch: allowed only when every case is returning (fall-through inherits).
+    // switch: allowed only when every non-empty case returns; empty fall-through
+    // cases inherit the next case. An unlabeled `break` does NOT count as
+    // returning inside a switch (it only exits the switch), unlike inside an if.
     assert_eq!(count(switch_returns, &allow), 0);
     assert_eq!(count(switch_partial, &allow), 1);
+    assert_eq!(count(switch_fallthrough, &allow), 0);
+    assert_eq!(count(switch_break, &allow), 1);
+    assert_eq!(count(if_break_loop, &allow), 0);
 }

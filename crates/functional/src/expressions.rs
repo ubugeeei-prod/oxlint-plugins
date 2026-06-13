@@ -380,16 +380,16 @@ impl<'a> Scanner<'a> {
         expression: &'a NewExpression<'a>,
         context: FunctionContext,
     ) {
-        // `new Promise(executor)` can reject only when the executor declares a
-        // second `reject` parameter, mirroring upstream's `arguments[0].params
-        // .length >= 2` check.
+        // `new Promise(executor)` can reject only when the executor declares
+        // exactly two parameters (`(resolve, reject) => ...`), mirroring
+        // upstream's `arguments[0].params.length === 2` check.
         let executor_can_reject = expression.arguments.first().is_some_and(|argument| {
             let params = match argument {
                 Argument::ArrowFunctionExpression(function) => Some(&function.params),
                 Argument::FunctionExpression(function) => Some(&function.params),
                 _ => None,
             };
-            params.is_some_and(|params| params.items.len() >= 2)
+            params.is_some_and(|params| params.items.len() == 2)
         });
         if is_identifier_expression(&expression.callee, "Promise") && executor_can_reject {
             self.report(
