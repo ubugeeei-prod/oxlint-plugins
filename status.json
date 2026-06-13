@@ -9435,19 +9435,19 @@
       },
       {
         "name": "prefer-predefined-assertion",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-predefined-assertion."
+        "notes": "Reuses GroupState.body_start. At close of a lookaround group, when no | has been seen and the body is exactly one byte equal to ^ or $, the lookaround is reported as redundant: the bare anchor is equivalent. Empty lookarounds remain no-empty-lookarounds-assertion territory. Multi-byte bodies and non-anchor single-byte bodies are deferred."
       },
       {
         "name": "prefer-quantifier",

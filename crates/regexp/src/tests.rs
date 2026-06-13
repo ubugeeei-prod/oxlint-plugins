@@ -99,8 +99,41 @@ fn exposes_initial_regexp_rule_names() {
             "no-trivially-nested-quantifier",
             "prefer-character-class",
             "sort-alternatives",
+            "prefer-predefined-assertion",
         ]
     );
+}
+
+mod prefer_predefined_assertion {
+    use super::*;
+
+    #[test]
+    fn reports_lookarounds_wrapping_anchors() {
+        assert_eq!(
+            rule_ids_for("const a = /(?=$)/u;", "prefer-predefined-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?<=^)/u;", "prefer-predefined-assertion").as_slice(),
+            &["unexpected"]
+        );
+        assert_eq!(
+            rule_ids_for("const a = /(?!^)/u;", "prefer-predefined-assertion").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_other_lookaround_bodies() {
+        // Non-anchor single-char body.
+        assert!(rule_ids_for("const a = /(?=a)/u;", "prefer-predefined-assertion").is_empty());
+        // Multi-byte body.
+        assert!(rule_ids_for("const a = /(?=ab)/u;", "prefer-predefined-assertion").is_empty());
+        // Anchor outside a lookaround.
+        assert!(rule_ids_for("const a = /^a$/u;", "prefer-predefined-assertion").is_empty());
+        // Empty lookaround — owned by no-empty-lookarounds-assertion.
+        assert!(rule_ids_for("const a = /(?=)/u;", "prefer-predefined-assertion").is_empty());
+    }
 }
 
 mod no_trivially_nested_assertion {

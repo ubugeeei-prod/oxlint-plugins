@@ -193,6 +193,10 @@ pub(crate) struct PatternAnalysis {
     /// `(?:b|a)` — a non-capturing alternation whose single-literal alts are
     /// not in ascending byte order. `sort-alternatives`.
     pub(crate) has_unsorted_alternatives: bool,
+    /// `(?=$)` / `(?<=^)` etc. — a lookaround whose body is exactly one
+    /// `^` or `$` anchor. Such lookarounds are equivalent to the anchor
+    /// itself. `prefer-predefined-assertion`.
+    pub(crate) has_preferable_predefined_assertion: bool,
 }
 
 impl PatternAnalysis {
@@ -318,6 +322,18 @@ impl PatternAnalysis {
                         // assertion does not consume input.
                         if group.is_lookaround && bytes.get(index + 1) == Some(&b'?') {
                             self.has_optional_assertion = true;
+                        }
+                        // `(?=$)` / `(?<=^)` etc.: a lookaround whose body is
+                        // exactly the `$` or `^` anchor is equivalent to the
+                        // bare anchor. Only fires for non-empty single-byte
+                        // bodies so empty lookarounds stay with
+                        // `no-empty-lookarounds-assertion`.
+                        if group.is_lookaround && !group.seen_pipe && index == group.body_start + 1
+                        {
+                            let byte = bytes[group.body_start];
+                            if matches!(byte, b'^' | b'$') {
+                                self.has_preferable_predefined_assertion = true;
+                            }
                         }
                         // `(?:X)` with a single ASCII-alphanumeric body. The
                         // wrapper carries no meaning regardless of what follows
