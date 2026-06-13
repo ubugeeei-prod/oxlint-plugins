@@ -191,7 +191,7 @@ impl<'a> Scanner<'a> {
                     );
                 }
             }
-            if param.readonly {
+            if param.readonly && self.options.readonly_type_mode == "generic" {
                 self.report(
                     "readonly-type",
                     "generic",
@@ -270,7 +270,10 @@ impl<'a> Scanner<'a> {
         }
         if !self.ignore_code_regexes.is_empty() {
             let span = class.span;
-            let code = &self.source_text[span.start as usize..span.end as usize];
+            let code = self
+                .source_text
+                .get(span.start as usize..span.end as usize)
+                .unwrap_or("");
             if self.ignore_code_regexes.iter().any(|re| re.is_match(code)) {
                 return true;
             }

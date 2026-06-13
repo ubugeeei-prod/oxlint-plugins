@@ -44,7 +44,15 @@ impl<'a> Scanner<'a> {
                 ChainElement::StaticMemberExpression(member) => {
                     self.scan_static_member_expression(member, context);
                 }
-                _ => {}
+                ChainElement::ComputedMemberExpression(member) => {
+                    self.scan_computed_member_expression(member, context);
+                }
+                ChainElement::PrivateFieldExpression(member) => {
+                    self.scan_expression(&member.object, context);
+                }
+                ChainElement::TSNonNullExpression(expression) => {
+                    self.scan_expression(&expression.expression, context);
+                }
             },
             Expression::StaticMemberExpression(member) => {
                 self.scan_static_member_expression(member, context);

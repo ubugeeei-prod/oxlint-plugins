@@ -512,3 +512,37 @@ fn no_throw_statements_honors_allow_to_reject_promises() {
     let nested = count("async function f() { function g() { throw e; } }", &allow);
     assert_eq!(nested, 1);
 }
+
+#[test]
+fn no_try_statements_reports_catch_and_finally_independently() {
+    let both = FunctionalOptions {
+        rule_names: ["no-try-statements".into()].into_iter().collect(),
+        ..FunctionalOptions::default()
+    };
+    let allow_catch = FunctionalOptions {
+        rule_names: ["no-try-statements".into()].into_iter().collect(),
+        allow_try_catch: true,
+        ..FunctionalOptions::default()
+    };
+    let allow_finally = FunctionalOptions {
+        rule_names: ["no-try-statements".into()].into_iter().collect(),
+        allow_try_finally: true,
+        ..FunctionalOptions::default()
+    };
+    let src = "try { f(); } catch (e) { g(); } finally { h(); }";
+    let ids = |opts: &FunctionalOptions| {
+        let mut ids: Vec<&str> = scan_functional(src, "fixture.ts", opts)
+            .iter()
+            .map(|d| d.message_id)
+            .collect();
+        ids.sort_unstable();
+        ids
+    };
+
+    // Both disallowed: a try/catch/finally reports catch AND finally.
+    assert_eq!(ids(&both), ["catch", "finally"]);
+    // allowCatch leaves only the finally diagnostic.
+    assert_eq!(ids(&allow_catch), ["finally"]);
+    // allowFinally leaves only the catch diagnostic.
+    assert_eq!(ids(&allow_finally), ["catch"]);
+}
