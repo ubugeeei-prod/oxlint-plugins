@@ -130,6 +130,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_assignment_expression(&mut self, it: &AssignmentExpression<'a>) {
         self.check_non_existent_operator(it);
         self.check_no_built_in_override_assignment(it);
+        self.check_class_prototype(it);
         walk::walk_assignment_expression(self, it);
     }
 
