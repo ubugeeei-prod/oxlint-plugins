@@ -62,6 +62,7 @@ impl<'a> Scanner<'a> {
         let context = FunctionContext {
             in_async_function: function.r#async,
             in_try_with_catch: false,
+            in_function: true,
         };
         if let Some(body) = &function.body {
             self.scan_function_body(body, context);
@@ -77,6 +78,7 @@ impl<'a> Scanner<'a> {
         let context = FunctionContext {
             in_async_function: function.r#async,
             in_try_with_catch: false,
+            in_function: true,
         };
         self.scan_function_body(&function.body, context);
     }
@@ -126,6 +128,7 @@ impl<'a> Scanner<'a> {
                     FunctionContext {
                         in_async_function: false,
                         in_try_with_catch: false,
+                        in_function: false,
                     },
                 );
             }
@@ -165,6 +168,15 @@ impl<'a> Scanner<'a> {
             _ => {}
         }
         self.scan_type(&return_type.type_annotation);
+    }
+
+    pub(crate) fn matches_ignore_identifier(&self, name: &str) -> bool {
+        for regex in &self.ignore_identifier_regexes {
+            if regex.is_match(name) {
+                return true;
+            }
+        }
+        false
     }
 
     pub(crate) fn class_is_ignored(&self, class: &Class<'a>) -> bool {

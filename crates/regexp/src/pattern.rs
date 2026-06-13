@@ -3,12 +3,12 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
-    BraceQuantifierShape, class_contains_backspace_escape, class_first_collapsible_run,
-    class_first_duplicate_literal, class_first_obscure_range, class_has_case_pair,
-    class_has_unsorted_literal_elements, class_has_useless_range, class_has_useless_string_literal,
-    class_is_digit_range, class_is_useless_single_literal, class_is_word_char_set,
-    class_matches_anything, find_class_end, group_prefix, is_zero_quantifier,
-    parse_brace_quantifier, skip_escape,
+    BraceQuantifierShape, class_bracket_changes_meaning, class_contains_backspace_escape,
+    class_first_collapsible_run, class_first_duplicate_literal, class_first_obscure_range,
+    class_has_case_pair, class_has_unsorted_literal_elements, class_has_useless_range,
+    class_has_useless_string_literal, class_is_digit_range, class_is_useless_single_literal,
+    class_is_word_char_set, class_matches_anything, find_class_end, group_prefix,
+    is_zero_quantifier, parse_brace_quantifier, skip_escape,
 };
 
 #[derive(Clone, Copy)]
@@ -229,6 +229,7 @@ impl PatternAnalysis {
                         }
                         if self.first_useless_single_literal_class.is_none()
                             && let Some(ch) = class_is_useless_single_literal(bytes, index)
+                            && !class_bracket_changes_meaning(bytes, index, ch as u8)
                         {
                             self.first_useless_single_literal_class = Some(ch);
                         }

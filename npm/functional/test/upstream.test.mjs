@@ -32,6 +32,7 @@ const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), 'fixtures');
 const FULL_PARITY = new Set([
   'no-class-inheritance',
   'no-classes',
+  'no-let',
   'no-loop-statements',
   'no-promise-reject',
   'no-this-expressions',
