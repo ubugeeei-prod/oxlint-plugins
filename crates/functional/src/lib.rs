@@ -4,8 +4,11 @@
     reason = "The first native functional port builds NAPI-facing diagnostics and small AST worklists; hot string data is compacted."
 )]
 
+mod expressions;
 mod helpers;
 mod scanner;
+mod statements;
+mod types;
 
 use oxc_allocator::Allocator;
 use oxc_parser::Parser;
