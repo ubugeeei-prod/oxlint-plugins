@@ -59,13 +59,19 @@ type CapturedRun = {
   valid: RawCase[];
   invalid: RawCase[];
 };
-type ValidCase = { code: string; options?: unknown[]; parser: ParserKind };
+type ValidCase = {
+  code: string;
+  options?: unknown[];
+  parser: ParserKind;
+  directive?: true;
+};
 type InvalidCase = {
   code: string;
   output: string;
   errors: number;
   options?: unknown[];
   parser: ParserKind;
+  directive?: true;
 };
 
 const ROOT = process.cwd();
@@ -96,6 +102,12 @@ const plugin = manifest.plugins.find((entry) => entry.id === 'eslint-plugin-simp
 if (!plugin) {
   throw new Error('eslint-plugin-simple-import-sort is not registered in tools/port-targets.json');
 }
+
+// Captured at module scope, where the `if (!plugin)` guard above narrows
+// `plugin` to defined (the narrowing does not reach into `main()`'s closure).
+const PLUGIN_NPM = plugin.npm;
+const PLUGIN_VERSION = plugin.baselineVersion;
+const PLUGIN_LICENSE = plugin.license;
 
 const SUBMODULE = join(ROOT, plugin.submodule);
 const TESTS_DIR = join(SUBMODULE, 'test');
@@ -135,10 +147,10 @@ async function main(): Promise<void> {
 
       const fixture = {
         __generated: {
-          source: plugin.npm,
-          version: plugin.baselineVersion,
+          source: PLUGIN_NPM,
+          version: PLUGIN_VERSION,
           sourceFile: `test/${rule}.test.js`,
-          license: plugin.license,
+          license: PLUGIN_LICENSE,
           tool: 'tools/tasks/sync-simple-import-sort-tests.ts',
         },
         valid,
@@ -361,8 +373,8 @@ function collapseRuns(runs: CapturedRun[]): {
 }
 
 function normalizeValid(raw: RawCase, runParser: ParserKind): ValidCase | null {
-  const value = typeof raw === 'string' ? { code: raw } : raw;
-  if (value == null || typeof value !== 'object' || typeof value.code !== 'string') {
+  const value: Record<string, unknown> = typeof raw === 'string' ? { code: raw } : raw;
+  if (typeof value.code !== 'string') {
     return null;
   }
   const options = Array.isArray(value.options) ? value.options : undefined;
@@ -370,6 +382,7 @@ function normalizeValid(raw: RawCase, runParser: ParserKind): ValidCase | null {
     code: value.code,
     ...(options ? { options } : {}),
     parser: caseParser(value, runParser),
+    ...(hasDisableDirective(value.code) ? { directive: true as const } : {}),
   };
 }
 
@@ -393,7 +406,16 @@ function normalizeInvalid(raw: RawCase, runParser: ParserKind): InvalidCase | nu
     errors,
     ...(options ? { options } : {}),
     parser: caseParser(value, runParser),
+    ...(hasDisableDirective(value.code) ? { directive: true as const } : {}),
   };
+}
+
+// Cases whose source carries an `eslint-disable` directive verify the linter's
+// directive engine (Oxlint core suppresses the diagnostic), not the sort logic.
+// The direct-adapter replay harness cannot model suppression, so these are
+// tagged and quarantined in upstream.test.mjs (counted and logged).
+function hasDisableDirective(code: string): boolean {
+  return code.includes('eslint-disable');
 }
 
 // Resolve the expected autofix output. The common form is a callback that calls

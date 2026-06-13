@@ -53,7 +53,8 @@
     },
     {
       "code": "// eslint-disable-next-line\nimport x2 from \"b\"\nimport x1 from \"a\";",
-      "parser": "js"
+      "parser": "js",
+      "directive": true
     },
     {
       "code": "import {\n  a, // a\n  b // b\n} from \"specifiers-comment-space\"\nimport {\n  c, // c\n  d, // d\n} from \"specifiers-comment-space-2\"",

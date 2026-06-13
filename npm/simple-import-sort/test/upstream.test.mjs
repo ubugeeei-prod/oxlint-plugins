@@ -100,18 +100,29 @@ for (const ruleName of RULES) {
     const valid = fixture.valid ?? [];
     const invalid = fixture.invalid ?? [];
 
-    let skippedByParser = 0;
-    let skippedByLevel = 0;
+    const skipped = { parser: 0, directive: 0, level: 0 };
+
+    // Decide whether a case is asserted or skipped (with the reason counted).
+    // `kind` is 'valid' or 'invalid'; returns true when the case is skipped.
+    function skipReason(testCase, kind) {
+      if (skipParsers.has(testCase.parser)) {
+        skipped.parser += 1;
+        return true;
+      }
+      if (testCase.directive) {
+        skipped.directive += 1;
+        return true;
+      }
+      if (level === 'off' || (kind === 'invalid' && level === 'valid')) {
+        skipped.level += 1;
+        return true;
+      }
+      return false;
+    }
 
     describe('valid', () => {
       valid.forEach((testCase, index) => {
-        if (skipParsers.has(testCase.parser)) {
-          skippedByParser += 1;
-          it.skip(label(testCase, index), () => {});
-          return;
-        }
-        if (level === 'off') {
-          skippedByLevel += 1;
+        if (skipReason(testCase, 'valid')) {
           it.skip(label(testCase, index), () => {});
           return;
         }
@@ -127,13 +138,7 @@ for (const ruleName of RULES) {
 
     describe('invalid', () => {
       invalid.forEach((testCase, index) => {
-        if (skipParsers.has(testCase.parser)) {
-          skippedByParser += 1;
-          it.skip(label(testCase, index), () => {});
-          return;
-        }
-        if (level === 'off' || level === 'valid') {
-          skippedByLevel += 1;
+        if (skipReason(testCase, 'invalid')) {
           it.skip(label(testCase, index), () => {});
           return;
         }
@@ -149,17 +154,21 @@ for (const ruleName of RULES) {
       });
     });
 
-    // Surface what was not asserted, so the ratchet level and parser scope are
-    // always visible in the test output — coverage is never silently dropped.
+    // Surface what was not asserted, so the ratchet level and parser/directive
+    // scope are always visible in the test output — coverage is never silently
+    // dropped.
     it(`parity summary (${valid.length} valid, ${invalid.length} invalid)`, () => {
-      if (skippedByParser > 0 || skippedByLevel > 0) {
-        const parts = [];
-        if (skippedByParser > 0) {
-          parts.push(`${skippedByParser} skipped by parser scope (${[...skipParsers].join(', ')})`);
-        }
-        if (skippedByLevel > 0) {
-          parts.push(`${skippedByLevel} skipped at level "${level}"`);
-        }
+      const parts = [];
+      if (skipped.parser > 0) {
+        parts.push(`${skipped.parser} skipped by parser scope (${[...skipParsers].join(', ')})`);
+      }
+      if (skipped.directive > 0) {
+        parts.push(`${skipped.directive} skipped as eslint-disable directive cases`);
+      }
+      if (skipped.level > 0) {
+        parts.push(`${skipped.level} skipped at level "${level}"`);
+      }
+      if (parts.length > 0) {
         console.info(`simple-import-sort/${ruleName}: ${parts.join('; ')}`);
       }
       expect(valid.length + invalid.length).toBeGreaterThan(0);

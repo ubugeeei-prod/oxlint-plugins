@@ -61,7 +61,8 @@
     },
     {
       "code": "// eslint-disable-next-line\nexport {x2} from \"b\"\nexport {x1} from \"a\";",
-      "parser": "js"
+      "parser": "js",
+      "directive": true
     },
     {
       "code": "export {\n  a, // a\n  b // b\n} from \"specifiers-comment-space\"\nexport {\n  c, // c\n  d, // d\n} from \"specifiers-comment-space-2\"",
