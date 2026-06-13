@@ -113,6 +113,9 @@ const messages = Object.freeze({
   'no-small-switch': {
     smallSwitch: "This switch has too few cases; use an 'if' statement instead.",
   },
+  'prefer-default-last': {
+    defaultLast: "Move this 'default' clause to the end of the switch statement.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -162,6 +165,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow 'for' loops with no initializer and no update clause; use a 'while' loop instead",
   'no-small-switch':
     "Disallow switch statements with fewer than two real 'case' clauses; use an 'if' statement instead (default clause not counted)",
+  'prefer-default-last':
+    "Require the 'default' clause of a switch statement to appear as the last clause for readability",
 });
 
 const ruleTypes = Object.freeze({
@@ -192,6 +197,7 @@ const ruleTypes = Object.freeze({
   'for-in': 'suggestion',
   'prefer-while': 'suggestion',
   'no-small-switch': 'suggestion',
+  'prefer-default-last': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -222,6 +228,7 @@ const recommendedRuleConfig = Object.freeze({
   'for-in': 'error',
   'prefer-while': 'error',
   'no-small-switch': 'error',
+  'prefer-default-last': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
