@@ -1162,3 +1162,51 @@ fn does_not_report_prefer_while_when_for_has_init_and_update() {
     let diagnostics = scan("prefer-while", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_small_switch_for_switch_with_one_case() {
+    let source = "switch (x) { case 1: break; }";
+    let diagnostics = scan("no-small-switch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-small-switch");
+    assert_eq!(diagnostics[0].message_id, "smallSwitch");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_small_switch_for_switch_with_one_case_and_default() {
+    let source = "switch (x) { case 1: break; default: break; }";
+    let diagnostics = scan("no-small-switch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "smallSwitch");
+}
+
+#[test]
+fn reports_no_small_switch_for_switch_with_only_default() {
+    let source = "switch (x) { default: break; }";
+    let diagnostics = scan("no-small-switch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "smallSwitch");
+}
+
+#[test]
+fn reports_no_small_switch_for_empty_switch() {
+    let source = "switch (x) {}";
+    let diagnostics = scan("no-small-switch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "smallSwitch");
+}
+
+#[test]
+fn does_not_report_no_small_switch_for_switch_with_two_cases() {
+    let source = "switch (x) { case 1: break; case 2: break; }";
+    let diagnostics = scan("no-small-switch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_small_switch_for_switch_with_two_cases_and_default() {
+    let source = "switch (x) { case 1: break; case 2: break; default: break; }";
+    let diagnostics = scan("no-small-switch", source);
+    assert!(diagnostics.is_empty());
+}

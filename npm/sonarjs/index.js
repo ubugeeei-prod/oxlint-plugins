@@ -110,6 +110,9 @@ const messages = Object.freeze({
     preferWhile:
       "Replace this 'for' loop with a 'while' loop; it has no initializer or update clause.",
   },
+  'no-small-switch': {
+    smallSwitch: "This switch has too few cases; use an 'if' statement instead.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -157,6 +160,8 @@ const ruleDescriptions = Object.freeze({
     "Require a 'for...in' loop body to be a single 'if' statement that filters inherited properties (structural check only — the 'if' condition is not inspected)",
   'prefer-while':
     "Disallow 'for' loops with no initializer and no update clause; use a 'while' loop instead",
+  'no-small-switch':
+    "Disallow switch statements with fewer than two real 'case' clauses; use an 'if' statement instead (default clause not counted)",
 });
 
 const ruleTypes = Object.freeze({
@@ -186,6 +191,7 @@ const ruleTypes = Object.freeze({
   'no-case-label-in-switch': 'problem',
   'for-in': 'suggestion',
   'prefer-while': 'suggestion',
+  'no-small-switch': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -215,6 +221,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-case-label-in-switch': 'error',
   'for-in': 'error',
   'prefer-while': 'error',
+  'no-small-switch': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
