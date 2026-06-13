@@ -26,7 +26,10 @@ impl<'a> Scanner<'a> {
                 self.scan_expression(&statement.expression)
             }
             Statement::IfStatement(statement) => {
+                let prev = self.in_boolean_ctx;
+                self.in_boolean_ctx = true;
                 self.scan_expression(&statement.test);
+                self.in_boolean_ctx = prev;
                 self.scan_statement(&statement.consequent);
                 if let Some(alternate) = &statement.alternate {
                     self.scan_statement(alternate);
@@ -39,19 +42,28 @@ impl<'a> Scanner<'a> {
             }
             Statement::ThrowStatement(statement) => self.scan_expression(&statement.argument),
             Statement::WhileStatement(statement) => {
+                let prev = self.in_boolean_ctx;
+                self.in_boolean_ctx = true;
                 self.scan_expression(&statement.test);
+                self.in_boolean_ctx = prev;
                 self.scan_statement(&statement.body);
             }
             Statement::DoWhileStatement(statement) => {
                 self.scan_statement(&statement.body);
+                let prev = self.in_boolean_ctx;
+                self.in_boolean_ctx = true;
                 self.scan_expression(&statement.test);
+                self.in_boolean_ctx = prev;
             }
             Statement::ForStatement(statement) => {
                 if let Some(init) = &statement.init {
                     self.scan_for_init(init);
                 }
                 if let Some(test) = &statement.test {
+                    let prev = self.in_boolean_ctx;
+                    self.in_boolean_ctx = true;
                     self.scan_expression(test);
+                    self.in_boolean_ctx = prev;
                 }
                 if let Some(update) = &statement.update {
                     self.scan_expression(update);

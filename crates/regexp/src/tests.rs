@@ -69,6 +69,7 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-range",
             "no-empty-lookarounds-assertion",
             "prefer-regexp-exec",
+            "prefer-regexp-test",
             "no-missing-g-flag",
             "no-useless-character-class",
             "no-empty-string-literal",
@@ -2191,6 +2192,163 @@ mod prefer_regexp_exec {
         assert!(rule_ids_for("str.match(pattern);", "prefer-regexp-exec").is_empty());
         // Different method name.
         assert!(rule_ids_for("str.replace(/foo/u, 'bar');", "prefer-regexp-exec").is_empty());
+    }
+}
+
+mod prefer_regexp_test {
+    use super::*;
+
+    #[test]
+    fn reports_exec_in_if_test() {
+        // `pattern.exec(text)` directly in `if (...)` — boolean context.
+        assert_eq!(
+            rule_ids_for(
+                "const pattern = /thing/; const text = 'something'; if (pattern.exec(text)) {}",
+                "prefer-regexp-test",
+            )
+            .as_slice(),
+            &["disallow"]
+        );
+    }
+
+    #[test]
+    fn reports_match_with_regexp_literal_in_if_test() {
+        // `text.match(/pattern/)` directly in `if (...)` — boolean context.
+        assert_eq!(
+            rule_ids_for(
+                "const text = 'something'; if (text.match(/thing/)) {}",
+                "prefer-regexp-test",
+            )
+            .as_slice(),
+            &["disallow"]
+        );
+    }
+
+    #[test]
+    fn reports_exec_under_negation() {
+        // `!re.exec(str)` — `!` places operand in boolean context.
+        assert_eq!(
+            rule_ids_for(
+                "const re = /a/; const s = 'abc'; const b = !re.exec(s);",
+                "prefer-regexp-test",
+            )
+            .as_slice(),
+            &["disallow"]
+        );
+    }
+
+    #[test]
+    fn reports_exec_under_boolean_call() {
+        assert_eq!(
+            rule_ids_for(
+                "const re = /a/; const s = 'abc'; const b = Boolean(re.exec(s));",
+                "prefer-regexp-test",
+            )
+            .as_slice(),
+            &["disallow"]
+        );
+    }
+
+    #[test]
+    fn reports_exec_in_while_and_ternary() {
+        // `while (re.exec(s)) {}`
+        assert_eq!(
+            rule_ids_for(
+                "const re = /a/; const s = 'abc'; while (re.exec(s)) {}",
+                "prefer-regexp-test",
+            )
+            .as_slice(),
+            &["disallow"]
+        );
+        // Ternary test position.
+        assert_eq!(
+            rule_ids_for(
+                "const re = /a/; const s = 'abc'; const x = re.exec(s) ? 1 : 0;",
+                "prefer-regexp-test",
+            )
+            .as_slice(),
+            &["disallow"]
+        );
+    }
+
+    #[test]
+    fn ignores_exec_when_result_is_used_as_value() {
+        // Result stored in a variable — not a boolean context.
+        assert!(
+            rule_ids_for(
+                "const re = /a/u; const s = 'abc'; const m = re.exec(s);",
+                "prefer-regexp-test",
+            )
+            .is_empty()
+        );
+    }
+
+    #[test]
+    fn ignores_string_receiver_calling_exec() {
+        // `text.exec(pattern)` — receiver is a known string; skip (wrong receiver type).
+        assert!(
+            rule_ids_for(
+                "const text = 'something'; const pattern = /thing/; if (text.exec(pattern)) {}",
+                "prefer-regexp-test",
+            )
+            .is_empty()
+        );
+    }
+
+    #[test]
+    fn ignores_match_with_global_flag() {
+        // `.match(/g/)` with `g` flag returns array — not equivalent to `.test()`.
+        assert!(
+            rule_ids_for(
+                "const text = 'something'; if (text.match(/thing/g)) {}",
+                "prefer-regexp-test",
+            )
+            .is_empty()
+        );
+    }
+
+    #[test]
+    fn ignores_match_when_receiver_is_not_known_string() {
+        // `pattern.match(text)` — receiver is not a known string (it is a regexp
+        // literal variable), so we conservatively skip.
+        assert!(
+            rule_ids_for(
+                "const pattern = /thing/; const text = 'something'; if (pattern.match(text)) {}",
+                "prefer-regexp-test",
+            )
+            .is_empty()
+        );
+    }
+
+    #[test]
+    fn ignores_loose_null_comparison() {
+        // `!= null` (loose) is NOT a strict boolean context this rule detects.
+        assert!(rule_ids_for(
+            "const text = 'something'; const pattern = /thing/; const d = text.match(pattern) != null;",
+            "prefer-regexp-test",
+        )
+        .is_empty());
+    }
+
+    #[test]
+    fn reports_strict_null_comparison() {
+        // `=== null` and `!== null` are boolean contexts.
+        assert_eq!(
+            rule_ids_for(
+                "const text = 'something'; const a = text.match(/thing/) === null;",
+                "prefer-regexp-test",
+            )
+            .as_slice(),
+            &["disallow"]
+        );
+        assert_eq!(
+            rule_ids_for(
+                "const text = 'something'; const b = text.match(/thing/) !== null;",
+                "prefer-regexp-test",
+            )
+            .as_slice(),
+            &["disallow"]
+        );
     }
 }
 

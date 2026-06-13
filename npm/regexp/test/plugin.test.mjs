@@ -233,6 +233,25 @@ const invalidCases = [
   // prefer-regexp-exec
   ['prefer-regexp-exec', 'match with non-global literal', 'str.match(/foo/u);\n', ['unexpected']],
   ['prefer-regexp-exec', 'member-chained receiver', 'obj.prop.match(/bar/);\n', ['unexpected']],
+  // prefer-regexp-test
+  [
+    'prefer-regexp-test',
+    'exec in if test',
+    "const re = /a/; const s = 'abc'; if (re.exec(s)) {}\n",
+    ['disallow'],
+  ],
+  [
+    'prefer-regexp-test',
+    'match with regexp literal in if test (string receiver)',
+    "const text = 'something'; if (text.match(/thing/)) {}\n",
+    ['disallow'],
+  ],
+  [
+    'prefer-regexp-test',
+    'exec under negation',
+    "const re = /a/; const s = 'abc'; const b = !re.exec(s);\n",
+    ['disallow'],
+  ],
   // no-missing-g-flag
   ['no-missing-g-flag', 'matchAll without g', "'abc'.matchAll(/foo/u);\n", ['unexpected']],
   [

@@ -1,0 +1,114 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/optimal-lookaround-quantifier.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/optimal-lookaround-quantifier.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/(?=(a*))\\w+\\1/"
+    },
+    {
+      "code": "/(?<=a{4})/"
+    },
+    {
+      "code": "/(?=a(?:(a)|b)*)/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(?=ba*)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantified expression 'a*' at the end of the expression tree should only be matched a constant number of times. The expression can be removed without affecting the lookaround.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=ba*)/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantified expression 'a*' at the end of the expression tree should only be matched a constant number of times. The expression can be removed without affecting the lookaround.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=(?:a|b|abc*))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantified expression 'c*' at the end of the expression tree should only be matched a constant number of times. The expression can be removed without affecting the lookaround.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=(?:a|b|abc+))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantified expression 'c+' at the end of the expression tree should only be matched a constant number of times. The expression can be replaced with 'c' (no quantifier) without affecting the lookaround.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=(?:a|b|abc{4,9}))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantified expression 'c{4,9}' at the end of the expression tree should only be matched a constant number of times. The expression can be replaced with 'c{4}' without affecting the lookaround.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<=[a-c]*)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantified expression '[a-c]*' at the start of the expression tree should only be matched a constant number of times. The expression can be removed without affecting the lookaround.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<=(?:d|c)*ab)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantified expression '(?:d|c)*' at the start of the expression tree should only be matched a constant number of times. The expression can be removed without affecting the lookaround.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    }
+  ]
+}

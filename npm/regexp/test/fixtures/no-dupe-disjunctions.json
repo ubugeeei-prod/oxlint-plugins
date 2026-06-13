@@ -1,0 +1,686 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-dupe-disjunctions.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-dupe-disjunctions.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/^\\s*(eslint-(?:en|dis)able)(?:\\s+(\\S|\\S[\\s\\S]*\\S))?\\s*$/u"
+    },
+    {
+      "code": "/a|b/"
+    },
+    {
+      "code": "/(a|b)/"
+    },
+    {
+      "code": "/(?:a|b)/"
+    },
+    {
+      "code": "/(?:js|json)$/"
+    },
+    {
+      "code": "/(?:js|json)abc/"
+    },
+    {
+      "code": "/(?:js|json)?abc/"
+    },
+    {
+      "code": "/<(\"[^\"]*\"|'[^']*'|[^'\">])*>/g"
+    },
+    {
+      "code": "/c+|[a-f]/"
+    },
+    {
+      "code": "/c+|[a-f]/v"
+    },
+    {
+      "code": "/b+(?:\\w+|[+-]?\\d+)/"
+    },
+    {
+      "code": "/\\d*\\.\\d+_|\\d+\\.\\d*_/"
+    },
+    {
+      "code": "/\\d*\\.\\d+|\\d+\\.\\d*/"
+    },
+    {
+      "code": "/(?:\\d*\\.\\d+|\\d+\\.\\d*)_/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a|a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(a|a)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:a|a)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=[a-c])|(?=a)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '(?=[a-c])' and can be removed.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=a|a)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<=a|a)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:[ab]|[ab])/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:[ab]|[ba])/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:[\\da-z]|[a-z\\d])/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/((?:ab|ba)|(?:ab|ba))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 22
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/((?:ab|ba)|(?:ab|ba))/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 22
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/((?:ab|ba)|(?:ba|ab))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 22
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:(a)|(a))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected duplicate alternative. This alternative can be removed. Careful! This alternative contains capturing groups which might be difficult to remove.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:a|ab)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is already covered by 'a' and can be removed.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:.|a|b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '.' and can be removed.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/.|abc/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is already covered by '.' and can be removed.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a|abc/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is already covered by 'a' and can be removed.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\w|abc|123|_|[A-Z]|\\$| /",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is already covered by '\\w' and can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\W|abc|123|_|[A-Z]|\\$| /",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '\\W' and can be removed.",
+          "line": 1,
+          "column": 21,
+          "endColumn": 23
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\s|abc|123|_|[A-Z]|\\$| /",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '\\s' and can be removed.",
+          "line": 1,
+          "column": 24,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\S|abc|123|_|[A-Z]|\\$| /",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is already covered by '\\S' and can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[^\\S]|abc|123|_|[A-Z]|\\$| /",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '[^\\S]' and can be removed.",
+          "line": 1,
+          "column": 27,
+          "endColumn": 28
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[^\\r]|./",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '[^\\r]' and can be removed.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\s|\\S|./",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '\\s|\\S' and can be removed.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:ya?ml|yml)$/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of 'ya?ml' and can be removed.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:yml|ya?ml)$/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of 'ya?ml' and can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:yml|ya?ml)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of 'ya?ml' and can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:\\p{Lu}\\p{L}*|[A-Z]\\w*)/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is already covered by '\\p{Lu}\\p{L}*' and can be removed.",
+          "line": 1,
+          "column": 18,
+          "endColumn": 26
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/FOO|foo(?:bar)?/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is already covered by 'FOO' and can be removed.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/foo(?:bar)?|foo/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of 'foo(?:bar)?' and can be removed.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=[\\t ]+[\\S]{1,}|[\\t ]+['\"][\\S]|[\\t ]+$|$)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '[\\t ]+[\\S]{1,}' and can be removed.",
+          "line": 1,
+          "column": 20,
+          "endColumn": 34
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\w+(?:\\s+(?:\\S+|\"[^\"]*\"))*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected overlap. This alternative overlaps with '\\S+'. The overlap is '\"[^\\s\"]*\"'. This ambiguity is likely to cause exponential backtracking.",
+          "line": 1,
+          "column": 18,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\b(?:\\d|foo|\\w+)\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '\\w+' and can be removed.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\d|[a-z]|_|\\w/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '\\d|[a-z]|_' and can be removed.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/((?:ab|ba)|(?:ba|ac))/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless element. All paths of '(?:ba|ac)' that go through 'ba' are a strict subset of '(?:ab|ba)'. This element can be removed.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 18
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a+|a|b|c/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of 'a+' and can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a+|(?:a|b|c)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless element. All paths of '(?:a|b|c)' that go through 'a' are a strict subset of 'a+'. This element can be removed.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a+|[abc]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless element. All paths of '[abc]' that go through 'a' (U+0061) are a strict subset of 'a+'. This element can be removed.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a+|[a-c]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless element. All paths of '[a-c]' that go through 'a' (U+0061) are a strict subset of 'a+'. This element can be removed.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a|aa|ba/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is already covered by 'a' and can be removed.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a|(a|b)a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless element. All paths of '(a|b)a' that go through 'a' are already covered by 'a'. This element can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a|(?:(a)|b)a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless element. All paths of '(?:(a)|b)a' that go through '(a)' are already covered by 'a'. This element can be removed. Careful! This alternative contains capturing groups which might be difficult to remove.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a|[ab]a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless element. All paths of '[ab]a' that go through 'a' (U+0061) are already covered by 'a'. This element can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:js|jso?n?)$/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of 'jso?n?' and can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/A+_|A*_/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of 'A*_' and can be removed.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:A+|A*)_/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of 'A*' and can be removed.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{a|bb}]|bb/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected useless alternative. This alternative is a strict subset of '[\\q{a|bb}]' and can be removed.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const partialPattern = /(?:ac?|\\wb?)a/ // overlap but not exp. backtracking\n            const bar = RegExp(\"^(?:\"+partialPattern.source+\")+$\") // exp backtracking\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected overlap. This alternative overlaps with 'ac?'. The overlap is 'a'. This ambiguity might cause exponential backtracking.",
+          "line": 2,
+          "column": 44,
+          "endColumn": 48
+        },
+        {
+          "message": "Unexpected overlap. This alternative overlaps with 'ac?'. The overlap is 'a'. This ambiguity is likely to cause exponential backtracking.",
+          "line": 3,
+          "column": 39,
+          "endColumn": 60
+        }
+      ],
+      "output": null
+    }
+  ]
+}
