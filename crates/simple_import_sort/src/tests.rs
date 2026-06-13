@@ -23,7 +23,10 @@ fn sorts_import_chunks_and_specifiers() {
             "",
             "import fs from 'node:fs';",
             "",
-            "import { alpha as renamed, beta } from 'pkg';",
+            // Faithful token preservation: the original second specifier had no
+            // trailing space before `}`, so after reordering the comma between
+            // the two specifiers carries no space (matches upstream exactly).
+            "import { alpha as renamed,beta } from 'pkg';",
             "import z from 'z';",
             "",
             "import local from './local';",
@@ -54,11 +57,10 @@ fn sorts_export_chunks_and_local_specifiers() {
             .as_str(),
         ["export * from 'a';", "export { zed } from 'z';"].join("\n")
     );
-    // Local export specifiers sorted: b, a as c, d → a as c, b, d
-    // external names: zed→zed, a→a, b→b, c→c, d→d
-    // export { d, a as c, b }: external names are d, c, b → sort → b, c, d
-    // b sorts as 'b', a as c sorts by external 'c', d sorts as 'd'
-    // so sorted order: b, a as c, d
+    // Local export specifiers `{ d, a as c, b }` sort by external name
+    // (d, c, b) → b, a as c, d. Whitespace is preserved per upstream token
+    // redistribution: the original last specifier `b` had no trailing comma, so
+    // after reordering the comma following `b` carries no space.
     assert_eq!(
         diagnostics[1]
             .fix
@@ -66,7 +68,7 @@ fn sorts_export_chunks_and_local_specifiers() {
             .expect("fix")
             .replacement
             .as_str(),
-        "export { b, a as c, d };"
+        "export { b,a as c, d };"
     );
 }
 

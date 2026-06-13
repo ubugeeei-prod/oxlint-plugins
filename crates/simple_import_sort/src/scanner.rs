@@ -665,8 +665,7 @@ fn find_last_token_end_before(
     // Find last comment that ends at or before offset
     let last_comment_end: Option<u32> = all_comments
         .iter()
-        .filter(|c| c.span.end <= offset)
-        .next_back()
+        .rfind(|c| c.span.end <= offset)
         .map(|c| c.span.end);
 
     // Check if there's non-whitespace text between last_comment_end and offset
