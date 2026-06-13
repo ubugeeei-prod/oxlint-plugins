@@ -1,7 +1,10 @@
 #![doc = "Rust implementation of eslint-plugin-mocha rule logic."]
 
+mod checks;
+mod expressions;
 mod helpers;
 mod scanner;
+mod statements;
 
 use oxc_allocator::Allocator;
 use oxc_ast::ast::FunctionBody;
