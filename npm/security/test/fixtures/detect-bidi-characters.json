@@ -1,0 +1,149 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-bidi-characters.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n  var accessLevel = \"user\";\n  if (accessLevel != \"user\") { // Check if admin\n    console.log(\"You are an admin.\");\n  }\n  "
+    },
+    {
+      "code": "\n  var isAdmin = false;\n  /* begin admins only */ if (isAdmin) {\n    console.log(\"You are an admin.\");\n  /* end admins only */ }\n  "
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n      var accessLevel = \"user\";\n      if (accessLevel != \"user‮ ⁦// Check if admin⁩ ⁦\") {\n          console.log(\"You are an admin.\");\n      }\n      ",
+      "errors": [
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this code",
+            "__flags": "i"
+          },
+          "line": 3,
+          "endLine": 3,
+          "column": 31,
+          "endColumn": 32
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this code",
+            "__flags": "i"
+          },
+          "line": 3,
+          "endLine": 3,
+          "column": 33,
+          "endColumn": 34
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this code",
+            "__flags": "i"
+          },
+          "line": 3,
+          "endLine": 3,
+          "column": 51,
+          "endColumn": 52
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this code",
+            "__flags": "i"
+          },
+          "line": 3,
+          "endLine": 3,
+          "column": 53,
+          "endColumn": 54
+        }
+      ]
+    },
+    {
+      "code": "\n      var isAdmin = false;\n      /*‮ } ⁦if (isAdmin)⁩ ⁦ begin admins only */\n          console.log(\"You are an admin.\");\n      /* end admins only ‮\n⁦*/\n      /* end admins only ‮\n { ⁦*/\n        ",
+      "errors": [
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this comment",
+            "__flags": "i"
+          },
+          "line": 3,
+          "endLine": 3,
+          "column": 9,
+          "endColumn": 10
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this comment",
+            "__flags": "i"
+          },
+          "line": 3,
+          "endLine": 3,
+          "column": 13,
+          "endColumn": 14
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this comment",
+            "__flags": "i"
+          },
+          "line": 3,
+          "endLine": 3,
+          "column": 26,
+          "endColumn": 27
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this comment",
+            "__flags": "i"
+          },
+          "line": 3,
+          "endLine": 3,
+          "column": 28,
+          "endColumn": 29
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this comment",
+            "__flags": "i"
+          },
+          "line": 5,
+          "endLine": 5,
+          "column": 26,
+          "endColumn": 27
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this comment",
+            "__flags": "i"
+          },
+          "line": 6,
+          "endLine": 6,
+          "column": 1,
+          "endColumn": 2
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this comment",
+            "__flags": "i"
+          },
+          "line": 7,
+          "endLine": 7,
+          "column": 26,
+          "endColumn": 27
+        },
+        {
+          "message": {
+            "__regex": "Detected potential trojan source attack with unicode bidi introduced in this comment",
+            "__flags": "i"
+          },
+          "line": 8,
+          "endLine": 8,
+          "column": 4,
+          "endColumn": 5
+        }
+      ]
+    }
+  ]
+}

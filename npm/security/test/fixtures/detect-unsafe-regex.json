@@ -1,0 +1,35 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-unsafe-regex.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/^d+1337d+$/"
+    },
+    {
+      "code": "new RegExp('^d+1337d+$')"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(x+x+)+y/",
+      "errors": [
+        {
+          "message": "Unsafe Regular Expression"
+        }
+      ]
+    },
+    {
+      "code": "new RegExp('x+x+)+y')",
+      "errors": [
+        {
+          "message": "Unsafe Regular Expression (new RegExp)"
+        }
+      ]
+    }
+  ]
+}

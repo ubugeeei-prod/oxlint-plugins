@@ -1,0 +1,254 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-non-literal-fs-filename.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "var fs = require('fs');\n             var a = fs.open('test')"
+    },
+    {
+      "code": "var something = require('some');\n             var a = something.readFile(c);"
+    },
+    {
+      "code": "var something = require('fs').readFile, readFile = require('foo').readFile;\n             readFile(c);"
+    },
+    {
+      "code": "\n            import { promises as fsp } from 'fs';\n            import fs from 'fs';\n            import path from 'path';\n\n            const index = await fsp.readFile(path.resolve(__dirname, './index.html'), 'utf-8');\n            const key = fs.readFileSync(path.join(__dirname, './ssl.key'));\n            await fsp.writeFile(path.resolve(__dirname, './sitemap.xml'), sitemap);",
+      "languageOptions": {
+        "globals": {
+          "__dirname": "readonly"
+        }
+      }
+    },
+    {
+      "code": "\n            import fs from 'fs';\n            import path from 'path';\n            const dirname = path.dirname(__filename)\n            const key = fs.readFileSync(path.resolve(dirname, './index.html'));",
+      "languageOptions": {
+        "globals": {
+          "__filename": "readonly"
+        }
+      }
+    },
+    {
+      "code": "\n            import fs from 'fs';\n            const key = fs.readFileSync(`${process.cwd()}/path/to/foo.json`);",
+      "languageOptions": {
+        "globals": {
+          "process": "readonly"
+        }
+      }
+    },
+    {
+      "code": "\n    import fs from 'fs';\n    import path from 'path';\n    import url from 'url';\n    const dirname = path.dirname(url.fileURLToPath(import.meta.url));\n    const html = fs.readFileSync(path.resolve(dirname, './index.html'), 'utf-8');"
+    },
+    {
+      "code": "\n      import fs from 'fs';\n      const pkg = fs.readFileSync(require.resolve('eslint/package.json'), 'utf-8');",
+      "languageOptions": {
+        "globals": {
+          "require": "readonly"
+        }
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "code": "var something = require('fs');\n             var a = something.open(c);",
+      "errors": [
+        {
+          "message": "Found open from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var one = require('fs').readFile;\n             one(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var one = require('node:fs').readFile;\n             one(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"node:fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var one = require('fs/promises').readFile;\n             one(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs/promises\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var something = require('fs/promises');\n             something.readFile(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs/promises\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var something = require('node:fs/promises');\n             something.readFile(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"node:fs/promises\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var something = require('fs-extra');\n             something.readFile(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs-extra\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var { readFile: something } = require('fs');\n             something(filename)",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "import { readFile as something } from 'fs';\n             something(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "import { readFile as something } from 'node:fs';\n             something(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"node:fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "import { readFile as something } from 'fs-extra';\n             something(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs-extra\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "import { readFile as something } from 'fs/promises'\n             something(filename)",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs/promises\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "import { readFile as something } from 'node:fs/promises'\n             something(filename)",
+      "errors": [
+        {
+          "message": "Found readFile from package \"node:fs/promises\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "import * as something from 'fs';\n             something.readFile(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "import * as something from 'node:fs';\n             something.readFile(filename);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"node:fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var something = require('fs').promises;\n             something.readFile(filename)",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var something = require('node:fs').promises;\n             something.readFile(filename)",
+      "errors": [
+        {
+          "message": "Found readFile from package \"node:fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var something = require('fs');\n             something.promises.readFile(filename)",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var something = require('node:fs');\n             something.promises.readFile(filename)",
+      "errors": [
+        {
+          "message": "Found readFile from package \"node:fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var fs = require('fs');\nfs.readFile(`template with ${filename}`);",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "function foo () {\nvar fs = require('fs');\nfs.readFile(filename);\n}",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "function foo () {\nvar { readFile: something } = require('fs');\nsomething(filename);\n}",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "var fs = require('fs');\nfunction foo () {\nvar { readFile: something } = fs.promises;\nsomething(filename);\n}",
+      "errors": [
+        {
+          "message": "Found readFile from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    },
+    {
+      "code": "\n            import fs from 'fs';\n            import path from 'path';\n            const key = fs.readFileSync(path.resolve(__dirname, foo));",
+      "languageOptions": {
+        "globals": {
+          "__filename": "readonly"
+        }
+      },
+      "errors": [
+        {
+          "message": "Found readFileSync from package \"fs\" with non literal argument at index 0"
+        }
+      ]
+    }
+  ]
+}
