@@ -413,7 +413,10 @@ fn reports_expressions_in_argument_position() {
         rule_names: ["no-this-expressions".into()].into_iter().collect(),
         ..FunctionalOptions::default()
     };
-    assert_eq!(scan_functional("foo(this);", "fixture.ts", &this_options).len(), 1);
+    assert_eq!(
+        scan_functional("foo(this);", "fixture.ts", &this_options).len(),
+        1
+    );
 
     // no-promise-reject fires for a rejecting `new Promise` in argument position.
     let reject_options = FunctionalOptions {
@@ -421,5 +424,8 @@ fn reports_expressions_in_argument_position() {
         ..FunctionalOptions::default()
     };
     let source = "foo(new Promise((resolve, reject) => reject('e')));";
-    assert_eq!(scan_functional(source, "fixture.ts", &reject_options).len(), 1);
+    assert_eq!(
+        scan_functional(source, "fixture.ts", &reject_options).len(),
+        1
+    );
 }
