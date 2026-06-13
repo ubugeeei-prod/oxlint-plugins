@@ -23,6 +23,10 @@ pub(crate) struct Scanner<'a> {
     pub(crate) switch_depth: u32,
     /// Number of conditional (ternary) expressions currently open on the traversal stack.
     pub(crate) conditional_depth: u32,
+    /// Span start offsets of IfStatement nodes that are `else if` members of a
+    /// chain already processed by their head; used by `no-identical-conditions`
+    /// to avoid double-processing a chain.
+    pub(crate) if_chain_seen: SmallVec<[u32; 16]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -97,6 +101,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_if_statement(&mut self, it: &IfStatement<'a>) {
         self.check_no_collapsible_if(it);
+        self.check_no_identical_conditions(it);
         walk::walk_if_statement(self, it);
     }
 

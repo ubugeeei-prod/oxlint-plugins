@@ -43,6 +43,10 @@ const messages = Object.freeze({
     nonExistentOperator:
       "Was this '=-', '=+', or '=!' meant to be a compound assignment or comparison? Add a space to clarify, or fix the operator.",
   },
+  'no-identical-conditions': {
+    identicalConditions:
+      "This branch's condition duplicates an earlier one in the same if/else-if chain, so it can never be reached.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -56,6 +60,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow duplicate type members in TypeScript union or intersection types',
   'non-existent-operator':
     "Disallow the suspicious '=-', '=+', or '=!' operator typos adjacent to a plain assignment",
+  'no-identical-conditions':
+    'Disallow duplicate conditions in the same if/else-if chain (dead branch)',
 });
 
 const ruleTypes = Object.freeze({
@@ -67,6 +73,7 @@ const ruleTypes = Object.freeze({
   'comma-or-logical-or-case': 'suggestion',
   'no-duplicate-in-composite': 'suggestion',
   'non-existent-operator': 'problem',
+  'no-identical-conditions': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -78,6 +85,7 @@ const recommendedRuleConfig = Object.freeze({
   'comma-or-logical-or-case': 'error',
   'no-duplicate-in-composite': 'error',
   'non-existent-operator': 'error',
+  'no-identical-conditions': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

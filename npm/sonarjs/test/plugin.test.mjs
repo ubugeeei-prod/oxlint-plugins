@@ -102,6 +102,7 @@ describe('sonarjs plugin shape', () => {
       'comma-or-logical-or-case',
       'no-duplicate-in-composite',
       'non-existent-operator',
+      'no-identical-conditions',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -111,6 +112,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['comma-or-logical-or-case']).toBe('object');
     expect(typeof plugin.rules['no-duplicate-in-composite']).toBe('object');
     expect(typeof plugin.rules['non-existent-operator']).toBe('object');
+    expect(typeof plugin.rules['no-identical-conditions']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -120,6 +122,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/comma-or-logical-or-case']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-duplicate-in-composite']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/non-existent-operator']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-identical-conditions']).toBe('error');
   });
 });
 
@@ -181,6 +184,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('non-existent-operator', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('nonExistentOperator');
+  });
+
+  it('reports no-identical-conditions through the adapter', () => {
+    const source = 'if (a) {} else if (b) {} else if (a) {}';
+    const reports = runRule('no-identical-conditions', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('identicalConditions');
   });
 });
 
@@ -259,5 +269,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(non-existent-operator)');
+  });
+
+  it('reports no-identical-conditions through the CLI', () => {
+    const source = 'if (a) {} else if (b) {} else if (a) {}';
+    const result = runOxlint('no-identical-conditions', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-identical-conditions)');
   });
 });
