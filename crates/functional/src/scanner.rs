@@ -150,8 +150,8 @@ impl<'a> Scanner<'a> {
 
                 if !skip_count {
                     // Upstream counts node.params.length which includes the rest element.
-                    let param_count = params.items.len()
-                        + if params.rest.is_some() { 1 } else { 0 };
+                    let param_count =
+                        params.items.len() + if params.rest.is_some() { 1 } else { 0 };
                     if enforce == EnforceParameterCount::AtLeastOne && param_count == 0 {
                         self.report(
                             "functional-parameters",

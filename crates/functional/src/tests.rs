@@ -9,9 +9,8 @@ fn functional_parameters_rest_param() {
         enforce_parameter_count: EnforceParameterCount::Off,
         ..FunctionalOptions::default()
     };
-    let count = |source: &str, opts: &FunctionalOptions| {
-        scan_functional(source, "fixture.ts", opts).len()
-    };
+    let count =
+        |source: &str, opts: &FunctionalOptions| scan_functional(source, "fixture.ts", opts).len();
 
     // Rest parameter is reported by default.
     assert_eq!(count("function f(...args) {}", &options), 1);
@@ -33,9 +32,8 @@ fn functional_parameters_arguments_keyword() {
         enforce_parameter_count: EnforceParameterCount::Off,
         ..FunctionalOptions::default()
     };
-    let count = |source: &str, opts: &FunctionalOptions| {
-        scan_functional(source, "fixture.ts", opts).len()
-    };
+    let count =
+        |source: &str, opts: &FunctionalOptions| scan_functional(source, "fixture.ts", opts).len();
 
     // `arguments` reference is reported.
     assert_eq!(count("function f(x) { return arguments; }", &options), 1);
@@ -93,8 +91,7 @@ fn functional_parameters_exactly_one_two_params() {
         enforce_parameter_count: EnforceParameterCount::ExactlyOne,
         ..FunctionalOptions::default()
     };
-    let diagnostics =
-        scan_functional("function f(a, b) {}", "fixture.ts", &options);
+    let diagnostics = scan_functional("function f(a, b) {}", "fixture.ts", &options);
     let ids: Vec<&str> = diagnostics.iter().map(|d| d.message_id).collect();
     assert!(ids.contains(&"paramCountExactlyOne"));
 }
@@ -107,13 +104,11 @@ fn functional_parameters_ignore_identifier_pattern_suppresses() {
         ..FunctionalOptions::default()
     };
     // `foo` matches the ignore pattern — rest param and count should not be reported.
-    let diagnostics =
-        scan_functional("function foo(...args) {}", "fixture.ts", &options);
+    let diagnostics = scan_functional("function foo(...args) {}", "fixture.ts", &options);
     assert!(diagnostics.is_empty());
 
     // `bar` does NOT match — rest param is reported.
-    let diagnostics2 =
-        scan_functional("function bar(...args) {}", "fixture.ts", &options);
+    let diagnostics2 = scan_functional("function bar(...args) {}", "fixture.ts", &options);
     let ids: Vec<&str> = diagnostics2.iter().map(|d| d.message_id).collect();
     assert!(ids.contains(&"restParam"));
 }

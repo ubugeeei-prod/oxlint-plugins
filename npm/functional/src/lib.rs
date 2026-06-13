@@ -76,13 +76,12 @@ mod napi_abi {
     ) -> Vec<Diagnostic> {
         let options = options.unwrap_or_default();
         let default_options = core::FunctionalOptions::default();
-        let enforce_parameter_count =
-            match options.enforce_parameter_count.as_deref() {
-                Some("off") => core::EnforceParameterCount::Off,
-                Some("exactlyOne") => core::EnforceParameterCount::ExactlyOne,
-                Some("atLeastOne") | None => core::EnforceParameterCount::AtLeastOne,
-                Some(_) => default_options.enforce_parameter_count,
-            };
+        let enforce_parameter_count = match options.enforce_parameter_count.as_deref() {
+            Some("off") => core::EnforceParameterCount::Off,
+            Some("exactlyOne") => core::EnforceParameterCount::ExactlyOne,
+            Some("atLeastOne") | None => core::EnforceParameterCount::AtLeastOne,
+            Some(_) => default_options.enforce_parameter_count,
+        };
         let core_options = core::FunctionalOptions {
             rule_names: compact_rule_names(options.rule_names),
             allow_rest_parameter: options
