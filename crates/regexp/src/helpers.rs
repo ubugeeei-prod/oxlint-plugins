@@ -570,20 +570,23 @@ fn is_invisible_character(ch: char) -> bool {
     )
 }
 
+/// Builds the lower-case `\xHH` escape for a code point in `0..=0xFF`. The
+/// nibble masks keep both indices within `HEX`, so no fallible conversion is
+/// needed.
+fn hex_escape_for(code_point: u32) -> CompactString {
+    const HEX: &[u8; 16] = b"0123456789abcdef";
+    let mut out = CompactString::new("\\x");
+    out.push(HEX[((code_point >> 4) & 0xF) as usize] as char);
+    out.push(HEX[(code_point & 0xF) as usize] as char);
+    out
+}
+
 /// Returns the first `\uHHHH` or `\u{H+}` escape sequence in `pattern` whose
 /// decoded code point is ≤ 0xFF, together with its `\xHH` replacement. Used by
 /// `hexadecimal-escape` (default `"always"` config: flag unicode escapes that
 /// can be written as `\xHH` and suggest the hexadecimal form). Code points
 /// above 0xFF are not representable as `\xHH` and are silently skipped.
 /// `\xHH` escapes (already in the correct form) are also skipped.
-/// Builds the lower-case `\xHH` escape for a code point in `0..=0xFF`.
-fn hex_escape_for(code_point: u32) -> CompactString {
-    let mut out = CompactString::new("\\x");
-    out.push(char::from_digit((code_point >> 4) & 0xF, 16).unwrap());
-    out.push(char::from_digit(code_point & 0xF, 16).unwrap());
-    out
-}
-
 pub(crate) fn first_unicode_escape_as_hex(pattern: &str) -> Option<(&str, CompactString)> {
     let bytes = pattern.as_bytes();
     let mut index = 0;
