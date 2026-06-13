@@ -198,8 +198,7 @@ impl<'a> Scanner<'a> {
             }
             Statement::ExportDefaultDeclaration(declaration) => match &declaration.declaration {
                 ExportDefaultDeclarationKind::FunctionDeclaration(function) => {
-                    let fn_name: Option<&'a str> =
-                        function.id.as_ref().map(|id| id.name.as_str());
+                    let fn_name: Option<&'a str> = function.id.as_ref().map(|id| id.name.as_str());
                     let meta = FunctionParamMeta {
                         name: fn_name,
                         ..FunctionParamMeta::default()

@@ -6,6 +6,7 @@ use crate::FunctionContext;
 use crate::FunctionParamMeta;
 use crate::helpers::{
     assignment_target_is_member, is_identifier_expression, is_mutating_call, is_static_call,
+    property_key_name,
 };
 use crate::scanner::Scanner;
 
@@ -66,8 +67,7 @@ impl<'a> Scanner<'a> {
                 self.scan_arrow_function(function, FunctionParamMeta::default());
             }
             Expression::FunctionExpression(function) => {
-                let fn_name: Option<&'a str> =
-                    function.id.as_ref().map(|id| id.name.as_str());
+                let fn_name: Option<&'a str> = function.id.as_ref().map(|id| id.name.as_str());
                 let meta = FunctionParamMeta {
                     name: fn_name,
                     ..FunctionParamMeta::default()
@@ -85,25 +85,14 @@ impl<'a> Scanner<'a> {
                             // For function/arrow values in an object literal, thread the
                             // property name and getter/setter flag into the meta so that
                             // `ignoreIdentifierPattern` and `ignoreGettersAndSetters` work.
-                            let prop_name: Option<&'a str> =
-                                if let PropertyKey::StaticIdentifier(id) = &property.key {
-                                    Some(id.name.as_str())
-                                } else if let PropertyKey::StringLiteral(lit) = &property.key {
-                                    Some(lit.value.as_str())
-                                } else {
-                                    None
-                                };
-                            let is_getter_setter = matches!(
-                                property.kind,
-                                PropertyKind::Get | PropertyKind::Set
-                            );
+                            let prop_name = property_key_name(&property.key);
+                            let is_getter_setter =
+                                matches!(property.kind, PropertyKind::Get | PropertyKind::Set);
                             match property.value.get_inner_expression() {
                                 Expression::FunctionExpression(func) => {
-                                    let name_from_id: Option<&'a str> =
-                                        func.id.as_ref().map(|id| id.name.as_str());
-                                    let effective_name = name_from_id.or(prop_name);
+                                    let from_id = func.id.as_ref().map(|id| id.name.as_str());
                                     let meta = FunctionParamMeta {
-                                        name: effective_name,
+                                        name: from_id.or(prop_name),
                                         is_getter_setter,
                                         ..FunctionParamMeta::default()
                                     };
@@ -378,8 +367,7 @@ impl<'a> Scanner<'a> {
         if callee_is_iife_fn {
             match callee_inner {
                 Expression::FunctionExpression(func) => {
-                    let fn_name: Option<&'a str> =
-                        func.id.as_ref().map(|id| id.name.as_str());
+                    let fn_name: Option<&'a str> = func.id.as_ref().map(|id| id.name.as_str());
                     let meta = FunctionParamMeta {
                         name: fn_name,
                         is_iife: true,
@@ -401,12 +389,10 @@ impl<'a> Scanner<'a> {
         }
 
         // Determine the callee property name for ignorePrefixSelector.
-        let callee_prop_name: Option<&'a str> =
-            if let Expression::StaticMemberExpression(member) = callee_inner {
-                Some(member.property.name.as_str())
-            } else {
-                None
-            };
+        let callee_prop_name = match callee_inner {
+            Expression::StaticMemberExpression(member) => Some(member.property.name.as_str()),
+            _ => None,
+        };
 
         for argument in &call.arguments {
             // For function/arrow arguments, scan them as lambda args with the
@@ -414,8 +400,7 @@ impl<'a> Scanner<'a> {
             // double-scanning via the generic scan_argument path.
             match argument {
                 Argument::FunctionExpression(func) => {
-                    let fn_name: Option<&'a str> =
-                        func.id.as_ref().map(|id| id.name.as_str());
+                    let fn_name: Option<&'a str> = func.id.as_ref().map(|id| id.name.as_str());
                     let meta = FunctionParamMeta {
                         name: fn_name,
                         is_lambda_arg: true,

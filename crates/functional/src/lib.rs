@@ -188,6 +188,7 @@ pub(crate) struct FunctionParamMeta<'a> {
     pub enclosing_call_property: Option<&'a str>,
 }
 
+#[derive(Clone, Copy)]
 pub(crate) struct FunctionContext {
     pub(crate) in_async_function: bool,
     /// True when the current statement is inside the `try` block of a

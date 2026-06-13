@@ -11,7 +11,7 @@ use oxc_ast::ast::*;
 use oxc_span::Span;
 use oxlint_plugins_carton::SmallVec;
 
-use crate::helpers::is_mutable_type;
+use crate::helpers::{is_mutable_type, property_key_name};
 use crate::{
     Diagnostic, EnforceParameterCount, FunctionContext, FunctionParamMeta, FunctionalOptions,
     LineIndex,
@@ -305,18 +305,8 @@ impl<'a> Scanner<'a> {
                         method.kind,
                         MethodDefinitionKind::Get | MethodDefinitionKind::Set
                     );
-                    // Extract the static identifier name from the method key so that
-                    // `ignoreIdentifierPattern` can match it.
-                    let method_name: Option<&'a str> =
-                        if let PropertyKey::StaticIdentifier(id) = &method.key {
-                            Some(id.name.as_str())
-                        } else if let PropertyKey::StringLiteral(lit) = &method.key {
-                            Some(lit.value.as_str())
-                        } else {
-                            None
-                        };
                     let meta = FunctionParamMeta {
-                        name: method_name,
+                        name: property_key_name(&method.key),
                         is_getter_setter,
                         ..FunctionParamMeta::default()
                     };
