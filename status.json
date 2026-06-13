@@ -9643,19 +9643,19 @@
       },
       {
         "name": "sort-alternatives",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule sort-alternatives."
+        "notes": "GroupState tracks prev_alt_first_byte and alts_in_order alongside current_alt_start. At each | (and at close `)`), when the alternative is exactly one ASCII alphanumeric byte, its byte is compared with the previously recorded alt; if the new byte is less than the previous, alts_in_order = false. The rule fires only when seen_pipe is true AND all alts were single literals AND ordering was violated. Escapes, classes, nested groups, and multi-byte alts opt out (all_alts_single_literal becomes false)."
       },
       {
         "name": "sort-character-class-elements",
