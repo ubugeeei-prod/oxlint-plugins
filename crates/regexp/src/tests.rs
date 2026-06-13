@@ -206,11 +206,8 @@ mod prefer_character_class {
     use super::*;
 
     #[test]
-    fn reports_non_cap_alternation_of_single_literals() {
-        assert_eq!(
-            rule_ids_for("const a = /(?:a|b)/u;", "prefer-character-class").as_slice(),
-            &["unexpected"]
-        );
+    fn reports_non_cap_alternation_with_three_or_more_single_literals() {
+        // Upstream default minAlternatives is 3; needs ≥ 3 single-char alts.
         assert_eq!(
             rule_ids_for("const a = /(?:a|b|c)/u;", "prefer-character-class").as_slice(),
             &["unexpected"]
@@ -219,6 +216,20 @@ mod prefer_character_class {
         assert_eq!(
             rule_ids_for("const a = /(?:a|1|b)/u;", "prefer-character-class").as_slice(),
             &["unexpected"]
+        );
+        // Four alternatives.
+        assert_eq!(
+            rule_ids_for("const a = /(?:a|b|c|d)/u;", "prefer-character-class").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_two_alt_non_cap_group() {
+        // Exactly 2 alternatives: valid per upstream (minAlternatives default 3).
+        assert!(
+            rule_ids_for("const a = /(?:a|b)/u;", "prefer-character-class").is_empty(),
+            "/(?:a|b)/ must not be flagged (only 2 alternatives)"
         );
     }
 

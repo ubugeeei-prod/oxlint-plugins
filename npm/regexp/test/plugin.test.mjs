@@ -126,6 +126,7 @@ const validCases = [
   ['prefer-character-class', 'multi-byte alt', 'const re = /(?:a|bc)/u;\n'],
   ['prefer-character-class', 'escape alt', 'const re = /(?:a|\\d)/u;\n'],
   ['prefer-character-class', 'no alternation', 'const re = /(?:a)/u;\n'],
+  ['prefer-character-class', 'two alternatives below threshold', 'const re = /(?:a|b)/u;\n'],
   // sort-alternatives
   ['sort-alternatives', 'already sorted', 'const re = /(?:a|b|c)/u;\n'],
   ['sort-alternatives', 'multi-byte alt', 'const re = /(?:bc|a)/u;\n'],
@@ -380,7 +381,6 @@ const invalidCases = [
     ['unexpected'],
   ],
   // prefer-character-class
-  ['prefer-character-class', 'two letters', 'const re = /(?:a|b)/u;\n', ['unexpected']],
   [
     'prefer-character-class',
     'mixed letters and digits',

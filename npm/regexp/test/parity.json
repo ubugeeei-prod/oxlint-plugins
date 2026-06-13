@@ -21,10 +21,6 @@
       "level": "off",
       "reason": "Flags replaceAll on an unknown receiver where upstream only reports a known string receiver."
     },
-    "prefer-character-class": {
-      "level": "off",
-      "reason": "Flags single-character alternations like /(?:a|b)/ that upstream allows by default."
-    },
     "prefer-named-replacement": {
       "level": "off",
       "reason": "Flags $1 referring to an unnamed group, which has no named-replacement alternative."
