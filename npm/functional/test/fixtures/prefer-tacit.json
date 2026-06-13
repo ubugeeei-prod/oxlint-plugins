@@ -71,6 +71,9 @@
       "errors": [
         {
           "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
         }
       ]
     },
@@ -80,6 +83,9 @@
       "errors": [
         {
           "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
         }
       ]
     },
@@ -89,6 +95,9 @@
       "errors": [
         {
           "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
         }
       ]
     },
@@ -103,6 +112,9 @@
       "errors": [
         {
           "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
         }
       ]
     },
@@ -117,6 +129,9 @@
       "errors": [
         {
           "messageId": "generic"
+        },
+        {
+          "messageId": "genericSuggestion"
         }
       ]
     }

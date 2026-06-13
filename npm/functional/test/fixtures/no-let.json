@@ -281,8 +281,7 @@
         {
           "ignoreIdentifierPattern": "^mutable"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "let immutable = 0;\nlet immutableX = 0;",
@@ -291,8 +290,7 @@
         {
           "ignoreIdentifierPattern": "^mutable"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "for (let immutableX = 0; immutableX < 1; immutableX++);",
@@ -301,8 +299,7 @@
         {
           "ignoreIdentifierPattern": "^mutable"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "for (let immutableX in {});",
@@ -311,8 +308,7 @@
         {
           "ignoreIdentifierPattern": "^mutable"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "for (let immutableX of []);",
@@ -321,8 +317,7 @@
         {
           "ignoreIdentifierPattern": "^mutable"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "function foo() {\n  let immutableX;\n  let immutableY = 0;\n}",
@@ -331,8 +326,7 @@
         {
           "ignoreIdentifierPattern": "^mutable"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "const foo = () => {\n  let immutableX;\n  let immutableY = 0;\n}",
@@ -341,8 +335,7 @@
         {
           "ignoreIdentifierPattern": "^mutable"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "class Foo {\n  foo() {\n    let immutableX;\n    let immutableY = 0;\n  }\n}",
@@ -351,8 +344,7 @@
         {
           "ignoreIdentifierPattern": "^mutable"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "let Immutable;\nlet xImmutable;",
@@ -361,8 +353,7 @@
         {
           "ignoreIdentifierPattern": "Mutable$"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "let Immutable = 0;\nlet xImmutable = 0;",
@@ -371,8 +362,7 @@
         {
           "ignoreIdentifierPattern": "Mutable$"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "for (let xImmutable = 0; x < 1; x++);",
@@ -381,8 +371,7 @@
         {
           "ignoreIdentifierPattern": "Mutable$"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "for (let xImmutable in {});",
@@ -391,8 +380,7 @@
         {
           "ignoreIdentifierPattern": "Mutable$"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "for (let xImmutable of []);",
@@ -401,8 +389,7 @@
         {
           "ignoreIdentifierPattern": "Mutable$"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "function foo() {\n  let xImmutable;\n  let yImmutable = 0;\n}",
@@ -411,8 +398,7 @@
         {
           "ignoreIdentifierPattern": "Mutable$"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "const foo = () => {\n  let xImmutable;\n  let yImmutable = 0;\n}",
@@ -421,8 +407,7 @@
         {
           "ignoreIdentifierPattern": "Mutable$"
         }
-      ],
-      "errors": []
+      ]
     },
     {
       "code": "class Foo {\n  foo() {\n    let xImmutable;\n    let yImmutable = 0;\n  }\n}",
@@ -431,8 +416,7 @@
         {
           "ignoreIdentifierPattern": "Mutable$"
         }
-      ],
-      "errors": []
+      ]
     }
   ]
 }

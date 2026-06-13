@@ -1527,7 +1527,13 @@
           "messageId": "parameter"
         },
         {
+          "messageId": "userDefined"
+        },
+        {
           "messageId": "parameter"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
@@ -1536,13 +1542,16 @@
       "typeAware": true,
       "errors": [
         {
-          "messageId": "propertyModifier"
+          "messageId": "propertyImmutability"
         },
         {
-          "messageId": "propertyModifier"
+          "messageId": "propertyImmutability"
         },
         {
-          "messageId": "propertyModifier"
+          "messageId": "propertyImmutability"
+        },
+        {
+          "messageId": "propertyImmutability"
         }
       ]
     },
@@ -1559,10 +1568,19 @@
           "messageId": "propertyModifier"
         },
         {
-          "messageId": "propertyModifier"
+          "messageId": "propertyModifierSuggestion"
         },
         {
           "messageId": "propertyModifier"
+        },
+        {
+          "messageId": "propertyModifierSuggestion"
+        },
+        {
+          "messageId": "propertyModifier"
+        },
+        {
+          "messageId": "propertyModifierSuggestion"
         }
       ]
     },
@@ -1577,6 +1595,9 @@
       "errors": [
         {
           "messageId": "parameter"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
@@ -1590,16 +1611,40 @@
       ],
       "errors": [
         {
-          "messageId": "parameter"
+          "messageId": "variable"
         },
         {
-          "messageId": "parameter"
+          "messageId": "userDefined"
         },
         {
-          "messageId": "parameter"
+          "messageId": "userDefined"
         },
         {
-          "messageId": "parameter"
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
@@ -1623,7 +1668,10 @@
       ],
       "errors": [
         {
-          "messageId": "parameter"
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
@@ -1645,28 +1693,28 @@
       ],
       "errors": [
         {
-          "messageId": "parameter"
+          "messageId": "variable"
         },
         {
-          "messageId": "parameter"
+          "messageId": "variable"
         },
         {
-          "messageId": "parameter"
+          "messageId": "variable"
         },
         {
-          "messageId": "parameter"
+          "messageId": "variable"
         },
         {
-          "messageId": "parameter"
+          "messageId": "variable"
         },
         {
-          "messageId": "parameter"
+          "messageId": "variable"
         },
         {
-          "messageId": "parameter"
+          "messageId": "variable"
         },
         {
-          "messageId": "parameter"
+          "messageId": "variable"
         }
       ]
     },
@@ -1708,6 +1756,9 @@
       "errors": [
         {
           "messageId": "returnType"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
@@ -1721,16 +1772,40 @@
       ],
       "errors": [
         {
-          "messageId": "returnType"
+          "messageId": "variable"
         },
         {
-          "messageId": "returnType"
+          "messageId": "userDefined"
         },
         {
-          "messageId": "returnType"
+          "messageId": "userDefined"
         },
         {
-          "messageId": "returnType"
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
@@ -1754,7 +1829,10 @@
       ],
       "errors": [
         {
-          "messageId": "returnType"
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
@@ -1776,28 +1854,28 @@
       ],
       "errors": [
         {
-          "messageId": "returnType"
+          "messageId": "variable"
         },
         {
-          "messageId": "returnType"
+          "messageId": "variable"
         },
         {
-          "messageId": "returnType"
+          "messageId": "variable"
         },
         {
-          "messageId": "returnType"
+          "messageId": "variable"
         },
         {
-          "messageId": "returnType"
+          "messageId": "variable"
         },
         {
-          "messageId": "returnType"
+          "messageId": "variable"
         },
         {
-          "messageId": "returnType"
+          "messageId": "variable"
         },
         {
-          "messageId": "returnType"
+          "messageId": "variable"
         }
       ]
     },
@@ -1839,6 +1917,9 @@
       "errors": [
         {
           "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
@@ -1855,13 +1936,37 @@
           "messageId": "variable"
         },
         {
-          "messageId": "variable"
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
         },
         {
           "messageId": "variable"
         },
         {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
           "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
@@ -1904,6 +2009,9 @@
       "errors": [
         {
           "messageId": "variable"
+        },
+        {
+          "messageId": "userDefined"
         }
       ]
     },
