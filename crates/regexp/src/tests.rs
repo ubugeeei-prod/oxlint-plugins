@@ -88,8 +88,42 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-dollar-replacements",
             "prefer-escape-replacement-dollar-char",
             "use-ignore-case",
+            "control-character-escape",
         ]
     );
+}
+
+mod control_character_escape {
+    use super::*;
+
+    #[test]
+    fn reports_literal_control_characters() {
+        // U+0001 SOH as a literal character inside the regex pattern.
+        assert_eq!(
+            rule_ids_for(
+                "const a = new RegExp('\\x01', 'u');",
+                "control-character-escape"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_escaped_control_character_references() {
+        // `\\x01` in the JS source decodes to the four-character regex escape;
+        // there is no literal control byte in the pattern, so this rule does
+        // not fire (no-control-character still does).
+        assert!(
+            rule_ids_for(
+                "const a = new RegExp('\\\\x01', 'u');",
+                "control-character-escape"
+            )
+            .is_empty()
+        );
+        // Plain ASCII pattern.
+        assert!(rule_ids_for("const a = /abc/u;", "control-character-escape").is_empty());
+    }
 }
 
 mod use_ignore_case {

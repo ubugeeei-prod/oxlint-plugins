@@ -260,6 +260,13 @@ const invalidCases = [
   // use-ignore-case
   ['use-ignore-case', 'lower and upper of a', 'const re = /[aA]/u;\n', ['unexpected']],
   ['use-ignore-case', 'multi case pair', 'const re = /[aAbB]/u;\n', ['unexpected']],
+  // control-character-escape
+  [
+    'control-character-escape',
+    'literal SOH',
+    "const re = new RegExp('\\x01', 'u');\n",
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {
