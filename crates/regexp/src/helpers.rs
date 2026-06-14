@@ -2388,6 +2388,92 @@ pub(crate) fn has_preferable_set_operation(pattern: &str) -> bool {
     false
 }
 
+/// Narrow-form detector for `simplify-set-operations`.
+///
+/// Returns `true` when a **v-mode** character class contains a top-level
+/// intersection (`&&`) where at least one operand is a *negated* nested class
+/// `[^...]`. Such an intersection can always be simplified:
+///
+/// * `A && [^B]` → `A -- B` (intersection with a complement is a subtraction).
+/// * `[^A] && [^B]` → `[^A B]` (De Morgan — negation of a disjunction).
+///
+/// Either way the presence of a negated operand inside a `&&` intersection
+/// means the expression is not in its simplest form.
+///
+/// Soundness: only fires for `&&` intersections that contain a top-level
+/// `[^...]` operand. Plain intersections (`[a&&b]`), subtractions (`[a--b]`),
+/// non-negated nested operands (`[a&&b&&[c]]`), and an outer class negation
+/// (`[^a&&b]`, whose operands are not themselves negated) are never flagged,
+/// matching every upstream valid case.
+///
+/// `caller` must only invoke this for patterns carrying the `v` flag.
+pub(crate) fn has_simplifiable_set_operation(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                if let Some(close) = find_class_end_nested(bytes, index) {
+                    // Inspect the body strictly between the outer brackets.
+                    let body = &bytes[index + 1..close];
+                    if class_body_has_intersection_with_negated_operand(body) {
+                        return true;
+                    }
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Scans a v-mode character-class body (the bytes strictly between the outer
+/// `[` and `]`) and returns `true` when it is a top-level intersection (`&&`)
+/// that has at least one top-level operand which is a negated nested class
+/// `[^...]`.
+///
+/// "Top level" means depth 0 with respect to nested `[...]` brackets: the `&&`
+/// operator and the opening `[^` of a negated operand must both sit at depth 0.
+/// A leading `^` (outer class negation) is skipped first and does not affect
+/// the result. Escapes are skipped so `\]`/`\[` are not mistaken for brackets.
+fn class_body_has_intersection_with_negated_operand(body: &[u8]) -> bool {
+    let mut start = 0;
+    if body.first() == Some(&b'^') {
+        start = 1;
+    }
+    let mut depth: usize = 0;
+    let mut has_top_level_intersection = false;
+    let mut has_top_level_negated_operand = false;
+    let mut i = start;
+    while i < body.len() {
+        match body[i] {
+            b'\\' => i = skip_escape(body, i),
+            b'[' => {
+                // A nested class opening at depth 0 is a top-level operand.
+                if depth == 0 && body.get(i + 1) == Some(&b'^') {
+                    has_top_level_negated_operand = true;
+                }
+                depth += 1;
+                i += 1;
+            }
+            b']' => {
+                depth = depth.saturating_sub(1);
+                i += 1;
+            }
+            b'&' if depth == 0 && body.get(i + 1) == Some(&b'&') => {
+                has_top_level_intersection = true;
+                i += 2;
+            }
+            _ => i += 1,
+        }
+    }
+    has_top_level_intersection && has_top_level_negated_operand
+}
+
 /// A single quantifiable atom recognised by the narrow
 /// `optimal-quantifier-concatenation` detector: an unambiguous single element
 /// whose matched-character set is independent of position.

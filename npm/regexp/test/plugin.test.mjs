@@ -221,6 +221,11 @@ const validCases = [
   ['prefer-set-operation', 'not v-mode lookahead', 'const re = /(?!a)\\w/u;\n'],
   ['prefer-set-operation', 'word boundary not lookaround', 'const re = /a\\b/v;\n'],
   ['prefer-set-operation', 'multi-element lookaround body', 'const re = /(?!ab)c/v;\n'],
+  // simplify-set-operations
+  ['simplify-set-operations', 'plain intersection', 'const re = /[a&&b]/v;\n'],
+  ['simplify-set-operations', 'non-negated nested operand', 'const re = /[a&&b&&[c]]/v;\n'],
+  ['simplify-set-operations', 'subtraction not intersection', 'const re = /[a--b--[c]]/v;\n'],
+  ['simplify-set-operations', 'not v-mode', 'const re = /[a&&[^b]]/u;\n'],
 ];
 
 const invalidCases = [
@@ -650,6 +655,25 @@ const invalidCases = [
     'prefer-set-operation',
     'negative lookahead then literal',
     'const re = /(?!-)&/v;\n',
+    ['unexpected'],
+  ],
+  // simplify-set-operations
+  [
+    'simplify-set-operations',
+    'intersection with negated operand',
+    'const re = /[a&&[^b]]/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'simplify-set-operations',
+    'negated operand on the left',
+    'const re = /[[^a]&&b&&c]/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'simplify-set-operations',
+    'both operands negated',
+    'const re = /[[^a]&&[^b]]/v;\n',
     ['unexpected'],
   ],
 ];

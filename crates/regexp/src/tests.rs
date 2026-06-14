@@ -115,8 +115,47 @@ fn exposes_initial_regexp_rule_names() {
             "no-contradiction-with-assertion",
             "no-useless-set-operand",
             "prefer-set-operation",
+            "simplify-set-operations",
         ]
     );
+}
+
+mod simplify_set_operations {
+    use super::*;
+
+    #[test]
+    fn reports_intersection_with_negated_operand() {
+        for src in [
+            // `A && [^B]` → subtraction.
+            "const a = /[a&&[^b]]/v;",
+            // Negated operand in the middle.
+            "const a = /[a&&[^b]&&c]/v;",
+            // Negated operand on the left.
+            "const a = /[[^a]&&b&&c]/v;",
+            // Both operands negated (De Morgan).
+            "const a = /[[^a]&&[^b]]/v;",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "simplify-set-operations").as_slice(),
+                &["unexpected"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_simple_or_unsupported_shapes() {
+        // Plain intersection — no negated operand.
+        assert!(rule_ids_for("const a = /[a&&b]/v;", "simplify-set-operations").is_empty());
+        // Non-negated nested operand.
+        assert!(rule_ids_for("const a = /[a&&b&&[c]]/v;", "simplify-set-operations").is_empty());
+        // Outer negation only; operands not negated.
+        assert!(rule_ids_for("const a = /[^a&&b]/v;", "simplify-set-operations").is_empty());
+        // Subtraction, not intersection.
+        assert!(rule_ids_for("const a = /[a--b--[c]]/v;", "simplify-set-operations").is_empty());
+        // Not v-mode.
+        assert!(rule_ids_for("const a = /[a&&[^b]]/u;", "simplify-set-operations").is_empty());
+    }
 }
 
 mod prefer_set_operation {

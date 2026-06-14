@@ -1,0 +1,362 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/simplify-set-operations.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/simplify-set-operations.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[[abc]]/v"
+    },
+    {
+      "code": "/[\\d]/u"
+    },
+    {
+      "code": "/[^\\d]/v"
+    },
+    {
+      "code": "/[a--b]/v"
+    },
+    {
+      "code": "/[a&&b]/v"
+    },
+    {
+      "code": "/[^ab]/v"
+    },
+    {
+      "code": "/[^a&&b]/v;"
+    },
+    {
+      "code": "/[\\s\\p{ASCII}]/u"
+    },
+    {
+      "code": "/[^\\S\\P{ASCII}]/u"
+    },
+    {
+      "code": "/[^[]]/v"
+    },
+    {
+      "code": "/[a&&b&&[c]]/v"
+    },
+    {
+      "code": "/[a--b--[c]]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[a&&[^b]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the subtraction.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[a--[b]]/v"
+    },
+    {
+      "code": "/[a&&b&&[^c]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the subtraction.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[[a&&b]--[c]]/v"
+    },
+    {
+      "code": "/[a&&[^b]&&c]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the subtraction.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[[a&&c]--[b]]/v"
+    },
+    {
+      "code": "/[a&&b&&[^c]&&d]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the subtraction.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[[a&&b&&d]--[c]]/v"
+    },
+    {
+      "code": "/[[^a]&&b&&c]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the subtraction.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[[b&&c]--[a]]/v"
+    },
+    {
+      "code": "/[[^b]&&a]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the subtraction.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[a--[b]]/v"
+    },
+    {
+      "code": "/[[abc]&&[^def]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the subtraction.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[[abc]--[def]]/v"
+    },
+    {
+      "code": "/[a--[^b]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the intersection.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[a&&[b]]/v"
+    },
+    {
+      "code": "/[a--[^b]--c]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the intersection.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[[a&&[b]]--c]/v"
+    },
+    {
+      "code": "/[a--b--[^c]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the intersection.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[[a--b]&&[c]]/v"
+    },
+    {
+      "code": "/[[abc]--[^def]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the intersection.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[[abc]&&[def]]/v"
+    },
+    {
+      "code": "/[[^a]&&[^b]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class can be converted to the negation of a disjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[^[a][b]]/v"
+    },
+    {
+      "code": "/[^[^a]&&[^b]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class can be converted to the negation of a disjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 15
+        }
+      ],
+      "output": "/[[a][b]]/v"
+    },
+    {
+      "code": "/[[^a]&&[^b]&&\\D]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class can be converted to the negation of a disjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[^[a][b]\\d]/v"
+    },
+    {
+      "code": "/[^[^a]&&[^b]&&\\D]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class can be converted to the negation of a disjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 19
+        }
+      ],
+      "output": "/[[a][b]\\d]/v"
+    },
+    {
+      "code": "/[[^a]&&\\D&&b]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the negation of a disjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[b--[[a]\\d]]/v"
+    },
+    {
+      "code": "/[[^abc]&&[^def]&&\\D]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class can be converted to the negation of a disjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 22
+        }
+      ],
+      "output": "/[^[abc][def]\\d]/v"
+    },
+    {
+      "code": "/[[^a]&&[b]&&[^c]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the negation of a disjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[[b]--[[a][c]]]/v"
+    },
+    {
+      "code": "/[[^a][^b]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class can be converted to the negation of a conjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[^[a]&&[b]]/v"
+    },
+    {
+      "code": "/[[^abc][^def]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class can be converted to the negation of a conjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[^[abc]&&[def]]/v"
+    },
+    {
+      "code": "/[^[^a][^b]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class can be converted to the negation of a conjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[[a]&&[b]]/v"
+    },
+    {
+      "code": "/[^\\S\\P{ASCII}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class can be converted to the negation of a conjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[\\s&&\\p{ASCII}]/v"
+    },
+    {
+      "code": "/[a&&[^b]&&[^c]&&d]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the negation of a disjunction using De Morgan's laws.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[[a&&d]--[[b][c]]]/v"
+    },
+    {
+      "code": "/[[^bc]&&a&&d]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This expression can be converted to the subtraction.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[[a&&d]--[bc]]/v"
+    }
+  ]
+}
