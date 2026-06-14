@@ -317,6 +317,10 @@ const messages = Object.freeze({
       'These capturing groups only assert at the edges and can be replaced with lookaround assertions (`(?<=...)` and `(?=...)`).',
     prefer: 'This capturing group can be replaced with a lookaround assertion.',
   },
+  'no-misleading-capturing-group': {
+    removeQuant:
+      'This quantifier is already included by the preceding quantifier, so the capturing group misleadingly captures less text than its pattern suggests.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -443,6 +447,8 @@ const ruleDescriptions = Object.freeze({
     'enforce using result array `groups` (narrow: numeric index of a match/exec result mapping to a named group)',
   'prefer-lookaround':
     'prefer lookarounds over capturing groups (narrow: both-ends `(B1)MID(B2)` replace whose replacement re-emits `$1` and `$2` at the edges)',
+  'no-misleading-capturing-group':
+    'disallow capturing groups that do not capture the whole pattern (narrow: `A<greedy>(A*)` where the prefix already consumes every `A`)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -524,6 +530,7 @@ const ruleTypes = Object.freeze({
   'no-unused-capturing-group': 'suggestion',
   'prefer-result-array-groups': 'suggestion',
   'prefer-lookaround': 'suggestion',
+  'no-misleading-capturing-group': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -551,6 +558,7 @@ const recommendedRuleConfig = Object.freeze({
   'prefer-set-operation': 'error',
   'simplify-set-operations': 'error',
   'no-unused-capturing-group': 'error',
+  'no-misleading-capturing-group': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
@@ -712,7 +720,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-potentially-useless-backreference' ||
     ruleName === 'strict' ||
     ruleName === 'no-useless-assertions' ||
-    ruleName === 'no-contradiction-with-assertion'
+    ruleName === 'no-contradiction-with-assertion' ||
+    ruleName === 'no-misleading-capturing-group'
   ) {
     return 'Possible Errors';
   }
