@@ -12,6 +12,7 @@ mod no_drop_column;
 mod no_drop_database;
 mod no_drop_not_null;
 mod no_equality_with_null;
+mod no_grant_to_public;
 mod no_group_by_ordinal;
 mod no_having_without_group_by;
 mod no_implicit_join;
@@ -140,6 +141,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-drop-database",
     "no-drop-not-null",
     "no-equality-with-null",
+    "no-grant-to-public",
     "no-group-by-ordinal",
     "no-having-without-group-by",
     "no-implicit-join",
@@ -209,6 +211,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-equality-with-null",
         run: no_equality_with_null::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-grant-to-public",
+        run: no_grant_to_public::run,
         uses_parse_error: false,
     },
     RuleDef {

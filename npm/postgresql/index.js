@@ -124,6 +124,17 @@ const ruleMeta = Object.freeze({
         '`{{op}} NULL` always evaluates to NULL (treated as false). Use `IS NULL` / `IS NOT NULL` instead.',
     },
   },
+  'no-grant-to-public': {
+    type: 'problem',
+    description: 'Disallow GRANT statements that target the `PUBLIC` pseudo-role',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noPublic:
+        'Avoid `GRANT ... TO PUBLIC`. The PUBLIC role covers every current and future role in the database, including ones added later for unrelated services. Name the role(s) you actually want to grant to.',
+    },
+  },
   'no-group-by-ordinal': {
     type: 'suggestion',
     description:
