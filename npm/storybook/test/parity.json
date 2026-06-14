@@ -7,8 +7,7 @@
     },
     "no-redundant-story-name": {
       "valid": [5],
-      "fixOutput": [2],
-      "reason": "valid[5]: port false-positives on a redundant-name case upstream accepts. invalid[2] fixOutput: the port's removal fix leaves a trailing newline upstream's suggestion does not."
+      "reason": "Port false-positives on `H1.storyName = 'H1'`: its story-name derivation does not split a letter→digit boundary the way upstream's lodash-style startCase does (`storyNameFromExport('H1') === 'H 1'`), so it wrongly treats the name as redundant."
     },
     "prefer-pascal-case": {
       "fixOutput": [0, 1, 2],

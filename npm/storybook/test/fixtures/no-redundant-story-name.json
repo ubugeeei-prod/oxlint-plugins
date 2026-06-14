@@ -72,7 +72,7 @@
           "suggestions": [
             {
               "messageId": "removeRedundantName",
-              "output": "export const PrimaryButton = Template.bind({})"
+              "output": "export const PrimaryButton = Template.bind({})\n"
             }
           ]
         }
