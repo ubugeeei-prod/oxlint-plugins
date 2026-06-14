@@ -561,6 +561,18 @@ const ruleMeta = Object.freeze({
         'Use `EXISTS (...)` instead of `IN (subquery)`. `IN` returns NULL when the subquery has any NULL row, which silently turns the row into a no-match; `EXISTS` is unambiguously boolean.',
     },
   },
+  'prefer-explicit-null-ordering': {
+    type: 'suggestion',
+    description:
+      'When `ORDER BY` specifies an explicit direction, require an explicit `NULLS FIRST` / `NULLS LAST` so null ordering is not implicit',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      preferExplicitNullOrdering:
+        "`ORDER BY ... ASC|DESC` without `NULLS FIRST` / `NULLS LAST` relies on PostgreSQL's implicit ordering (NULLS LAST for ASC, NULLS FIRST for DESC), which trips up cross-database readers. Add an explicit `NULLS FIRST` / `NULLS LAST`.",
+    },
+  },
   'prefer-not-equals-operator': {
     type: 'layout',
     description: 'Enforce a single style for the not-equal operator (`<>` or `!=`)',

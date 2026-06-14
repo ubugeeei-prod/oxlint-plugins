@@ -47,6 +47,7 @@ mod no_volatile_default_on_add_column;
 mod no_with_recursive_without_limit;
 mod prefer_current_timestamp_over_now;
 mod prefer_exists_over_in_subquery;
+mod prefer_explicit_null_ordering;
 mod prefer_not_equals_operator;
 mod require_if_exists;
 mod require_limit;
@@ -198,6 +199,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-with-recursive-without-limit",
     "prefer-current-timestamp-over-now",
     "prefer-exists-over-in-subquery",
+    "prefer-explicit-null-ordering",
     "prefer-not-equals-operator",
     "require-if-exists",
     "require-limit",
@@ -430,6 +432,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "prefer-exists-over-in-subquery",
         run: prefer_exists_over_in_subquery::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-explicit-null-ordering",
+        run: prefer_explicit_null_ordering::run,
         uses_parse_error: false,
     },
     RuleDef {
