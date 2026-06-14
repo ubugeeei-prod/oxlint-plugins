@@ -8955,7 +8955,7 @@
       },
       {
         "name": "no-potentially-useless-backreference",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,

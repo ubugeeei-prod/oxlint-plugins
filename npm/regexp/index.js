@@ -255,6 +255,10 @@ const messages = Object.freeze({
     unexpected:
       "Unexpected standalone backslash (`\\`). It looks like an escape sequence, but it's a single `\\` character pattern.",
   },
+  'no-potentially-useless-backreference': {
+    potentiallyUselessBackreference:
+      'Some paths leading to the backreference do not go through the referenced capturing group or the captured text might be reset before reaching the backreference.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -358,6 +362,8 @@ const ruleDescriptions = Object.freeze({
   'no-misleading-unicode-character':
     'disallow character classes that contain a ZWJ (U+200D) and match it as a separate atom',
   'no-standalone-backslash': 'disallow standalone backslashes (`\\`)',
+  'no-potentially-useless-backreference':
+    'disallow backreferences to capturing groups that might not have matched (narrow: optional/star-quantified groups)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -427,6 +433,7 @@ const ruleTypes = Object.freeze({
   'no-useless-lazy': 'suggestion',
   'no-misleading-unicode-character': 'problem',
   'no-standalone-backslash': 'suggestion',
+  'no-potentially-useless-backreference': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -445,6 +452,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-legacy-features': 'error',
   'no-non-standard-flag': 'error',
   'no-invisible-character': 'error',
+  'no-potentially-useless-backreference': 'warn',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
@@ -599,7 +607,8 @@ function ruleCategory(ruleName) {
     ruleName === 'optimal-lookaround-quantifier' ||
     ruleName === 'no-dupe-disjunctions' ||
     ruleName === 'no-useless-backreference' ||
-    ruleName === 'no-misleading-unicode-character'
+    ruleName === 'no-misleading-unicode-character' ||
+    ruleName === 'no-potentially-useless-backreference'
   ) {
     return 'Possible Errors';
   }

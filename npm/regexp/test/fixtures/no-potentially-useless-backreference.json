@@ -1,0 +1,116 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-potentially-useless-backreference.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-potentially-useless-backreference.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/()\\1/"
+    },
+    {
+      "code": "/(a*)(?:a|\\1)/"
+    },
+    {
+      "code": "/(a)+\\1/"
+    },
+    {
+      "code": "/(?=(a))\\1/"
+    },
+    {
+      "code": "/([\\q{a}])\\1/v"
+    },
+    {
+      "code": "/(a+)b|\\1/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n            var foo = /(a+)b\\1/;\n\n            var foo = /(a)?b\\1/;\n            var foo = /((a)|c)+b\\2/;",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Some paths leading to the backreference do not go through the referenced capturing group or the captured text might be reset before reaching the backreference.",
+          "line": 4,
+          "column": 29,
+          "endColumn": 31
+        },
+        {
+          "message": "Some paths leading to the backreference do not go through the referenced capturing group or the captured text might be reset before reaching the backreference.",
+          "line": 5,
+          "column": 33,
+          "endColumn": 35
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(a)?\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Some paths leading to the backreference do not go through the referenced capturing group or the captured text might be reset before reaching the backreference.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(a)*\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Some paths leading to the backreference do not go through the referenced capturing group or the captured text might be reset before reaching the backreference.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:(a)|b)\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Some paths leading to the backreference do not go through the referenced capturing group or the captured text might be reset before reaching the backreference.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:(a)|b)+\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Some paths leading to the backreference do not go through the referenced capturing group or the captured text might be reset before reaching the backreference.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:([\\q{a}])|b)\\1/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Some paths leading to the backreference do not go through the referenced capturing group or the captured text might be reset before reaching the backreference.",
+          "line": 1,
+          "column": 17,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    }
+  ]
+}
