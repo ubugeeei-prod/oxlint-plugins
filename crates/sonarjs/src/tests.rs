@@ -2321,3 +2321,51 @@ fn max_lines_uses_default_threshold_when_unset() {
     let diagnostics = scan("max-lines", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_nested_control_flow_for_four_levels_deep() {
+    // Default threshold is 3; a 4th-level statement is flagged.
+    let source = "if (a) { for (let i = 0; i < 10; i++) { while (b) { if (c) {} } } }";
+    let diagnostics = scan("nested-control-flow", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "nested-control-flow");
+    assert_eq!(diagnostics[0].message_id, "nestedControlFlow");
+}
+
+#[test]
+fn does_not_report_nested_control_flow_for_exactly_three_levels() {
+    // Exactly 3 levels: at the threshold, not exceeding it.
+    let source = "if (a) { for (let i = 0; i < 10; i++) { while (b) {} } }";
+    let diagnostics = scan("nested-control-flow", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_nested_control_flow_for_else_if_chain() {
+    // An else-if chain at the top level must not accumulate depth.
+    let source = "if (a) {} else if (b) {} else if (c) {} else if (d) {} else {}";
+    let diagnostics = scan("nested-control-flow", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_nested_control_flow_when_try_counts_as_a_level() {
+    // try(1) + if(2) + for(3) + while(4) = 4 levels → 1 diagnostic
+    let source = "try { if (a) { for (let i = 0; i < 10; i++) { while (b) {} } } } catch (e) {}";
+    let diagnostics = scan("nested-control-flow", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "nested-control-flow");
+    assert_eq!(diagnostics[0].message_id, "nestedControlFlow");
+}
+
+#[test]
+fn nested_control_flow_respects_custom_threshold() {
+    // With threshold 2, a 3-level nest should fire exactly once.
+    let mut options = options_for("nested-control-flow");
+    options.nested_control_flow_threshold = 2;
+    let source = "if (a) { for (let i = 0; i < 10; i++) { while (b) {} } }";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "nested-control-flow");
+    assert_eq!(diagnostics[0].message_id, "nestedControlFlow");
+}

@@ -53,6 +53,7 @@ const expectedRuleNames = [
   'no-useless-increment',
   'class-name',
   'max-lines',
+  'nested-control-flow',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1894,5 +1895,16 @@ describe('sonarjs native API', () => {
       maxLinesThreshold: 2,
     });
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports nested-control-flow when threshold 2 is exceeded with a 3-level nest', () => {
+    const source = 'if (a) { for (let i = 0; i < 10; i++) { while (b) {} } }';
+    const diagnostics = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['nested-control-flow'],
+      nestedControlFlowThreshold: 2,
+    });
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('nested-control-flow');
+    expect(diagnostics[0].messageId).toBe('nestedControlFlow');
   });
 });

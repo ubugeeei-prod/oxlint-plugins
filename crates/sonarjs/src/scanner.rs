@@ -8,8 +8,8 @@ use oxc_ast::ast::{
     ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function, FunctionBody,
     IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, NewExpression, Program,
     RegExpLiteral, ReturnStatement, StaticMemberExpression, SwitchCase, SwitchStatement,
-    TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, UnaryExpression,
-    WhileStatement, YieldExpression,
+    TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, TryStatement,
+    UnaryExpression, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -44,6 +44,12 @@ pub(crate) struct Scanner<'a> {
     /// Pushed on entry to a function/arrow and popped on exit;
     /// `no-inconsistent-returns` reports a scope whose frame has both kinds set.
     pub(crate) return_kind_stack: SmallVec<[(Span, bool, bool); 8]>,
+    /// Current nesting depth of control-flow statements (if/for/while/switch/try),
+    /// used by `nested-control-flow`. `else if` branches do not add depth.
+    pub(crate) control_flow_depth: u32,
+    /// Span-start offsets of `if` statements that are the `else`-branch of a parent
+    /// `if` (an `else if`); these do not increment the nesting depth.
+    pub(crate) else_if_starts: SmallVec<[u32; 8]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -115,7 +121,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_small_switch(it);
         self.check_prefer_default_last(it);
         self.switch_depth += 1;
+        let counted = self.enter_nested_control_flow(it.span);
         walk::walk_switch_statement(self, it);
+        self.leave_nested_control_flow(counted);
         self.switch_depth -= 1;
     }
 
@@ -158,13 +166,17 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_elseif_without_else(it);
         self.check_prefer_single_boolean_return(it);
         self.check_no_nested_assignment_condition(&it.test);
+        let counted = self.enter_nested_control_flow_if(it);
         walk::walk_if_statement(self, it);
+        self.leave_nested_control_flow(counted);
     }
 
     fn visit_for_in_statement(&mut self, it: &ForInStatement<'a>) {
         self.check_for_in(it);
         self.check_redundant_continue(&it.body);
+        let counted = self.enter_nested_control_flow(it.span);
         walk::walk_for_in_statement(self, it);
+        self.leave_nested_control_flow(counted);
     }
 
     fn visit_for_statement(&mut self, it: &ForStatement<'a>) {
@@ -173,24 +185,32 @@ impl<'a> Visit<'a> for Scanner<'a> {
         if let Some(test) = &it.test {
             self.check_no_nested_assignment_condition(test);
         }
+        let counted = self.enter_nested_control_flow(it.span);
         walk::walk_for_statement(self, it);
+        self.leave_nested_control_flow(counted);
     }
 
     fn visit_while_statement(&mut self, it: &WhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
         self.check_no_nested_assignment_condition(&it.test);
+        let counted = self.enter_nested_control_flow(it.span);
         walk::walk_while_statement(self, it);
+        self.leave_nested_control_flow(counted);
     }
 
     fn visit_do_while_statement(&mut self, it: &DoWhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
         self.check_no_nested_assignment_condition(&it.test);
+        let counted = self.enter_nested_control_flow(it.span);
         walk::walk_do_while_statement(self, it);
+        self.leave_nested_control_flow(counted);
     }
 
     fn visit_for_of_statement(&mut self, it: &ForOfStatement<'a>) {
         self.check_redundant_continue(&it.body);
+        let counted = self.enter_nested_control_flow(it.span);
         walk::walk_for_of_statement(self, it);
+        self.leave_nested_control_flow(counted);
     }
 
     fn visit_binding_identifier(&mut self, it: &BindingIdentifier<'a>) {
@@ -291,6 +311,12 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_catch_clause(&mut self, it: &CatchClause<'a>) {
         self.check_no_useless_catch(it);
         walk::walk_catch_clause(self, it);
+    }
+
+    fn visit_try_statement(&mut self, it: &TryStatement<'a>) {
+        let counted = self.enter_nested_control_flow(it.span);
+        walk::walk_try_statement(self, it);
+        self.leave_nested_control_flow(counted);
     }
 
     fn visit_function_body(&mut self, it: &FunctionBody<'a>) {

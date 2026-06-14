@@ -144,6 +144,7 @@ describe('sonarjs plugin shape', () => {
       'no-useless-increment',
       'class-name',
       'max-lines',
+      'nested-control-flow',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -195,6 +196,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-useless-increment']).toBe('object');
     expect(typeof plugin.rules['class-name']).toBe('object');
     expect(typeof plugin.rules['max-lines']).toBe('object');
+    expect(typeof plugin.rules['nested-control-flow']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -248,6 +250,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-increment']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/class-name']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/max-lines']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/nested-control-flow']).toBe('error');
   });
 });
 
@@ -1131,5 +1134,25 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     // default threshold is 1000; three code lines must NOT be flagged
     expect(result.status).toBe(0);
     expect(result.diagnostics).toHaveLength(0);
+  });
+
+  it('honors the nested-control-flow "maximumNestingLevel" option through the adapter', () => {
+    const source = 'if (a) { for (let i = 0; i < 10; i++) { while (b) {} } }';
+    expect(
+      runRule('nested-control-flow', source, { options: [{ maximumNestingLevel: 2 }] }),
+    ).toHaveLength(1);
+    expect(
+      runRule('nested-control-flow', source, { options: [{ maximumNestingLevel: 3 }] }),
+    ).toHaveLength(0);
+  });
+
+  it('reports nested-control-flow through the CLI', () => {
+    const source = 'if (a) { for (let i = 0; i < 10; i++) { while (b) { if (c) {} } } }';
+    const result = runOxlint('nested-control-flow', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(nested-control-flow)');
   });
 });

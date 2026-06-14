@@ -191,6 +191,9 @@ const messages = Object.freeze({
   'max-lines': {
     maxLines: 'This file has more lines than the maximum allowed; split it into smaller files.',
   },
+  'nested-control-flow': {
+    nestedControlFlow: 'Refactor this code to reduce the nesting of control flow statements.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -286,6 +289,8 @@ const ruleDescriptions = Object.freeze({
     'Require class names to start with an uppercase letter, following the PascalCase convention',
   'max-lines':
     'Disallow files with more code lines than the configured maximum (the "maximum" option; default 1000); blank lines and comment-only lines are not counted',
+  'nested-control-flow':
+    'Disallow control flow statements (if/for/for-in/for-of/while/do-while/switch/try) nested beyond the configured maximumNestingLevel (default 3); else-if chains do not add a level',
 });
 
 const ruleTypes = Object.freeze({
@@ -339,6 +344,7 @@ const ruleTypes = Object.freeze({
   'no-useless-increment': 'suggestion',
   'class-name': 'suggestion',
   'max-lines': 'suggestion',
+  'nested-control-flow': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -392,6 +398,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-useless-increment': 'error',
   'class-name': 'error',
   'max-lines': 'error',
+  'nested-control-flow': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
@@ -457,6 +464,15 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'nested-control-flow') {
+    return [
+      {
+        type: 'object',
+        properties: { maximumNestingLevel: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   return [];
 }
 
@@ -472,6 +488,9 @@ function scanOptionsForRule(context, ruleName) {
   }
   if (ruleName === 'max-lines' && Number.isInteger(raw.maximum)) {
     options.maxLinesThreshold = raw.maximum;
+  }
+  if (ruleName === 'nested-control-flow' && Number.isInteger(raw.maximumNestingLevel)) {
+    options.nestedControlFlowThreshold = raw.maximumNestingLevel;
   }
   return options;
 }

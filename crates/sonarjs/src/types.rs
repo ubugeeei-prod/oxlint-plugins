@@ -50,6 +50,8 @@ pub struct SonarjsOptions {
     pub max_switch_cases_threshold: u32,
     /// Threshold for `max-union-size` (S4622); the SonarJS default is 3.
     pub max_union_size_threshold: u32,
+    /// Maximum nesting level for `nested-control-flow` (S134); the SonarJS default is 3.
+    pub nested_control_flow_threshold: u32,
 }
 
 impl Default for SonarjsOptions {
@@ -62,6 +64,7 @@ impl Default for SonarjsOptions {
             max_lines_threshold: 1000,
             max_switch_cases_threshold: 30,
             max_union_size_threshold: 3,
+            nested_control_flow_threshold: 3,
         }
     }
 }

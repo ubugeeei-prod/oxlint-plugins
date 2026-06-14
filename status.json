@@ -11598,19 +11598,19 @@
       },
       {
         "name": "nested-control-flow",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule nested-control-flow (Sonar key S134). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S134. Counts nesting depth for if/for/for-in/for-of/while/do-while/switch/try; else-if chains do not add a level; configurable maximumNestingLevel option (default 3); reports the statement that exceeds the limit."
       },
       {
         "name": "new-operator-misuse",
