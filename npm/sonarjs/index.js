@@ -145,6 +145,9 @@ const messages = Object.freeze({
     preferSingleBooleanReturn:
       "Replace this if/else returning booleans with a single 'return' of the condition.",
   },
+  'no-unthrown-error': {
+    unthrownError: 'Throw this error or remove this useless statement.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -212,6 +215,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow committed skipped tests (.skip member or x-prefixed Jasmine calls); re-enable or remove them instead',
   'prefer-single-boolean-return':
     'Disallow if/else structures where both branches return a boolean literal; return the condition directly instead',
+  'no-unthrown-error':
+    "Disallow creating an Error (or Error subtype) with 'new' as a bare statement without throwing it; the value is discarded and this is almost always a bug",
 });
 
 const ruleTypes = Object.freeze({
@@ -251,6 +256,7 @@ const ruleTypes = Object.freeze({
   'no-primitive-wrappers': 'problem',
   'no-skipped-tests': 'problem',
   'prefer-single-boolean-return': 'suggestion',
+  'no-unthrown-error': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -290,6 +296,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-primitive-wrappers': 'error',
   'no-skipped-tests': 'error',
   'prefer-single-boolean-return': 'error',
+  'no-unthrown-error': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

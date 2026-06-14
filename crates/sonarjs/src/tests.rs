@@ -1719,3 +1719,57 @@ fn does_not_report_prefer_single_boolean_return_block_has_two_statements() {
     let diagnostics = scan("prefer-single-boolean-return", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_unthrown_error_for_new_error_bare_statement() {
+    let source = "new Error('boom');";
+    let diagnostics = scan("no-unthrown-error", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-unthrown-error");
+    assert_eq!(diagnostics[0].message_id, "unthrownError");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_unthrown_error_for_new_type_error_bare_statement() {
+    let source = "new TypeError('x');";
+    let diagnostics = scan("no-unthrown-error", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unthrownError");
+}
+
+#[test]
+fn reports_no_unthrown_error_for_user_defined_error_subtype_bare_statement() {
+    let source = "new MyError();";
+    let diagnostics = scan("no-unthrown-error", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unthrownError");
+}
+
+#[test]
+fn does_not_report_no_unthrown_error_when_error_is_thrown() {
+    let source = "throw new Error('boom');";
+    let diagnostics = scan("no-unthrown-error", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_unthrown_error_when_error_is_assigned() {
+    let source = "const e = new Error();";
+    let diagnostics = scan("no-unthrown-error", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_unthrown_error_for_non_error_constructor() {
+    let source = "new Foo();";
+    let diagnostics = scan("no-unthrown-error", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_unthrown_error_when_error_passed_as_argument() {
+    let source = "foo(new Error());";
+    let diagnostics = scan("no-unthrown-error", source);
+    assert!(diagnostics.is_empty());
+}

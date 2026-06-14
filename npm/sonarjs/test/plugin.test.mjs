@@ -130,6 +130,7 @@ describe('sonarjs plugin shape', () => {
       'no-primitive-wrappers',
       'no-skipped-tests',
       'prefer-single-boolean-return',
+      'no-unthrown-error',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -167,6 +168,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-primitive-wrappers']).toBe('object');
     expect(typeof plugin.rules['no-skipped-tests']).toBe('object');
     expect(typeof plugin.rules['prefer-single-boolean-return']).toBe('object');
+    expect(typeof plugin.rules['no-unthrown-error']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -204,6 +206,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-primitive-wrappers']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-skipped-tests']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-single-boolean-return']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-unthrown-error']).toBe('error');
   });
 });
 
@@ -821,5 +824,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(prefer-single-boolean-return)');
+  });
+
+  it('reports no-unthrown-error for new Error as a bare statement through the adapter', () => {
+    const source = "new Error('boom');";
+    const reports = runRule('no-unthrown-error', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unthrownError');
+  });
+
+  it('reports no-unthrown-error through the CLI', () => {
+    const source = "new TypeError('x');";
+    const result = runOxlint('no-unthrown-error', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-unthrown-error)');
   });
 });

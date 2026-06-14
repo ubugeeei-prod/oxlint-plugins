@@ -39,6 +39,7 @@ const expectedRuleNames = [
   'no-primitive-wrappers',
   'no-skipped-tests',
   'prefer-single-boolean-return',
+  'no-unthrown-error',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1380,6 +1381,52 @@ describe('sonarjs native API', () => {
   it('does not report prefer-single-boolean-return when consequent block has two statements', () => {
     const source = 'function f() { if (c) { return true; bar(); } else { return false; } }';
     const diagnostics = scan('prefer-single-boolean-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-unthrown-error for new Error as a bare statement', () => {
+    const source = "new Error('boom');";
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-unthrown-error');
+    expect(diagnostics[0].messageId).toBe('unthrownError');
+  });
+
+  it('reports no-unthrown-error for new TypeError as a bare statement', () => {
+    const source = "new TypeError('x');";
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('unthrownError');
+  });
+
+  it('reports no-unthrown-error for a user-defined Error subtype as a bare statement', () => {
+    const source = 'new MyError();';
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('unthrownError');
+  });
+
+  it('does not report no-unthrown-error when the error is thrown', () => {
+    const source = "throw new Error('boom');";
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-unthrown-error when the error is assigned to a variable', () => {
+    const source = 'const e = new Error();';
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-unthrown-error for new Foo() (callee does not end with Error)', () => {
+    const source = 'new Foo();';
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-unthrown-error when the error is passed as a call argument', () => {
+    const source = 'foo(new Error());';
+    const diagnostics = scan('no-unthrown-error', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
