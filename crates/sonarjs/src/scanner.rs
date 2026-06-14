@@ -4,16 +4,17 @@
 
 use oxc_ast::AstKind;
 use oxc_ast::ast::{
-    AccessorProperty, ArrowFunctionExpression, AssignmentExpression, BinaryExpression,
-    BindingIdentifier, BindingPattern, BlockStatement, BreakStatement, CallExpression, CatchClause,
-    Class, ConditionalExpression, ContinueStatement, DoWhileStatement, ExportAllDeclaration,
-    ExportNamedDeclaration, Expression, ExpressionStatement, ForInStatement, ForOfStatement,
-    ForStatement, Function, FunctionBody, IdentifierReference, IfStatement, ImportDeclaration,
-    ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment, LabeledStatement,
-    LogicalExpression, NewExpression, Program, PropertyDefinition, RegExpLiteral, ReturnStatement,
-    Statement, StaticBlock, StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement,
-    TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, ThisExpression,
-    TryStatement, UnaryExpression, VariableDeclarator, WhileStatement, YieldExpression,
+    AccessorProperty, ArrowFunctionExpression, AssignmentExpression, AssignmentTarget,
+    BinaryExpression, BindingIdentifier, BindingPattern, BlockStatement, BreakStatement,
+    CallExpression, CatchClause, Class, ConditionalExpression, ContinueStatement, DoWhileStatement,
+    ExportAllDeclaration, ExportNamedDeclaration, Expression, ExpressionStatement, ForInStatement,
+    ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
+    ImportDeclaration, ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment,
+    LabeledStatement, LogicalExpression, NewExpression, Program, PropertyDefinition, RegExpLiteral,
+    ReturnStatement, SimpleAssignmentTarget, Statement, StaticBlock, StaticMemberExpression,
+    StringLiteral, SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature,
+    TSUnionType, TemplateLiteral, ThisExpression, TryStatement, UnaryExpression, UpdateExpression,
+    VariableDeclarator, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_semantic::{AstNodes, Scoping};
@@ -369,7 +370,17 @@ impl<'a> Visit<'a> for Scanner<'a> {
         if matches!(it.operator, AssignmentOperator::Assign) {
             self.check_no_misleading_array_reverse(&it.right);
         }
+        if let AssignmentTarget::AssignmentTargetIdentifier(ident) = &it.left {
+            self.check_no_parameter_reassignment_assignment(ident, it.span);
+        }
         walk::walk_assignment_expression(self, it);
+    }
+
+    fn visit_update_expression(&mut self, it: &UpdateExpression<'a>) {
+        if let SimpleAssignmentTarget::AssignmentTargetIdentifier(ident) = &it.argument {
+            self.check_no_parameter_reassignment_update(ident, it.span);
+        }
+        walk::walk_update_expression(self, it);
     }
 
     fn visit_variable_declarator(&mut self, it: &VariableDeclarator<'a>) {

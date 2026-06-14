@@ -306,6 +306,9 @@ const messages = Object.freeze({
   'reduce-initial-value': {
     provideInitialValue: 'Provide an initial value to this "reduce" call.',
   },
+  'no-parameter-reassignment': {
+    noParameterReassignment: 'Introduce a new variable instead of reassigning this parameter.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -470,6 +473,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow an equality operator ("==", "!=", "===", "!==") in a "for" loop termination condition when the counter is advanced by a non-unit step (e.g. "i != 10" with "i += 2"), which can skip the bound and loop forever',
   'reduce-initial-value':
     'Require an initial value (second argument) when calling "reduce" or "reduceRight" on an array, to avoid a TypeError on empty arrays and a skipped first element',
+  'no-parameter-reassignment':
+    'Disallow reassigning a function parameter, caught exception, or for-in/for-of loop variable, which discards the value supplied at runtime; introduce a new local variable instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -556,6 +561,7 @@ const ruleTypes = Object.freeze({
   'for-loop-increment-sign': 'suggestion',
   'no-equals-in-for-termination': 'suggestion',
   'reduce-initial-value': 'suggestion',
+  'no-parameter-reassignment': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -642,6 +648,7 @@ const recommendedRuleConfig = Object.freeze({
   'for-loop-increment-sign': 'error',
   'no-equals-in-for-termination': 'error',
   'reduce-initial-value': 'error',
+  'no-parameter-reassignment': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

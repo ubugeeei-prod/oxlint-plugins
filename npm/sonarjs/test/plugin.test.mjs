@@ -177,6 +177,7 @@ describe('sonarjs plugin shape', () => {
       'for-loop-increment-sign',
       'no-equals-in-for-termination',
       'reduce-initial-value',
+      'no-parameter-reassignment',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -260,6 +261,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['for-loop-increment-sign']).toBe('object');
     expect(typeof plugin.rules['no-equals-in-for-termination']).toBe('object');
     expect(typeof plugin.rules['reduce-initial-value']).toBe('object');
+    expect(typeof plugin.rules['no-parameter-reassignment']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -351,6 +353,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/for-loop-increment-sign']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-equals-in-for-termination']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/reduce-initial-value']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-parameter-reassignment']).toBe('error');
   });
 });
 
@@ -2360,5 +2363,75 @@ describe('reduce-initial-value rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(reduce-initial-value)');
+  });
+});
+
+describe('no-parameter-reassignment rule', () => {
+  it('reports reassigning a function parameter', () => {
+    const source = 'function f(p) { p = 1; }';
+    const reports = runRule('no-parameter-reassignment', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noParameterReassignment');
+  });
+
+  it('reports incrementing a function parameter', () => {
+    const source = 'function f(p) { p++; }';
+    const reports = runRule('no-parameter-reassignment', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noParameterReassignment');
+  });
+
+  it('reports compound-assigning an arrow parameter', () => {
+    const source = 'const g = (a) => { a += 2; };';
+    const reports = runRule('no-parameter-reassignment', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noParameterReassignment');
+  });
+
+  it('reports reassigning a caught exception', () => {
+    const source = 'try {} catch (e) { e = null; }';
+    const reports = runRule('no-parameter-reassignment', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noParameterReassignment');
+  });
+
+  it('reports reassigning a for-of loop variable', () => {
+    const source = 'for (const x of xs) { x = 0; }';
+    const reports = runRule('no-parameter-reassignment', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noParameterReassignment');
+  });
+
+  it('does not report writing to a parameter property', () => {
+    const source = 'function f(p) { p.x = 1; }';
+    const reports = runRule('no-parameter-reassignment', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report reassigning a local variable copy', () => {
+    const source = 'function f(p) { let q = p; q = 2; }';
+    const reports = runRule('no-parameter-reassignment', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report reassigning a module-scope variable', () => {
+    const source = 'let x = 1; x = 2;';
+    const reports = runRule('no-parameter-reassignment', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a classic for-loop counter', () => {
+    const source = 'function f() { for (let i = 0; i < 3; i++) { i = 2; } }';
+    const reports = runRule('no-parameter-reassignment', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-parameter-reassignment through the CLI', () => {
+    const source = 'function f(p) { p = 1; }';
+    const result = runOxlint('no-parameter-reassignment', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-parameter-reassignment)');
   });
 });

@@ -57,6 +57,7 @@ mod no_nested_functions;
 mod no_nested_incdec;
 mod no_nested_switch;
 mod no_nested_template_literals;
+mod no_parameter_reassignment;
 mod no_primitive_wrappers;
 mod no_redundant_boolean;
 mod no_redundant_jump;
