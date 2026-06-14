@@ -12,20 +12,9 @@
 use serde_json::Value;
 
 use crate::ast::is_type;
-use crate::tokenize::{Token, TokenKind, tokenize};
+use crate::tokenize::{TokenKind, tokenize};
 use crate::{DiagnosticDatum, DiagnosticFix, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
-
-/// Strips surrounding double quotes from a token value so it can be compared
-/// with `alias.aliasname` (which holds the unquoted identifier from the parser).
-fn token_identifier_text(token: &Token) -> &str {
-    let v = &token.value;
-    if v.len() >= 2 && v.starts_with('"') && v.ends_with('"') {
-        &v[1..v.len() - 1]
-    } else {
-        v.as_str()
-    }
-}
 
 pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
     if !is_type(node, "RangeVar") {
@@ -74,9 +63,12 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
     let has_as = next.kind == TokenKind::Keyword && next.value.eq_ignore_ascii_case("AS");
 
     if style == "always" && !has_as {
-        // Confirm the token is actually the alias identifier (not a keyword
-        // like WHERE/JOIN that follows an un-aliased table reference).
-        if token_identifier_text(next) != alias_name {
+        // Upstream compares the raw token value (not unquoted) to the alias
+        // name. For a quoted alias like `FROM t "foo"`, aliasname is `foo`
+        // but the raw token value is `"foo"`, so they differ and the rule
+        // correctly skips it (no AS needed for quoted aliases that already
+        // differ from their raw token). Mirror upstream exactly.
+        if next.value != alias_name {
             return;
         }
         let loc = DiagnosticLoc {
@@ -102,7 +94,9 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
             return;
         };
         // Confirm the token after AS is actually the alias identifier.
-        if token_identifier_text(after) != alias_name {
+        // Compare the raw token value (not unquoted) to alias_name, matching
+        // upstream's `if (next.value !== alias.aliasname) return;`.
+        if after.value != alias_name {
             return;
         }
         let loc = DiagnosticLoc {

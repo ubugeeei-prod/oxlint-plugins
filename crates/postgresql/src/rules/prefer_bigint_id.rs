@@ -6,32 +6,12 @@
 use serde_json::Value;
 
 use crate::RuleContext;
-use crate::ast::is_type;
+use crate::ast::{get_type_name, is_type};
 
 /// Upstream `SMALL_INT_TYPES`: canonical small-integer type names plus the
 /// pseudo-types PostgreSQL keeps before a SERIAL is rewritten.
 fn is_small_int_type(name: &str) -> bool {
     matches!(name, "int2" | "int4" | "smallserial" | "serial")
-}
-
-/// Mirrors upstream `getTypeName` (`src/utils/ast.ts`): the canonical type name
-/// is the segment at key `"1"` (lower segments are schema qualifiers such as
-/// `pg_catalog`), falling back to key `"0"` for unqualified names.
-fn get_type_name(type_name: &Value) -> Option<&str> {
-    if !type_name.is_object() {
-        return None;
-    }
-    if let Some(v1) = type_name
-        .get("1")
-        .and_then(|s| s.get("sval"))
-        .and_then(Value::as_str)
-    {
-        return Some(v1);
-    }
-    type_name
-        .get("0")
-        .and_then(|s| s.get("sval"))
-        .and_then(Value::as_str)
 }
 
 /// Mirrors upstream `isPrimaryKey`: a column-level `CONSTR_PRIMARY` constraint.

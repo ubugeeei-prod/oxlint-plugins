@@ -60,9 +60,10 @@ pub fn parse_to_json(sql: &str) -> Result<String, String> {
             if result.parse_tree.is_null() {
                 Err("libpg_query returned no parse tree".to_string())
             } else {
-                Ok(CStr::from_ptr(result.parse_tree)
-                    .to_string_lossy()
-                    .into_owned())
+                CStr::from_ptr(result.parse_tree)
+                    .to_str()
+                    .map(str::to_owned)
+                    .map_err(|_| "libpg_query returned non-UTF-8 parse tree".to_string())
             }
         } else {
             // `error` is non-null here, but its `message` field is itself a
