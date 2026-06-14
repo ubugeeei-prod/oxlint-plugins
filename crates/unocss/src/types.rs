@@ -108,7 +108,6 @@ impl LineIndex {
 
 #[derive(Clone, Copy)]
 pub(crate) struct LiteralSpan<'a> {
-    pub(crate) full_start: usize,
     pub(crate) content_start: usize,
     pub(crate) content_end: usize,
     pub(crate) content: &'a str,
