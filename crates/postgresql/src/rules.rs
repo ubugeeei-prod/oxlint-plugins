@@ -66,6 +66,7 @@ mod require_schema_qualified_table;
 mod require_trailing_semicolon;
 mod require_where_in_delete;
 mod require_where_in_update;
+mod snake_case_column_name;
 mod snake_case_table_name;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
@@ -227,6 +228,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "require-trailing-semicolon",
     "require-where-in-delete",
     "require-where-in-update",
+    "snake-case-column-name",
     "snake-case-table-name",
 ];
 
@@ -545,6 +547,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-where-in-update",
         run: require_where_in_update::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "snake-case-column-name",
+        run: snake_case_column_name::run,
         uses_parse_error: false,
     },
     RuleDef {
