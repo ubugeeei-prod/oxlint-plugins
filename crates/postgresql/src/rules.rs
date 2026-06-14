@@ -4,6 +4,7 @@
 use crate::RuleDef;
 
 mod no_select_star;
+mod no_vacuum_full;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
 /// know the full surface even while only a subset is implemented.
@@ -100,11 +101,18 @@ pub const RULE_NAMES: [&str; 89] = [
 ];
 
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
-pub const IMPLEMENTED_RULE_NAMES: &[&str] = &["no-select-star"];
+pub const IMPLEMENTED_RULE_NAMES: &[&str] = &["no-select-star", "no-vacuum-full"];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
-pub(crate) const REGISTRY: &[RuleDef] = &[RuleDef {
-    name: "no-select-star",
-    run: no_select_star::run,
-    uses_parse_error: false,
-}];
+pub(crate) const REGISTRY: &[RuleDef] = &[
+    RuleDef {
+        name: "no-select-star",
+        run: no_select_star::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-vacuum-full",
+        run: no_vacuum_full::run,
+        uses_parse_error: false,
+    },
+];

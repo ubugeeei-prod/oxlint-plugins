@@ -29,6 +29,18 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-vacuum-full': {
+    type: 'problem',
+    description:
+      'Disallow `VACUUM FULL` because it takes ACCESS EXCLUSIVE and rewrites the entire table',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noVacuumFull:
+        '`VACUUM FULL` takes `ACCESS EXCLUSIVE` and rewrites the whole table; the table is unavailable for the duration. For shrinking a bloated table on a live database, use `pg_repack` or `pg_squeeze`. A plain `VACUUM` (no `FULL`) is fine.',
+    },
+  },
 });
 
 const implementedRuleNames = Object.freeze(implementedPostgresqlRuleNames());
