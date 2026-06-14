@@ -65,6 +65,18 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-implicit-join': {
+    type: 'suggestion',
+    description:
+      'Disallow comma-separated FROM clauses (implicit cross joins); use explicit JOIN syntax',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noImplicitJoin:
+        'Comma-separated tables in `FROM` are an implicit cross join. Use explicit `JOIN ... ON ...` so the join condition lives next to the join.',
+    },
+  },
   'no-rename-column': {
     type: 'problem',
     description:
