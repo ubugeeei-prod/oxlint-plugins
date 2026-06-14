@@ -13,6 +13,7 @@ mod no_add_check_constraint_without_not_valid;
 mod no_add_column_not_null_without_default;
 mod no_add_unique_constraint_directly;
 mod no_alter_column_type;
+mod no_char_type;
 mod no_cluster;
 mod no_composite_primary_key;
 mod no_create_role;
@@ -174,6 +175,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-add-column-not-null-without-default",
     "no-add-unique-constraint-directly",
     "no-alter-column-type",
+    "no-char-type",
     "no-cluster",
     "no-composite-primary-key",
     "no-create-role",
@@ -280,6 +282,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-alter-column-type",
         run: no_alter_column_type::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-char-type",
+        run: no_char_type::run,
         uses_parse_error: false,
     },
     RuleDef {
