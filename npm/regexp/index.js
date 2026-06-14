@@ -284,6 +284,10 @@ const messages = Object.freeze({
     unexpected:
       'Adjacent quantifiers on the same element can be merged into a single optimal quantifier (e.g. `aa*` to `a+`).',
   },
+  'no-contradiction-with-assertion': {
+    unexpected:
+      'This quantifier contradicts the preceding `\\b` assertion and can never be entered.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -394,6 +398,8 @@ const ruleDescriptions = Object.freeze({
     'disallow assertions that are known to always accept (or always reject) (narrow: word-boundary between same-class literals)',
   'optimal-quantifier-concatenation':
     'require optimal quantifiers for concatenated quantifiers (narrow: adjacent quantifiers on the same single element)',
+  'no-contradiction-with-assertion':
+    'disallow elements that contradict assertions (narrow: min-zero quantifier on a same-class literal right after `\\b`)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -467,6 +473,7 @@ const ruleTypes = Object.freeze({
   strict: 'suggestion',
   'no-useless-assertions': 'problem',
   'optimal-quantifier-concatenation': 'suggestion',
+  'no-contradiction-with-assertion': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -489,6 +496,7 @@ const recommendedRuleConfig = Object.freeze({
   strict: 'error',
   'no-useless-assertions': 'error',
   'optimal-quantifier-concatenation': 'error',
+  'no-contradiction-with-assertion': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
@@ -646,7 +654,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-misleading-unicode-character' ||
     ruleName === 'no-potentially-useless-backreference' ||
     ruleName === 'strict' ||
-    ruleName === 'no-useless-assertions'
+    ruleName === 'no-useless-assertions' ||
+    ruleName === 'no-contradiction-with-assertion'
   ) {
     return 'Possible Errors';
   }

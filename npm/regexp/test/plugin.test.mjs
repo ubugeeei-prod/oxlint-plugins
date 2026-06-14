@@ -209,6 +209,10 @@ const validCases = [
   ['optimal-quantifier-concatenation', 'bounded optional pair', 'const re = /aa?/u;\n'],
   ['optimal-quantifier-concatenation', 'distinct shorthands', 'const re = /\\w+\\d{4}/u;\n'],
   ['optimal-quantifier-concatenation', 'group then shorthand', 'const re = /(\\d)\\d+/u;\n'],
+  // no-contradiction-with-assertion
+  ['no-contradiction-with-assertion', 'plain char after boundary', 'const re = /a\\ba/u;\n'],
+  ['no-contradiction-with-assertion', 'consistent quantifier', 'const re = /a\\b-*a/u;\n'],
+  ['no-contradiction-with-assertion', 'boundary after group', 'const re = /(?:aa|a\\b)-?a/u;\n'],
 ];
 
 const invalidCases = [
@@ -587,6 +591,19 @@ const invalidCases = [
     'optimal-quantifier-concatenation',
     'plus then plus of same char',
     'const re = /a+a+/u;\n',
+    ['unexpected'],
+  ],
+  // no-contradiction-with-assertion
+  [
+    'no-contradiction-with-assertion',
+    'star quantifier on same-class char after boundary',
+    'const re = /a\\ba*-/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-contradiction-with-assertion',
+    'brace min-zero quantifier after boundary',
+    'const re = /a\\ba{0,3}-/u;\n',
     ['unexpected'],
   ],
 ];

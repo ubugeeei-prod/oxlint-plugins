@@ -8699,7 +8699,7 @@
       },
       {
         "name": "no-contradiction-with-assertion",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
