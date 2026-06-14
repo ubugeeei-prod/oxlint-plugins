@@ -303,6 +303,9 @@ const messages = Object.freeze({
     noEqualsInForTermination:
       'Replace this equality operator in the loop termination condition with a relational operator.',
   },
+  'reduce-initial-value': {
+    provideInitialValue: 'Provide an initial value to this "reduce" call.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -465,6 +468,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow a "for" loop whose update clause moves the counter away from the relational termination condition (e.g. "i < n" with "i--"), which can prevent the loop from terminating',
   'no-equals-in-for-termination':
     'Disallow an equality operator ("==", "!=", "===", "!==") in a "for" loop termination condition when the counter is advanced by a non-unit step (e.g. "i != 10" with "i += 2"), which can skip the bound and loop forever',
+  'reduce-initial-value':
+    'Require an initial value (second argument) when calling "reduce" or "reduceRight" on an array, to avoid a TypeError on empty arrays and a skipped first element',
 });
 
 const ruleTypes = Object.freeze({
@@ -550,6 +555,7 @@ const ruleTypes = Object.freeze({
   'inverted-assertion-arguments': 'suggestion',
   'for-loop-increment-sign': 'suggestion',
   'no-equals-in-for-termination': 'suggestion',
+  'reduce-initial-value': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -635,6 +641,7 @@ const recommendedRuleConfig = Object.freeze({
   'inverted-assertion-arguments': 'error',
   'for-loop-increment-sign': 'error',
   'no-equals-in-for-termination': 'error',
+  'reduce-initial-value': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

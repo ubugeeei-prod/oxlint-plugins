@@ -13726,19 +13726,19 @@
       },
       {
         "name": "reduce-initial-value",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule reduce-initial-value (Sonar key S6959). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6959). Reports a reduce() / reduceRight() call with exactly one (non-spread) argument — no initial value — whose receiver is provably an array (array literal, or an identifier resolving to an array-literal initializer). The upstream rule is type-aware; without TypeScript types we conservatively flag only provable arrays and skip spread arguments, deliberately under-reporting to avoid false positives. No upstream source, fixtures, tests, or messages consulted or copied."
       },
       {
         "name": "redundant-type-aliases",

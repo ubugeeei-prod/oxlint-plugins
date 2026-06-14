@@ -3994,6 +3994,61 @@ fn does_not_report_for_in_iterable_on_for_of_loop() {
 }
 
 #[test]
+fn reports_reduce_initial_value_on_array_literal() {
+    let source = "[1, 2, 3].reduce((a, b) => a + b);";
+    let diagnostics = scan("reduce-initial-value", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "reduce-initial-value");
+    assert_eq!(diagnostics[0].message_id, "provideInitialValue");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_reduce_initial_value_on_resolved_array_variable() {
+    let source = "const a = [1, 2];\na.reduce(fn);";
+    let diagnostics = scan("reduce-initial-value", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "provideInitialValue");
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+}
+
+#[test]
+fn reports_reduce_right_initial_value_on_array_literal() {
+    let source = "[1, 2, 3].reduceRight((a, b) => a + b);";
+    let diagnostics = scan("reduce-initial-value", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "provideInitialValue");
+}
+
+#[test]
+fn does_not_report_reduce_initial_value_with_initial_value() {
+    let source = "[1, 2].reduce((a, b) => a + b, 0);";
+    let diagnostics = scan("reduce-initial-value", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_reduce_initial_value_on_non_array_receiver() {
+    let source = "const obj = { reduce() {} };\nobj.reduce(fn);";
+    let diagnostics = scan("reduce-initial-value", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_reduce_initial_value_on_spread_argument() {
+    let source = "[1, 2, 3].reduce(...args);";
+    let diagnostics = scan("reduce-initial-value", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_reduce_initial_value_on_non_reduce_call() {
+    let source = "foo.bar();";
+    let diagnostics = scan("reduce-initial-value", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn reports_associative_array_computed_string_key() {
     let diagnostics = scan("no-associative-arrays", "const a = [];\na['key'] = 1;");
     assert_eq!(diagnostics.len(), 1);

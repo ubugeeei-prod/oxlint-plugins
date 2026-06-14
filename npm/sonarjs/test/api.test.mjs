@@ -85,6 +85,7 @@ const expectedRuleNames = [
   'inverted-assertion-arguments',
   'for-loop-increment-sign',
   'no-equals-in-for-termination',
+  'reduce-initial-value',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
