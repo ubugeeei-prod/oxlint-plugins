@@ -48,6 +48,7 @@ mod no_set_search_path;
 mod no_temporary_table;
 mod no_truncate_cascade;
 mod no_unlogged_table;
+mod no_unnecessary_quoted_identifier;
 mod no_update_primary_key;
 mod no_update_without_from_binding;
 mod no_vacuum_full;
@@ -211,6 +212,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-temporary-table",
     "no-truncate-cascade",
     "no-unlogged-table",
+    "no-unnecessary-quoted-identifier",
     "no-update-primary-key",
     "no-update-without-from-binding",
     "no-vacuum-full",
@@ -460,6 +462,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "no-unlogged-table",
         run: no_unlogged_table::run,
         uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-unnecessary-quoted-identifier",
+        run: no_unnecessary_quoted_identifier::run,
+        uses_parse_error: true,
     },
     RuleDef {
         name: "no-update-primary-key",

@@ -613,6 +613,18 @@ const ruleMeta = Object.freeze({
         '`UNLOGGED` tables skip WAL: they are truncated on crash, not replicated to standbys, and not restored from base backups. If a cache table is what you want, document it explicitly and disable this rule for that file.',
     },
   },
+  'no-unnecessary-quoted-identifier': {
+    type: 'layout',
+    description:
+      'Disallow unnecessary double-quoting of identifiers (e.g. `"users"` when `users` would mean the same thing)',
+    recommended: false,
+    fixable: 'code',
+    schema: [],
+    messages: {
+      unnecessaryQuoting:
+        'The identifier `"{{inner}}"` does not need quoting; `{{inner}}` means the same thing.',
+    },
+  },
   'no-update-primary-key': {
     type: 'problem',
     description: 'Disallow `UPDATE ... SET <pk> = ...` for columns the rule treats as primary keys',
