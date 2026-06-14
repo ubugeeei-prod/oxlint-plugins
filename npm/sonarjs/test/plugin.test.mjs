@@ -154,6 +154,7 @@ describe('sonarjs plugin shape', () => {
       'single-char-in-character-classes',
       'duplicates-in-character-class',
       'anchor-precedence',
+      'cyclomatic-complexity',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -215,6 +216,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['single-char-in-character-classes']).toBe('object');
     expect(typeof plugin.rules['duplicates-in-character-class']).toBe('object');
     expect(typeof plugin.rules['anchor-precedence']).toBe('object');
+    expect(typeof plugin.rules['cyclomatic-complexity']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -280,6 +282,7 @@ describe('sonarjs plugin shape', () => {
     );
     expect(plugin.configs.recommended.rules['sonarjs/duplicates-in-character-class']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/anchor-precedence']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/cyclomatic-complexity']).toBe('error');
   });
 });
 
@@ -1335,5 +1338,44 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(anchor-precedence)');
+  });
+
+  it('reports cyclomatic-complexity through the adapter with custom threshold', () => {
+    // base 1 + 4 ifs = 5 > threshold 3 → 1 report
+    const source = 'function f(a,b,c,d){if(a){}if(b){}if(c){}if(d){}}';
+    const reports = runRule('cyclomatic-complexity', source, { options: [{ threshold: 3 }] });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('cyclomaticComplexity');
+  });
+
+  it('does not report cyclomatic-complexity when function is within the threshold', () => {
+    // base 1 + 3 ifs = 4, threshold 4: 4 is not > 4 → 0 reports
+    const source = 'function f(a,b,c){if(a){}if(b){}if(c){}}';
+    const reports = runRule('cyclomatic-complexity', source, { options: [{ threshold: 4 }] });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports cyclomatic-complexity through the CLI', () => {
+    // 11 ifs + base 1 = 12 > default threshold 10 → reported by CLI
+    const src =
+      'function f(a,b,c,d,e,f2,g,h,i,j,k)' +
+      '{if(a){}if(b){}if(c){}if(d){}if(e){}' +
+      'if(f2){}if(g){}if(h){}if(i){}if(j){}if(k){}}';
+    const result = runOxlint('cyclomatic-complexity', src);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(cyclomatic-complexity)');
+  });
+
+  it('exposes the cyclomatic-complexity threshold option in the rule schema', () => {
+    expect(plugin.rules['cyclomatic-complexity'].meta.schema).toEqual([
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ]);
   });
 });
