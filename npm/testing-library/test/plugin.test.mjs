@@ -12,7 +12,7 @@ const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const workspaceRoot = resolve(packageRoot, '../..');
 const expectedRuleNames = plugin.implementedTestingLibraryRuleNames;
 
-function runRule(ruleName, sourceText, filename = 'fixture.test.tsx') {
+function runRule(ruleName, sourceText, { filename = 'fixture.test.tsx', options = [] } = {}) {
   const reports = [];
   const sourceCode = {
     text: sourceText,
@@ -22,7 +22,7 @@ function runRule(ruleName, sourceText, filename = 'fixture.test.tsx') {
   };
   const visitor = plugin.rules[ruleName].createOnce({
     filename,
-    options: [],
+    options,
     sourceCode,
     report(descriptor) {
       reports.push(descriptor);
@@ -114,11 +114,29 @@ describe('testing-library rules through direct adapter harness', () => {
     expect(reports[0].data.message).toBe('Prefer userEvent over fireEvent.');
   });
 
-  it('passes source through the Rust scanner', () => {
-    const reports = runRule('consistent-data-testid', 'render(<button data-testid="BadId" />);');
+  it('forwards consistent-data-testid options to the Rust scanner', () => {
+    const reports = runRule('consistent-data-testid', 'render(<button data-testid="BadId" />);', {
+      options: [{ testIdPattern: '^[a-z-]+$' }],
+    });
 
     expect(reports).toHaveLength(1);
     expect(reports[0].data.message).toContain('data-testid');
+    expect(reports[0].data.message).toContain('/^[a-z-]+$/');
+  });
+
+  it('treats consistent-data-testid as a no-op without a configured pattern', () => {
+    const reports = runRule('consistent-data-testid', 'render(<button data-testid="BadId" />);');
+
+    expect(reports).toHaveLength(0);
+  });
+
+  it('honors a custom consistent-data-testid message', () => {
+    const reports = runRule('consistent-data-testid', 'render(<button data-testid="BadId" />);', {
+      options: [{ testIdPattern: '^[a-z-]+$', customMessage: 'use kebab-case' }],
+    });
+
+    expect(reports).toHaveLength(1);
+    expect(reports[0].data.message).toBe('use kebab-case');
   });
 });
 

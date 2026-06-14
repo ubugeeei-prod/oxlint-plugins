@@ -1,33 +1,60 @@
 //! Targeted scan_* methods for testing-library rules, grouped here to keep the
 //! scanner driver file focused on dispatching.
 
-use oxc_span::Span;
+use std::fmt::Write as _;
 
-use crate::helpers::{
-    count_occurrences, find_all, is_kebab_case, line_prefix, quoted_value_after, span_for,
-};
+use oxc_span::Span;
+use oxlint_plugins_carton::CompactString;
+use regex::Regex;
+
+use crate::helpers::{count_occurrences, find_all, line_prefix, quoted_value_after, span_for};
 use crate::scanner::Scanner;
+
+const FILENAME_PLACEHOLDER: &str = "{fileName}";
 
 impl<'a> Scanner<'a> {
     pub(crate) fn scan_test_id_attributes(&mut self) {
         if !self.options.has_rule("consistent-data-testid") {
             return;
         }
-        let pattern = "data-testid=";
-        for index in find_all(self.source_text, pattern) {
-            let Some((value, value_start, value_end)) =
-                quoted_value_after(self.source_text, index + pattern.len())
-            else {
-                continue;
-            };
-            if !is_kebab_case(value) {
-                self.report(
-                    "consistent-data-testid",
-                    "data-testid should use a consistent kebab-case format.",
-                    Span::new(value_start as u32, value_end as u32),
-                );
-                return;
+        // Upstream defaults `testIdPattern` to "" which compiles to `//` and
+        // matches every value, so an unset pattern never reports.
+        if self.options.test_id_pattern.is_empty() {
+            return;
+        }
+        let file_name = derive_file_name(self.filename).unwrap_or_default();
+        let resolved = self
+            .options
+            .test_id_pattern
+            .replacen(FILENAME_PLACEHOLDER, file_name, 1);
+        let Ok(regex) = Regex::new(&resolved) else {
+            return;
+        };
+
+        // Collect first so the immutable borrows of `self` end before we report.
+        let mut reports: Vec<(CompactString, Span)> = Vec::new();
+        for attr in &self.options.test_id_attribute {
+            let mut needle = CompactString::new("");
+            let _ = write!(needle, "{attr}=");
+            for index in find_all(self.source_text, &needle) {
+                let Some((value, value_start, value_end)) =
+                    quoted_value_after(self.source_text, index + needle.len())
+                else {
+                    continue;
+                };
+                if regex.is_match(value) {
+                    continue;
+                }
+                let message = self.options.custom_message.clone().unwrap_or_else(|| {
+                    let mut message = CompactString::new("");
+                    let _ = write!(message, "`{attr}` \"{value}\" should match `/{resolved}/`");
+                    message
+                });
+                reports.push((message, Span::new(value_start as u32, value_end as u32)));
             }
+        }
+        for (message, span) in reports {
+            self.report_message("consistent-data-testid", message, span);
         }
     }
 
@@ -227,4 +254,19 @@ impl<'a> Scanner<'a> {
             }
         }
     }
+}
+
+/// Derive the `{fileName}` substitution the way upstream `consistent-data-testid`
+/// does: take the last path segment, drop its extension, and fall back to the
+/// parent directory when the file is `index`. Bracketed names (e.g. Next.js
+/// `[id].tsx`) yield no file name.
+fn derive_file_name(filename: &str) -> Option<&str> {
+    let mut segments: Vec<&str> = filename.split('/').collect();
+    let file_with_ext = segments.pop()?;
+    if file_with_ext.contains('[') || file_with_ext.contains(']') {
+        return None;
+    }
+    let parent = segments.pop();
+    let name = file_with_ext.split('.').next().unwrap_or("");
+    if name == "index" { parent } else { Some(name) }
 }

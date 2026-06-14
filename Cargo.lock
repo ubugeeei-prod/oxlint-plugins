@@ -1430,6 +1430,7 @@ dependencies = [
  "oxc_parser",
  "oxc_span",
  "oxlint-plugins-_carton",
+ "regex",
 ]
 
 [[package]]

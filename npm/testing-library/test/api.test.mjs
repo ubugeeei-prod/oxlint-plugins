@@ -38,7 +38,11 @@ const focusedRuleCases = [
   ['await-async-events', 'userEvent.click(button);'],
   ['await-async-queries', 'screen.findByText("Save");'],
   ['await-async-utils', 'waitFor(() => screen.getByText("Save"));'],
-  ['consistent-data-testid', 'render(<button data-testid="BadId" />);'],
+  [
+    'consistent-data-testid',
+    'render(<button data-testid="BadId" />);',
+    { testIdPattern: '^[a-z-]+$' },
+  ],
   ['no-await-sync-events', 'await fireEvent.click(button);'],
   ['no-await-sync-queries', 'await screen.getByText("Save");'],
   ['no-container', 'container.querySelector(".save");'],
@@ -72,8 +76,11 @@ describe('testing-library native API', () => {
   });
 
   it('reports each ported rule with a focused fixture', () => {
-    for (const [ruleName, source] of focusedRuleCases) {
-      const diagnostics = scanTestingLibrary(source, 'fixture.test.tsx', { ruleNames: [ruleName] });
+    for (const [ruleName, source, ruleOptions] of focusedRuleCases) {
+      const diagnostics = scanTestingLibrary(source, 'fixture.test.tsx', {
+        ruleNames: [ruleName],
+        ...ruleOptions,
+      });
 
       expect(
         diagnostics.map((diagnostic) => diagnostic.ruleName),
@@ -104,7 +111,6 @@ describe('testing-library native API', () => {
       new Set([
         'await-async-events',
         'await-async-utils',
-        'consistent-data-testid',
         'no-await-sync-events',
         'no-container',
         'no-dom-import',

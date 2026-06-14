@@ -20,6 +20,8 @@ mod napi_abi {
     pub struct TestingLibraryScanOptions {
         pub rule_names: Option<Vec<String>>,
         pub test_id_pattern: Option<String>,
+        pub test_id_attribute: Option<Vec<String>>,
+        pub custom_message: Option<String>,
     }
 
     #[napi(object)]
@@ -59,9 +61,14 @@ mod napi_abi {
             rule_names: compact_rule_names(options.rule_names),
             test_id_pattern: options
                 .test_id_pattern
-                .filter(|value| !value.is_empty())
                 .map(CompactString::from)
                 .unwrap_or(default_options.test_id_pattern),
+            test_id_attribute: options
+                .test_id_attribute
+                .filter(|values| !values.is_empty())
+                .map(|values| values.into_iter().map(CompactString::from).collect())
+                .unwrap_or(default_options.test_id_attribute),
+            custom_message: options.custom_message.map(CompactString::from),
         };
 
         core::scan_testing_library(&source_text, &filename, &core_options)
