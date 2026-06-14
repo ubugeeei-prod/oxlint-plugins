@@ -157,6 +157,24 @@ const messages = Object.freeze({
   'todo-tag': {
     todoTag: 'Complete the task tracked by this TODO-tagged comment.',
   },
+  'no-sonar-comments': {
+    noSonarComments: 'Remove this NOSONAR comment and fix the underlying issue.',
+  },
+  'array-constructor': {
+    arrayConstructor: 'Use an array literal instead of the Array constructor.',
+  },
+  'no-function-declaration-in-block': {
+    noFunctionDeclarationInBlock:
+      'Move this function declaration out of the block, or use a function expression instead.',
+  },
+  'no-inconsistent-returns': {
+    inconsistentReturns:
+      'Refactor this function to use "return" consistently, either always with a value or always without.',
+  },
+  'no-same-line-conditional': {
+    sameLineConditional:
+      'Move this "if" to a new line or add the missing "else" to clarify the intent.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -232,6 +250,16 @@ const ruleDescriptions = Object.freeze({
     'Disallow FIXME-tagged comments; a FIXME marks code that is known-broken and must be addressed before shipping',
   'todo-tag':
     'Disallow TODO-tagged comments; a TODO marks incomplete work that should be tracked and completed',
+  'no-sonar-comments':
+    'Disallow NOSONAR comments; they suppress analysis and can hide real issues that should be fixed',
+  'array-constructor':
+    'Disallow the Array constructor in favor of array literals, except for the single-argument length form',
+  'no-function-declaration-in-block':
+    'Disallow function declarations nested directly inside a block; use a function expression or move it to the top level',
+  'no-inconsistent-returns':
+    'Disallow mixing value returns and bare returns in the same function; return a value on all paths or none',
+  'no-same-line-conditional':
+    'Disallow an "if" statement placed on the same line as the closing brace of a preceding sibling "if"',
 });
 
 const ruleTypes = Object.freeze({
@@ -275,6 +303,11 @@ const ruleTypes = Object.freeze({
   'no-tab': 'suggestion',
   'fixme-tag': 'suggestion',
   'todo-tag': 'suggestion',
+  'no-sonar-comments': 'suggestion',
+  'array-constructor': 'suggestion',
+  'no-function-declaration-in-block': 'suggestion',
+  'no-inconsistent-returns': 'suggestion',
+  'no-same-line-conditional': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -318,6 +351,11 @@ const recommendedRuleConfig = Object.freeze({
   'no-tab': 'error',
   'fixme-tag': 'error',
   'todo-tag': 'error',
+  'no-sonar-comments': 'error',
+  'array-constructor': 'error',
+  'no-function-declaration-in-block': 'error',
+  'no-inconsistent-returns': 'error',
+  'no-same-line-conditional': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

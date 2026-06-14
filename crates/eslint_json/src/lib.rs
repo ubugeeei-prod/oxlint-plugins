@@ -466,7 +466,7 @@ fn scan_number(
             line_index,
             number.span,
         ));
-    } else if !is_decimal_integer(raw) && value.abs() < f64::MIN_POSITIVE {
+    } else if !is_decimal_integer(raw) && value != 0.0 && value.abs() < f64::MIN_POSITIVE {
         diagnostics.push(number_diagnostic(
             "subnormal",
             raw,
@@ -901,7 +901,11 @@ impl<'a> Parser<'a> {
                     return None;
                 }
                 Some(MemberFact {
-                    key: CompactString::from(ident),
+                    // JSON5 identifier names may carry Unicode escapes (e.g.
+                    // `foot`), which momoa decodes for the key's value while
+                    // the raw key keeps the source text. Mirror that so duplicate
+                    // and sort comparisons see the decoded name.
+                    key: decode_identifier_escapes(ident),
                     raw_key: CompactString::from(ident),
                     name_span: ByteSpan {
                         start,
@@ -1221,6 +1225,61 @@ fn push_utf16_units(ch: char, units: &mut SmallVec<[u16; 16]>) {
 
 fn is_identifier_continue(ch: char) -> bool {
     ch.is_alphanumeric() || matches!(ch, '_' | '$')
+}
+
+// Decode the Unicode escapes (`\uXXXX` or `\u{...}`) that a JSON5 identifier
+// name may contain, returning the identifier's value. Non-escaped identifiers
+// pass through unchanged so the common case allocates the raw text verbatim.
+fn decode_identifier_escapes(ident: &str) -> CompactString {
+    if !ident.contains('\\') {
+        return CompactString::from(ident);
+    }
+
+    let mut out = CompactString::new("");
+    let mut chars = ident.chars().peekable();
+    while let Some(ch) = chars.next() {
+        if ch != '\\' || chars.peek() != Some(&'u') {
+            out.push(ch);
+            continue;
+        }
+        chars.next();
+
+        let code = if chars.peek() == Some(&'{') {
+            chars.next();
+            let mut value = 0u32;
+            let mut any = false;
+            while let Some(&candidate) = chars.peek() {
+                if candidate == '}' {
+                    chars.next();
+                    break;
+                }
+                let Some(digit) = candidate.to_digit(16) else {
+                    break;
+                };
+                value = value.saturating_mul(16).saturating_add(digit);
+                any = true;
+                chars.next();
+            }
+            any.then_some(value)
+        } else {
+            let mut value = 0u32;
+            let mut count = 0;
+            while count < 4 {
+                let Some(digit) = chars.peek().and_then(|candidate| candidate.to_digit(16)) else {
+                    break;
+                };
+                value = value * 16 + digit;
+                count += 1;
+                chars.next();
+            }
+            (count == 4).then_some(value)
+        };
+
+        if let Some(ch) = code.and_then(char::from_u32) {
+            out.push(ch);
+        }
+    }
+    out
 }
 
 fn utf16_offset(source_text: &str, byte_offset: usize) -> u32 {

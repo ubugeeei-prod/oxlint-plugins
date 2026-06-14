@@ -1897,3 +1897,187 @@ fn does_not_report_todo_tag_for_source_with_no_comments() {
     let diagnostics = scan("todo-tag", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_sonar_comments_for_comment_containing_nosonar() {
+    let source = "// NOSONAR suppress this";
+    let diagnostics = scan("no-sonar-comments", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-sonar-comments");
+    assert_eq!(diagnostics[0].message_id, "noSonarComments");
+}
+
+#[test]
+fn reports_no_sonar_comments_for_block_comment_containing_nosonar() {
+    let source = "/* NOSONAR */";
+    let diagnostics = scan("no-sonar-comments", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_sonar_comments_for_plain_comment() {
+    let source = "// just a comment";
+    let diagnostics = scan("no-sonar-comments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_sonar_comments_for_source_with_no_comments() {
+    let source = "const a = 1;";
+    let diagnostics = scan("no-sonar-comments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_array_constructor_for_multi_argument_call() {
+    let source = "const a = Array(1, 2, 3);";
+    let diagnostics = scan("array-constructor", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "array-constructor");
+    assert_eq!(diagnostics[0].message_id, "arrayConstructor");
+}
+
+#[test]
+fn reports_array_constructor_for_multi_argument_new_expression() {
+    let source = "const a = new Array(1, 2, 3);";
+    let diagnostics = scan("array-constructor", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_array_constructor_for_zero_argument_new_expression() {
+    let source = "const a = new Array();";
+    let diagnostics = scan("array-constructor", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_array_constructor_for_single_argument_length_form() {
+    let source = "const a = new Array(500);";
+    let diagnostics = scan("array-constructor", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_constructor_when_type_arguments_present() {
+    let source = "const a = Array<number>(1, 2, 3);";
+    let diagnostics = scan("array-constructor", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_constructor_for_array_literal() {
+    let source = "const a = [1, 2, 3];";
+    let diagnostics = scan("array-constructor", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_constructor_for_unrelated_member_call() {
+    let source = "const a = foo.Array(1, 2, 3);";
+    let diagnostics = scan("array-constructor", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_no_function_declaration_in_block_for_if_block() {
+    let source = "if (cond) { function f() {} }";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noFunctionDeclarationInBlock");
+}
+
+#[test]
+fn reports_no_function_declaration_in_block_for_bare_block() {
+    let source = "{ function f() {} }";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_function_declaration_in_block_for_top_level() {
+    let source = "function f() {}";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_function_declaration_in_block_for_nested_function_body() {
+    let source = "function outer() { function inner() {} }";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_function_declaration_in_block_for_function_expression() {
+    let source = "if (cond) { const f = function () {}; }";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_no_inconsistent_returns_for_mixed_returns() {
+    let source = "function f(x) { if (!x) return; return x.value; }";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-inconsistent-returns");
+    assert_eq!(diagnostics[0].message_id, "inconsistentReturns");
+}
+
+#[test]
+fn reports_no_inconsistent_returns_for_mixed_returns_in_arrow() {
+    let source = "const f = (x) => { if (!x) return; return 1; };";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_inconsistent_returns_when_all_returns_have_values() {
+    let source = "function f(x) { if (!x) return 0; return x.value; }";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_inconsistent_returns_when_all_returns_are_bare() {
+    let source = "function f(x) { if (!x) return; doWork(); return; }";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_no_inconsistent_returns_only_for_inner_scope() {
+    let source = "function outer() { return 1; function inner() { if (a) return; return 2; } }";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_same_line_conditional_for_if_on_closing_brace_line() {
+    let source = "if (a) {\n  doA();\n} if (b) {\n  doB();\n}";
+    let diagnostics = scan("no-same-line-conditional", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-same-line-conditional");
+    assert_eq!(diagnostics[0].message_id, "sameLineConditional");
+}
+
+#[test]
+fn does_not_report_no_same_line_conditional_for_if_on_new_line() {
+    let source = "if (a) {\n  doA();\n}\nif (b) {\n  doB();\n}";
+    let diagnostics = scan("no-same-line-conditional", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_same_line_conditional_for_else_if_chain() {
+    let source = "if (a) {\n  doA();\n} else if (b) {\n  doB();\n}";
+    let diagnostics = scan("no-same-line-conditional", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_same_line_conditional_when_preceding_is_not_if() {
+    let source = "doA(); if (b) {\n  doB();\n}";
+    let diagnostics = scan("no-same-line-conditional", source);
+    assert!(diagnostics.is_empty());
+}

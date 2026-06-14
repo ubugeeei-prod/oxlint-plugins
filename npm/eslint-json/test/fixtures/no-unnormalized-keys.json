@@ -1,0 +1,439 @@
+{
+  "__generated": {
+    "source": "@eslint/json",
+    "version": "2.0.0",
+    "sourceFile": "tests/rules/no-unnormalized-keys.test.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-json-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "{\"ẛ̣\":\"NFC\"}",
+      "language": "json/json"
+    },
+    {
+      "code": "{\"ẛ̣\":\"NFC\"}",
+      "options": [
+        {
+          "form": "NFC"
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"ẛ̣\":\"NFD\"}",
+      "options": [
+        {
+          "form": "NFD"
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"ṩ\":\"NFKC\"}",
+      "options": [
+        {
+          "form": "NFKC"
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"ṩ\":\"NFKD\"}",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u1E9B\\u0323\":\"NFC\"}",
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u1E9B\\u0323\":\"NFC\"}",
+      "options": [
+        {
+          "form": "NFC"
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u1E9B\\u0323\":\"NFC\"}",
+      "language": "json/jsonc",
+      "options": [
+        {
+          "form": "NFC"
+        }
+      ]
+    },
+    {
+      "code": "{\"\\u1E9B\\u0323\":\"NFC\"}",
+      "language": "json/json5",
+      "options": [
+        {
+          "form": "NFC"
+        }
+      ]
+    },
+    {
+      "code": "{\"\\u017F\\u0323\\u0307\":\"NFD\"}",
+      "options": [
+        {
+          "form": "NFD"
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u017F\\u0323\\u0307\":\"NFD\"}",
+      "language": "json/jsonc",
+      "options": [
+        {
+          "form": "NFD"
+        }
+      ]
+    },
+    {
+      "code": "{\"\\u017F\\u0323\\u0307\":\"NFD\"}",
+      "language": "json/json5",
+      "options": [
+        {
+          "form": "NFD"
+        }
+      ]
+    },
+    {
+      "code": "{\"\\u1E69\":\"NFKC\"}",
+      "options": [
+        {
+          "form": "NFKC"
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u1E69\":\"NFKC\"}",
+      "language": "json/jsonc",
+      "options": [
+        {
+          "form": "NFKC"
+        }
+      ]
+    },
+    {
+      "code": "{\"\\u1E69\":\"NFKC\"}",
+      "language": "json/json5",
+      "options": [
+        {
+          "form": "NFKC"
+        }
+      ]
+    },
+    {
+      "code": "{\"\\u0073\\u0323\\u0307\":\"NFKD\"}",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u0073\\u0323\\u0307\":\"NFKD\"}",
+      "language": "json/jsonc",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ]
+    },
+    {
+      "code": "{\"\\u0073\\u0323\\u0307\":\"NFKD\"}",
+      "language": "json/json5",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "{\"ẛ̣\":\"NFD\"}",
+      "output": "{\"ẛ̣\":\"NFD\"}",
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ẛ̣"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"ẛ̣\":\"NFD\"}",
+      "output": "{\"ẛ̣\":\"NFD\"}",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ẛ̣"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "{\"ẛ̣\":\"NFD\"}",
+      "output": "{\"ẛ̣\":\"NFD\"}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ẛ̣"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "{'ẛ̣':'NFD'}",
+      "output": "{'ẛ̣':'NFD'}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ẛ̣"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "{ẛ̣:\"NFD\"}",
+      "output": "{ẛ̣:\"NFD\"}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ẛ̣"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "{\"ṩ\":\"NFKC\"}",
+      "output": "{\"ṩ\":\"NFKC\"}",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ṩ"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"ṩ\":\"NFKC\"}",
+      "output": "{\"ṩ\":\"NFKC\"}",
+      "language": "json/jsonc",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ṩ"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "{\"ṩ\":\"NFKC\"}",
+      "output": "{\"ṩ\":\"NFKC\"}",
+      "language": "json/json5",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ṩ"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "{'ṩ':\"NFKC\"}",
+      "output": "{'ṩ':\"NFKC\"}",
+      "language": "json/json5",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ṩ"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "{ṩ:\"NFKC\"}",
+      "output": "{ṩ:\"NFKC\"}",
+      "language": "json/json5",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "ṩ"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 3
+        }
+      ]
+    },
+    {
+      "code": "{\"\\u1E9B\\u0323\":\"NFC\"}",
+      "options": [
+        {
+          "form": "NFD"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "\\u1E9B\\u0323"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u1E9B\\u0323\\n\":42}",
+      "options": [
+        {
+          "form": "NFD"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "\\u1E9B\\u0323\\n"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u017F\\u0323\\u0307\":\"NFD\"}",
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "\\u017F\\u0323\\u0307"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u1E69\":\"NFKC\"}",
+      "options": [
+        {
+          "form": "NFKD"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unnormalizedKey",
+          "data": {
+            "key": "\\u1E69"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ],
+      "language": "json/json"
+    }
+  ]
+}
