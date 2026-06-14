@@ -40,10 +40,6 @@
     "no-space-in-emphasis": {
       "level": "off",
       "note": "Fundamentally different emphasis-marker scan; large divergence in spans and counts."
-    },
-    "no-unused-definitions": {
-      "level": "off",
-      "note": "Reference-usage tracking differs for footnotes and collapsed references."
     }
   }
 }
