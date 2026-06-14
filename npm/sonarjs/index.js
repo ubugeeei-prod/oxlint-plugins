@@ -141,6 +141,10 @@ const messages = Object.freeze({
   'no-skipped-tests': {
     skippedTest: 'Re-enable or remove this skipped test.',
   },
+  'prefer-single-boolean-return': {
+    preferSingleBooleanReturn:
+      "Replace this if/else returning booleans with a single 'return' of the condition.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -206,6 +210,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow using 'new' with the primitive wrapper constructors Number, String, or Boolean, which create wrapper objects instead of primitive values",
   'no-skipped-tests':
     'Disallow committed skipped tests (.skip member or x-prefixed Jasmine calls); re-enable or remove them instead',
+  'prefer-single-boolean-return':
+    'Disallow if/else structures where both branches return a boolean literal; return the condition directly instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -244,6 +250,7 @@ const ruleTypes = Object.freeze({
   'no-redundant-jump': 'suggestion',
   'no-primitive-wrappers': 'problem',
   'no-skipped-tests': 'problem',
+  'prefer-single-boolean-return': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -282,6 +289,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-redundant-jump': 'error',
   'no-primitive-wrappers': 'error',
   'no-skipped-tests': 'error',
+  'prefer-single-boolean-return': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

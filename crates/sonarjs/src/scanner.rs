@@ -127,6 +127,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_identical_conditions(it);
         self.check_no_all_duplicated_branches_if(it);
         self.check_elseif_without_else(it);
+        self.check_prefer_single_boolean_return(it);
         walk::walk_if_statement(self, it);
     }
 
