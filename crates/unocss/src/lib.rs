@@ -1,10 +1,9 @@
 #![doc = "Rust implementation of @unocss/eslint-plugin rule logic."]
 
-mod literals;
 mod ordering;
 mod scanner;
-mod tags;
 mod types;
+mod visitor;
 
 #[cfg(test)]
 mod tests;
@@ -13,7 +12,7 @@ use oxc_allocator::Allocator;
 use oxc_parser::Parser;
 use oxc_span::SourceType;
 use oxlint_plugins_carton::SmallVec;
-use regex::Regex;
+use regex::RegexBuilder;
 
 use crate::scanner::Scanner;
 use crate::types::LineIndex;
@@ -45,11 +44,18 @@ pub fn scan_unocss(
         return SmallVec::new();
     }
 
+    // Build case-insensitive regexes matching upstream `new RegExp(regex, 'i')`.
     let variable_regexes = options
         .uno_variables
         .iter()
-        .filter_map(|pattern| Regex::new(pattern.as_str()).ok())
+        .filter_map(|pattern| {
+            RegexBuilder::new(pattern.as_str())
+                .case_insensitive(true)
+                .build()
+                .ok()
+        })
         .collect();
+
     let mut scanner = Scanner {
         source_text,
         line_index: LineIndex::new(source_text),
@@ -57,7 +63,6 @@ pub fn scan_unocss(
         variable_regexes,
         diagnostics: SmallVec::new(),
     };
-    scanner.scan_literals();
-    scanner.scan_attributify();
+    scanner.run(&parser_return.program);
     scanner.diagnostics
 }
