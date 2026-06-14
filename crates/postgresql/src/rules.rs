@@ -3,6 +3,7 @@
 
 use crate::RuleDef;
 
+mod consistent_create_or_replace;
 mod consistent_identity_over_serial;
 mod consistent_reindex_concurrently;
 mod no_add_check_constraint_without_not_valid;
@@ -160,6 +161,7 @@ pub const RULE_NAMES: [&str; 89] = [
 
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
+    "consistent-create-or-replace",
     "consistent-identity-over-serial",
     "consistent-reindex-concurrently",
     "no-add-check-constraint-without-not-valid",
@@ -224,6 +226,11 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
 pub(crate) const REGISTRY: &[RuleDef] = &[
+    RuleDef {
+        name: "consistent-create-or-replace",
+        run: consistent_create_or_replace::run,
+        uses_parse_error: false,
+    },
     RuleDef {
         name: "consistent-identity-over-serial",
         run: consistent_identity_over_serial::run,
