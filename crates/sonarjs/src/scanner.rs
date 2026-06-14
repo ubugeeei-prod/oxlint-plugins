@@ -269,6 +269,13 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_reg_exp_literal(&mut self, it: &RegExpLiteral<'a>) {
         self.check_no_empty_character_class(it);
+        self.check_no_empty_group(it);
+        self.check_no_empty_alternatives(it);
+        self.check_no_regex_spaces(it);
+        self.check_no_control_regex(it);
+        self.check_single_char_in_character_classes(it);
+        self.check_duplicates_in_character_class(it);
+        self.check_anchor_precedence(it);
         walk::walk_reg_exp_literal(self, it);
     }
 

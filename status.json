@@ -5207,19 +5207,19 @@
       },
       {
         "name": "no-distinct-on-without-order-by",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-distinct-on-without-order-by."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-distinct-on-without-order-by; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-drop-column",
@@ -5399,19 +5399,19 @@
       },
       {
         "name": "no-implicit-join",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-implicit-join."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-implicit-join; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-leading-wildcard-like",
@@ -5527,19 +5527,19 @@
       },
       {
         "name": "no-rename-column",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-rename-column."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-rename-column; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-rename-table",
@@ -5623,35 +5623,35 @@
       },
       {
         "name": "no-set-not-null",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-set-not-null."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-set-not-null; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-set-search-path",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-set-search-path."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-set-search-path; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-syntax-error",
@@ -5671,19 +5671,19 @@
       },
       {
         "name": "no-temporary-table",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-temporary-table."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-temporary-table; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-time-type",
@@ -5783,19 +5783,19 @@
       },
       {
         "name": "no-vacuum-full",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-vacuum-full."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-vacuum-full; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-volatile-default-on-add-column",
@@ -6055,19 +6055,19 @@
       },
       {
         "name": "require-limit",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule require-limit."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/require-limit; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "require-named-constraint",
@@ -10046,19 +10046,19 @@
     "rules": [
       {
         "name": "anchor-precedence",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule anchor-precedence (Sonar key S5850). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S5850 (anchor-precedence). Flags top-level alternations where ^ anchors only the first branch or $ only the last, due to operator precedence. Excludes: single-alternative patterns (grouped), patterns where every branch is fully anchored, and the two-branch complementary trim idiom (^...|...$). Never recurses into groups. SonarJS upstream is LGPL-3.0; implemented from public RSPEC description only."
       },
       {
         "name": "argument-type",
@@ -10990,19 +10990,19 @@
       },
       {
         "name": "duplicates-in-character-class",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule duplicates-in-character-class (Sonar key S5869). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room narrow port (Sonar key S5869). Uses the shared regex_ast helper to walk a regex literal; within each CharacterClass body, flags every CharacterClassContents::Character whose codepoint value repeats an earlier literal character in the same class. Overlaps involving ranges or class escapes (\\w over a, \\s over \\t) are a documented follow-up, keeping the rule free of false positives. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "dynamically-constructed-templates",
@@ -11838,19 +11838,19 @@
       },
       {
         "name": "no-control-regex",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-control-regex (Sonar key S6324). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6324). Flags control characters (U+0000\u2013U+001F) written as \\x, \\u/\\u{}, or \\c escapes anywhere in a regex literal including inside character classes. Named escapes \\t\\n\\r\\v\\f (CharacterKind::SingleEscape) are not flagged. Literal raw control chars and octal escapes are a documented follow-up (false negatives, not false positives). No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-dead-store",
@@ -11966,19 +11966,19 @@
       },
       {
         "name": "no-empty-alternatives",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-empty-alternatives (Sonar key S6323). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6323). Uses the shared regex_ast helper to parse a regex literal and walk every disjunction (top-level + group/lookaround bodies); a disjunction with two or more alternatives where some alternative body is empty is flagged at each empty alternative's span. A single empty alternative with no `|` (an empty group) is left to no-empty-group. Regex-literal scope only; the new RegExp(string) form is a documented follow-up. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-empty-character-class",
@@ -12014,19 +12014,19 @@
       },
       {
         "name": "no-empty-group",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-empty-group (Sonar key S6331). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (SonarJS key S6331). Detects empty capturing and non-capturing groups in regex literals via oxc_regular_expression AST. Never copied upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-empty-test-file",
@@ -12878,19 +12878,19 @@
       },
       {
         "name": "no-regex-spaces",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-regex-spaces (Sonar key S6326). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6326). Uses the shared regex_ast helper to walk every Alternative's term sequence, detecting maximal runs of two or more consecutive literal space characters (U+0020). Spaces inside character classes are naturally excluded (they live in CharacterClass.body, not Alternative.body). A quantified space ` {n}` is a single Quantifier term, not multiple Character terms, so it is also naturally excluded. Recurses into capturing groups, non-capturing groups, lookaround assertions, and quantifier bodies. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-require-or-define",
@@ -13838,19 +13838,19 @@
       },
       {
         "name": "single-char-in-character-classes",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule single-char-in-character-classes (Sonar key S6397). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6397). Uses the shared regex_ast helper to walk a regex literal; flags a non-negated CharacterClass whose body is exactly one CharacterClassContents::Character (a single literal character), at any nesting depth. Negated classes, ranges, multi-element classes, and single class-escape elements (e.g. [\\d]) are not flagged; the class-escape and nested-class cases are documented follow-ups. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "single-character-alternation",

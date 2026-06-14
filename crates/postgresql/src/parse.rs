@@ -17,7 +17,7 @@ use serde_json::Value;
 use crate::ffi::parse_to_json;
 use crate::manipulate::manipulate;
 use crate::text::Source;
-use crate::tokenize::{Token, tokenize};
+use crate::tokenize::{Comment, Token, Tokenized, tokenize};
 
 #[derive(Clone, Debug)]
 pub struct ParseError {
@@ -26,18 +26,15 @@ pub struct ParseError {
 
 pub struct Parsed {
     pub source: Source,
-    #[allow(
-        dead_code,
-        reason = "token stream consumed by rules added in later PRs"
-    )]
     pub tokens: Vec<Token>,
+    pub comments: Vec<Comment>,
     pub statements: Vec<Value>,
     pub error: Option<ParseError>,
 }
 
 pub fn parse(source_text: &str) -> Parsed {
     let source = Source::new(source_text);
-    let tokens = tokenize(&source);
+    let Tokenized { tokens, comments } = tokenize(&source);
 
     match parse_to_json(source_text) {
         Ok(json) => match serde_json::from_str::<Value>(&json) {
@@ -46,6 +43,7 @@ pub fn parse(source_text: &str) -> Parsed {
                 Parsed {
                     source,
                     tokens,
+                    comments,
                     statements,
                     error: None,
                 }
@@ -53,6 +51,7 @@ pub fn parse(source_text: &str) -> Parsed {
             Err(err) => Parsed {
                 source,
                 tokens,
+                comments,
                 statements: Vec::new(),
                 error: Some(ParseError {
                     message: err.to_string(),
@@ -62,6 +61,7 @@ pub fn parse(source_text: &str) -> Parsed {
         Err(message) => Parsed {
             source,
             tokens,
+            comments,
             statements: Vec::new(),
             error: Some(ParseError { message }),
         },
