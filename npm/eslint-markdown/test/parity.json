@@ -48,10 +48,6 @@
     "no-unused-definitions": {
       "level": "off",
       "note": "Reference-usage tracking differs for footnotes and collapsed references."
-    },
-    "require-alt-text": {
-      "level": "off",
-      "note": "Divergence detecting images nested in HTML and reference-style images without alt text."
     }
   }
 }
