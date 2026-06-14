@@ -94,6 +94,14 @@ fn scans_story_exports_and_story_names() {
 }
 
 #[test]
+fn await_interactions_skips_locally_shadowed_user_event() {
+    // A locally declared `userEvent` shadows the storybook import, so upstream does
+    // not require its calls to be awaited.
+    let source = "Basic.play = async () => {\n  const userEvent = { test: () => {} };\n  userEvent.test();\n};";
+    assert_eq!(scan("await-interactions", source).len(), 0);
+}
+
+#[test]
 fn no_redundant_story_name_splits_letter_digit_boundary() {
     // Upstream `storyNameFromExport('H1') === 'H 1'`, so `H1.storyName = 'H1'` is
     // NOT redundant. The port must split the letter→digit boundary the same way.
