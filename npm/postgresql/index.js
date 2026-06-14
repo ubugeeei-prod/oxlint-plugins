@@ -53,6 +53,18 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-rename-table': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... RENAME TO` — every deployed reader of the old name breaks at deploy time',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noRenameTable:
+        "`RENAME TO` breaks every running app that still queries the old name. The safer pattern is `CREATE VIEW old AS SELECT * FROM new` so old callers keep working until they're migrated, then drop the view in a separate deploy.",
+    },
+  },
   'no-set-not-null': {
     type: 'problem',
     description:
