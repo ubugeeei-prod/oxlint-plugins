@@ -27,6 +27,7 @@ mod no_nested_switch;
 mod no_nested_template_literals;
 mod no_redundant_boolean;
 mod no_small_switch;
+mod no_useless_catch;
 mod non_existent_operator;
 mod prefer_default_last;
 mod prefer_while;

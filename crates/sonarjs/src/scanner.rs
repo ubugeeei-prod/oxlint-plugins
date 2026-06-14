@@ -3,7 +3,7 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, BindingIdentifier, ConditionalExpression,
+    AssignmentExpression, BinaryExpression, BindingIdentifier, CatchClause, ConditionalExpression,
     ExpressionStatement, ForInStatement, ForStatement, Function, IdentifierReference, IfStatement,
     LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression, SwitchCase,
     SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
@@ -196,5 +196,10 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_yield_expression(&mut self, it: &YieldExpression<'a>) {
         self.mark_generator_yield();
         walk::walk_yield_expression(self, it);
+    }
+
+    fn visit_catch_clause(&mut self, it: &CatchClause<'a>) {
+        self.check_no_useless_catch(it);
+        walk::walk_catch_clause(self, it);
     }
 }

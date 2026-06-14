@@ -123,6 +123,7 @@ describe('sonarjs plugin shape', () => {
       'no-small-switch',
       'prefer-default-last',
       'no-inverted-boolean-check',
+      'no-useless-catch',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -153,6 +154,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-small-switch']).toBe('object');
     expect(typeof plugin.rules['prefer-default-last']).toBe('object');
     expect(typeof plugin.rules['no-inverted-boolean-check']).toBe('object');
+    expect(typeof plugin.rules['no-useless-catch']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -183,6 +185,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-small-switch']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-default-last']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-inverted-boolean-check']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-useless-catch']).toBe('error');
   });
 });
 
@@ -681,5 +684,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-inverted-boolean-check)');
+  });
+
+  it('reports no-useless-catch for catch that only rethrows through the adapter', () => {
+    const source = 'try { f(); } catch (e) { throw e; }';
+    const reports = runRule('no-useless-catch', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('uselessCatch');
+  });
+
+  it('reports no-useless-catch through the CLI', () => {
+    const source = 'try { f(); } catch (e) { throw e; }';
+    const result = runOxlint('no-useless-catch', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-useless-catch)');
   });
 });
