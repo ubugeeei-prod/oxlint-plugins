@@ -13,7 +13,7 @@
 
 use serde_json::Value;
 
-use crate::tokenize::{TokenKind, tokenize};
+use crate::tokenize::TokenKind;
 use crate::{DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::SmallVec;
 
@@ -64,8 +64,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
     // Constraining the search to the node range avoids false attribution to
     // `ALTER TABLE … DROP COLUMN` / `ALTER TABLE … DROP CONSTRAINT` when
     // those precede a standalone `DROP` statement.
-    let tokenized = tokenize(ctx.source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     let drop_idx = match tokens.iter().position(|tok| {
         tok.kind == TokenKind::Keyword

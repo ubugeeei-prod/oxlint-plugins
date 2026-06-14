@@ -12,7 +12,7 @@
 use serde_json::Value;
 
 use crate::ast::is_type;
-use crate::tokenize::{TokenKind, tokenize};
+use crate::tokenize::TokenKind;
 use crate::{DiagnosticDatum, DiagnosticFix, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -49,8 +49,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         .and_then(Value::as_str)
         .unwrap_or("always");
 
-    let tokenized = tokenize(ctx.source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     let Some((next_index, next)) = tokens
         .iter()

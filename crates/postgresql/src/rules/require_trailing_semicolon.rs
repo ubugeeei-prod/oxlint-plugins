@@ -4,7 +4,6 @@
 
 use serde_json::Value;
 
-use crate::tokenize::tokenize;
 use crate::{DiagnosticFix, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -14,8 +13,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         return;
     }
 
-    let tokenized = tokenize(ctx.source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     let last = match tokens.last() {
         Some(t) => t,

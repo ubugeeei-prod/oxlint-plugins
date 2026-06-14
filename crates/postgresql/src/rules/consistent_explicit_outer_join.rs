@@ -1,5 +1,5 @@
 //! Port of `consistent-explicit-outer-join`
-use crate::tokenize::{TokenKind, tokenize};
+use crate::tokenize::TokenKind;
 use crate::{DiagnosticDatum, DiagnosticFix, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 use serde_json::Value;
@@ -19,8 +19,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         .and_then(|o| o.get("style"))
         .and_then(Value::as_str)
         .unwrap_or("always");
-    let tokenized = tokenize(ctx.source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     for i in 0..tokens.len() {
         let token = &tokens[i];

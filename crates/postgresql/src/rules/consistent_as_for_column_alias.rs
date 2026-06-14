@@ -16,7 +16,7 @@
 use serde_json::Value;
 
 use crate::ast::{array_field, field, is_type};
-use crate::tokenize::{Token, TokenKind, tokenize};
+use crate::tokenize::{Token, TokenKind};
 use crate::{DiagnosticDatum, DiagnosticFix, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -48,8 +48,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         return;
     };
 
-    let tokenized = tokenize(ctx.source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     for target in target_list {
         visit_target(target, style, tokens, ctx);

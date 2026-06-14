@@ -6,7 +6,7 @@
 use core::fmt::Write as _;
 use serde_json::Value;
 
-use crate::tokenize::{TokenKind, tokenize};
+use crate::tokenize::TokenKind;
 use crate::{DiagnosticDatum, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
 
@@ -41,8 +41,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         .map(|v| v as usize)
         .unwrap_or(DEFAULT_MAX);
 
-    let tokenized = tokenize(ctx.source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     // Deduplicate by start offset (upstream uses `seen.has(range[0])`).
     let mut seen: FastHashSet<u32> = FastHashSet::default();

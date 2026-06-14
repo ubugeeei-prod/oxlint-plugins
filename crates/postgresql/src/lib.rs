@@ -99,6 +99,7 @@ pub fn scan_postgresql(source_text: &str, options: &ScanOptions) -> SmallVec<[Di
         options: &options.options,
         error: parsed.error.as_ref(),
         statements: &parsed.statements,
+        tokens: &parsed.tokens,
         diagnostics: SmallVec::new(),
         rule_name: "",
     };
@@ -138,6 +139,10 @@ pub struct RuleContext<'a> {
     /// program-exit behaviour (e.g. `require-index-on-fk-column`) walk this
     /// slice directly instead of relying on the visitor dispatch.
     pub statements: &'a [Value],
+    /// The token stream produced by the single tokenization of the source file.
+    /// Rules that need to walk the token stream (e.g. `prefer-keyword-case`)
+    /// use this shared slice instead of calling `tokenize(ctx.source)` again.
+    pub tokens: &'a [crate::tokenize::Token],
     diagnostics: SmallVec<[Diagnostic; 8]>,
     rule_name: &'static str,
 }
