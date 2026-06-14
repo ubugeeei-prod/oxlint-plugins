@@ -35,6 +35,7 @@ mod napi_abi {
         pub allow_fragment_pattern: Option<String>,
         pub check_missing_table_cells: Option<bool>,
         pub math: Option<bool>,
+        pub frontmatter: Option<bool>,
     }
 
     #[napi(object)]
@@ -129,6 +130,7 @@ mod napi_abi {
             allow_fragment_pattern: options.allow_fragment_pattern.map(CompactString::from),
             check_missing_table_cells: options.check_missing_table_cells.unwrap_or(false),
             math: options.math.unwrap_or(false),
+            frontmatter: options.frontmatter.unwrap_or(false),
         };
 
         if core_options.rule_names.is_empty() && default_rule_names {
