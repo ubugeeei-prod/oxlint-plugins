@@ -1,7 +1,39 @@
 #![doc = "Rust implementation of @eslint/markdown rule logic."]
 
+use markdown::mdast;
 use oxlint_plugins_carton::{CompactString, FastHashMap, FastHashSet, SmallVec};
 use regex::Regex;
+
+// Rules whose logic is driven by the markdown-rs mdast tree (mirroring upstream's
+// mdast-based rules) rather than the regex `MarkdownFacts`. The tree is parsed
+// once per scan only when one of these rules is active.
+const MDAST_RULES: &[&str] = &["require-alt-text"];
+
+// Parse the source into an mdast tree with the same constructs upstream enables
+// for `markdown/gfm` (GFM tables, autolink literals, footnotes, strikethrough).
+fn parse_mdast(source_text: &str) -> Option<mdast::Node> {
+    markdown::to_mdast(source_text, &markdown::ParseOptions::gfm()).ok()
+}
+
+// Depth-first visit of every node in the tree.
+fn visit_mdast<'a>(node: &'a mdast::Node, visit: &mut impl FnMut(&'a mdast::Node)) {
+    visit(node);
+    if let Some(children) = node.children() {
+        for child in children {
+            visit_mdast(child, visit);
+        }
+    }
+}
+
+// The byte span of a node, taken from its mdast source position. Byte offsets are
+// converted to 1-indexed-line / 0-indexed-UTF-16-column locations by `LineIndex`,
+// keeping every rule on one column convention.
+fn node_span(node: &mdast::Node) -> Option<ByteSpan> {
+    node.position().map(|position| ByteSpan {
+        start: position.start.offset,
+        end: position.end.offset,
+    })
+}
 
 pub const RULE_NAMES: [&str; 21] = [
     "fenced-code-language",
@@ -218,6 +250,11 @@ pub fn scan_eslint_markdown(
 ) -> SmallVec<[Diagnostic; 32]> {
     let line_index = LineIndex::new(source_text);
     let facts = collect_facts(source_text, options);
+    let mdast = if MDAST_RULES.iter().any(|rule| options.is_enabled(rule)) {
+        parse_mdast(source_text)
+    } else {
+        None
+    };
     let mut diagnostics = SmallVec::new();
 
     if options.is_enabled("fenced-code-language") {
@@ -277,8 +314,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("no-unused-definitions") {
         scan_unused_definitions(source_text, &line_index, &facts, options, &mut diagnostics);
     }
-    if options.is_enabled("require-alt-text") {
-        scan_require_alt_text(source_text, &line_index, &facts, &mut diagnostics);
+    if options.is_enabled("require-alt-text")
+        && let Some(tree) = &mdast
+    {
+        scan_require_alt_text(source_text, &line_index, tree, &mut diagnostics);
     }
     if options.is_enabled("table-column-count") {
         scan_table_column_count(source_text, &line_index, &facts, options, &mut diagnostics);
@@ -1417,39 +1456,105 @@ fn scan_unused_definitions(
 fn scan_require_alt_text(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    for link in &facts.links {
-        if link.is_image && link.label.trim().is_empty() {
+    visit_mdast(tree, &mut |node| match node {
+        // Markdown images / image references: flag when alt text is blank.
+        mdast::Node::Image(image) if image.alt.trim().is_empty() => {
+            push_alt_required(source_text, line_index, node_span(node), diagnostics);
+        }
+        mdast::Node::ImageReference(image) if image.alt.trim().is_empty() => {
+            push_alt_required(source_text, line_index, node_span(node), diagnostics);
+        }
+        // Raw HTML: scan each `<img>` tag for a usable alt attribute.
+        mdast::Node::Html(_) => {
+            if let Some(span) = node_span(node) {
+                scan_html_img_alt(source_text, line_index, span, diagnostics);
+            }
+        }
+        _ => {}
+    });
+}
+
+fn push_alt_required(
+    source_text: &str,
+    line_index: &LineIndex,
+    span: Option<ByteSpan>,
+    diagnostics: &mut SmallVec<[Diagnostic; 32]>,
+) {
+    if let Some(span) = span {
+        diagnostics.push(Diagnostic {
+            rule_name: "require-alt-text",
+            message_id: "altTextRequired",
+            data: DiagnosticData::default(),
+            loc: line_index.loc_for_span(source_text, span),
+            fix: None,
+        });
+    }
+}
+
+// Mirror upstream's `<img>` handling: strip comments, then for each img tag flag
+// it unless it carries a usable alt. `aria-hidden="true"` exempts the tag. An alt
+// attribute that is present but whitespace-only (and non-empty, e.g. `alt=" "`)
+// is flagged; a bare `alt` or `alt=""` is accepted.
+fn scan_html_img_alt(
+    source_text: &str,
+    line_index: &LineIndex,
+    span: ByteSpan,
+    diagnostics: &mut SmallVec<[Diagnostic; 32]>,
+) {
+    let Ok(img_re) = Regex::new(r#"(?i)<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?/?>"#) else {
+        return;
+    };
+    let text = strip_html_comments(source_text.get(span.start..span.end).unwrap_or(""));
+    for mat in img_re.find_iter(&text) {
+        let tag = mat.as_str();
+        if html_attribute(tag, "aria-hidden")
+            .flatten()
+            .is_some_and(|value| value.eq_ignore_ascii_case("true"))
+        {
+            continue;
+        }
+        let flag = match html_attribute(tag, "alt") {
+            None => true,
+            Some(Some(value)) => value.trim().is_empty() && !value.is_empty(),
+            Some(None) => false,
+        };
+        if flag {
+            let start = span.start + mat.start();
             diagnostics.push(Diagnostic {
                 rule_name: "require-alt-text",
                 message_id: "altTextRequired",
                 data: DiagnosticData::default(),
-                loc: line_index.loc_for_span(source_text, link.span),
+                loc: line_index.loc_for_span(
+                    source_text,
+                    ByteSpan {
+                        start,
+                        end: start + tag.len(),
+                    },
+                ),
                 fix: None,
             });
         }
     }
-    for tag in &facts.html_tags {
-        if !tag.name.eq_ignore_ascii_case("img") {
-            continue;
-        }
-        let alt = html_attr(tag.raw.as_str(), "alt");
-        let aria_hidden = html_attr(tag.raw.as_str(), "aria-hidden");
-        if aria_hidden.is_some_and(|value| value.eq_ignore_ascii_case("true")) {
-            continue;
-        }
-        if alt.is_none_or(|value| value.trim().is_empty()) {
-            diagnostics.push(Diagnostic {
-                rule_name: "require-alt-text",
-                message_id: "altTextRequired",
-                data: DiagnosticData::default(),
-                loc: line_index.loc_for_span(source_text, tag.span),
-                fix: None,
-            });
-        }
-    }
+}
+
+// Match an HTML attribute the way upstream's `getHtmlAttributeRe` does:
+// `\s<name>(\s*=\s*['"]([^'"]*)['"])?`. Returns `None` if absent, `Some(None)` if
+// present without a value (bare), `Some(Some(value))` if present with a value.
+fn html_attribute(tag: &str, name: &str) -> Option<Option<CompactString>> {
+    let pattern = format_attr_pattern(name);
+    let attr_re = Regex::new(&pattern).ok()?;
+    let caps = attr_re.captures(tag)?;
+    Some(caps.get(1).map(|value| CompactString::from(value.as_str())))
+}
+
+fn format_attr_pattern(name: &str) -> CompactString {
+    let mut pattern = CompactString::from(r"(?i)\s");
+    pattern.push_str(name);
+    pattern.push_str(r#"(?:\s*=\s*['"]([^'"]*)['"])?"#);
+    pattern
 }
 
 fn scan_table_column_count(

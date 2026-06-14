@@ -9,6 +9,7 @@ version.workspace = true
 publish = false
 
 [dependencies]
+markdown.workspace = true
 oxlint-plugins-carton.workspace = true
 regex.workspace = true
 

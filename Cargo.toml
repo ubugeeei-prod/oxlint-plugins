@@ -60,6 +60,7 @@ compact_str = "0.9.1"
 divan = "0.1.21"
 ghost-cell = "0.2.6"
 insta = "1.47.2"
+markdown = "1.0.0"
 napi = { version = "3.9.0", default-features = false, features = ["napi9", "serde-json"] }
 napi-build = "2.3.2"
 napi-derive = "3.5.6"
