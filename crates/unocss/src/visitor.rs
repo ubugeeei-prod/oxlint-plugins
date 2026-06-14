@@ -13,7 +13,8 @@
 
 use oxc_ast::ast::{
     Argument, BindingPattern, CallExpression, Expression, JSXAttributeItem, JSXAttributeName,
-    JSXAttributeValue, JSXOpeningElement, ObjectPropertyKind, TemplateLiteral, VariableDeclarator,
+    JSXAttributeValue, JSXOpeningElement, ObjectExpression, ObjectPropertyKind, TemplateLiteral,
+    VariableDeclarator,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -203,6 +204,35 @@ impl<'src, 'a> UnocssVisitor<'src, 'a> {
         }
     }
 
+    /// Collect literals from an object passed as a UnoCSS-function argument,
+    /// mirroring upstream `handleObjectExpression` in the CallExpression visitor:
+    /// property VALUES (recursing into nested objects) AND property KEYS that are
+    /// string / template / `String.raw` literals (e.g. `{ 'a b': x }`,
+    /// `` { [`a b`]: x } ``). Upstream collects keys ONLY for call-argument
+    /// objects, not variable-initialiser objects, so this is reached only from
+    /// the call path; `collect_expression_literals` keeps the value-only behavior.
+    fn collect_object_with_keys(
+        &self,
+        obj: &ObjectExpression<'_>,
+        out: &mut SmallVec<[LiteralSpan<'src>; 16]>,
+    ) {
+        for prop in &obj.properties {
+            let ObjectPropertyKind::ObjectProperty(op) = prop else {
+                continue;
+            };
+            if let Expression::ObjectExpression(inner) = &op.value {
+                self.collect_object_with_keys(inner, out);
+            } else {
+                self.collect_expression_literals(&op.value, out);
+            }
+            // Non-identifier keys (string/template/`String.raw`) expose an inner
+            // expression; identifier keys (`small:`) return `None` and are skipped.
+            if let Some(key_expr) = op.key.as_expression() {
+                self.collect_expression_literals(key_expr, out);
+            }
+        }
+    }
+
     /// Return the simple identifier callee name of a call expression, if any.
     fn callee_name<'x>(call: &'x CallExpression<'_>) -> Option<&'x str> {
         match &call.callee {
@@ -339,7 +369,13 @@ impl<'src, 'a> Visit<'src> for UnocssVisitor<'src, 'a> {
                 }
                 if let Some(expr) = arg.as_expression() {
                     let mut tmp: SmallVec<[LiteralSpan<'src>; 16]> = SmallVec::new();
-                    self.collect_expression_literals(expr, &mut tmp);
+                    // A direct object argument also has its keys checked (upstream
+                    // `handleObjectExpression`); other args collect values only.
+                    if let Expression::ObjectExpression(obj) = expr {
+                        self.collect_object_with_keys(obj, &mut tmp);
+                    } else {
+                        self.collect_expression_literals(expr, &mut tmp);
+                    }
                     for ls in tmp {
                         if !ls.content.trim().is_empty() {
                             self.call_literals.push(ls);
