@@ -89,6 +89,18 @@ const ruleMeta = Object.freeze({
         '`RENAME COLUMN` breaks every running app that still selects/inserts by the old name. The safer pattern is to add a new column, dual-write, backfill, and drop the old one across separate deploys.',
     },
   },
+  'no-rule': {
+    type: 'problem',
+    description:
+      "Disallow `CREATE RULE`; PostgreSQL's rule system is a known foot-gun and is effectively deprecated in favor of triggers and views",
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noRule:
+        "Avoid `CREATE RULE`. PostgreSQL's rule system has surprising semantics around row counts, RETURNING, and updatable views; use a trigger or an updatable view instead.",
+    },
+  },
   'no-set-not-null': {
     type: 'problem',
     description:
