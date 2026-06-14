@@ -74,6 +74,7 @@ mod prefer_explicit_null_ordering;
 mod prefer_in_list_over_or;
 mod prefer_not_equals_operator;
 mod require_if_exists;
+mod require_index_on_fk_column;
 mod require_limit;
 mod require_named_constraint;
 mod require_on_delete_action;
@@ -252,6 +253,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "prefer-in-list-over-or",
     "prefer-not-equals-operator",
     "require-if-exists",
+    "require-index-on-fk-column",
     "require-limit",
     "require-named-constraint",
     "require-on-delete-action",
@@ -620,6 +622,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "require-if-exists",
         run: require_if_exists::run,
         uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-index-on-fk-column",
+        run: require_index_on_fk_column::run,
+        uses_parse_error: true,
     },
     RuleDef {
         name: "require-limit",

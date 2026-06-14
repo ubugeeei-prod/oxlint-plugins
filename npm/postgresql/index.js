@@ -1017,6 +1017,18 @@ const ruleMeta = Object.freeze({
         'Add `IF EXISTS` to this `DROP` so re-running the migration on a database that already lost the object does not abort.',
     },
   },
+  'require-index-on-fk-column': {
+    type: 'suggestion',
+    description:
+      'Require a covering index on every foreign-key leading column so that parent-row deletes and updates do not trigger a sequential scan of the child table',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingIndex:
+        'Foreign-key column `{{col}}` has no covering index in this file. Without one, a DELETE / UPDATE of the parent row sequentially scans this table to enforce the FK.',
+    },
+  },
   'require-limit': {
     type: 'suggestion',
     description: 'Require LIMIT clause in SELECT statements',
