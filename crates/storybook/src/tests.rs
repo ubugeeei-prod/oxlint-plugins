@@ -94,6 +94,15 @@ fn scans_story_exports_and_story_names() {
 }
 
 #[test]
+fn story_exports_ignores_unresolvable_filter() {
+    // A non-string-literal `includeStories` element makes upstream `getDescriptor`
+    // throw, discarding the filter; the file then has a valid story export.
+    let source = "export default { title: 'C', component: C, includeStories: [C.name] };\n\
+         export const SimpleStory = () => null;";
+    assert_eq!(scan("story-exports", source).len(), 0);
+}
+
+#[test]
 fn scans_imports_and_addons() {
     assert_eq!(
         scan(
