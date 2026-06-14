@@ -23,27 +23,26 @@
 //! A diagnostic is emitted when the code-line count is **strictly greater
 //! than** the threshold; a file with exactly the threshold lines is accepted.
 
-use oxc_ast::ast::Comment;
 use oxc_span::Span;
 
 use crate::scanner::Scanner;
 
 pub(crate) const RULE_NAME: &str = "max-lines";
 
-/// Returns `true` when byte offset `abs` falls inside `comment`'s span.
-fn span_covers(comment: &Comment, abs: u32) -> bool {
-    comment.span.start <= abs && abs < comment.span.end
+/// Returns `true` when byte offset `abs` falls inside `span`.
+pub(crate) fn span_covers(span: Span, abs: u32) -> bool {
+    span.start <= abs && abs < span.end
 }
 
 /// Returns `true` when the slice `source[start..end]` contains at least one
 /// character that is not whitespace and not covered by any comment span.
-fn line_has_code(source: &str, start: usize, end: usize, comments: &[Comment]) -> bool {
+pub(crate) fn line_has_code(source: &str, start: usize, end: usize, comments: &[Span]) -> bool {
     for (offset, ch) in source[start..end].char_indices() {
         if ch.is_whitespace() {
             continue;
         }
         let abs = (start + offset) as u32;
-        if !comments.iter().any(|c| span_covers(c, abs)) {
+        if !comments.iter().any(|c| span_covers(*c, abs)) {
             return true;
         }
     }
@@ -52,7 +51,7 @@ fn line_has_code(source: &str, start: usize, end: usize, comments: &[Comment]) -
 
 /// Counts the number of code lines in `source`, excluding blank lines and
 /// lines that are entirely inside comment spans.
-fn count_code_lines(source: &str, comments: &[Comment]) -> u32 {
+fn count_code_lines(source: &str, comments: &[Span]) -> u32 {
     let mut count = 0u32;
     let mut start = 0usize;
     for (i, b) in source.bytes().enumerate() {
@@ -71,8 +70,8 @@ fn count_code_lines(source: &str, comments: &[Comment]) -> u32 {
 }
 
 impl Scanner<'_> {
-    pub(crate) fn check_max_lines(&mut self, comments: &[Comment]) {
-        let code_lines = count_code_lines(self.source_text, comments);
+    pub(crate) fn check_max_lines(&mut self) {
+        let code_lines = count_code_lines(self.source_text, &self.comment_spans);
         if code_lines <= self.options.max_lines_threshold {
             return;
         }

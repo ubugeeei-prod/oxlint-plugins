@@ -191,6 +191,10 @@ const messages = Object.freeze({
   'max-lines': {
     maxLines: 'This file has more lines than the maximum allowed; split it into smaller files.',
   },
+  'max-lines-per-function': {
+    maxLinesPerFunction:
+      'This function has more lines than the maximum allowed; split it into smaller functions.',
+  },
   'nested-control-flow': {
     nestedControlFlow: 'Refactor this code to reduce the nesting of control flow statements.',
   },
@@ -289,6 +293,8 @@ const ruleDescriptions = Object.freeze({
     'Require class names to start with an uppercase letter, following the PascalCase convention',
   'max-lines':
     'Disallow files with more code lines than the configured maximum (the "maximum" option; default 1000); blank lines and comment-only lines are not counted',
+  'max-lines-per-function':
+    'Disallow functions with more code lines than the configured maximum (the "maximum" option; default 200); IIFEs and JSX-containing functions are excluded',
   'nested-control-flow':
     'Disallow control flow statements (if/for/for-in/for-of/while/do-while/switch/try) nested beyond the configured maximumNestingLevel (default 3); else-if chains do not add a level',
 });
@@ -344,6 +350,7 @@ const ruleTypes = Object.freeze({
   'no-useless-increment': 'suggestion',
   'class-name': 'suggestion',
   'max-lines': 'suggestion',
+  'max-lines-per-function': 'suggestion',
   'nested-control-flow': 'suggestion',
 });
 
@@ -398,6 +405,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-useless-increment': 'error',
   'class-name': 'error',
   'max-lines': 'error',
+  'max-lines-per-function': 'error',
   'nested-control-flow': 'error',
 });
 
@@ -464,6 +472,15 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'max-lines-per-function') {
+    return [
+      {
+        type: 'object',
+        properties: { maximum: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   if (ruleName === 'nested-control-flow') {
     return [
       {
@@ -488,6 +505,9 @@ function scanOptionsForRule(context, ruleName) {
   }
   if (ruleName === 'max-lines' && Number.isInteger(raw.maximum)) {
     options.maxLinesThreshold = raw.maximum;
+  }
+  if (ruleName === 'max-lines-per-function' && Number.isInteger(raw.maximum)) {
+    options.maxLinesPerFunctionThreshold = raw.maximum;
   }
   if (ruleName === 'nested-control-flow' && Number.isInteger(raw.maximumNestingLevel)) {
     options.nestedControlFlowThreshold = raw.maximumNestingLevel;

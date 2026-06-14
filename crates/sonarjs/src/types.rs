@@ -46,6 +46,8 @@ pub struct SonarjsOptions {
     pub rule_names: SmallVec<[CompactString; 32]>,
     /// Threshold for `max-lines` (S104); the SonarJS default is 1000.
     pub max_lines_threshold: u32,
+    /// Threshold for `max-lines-per-function` (S138); the SonarJS default is 200.
+    pub max_lines_per_function_threshold: u32,
     /// Threshold for `max-switch-cases` (S1479); the SonarJS default is 30.
     pub max_switch_cases_threshold: u32,
     /// Threshold for `max-union-size` (S4622); the SonarJS default is 3.
@@ -62,6 +64,7 @@ impl Default for SonarjsOptions {
                 .map(|rule_name| CompactString::from(*rule_name))
                 .collect(),
             max_lines_threshold: 1000,
+            max_lines_per_function_threshold: 200,
             max_switch_cases_threshold: 30,
             max_union_size_threshold: 3,
             nested_control_flow_threshold: 3,
