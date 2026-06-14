@@ -4871,19 +4871,19 @@
       },
       {
         "name": "consistent-between-over-and",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule consistent-between-over-and."
+        "notes": "AST port: always mode rewrites >= a AND <= b to BETWEEN, never mode rewrites BETWEEN to >= AND <=. Autofix in both directions. Uses getFullSourceRange to handle TypeCast and other complex sub-expressions."
       },
       {
         "name": "consistent-create-index-concurrently",
