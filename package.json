@@ -58,6 +58,7 @@
     "port:tests:security": "node tools/tasks/sync-eslint-security-tests.ts",
     "port:tests:simple-import-sort": "node tools/tasks/sync-simple-import-sort-tests.ts",
     "port:tests:storybook": "node tools/tasks/sync-storybook-tests.ts",
+    "port:tests:unocss": "node tools/tasks/sync-unocss-tests.ts",
     "profile": "node tools/tasks/profile.ts",
     "release": "node tools/tasks/release.ts",
     "security:audit": "node tools/tasks/security-audit.ts",

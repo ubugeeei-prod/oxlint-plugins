@@ -1,0 +1,220 @@
+{
+  "__generated": {
+    "source": "@unocss/eslint-plugin",
+    "ref": "v66.7.0",
+    "sourceFiles": ["src/rules/enforce-class-compile.test.ts"],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-unocss-tests.ts"
+  },
+  "blocks": {
+    "enforce-class-compile": {
+      "parser": "vue",
+      "valid": [
+        {
+          "code": "<template>\n  <div class=\":uno: mr-1\"></div>\n</template>",
+          "parser": "vue"
+        },
+        {
+          "code": "<template>\n  <div :class=\"':uno: mr-1'\"></div>\n</template>",
+          "parser": "vue"
+        },
+        {
+          "code": "<template>\n  <div :class=\"condition ? ':uno: mr-1' : ':uno: ml-1'\"></div>\n</template>",
+          "parser": "vue"
+        },
+        {
+          "code": "<template>\n  <div :class=\"{':uno: mr-1': condition}\"></div>\n</template>",
+          "parser": "vue"
+        },
+        {
+          "code": "<template>\n  <div :class=\"`:uno: mr-1`\"></div>\n</template>",
+          "parser": "vue"
+        },
+        {
+          "code": "<template>\n  <div class=\":some: mr-1\"></div>\n</template>",
+          "parser": "vue",
+          "options": [
+            {
+              "prefix": ":some:"
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"':some: mr-1'\"></div>\n</template>",
+          "parser": "vue",
+          "options": [
+            {
+              "prefix": ":some:"
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"condition ? ':some: mr-1' : ':some: ml-1'\"></div>\n</template>",
+          "parser": "vue",
+          "options": [
+            {
+              "prefix": ":some:"
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"{':some: mr-1': condition}\"></div>\n</template>",
+          "parser": "vue",
+          "options": [
+            {
+              "prefix": ":some:"
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"`:some: mr-1`\"></div>\n</template>",
+          "parser": "vue",
+          "options": [
+            {
+              "prefix": ":some:"
+            }
+          ]
+        }
+      ],
+      "invalid": [
+        {
+          "code": "<template>\n  <div class=\"mr-1\"></div>\n</template>",
+          "parser": "vue",
+          "output": "<template>\n  <div class=\":uno: mr-1\"></div>\n</template>",
+          "errors": [
+            {
+              "messageId": "missing",
+              "line": 2,
+              "column": 14,
+              "endLine": 2,
+              "endColumn": 20,
+              "data": {
+                "prefix": ":uno:"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"'mr-1'\"></div>\n</template>",
+          "parser": "vue",
+          "output": "<template>\n  <div :class=\"':uno: mr-1'\"></div>\n</template>",
+          "errors": [
+            {
+              "messageId": "missing",
+              "data": {
+                "prefix": ":uno:"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"condition ? 'mr-1' : 'ml-1'\"></div>\n</template>",
+          "parser": "vue",
+          "output": "<template>\n  <div :class=\"condition ? ':uno: mr-1' : ':uno: ml-1'\"></div>\n</template>",
+          "errors": [
+            {
+              "messageId": "missing",
+              "data": {
+                "prefix": ":uno:"
+              }
+            },
+            {
+              "messageId": "missing",
+              "data": {
+                "prefix": ":uno:"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"{'mr-1': condition}\"></div>\n</template>",
+          "parser": "vue",
+          "output": "<template>\n  <div :class=\"{':uno: mr-1': condition}\"></div>\n</template>",
+          "errors": [
+            {
+              "messageId": "missing",
+              "data": {
+                "prefix": ":uno:"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"{flex}\"></div>\n</template>",
+          "parser": "vue",
+          "output": "<template>\n  <div :class=\"{':uno: flex': flex}\"></div>\n</template>",
+          "errors": [
+            {
+              "messageId": "missing",
+              "data": {
+                "prefix": ":uno:"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"{flex: condition}\"></div>\n</template>",
+          "parser": "vue",
+          "output": "<template>\n  <div :class=\"{':uno: flex': condition}\"></div>\n</template>",
+          "errors": [
+            {
+              "messageId": "missing",
+              "data": {
+                "prefix": ":uno:"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"`mr-1`\"></div>\n</template>",
+          "parser": "vue",
+          "output": "<template>\n  <div :class=\"`:uno: mr-1`\"></div>\n</template>",
+          "errors": [
+            {
+              "messageId": "missing",
+              "data": {
+                "prefix": ":uno:"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div :class=\"`mr-1`\"></div>\n</template>",
+          "parser": "vue",
+          "options": [
+            {
+              "prefix": ":some:"
+            }
+          ],
+          "output": "<template>\n  <div :class=\"`:some: mr-1`\"></div>\n</template>",
+          "errors": [
+            {
+              "messageId": "missing",
+              "data": {
+                "prefix": ":some:"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div class=\"mr-1\"></div>\n</template>",
+          "parser": "vue",
+          "options": [
+            {
+              "enableFix": false
+            }
+          ],
+          "output": null,
+          "errors": [
+            {
+              "messageId": "missing",
+              "data": {
+                "prefix": ":uno:"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
