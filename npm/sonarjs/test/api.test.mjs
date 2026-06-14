@@ -64,6 +64,7 @@ const expectedRuleNames = [
   'duplicates-in-character-class',
   'anchor-precedence',
   'cyclomatic-complexity',
+  'no-collection-size-mischeck',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2072,5 +2073,12 @@ describe('sonarjs native API', () => {
       cyclomaticComplexityThreshold: 4,
     });
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-collection-size-mischeck for always-false length < 0', () => {
+    const diagnostics = scan('no-collection-size-mischeck', 'const b = x.length < 0;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-collection-size-mischeck');
+    expect(diagnostics[0].messageId).toBe('collectionSizeMischeck');
   });
 });
