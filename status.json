@@ -11406,19 +11406,19 @@
       },
       {
         "name": "index-of-compare-to-positive-number",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule index-of-compare-to-positive-number (Sonar key S2692). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S2692. Purely syntactic: flags BinaryExpression where one side is a CallExpression whose callee is a StaticMemberExpression with property name 'indexOf' or 'lastIndexOf', and the other side is a numeric literal, with operator/value excluding index 0: indexOf > N (N>=0), indexOf >= N (N>=1), and mirrored forms N < indexOf (N>=0), N <= indexOf (N>=1). Compliant forms >= 0, > -1, === -1, !== -1 are not flagged. No type info required. Message and tests independently authored from RSPEC S2692 public documentation."
       },
       {
         "name": "insecure-cookie",
