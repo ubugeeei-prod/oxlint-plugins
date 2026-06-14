@@ -32,6 +32,11 @@ upstream as the submodule is bumped (oxc-style test syncing):
   TypeScript type information the syntax-only Rust port does not have, so the
   replay harness skips and counts them (no silent truncation) and asserts full
   parity per rule via a `FULL_PARITY` allowlist that grows one entry per rule PR.
+- `pnpm run port:tests:unocss` — `eslint-vitest-rule-tester` declarative `run()`
+  suites. Cases are grouped by block name (each `run()` call) and tagged with the
+  detected parser (`vue`, `svelte`, `jsx`, `js`). Vue/svelte-parser blocks are
+  always skipped (template languages); js/jsx-parser blocks are asserted and
+  individual divergences are quarantined in `test/parity.json`.
 
 Re-run the relevant sync script after bumping a submodule and commit the
 regenerated fixtures.

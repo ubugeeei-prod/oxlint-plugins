@@ -1,0 +1,74 @@
+{
+  "__generated": {
+    "source": "@unocss/eslint-plugin",
+    "ref": "v66.7.0",
+    "sourceFiles": ["src/rules/blocklist.test.ts"],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-unocss-tests.ts"
+  },
+  "blocks": {
+    "blocklist": {
+      "parser": "vue",
+      "valid": [
+        {
+          "code": "<template>\n  <div class=\"m1 mx1 mr-1\"></div>\n</template>",
+          "parser": "vue"
+        }
+      ],
+      "invalid": [
+        {
+          "code": "<template>\n  <div class=\"border\"></div>\n</template>",
+          "parser": "vue",
+          "errors": [
+            {
+              "messageId": "in-blocklist",
+              "data": {
+                "name": "border",
+                "reason": ""
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div class=\"bg-red-500\"></div>\n</template>",
+          "parser": "vue",
+          "errors": [
+            {
+              "messageId": "in-blocklist",
+              "data": {
+                "name": "bg-red-500",
+                "reason": ": Use bg-red-600 instead"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div class=\"text-red\"></div>\n</template>",
+          "parser": "vue",
+          "errors": [
+            {
+              "messageId": "in-blocklist",
+              "data": {
+                "name": "text-red",
+                "reason": ": Use color-* instead"
+              }
+            }
+          ]
+        },
+        {
+          "code": "<template>\n  <div class=\"h-auto\"></div>\n</template>",
+          "parser": "vue",
+          "errors": [
+            {
+              "messageId": "in-blocklist",
+              "data": {
+                "name": "h-auto",
+                "reason": ": Use h-a instead"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "__generated": {
+    "source": "@unocss/eslint-plugin",
+    "ref": "v66.7.0",
+    "sourceFiles": [],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-unocss-tests.ts",
+    "noUpstreamTests": true
+  },
+  "blocks": {}
+}
