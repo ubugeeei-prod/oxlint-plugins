@@ -41,6 +41,33 @@ impl Token {
     }
 }
 
+/// A `--` line comment or `/* */` block comment, in upstream's ESLint shape.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum CommentKind {
+    Line,
+    Block,
+}
+
+#[derive(Clone, Debug)]
+pub struct Comment {
+    pub kind: CommentKind,
+    /// Comment text with its delimiters stripped (`--` for lines, `/* */` for
+    /// blocks), matching upstream's `value`.
+    pub value: String,
+    /// UTF-16 offset range `[start, end)` of the whole comment (delimiters
+    /// included).
+    pub start: u32,
+    pub end: u32,
+    pub start_pos: Position,
+    pub end_pos: Position,
+}
+
+/// The lexer output: lexeme tokens plus the comments stripped out between them.
+pub struct Tokenized {
+    pub tokens: Vec<Token>,
+    pub comments: Vec<Comment>,
+}
+
 static KEYWORDS: phf::Set<&'static str> = phf::phf_set! {
     // basic
     "SELECT", "INSERT", "UPDATE", "DELETE", "CREATE", "ALTER", "DROP", "TABLE",
@@ -161,10 +188,12 @@ fn numeric_is_valid(lexeme: &str) -> bool {
     i == n
 }
 
-/// Tokenize `source`, returning the lexeme tokens (comments are consumed but
-/// not retained — they never participate in span resolution).
-pub fn tokenize(source: &Source) -> Vec<Token> {
+/// Tokenize `source`, returning the lexeme tokens and the comments scanned out
+/// between them. Comments do not participate in span resolution but upstream
+/// surfaces them on `Program.comments`, so they are retained here too.
+pub fn tokenize(source: &Source) -> Tokenized {
     let mut tokens = Vec::new();
+    let mut comments = Vec::new();
     let length = source.len();
     let mut i: u32 = 0;
 
@@ -195,14 +224,25 @@ pub fn tokenize(source: &Source) -> Vec<Token> {
 
         // line comment
         if byte == b'-' && source.ascii_at(i + 1) == Some(b'-') {
+            let start = i;
             while i < length && source.ascii_at(i) != Some(b'\n') {
                 i += 1;
             }
+            // `i` stops at the newline (or EOF) and never exceeds `length`.
+            comments.push(Comment {
+                kind: CommentKind::Line,
+                value: source.slice(start + 2, i), // strip leading "--"
+                start,
+                end: i,
+                start_pos: source.position(start),
+                end_pos: source.position(i),
+            });
             continue;
         }
 
         // block comment
         if byte == b'/' && source.ascii_at(i + 1) == Some(b'*') {
+            let start = i;
             i += 2;
             while i + 1 < length
                 && !(source.ascii_at(i) == Some(b'*') && source.ascii_at(i + 1) == Some(b'/'))
@@ -210,6 +250,17 @@ pub fn tokenize(source: &Source) -> Vec<Token> {
                 i += 1;
             }
             i += 2;
+            // Upstream computes the range from `code.slice(start, i).length`,
+            // which clamps an unterminated comment's end to the source length.
+            let end = i.min(length);
+            comments.push(Comment {
+                kind: CommentKind::Block,
+                value: source.slice(start + 2, end.saturating_sub(2)), // strip "/*" and "*/"
+                start,
+                end,
+                start_pos: source.position(start),
+                end_pos: source.position(end),
+            });
             continue;
         }
 
@@ -349,18 +400,18 @@ pub fn tokenize(source: &Source) -> Vec<Token> {
         i += 1;
     }
 
-    tokens
+    Tokenized { tokens, comments }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{TokenKind, tokenize};
+    use super::{CommentKind, TokenKind, tokenize};
     use crate::text::Source;
 
     #[test]
     fn classifies_basic_tokens() {
         let src = Source::new("SELECT id FROM users WHERE id >= 1");
-        let toks = tokenize(&src);
+        let toks = tokenize(&src).tokens;
         let kinds: Vec<_> = toks.iter().map(|t| (t.kind, t.value.as_str())).collect();
         assert_eq!(kinds[0], (TokenKind::Keyword, "SELECT"));
         assert_eq!(kinds[1], (TokenKind::Identifier, "id"));
@@ -380,8 +431,20 @@ mod tests {
     #[test]
     fn dollar_quoted_string() {
         let src = Source::new("$$ a $tag$ b$$");
-        let toks = tokenize(&src);
+        let toks = tokenize(&src).tokens;
         assert_eq!(toks.len(), 1);
         assert_eq!(toks[0].kind, TokenKind::String);
+    }
+
+    #[test]
+    fn collects_line_and_block_comments() {
+        let src = Source::new("-- hi\nSELECT 1 /* note */");
+        let out = tokenize(&src);
+        assert_eq!(out.comments.len(), 2);
+        assert_eq!(out.comments[0].kind, CommentKind::Line);
+        assert_eq!(out.comments[0].value, " hi");
+        assert_eq!((out.comments[0].start, out.comments[0].end), (0, 5));
+        assert_eq!(out.comments[1].kind, CommentKind::Block);
+        assert_eq!(out.comments[1].value, " note ");
     }
 }
