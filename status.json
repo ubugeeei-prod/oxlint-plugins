@@ -11246,19 +11246,19 @@
       },
       {
         "name": "function-inside-loop",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule function-inside-loop (Sonar key S1515). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S1515. Flags any function declaration, function expression, or arrow function created directly inside a loop body (for/for-in/for-of/while/do-while) relative to the nearest enclosing function; a function nested inside another function resets the loop context. Immediately invoked function expressions are exempt. No closure/capture analysis is performed (flags every eligible function in a loop, like upstream). Reported at the function span. Implemented via a per-function-scope loop-depth stack. Message and tests independently authored."
       },
       {
         "name": "function-name",

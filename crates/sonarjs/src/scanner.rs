@@ -141,6 +141,13 @@ pub(crate) struct Scanner<'a> {
     /// popped on exit; `updated-loop-counter` checks every assignment/update
     /// target against the counters of all active frames.
     pub(crate) loop_counter_symbols: SmallVec<[LoopCounterFrame; 4]>,
+    /// Per-function-scope stack of loop-nesting depths, used by
+    /// `function-inside-loop`. One frame per open function/arrow scope plus a
+    /// base frame for module/top-level scope. Entering a loop increments the top
+    /// frame; entering a function pushes a fresh `0` frame, so loop context is
+    /// reset at every function boundary. A function entered while the top frame
+    /// is `> 0` is defined inside a loop.
+    pub(crate) loop_depth_in_function: SmallVec<[u32; 8]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -317,7 +324,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         let label = self.pending_loop_label.take();
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
+        self.enter_loop_depth();
         walk::walk_for_in_statement(self, it);
+        self.leave_loop_depth();
         self.leave_nested_control_flow(counted);
         self.leave_breakable_loop();
     }
@@ -336,7 +345,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         let counter_frame = self.enter_updated_loop_counter(it);
+        self.enter_loop_depth();
         walk::walk_for_statement(self, it);
+        self.leave_loop_depth();
         self.leave_updated_loop_counter(counter_frame);
         self.leave_nested_control_flow(counted);
         self.leave_breakable_loop();
@@ -349,7 +360,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         let label = self.pending_loop_label.take();
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
+        self.enter_loop_depth();
         walk::walk_while_statement(self, it);
+        self.leave_loop_depth();
         self.leave_nested_control_flow(counted);
         self.leave_breakable_loop();
     }
@@ -361,7 +374,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         let label = self.pending_loop_label.take();
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
+        self.enter_loop_depth();
         walk::walk_do_while_statement(self, it);
+        self.leave_loop_depth();
         self.leave_nested_control_flow(counted);
         self.leave_breakable_loop();
     }
@@ -372,7 +387,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         let label = self.pending_loop_label.take();
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
+        self.enter_loop_depth();
         walk::walk_for_of_statement(self, it);
+        self.leave_loop_depth();
         self.leave_nested_control_flow(counted);
         self.leave_breakable_loop();
     }
@@ -526,9 +543,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);
         self.enter_nested_function(it.span);
+        self.enter_function_inside_loop(it.span);
         self.enter_this_binding_scope();
         walk::walk_function(self, it, flags);
         self.leave_this_binding_scope();
+        self.leave_function_inside_loop();
         self.leave_nested_function();
         self.leave_cyclomatic_scope();
         self.leave_return_scope();
@@ -569,7 +588,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);
         self.enter_nested_function(it.span);
+        self.enter_function_inside_loop(it.span);
         walk::walk_arrow_function_expression(self, it);
+        self.leave_function_inside_loop();
         self.leave_nested_function();
         self.leave_cyclomatic_scope();
         self.leave_return_scope();

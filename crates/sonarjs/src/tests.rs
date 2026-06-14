@@ -5127,3 +5127,94 @@ fn does_not_report_no_code_after_done_for_nested_done_call() {
     let diagnostics = scan("no-code-after-done", source);
     assert!(diagnostics.is_empty());
 }
+
+// --- function-inside-loop tests ---
+
+#[test]
+fn function_inside_loop_reports_arrow_in_for_loop() {
+    let source = "for (let i = 0; i < 10; i++) { const f = () => i; }";
+    let diagnostics = scan("function-inside-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "function-inside-loop");
+    assert_eq!(diagnostics[0].message_id, "noFunctionInLoop");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn function_inside_loop_reports_function_declaration_in_while() {
+    let source = "while (x) { function g() {} }";
+    let diagnostics = scan("function-inside-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noFunctionInLoop");
+}
+
+#[test]
+fn function_inside_loop_reports_function_expression_in_for_of() {
+    let source = "for (const x of xs) { const h = function () {}; }";
+    let diagnostics = scan("function-inside-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn function_inside_loop_reports_in_for_in_and_do_while() {
+    let source = "for (const k in obj) { const f = () => k; }";
+    let diagnostics = scan("function-inside-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+    let source = "do { const g = () => {}; } while (cond);";
+    let diagnostics = scan("function-inside-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn function_inside_loop_does_not_report_top_level_function() {
+    let source = "function h() {}";
+    let diagnostics = scan("function-inside-loop", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn function_inside_loop_does_not_report_loop_without_function() {
+    let source = "for (const x of xs) { use(x); }";
+    let diagnostics = scan("function-inside-loop", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn function_inside_loop_reports_function_in_loop_inside_outer_function() {
+    let source = "function outer() { for (;;) { const f = () => {}; } }";
+    let diagnostics = scan("function-inside-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn function_inside_loop_resets_context_at_function_boundary() {
+    // `a` is directly in the loop and flagged; `b` is inside `a`, not the loop.
+    let source = "for (;;) { const a = () => { const b = () => {}; }; }";
+    let diagnostics = scan("function-inside-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn function_inside_loop_does_not_report_nested_loop_in_function_outside_loop() {
+    // The inner function `f` is in a loop that lives inside `inner`, which is
+    // itself inside the outer loop: `f` IS in a loop, so it is flagged. The
+    // function `inner` is directly in the outer loop, so it is flagged too.
+    let source = "for (;;) { const inner = () => { for (;;) { const f = () => {}; } }; }";
+    let diagnostics = scan("function-inside-loop", source);
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
+fn function_inside_loop_does_not_report_iife() {
+    let source = "for (let i = 0; i < 10; i++) { (() => use(i))(); }";
+    let diagnostics = scan("function-inside-loop", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn function_inside_loop_does_not_report_function_outside_any_loop() {
+    let source = "const f = () => { const g = () => {}; };";
+    let diagnostics = scan("function-inside-loop", source);
+    assert!(diagnostics.is_empty());
+}

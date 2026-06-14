@@ -343,6 +343,9 @@ const messages = Object.freeze({
   'no-code-after-done': {
     noCodeAfterDone: 'Refactor this test; the code after the "done()" call will run unexpectedly.',
   },
+  'function-inside-loop': {
+    noFunctionInLoop: 'Refactor this code; do not define functions inside loops.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -529,6 +532,8 @@ const ruleDescriptions = Object.freeze({
     'Flag reads of process.stdin, since reading from the standard input is security-sensitive and should be reviewed',
   'no-code-after-done':
     'Flag statements that run after a "done()" callback call in a Mocha test or hook, since the test is already finished and the trailing code executes unexpectedly',
+  'function-inside-loop':
+    'Flag functions (declarations, expressions, or arrow functions) defined inside a loop, since such closures are error-prone and inefficient; immediately invoked function expressions are exempt',
 });
 
 const ruleTypes = Object.freeze({
@@ -626,6 +631,7 @@ const ruleTypes = Object.freeze({
   'process-argv': 'suggestion',
   'standard-input': 'suggestion',
   'no-code-after-done': 'suggestion',
+  'function-inside-loop': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -723,6 +729,7 @@ const recommendedRuleConfig = Object.freeze({
   'process-argv': 'error',
   'standard-input': 'error',
   'no-code-after-done': 'error',
+  'function-inside-loop': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

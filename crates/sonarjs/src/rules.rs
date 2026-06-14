@@ -18,6 +18,7 @@ mod empty_string_repetition;
 mod fixme_tag;
 mod for_in;
 mod for_loop_increment_sign;
+mod function_inside_loop;
 mod generator_without_yield;
 mod index_of_compare_to_positive_number;
 mod inverted_assertion_arguments;
