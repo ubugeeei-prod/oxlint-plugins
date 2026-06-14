@@ -1,0 +1,82 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/no-redundant-story-name.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export const PrimaryButton = { name: 'The Primary Button' }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const PrimaryButton: Story = { name: 'The Primary Button' }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      const Default = {}\n      export const PrimaryButton = { ...Default, name: 'The Primary Button' }\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      export const PrimaryButton = Template.bind({})\n      PrimaryButton.storyName = 'The Primary Button'\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      export function PrimaryButton () {\n        return <div>Hello</div>\n      }\n      PrimaryButton.storyName = 'The Primary Button'\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      export function H1 () {\n        return <h1>Hello</h1>\n      }\n      H1.storyName = 'H1'\n    ",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "export const PrimaryButton = { name: 'Primary Button' }",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "storyNameIsRedundant",
+          "suggestions": [
+            {
+              "messageId": "removeRedundantName",
+              "output": "export const PrimaryButton = {  }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "export const PrimaryButton: Story = { name: 'Primary Button' }",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "storyNameIsRedundant",
+          "suggestions": [
+            {
+              "messageId": "removeRedundantName",
+              "output": "export const PrimaryButton: Story = {  }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "export const PrimaryButton = Template.bind({})\nPrimaryButton.storyName = 'Primary Button'",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "storyNameIsRedundant",
+          "suggestions": [
+            {
+              "messageId": "removeRedundantName",
+              "output": "export const PrimaryButton = Template.bind({})"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

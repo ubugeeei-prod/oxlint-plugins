@@ -1,0 +1,22 @@
+{
+  "//": "Parity ratchet for the upstream eslint-plugin-storybook test suite replayed by upstream.test.mjs. By default EVERY upstream case is enforced: valid cases must report zero diagnostics, invalid cases must match the upstream-declared messageId multiset and `data` placeholders, and (where the upstream case is autofixable or carries a single suggestion) applying the port's fixes must reproduce the upstream output. The entries below quarantine the specific cases where the current Rust port diverges from upstream; each is a known bug tracked for a follow-up fix PR, after which its entry is removed and the case becomes enforced. Indices are positions in the rule's fixture `valid`/`invalid` arrays (re-check after a submodule bump + re-sync).",
+  "skip": {
+    "await-interactions": {
+      "valid": [8],
+      "reason": "Port false-positives on a locally shadowed `userEvent` (`const userEvent = { test: () => {} }; userEvent.test()`); needs scope awareness to skip the redefined binding."
+    },
+    "no-redundant-story-name": {
+      "valid": [5],
+      "fixOutput": [2],
+      "reason": "valid[5]: port false-positives on a redundant-name case upstream accepts. invalid[2] fixOutput: the port's removal fix leaves a trailing newline upstream's suggestion does not."
+    },
+    "prefer-pascal-case": {
+      "fixOutput": [0, 1, 2],
+      "reason": "The port's autofix renames the export declaration identifier but not its other references (`primary.foo` stays lowercase); upstream's suggestion renames every reference."
+    },
+    "story-exports": {
+      "valid": [5],
+      "reason": "Port false-positives (shouldHaveStoryExportWithFilters) on a valid file that uses includeStories/excludeStories filters."
+    }
+  }
+}

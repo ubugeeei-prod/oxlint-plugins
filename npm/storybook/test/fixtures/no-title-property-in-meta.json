@@ -1,0 +1,105 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/no-title-property-in-meta.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export default {  }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { component: Button }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { component: Button } as ComponentMeta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { component: Button } as Meta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { component: Button } satisfies Meta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { ...props }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "const meta = preview.meta({ component: Button, title: 'Button' })\nexport default meta",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "const meta = preview.type<{ args: { theme: string } }>().meta({ component: Button, title: 'Button' })\nexport default meta",
+      "filename": "MyComponent.stories.ts"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "export default { title: 'Button', component: Button }",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "noTitleInMeta",
+          "suggestions": [
+            {
+              "messageId": "removeTitleInMeta",
+              "output": "export default {  component: Button }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "const meta = { component: Button, title: 'Button' }\nexport default meta",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "noTitleInMeta",
+          "suggestions": [
+            {
+              "messageId": "removeTitleInMeta",
+              "output": "const meta = { component: Button,  }\nexport default meta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "const meta = { component: Button, title: 'Button' } as Meta<typeof Button>\nexport default meta",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "noTitleInMeta",
+          "suggestions": [
+            {
+              "messageId": "removeTitleInMeta",
+              "output": "const meta = { component: Button,  } as Meta<typeof Button>\nexport default meta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "const meta = { component: Button, title: 'Button' } satisfies Meta<typeof Button>\nexport default meta",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "noTitleInMeta",
+          "suggestions": [
+            {
+              "messageId": "removeTitleInMeta",
+              "output": "const meta = { component: Button,  } satisfies Meta<typeof Button>\nexport default meta"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
