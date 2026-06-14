@@ -6,6 +6,7 @@ use crate::RuleDef;
 mod no_cluster;
 mod no_drop_database;
 mod no_select_star;
+mod require_where_in_delete;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
 /// know the full surface even while only a subset is implemented.
@@ -102,7 +103,12 @@ pub const RULE_NAMES: [&str; 89] = [
 ];
 
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
-pub const IMPLEMENTED_RULE_NAMES: &[&str] = &["no-cluster", "no-drop-database", "no-select-star"];
+pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
+    "no-cluster",
+    "no-drop-database",
+    "no-select-star",
+    "require-where-in-delete",
+];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
 pub(crate) const REGISTRY: &[RuleDef] = &[
@@ -119,6 +125,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-select-star",
         run: no_select_star::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-where-in-delete",
+        run: require_where_in_delete::run,
         uses_parse_error: false,
     },
 ];

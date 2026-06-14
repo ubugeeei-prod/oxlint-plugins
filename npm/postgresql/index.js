@@ -53,6 +53,17 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'require-where-in-delete': {
+    type: 'problem',
+    description: 'Require a WHERE clause in DELETE statements',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingWhere:
+        'DELETE without WHERE removes every row in the table. Add a WHERE clause, or use TRUNCATE if you really mean to empty the table.',
+    },
+  },
 });
 
 const implementedRuleNames = Object.freeze(implementedPostgresqlRuleNames());
