@@ -295,6 +295,10 @@ const messages = Object.freeze({
     invertedArguments:
       'Swap these assertion arguments so the actual value comes first and the expected value second.',
   },
+  'for-loop-increment-sign': {
+    wrongDirection:
+      'This loop update moves the counter away from the termination condition, so the loop may not stop as intended.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -453,6 +457,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow a Chai "assert.<method>(...)" call whose first two arguments are the same source expression, since it compares a value to itself and is trivially true',
   'inverted-assertion-arguments':
     'Disallow a Chai "assert.<method>(...)" call whose first argument is a literal constant and second is not, since the actual/expected arguments were likely inverted',
+  'for-loop-increment-sign':
+    'Disallow a "for" loop whose update clause moves the counter away from the relational termination condition (e.g. "i < n" with "i--"), which can prevent the loop from terminating',
 });
 
 const ruleTypes = Object.freeze({
@@ -536,6 +542,7 @@ const ruleTypes = Object.freeze({
   'bitwise-operators': 'suggestion',
   'no-same-argument-assert': 'suggestion',
   'inverted-assertion-arguments': 'suggestion',
+  'for-loop-increment-sign': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -619,6 +626,7 @@ const recommendedRuleConfig = Object.freeze({
   'bitwise-operators': 'error',
   'no-same-argument-assert': 'error',
   'inverted-assertion-arguments': 'error',
+  'for-loop-increment-sign': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

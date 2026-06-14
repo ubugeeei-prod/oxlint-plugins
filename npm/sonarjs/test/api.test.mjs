@@ -83,6 +83,7 @@ const expectedRuleNames = [
   'bitwise-operators',
   'no-same-argument-assert',
   'inverted-assertion-arguments',
+  'for-loop-increment-sign',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2399,6 +2400,41 @@ describe('sonarjs native API', () => {
 
   it('does not report inverted-assertion-arguments for foo(42, x) (not an assertion call)', () => {
     const diagnostics = scan('inverted-assertion-arguments', 'foo(42, x);');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('for-loop-increment-sign rule', () => {
+  it('reports an increasing condition with a decrementing update', () => {
+    const diagnostics = scan('for-loop-increment-sign', 'for (let i = 0; i < 10; i--) {}');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('for-loop-increment-sign');
+    expect(diagnostics[0].messageId).toBe('wrongDirection');
+  });
+
+  it('reports a decreasing condition with an incrementing update', () => {
+    const diagnostics = scan('for-loop-increment-sign', 'for (let i = 10; i > 0; i++) {}');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('wrongDirection');
+  });
+
+  it('reports a counter that appears on the right of the comparison', () => {
+    const diagnostics = scan('for-loop-increment-sign', 'for (let i = 0; 10 > i; i--) {}');
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report a correctly increasing loop', () => {
+    const diagnostics = scan('for-loop-increment-sign', 'for (let i = 0; i < 10; i++) {}');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an equality condition with no direction', () => {
+    const diagnostics = scan('for-loop-increment-sign', 'for (let i = 0; i != 10; i++) {}');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the update variable differs from the counter', () => {
+    const diagnostics = scan('for-loop-increment-sign', 'for (let i = 0, j = 0; i < 10; j++) {}');
     expect(diagnostics).toHaveLength(0);
   });
 });
