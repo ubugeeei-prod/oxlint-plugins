@@ -22,6 +22,7 @@ mod napi_abi {
         pub max_lines_threshold: Option<u32>,
         pub max_switch_cases_threshold: Option<u32>,
         pub max_union_size_threshold: Option<u32>,
+        pub nested_control_flow_threshold: Option<u32>,
     }
 
     #[napi(object)]
@@ -84,6 +85,9 @@ mod napi_abi {
             max_union_size_threshold: options
                 .max_union_size_threshold
                 .unwrap_or(default_options.max_union_size_threshold),
+            nested_control_flow_threshold: options
+                .nested_control_flow_threshold
+                .unwrap_or(default_options.nested_control_flow_threshold),
         };
 
         core::scan_sonarjs(&source_text, &filename, &core_options)
