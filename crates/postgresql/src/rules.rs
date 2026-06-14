@@ -60,6 +60,7 @@ mod no_update_without_from_binding;
 mod no_vacuum_full;
 mod no_volatile_default_on_add_column;
 mod no_with_recursive_without_limit;
+mod prefer_add_constraint_not_valid;
 mod prefer_bigint_id;
 mod prefer_coalesce_over_case;
 mod prefer_current_timestamp_over_now;
@@ -232,6 +233,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-vacuum-full",
     "no-volatile-default-on-add-column",
     "no-with-recursive-without-limit",
+    "prefer-add-constraint-not-valid",
     "prefer-bigint-id",
     "prefer-coalesce-over-case",
     "prefer-current-timestamp-over-now",
@@ -537,6 +539,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-with-recursive-without-limit",
         run: no_with_recursive_without_limit::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-add-constraint-not-valid",
+        run: prefer_add_constraint_not_valid::run,
         uses_parse_error: false,
     },
     RuleDef {
