@@ -343,6 +343,11 @@ function diagnosticsForRule(context, ruleName) {
   if (context.languageOptions?.math === true) {
     scanOptions.math = true;
   }
+  // `languageOptions.frontmatter` ('yaml' | 'toml' | 'json') enables `---`/`+++`
+  // frontmatter parsing (off / `false` by default upstream).
+  if (context.languageOptions?.frontmatter) {
+    scanOptions.frontmatter = true;
+  }
   const cacheKey = `${ruleName}\0${JSON.stringify(scanOptions)}`;
   let diagnostics = bySource.get(cacheKey);
   if (!diagnostics) {

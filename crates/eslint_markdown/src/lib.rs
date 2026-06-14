@@ -8,12 +8,14 @@ use regex::Regex;
 // mdast-based rules) rather than the regex `MarkdownFacts`. The tree is parsed
 // once per scan only when one of these rules is active.
 const MDAST_RULES: &[&str] = &[
+    "heading-increment",
     "no-bare-urls",
     "no-duplicate-headings",
     "no-empty-definitions",
     "no-missing-atx-heading-space",
     "no-missing-label-refs",
     "no-missing-link-fragments",
+    "no-multiple-h1",
     "no-reference-like-urls",
     "no-reversed-media-syntax",
     "no-space-in-emphasis",
@@ -23,12 +25,15 @@ const MDAST_RULES: &[&str] = &[
 
 // Parse the source into an mdast tree with the same constructs upstream enables
 // for `markdown/gfm` (GFM tables, autolink literals, footnotes, strikethrough).
-fn parse_mdast(source_text: &str, math: bool) -> Option<mdast::Node> {
+fn parse_mdast(source_text: &str, math: bool, frontmatter: bool) -> Option<mdast::Node> {
     let mut options = markdown::ParseOptions::gfm();
     if math {
         options.constructs.math_flow = true;
         options.constructs.math_text = true;
     }
+    // `---`/`+++` frontmatter becomes a Yaml/Toml node (upstream gates this on
+    // `languageOptions.frontmatter`; off by default).
+    options.constructs.frontmatter = frontmatter;
     markdown::to_mdast(source_text, &options).ok()
 }
 
@@ -96,6 +101,8 @@ pub struct ScanOptions {
     pub check_missing_table_cells: bool,
     /// Whether `$...$` / `$$...$$` math is parsed (upstream `languageOptions.math`).
     pub math: bool,
+    /// Whether `---`/`+++` frontmatter is parsed (upstream `languageOptions.frontmatter`).
+    pub frontmatter: bool,
 }
 
 impl Default for ScanOptions {
@@ -122,6 +129,7 @@ impl Default for ScanOptions {
             allow_fragment_pattern: None,
             check_missing_table_cells: false,
             math: false,
+            frontmatter: false,
         }
     }
 }
@@ -254,7 +262,6 @@ struct MarkdownFacts<'a> {
     links: SmallVec<[LinkFact; 32]>,
     label_refs: SmallVec<[LabelRefFact; 32]>,
     html_tags: SmallVec<[HtmlTagFact; 16]>,
-    frontmatter_has_title: bool,
 }
 
 pub fn implemented_eslint_markdown_rule_names() -> &'static [&'static str] {
@@ -266,9 +273,9 @@ pub fn scan_eslint_markdown(
     options: &ScanOptions,
 ) -> SmallVec<[Diagnostic; 32]> {
     let line_index = LineIndex::new(source_text);
-    let facts = collect_facts(source_text, options);
+    let facts = collect_facts(source_text);
     let mdast = if MDAST_RULES.iter().any(|rule| options.is_enabled(rule)) {
-        parse_mdast(source_text, options.math)
+        parse_mdast(source_text, options.math, options.frontmatter)
     } else {
         None
     };
@@ -280,8 +287,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("fenced-code-meta") {
         scan_fenced_code_meta(source_text, &line_index, &facts, options, &mut diagnostics);
     }
-    if options.is_enabled("heading-increment") {
-        scan_heading_increment(source_text, &line_index, &facts, &mut diagnostics);
+    if options.is_enabled("heading-increment")
+        && let Some(tree) = &mdast
+    {
+        scan_heading_increment(source_text, &line_index, tree, options, &mut diagnostics);
     }
     if options.is_enabled("no-bare-urls")
         && let Some(tree) = &mdast
@@ -328,8 +337,10 @@ pub fn scan_eslint_markdown(
     {
         scan_missing_link_fragments(source_text, &line_index, tree, options, &mut diagnostics);
     }
-    if options.is_enabled("no-multiple-h1") {
-        scan_multiple_h1(source_text, &line_index, &facts, &mut diagnostics);
+    if options.is_enabled("no-multiple-h1")
+        && let Some(tree) = &mdast
+    {
+        scan_multiple_h1(source_text, &line_index, tree, options, &mut diagnostics);
     }
     if options.is_enabled("no-reference-like-urls")
         && let Some(tree) = &mdast
@@ -363,14 +374,9 @@ pub fn scan_eslint_markdown(
     diagnostics
 }
 
-fn collect_facts<'a>(source_text: &'a str, options: &ScanOptions) -> MarkdownFacts<'a> {
+fn collect_facts(source_text: &str) -> MarkdownFacts<'_> {
     let mut facts = MarkdownFacts::default();
     collect_lines(source_text, &mut facts);
-    collect_frontmatter(
-        source_text,
-        &mut facts,
-        options.frontmatter_title.as_deref(),
-    );
     collect_fences(source_text, &mut facts);
     collect_headings(&mut facts);
     collect_definitions(&mut facts);
@@ -406,48 +412,6 @@ fn collect_lines<'a>(source_text: &'a str, facts: &mut MarkdownFacts<'a>) {
         }
         start = end + 1;
         number += 1;
-    }
-}
-
-fn collect_frontmatter(
-    source_text: &str,
-    facts: &mut MarkdownFacts<'_>,
-    frontmatter_title: Option<&str>,
-) {
-    if frontmatter_title == Some("") {
-        return;
-    }
-    let Some(first) = facts.lines.first() else {
-        return;
-    };
-    let marker = first.text.trim();
-    if !matches!(marker, "---" | "+++" | "{") {
-        return;
-    }
-    let title_pattern = frontmatter_title.and_then(|pattern| Regex::new(pattern).ok());
-    for line in facts.lines.iter().skip(1).take(32) {
-        let text = line.text.trim();
-        let matched_title = title_pattern
-            .as_ref()
-            .is_some_and(|pattern| pattern.is_match(text))
-            || (title_pattern.is_none()
-                && (text.starts_with("title")
-                    || text.starts_with("\"title\"")
-                    || text.starts_with("'title'")));
-        if matched_title {
-            facts.frontmatter_has_title = true;
-            return;
-        }
-        if text == marker || (marker == "{" && text == "}") {
-            return;
-        }
-    }
-    if title_pattern
-        .as_ref()
-        .is_some_and(|pattern| pattern.is_match(source_text))
-        || (title_pattern.is_none() && source_text.starts_with("title:"))
-    {
-        facts.frontmatter_has_title = true;
     }
 }
 
@@ -782,29 +746,103 @@ fn scan_fenced_code_meta(
 fn scan_heading_increment(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
+    options: &ScanOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let mut last_depth = if facts.frontmatter_has_title { 1 } else { 0 };
-    let mut headings = facts.headings.iter().collect::<SmallVec<[_; 16]>>();
-    headings.sort_by_key(|heading| heading.span.start);
-    for heading in headings {
-        let depth = u32::from(heading.depth);
-        if last_depth > 0 && depth > last_depth + 1 {
-            diagnostics.push(Diagnostic {
-                rule_name: "heading-increment",
-                message_id: "skippedHeading",
-                data: DiagnosticData {
-                    from_level: Some(last_depth),
-                    to_level: Some(depth),
-                    ..DiagnosticData::default()
-                },
-                loc: line_index.loc_for_span(source_text, heading.span),
-                fix: None,
-            });
+    let frontmatter_title = options.frontmatter_title.as_deref();
+    let mut last_depth = 0u32;
+    visit_mdast(tree, &mut |node| match node {
+        // A frontmatter title counts as a level-1 heading.
+        mdast::Node::Yaml(yaml) => {
+            if frontmatter_has_title(&yaml.value, frontmatter_title) {
+                last_depth = 1;
+            }
         }
-        last_depth = depth;
+        mdast::Node::Toml(toml) => {
+            if frontmatter_has_title(&toml.value, frontmatter_title) {
+                last_depth = 1;
+            }
+        }
+        mdast::Node::Heading(heading) => {
+            let depth = u32::from(heading.depth);
+            if last_depth > 0
+                && depth > last_depth + 1
+                && let Some(span) = node_span(node)
+            {
+                diagnostics.push(Diagnostic {
+                    rule_name: "heading-increment",
+                    message_id: "skippedHeading",
+                    data: DiagnosticData {
+                        from_level: Some(last_depth),
+                        to_level: Some(depth),
+                        ..DiagnosticData::default()
+                    },
+                    loc: line_index.loc_for_span(source_text, span),
+                    fix: None,
+                });
+            }
+            last_depth = depth;
+        }
+        _ => {}
+    });
+}
+
+// Mirror upstream's `frontmatterHasTitle`: test each line of the frontmatter
+// value against the title pattern. `frontmatterTitle` is `None` (the default
+// pattern, which has a negative lookahead and is hand-rolled), `Some("")`
+// (disabled), or `Some(custom)` (a user regex, case-insensitive).
+fn frontmatter_has_title(value: &str, frontmatter_title: Option<&str>) -> bool {
+    match frontmatter_title {
+        Some("") => false,
+        Some(pattern) => {
+            let mut full = CompactString::from("(?i)");
+            full.push_str(pattern);
+            let Ok(re) = Regex::new(&full) else {
+                return false;
+            };
+            value.split(['\n', '\r']).any(|line| re.is_match(line))
+        }
+        None => value
+            .split(['\n', '\r'])
+            .any(default_frontmatter_title_line),
     }
+}
+
+// The default `frontmatterTitle` pattern (case-insensitive):
+// `^(?!\s*['"]title[:=]['"])\s*\{?\s*['"]?title['"]?\s*[:=]` — a `title` key
+// (optionally quoted, optionally inside `{`), but NOT a quoted `"title:"` value.
+fn default_frontmatter_title_line(line: &str) -> bool {
+    let after_ws = line.trim_start();
+    // Negative lookahead: `['"] title [:=] ['"]`.
+    if let Some(quote) = after_ws.as_bytes().first().copied()
+        && matches!(quote, b'\'' | b'"')
+        && let Some(rest) = strip_prefix_ignore_case(&after_ws[1..], "title")
+        && matches!(rest.as_bytes().first(), Some(b':' | b'='))
+        && rest.as_bytes().get(1) == Some(&quote)
+    {
+        return false;
+    }
+    // Main pattern.
+    let mut rest = line.trim_start();
+    rest = rest.strip_prefix('{').unwrap_or(rest).trim_start();
+    if matches!(rest.as_bytes().first(), Some(b'\'' | b'"')) {
+        rest = &rest[1..];
+    }
+    let Some(mut rest) = strip_prefix_ignore_case(rest, "title") else {
+        return false;
+    };
+    if matches!(rest.as_bytes().first(), Some(b'\'' | b'"')) {
+        rest = &rest[1..];
+    }
+    rest = rest.trim_start();
+    matches!(rest.as_bytes().first(), Some(b':' | b'='))
+}
+
+fn strip_prefix_ignore_case<'a>(value: &'a str, prefix: &str) -> Option<&'a str> {
+    let head = value.get(..prefix.len())?;
+    head.eq_ignore_ascii_case(prefix)
+        .then(|| &value[prefix.len()..])
 }
 
 fn scan_bare_urls(
@@ -1815,38 +1853,63 @@ fn percent_decode(value: &str) -> CompactString {
 fn scan_multiple_h1(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
+    options: &ScanOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let mut count = u32::from(facts.frontmatter_has_title);
-    for heading in &facts.headings {
-        if heading.depth == 1 {
-            count += 1;
-            if count > 1 {
-                diagnostics.push(Diagnostic {
-                    rule_name: "no-multiple-h1",
-                    message_id: "multipleH1",
-                    data: DiagnosticData::default(),
-                    loc: line_index.loc_for_span(source_text, heading.span),
-                    fix: None,
-                });
+    let frontmatter_title = options.frontmatter_title.as_deref();
+    let h1_re = Regex::new(r"(?is)<h1[^>]*>[\s\S]*?</h1\s*>").ok();
+    let mut count = 0u32;
+    let report = |span: ByteSpan, diagnostics: &mut SmallVec<[Diagnostic; 32]>| {
+        diagnostics.push(Diagnostic {
+            rule_name: "no-multiple-h1",
+            message_id: "multipleH1",
+            data: DiagnosticData::default(),
+            loc: line_index.loc_for_span(source_text, span),
+            fix: None,
+        });
+    };
+    visit_mdast(tree, &mut |node| match node {
+        mdast::Node::Yaml(yaml) => {
+            if frontmatter_has_title(&yaml.value, frontmatter_title) {
+                count += 1;
             }
         }
-    }
-    for tag in &facts.html_tags {
-        if tag.name.eq_ignore_ascii_case("h1") {
-            count += 1;
-            if count > 1 {
-                diagnostics.push(Diagnostic {
-                    rule_name: "no-multiple-h1",
-                    message_id: "multipleH1",
-                    data: DiagnosticData::default(),
-                    loc: line_index.loc_for_span(source_text, tag.span),
-                    fix: None,
-                });
+        mdast::Node::Toml(toml) => {
+            if frontmatter_has_title(&toml.value, frontmatter_title) {
+                count += 1;
             }
         }
-    }
+        mdast::Node::Html(html) => {
+            let Some(span) = node_span(node) else {
+                return;
+            };
+            let stripped = strip_html_comments(&html.value);
+            if let Some(re) = &h1_re {
+                for mat in re.find_iter(&stripped) {
+                    count += 1;
+                    if count > 1 {
+                        report(
+                            ByteSpan {
+                                start: span.start + mat.start(),
+                                end: span.start + mat.end(),
+                            },
+                            diagnostics,
+                        );
+                    }
+                }
+            }
+        }
+        mdast::Node::Heading(heading) if heading.depth == 1 => {
+            count += 1;
+            if count > 1
+                && let Some(span) = node_span(node)
+            {
+                report(span, diagnostics);
+            }
+        }
+        _ => {}
+    });
 }
 
 fn scan_reference_like_urls(

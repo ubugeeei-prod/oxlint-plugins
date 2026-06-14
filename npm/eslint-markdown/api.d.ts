@@ -78,6 +78,7 @@ export type ScanEslintMarkdownOptions = {
   allowFragmentPattern?: string;
   checkMissingTableCells?: boolean;
   math?: boolean;
+  frontmatter?: boolean;
 };
 
 export function implementedEslintMarkdownRuleNames(): EslintMarkdownRuleName[];
