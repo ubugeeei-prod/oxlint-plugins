@@ -4935,19 +4935,19 @@
       },
       {
         "name": "consistent-explicit-inner-join",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule consistent-explicit-inner-join."
+        "notes": "Token-stream port: always mode inserts INNER before bare JOIN, never mode removes INNER from INNER JOIN. Autofix in both directions."
       },
       {
         "name": "consistent-explicit-outer-join",

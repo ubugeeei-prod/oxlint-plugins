@@ -39,6 +39,26 @@ const ruleMeta = Object.freeze({
         'Avoid `CREATE OR REPLACE {{kind}}`; drop and re-create the object explicitly so unintended overwrites are surfaced.',
     },
   },
+  'consistent-explicit-inner-join': {
+    type: 'layout',
+    description:
+      'Enforce a consistent stance on the explicit `INNER` keyword in `INNER JOIN` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferInnerJoin: 'Write `INNER JOIN` explicitly instead of bare `JOIN`.',
+      unexpectedInnerJoin: 'Omit the redundant `INNER`; use bare `JOIN` for inner joins.',
+    },
+  },
   'consistent-identity-over-serial': {
     type: 'suggestion',
     description:
