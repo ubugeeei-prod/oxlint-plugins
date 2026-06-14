@@ -17,6 +17,42 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'no-cluster': {
+    type: 'problem',
+    description:
+      'Disallow the `CLUSTER` statement: it takes ACCESS EXCLUSIVE, rewrites the table, and is not maintained afterwards',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCluster:
+        '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
+    },
+  },
+  'no-distinct-on-without-order-by': {
+    type: 'problem',
+    description:
+      'Disallow `SELECT DISTINCT ON (...)` without an `ORDER BY`; the surviving row in each group is otherwise non-deterministic',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDistinctOnWithoutOrderBy:
+        '`DISTINCT ON (...)` keeps an arbitrary row from each group unless `ORDER BY` is specified. Add an `ORDER BY` whose leading columns match the `DISTINCT ON` expressions.',
+    },
+  },
+  'no-drop-database': {
+    type: 'problem',
+    description:
+      'Disallow `DROP DATABASE`; it is catastrophic if run by accident and should not live in versioned SQL',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDropDatabase:
+        '`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
@@ -29,6 +65,66 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-implicit-join': {
+    type: 'suggestion',
+    description:
+      'Disallow comma-separated FROM clauses (implicit cross joins); use explicit JOIN syntax',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noImplicitJoin:
+        'Comma-separated tables in `FROM` are an implicit cross join. Use explicit `JOIN ... ON ...` so the join condition lives next to the join.',
+    },
+  },
+  'no-rename-column': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... RENAME COLUMN` — every deployed reader of the old name breaks at deploy time',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noRenameColumn:
+        '`RENAME COLUMN` breaks every running app that still selects/inserts by the old name. The safer pattern is to add a new column, dual-write, backfill, and drop the old one across separate deploys.',
+    },
+  },
+  'no-set-not-null': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER COLUMN ... SET NOT NULL` because it scans the whole table under ACCESS EXCLUSIVE',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noSetNotNull:
+        '`SET NOT NULL` scans the whole table for nulls under an `ACCESS EXCLUSIVE` lock. The safe pattern in production is to add a `CHECK (col IS NOT NULL) NOT VALID` constraint, `VALIDATE CONSTRAINT` separately, then `SET NOT NULL` (PG ≥ 12 reuses the validated CHECK and skips the scan).',
+    },
+  },
+  'no-set-search-path': {
+    type: 'suggestion',
+    description:
+      'Disallow `SET search_path = ...` in versioned SQL; qualify identifiers with their schema instead',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noSetSearchPath:
+        '`SET search_path` makes name resolution depend on session state and is a known foot-gun for security-definer functions and CREATE statements. Qualify identifiers with their schema (`audit.events`, `public.users`) instead.',
+    },
+  },
+  'no-temporary-table': {
+    type: 'suggestion',
+    description:
+      'Disallow `CREATE TEMPORARY TABLE` in versioned SQL — temp tables exist for the session only and rarely belong in migration files',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noTemporaryTable:
+        '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
+    },
+  },
   'no-vacuum-full': {
     type: 'problem',
     description:
@@ -39,6 +135,17 @@ const ruleMeta = Object.freeze({
     messages: {
       noVacuumFull:
         '`VACUUM FULL` takes `ACCESS EXCLUSIVE` and rewrites the whole table; the table is unavailable for the duration. For shrinking a bloated table on a live database, use `pg_repack` or `pg_squeeze`. A plain `VACUUM` (no `FULL`) is fine.',
+    },
+  },
+  'require-limit': {
+    type: 'suggestion',
+    description: 'Require LIMIT clause in SELECT statements',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingLimit:
+        'SELECT statement should include a LIMIT clause to prevent excessive data retrieval',
     },
   },
 });

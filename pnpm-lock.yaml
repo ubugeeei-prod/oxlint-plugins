@@ -160,6 +160,8 @@ importers:
         specifier: 'catalog:'
         version: 1.68.0
 
+  npm/postgresql-eslint-parser: {}
+
   npm/react: {}
 
   npm/react-hooks:
