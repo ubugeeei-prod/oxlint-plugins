@@ -292,6 +292,17 @@ const ruleMeta = Object.freeze({
         'SELECT statement should include a LIMIT clause to prevent excessive data retrieval',
     },
   },
+  'require-where-in-delete': {
+    type: 'problem',
+    description: 'Require a WHERE clause in DELETE statements',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingWhere:
+        'DELETE without WHERE removes every row in the table. Add a WHERE clause, or use TRUNCATE if you really mean to empty the table.',
+    },
+  },
   'require-where-in-update': {
     type: 'problem',
     description: 'Require a WHERE clause in UPDATE statements',

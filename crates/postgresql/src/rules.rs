@@ -26,6 +26,7 @@ mod no_unlogged_table;
 mod no_vacuum_full;
 mod no_with_recursive_without_limit;
 mod require_limit;
+mod require_where_in_delete;
 mod require_where_in_update;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
@@ -147,6 +148,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-vacuum-full",
     "no-with-recursive-without-limit",
     "require-limit",
+    "require-where-in-delete",
     "require-where-in-update",
 ];
 
@@ -265,6 +267,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-limit",
         run: require_limit::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-where-in-delete",
+        run: require_where_in_delete::run,
         uses_parse_error: false,
     },
     RuleDef {
