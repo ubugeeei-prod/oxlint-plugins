@@ -24,8 +24,7 @@ const fixtureNames = readdirSync(fixturesDir)
   .map((name) => name.replace(/\.json$/, ''))
   .sort();
 
-const loadFixture = (name) =>
-  JSON.parse(readFileSync(join(fixturesDir, `${name}.json`), 'utf8'));
+const loadFixture = (name) => JSON.parse(readFileSync(join(fixturesDir, `${name}.json`), 'utf8'));
 
 describe('postgresql-eslint-parser fixtures', () => {
   it('has fixtures committed', () => {

@@ -405,7 +405,7 @@ pub fn tokenize(source: &Source) -> Tokenized {
 
 #[cfg(test)]
 mod tests {
-    use super::{TokenKind, tokenize};
+    use super::{CommentKind, TokenKind, tokenize};
     use crate::text::Source;
 
     #[test]

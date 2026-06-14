@@ -9,10 +9,7 @@
   "input": "-- Dollar-quote with custom tag (plpython3u body)\nCREATE FUNCTION py_demo() RETURNS text AS $body$\n    return \"hi from python\"\n$body$ LANGUAGE plpython3u;\n\n-- Single-quoted body with embedded single-quote escape\nCREATE FUNCTION sq_demo() RETURNS void AS '\n    RAISE NOTICE ''hi from plpgsql'';\n' LANGUAGE plpgsql;\n\n-- C language uses two-argument AS — should NOT produce EmbeddedCode\nCREATE FUNCTION c_demo() RETURNS int AS 'libname', 'symbol' LANGUAGE c;\n\n-- Unknown / exotic language is still extracted (parser stays language-agnostic)\nCREATE FUNCTION rust_demo() RETURNS int AS $$\n    Ok(Some(42))\n$$ LANGUAGE plrust;\n\n-- CREATE PROCEDURE shares the CreateFunctionStmt shape\nCREATE PROCEDURE proc_demo() AS $$\n    plv8.elog(NOTICE, 'from procedure');\n$$ LANGUAGE plv8;\n",
   "ast": {
     "type": "Program",
-    "range": [
-      0,
-      772
-    ],
+    "range": [0, 772],
     "loc": {
       "start": {
         "line": 1,
@@ -30,10 +27,7 @@
           {
             "type": "String",
             "sval": "py_demo",
-            "range": [
-              0,
-              153
-            ],
+            "range": [0, 153],
             "loc": {
               "start": {
                 "line": 1,
@@ -50,10 +44,7 @@
           "0": {
             "type": "String",
             "sval": "text",
-            "range": [
-              84,
-              88
-            ],
+            "range": [84, 88],
             "loc": {
               "start": {
                 "line": 2,
@@ -67,10 +58,7 @@
           },
           "typemod": -1,
           "type": "names",
-          "range": [
-            84,
-            88
-          ],
+          "range": [84, 88],
           "loc": {
             "start": {
               "line": 2,
@@ -92,10 +80,7 @@
                 {
                   "type": "String",
                   "sval": "\n    return \"hi from python\"\n",
-                  "range": [
-                    89,
-                    91
-                  ],
+                  "range": [89, 91],
                   "loc": {
                     "start": {
                       "line": 2,
@@ -108,10 +93,7 @@
                   }
                 }
               ],
-              "range": [
-                89,
-                91
-              ],
+              "range": [89, 91],
               "loc": {
                 "start": {
                   "line": 2,
@@ -124,10 +106,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              89,
-              91
-            ],
+            "range": [89, 91],
             "loc": {
               "start": {
                 "line": 2,
@@ -145,10 +124,7 @@
             "arg": {
               "type": "String",
               "sval": "plpython3u",
-              "range": [
-                134,
-                142
-              ],
+              "range": [134, 142],
               "loc": {
                 "start": {
                   "line": 4,
@@ -161,10 +137,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              134,
-              142
-            ],
+            "range": [134, 142],
             "loc": {
               "start": {
                 "line": 4,
@@ -177,10 +150,7 @@
             }
           }
         ],
-        "range": [
-          0,
-          153
-        ],
+        "range": [0, 153],
         "loc": {
           "start": {
             "line": 1,
@@ -196,10 +166,7 @@
           "language": "plpython3u",
           "source": "\n    return \"hi from python\"\n",
           "quoteStyle": "dollar",
-          "range": [
-            98,
-            127
-          ],
+          "range": [98, 127],
           "loc": {
             "start": {
               "line": 2,
@@ -218,10 +185,7 @@
           {
             "type": "String",
             "sval": "sq_demo",
-            "range": [
-              154,
-              312
-            ],
+            "range": [154, 312],
             "loc": {
               "start": {
                 "line": 4,
@@ -238,10 +202,7 @@
           "0": {
             "type": "String",
             "sval": "void",
-            "range": [
-              246,
-              250
-            ],
+            "range": [246, 250],
             "loc": {
               "start": {
                 "line": 7,
@@ -255,10 +216,7 @@
           },
           "typemod": -1,
           "type": "names",
-          "range": [
-            246,
-            250
-          ],
+          "range": [246, 250],
           "loc": {
             "start": {
               "line": 7,
@@ -280,10 +238,7 @@
                 {
                   "type": "String",
                   "sval": "\n    RAISE NOTICE 'hi from plpgsql';\n",
-                  "range": [
-                    251,
-                    253
-                  ],
+                  "range": [251, 253],
                   "loc": {
                     "start": {
                       "line": 7,
@@ -296,10 +251,7 @@
                   }
                 }
               ],
-              "range": [
-                251,
-                253
-              ],
+              "range": [251, 253],
               "loc": {
                 "start": {
                   "line": 7,
@@ -312,10 +264,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              251,
-              253
-            ],
+            "range": [251, 253],
             "loc": {
               "start": {
                 "line": 7,
@@ -333,10 +282,7 @@
             "arg": {
               "type": "String",
               "sval": "plpgsql",
-              "range": [
-                296,
-                304
-              ],
+              "range": [296, 304],
               "loc": {
                 "start": {
                   "line": 9,
@@ -349,10 +295,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              296,
-              304
-            ],
+            "range": [296, 304],
             "loc": {
               "start": {
                 "line": 9,
@@ -365,10 +308,7 @@
             }
           }
         ],
-        "range": [
-          154,
-          312
-        ],
+        "range": [154, 312],
         "loc": {
           "start": {
             "line": 4,
@@ -384,10 +324,7 @@
           "language": "plpgsql",
           "source": "\n    RAISE NOTICE 'hi from plpgsql';\n",
           "quoteStyle": "single",
-          "range": [
-            255,
-            294
-          ],
+          "range": [255, 294],
           "loc": {
             "start": {
               "line": 7,
@@ -406,10 +343,7 @@
           {
             "type": "String",
             "sval": "c_demo",
-            "range": [
-              313,
-              454
-            ],
+            "range": [313, 454],
             "loc": {
               "start": {
                 "line": 9,
@@ -426,10 +360,7 @@
           "0": {
             "type": "String",
             "sval": "pg_catalog",
-            "range": [
-              417,
-              420
-            ],
+            "range": [417, 420],
             "loc": {
               "start": {
                 "line": 12,
@@ -444,10 +375,7 @@
           "1": {
             "type": "String",
             "sval": "int4",
-            "range": [
-              417,
-              420
-            ],
+            "range": [417, 420],
             "loc": {
               "start": {
                 "line": 12,
@@ -461,10 +389,7 @@
           },
           "typemod": -1,
           "type": "names",
-          "range": [
-            417,
-            420
-          ],
+          "range": [417, 420],
           "loc": {
             "start": {
               "line": 12,
@@ -486,10 +411,7 @@
                 {
                   "type": "String",
                   "sval": "libname",
-                  "range": [
-                    421,
-                    423
-                  ],
+                  "range": [421, 423],
                   "loc": {
                     "start": {
                       "line": 12,
@@ -504,10 +426,7 @@
                 {
                   "type": "String",
                   "sval": "symbol",
-                  "range": [
-                    421,
-                    423
-                  ],
+                  "range": [421, 423],
                   "loc": {
                     "start": {
                       "line": 12,
@@ -520,10 +439,7 @@
                   }
                 }
               ],
-              "range": [
-                421,
-                423
-              ],
+              "range": [421, 423],
               "loc": {
                 "start": {
                   "line": 12,
@@ -536,10 +452,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              421,
-              423
-            ],
+            "range": [421, 423],
             "loc": {
               "start": {
                 "line": 12,
@@ -557,10 +470,7 @@
             "arg": {
               "type": "String",
               "sval": "c",
-              "range": [
-                444,
-                452
-              ],
+              "range": [444, 452],
               "loc": {
                 "start": {
                   "line": 12,
@@ -573,10 +483,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              444,
-              452
-            ],
+            "range": [444, 452],
             "loc": {
               "start": {
                 "line": 12,
@@ -589,10 +496,7 @@
             }
           }
         ],
-        "range": [
-          313,
-          454
-        ],
+        "range": [313, 454],
         "loc": {
           "start": {
             "line": 9,
@@ -610,10 +514,7 @@
           {
             "type": "String",
             "sval": "rust_demo",
-            "range": [
-              455,
-              619
-            ],
+            "range": [455, 619],
             "loc": {
               "start": {
                 "line": 12,
@@ -630,10 +531,7 @@
           "0": {
             "type": "String",
             "sval": "pg_catalog",
-            "range": [
-              574,
-              577
-            ],
+            "range": [574, 577],
             "loc": {
               "start": {
                 "line": 15,
@@ -648,10 +546,7 @@
           "1": {
             "type": "String",
             "sval": "int4",
-            "range": [
-              574,
-              577
-            ],
+            "range": [574, 577],
             "loc": {
               "start": {
                 "line": 15,
@@ -665,10 +560,7 @@
           },
           "typemod": -1,
           "type": "names",
-          "range": [
-            574,
-            577
-          ],
+          "range": [574, 577],
           "loc": {
             "start": {
               "line": 15,
@@ -690,10 +582,7 @@
                 {
                   "type": "String",
                   "sval": "\n    Ok(Some(42))\n",
-                  "range": [
-                    578,
-                    580
-                  ],
+                  "range": [578, 580],
                   "loc": {
                     "start": {
                       "line": 15,
@@ -706,10 +595,7 @@
                   }
                 }
               ],
-              "range": [
-                578,
-                580
-              ],
+              "range": [578, 580],
               "loc": {
                 "start": {
                   "line": 15,
@@ -722,10 +608,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              578,
-              580
-            ],
+            "range": [578, 580],
             "loc": {
               "start": {
                 "line": 15,
@@ -743,10 +626,7 @@
             "arg": {
               "type": "String",
               "sval": "plrust",
-              "range": [
-                604,
-                612
-              ],
+              "range": [604, 612],
               "loc": {
                 "start": {
                   "line": 17,
@@ -759,10 +639,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              604,
-              612
-            ],
+            "range": [604, 612],
             "loc": {
               "start": {
                 "line": 17,
@@ -775,10 +652,7 @@
             }
           }
         ],
-        "range": [
-          455,
-          619
-        ],
+        "range": [455, 619],
         "loc": {
           "start": {
             "line": 12,
@@ -794,10 +668,7 @@
           "language": "plrust",
           "source": "\n    Ok(Some(42))\n",
           "quoteStyle": "dollar",
-          "range": [
-            583,
-            601
-          ],
+          "range": [583, 601],
           "loc": {
             "start": {
               "line": 15,
@@ -817,10 +688,7 @@
           {
             "type": "String",
             "sval": "proc_demo",
-            "range": [
-              620,
-              770
-            ],
+            "range": [620, 770],
             "loc": {
               "start": {
                 "line": 17,
@@ -843,10 +711,7 @@
                 {
                   "type": "String",
                   "sval": "\n    plv8.elog(NOTICE, 'from procedure');\n",
-                  "range": [
-                    707,
-                    709
-                  ],
+                  "range": [707, 709],
                   "loc": {
                     "start": {
                       "line": 20,
@@ -859,10 +724,7 @@
                   }
                 }
               ],
-              "range": [
-                707,
-                709
-              ],
+              "range": [707, 709],
               "loc": {
                 "start": {
                   "line": 20,
@@ -875,10 +737,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              707,
-              709
-            ],
+            "range": [707, 709],
             "loc": {
               "start": {
                 "line": 20,
@@ -896,10 +755,7 @@
             "arg": {
               "type": "String",
               "sval": "plv8",
-              "range": [
-                757,
-                765
-              ],
+              "range": [757, 765],
               "loc": {
                 "start": {
                   "line": 22,
@@ -912,10 +768,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              757,
-              765
-            ],
+            "range": [757, 765],
             "loc": {
               "start": {
                 "line": 22,
@@ -928,10 +781,7 @@
             }
           }
         ],
-        "range": [
-          620,
-          770
-        ],
+        "range": [620, 770],
         "loc": {
           "start": {
             "line": 17,
@@ -947,10 +797,7 @@
           "language": "plv8",
           "source": "\n    plv8.elog(NOTICE, 'from procedure');\n",
           "quoteStyle": "dollar",
-          "range": [
-            712,
-            754
-          ],
+          "range": [712, 754],
           "loc": {
             "start": {
               "line": 20,
@@ -968,10 +815,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          50,
-          56
-        ],
+        "range": [50, 56],
         "loc": {
           "start": {
             "line": 2,
@@ -986,10 +830,7 @@
       {
         "type": "Keyword",
         "value": "FUNCTION",
-        "range": [
-          57,
-          65
-        ],
+        "range": [57, 65],
         "loc": {
           "start": {
             "line": 2,
@@ -1004,10 +845,7 @@
       {
         "type": "Identifier",
         "value": "py_demo",
-        "range": [
-          66,
-          73
-        ],
+        "range": [66, 73],
         "loc": {
           "start": {
             "line": 2,
@@ -1022,10 +860,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          73,
-          74
-        ],
+        "range": [73, 74],
         "loc": {
           "start": {
             "line": 2,
@@ -1040,10 +875,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          74,
-          75
-        ],
+        "range": [74, 75],
         "loc": {
           "start": {
             "line": 2,
@@ -1058,10 +890,7 @@
       {
         "type": "Keyword",
         "value": "RETURNS",
-        "range": [
-          76,
-          83
-        ],
+        "range": [76, 83],
         "loc": {
           "start": {
             "line": 2,
@@ -1076,10 +905,7 @@
       {
         "type": "Keyword",
         "value": "text",
-        "range": [
-          84,
-          88
-        ],
+        "range": [84, 88],
         "loc": {
           "start": {
             "line": 2,
@@ -1094,10 +920,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          89,
-          91
-        ],
+        "range": [89, 91],
         "loc": {
           "start": {
             "line": 2,
@@ -1112,10 +935,7 @@
       {
         "type": "String",
         "value": "$body$\n    return \"hi from python\"\n$body$",
-        "range": [
-          92,
-          133
-        ],
+        "range": [92, 133],
         "loc": {
           "start": {
             "line": 2,
@@ -1130,10 +950,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          134,
-          142
-        ],
+        "range": [134, 142],
         "loc": {
           "start": {
             "line": 4,
@@ -1148,10 +965,7 @@
       {
         "type": "Identifier",
         "value": "plpython3u",
-        "range": [
-          143,
-          153
-        ],
+        "range": [143, 153],
         "loc": {
           "start": {
             "line": 4,
@@ -1166,10 +980,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          153,
-          154
-        ],
+        "range": [153, 154],
         "loc": {
           "start": {
             "line": 4,
@@ -1184,10 +995,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          212,
-          218
-        ],
+        "range": [212, 218],
         "loc": {
           "start": {
             "line": 7,
@@ -1202,10 +1010,7 @@
       {
         "type": "Keyword",
         "value": "FUNCTION",
-        "range": [
-          219,
-          227
-        ],
+        "range": [219, 227],
         "loc": {
           "start": {
             "line": 7,
@@ -1220,10 +1025,7 @@
       {
         "type": "Identifier",
         "value": "sq_demo",
-        "range": [
-          228,
-          235
-        ],
+        "range": [228, 235],
         "loc": {
           "start": {
             "line": 7,
@@ -1238,10 +1040,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          235,
-          236
-        ],
+        "range": [235, 236],
         "loc": {
           "start": {
             "line": 7,
@@ -1256,10 +1055,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          236,
-          237
-        ],
+        "range": [236, 237],
         "loc": {
           "start": {
             "line": 7,
@@ -1274,10 +1070,7 @@
       {
         "type": "Keyword",
         "value": "RETURNS",
-        "range": [
-          238,
-          245
-        ],
+        "range": [238, 245],
         "loc": {
           "start": {
             "line": 7,
@@ -1292,10 +1085,7 @@
       {
         "type": "Identifier",
         "value": "void",
-        "range": [
-          246,
-          250
-        ],
+        "range": [246, 250],
         "loc": {
           "start": {
             "line": 7,
@@ -1310,10 +1100,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          251,
-          253
-        ],
+        "range": [251, 253],
         "loc": {
           "start": {
             "line": 7,
@@ -1328,10 +1115,7 @@
       {
         "type": "String",
         "value": "'\n    RAISE NOTICE ''hi from plpgsql'';\n'",
-        "range": [
-          254,
-          295
-        ],
+        "range": [254, 295],
         "loc": {
           "start": {
             "line": 7,
@@ -1346,10 +1130,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          296,
-          304
-        ],
+        "range": [296, 304],
         "loc": {
           "start": {
             "line": 9,
@@ -1364,10 +1145,7 @@
       {
         "type": "Keyword",
         "value": "plpgsql",
-        "range": [
-          305,
-          312
-        ],
+        "range": [305, 312],
         "loc": {
           "start": {
             "line": 9,
@@ -1382,10 +1160,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          312,
-          313
-        ],
+        "range": [312, 313],
         "loc": {
           "start": {
             "line": 9,
@@ -1400,10 +1175,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          384,
-          390
-        ],
+        "range": [384, 390],
         "loc": {
           "start": {
             "line": 12,
@@ -1418,10 +1190,7 @@
       {
         "type": "Keyword",
         "value": "FUNCTION",
-        "range": [
-          391,
-          399
-        ],
+        "range": [391, 399],
         "loc": {
           "start": {
             "line": 12,
@@ -1436,10 +1205,7 @@
       {
         "type": "Identifier",
         "value": "c_demo",
-        "range": [
-          400,
-          406
-        ],
+        "range": [400, 406],
         "loc": {
           "start": {
             "line": 12,
@@ -1454,10 +1220,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          406,
-          407
-        ],
+        "range": [406, 407],
         "loc": {
           "start": {
             "line": 12,
@@ -1472,10 +1235,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          407,
-          408
-        ],
+        "range": [407, 408],
         "loc": {
           "start": {
             "line": 12,
@@ -1490,10 +1250,7 @@
       {
         "type": "Keyword",
         "value": "RETURNS",
-        "range": [
-          409,
-          416
-        ],
+        "range": [409, 416],
         "loc": {
           "start": {
             "line": 12,
@@ -1508,10 +1265,7 @@
       {
         "type": "Keyword",
         "value": "int",
-        "range": [
-          417,
-          420
-        ],
+        "range": [417, 420],
         "loc": {
           "start": {
             "line": 12,
@@ -1526,10 +1280,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          421,
-          423
-        ],
+        "range": [421, 423],
         "loc": {
           "start": {
             "line": 12,
@@ -1544,10 +1295,7 @@
       {
         "type": "String",
         "value": "'libname'",
-        "range": [
-          424,
-          433
-        ],
+        "range": [424, 433],
         "loc": {
           "start": {
             "line": 12,
@@ -1562,10 +1310,7 @@
       {
         "type": "Punctuator",
         "value": ",",
-        "range": [
-          433,
-          434
-        ],
+        "range": [433, 434],
         "loc": {
           "start": {
             "line": 12,
@@ -1580,10 +1325,7 @@
       {
         "type": "String",
         "value": "'symbol'",
-        "range": [
-          435,
-          443
-        ],
+        "range": [435, 443],
         "loc": {
           "start": {
             "line": 12,
@@ -1598,10 +1340,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          444,
-          452
-        ],
+        "range": [444, 452],
         "loc": {
           "start": {
             "line": 12,
@@ -1616,10 +1355,7 @@
       {
         "type": "Identifier",
         "value": "c",
-        "range": [
-          453,
-          454
-        ],
+        "range": [453, 454],
         "loc": {
           "start": {
             "line": 12,
@@ -1634,10 +1370,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          454,
-          455
-        ],
+        "range": [454, 455],
         "loc": {
           "start": {
             "line": 12,
@@ -1652,10 +1385,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          538,
-          544
-        ],
+        "range": [538, 544],
         "loc": {
           "start": {
             "line": 15,
@@ -1670,10 +1400,7 @@
       {
         "type": "Keyword",
         "value": "FUNCTION",
-        "range": [
-          545,
-          553
-        ],
+        "range": [545, 553],
         "loc": {
           "start": {
             "line": 15,
@@ -1688,10 +1415,7 @@
       {
         "type": "Identifier",
         "value": "rust_demo",
-        "range": [
-          554,
-          563
-        ],
+        "range": [554, 563],
         "loc": {
           "start": {
             "line": 15,
@@ -1706,10 +1430,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          563,
-          564
-        ],
+        "range": [563, 564],
         "loc": {
           "start": {
             "line": 15,
@@ -1724,10 +1445,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          564,
-          565
-        ],
+        "range": [564, 565],
         "loc": {
           "start": {
             "line": 15,
@@ -1742,10 +1460,7 @@
       {
         "type": "Keyword",
         "value": "RETURNS",
-        "range": [
-          566,
-          573
-        ],
+        "range": [566, 573],
         "loc": {
           "start": {
             "line": 15,
@@ -1760,10 +1475,7 @@
       {
         "type": "Keyword",
         "value": "int",
-        "range": [
-          574,
-          577
-        ],
+        "range": [574, 577],
         "loc": {
           "start": {
             "line": 15,
@@ -1778,10 +1490,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          578,
-          580
-        ],
+        "range": [578, 580],
         "loc": {
           "start": {
             "line": 15,
@@ -1796,10 +1505,7 @@
       {
         "type": "String",
         "value": "$$\n    Ok(Some(42))\n$$",
-        "range": [
-          581,
-          603
-        ],
+        "range": [581, 603],
         "loc": {
           "start": {
             "line": 15,
@@ -1814,10 +1520,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          604,
-          612
-        ],
+        "range": [604, 612],
         "loc": {
           "start": {
             "line": 17,
@@ -1832,10 +1535,7 @@
       {
         "type": "Identifier",
         "value": "plrust",
-        "range": [
-          613,
-          619
-        ],
+        "range": [613, 619],
         "loc": {
           "start": {
             "line": 17,
@@ -1850,10 +1550,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          619,
-          620
-        ],
+        "range": [619, 620],
         "loc": {
           "start": {
             "line": 17,
@@ -1868,10 +1565,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          678,
-          684
-        ],
+        "range": [678, 684],
         "loc": {
           "start": {
             "line": 20,
@@ -1886,10 +1580,7 @@
       {
         "type": "Keyword",
         "value": "PROCEDURE",
-        "range": [
-          685,
-          694
-        ],
+        "range": [685, 694],
         "loc": {
           "start": {
             "line": 20,
@@ -1904,10 +1595,7 @@
       {
         "type": "Identifier",
         "value": "proc_demo",
-        "range": [
-          695,
-          704
-        ],
+        "range": [695, 704],
         "loc": {
           "start": {
             "line": 20,
@@ -1922,10 +1610,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          704,
-          705
-        ],
+        "range": [704, 705],
         "loc": {
           "start": {
             "line": 20,
@@ -1940,10 +1625,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          705,
-          706
-        ],
+        "range": [705, 706],
         "loc": {
           "start": {
             "line": 20,
@@ -1958,10 +1640,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          707,
-          709
-        ],
+        "range": [707, 709],
         "loc": {
           "start": {
             "line": 20,
@@ -1976,10 +1655,7 @@
       {
         "type": "String",
         "value": "$$\n    plv8.elog(NOTICE, 'from procedure');\n$$",
-        "range": [
-          710,
-          756
-        ],
+        "range": [710, 756],
         "loc": {
           "start": {
             "line": 20,
@@ -1994,10 +1670,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          757,
-          765
-        ],
+        "range": [757, 765],
         "loc": {
           "start": {
             "line": 22,
@@ -2012,10 +1685,7 @@
       {
         "type": "Identifier",
         "value": "plv8",
-        "range": [
-          766,
-          770
-        ],
+        "range": [766, 770],
         "loc": {
           "start": {
             "line": 22,
@@ -2030,10 +1700,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          770,
-          771
-        ],
+        "range": [770, 771],
         "loc": {
           "start": {
             "line": 22,
@@ -2050,10 +1717,7 @@
       {
         "type": "Line",
         "value": " Dollar-quote with custom tag (plpython3u body)",
-        "range": [
-          0,
-          49
-        ],
+        "range": [0, 49],
         "loc": {
           "start": {
             "line": 1,
@@ -2068,10 +1732,7 @@
       {
         "type": "Line",
         "value": " Single-quoted body with embedded single-quote escape",
-        "range": [
-          156,
-          211
-        ],
+        "range": [156, 211],
         "loc": {
           "start": {
             "line": 6,
@@ -2086,10 +1747,7 @@
       {
         "type": "Line",
         "value": " C language uses two-argument AS — should NOT produce EmbeddedCode",
-        "range": [
-          315,
-          383
-        ],
+        "range": [315, 383],
         "loc": {
           "start": {
             "line": 11,
@@ -2104,10 +1762,7 @@
       {
         "type": "Line",
         "value": " Unknown / exotic language is still extracted (parser stays language-agnostic)",
-        "range": [
-          457,
-          537
-        ],
+        "range": [457, 537],
         "loc": {
           "start": {
             "line": 14,
@@ -2122,10 +1777,7 @@
       {
         "type": "Line",
         "value": " CREATE PROCEDURE shares the CreateFunctionStmt shape",
-        "range": [
-          622,
-          677
-        ],
+        "range": [622, 677],
         "loc": {
           "start": {
             "line": 19,
@@ -2140,36 +1792,18 @@
     ]
   },
   "visitorKeys": {
-    "Program": [
-      "body",
-      "tokens",
-      "comments"
-    ],
-    "CreateFunctionStmt": [
-      "funcname",
-      "returnType",
-      "options",
-      "embeddedCode"
-    ],
+    "Program": ["body", "tokens", "comments"],
+    "CreateFunctionStmt": ["funcname", "returnType", "options", "embeddedCode"],
     "String": [],
-    "names": [
-      "0",
-      "1"
-    ],
-    "DefElem": [
-      "arg"
-    ],
-    "List": [
-      "items"
-    ],
+    "names": ["0", "1"],
+    "DefElem": ["arg"],
+    "List": ["items"],
     "EmbeddedCode": [],
     "Keyword": [],
     "Identifier": [],
     "Punctuator": [],
     "Line": [],
-    "SQLStatement": [
-      "statement"
-    ],
+    "SQLStatement": ["statement"],
     "SQLParseError": [],
     "SQLProcedure": []
   },

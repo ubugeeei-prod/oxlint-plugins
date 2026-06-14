@@ -9,10 +9,7 @@
   "input": "-- Stored procedures and functions test\nCREATE OR REPLACE FUNCTION get_user_count(status_filter VARCHAR DEFAULT NULL)\nRETURNS INTEGER AS $$\nDECLARE\n    user_count INTEGER;\nBEGIN\n    IF status_filter IS NULL THEN\n        SELECT COUNT(*) INTO user_count FROM users;\n    ELSE\n        SELECT COUNT(*) INTO user_count FROM users WHERE status = status_filter;\n    END IF;\n    \n    RETURN user_count;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE OR REPLACE PROCEDURE update_user_status(\n    user_id INTEGER,\n    new_status VARCHAR\n)\nLANGUAGE plpgsql AS $$\nBEGIN\n    UPDATE users \n    SET status = new_status, \n        updated_at = CURRENT_TIMESTAMP \n    WHERE id = user_id;\n    \n    IF NOT FOUND THEN\n        RAISE EXCEPTION 'User with id % not found', user_id;\n    END IF;\n    \n    COMMIT;\nEND;\n$$;\n\n-- Recursive function\nCREATE OR REPLACE FUNCTION factorial(n INTEGER)\nRETURNS INTEGER AS $$\nBEGIN\n    IF n <= 1 THEN\n        RETURN 1;\n    ELSE\n        RETURN n * factorial(n - 1);\n    END IF;\nEND;\n$$ LANGUAGE plpgsql;\n\n-- Function with multiple return types\nCREATE OR REPLACE FUNCTION get_user_info(user_id INTEGER)\nRETURNS TABLE(name VARCHAR, email VARCHAR, status VARCHAR) AS $$\nBEGIN\n    RETURN QUERY\n    SELECT u.full_name, u.email, u.status\n    FROM users u\n    WHERE u.id = user_id;\nEND;\n$$ LANGUAGE plpgsql; ",
   "ast": {
     "type": "Program",
-    "range": [
-      0,
-      1299
-    ],
+    "range": [0, 1299],
     "loc": {
       "start": {
         "line": 1,
@@ -31,10 +28,7 @@
           {
             "type": "String",
             "sval": "get_user_count",
-            "range": [
-              0,
-              418
-            ],
+            "range": [0, 418],
             "loc": {
               "start": {
                 "line": 1,
@@ -55,10 +49,7 @@
               "0": {
                 "type": "String",
                 "sval": "pg_catalog",
-                "range": [
-                  96,
-                  103
-                ],
+                "range": [96, 103],
                 "loc": {
                   "start": {
                     "line": 2,
@@ -73,10 +64,7 @@
               "1": {
                 "type": "String",
                 "sval": "varchar",
-                "range": [
-                  96,
-                  103
-                ],
+                "range": [96, 103],
                 "loc": {
                   "start": {
                     "line": 2,
@@ -90,10 +78,7 @@
               },
               "typemod": -1,
               "type": "names",
-              "range": [
-                96,
-                103
-              ],
+              "range": [96, 103],
               "loc": {
                 "start": {
                   "line": 2,
@@ -109,10 +94,7 @@
             "defexpr": {
               "type": "A_Const",
               "isnull": true,
-              "range": [
-                112,
-                116
-              ],
+              "range": [112, 116],
               "loc": {
                 "start": {
                   "line": 2,
@@ -124,10 +106,7 @@
                 }
               }
             },
-            "range": [
-              96,
-              116
-            ],
+            "range": [96, 116],
             "loc": {
               "start": {
                 "line": 2,
@@ -144,10 +123,7 @@
           "0": {
             "type": "String",
             "sval": "pg_catalog",
-            "range": [
-              126,
-              133
-            ],
+            "range": [126, 133],
             "loc": {
               "start": {
                 "line": 3,
@@ -162,10 +138,7 @@
           "1": {
             "type": "String",
             "sval": "int4",
-            "range": [
-              126,
-              133
-            ],
+            "range": [126, 133],
             "loc": {
               "start": {
                 "line": 3,
@@ -179,10 +152,7 @@
           },
           "typemod": -1,
           "type": "names",
-          "range": [
-            126,
-            133
-          ],
+          "range": [126, 133],
           "loc": {
             "start": {
               "line": 3,
@@ -204,10 +174,7 @@
                 {
                   "type": "String",
                   "sval": "\nDECLARE\n    user_count INTEGER;\nBEGIN\n    IF status_filter IS NULL THEN\n        SELECT COUNT(*) INTO user_count FROM users;\n    ELSE\n        SELECT COUNT(*) INTO user_count FROM users WHERE status = status_filter;\n    END IF;\n    \n    RETURN user_count;\nEND;\n",
-                  "range": [
-                    134,
-                    136
-                  ],
+                  "range": [134, 136],
                   "loc": {
                     "start": {
                       "line": 3,
@@ -220,10 +187,7 @@
                   }
                 }
               ],
-              "range": [
-                134,
-                136
-              ],
+              "range": [134, 136],
               "loc": {
                 "start": {
                   "line": 3,
@@ -236,10 +200,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              134,
-              136
-            ],
+            "range": [134, 136],
             "loc": {
               "start": {
                 "line": 3,
@@ -257,10 +218,7 @@
             "arg": {
               "type": "String",
               "sval": "plpgsql",
-              "range": [
-                402,
-                410
-              ],
+              "range": [402, 410],
               "loc": {
                 "start": {
                   "line": 15,
@@ -273,10 +231,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              402,
-              410
-            ],
+            "range": [402, 410],
             "loc": {
               "start": {
                 "line": 15,
@@ -289,10 +244,7 @@
             }
           }
         ],
-        "range": [
-          0,
-          418
-        ],
+        "range": [0, 418],
         "loc": {
           "start": {
             "line": 1,
@@ -308,10 +260,7 @@
           "language": "plpgsql",
           "source": "\nDECLARE\n    user_count INTEGER;\nBEGIN\n    IF status_filter IS NULL THEN\n        SELECT COUNT(*) INTO user_count FROM users;\n    ELSE\n        SELECT COUNT(*) INTO user_count FROM users WHERE status = status_filter;\n    END IF;\n    \n    RETURN user_count;\nEND;\n",
           "quoteStyle": "dollar",
-          "range": [
-            139,
-            399
-          ],
+          "range": [139, 399],
           "loc": {
             "start": {
               "line": 3,
@@ -332,10 +281,7 @@
           {
             "type": "String",
             "sval": "update_user_status",
-            "range": [
-              419,
-              780
-            ],
+            "range": [419, 780],
             "loc": {
               "start": {
                 "line": 15,
@@ -356,10 +302,7 @@
               "0": {
                 "type": "String",
                 "sval": "pg_catalog",
-                "range": [
-                  481,
-                  488
-                ],
+                "range": [481, 488],
                 "loc": {
                   "start": {
                     "line": 18,
@@ -374,10 +317,7 @@
               "1": {
                 "type": "String",
                 "sval": "int4",
-                "range": [
-                  481,
-                  488
-                ],
+                "range": [481, 488],
                 "loc": {
                   "start": {
                     "line": 18,
@@ -391,10 +331,7 @@
               },
               "typemod": -1,
               "type": "names",
-              "range": [
-                481,
-                488
-              ],
+              "range": [481, 488],
               "loc": {
                 "start": {
                   "line": 18,
@@ -407,10 +344,7 @@
               }
             },
             "mode": "FUNC_PARAM_DEFAULT",
-            "range": [
-              481,
-              488
-            ],
+            "range": [481, 488],
             "loc": {
               "start": {
                 "line": 18,
@@ -429,10 +363,7 @@
               "0": {
                 "type": "String",
                 "sval": "pg_catalog",
-                "range": [
-                  505,
-                  512
-                ],
+                "range": [505, 512],
                 "loc": {
                   "start": {
                     "line": 19,
@@ -447,10 +378,7 @@
               "1": {
                 "type": "String",
                 "sval": "varchar",
-                "range": [
-                  505,
-                  512
-                ],
+                "range": [505, 512],
                 "loc": {
                   "start": {
                     "line": 19,
@@ -464,10 +392,7 @@
               },
               "typemod": -1,
               "type": "names",
-              "range": [
-                505,
-                512
-              ],
+              "range": [505, 512],
               "loc": {
                 "start": {
                   "line": 19,
@@ -480,10 +405,7 @@
               }
             },
             "mode": "FUNC_PARAM_DEFAULT",
-            "range": [
-              505,
-              512
-            ],
+            "range": [505, 512],
             "loc": {
               "start": {
                 "line": 19,
@@ -503,10 +425,7 @@
             "arg": {
               "type": "String",
               "sval": "plpgsql",
-              "range": [
-                515,
-                523
-              ],
+              "range": [515, 523],
               "loc": {
                 "start": {
                   "line": 21,
@@ -519,10 +438,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              515,
-              523
-            ],
+            "range": [515, 523],
             "loc": {
               "start": {
                 "line": 21,
@@ -543,10 +459,7 @@
                 {
                   "type": "String",
                   "sval": "\nBEGIN\n    UPDATE users \n    SET status = new_status, \n        updated_at = CURRENT_TIMESTAMP \n    WHERE id = user_id;\n    \n    IF NOT FOUND THEN\n        RAISE EXCEPTION 'User with id % not found', user_id;\n    END IF;\n    \n    COMMIT;\nEND;\n",
-                  "range": [
-                    532,
-                    534
-                  ],
+                  "range": [532, 534],
                   "loc": {
                     "start": {
                       "line": 21,
@@ -559,10 +472,7 @@
                   }
                 }
               ],
-              "range": [
-                532,
-                534
-              ],
+              "range": [532, 534],
               "loc": {
                 "start": {
                   "line": 21,
@@ -575,10 +485,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              532,
-              534
-            ],
+            "range": [532, 534],
             "loc": {
               "start": {
                 "line": 21,
@@ -591,10 +498,7 @@
             }
           }
         ],
-        "range": [
-          419,
-          780
-        ],
+        "range": [419, 780],
         "loc": {
           "start": {
             "line": 15,
@@ -610,10 +514,7 @@
           "language": "plpgsql",
           "source": "\nBEGIN\n    UPDATE users \n    SET status = new_status, \n        updated_at = CURRENT_TIMESTAMP \n    WHERE id = user_id;\n    \n    IF NOT FOUND THEN\n        RAISE EXCEPTION 'User with id % not found', user_id;\n    END IF;\n    \n    COMMIT;\nEND;\n",
           "quoteStyle": "dollar",
-          "range": [
-            537,
-            778
-          ],
+          "range": [537, 778],
           "loc": {
             "start": {
               "line": 21,
@@ -633,10 +534,7 @@
           {
             "type": "String",
             "sval": "factorial",
-            "range": [
-              781,
-              1000
-            ],
+            "range": [781, 1000],
             "loc": {
               "start": {
                 "line": 34,
@@ -657,10 +555,7 @@
               "0": {
                 "type": "String",
                 "sval": "pg_catalog",
-                "range": [
-                  844,
-                  851
-                ],
+                "range": [844, 851],
                 "loc": {
                   "start": {
                     "line": 37,
@@ -675,10 +570,7 @@
               "1": {
                 "type": "String",
                 "sval": "int4",
-                "range": [
-                  844,
-                  851
-                ],
+                "range": [844, 851],
                 "loc": {
                   "start": {
                     "line": 37,
@@ -692,10 +584,7 @@
               },
               "typemod": -1,
               "type": "names",
-              "range": [
-                844,
-                851
-              ],
+              "range": [844, 851],
               "loc": {
                 "start": {
                   "line": 37,
@@ -708,10 +597,7 @@
               }
             },
             "mode": "FUNC_PARAM_DEFAULT",
-            "range": [
-              844,
-              851
-            ],
+            "range": [844, 851],
             "loc": {
               "start": {
                 "line": 37,
@@ -728,10 +614,7 @@
           "0": {
             "type": "String",
             "sval": "pg_catalog",
-            "range": [
-              861,
-              868
-            ],
+            "range": [861, 868],
             "loc": {
               "start": {
                 "line": 38,
@@ -746,10 +629,7 @@
           "1": {
             "type": "String",
             "sval": "int4",
-            "range": [
-              861,
-              868
-            ],
+            "range": [861, 868],
             "loc": {
               "start": {
                 "line": 38,
@@ -763,10 +643,7 @@
           },
           "typemod": -1,
           "type": "names",
-          "range": [
-            861,
-            868
-          ],
+          "range": [861, 868],
           "loc": {
             "start": {
               "line": 38,
@@ -788,10 +665,7 @@
                 {
                   "type": "String",
                   "sval": "\nBEGIN\n    IF n <= 1 THEN\n        RETURN 1;\n    ELSE\n        RETURN n * factorial(n - 1);\n    END IF;\nEND;\n",
-                  "range": [
-                    869,
-                    871
-                  ],
+                  "range": [869, 871],
                   "loc": {
                     "start": {
                       "line": 38,
@@ -804,10 +678,7 @@
                   }
                 }
               ],
-              "range": [
-                869,
-                871
-              ],
+              "range": [869, 871],
               "loc": {
                 "start": {
                   "line": 38,
@@ -820,10 +691,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              869,
-              871
-            ],
+            "range": [869, 871],
             "loc": {
               "start": {
                 "line": 38,
@@ -841,10 +709,7 @@
             "arg": {
               "type": "String",
               "sval": "plpgsql",
-              "range": [
-                984,
-                992
-              ],
+              "range": [984, 992],
               "loc": {
                 "start": {
                   "line": 46,
@@ -857,10 +722,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              984,
-              992
-            ],
+            "range": [984, 992],
             "loc": {
               "start": {
                 "line": 46,
@@ -873,10 +735,7 @@
             }
           }
         ],
-        "range": [
-          781,
-          1000
-        ],
+        "range": [781, 1000],
         "loc": {
           "start": {
             "line": 34,
@@ -892,10 +751,7 @@
           "language": "plpgsql",
           "source": "\nBEGIN\n    IF n <= 1 THEN\n        RETURN 1;\n    ELSE\n        RETURN n * factorial(n - 1);\n    END IF;\nEND;\n",
           "quoteStyle": "dollar",
-          "range": [
-            874,
-            981
-          ],
+          "range": [874, 981],
           "loc": {
             "start": {
               "line": 38,
@@ -915,10 +771,7 @@
           {
             "type": "String",
             "sval": "get_user_info",
-            "range": [
-              1001,
-              1297
-            ],
+            "range": [1001, 1297],
             "loc": {
               "start": {
                 "line": 46,
@@ -939,10 +792,7 @@
               "0": {
                 "type": "String",
                 "sval": "pg_catalog",
-                "range": [
-                  1091,
-                  1098
-                ],
+                "range": [1091, 1098],
                 "loc": {
                   "start": {
                     "line": 49,
@@ -957,10 +807,7 @@
               "1": {
                 "type": "String",
                 "sval": "int4",
-                "range": [
-                  1091,
-                  1098
-                ],
+                "range": [1091, 1098],
                 "loc": {
                   "start": {
                     "line": 49,
@@ -974,10 +821,7 @@
               },
               "typemod": -1,
               "type": "names",
-              "range": [
-                1091,
-                1098
-              ],
+              "range": [1091, 1098],
               "loc": {
                 "start": {
                   "line": 49,
@@ -990,10 +834,7 @@
               }
             },
             "mode": "FUNC_PARAM_DEFAULT",
-            "range": [
-              1091,
-              1098
-            ],
+            "range": [1091, 1098],
             "loc": {
               "start": {
                 "line": 49,
@@ -1012,10 +853,7 @@
               "0": {
                 "type": "String",
                 "sval": "pg_catalog",
-                "range": [
-                  1119,
-                  1126
-                ],
+                "range": [1119, 1126],
                 "loc": {
                   "start": {
                     "line": 50,
@@ -1030,10 +868,7 @@
               "1": {
                 "type": "String",
                 "sval": "varchar",
-                "range": [
-                  1119,
-                  1126
-                ],
+                "range": [1119, 1126],
                 "loc": {
                   "start": {
                     "line": 50,
@@ -1047,10 +882,7 @@
               },
               "typemod": -1,
               "type": "names",
-              "range": [
-                1119,
-                1126
-              ],
+              "range": [1119, 1126],
               "loc": {
                 "start": {
                   "line": 50,
@@ -1063,10 +895,7 @@
               }
             },
             "mode": "FUNC_PARAM_TABLE",
-            "range": [
-              1119,
-              1126
-            ],
+            "range": [1119, 1126],
             "loc": {
               "start": {
                 "line": 50,
@@ -1085,10 +914,7 @@
               "0": {
                 "type": "String",
                 "sval": "pg_catalog",
-                "range": [
-                  1134,
-                  1141
-                ],
+                "range": [1134, 1141],
                 "loc": {
                   "start": {
                     "line": 50,
@@ -1103,10 +929,7 @@
               "1": {
                 "type": "String",
                 "sval": "varchar",
-                "range": [
-                  1134,
-                  1141
-                ],
+                "range": [1134, 1141],
                 "loc": {
                   "start": {
                     "line": 50,
@@ -1120,10 +943,7 @@
               },
               "typemod": -1,
               "type": "names",
-              "range": [
-                1134,
-                1141
-              ],
+              "range": [1134, 1141],
               "loc": {
                 "start": {
                   "line": 50,
@@ -1136,10 +956,7 @@
               }
             },
             "mode": "FUNC_PARAM_TABLE",
-            "range": [
-              1134,
-              1141
-            ],
+            "range": [1134, 1141],
             "loc": {
               "start": {
                 "line": 50,
@@ -1158,10 +975,7 @@
               "0": {
                 "type": "String",
                 "sval": "pg_catalog",
-                "range": [
-                  1150,
-                  1157
-                ],
+                "range": [1150, 1157],
                 "loc": {
                   "start": {
                     "line": 50,
@@ -1176,10 +990,7 @@
               "1": {
                 "type": "String",
                 "sval": "varchar",
-                "range": [
-                  1150,
-                  1157
-                ],
+                "range": [1150, 1157],
                 "loc": {
                   "start": {
                     "line": 50,
@@ -1193,10 +1004,7 @@
               },
               "typemod": -1,
               "type": "names",
-              "range": [
-                1150,
-                1157
-              ],
+              "range": [1150, 1157],
               "loc": {
                 "start": {
                   "line": 50,
@@ -1209,10 +1017,7 @@
               }
             },
             "mode": "FUNC_PARAM_TABLE",
-            "range": [
-              1150,
-              1157
-            ],
+            "range": [1150, 1157],
             "loc": {
               "start": {
                 "line": 50,
@@ -1229,10 +1034,7 @@
           "0": {
             "type": "String",
             "sval": "pg_catalog",
-            "range": [
-              1108,
-              1113
-            ],
+            "range": [1108, 1113],
             "loc": {
               "start": {
                 "line": 50,
@@ -1247,10 +1049,7 @@
           "1": {
             "type": "String",
             "sval": "record",
-            "range": [
-              1108,
-              1113
-            ],
+            "range": [1108, 1113],
             "loc": {
               "start": {
                 "line": 50,
@@ -1265,10 +1064,7 @@
           "setof": true,
           "typemod": -1,
           "type": "names",
-          "range": [
-            1108,
-            1113
-          ],
+          "range": [1108, 1113],
           "loc": {
             "start": {
               "line": 50,
@@ -1290,10 +1086,7 @@
                 {
                   "type": "String",
                   "sval": "\nBEGIN\n    RETURN QUERY\n    SELECT u.full_name, u.email, u.status\n    FROM users u\n    WHERE u.id = user_id;\nEND;\n",
-                  "range": [
-                    1159,
-                    1161
-                  ],
+                  "range": [1159, 1161],
                   "loc": {
                     "start": {
                       "line": 50,
@@ -1306,10 +1099,7 @@
                   }
                 }
               ],
-              "range": [
-                1159,
-                1161
-              ],
+              "range": [1159, 1161],
               "loc": {
                 "start": {
                   "line": 50,
@@ -1322,10 +1112,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              1159,
-              1161
-            ],
+            "range": [1159, 1161],
             "loc": {
               "start": {
                 "line": 50,
@@ -1343,10 +1130,7 @@
             "arg": {
               "type": "String",
               "sval": "plpgsql",
-              "range": [
-                1281,
-                1289
-              ],
+              "range": [1281, 1289],
               "loc": {
                 "start": {
                   "line": 57,
@@ -1359,10 +1143,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              1281,
-              1289
-            ],
+            "range": [1281, 1289],
             "loc": {
               "start": {
                 "line": 57,
@@ -1375,10 +1156,7 @@
             }
           }
         ],
-        "range": [
-          1001,
-          1297
-        ],
+        "range": [1001, 1297],
         "loc": {
           "start": {
             "line": 46,
@@ -1394,10 +1172,7 @@
           "language": "plpgsql",
           "source": "\nBEGIN\n    RETURN QUERY\n    SELECT u.full_name, u.email, u.status\n    FROM users u\n    WHERE u.id = user_id;\nEND;\n",
           "quoteStyle": "dollar",
-          "range": [
-            1164,
-            1278
-          ],
+          "range": [1164, 1278],
           "loc": {
             "start": {
               "line": 50,
@@ -1415,10 +1190,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          40,
-          46
-        ],
+        "range": [40, 46],
         "loc": {
           "start": {
             "line": 2,
@@ -1433,10 +1205,7 @@
       {
         "type": "Keyword",
         "value": "OR",
-        "range": [
-          47,
-          49
-        ],
+        "range": [47, 49],
         "loc": {
           "start": {
             "line": 2,
@@ -1451,10 +1220,7 @@
       {
         "type": "Identifier",
         "value": "REPLACE",
-        "range": [
-          50,
-          57
-        ],
+        "range": [50, 57],
         "loc": {
           "start": {
             "line": 2,
@@ -1469,10 +1235,7 @@
       {
         "type": "Keyword",
         "value": "FUNCTION",
-        "range": [
-          58,
-          66
-        ],
+        "range": [58, 66],
         "loc": {
           "start": {
             "line": 2,
@@ -1487,10 +1250,7 @@
       {
         "type": "Identifier",
         "value": "get_user_count",
-        "range": [
-          67,
-          81
-        ],
+        "range": [67, 81],
         "loc": {
           "start": {
             "line": 2,
@@ -1505,10 +1265,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          81,
-          82
-        ],
+        "range": [81, 82],
         "loc": {
           "start": {
             "line": 2,
@@ -1523,10 +1280,7 @@
       {
         "type": "Identifier",
         "value": "status_filter",
-        "range": [
-          82,
-          95
-        ],
+        "range": [82, 95],
         "loc": {
           "start": {
             "line": 2,
@@ -1541,10 +1295,7 @@
       {
         "type": "Keyword",
         "value": "VARCHAR",
-        "range": [
-          96,
-          103
-        ],
+        "range": [96, 103],
         "loc": {
           "start": {
             "line": 2,
@@ -1559,10 +1310,7 @@
       {
         "type": "Keyword",
         "value": "DEFAULT",
-        "range": [
-          104,
-          111
-        ],
+        "range": [104, 111],
         "loc": {
           "start": {
             "line": 2,
@@ -1577,10 +1325,7 @@
       {
         "type": "Keyword",
         "value": "NULL",
-        "range": [
-          112,
-          116
-        ],
+        "range": [112, 116],
         "loc": {
           "start": {
             "line": 2,
@@ -1595,10 +1340,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          116,
-          117
-        ],
+        "range": [116, 117],
         "loc": {
           "start": {
             "line": 2,
@@ -1613,10 +1355,7 @@
       {
         "type": "Keyword",
         "value": "RETURNS",
-        "range": [
-          118,
-          125
-        ],
+        "range": [118, 125],
         "loc": {
           "start": {
             "line": 3,
@@ -1631,10 +1370,7 @@
       {
         "type": "Keyword",
         "value": "INTEGER",
-        "range": [
-          126,
-          133
-        ],
+        "range": [126, 133],
         "loc": {
           "start": {
             "line": 3,
@@ -1649,10 +1385,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          134,
-          136
-        ],
+        "range": [134, 136],
         "loc": {
           "start": {
             "line": 3,
@@ -1667,10 +1400,7 @@
       {
         "type": "String",
         "value": "$$\nDECLARE\n    user_count INTEGER;\nBEGIN\n    IF status_filter IS NULL THEN\n        SELECT COUNT(*) INTO user_count FROM users;\n    ELSE\n        SELECT COUNT(*) INTO user_count FROM users WHERE status = status_filter;\n    END IF;\n    \n    RETURN user_count;\nEND;\n$$",
-        "range": [
-          137,
-          401
-        ],
+        "range": [137, 401],
         "loc": {
           "start": {
             "line": 3,
@@ -1685,10 +1415,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          402,
-          410
-        ],
+        "range": [402, 410],
         "loc": {
           "start": {
             "line": 15,
@@ -1703,10 +1430,7 @@
       {
         "type": "Keyword",
         "value": "plpgsql",
-        "range": [
-          411,
-          418
-        ],
+        "range": [411, 418],
         "loc": {
           "start": {
             "line": 15,
@@ -1721,10 +1445,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          418,
-          419
-        ],
+        "range": [418, 419],
         "loc": {
           "start": {
             "line": 15,
@@ -1739,10 +1460,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          421,
-          427
-        ],
+        "range": [421, 427],
         "loc": {
           "start": {
             "line": 17,
@@ -1757,10 +1475,7 @@
       {
         "type": "Keyword",
         "value": "OR",
-        "range": [
-          428,
-          430
-        ],
+        "range": [428, 430],
         "loc": {
           "start": {
             "line": 17,
@@ -1775,10 +1490,7 @@
       {
         "type": "Identifier",
         "value": "REPLACE",
-        "range": [
-          431,
-          438
-        ],
+        "range": [431, 438],
         "loc": {
           "start": {
             "line": 17,
@@ -1793,10 +1505,7 @@
       {
         "type": "Keyword",
         "value": "PROCEDURE",
-        "range": [
-          439,
-          448
-        ],
+        "range": [439, 448],
         "loc": {
           "start": {
             "line": 17,
@@ -1811,10 +1520,7 @@
       {
         "type": "Identifier",
         "value": "update_user_status",
-        "range": [
-          449,
-          467
-        ],
+        "range": [449, 467],
         "loc": {
           "start": {
             "line": 17,
@@ -1829,10 +1535,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          467,
-          468
-        ],
+        "range": [467, 468],
         "loc": {
           "start": {
             "line": 17,
@@ -1847,10 +1550,7 @@
       {
         "type": "Identifier",
         "value": "user_id",
-        "range": [
-          473,
-          480
-        ],
+        "range": [473, 480],
         "loc": {
           "start": {
             "line": 18,
@@ -1865,10 +1565,7 @@
       {
         "type": "Keyword",
         "value": "INTEGER",
-        "range": [
-          481,
-          488
-        ],
+        "range": [481, 488],
         "loc": {
           "start": {
             "line": 18,
@@ -1883,10 +1580,7 @@
       {
         "type": "Punctuator",
         "value": ",",
-        "range": [
-          488,
-          489
-        ],
+        "range": [488, 489],
         "loc": {
           "start": {
             "line": 18,
@@ -1901,10 +1595,7 @@
       {
         "type": "Identifier",
         "value": "new_status",
-        "range": [
-          494,
-          504
-        ],
+        "range": [494, 504],
         "loc": {
           "start": {
             "line": 19,
@@ -1919,10 +1610,7 @@
       {
         "type": "Keyword",
         "value": "VARCHAR",
-        "range": [
-          505,
-          512
-        ],
+        "range": [505, 512],
         "loc": {
           "start": {
             "line": 19,
@@ -1937,10 +1625,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          513,
-          514
-        ],
+        "range": [513, 514],
         "loc": {
           "start": {
             "line": 20,
@@ -1955,10 +1640,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          515,
-          523
-        ],
+        "range": [515, 523],
         "loc": {
           "start": {
             "line": 21,
@@ -1973,10 +1655,7 @@
       {
         "type": "Keyword",
         "value": "plpgsql",
-        "range": [
-          524,
-          531
-        ],
+        "range": [524, 531],
         "loc": {
           "start": {
             "line": 21,
@@ -1991,10 +1670,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          532,
-          534
-        ],
+        "range": [532, 534],
         "loc": {
           "start": {
             "line": 21,
@@ -2009,10 +1685,7 @@
       {
         "type": "String",
         "value": "$$\nBEGIN\n    UPDATE users \n    SET status = new_status, \n        updated_at = CURRENT_TIMESTAMP \n    WHERE id = user_id;\n    \n    IF NOT FOUND THEN\n        RAISE EXCEPTION 'User with id % not found', user_id;\n    END IF;\n    \n    COMMIT;\nEND;\n$$",
-        "range": [
-          535,
-          780
-        ],
+        "range": [535, 780],
         "loc": {
           "start": {
             "line": 21,
@@ -2027,10 +1700,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          780,
-          781
-        ],
+        "range": [780, 781],
         "loc": {
           "start": {
             "line": 34,
@@ -2045,10 +1715,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          805,
-          811
-        ],
+        "range": [805, 811],
         "loc": {
           "start": {
             "line": 37,
@@ -2063,10 +1730,7 @@
       {
         "type": "Keyword",
         "value": "OR",
-        "range": [
-          812,
-          814
-        ],
+        "range": [812, 814],
         "loc": {
           "start": {
             "line": 37,
@@ -2081,10 +1745,7 @@
       {
         "type": "Identifier",
         "value": "REPLACE",
-        "range": [
-          815,
-          822
-        ],
+        "range": [815, 822],
         "loc": {
           "start": {
             "line": 37,
@@ -2099,10 +1760,7 @@
       {
         "type": "Keyword",
         "value": "FUNCTION",
-        "range": [
-          823,
-          831
-        ],
+        "range": [823, 831],
         "loc": {
           "start": {
             "line": 37,
@@ -2117,10 +1775,7 @@
       {
         "type": "Identifier",
         "value": "factorial",
-        "range": [
-          832,
-          841
-        ],
+        "range": [832, 841],
         "loc": {
           "start": {
             "line": 37,
@@ -2135,10 +1790,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          841,
-          842
-        ],
+        "range": [841, 842],
         "loc": {
           "start": {
             "line": 37,
@@ -2153,10 +1805,7 @@
       {
         "type": "Identifier",
         "value": "n",
-        "range": [
-          842,
-          843
-        ],
+        "range": [842, 843],
         "loc": {
           "start": {
             "line": 37,
@@ -2171,10 +1820,7 @@
       {
         "type": "Keyword",
         "value": "INTEGER",
-        "range": [
-          844,
-          851
-        ],
+        "range": [844, 851],
         "loc": {
           "start": {
             "line": 37,
@@ -2189,10 +1835,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          851,
-          852
-        ],
+        "range": [851, 852],
         "loc": {
           "start": {
             "line": 37,
@@ -2207,10 +1850,7 @@
       {
         "type": "Keyword",
         "value": "RETURNS",
-        "range": [
-          853,
-          860
-        ],
+        "range": [853, 860],
         "loc": {
           "start": {
             "line": 38,
@@ -2225,10 +1865,7 @@
       {
         "type": "Keyword",
         "value": "INTEGER",
-        "range": [
-          861,
-          868
-        ],
+        "range": [861, 868],
         "loc": {
           "start": {
             "line": 38,
@@ -2243,10 +1880,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          869,
-          871
-        ],
+        "range": [869, 871],
         "loc": {
           "start": {
             "line": 38,
@@ -2261,10 +1895,7 @@
       {
         "type": "String",
         "value": "$$\nBEGIN\n    IF n <= 1 THEN\n        RETURN 1;\n    ELSE\n        RETURN n * factorial(n - 1);\n    END IF;\nEND;\n$$",
-        "range": [
-          872,
-          983
-        ],
+        "range": [872, 983],
         "loc": {
           "start": {
             "line": 38,
@@ -2279,10 +1910,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          984,
-          992
-        ],
+        "range": [984, 992],
         "loc": {
           "start": {
             "line": 46,
@@ -2297,10 +1925,7 @@
       {
         "type": "Keyword",
         "value": "plpgsql",
-        "range": [
-          993,
-          1000
-        ],
+        "range": [993, 1000],
         "loc": {
           "start": {
             "line": 46,
@@ -2315,10 +1940,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          1000,
-          1001
-        ],
+        "range": [1000, 1001],
         "loc": {
           "start": {
             "line": 46,
@@ -2333,10 +1955,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          1042,
-          1048
-        ],
+        "range": [1042, 1048],
         "loc": {
           "start": {
             "line": 49,
@@ -2351,10 +1970,7 @@
       {
         "type": "Keyword",
         "value": "OR",
-        "range": [
-          1049,
-          1051
-        ],
+        "range": [1049, 1051],
         "loc": {
           "start": {
             "line": 49,
@@ -2369,10 +1985,7 @@
       {
         "type": "Identifier",
         "value": "REPLACE",
-        "range": [
-          1052,
-          1059
-        ],
+        "range": [1052, 1059],
         "loc": {
           "start": {
             "line": 49,
@@ -2387,10 +2000,7 @@
       {
         "type": "Keyword",
         "value": "FUNCTION",
-        "range": [
-          1060,
-          1068
-        ],
+        "range": [1060, 1068],
         "loc": {
           "start": {
             "line": 49,
@@ -2405,10 +2015,7 @@
       {
         "type": "Identifier",
         "value": "get_user_info",
-        "range": [
-          1069,
-          1082
-        ],
+        "range": [1069, 1082],
         "loc": {
           "start": {
             "line": 49,
@@ -2423,10 +2030,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          1082,
-          1083
-        ],
+        "range": [1082, 1083],
         "loc": {
           "start": {
             "line": 49,
@@ -2441,10 +2045,7 @@
       {
         "type": "Identifier",
         "value": "user_id",
-        "range": [
-          1083,
-          1090
-        ],
+        "range": [1083, 1090],
         "loc": {
           "start": {
             "line": 49,
@@ -2459,10 +2060,7 @@
       {
         "type": "Keyword",
         "value": "INTEGER",
-        "range": [
-          1091,
-          1098
-        ],
+        "range": [1091, 1098],
         "loc": {
           "start": {
             "line": 49,
@@ -2477,10 +2075,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          1098,
-          1099
-        ],
+        "range": [1098, 1099],
         "loc": {
           "start": {
             "line": 49,
@@ -2495,10 +2090,7 @@
       {
         "type": "Keyword",
         "value": "RETURNS",
-        "range": [
-          1100,
-          1107
-        ],
+        "range": [1100, 1107],
         "loc": {
           "start": {
             "line": 50,
@@ -2513,10 +2105,7 @@
       {
         "type": "Keyword",
         "value": "TABLE",
-        "range": [
-          1108,
-          1113
-        ],
+        "range": [1108, 1113],
         "loc": {
           "start": {
             "line": 50,
@@ -2531,10 +2120,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          1113,
-          1114
-        ],
+        "range": [1113, 1114],
         "loc": {
           "start": {
             "line": 50,
@@ -2549,10 +2135,7 @@
       {
         "type": "Identifier",
         "value": "name",
-        "range": [
-          1114,
-          1118
-        ],
+        "range": [1114, 1118],
         "loc": {
           "start": {
             "line": 50,
@@ -2567,10 +2150,7 @@
       {
         "type": "Keyword",
         "value": "VARCHAR",
-        "range": [
-          1119,
-          1126
-        ],
+        "range": [1119, 1126],
         "loc": {
           "start": {
             "line": 50,
@@ -2585,10 +2165,7 @@
       {
         "type": "Punctuator",
         "value": ",",
-        "range": [
-          1126,
-          1127
-        ],
+        "range": [1126, 1127],
         "loc": {
           "start": {
             "line": 50,
@@ -2603,10 +2180,7 @@
       {
         "type": "Identifier",
         "value": "email",
-        "range": [
-          1128,
-          1133
-        ],
+        "range": [1128, 1133],
         "loc": {
           "start": {
             "line": 50,
@@ -2621,10 +2195,7 @@
       {
         "type": "Keyword",
         "value": "VARCHAR",
-        "range": [
-          1134,
-          1141
-        ],
+        "range": [1134, 1141],
         "loc": {
           "start": {
             "line": 50,
@@ -2639,10 +2210,7 @@
       {
         "type": "Punctuator",
         "value": ",",
-        "range": [
-          1141,
-          1142
-        ],
+        "range": [1141, 1142],
         "loc": {
           "start": {
             "line": 50,
@@ -2657,10 +2225,7 @@
       {
         "type": "Identifier",
         "value": "status",
-        "range": [
-          1143,
-          1149
-        ],
+        "range": [1143, 1149],
         "loc": {
           "start": {
             "line": 50,
@@ -2675,10 +2240,7 @@
       {
         "type": "Keyword",
         "value": "VARCHAR",
-        "range": [
-          1150,
-          1157
-        ],
+        "range": [1150, 1157],
         "loc": {
           "start": {
             "line": 50,
@@ -2693,10 +2255,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          1157,
-          1158
-        ],
+        "range": [1157, 1158],
         "loc": {
           "start": {
             "line": 50,
@@ -2711,10 +2270,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          1159,
-          1161
-        ],
+        "range": [1159, 1161],
         "loc": {
           "start": {
             "line": 50,
@@ -2729,10 +2285,7 @@
       {
         "type": "String",
         "value": "$$\nBEGIN\n    RETURN QUERY\n    SELECT u.full_name, u.email, u.status\n    FROM users u\n    WHERE u.id = user_id;\nEND;\n$$",
-        "range": [
-          1162,
-          1280
-        ],
+        "range": [1162, 1280],
         "loc": {
           "start": {
             "line": 50,
@@ -2747,10 +2300,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          1281,
-          1289
-        ],
+        "range": [1281, 1289],
         "loc": {
           "start": {
             "line": 57,
@@ -2765,10 +2315,7 @@
       {
         "type": "Keyword",
         "value": "plpgsql",
-        "range": [
-          1290,
-          1297
-        ],
+        "range": [1290, 1297],
         "loc": {
           "start": {
             "line": 57,
@@ -2783,10 +2330,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          1297,
-          1298
-        ],
+        "range": [1297, 1298],
         "loc": {
           "start": {
             "line": 57,
@@ -2803,10 +2347,7 @@
       {
         "type": "Line",
         "value": " Stored procedures and functions test",
-        "range": [
-          0,
-          39
-        ],
+        "range": [0, 39],
         "loc": {
           "start": {
             "line": 1,
@@ -2821,10 +2362,7 @@
       {
         "type": "Line",
         "value": " Recursive function",
-        "range": [
-          783,
-          804
-        ],
+        "range": [783, 804],
         "loc": {
           "start": {
             "line": 36,
@@ -2839,10 +2377,7 @@
       {
         "type": "Line",
         "value": " Function with multiple return types",
-        "range": [
-          1003,
-          1041
-        ],
+        "range": [1003, 1041],
         "loc": {
           "start": {
             "line": 48,
@@ -2857,42 +2392,20 @@
     ]
   },
   "visitorKeys": {
-    "Program": [
-      "body",
-      "tokens",
-      "comments"
-    ],
-    "CreateFunctionStmt": [
-      "funcname",
-      "parameters",
-      "returnType",
-      "options",
-      "embeddedCode"
-    ],
+    "Program": ["body", "tokens", "comments"],
+    "CreateFunctionStmt": ["funcname", "parameters", "returnType", "options", "embeddedCode"],
     "String": [],
-    "FunctionParameter": [
-      "argType",
-      "defexpr"
-    ],
-    "names": [
-      "0",
-      "1"
-    ],
+    "FunctionParameter": ["argType", "defexpr"],
+    "names": ["0", "1"],
     "A_Const": [],
-    "DefElem": [
-      "arg"
-    ],
-    "List": [
-      "items"
-    ],
+    "DefElem": ["arg"],
+    "List": ["items"],
     "EmbeddedCode": [],
     "Keyword": [],
     "Identifier": [],
     "Punctuator": [],
     "Line": [],
-    "SQLStatement": [
-      "statement"
-    ],
+    "SQLStatement": ["statement"],
     "SQLParseError": [],
     "SQLProcedure": []
   },

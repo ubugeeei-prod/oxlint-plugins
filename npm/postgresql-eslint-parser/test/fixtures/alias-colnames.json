@@ -9,10 +9,7 @@
   "input": "SELECT * FROM tbl AS t(col1, col2);\nSELECT * FROM tbl t(col1);\nSELECT * FROM generate_series(1, 10) WITH ORDINALITY AS r(range, r_idx);\nSELECT * FROM (SELECT 1, 2) AS sub(col1, col2);\n",
   "ast": {
     "type": "Program",
-    "range": [
-      0,
-      184
-    ],
+    "range": [0, 184],
     "loc": {
       "start": {
         "line": 1,
@@ -34,10 +31,7 @@
               "fields": [
                 {
                   "type": "A_Star",
-                  "range": [
-                    7,
-                    8
-                  ],
+                  "range": [7, 8],
                   "loc": {
                     "start": {
                       "line": 1,
@@ -50,10 +44,7 @@
                   }
                 }
               ],
-              "range": [
-                7,
-                8
-              ],
+              "range": [7, 8],
               "loc": {
                 "start": {
                   "line": 1,
@@ -65,10 +56,7 @@
                 }
               }
             },
-            "range": [
-              7,
-              8
-            ],
+            "range": [7, 8],
             "loc": {
               "start": {
                 "line": 1,
@@ -93,10 +81,7 @@
                 {
                   "type": "String",
                   "sval": "col1",
-                  "range": [
-                    23,
-                    27
-                  ],
+                  "range": [23, 27],
                   "loc": {
                     "start": {
                       "line": 1,
@@ -111,10 +96,7 @@
                 {
                   "type": "String",
                   "sval": "col2",
-                  "range": [
-                    29,
-                    33
-                  ],
+                  "range": [29, 33],
                   "loc": {
                     "start": {
                       "line": 1,
@@ -128,10 +110,7 @@
                 }
               ],
               "type": "Alias",
-              "range": [
-                21,
-                34
-              ],
+              "range": [21, 34],
               "loc": {
                 "start": {
                   "line": 1,
@@ -143,10 +122,7 @@
                 }
               }
             },
-            "range": [
-              14,
-              17
-            ],
+            "range": [14, 17],
             "loc": {
               "start": {
                 "line": 1,
@@ -161,10 +137,7 @@
         ],
         "limitOption": "LIMIT_OPTION_DEFAULT",
         "op": "SETOP_NONE",
-        "range": [
-          0,
-          34
-        ],
+        "range": [0, 34],
         "loc": {
           "start": {
             "line": 1,
@@ -186,10 +159,7 @@
               "fields": [
                 {
                   "type": "A_Star",
-                  "range": [
-                    43,
-                    44
-                  ],
+                  "range": [43, 44],
                   "loc": {
                     "start": {
                       "line": 2,
@@ -202,10 +172,7 @@
                   }
                 }
               ],
-              "range": [
-                43,
-                44
-              ],
+              "range": [43, 44],
               "loc": {
                 "start": {
                   "line": 2,
@@ -217,10 +184,7 @@
                 }
               }
             },
-            "range": [
-              43,
-              44
-            ],
+            "range": [43, 44],
             "loc": {
               "start": {
                 "line": 2,
@@ -245,10 +209,7 @@
                 {
                   "type": "String",
                   "sval": "col1",
-                  "range": [
-                    56,
-                    60
-                  ],
+                  "range": [56, 60],
                   "loc": {
                     "start": {
                       "line": 2,
@@ -262,10 +223,7 @@
                 }
               ],
               "type": "Alias",
-              "range": [
-                54,
-                61
-              ],
+              "range": [54, 61],
               "loc": {
                 "start": {
                   "line": 2,
@@ -277,10 +235,7 @@
                 }
               }
             },
-            "range": [
-              50,
-              53
-            ],
+            "range": [50, 53],
             "loc": {
               "start": {
                 "line": 2,
@@ -295,10 +250,7 @@
         ],
         "limitOption": "LIMIT_OPTION_DEFAULT",
         "op": "SETOP_NONE",
-        "range": [
-          35,
-          61
-        ],
+        "range": [35, 61],
         "loc": {
           "start": {
             "line": 1,
@@ -320,10 +272,7 @@
               "fields": [
                 {
                   "type": "A_Star",
-                  "range": [
-                    70,
-                    71
-                  ],
+                  "range": [70, 71],
                   "loc": {
                     "start": {
                       "line": 3,
@@ -336,10 +285,7 @@
                   }
                 }
               ],
-              "range": [
-                70,
-                71
-              ],
+              "range": [70, 71],
               "loc": {
                 "start": {
                   "line": 3,
@@ -351,10 +297,7 @@
                 }
               }
             },
-            "range": [
-              70,
-              71
-            ],
+            "range": [70, 71],
             "loc": {
               "start": {
                 "line": 3,
@@ -381,10 +324,7 @@
                       {
                         "type": "String",
                         "sval": "generate_series",
-                        "range": [
-                          77,
-                          92
-                        ],
+                        "range": [77, 92],
                         "loc": {
                           "start": {
                             "line": 3,
@@ -403,10 +343,7 @@
                         "ival": {
                           "ival": 1
                         },
-                        "range": [
-                          93,
-                          94
-                        ],
+                        "range": [93, 94],
                         "loc": {
                           "start": {
                             "line": 3,
@@ -423,10 +360,7 @@
                         "ival": {
                           "ival": 10
                         },
-                        "range": [
-                          96,
-                          98
-                        ],
+                        "range": [96, 98],
                         "loc": {
                           "start": {
                             "line": 3,
@@ -440,10 +374,7 @@
                       }
                     ],
                     "funcformat": "COERCE_EXPLICIT_CALL",
-                    "range": [
-                      77,
-                      92
-                    ],
+                    "range": [77, 92],
                     "loc": {
                       "start": {
                         "line": 3,
@@ -457,10 +388,7 @@
                   },
                   {}
                 ],
-                "range": [
-                  77,
-                  98
-                ],
+                "range": [77, 98],
                 "loc": {
                   "start": {
                     "line": 3,
@@ -479,10 +407,7 @@
                 {
                   "type": "String",
                   "sval": "range",
-                  "range": [
-                    121,
-                    126
-                  ],
+                  "range": [121, 126],
                   "loc": {
                     "start": {
                       "line": 3,
@@ -497,10 +422,7 @@
                 {
                   "type": "String",
                   "sval": "r_idx",
-                  "range": [
-                    128,
-                    133
-                  ],
+                  "range": [128, 133],
                   "loc": {
                     "start": {
                       "line": 3,
@@ -514,10 +436,7 @@
                 }
               ],
               "type": "Alias",
-              "range": [
-                119,
-                134
-              ],
+              "range": [119, 134],
               "loc": {
                 "start": {
                   "line": 3,
@@ -529,10 +448,7 @@
                 }
               }
             },
-            "range": [
-              77,
-              98
-            ],
+            "range": [77, 98],
             "loc": {
               "start": {
                 "line": 3,
@@ -547,10 +463,7 @@
         ],
         "limitOption": "LIMIT_OPTION_DEFAULT",
         "op": "SETOP_NONE",
-        "range": [
-          62,
-          134
-        ],
+        "range": [62, 134],
         "loc": {
           "start": {
             "line": 2,
@@ -572,10 +485,7 @@
               "fields": [
                 {
                   "type": "A_Star",
-                  "range": [
-                    143,
-                    144
-                  ],
+                  "range": [143, 144],
                   "loc": {
                     "start": {
                       "line": 4,
@@ -588,10 +498,7 @@
                   }
                 }
               ],
-              "range": [
-                143,
-                144
-              ],
+              "range": [143, 144],
               "loc": {
                 "start": {
                   "line": 4,
@@ -603,10 +510,7 @@
                 }
               }
             },
-            "range": [
-              143,
-              144
-            ],
+            "range": [143, 144],
             "loc": {
               "start": {
                 "line": 4,
@@ -632,10 +536,7 @@
                     "ival": {
                       "ival": 1
                     },
-                    "range": [
-                      158,
-                      159
-                    ],
+                    "range": [158, 159],
                     "loc": {
                       "start": {
                         "line": 4,
@@ -647,10 +548,7 @@
                       }
                     }
                   },
-                  "range": [
-                    158,
-                    159
-                  ],
+                  "range": [158, 159],
                   "loc": {
                     "start": {
                       "line": 4,
@@ -669,10 +567,7 @@
                     "ival": {
                       "ival": 2
                     },
-                    "range": [
-                      161,
-                      162
-                    ],
+                    "range": [161, 162],
                     "loc": {
                       "start": {
                         "line": 4,
@@ -684,10 +579,7 @@
                       }
                     }
                   },
-                  "range": [
-                    161,
-                    162
-                  ],
+                  "range": [161, 162],
                   "loc": {
                     "start": {
                       "line": 4,
@@ -702,10 +594,7 @@
               ],
               "limitOption": "LIMIT_OPTION_DEFAULT",
               "op": "SETOP_NONE",
-              "range": [
-                158,
-                162
-              ],
+              "range": [158, 162],
               "loc": {
                 "start": {
                   "line": 4,
@@ -723,10 +612,7 @@
                 {
                   "type": "String",
                   "sval": "col1",
-                  "range": [
-                    171,
-                    175
-                  ],
+                  "range": [171, 175],
                   "loc": {
                     "start": {
                       "line": 4,
@@ -741,10 +627,7 @@
                 {
                   "type": "String",
                   "sval": "col2",
-                  "range": [
-                    177,
-                    181
-                  ],
+                  "range": [177, 181],
                   "loc": {
                     "start": {
                       "line": 4,
@@ -758,10 +641,7 @@
                 }
               ],
               "type": "Alias",
-              "range": [
-                167,
-                182
-              ],
+              "range": [167, 182],
               "loc": {
                 "start": {
                   "line": 4,
@@ -773,10 +653,7 @@
                 }
               }
             },
-            "range": [
-              158,
-              162
-            ],
+            "range": [158, 162],
             "loc": {
               "start": {
                 "line": 4,
@@ -791,10 +668,7 @@
         ],
         "limitOption": "LIMIT_OPTION_DEFAULT",
         "op": "SETOP_NONE",
-        "range": [
-          135,
-          182
-        ],
+        "range": [135, 182],
         "loc": {
           "start": {
             "line": 3,
@@ -811,10 +685,7 @@
       {
         "type": "Keyword",
         "value": "SELECT",
-        "range": [
-          0,
-          6
-        ],
+        "range": [0, 6],
         "loc": {
           "start": {
             "line": 1,
@@ -829,10 +700,7 @@
       {
         "type": "Operator",
         "value": "*",
-        "range": [
-          7,
-          8
-        ],
+        "range": [7, 8],
         "loc": {
           "start": {
             "line": 1,
@@ -847,10 +715,7 @@
       {
         "type": "Keyword",
         "value": "FROM",
-        "range": [
-          9,
-          13
-        ],
+        "range": [9, 13],
         "loc": {
           "start": {
             "line": 1,
@@ -865,10 +730,7 @@
       {
         "type": "Identifier",
         "value": "tbl",
-        "range": [
-          14,
-          17
-        ],
+        "range": [14, 17],
         "loc": {
           "start": {
             "line": 1,
@@ -883,10 +745,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          18,
-          20
-        ],
+        "range": [18, 20],
         "loc": {
           "start": {
             "line": 1,
@@ -901,10 +760,7 @@
       {
         "type": "Identifier",
         "value": "t",
-        "range": [
-          21,
-          22
-        ],
+        "range": [21, 22],
         "loc": {
           "start": {
             "line": 1,
@@ -919,10 +775,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          22,
-          23
-        ],
+        "range": [22, 23],
         "loc": {
           "start": {
             "line": 1,
@@ -937,10 +790,7 @@
       {
         "type": "Identifier",
         "value": "col1",
-        "range": [
-          23,
-          27
-        ],
+        "range": [23, 27],
         "loc": {
           "start": {
             "line": 1,
@@ -955,10 +805,7 @@
       {
         "type": "Punctuator",
         "value": ",",
-        "range": [
-          27,
-          28
-        ],
+        "range": [27, 28],
         "loc": {
           "start": {
             "line": 1,
@@ -973,10 +820,7 @@
       {
         "type": "Identifier",
         "value": "col2",
-        "range": [
-          29,
-          33
-        ],
+        "range": [29, 33],
         "loc": {
           "start": {
             "line": 1,
@@ -991,10 +835,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          33,
-          34
-        ],
+        "range": [33, 34],
         "loc": {
           "start": {
             "line": 1,
@@ -1009,10 +850,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          34,
-          35
-        ],
+        "range": [34, 35],
         "loc": {
           "start": {
             "line": 1,
@@ -1027,10 +865,7 @@
       {
         "type": "Keyword",
         "value": "SELECT",
-        "range": [
-          36,
-          42
-        ],
+        "range": [36, 42],
         "loc": {
           "start": {
             "line": 2,
@@ -1045,10 +880,7 @@
       {
         "type": "Operator",
         "value": "*",
-        "range": [
-          43,
-          44
-        ],
+        "range": [43, 44],
         "loc": {
           "start": {
             "line": 2,
@@ -1063,10 +895,7 @@
       {
         "type": "Keyword",
         "value": "FROM",
-        "range": [
-          45,
-          49
-        ],
+        "range": [45, 49],
         "loc": {
           "start": {
             "line": 2,
@@ -1081,10 +910,7 @@
       {
         "type": "Identifier",
         "value": "tbl",
-        "range": [
-          50,
-          53
-        ],
+        "range": [50, 53],
         "loc": {
           "start": {
             "line": 2,
@@ -1099,10 +925,7 @@
       {
         "type": "Identifier",
         "value": "t",
-        "range": [
-          54,
-          55
-        ],
+        "range": [54, 55],
         "loc": {
           "start": {
             "line": 2,
@@ -1117,10 +940,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          55,
-          56
-        ],
+        "range": [55, 56],
         "loc": {
           "start": {
             "line": 2,
@@ -1135,10 +955,7 @@
       {
         "type": "Identifier",
         "value": "col1",
-        "range": [
-          56,
-          60
-        ],
+        "range": [56, 60],
         "loc": {
           "start": {
             "line": 2,
@@ -1153,10 +970,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          60,
-          61
-        ],
+        "range": [60, 61],
         "loc": {
           "start": {
             "line": 2,
@@ -1171,10 +985,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          61,
-          62
-        ],
+        "range": [61, 62],
         "loc": {
           "start": {
             "line": 2,
@@ -1189,10 +1000,7 @@
       {
         "type": "Keyword",
         "value": "SELECT",
-        "range": [
-          63,
-          69
-        ],
+        "range": [63, 69],
         "loc": {
           "start": {
             "line": 3,
@@ -1207,10 +1015,7 @@
       {
         "type": "Operator",
         "value": "*",
-        "range": [
-          70,
-          71
-        ],
+        "range": [70, 71],
         "loc": {
           "start": {
             "line": 3,
@@ -1225,10 +1030,7 @@
       {
         "type": "Keyword",
         "value": "FROM",
-        "range": [
-          72,
-          76
-        ],
+        "range": [72, 76],
         "loc": {
           "start": {
             "line": 3,
@@ -1243,10 +1045,7 @@
       {
         "type": "Identifier",
         "value": "generate_series",
-        "range": [
-          77,
-          92
-        ],
+        "range": [77, 92],
         "loc": {
           "start": {
             "line": 3,
@@ -1261,10 +1060,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          92,
-          93
-        ],
+        "range": [92, 93],
         "loc": {
           "start": {
             "line": 3,
@@ -1279,10 +1075,7 @@
       {
         "type": "Numeric",
         "value": "1",
-        "range": [
-          93,
-          94
-        ],
+        "range": [93, 94],
         "loc": {
           "start": {
             "line": 3,
@@ -1297,10 +1090,7 @@
       {
         "type": "Punctuator",
         "value": ",",
-        "range": [
-          94,
-          95
-        ],
+        "range": [94, 95],
         "loc": {
           "start": {
             "line": 3,
@@ -1315,10 +1105,7 @@
       {
         "type": "Numeric",
         "value": "10",
-        "range": [
-          96,
-          98
-        ],
+        "range": [96, 98],
         "loc": {
           "start": {
             "line": 3,
@@ -1333,10 +1120,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          98,
-          99
-        ],
+        "range": [98, 99],
         "loc": {
           "start": {
             "line": 3,
@@ -1351,10 +1135,7 @@
       {
         "type": "Keyword",
         "value": "WITH",
-        "range": [
-          100,
-          104
-        ],
+        "range": [100, 104],
         "loc": {
           "start": {
             "line": 3,
@@ -1369,10 +1150,7 @@
       {
         "type": "Identifier",
         "value": "ORDINALITY",
-        "range": [
-          105,
-          115
-        ],
+        "range": [105, 115],
         "loc": {
           "start": {
             "line": 3,
@@ -1387,10 +1165,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          116,
-          118
-        ],
+        "range": [116, 118],
         "loc": {
           "start": {
             "line": 3,
@@ -1405,10 +1180,7 @@
       {
         "type": "Identifier",
         "value": "r",
-        "range": [
-          119,
-          120
-        ],
+        "range": [119, 120],
         "loc": {
           "start": {
             "line": 3,
@@ -1423,10 +1195,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          120,
-          121
-        ],
+        "range": [120, 121],
         "loc": {
           "start": {
             "line": 3,
@@ -1441,10 +1210,7 @@
       {
         "type": "Keyword",
         "value": "range",
-        "range": [
-          121,
-          126
-        ],
+        "range": [121, 126],
         "loc": {
           "start": {
             "line": 3,
@@ -1459,10 +1225,7 @@
       {
         "type": "Punctuator",
         "value": ",",
-        "range": [
-          126,
-          127
-        ],
+        "range": [126, 127],
         "loc": {
           "start": {
             "line": 3,
@@ -1477,10 +1240,7 @@
       {
         "type": "Identifier",
         "value": "r_idx",
-        "range": [
-          128,
-          133
-        ],
+        "range": [128, 133],
         "loc": {
           "start": {
             "line": 3,
@@ -1495,10 +1255,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          133,
-          134
-        ],
+        "range": [133, 134],
         "loc": {
           "start": {
             "line": 3,
@@ -1513,10 +1270,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          134,
-          135
-        ],
+        "range": [134, 135],
         "loc": {
           "start": {
             "line": 3,
@@ -1531,10 +1285,7 @@
       {
         "type": "Keyword",
         "value": "SELECT",
-        "range": [
-          136,
-          142
-        ],
+        "range": [136, 142],
         "loc": {
           "start": {
             "line": 4,
@@ -1549,10 +1300,7 @@
       {
         "type": "Operator",
         "value": "*",
-        "range": [
-          143,
-          144
-        ],
+        "range": [143, 144],
         "loc": {
           "start": {
             "line": 4,
@@ -1567,10 +1315,7 @@
       {
         "type": "Keyword",
         "value": "FROM",
-        "range": [
-          145,
-          149
-        ],
+        "range": [145, 149],
         "loc": {
           "start": {
             "line": 4,
@@ -1585,10 +1330,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          150,
-          151
-        ],
+        "range": [150, 151],
         "loc": {
           "start": {
             "line": 4,
@@ -1603,10 +1345,7 @@
       {
         "type": "Keyword",
         "value": "SELECT",
-        "range": [
-          151,
-          157
-        ],
+        "range": [151, 157],
         "loc": {
           "start": {
             "line": 4,
@@ -1621,10 +1360,7 @@
       {
         "type": "Numeric",
         "value": "1",
-        "range": [
-          158,
-          159
-        ],
+        "range": [158, 159],
         "loc": {
           "start": {
             "line": 4,
@@ -1639,10 +1375,7 @@
       {
         "type": "Punctuator",
         "value": ",",
-        "range": [
-          159,
-          160
-        ],
+        "range": [159, 160],
         "loc": {
           "start": {
             "line": 4,
@@ -1657,10 +1390,7 @@
       {
         "type": "Numeric",
         "value": "2",
-        "range": [
-          161,
-          162
-        ],
+        "range": [161, 162],
         "loc": {
           "start": {
             "line": 4,
@@ -1675,10 +1405,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          162,
-          163
-        ],
+        "range": [162, 163],
         "loc": {
           "start": {
             "line": 4,
@@ -1693,10 +1420,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          164,
-          166
-        ],
+        "range": [164, 166],
         "loc": {
           "start": {
             "line": 4,
@@ -1711,10 +1435,7 @@
       {
         "type": "Identifier",
         "value": "sub",
-        "range": [
-          167,
-          170
-        ],
+        "range": [167, 170],
         "loc": {
           "start": {
             "line": 4,
@@ -1729,10 +1450,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          170,
-          171
-        ],
+        "range": [170, 171],
         "loc": {
           "start": {
             "line": 4,
@@ -1747,10 +1465,7 @@
       {
         "type": "Identifier",
         "value": "col1",
-        "range": [
-          171,
-          175
-        ],
+        "range": [171, 175],
         "loc": {
           "start": {
             "line": 4,
@@ -1765,10 +1480,7 @@
       {
         "type": "Punctuator",
         "value": ",",
-        "range": [
-          175,
-          176
-        ],
+        "range": [175, 176],
         "loc": {
           "start": {
             "line": 4,
@@ -1783,10 +1495,7 @@
       {
         "type": "Identifier",
         "value": "col2",
-        "range": [
-          177,
-          181
-        ],
+        "range": [177, 181],
         "loc": {
           "start": {
             "line": 4,
@@ -1801,10 +1510,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          181,
-          182
-        ],
+        "range": [181, 182],
         "loc": {
           "start": {
             "line": 4,
@@ -1819,10 +1525,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          182,
-          183
-        ],
+        "range": [182, 183],
         "loc": {
           "start": {
             "line": 4,
@@ -1838,56 +1541,26 @@
     "comments": []
   },
   "visitorKeys": {
-    "Program": [
-      "body",
-      "tokens",
-      "comments"
-    ],
-    "SelectStmt": [
-      "targetList",
-      "fromClause"
-    ],
-    "ResTarget": [
-      "val"
-    ],
-    "ColumnRef": [
-      "fields"
-    ],
+    "Program": ["body", "tokens", "comments"],
+    "SelectStmt": ["targetList", "fromClause"],
+    "ResTarget": ["val"],
+    "ColumnRef": ["fields"],
     "A_Star": [],
-    "RangeVar": [
-      "alias"
-    ],
-    "Alias": [
-      "colnames"
-    ],
+    "RangeVar": ["alias"],
+    "Alias": ["colnames"],
     "String": [],
-    "RangeFunction": [
-      "functions",
-      "alias"
-    ],
-    "List": [
-      "items"
-    ],
-    "FuncCall": [
-      "funcname",
-      "args"
-    ],
-    "A_Const": [
-      "ival"
-    ],
+    "RangeFunction": ["functions", "alias"],
+    "List": ["items"],
+    "FuncCall": ["funcname", "args"],
+    "A_Const": ["ival"],
     "Unknown": [],
-    "RangeSubselect": [
-      "subquery",
-      "alias"
-    ],
+    "RangeSubselect": ["subquery", "alias"],
     "Keyword": [],
     "Operator": [],
     "Identifier": [],
     "Punctuator": [],
     "Numeric": [],
-    "SQLStatement": [
-      "statement"
-    ],
+    "SQLStatement": ["statement"],
     "SQLParseError": [],
     "SQLProcedure": [],
     "EmbeddedCode": []

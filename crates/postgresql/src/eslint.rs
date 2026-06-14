@@ -21,7 +21,25 @@ use crate::parse::parse;
 use crate::text::Position;
 use crate::tokenize::{Comment, CommentKind, Token, TokenKind};
 
-/// Parse `source_text` and return the upstream `parseForESLint` result as JSON:
+/// Parse `source_text` and return the `parseForESLint` result serialized as a
+/// JSON string. The NAPI boundary of `npm/postgresql-eslint-parser` hands this
+/// to JavaScript, which `JSON.parse`s it back into the object an ESLint custom
+/// parser must return.
+pub fn parse_for_eslint_json(source_text: &str) -> String {
+    parse_for_eslint(source_text).to_string()
+}
+
+/// Parse `source_text` and return only the `ast` half of the result, mirroring
+/// upstream's `parse(code)` convenience export.
+pub fn parse_ast(source_text: &str) -> Value {
+    let mut result = parse_for_eslint(source_text);
+    result
+        .get_mut("ast")
+        .map(Value::take)
+        .unwrap_or(Value::Null)
+}
+
+/// Parse `source_text` and return the upstream `parseForESLint` result:
 /// `{ "ast": Program, "visitorKeys": { … }, "scopeManager": null }`.
 pub fn parse_for_eslint(source_text: &str) -> Value {
     let parsed = parse(source_text);
@@ -225,7 +243,10 @@ mod tests {
         assert!(result["scopeManager"].is_null());
 
         let vk = &result["visitorKeys"];
-        assert_eq!(vk["Program"], serde_json::json!(["body", "tokens", "comments"]));
+        assert_eq!(
+            vk["Program"],
+            serde_json::json!(["body", "tokens", "comments"])
+        );
         assert_eq!(vk["ColumnRef"], serde_json::json!(["fields"]));
         assert_eq!(vk["A_Star"], serde_json::json!([]));
     }

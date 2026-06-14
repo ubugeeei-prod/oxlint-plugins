@@ -9,10 +9,7 @@
   "input": "SELECT id FROM users;\nINSERT INTO events (kind) VALUES ('login');\nUPDATE users SET active = FALSE WHERE id = 1;\n",
   "ast": {
     "type": "Program",
-    "range": [
-      0,
-      112
-    ],
+    "range": [0, 112],
     "loc": {
       "start": {
         "line": 1,
@@ -35,10 +32,7 @@
                 {
                   "type": "String",
                   "sval": "id",
-                  "range": [
-                    7,
-                    9
-                  ],
+                  "range": [7, 9],
                   "loc": {
                     "start": {
                       "line": 1,
@@ -51,10 +45,7 @@
                   }
                 }
               ],
-              "range": [
-                7,
-                9
-              ],
+              "range": [7, 9],
               "loc": {
                 "start": {
                   "line": 1,
@@ -66,10 +57,7 @@
                 }
               }
             },
-            "range": [
-              7,
-              9
-            ],
+            "range": [7, 9],
             "loc": {
               "start": {
                 "line": 1,
@@ -88,10 +76,7 @@
             "relname": "users",
             "inh": true,
             "relpersistence": "p",
-            "range": [
-              15,
-              20
-            ],
+            "range": [15, 20],
             "loc": {
               "start": {
                 "line": 1,
@@ -106,10 +91,7 @@
         ],
         "limitOption": "LIMIT_OPTION_DEFAULT",
         "op": "SETOP_NONE",
-        "range": [
-          0,
-          20
-        ],
+        "range": [0, 20],
         "loc": {
           "start": {
             "line": 1,
@@ -127,10 +109,7 @@
           "relname": "events",
           "inh": true,
           "relpersistence": "p",
-          "range": [
-            34,
-            40
-          ],
+          "range": [34, 40],
           "loc": {
             "start": {
               "line": 2,
@@ -146,10 +125,7 @@
           {
             "type": "ResTarget",
             "name": "kind",
-            "range": [
-              42,
-              46
-            ],
+            "range": [42, 46],
             "loc": {
               "start": {
                 "line": 2,
@@ -173,10 +149,7 @@
                   "sval": {
                     "sval": "login"
                   },
-                  "range": [
-                    56,
-                    63
-                  ],
+                  "range": [56, 63],
                   "loc": {
                     "start": {
                       "line": 2,
@@ -189,10 +162,7 @@
                   }
                 }
               ],
-              "range": [
-                56,
-                63
-              ],
+              "range": [56, 63],
               "loc": {
                 "start": {
                   "line": 2,
@@ -207,10 +177,7 @@
           ],
           "limitOption": "LIMIT_OPTION_DEFAULT",
           "op": "SETOP_NONE",
-          "range": [
-            56,
-            63
-          ],
+          "range": [56, 63],
           "loc": {
             "start": {
               "line": 2,
@@ -223,10 +190,7 @@
           }
         },
         "override": "OVERRIDING_NOT_SET",
-        "range": [
-          21,
-          64
-        ],
+        "range": [21, 64],
         "loc": {
           "start": {
             "line": 1,
@@ -244,10 +208,7 @@
           "relname": "users",
           "inh": true,
           "relpersistence": "p",
-          "range": [
-            73,
-            78
-          ],
+          "range": [73, 78],
           "loc": {
             "start": {
               "line": 3,
@@ -266,10 +227,7 @@
             "val": {
               "type": "A_Const",
               "boolval": {},
-              "range": [
-                92,
-                97
-              ],
+              "range": [92, 97],
               "loc": {
                 "start": {
                   "line": 3,
@@ -281,10 +239,7 @@
                 }
               }
             },
-            "range": [
-              83,
-              89
-            ],
+            "range": [83, 89],
             "loc": {
               "start": {
                 "line": 3,
@@ -304,10 +259,7 @@
             {
               "type": "String",
               "sval": "=",
-              "range": [
-                107,
-                108
-              ],
+              "range": [107, 108],
               "loc": {
                 "start": {
                   "line": 3,
@@ -326,10 +278,7 @@
               {
                 "type": "String",
                 "sval": "id",
-                "range": [
-                  104,
-                  106
-                ],
+                "range": [104, 106],
                 "loc": {
                   "start": {
                     "line": 3,
@@ -342,10 +291,7 @@
                 }
               }
             ],
-            "range": [
-              104,
-              106
-            ],
+            "range": [104, 106],
             "loc": {
               "start": {
                 "line": 3,
@@ -362,10 +308,7 @@
             "ival": {
               "ival": 1
             },
-            "range": [
-              109,
-              110
-            ],
+            "range": [109, 110],
             "loc": {
               "start": {
                 "line": 3,
@@ -377,10 +320,7 @@
               }
             }
           },
-          "range": [
-            107,
-            108
-          ],
+          "range": [107, 108],
           "loc": {
             "start": {
               "line": 3,
@@ -392,10 +332,7 @@
             }
           }
         },
-        "range": [
-          65,
-          110
-        ],
+        "range": [65, 110],
         "loc": {
           "start": {
             "line": 2,
@@ -412,10 +349,7 @@
       {
         "type": "Keyword",
         "value": "SELECT",
-        "range": [
-          0,
-          6
-        ],
+        "range": [0, 6],
         "loc": {
           "start": {
             "line": 1,
@@ -430,10 +364,7 @@
       {
         "type": "Identifier",
         "value": "id",
-        "range": [
-          7,
-          9
-        ],
+        "range": [7, 9],
         "loc": {
           "start": {
             "line": 1,
@@ -448,10 +379,7 @@
       {
         "type": "Keyword",
         "value": "FROM",
-        "range": [
-          10,
-          14
-        ],
+        "range": [10, 14],
         "loc": {
           "start": {
             "line": 1,
@@ -466,10 +394,7 @@
       {
         "type": "Identifier",
         "value": "users",
-        "range": [
-          15,
-          20
-        ],
+        "range": [15, 20],
         "loc": {
           "start": {
             "line": 1,
@@ -484,10 +409,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          20,
-          21
-        ],
+        "range": [20, 21],
         "loc": {
           "start": {
             "line": 1,
@@ -502,10 +424,7 @@
       {
         "type": "Keyword",
         "value": "INSERT",
-        "range": [
-          22,
-          28
-        ],
+        "range": [22, 28],
         "loc": {
           "start": {
             "line": 2,
@@ -520,10 +439,7 @@
       {
         "type": "Keyword",
         "value": "INTO",
-        "range": [
-          29,
-          33
-        ],
+        "range": [29, 33],
         "loc": {
           "start": {
             "line": 2,
@@ -538,10 +454,7 @@
       {
         "type": "Identifier",
         "value": "events",
-        "range": [
-          34,
-          40
-        ],
+        "range": [34, 40],
         "loc": {
           "start": {
             "line": 2,
@@ -556,10 +469,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          41,
-          42
-        ],
+        "range": [41, 42],
         "loc": {
           "start": {
             "line": 2,
@@ -574,10 +484,7 @@
       {
         "type": "Identifier",
         "value": "kind",
-        "range": [
-          42,
-          46
-        ],
+        "range": [42, 46],
         "loc": {
           "start": {
             "line": 2,
@@ -592,10 +499,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          46,
-          47
-        ],
+        "range": [46, 47],
         "loc": {
           "start": {
             "line": 2,
@@ -610,10 +514,7 @@
       {
         "type": "Keyword",
         "value": "VALUES",
-        "range": [
-          48,
-          54
-        ],
+        "range": [48, 54],
         "loc": {
           "start": {
             "line": 2,
@@ -628,10 +529,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          55,
-          56
-        ],
+        "range": [55, 56],
         "loc": {
           "start": {
             "line": 2,
@@ -646,10 +544,7 @@
       {
         "type": "String",
         "value": "'login'",
-        "range": [
-          56,
-          63
-        ],
+        "range": [56, 63],
         "loc": {
           "start": {
             "line": 2,
@@ -664,10 +559,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          63,
-          64
-        ],
+        "range": [63, 64],
         "loc": {
           "start": {
             "line": 2,
@@ -682,10 +574,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          64,
-          65
-        ],
+        "range": [64, 65],
         "loc": {
           "start": {
             "line": 2,
@@ -700,10 +589,7 @@
       {
         "type": "Keyword",
         "value": "UPDATE",
-        "range": [
-          66,
-          72
-        ],
+        "range": [66, 72],
         "loc": {
           "start": {
             "line": 3,
@@ -718,10 +604,7 @@
       {
         "type": "Identifier",
         "value": "users",
-        "range": [
-          73,
-          78
-        ],
+        "range": [73, 78],
         "loc": {
           "start": {
             "line": 3,
@@ -736,10 +619,7 @@
       {
         "type": "Keyword",
         "value": "SET",
-        "range": [
-          79,
-          82
-        ],
+        "range": [79, 82],
         "loc": {
           "start": {
             "line": 3,
@@ -754,10 +634,7 @@
       {
         "type": "Identifier",
         "value": "active",
-        "range": [
-          83,
-          89
-        ],
+        "range": [83, 89],
         "loc": {
           "start": {
             "line": 3,
@@ -772,10 +649,7 @@
       {
         "type": "Operator",
         "value": "=",
-        "range": [
-          90,
-          91
-        ],
+        "range": [90, 91],
         "loc": {
           "start": {
             "line": 3,
@@ -790,10 +664,7 @@
       {
         "type": "Keyword",
         "value": "FALSE",
-        "range": [
-          92,
-          97
-        ],
+        "range": [92, 97],
         "loc": {
           "start": {
             "line": 3,
@@ -808,10 +679,7 @@
       {
         "type": "Keyword",
         "value": "WHERE",
-        "range": [
-          98,
-          103
-        ],
+        "range": [98, 103],
         "loc": {
           "start": {
             "line": 3,
@@ -826,10 +694,7 @@
       {
         "type": "Identifier",
         "value": "id",
-        "range": [
-          104,
-          106
-        ],
+        "range": [104, 106],
         "loc": {
           "start": {
             "line": 3,
@@ -844,10 +709,7 @@
       {
         "type": "Operator",
         "value": "=",
-        "range": [
-          107,
-          108
-        ],
+        "range": [107, 108],
         "loc": {
           "start": {
             "line": 3,
@@ -862,10 +724,7 @@
       {
         "type": "Numeric",
         "value": "1",
-        "range": [
-          109,
-          110
-        ],
+        "range": [109, 110],
         "loc": {
           "start": {
             "line": 3,
@@ -880,10 +739,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          110,
-          111
-        ],
+        "range": [110, 111],
         "loc": {
           "start": {
             "line": 3,
@@ -899,56 +755,24 @@
     "comments": []
   },
   "visitorKeys": {
-    "Program": [
-      "body",
-      "tokens",
-      "comments"
-    ],
-    "SelectStmt": [
-      "targetList",
-      "fromClause",
-      "valuesLists"
-    ],
-    "ResTarget": [
-      "val"
-    ],
-    "ColumnRef": [
-      "fields"
-    ],
+    "Program": ["body", "tokens", "comments"],
+    "SelectStmt": ["targetList", "fromClause", "valuesLists"],
+    "ResTarget": ["val"],
+    "ColumnRef": ["fields"],
     "String": [],
     "RangeVar": [],
-    "InsertStmt": [
-      "relation",
-      "cols",
-      "selectStmt"
-    ],
+    "InsertStmt": ["relation", "cols", "selectStmt"],
     "Unknown": [],
-    "List": [
-      "items"
-    ],
-    "A_Const": [
-      "sval",
-      "boolval",
-      "ival"
-    ],
-    "UpdateStmt": [
-      "relation",
-      "targetList",
-      "whereClause"
-    ],
-    "A_Expr": [
-      "name",
-      "lexpr",
-      "rexpr"
-    ],
+    "List": ["items"],
+    "A_Const": ["sval", "boolval", "ival"],
+    "UpdateStmt": ["relation", "targetList", "whereClause"],
+    "A_Expr": ["name", "lexpr", "rexpr"],
     "Keyword": [],
     "Identifier": [],
     "Punctuator": [],
     "Operator": [],
     "Numeric": [],
-    "SQLStatement": [
-      "statement"
-    ],
+    "SQLStatement": ["statement"],
     "SQLParseError": [],
     "SQLProcedure": [],
     "EmbeddedCode": []

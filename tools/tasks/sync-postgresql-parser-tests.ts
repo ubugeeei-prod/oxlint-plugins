@@ -19,14 +19,7 @@
 // Re-run with `pnpm run port:tests:postgresql-parser`, then `vp fmt` the JSON
 // (JSON.stringify expands short arrays the formatter collapses onto one line).
 
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-  statSync,
-  writeFileSync,
-} from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 

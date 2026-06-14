@@ -9,10 +9,7 @@
   "input": "-- This SQL has intentional syntax errors for testing\nSELECT * FROM users WHERE id = AND name = 'test'; ",
   "ast": {
     "type": "Program",
-    "range": [
-      0,
-      104
-    ],
+    "range": [0, 104],
     "loc": {
       "start": {
         "line": 1,
@@ -26,10 +23,7 @@
     "body": [
       {
         "type": "SQLParseError",
-        "range": [
-          0,
-          104
-        ],
+        "range": [0, 104],
         "loc": {
           "start": {
             "line": 1,
@@ -48,10 +42,7 @@
       {
         "type": "Keyword",
         "value": "SELECT",
-        "range": [
-          54,
-          60
-        ],
+        "range": [54, 60],
         "loc": {
           "start": {
             "line": 2,
@@ -66,10 +57,7 @@
       {
         "type": "Operator",
         "value": "*",
-        "range": [
-          61,
-          62
-        ],
+        "range": [61, 62],
         "loc": {
           "start": {
             "line": 2,
@@ -84,10 +72,7 @@
       {
         "type": "Keyword",
         "value": "FROM",
-        "range": [
-          63,
-          67
-        ],
+        "range": [63, 67],
         "loc": {
           "start": {
             "line": 2,
@@ -102,10 +87,7 @@
       {
         "type": "Identifier",
         "value": "users",
-        "range": [
-          68,
-          73
-        ],
+        "range": [68, 73],
         "loc": {
           "start": {
             "line": 2,
@@ -120,10 +102,7 @@
       {
         "type": "Keyword",
         "value": "WHERE",
-        "range": [
-          74,
-          79
-        ],
+        "range": [74, 79],
         "loc": {
           "start": {
             "line": 2,
@@ -138,10 +117,7 @@
       {
         "type": "Identifier",
         "value": "id",
-        "range": [
-          80,
-          82
-        ],
+        "range": [80, 82],
         "loc": {
           "start": {
             "line": 2,
@@ -156,10 +132,7 @@
       {
         "type": "Operator",
         "value": "=",
-        "range": [
-          83,
-          84
-        ],
+        "range": [83, 84],
         "loc": {
           "start": {
             "line": 2,
@@ -174,10 +147,7 @@
       {
         "type": "Keyword",
         "value": "AND",
-        "range": [
-          85,
-          88
-        ],
+        "range": [85, 88],
         "loc": {
           "start": {
             "line": 2,
@@ -192,10 +162,7 @@
       {
         "type": "Identifier",
         "value": "name",
-        "range": [
-          89,
-          93
-        ],
+        "range": [89, 93],
         "loc": {
           "start": {
             "line": 2,
@@ -210,10 +177,7 @@
       {
         "type": "Operator",
         "value": "=",
-        "range": [
-          94,
-          95
-        ],
+        "range": [94, 95],
         "loc": {
           "start": {
             "line": 2,
@@ -228,10 +192,7 @@
       {
         "type": "String",
         "value": "'test'",
-        "range": [
-          96,
-          102
-        ],
+        "range": [96, 102],
         "loc": {
           "start": {
             "line": 2,
@@ -246,10 +207,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          102,
-          103
-        ],
+        "range": [102, 103],
         "loc": {
           "start": {
             "line": 2,
@@ -266,10 +224,7 @@
       {
         "type": "Line",
         "value": " This SQL has intentional syntax errors for testing",
-        "range": [
-          0,
-          53
-        ],
+        "range": [0, 53],
         "loc": {
           "start": {
             "line": 1,
@@ -284,11 +239,7 @@
     ]
   },
   "visitorKeys": {
-    "Program": [
-      "body",
-      "tokens",
-      "comments"
-    ],
+    "Program": ["body", "tokens", "comments"],
     "SQLParseError": [],
     "Keyword": [],
     "Operator": [],
@@ -296,9 +247,7 @@
     "String": [],
     "Punctuator": [],
     "Line": [],
-    "SQLStatement": [
-      "statement"
-    ],
+    "SQLStatement": ["statement"],
     "SQLProcedure": [],
     "EmbeddedCode": []
   },

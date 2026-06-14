@@ -9,10 +9,7 @@
   "input": "CREATE FUNCTION anon_body() RETURNS void AS $$\nBEGIN\n  SELECT 1;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE FUNCTION tagged_body() RETURNS void AS $func$\nBEGIN\n  SELECT 'hello $$ world';\nEND;\n$func$ LANGUAGE plpgsql;\n",
   "ast": {
     "type": "Program",
-    "range": [
-      0,
-      208
-    ],
+    "range": [0, 208],
     "loc": {
       "start": {
         "line": 1,
@@ -30,10 +27,7 @@
           {
             "type": "String",
             "sval": "anon_body",
-            "range": [
-              0,
-              89
-            ],
+            "range": [0, 89],
             "loc": {
               "start": {
                 "line": 1,
@@ -50,10 +44,7 @@
           "0": {
             "type": "String",
             "sval": "void",
-            "range": [
-              36,
-              40
-            ],
+            "range": [36, 40],
             "loc": {
               "start": {
                 "line": 1,
@@ -67,10 +58,7 @@
           },
           "typemod": -1,
           "type": "names",
-          "range": [
-            36,
-            40
-          ],
+          "range": [36, 40],
           "loc": {
             "start": {
               "line": 1,
@@ -92,10 +80,7 @@
                 {
                   "type": "String",
                   "sval": "\nBEGIN\n  SELECT 1;\nEND;\n",
-                  "range": [
-                    41,
-                    43
-                  ],
+                  "range": [41, 43],
                   "loc": {
                     "start": {
                       "line": 1,
@@ -108,10 +93,7 @@
                   }
                 }
               ],
-              "range": [
-                41,
-                43
-              ],
+              "range": [41, 43],
               "loc": {
                 "start": {
                   "line": 1,
@@ -124,10 +106,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              41,
-              43
-            ],
+            "range": [41, 43],
             "loc": {
               "start": {
                 "line": 1,
@@ -145,10 +124,7 @@
             "arg": {
               "type": "String",
               "sval": "plpgsql",
-              "range": [
-                73,
-                81
-              ],
+              "range": [73, 81],
               "loc": {
                 "start": {
                   "line": 5,
@@ -161,10 +137,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              73,
-              81
-            ],
+            "range": [73, 81],
             "loc": {
               "start": {
                 "line": 5,
@@ -177,10 +150,7 @@
             }
           }
         ],
-        "range": [
-          0,
-          89
-        ],
+        "range": [0, 89],
         "loc": {
           "start": {
             "line": 1,
@@ -196,10 +166,7 @@
           "language": "plpgsql",
           "source": "\nBEGIN\n  SELECT 1;\nEND;\n",
           "quoteStyle": "dollar",
-          "range": [
-            46,
-            70
-          ],
+          "range": [46, 70],
           "loc": {
             "start": {
               "line": 1,
@@ -218,10 +185,7 @@
           {
             "type": "String",
             "sval": "tagged_body",
-            "range": [
-              90,
-              206
-            ],
+            "range": [90, 206],
             "loc": {
               "start": {
                 "line": 5,
@@ -238,10 +202,7 @@
           "0": {
             "type": "String",
             "sval": "void",
-            "range": [
-              130,
-              134
-            ],
+            "range": [130, 134],
             "loc": {
               "start": {
                 "line": 7,
@@ -255,10 +216,7 @@
           },
           "typemod": -1,
           "type": "names",
-          "range": [
-            130,
-            134
-          ],
+          "range": [130, 134],
           "loc": {
             "start": {
               "line": 7,
@@ -280,10 +238,7 @@
                 {
                   "type": "String",
                   "sval": "\nBEGIN\n  SELECT 'hello $$ world';\nEND;\n",
-                  "range": [
-                    135,
-                    137
-                  ],
+                  "range": [135, 137],
                   "loc": {
                     "start": {
                       "line": 7,
@@ -296,10 +251,7 @@
                   }
                 }
               ],
-              "range": [
-                135,
-                137
-              ],
+              "range": [135, 137],
               "loc": {
                 "start": {
                   "line": 7,
@@ -312,10 +264,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              135,
-              137
-            ],
+            "range": [135, 137],
             "loc": {
               "start": {
                 "line": 7,
@@ -333,10 +282,7 @@
             "arg": {
               "type": "String",
               "sval": "plpgsql",
-              "range": [
-                190,
-                198
-              ],
+              "range": [190, 198],
               "loc": {
                 "start": {
                   "line": 11,
@@ -349,10 +295,7 @@
               }
             },
             "defaction": "DEFELEM_UNSPEC",
-            "range": [
-              190,
-              198
-            ],
+            "range": [190, 198],
             "loc": {
               "start": {
                 "line": 11,
@@ -365,10 +308,7 @@
             }
           }
         ],
-        "range": [
-          90,
-          206
-        ],
+        "range": [90, 206],
         "loc": {
           "start": {
             "line": 5,
@@ -384,10 +324,7 @@
           "language": "plpgsql",
           "source": "\nBEGIN\n  SELECT 'hello $$ world';\nEND;\n",
           "quoteStyle": "dollar",
-          "range": [
-            144,
-            183
-          ],
+          "range": [144, 183],
           "loc": {
             "start": {
               "line": 7,
@@ -405,10 +342,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          0,
-          6
-        ],
+        "range": [0, 6],
         "loc": {
           "start": {
             "line": 1,
@@ -423,10 +357,7 @@
       {
         "type": "Keyword",
         "value": "FUNCTION",
-        "range": [
-          7,
-          15
-        ],
+        "range": [7, 15],
         "loc": {
           "start": {
             "line": 1,
@@ -441,10 +372,7 @@
       {
         "type": "Identifier",
         "value": "anon_body",
-        "range": [
-          16,
-          25
-        ],
+        "range": [16, 25],
         "loc": {
           "start": {
             "line": 1,
@@ -459,10 +387,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          25,
-          26
-        ],
+        "range": [25, 26],
         "loc": {
           "start": {
             "line": 1,
@@ -477,10 +402,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          26,
-          27
-        ],
+        "range": [26, 27],
         "loc": {
           "start": {
             "line": 1,
@@ -495,10 +417,7 @@
       {
         "type": "Keyword",
         "value": "RETURNS",
-        "range": [
-          28,
-          35
-        ],
+        "range": [28, 35],
         "loc": {
           "start": {
             "line": 1,
@@ -513,10 +432,7 @@
       {
         "type": "Identifier",
         "value": "void",
-        "range": [
-          36,
-          40
-        ],
+        "range": [36, 40],
         "loc": {
           "start": {
             "line": 1,
@@ -531,10 +447,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          41,
-          43
-        ],
+        "range": [41, 43],
         "loc": {
           "start": {
             "line": 1,
@@ -549,10 +462,7 @@
       {
         "type": "String",
         "value": "$$\nBEGIN\n  SELECT 1;\nEND;\n$$",
-        "range": [
-          44,
-          72
-        ],
+        "range": [44, 72],
         "loc": {
           "start": {
             "line": 1,
@@ -567,10 +477,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          73,
-          81
-        ],
+        "range": [73, 81],
         "loc": {
           "start": {
             "line": 5,
@@ -585,10 +492,7 @@
       {
         "type": "Keyword",
         "value": "plpgsql",
-        "range": [
-          82,
-          89
-        ],
+        "range": [82, 89],
         "loc": {
           "start": {
             "line": 5,
@@ -603,10 +507,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          89,
-          90
-        ],
+        "range": [89, 90],
         "loc": {
           "start": {
             "line": 5,
@@ -621,10 +522,7 @@
       {
         "type": "Keyword",
         "value": "CREATE",
-        "range": [
-          92,
-          98
-        ],
+        "range": [92, 98],
         "loc": {
           "start": {
             "line": 7,
@@ -639,10 +537,7 @@
       {
         "type": "Keyword",
         "value": "FUNCTION",
-        "range": [
-          99,
-          107
-        ],
+        "range": [99, 107],
         "loc": {
           "start": {
             "line": 7,
@@ -657,10 +552,7 @@
       {
         "type": "Identifier",
         "value": "tagged_body",
-        "range": [
-          108,
-          119
-        ],
+        "range": [108, 119],
         "loc": {
           "start": {
             "line": 7,
@@ -675,10 +567,7 @@
       {
         "type": "Punctuator",
         "value": "(",
-        "range": [
-          119,
-          120
-        ],
+        "range": [119, 120],
         "loc": {
           "start": {
             "line": 7,
@@ -693,10 +582,7 @@
       {
         "type": "Punctuator",
         "value": ")",
-        "range": [
-          120,
-          121
-        ],
+        "range": [120, 121],
         "loc": {
           "start": {
             "line": 7,
@@ -711,10 +597,7 @@
       {
         "type": "Keyword",
         "value": "RETURNS",
-        "range": [
-          122,
-          129
-        ],
+        "range": [122, 129],
         "loc": {
           "start": {
             "line": 7,
@@ -729,10 +612,7 @@
       {
         "type": "Identifier",
         "value": "void",
-        "range": [
-          130,
-          134
-        ],
+        "range": [130, 134],
         "loc": {
           "start": {
             "line": 7,
@@ -747,10 +627,7 @@
       {
         "type": "Keyword",
         "value": "AS",
-        "range": [
-          135,
-          137
-        ],
+        "range": [135, 137],
         "loc": {
           "start": {
             "line": 7,
@@ -765,10 +642,7 @@
       {
         "type": "String",
         "value": "$func$\nBEGIN\n  SELECT 'hello $$ world';\nEND;\n$func$",
-        "range": [
-          138,
-          189
-        ],
+        "range": [138, 189],
         "loc": {
           "start": {
             "line": 7,
@@ -783,10 +657,7 @@
       {
         "type": "Keyword",
         "value": "LANGUAGE",
-        "range": [
-          190,
-          198
-        ],
+        "range": [190, 198],
         "loc": {
           "start": {
             "line": 11,
@@ -801,10 +672,7 @@
       {
         "type": "Keyword",
         "value": "plpgsql",
-        "range": [
-          199,
-          206
-        ],
+        "range": [199, 206],
         "loc": {
           "start": {
             "line": 11,
@@ -819,10 +687,7 @@
       {
         "type": "Punctuator",
         "value": ";",
-        "range": [
-          206,
-          207
-        ],
+        "range": [206, 207],
         "loc": {
           "start": {
             "line": 11,
@@ -838,34 +703,17 @@
     "comments": []
   },
   "visitorKeys": {
-    "Program": [
-      "body",
-      "tokens",
-      "comments"
-    ],
-    "CreateFunctionStmt": [
-      "funcname",
-      "returnType",
-      "options",
-      "embeddedCode"
-    ],
+    "Program": ["body", "tokens", "comments"],
+    "CreateFunctionStmt": ["funcname", "returnType", "options", "embeddedCode"],
     "String": [],
-    "names": [
-      "0"
-    ],
-    "DefElem": [
-      "arg"
-    ],
-    "List": [
-      "items"
-    ],
+    "names": ["0"],
+    "DefElem": ["arg"],
+    "List": ["items"],
     "EmbeddedCode": [],
     "Keyword": [],
     "Identifier": [],
     "Punctuator": [],
-    "SQLStatement": [
-      "statement"
-    ],
+    "SQLStatement": ["statement"],
     "SQLParseError": [],
     "SQLProcedure": []
   },

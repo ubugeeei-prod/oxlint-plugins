@@ -142,11 +142,12 @@ fn find_body_token(tokens: &[Token], start_search_from: u32) -> Option<BodyToken
         }
 
         let raw = token.value.as_str();
-        if raw.starts_with('$') {
+        if let Some(after_dollar) = raw.strip_prefix('$') {
             // Dollar-quote: $$...$$ or $tag$...$tag$. The opening tag is ASCII
-            // by grammar, so byte and UTF-16 offsets coincide over it.
-            let tag_end = raw[1..].find('$').map(|index| index + 1)?;
-            let tag_length = (tag_end + 1) as u32;
+            // by grammar, so byte and UTF-16 offsets coincide over it. The
+            // closing `$` of the opening tag sits one past its index in the
+            // `$`-stripped remainder.
+            let tag_length = (after_dollar.find('$')? + 2) as u32;
             return Some(BodyTokenInfo {
                 inner_start: token.start + tag_length,
                 inner_end: token.end - tag_length,
