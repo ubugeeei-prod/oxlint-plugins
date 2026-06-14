@@ -83,6 +83,7 @@ mod prefer_immediate_return;
 mod prefer_promise_shorthand;
 mod prefer_single_boolean_return;
 mod prefer_while;
+mod process_argv;
 mod pseudo_random;
 mod reduce_initial_value;
 mod shorthand_property_grouping;

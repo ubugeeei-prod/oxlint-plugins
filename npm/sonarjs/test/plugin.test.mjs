@@ -185,6 +185,7 @@ describe('sonarjs plugin shape', () => {
       'no-array-delete',
       'no-literal-call',
       'shorthand-property-grouping',
+      'process-argv',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -276,6 +277,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-array-delete']).toBe('object');
     expect(typeof plugin.rules['no-literal-call']).toBe('object');
     expect(typeof plugin.rules['shorthand-property-grouping']).toBe('object');
+    expect(typeof plugin.rules['process-argv']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -375,6 +377,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-array-delete']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-literal-call']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/shorthand-property-grouping']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/process-argv']).toBe('error');
   });
 });
 
@@ -2799,5 +2802,49 @@ describe('shorthand-property-grouping rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(shorthand-property-grouping)');
+  });
+});
+
+describe('process-argv rule', () => {
+  it('reports process-argv for a direct process.argv access through the adapter', () => {
+    const source = 'const a = process.argv;';
+    const reports = runRule('process-argv', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('processArgv');
+  });
+
+  it('reports process-argv once for process.argv[2] through the adapter', () => {
+    const source = 'process.argv[2];';
+    const reports = runRule('process-argv', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('processArgv');
+  });
+
+  it('reports process-argv once for process.argv.slice(2) through the adapter', () => {
+    const source = 'process.argv.slice(2);';
+    const reports = runRule('process-argv', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('processArgv');
+  });
+
+  it('does not report process-argv for process.env', () => {
+    const source = 'process.env.PATH;';
+    const reports = runRule('process-argv', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report process-argv for foo.argv', () => {
+    const source = 'foo.argv;';
+    const reports = runRule('process-argv', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports process-argv through the CLI', () => {
+    const source = 'const a = process.argv;';
+    const result = runOxlint('process-argv', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(process-argv)');
   });
 });

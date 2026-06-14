@@ -3491,6 +3491,52 @@ fn does_not_report_pseudo_random_for_bare_reference() {
 }
 
 #[test]
+fn reports_process_argv_for_direct_access() {
+    let source = "const a = process.argv;";
+    let diagnostics = scan("process-argv", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "process-argv");
+    assert_eq!(diagnostics[0].message_id, "processArgv");
+}
+
+#[test]
+fn reports_process_argv_for_indexed_access() {
+    let source = "process.argv[2];";
+    let diagnostics = scan("process-argv", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "processArgv");
+}
+
+#[test]
+fn reports_process_argv_for_slice_access() {
+    let source = "process.argv.slice(2);";
+    let diagnostics = scan("process-argv", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "processArgv");
+}
+
+#[test]
+fn does_not_report_process_argv_for_different_property() {
+    let source = "process.env.PATH;";
+    let diagnostics = scan("process-argv", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_process_argv_for_different_object() {
+    let source = "foo.argv;";
+    let diagnostics = scan("process-argv", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_process_argv_for_bare_identifier() {
+    let source = "argv;";
+    let diagnostics = scan("process-argv", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn reports_no_hardcoded_ip_for_private_ipv4() {
     let diagnostics = scan("no-hardcoded-ip", r#"const ip = "192.168.1.1";"#);
     assert_eq!(diagnostics.len(), 1);

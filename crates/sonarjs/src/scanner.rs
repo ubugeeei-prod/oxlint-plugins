@@ -458,6 +458,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_static_member_expression(&mut self, it: &StaticMemberExpression<'a>) {
         self.check_no_exclusive_tests(it);
         self.check_no_skipped_tests_member(it);
+        self.check_process_argv(it);
         walk::walk_static_member_expression(self, it);
     }
 
