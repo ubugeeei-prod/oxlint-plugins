@@ -245,6 +245,18 @@ const ruleMeta = Object.freeze({
         '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
     },
   },
+  'no-truncate-cascade': {
+    type: 'problem',
+    description:
+      'Disallow `TRUNCATE ... CASCADE` because it transitively empties referencing tables',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCascade:
+        '`TRUNCATE ... CASCADE` also truncates every table that has a foreign key referencing this one. List the dependent tables explicitly so reviewers can see what gets emptied.',
+    },
+  },
   'no-unlogged-table': {
     type: 'problem',
     description:

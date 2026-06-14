@@ -22,6 +22,7 @@ mod no_select_star;
 mod no_set_not_null;
 mod no_set_search_path;
 mod no_temporary_table;
+mod no_truncate_cascade;
 mod no_unlogged_table;
 mod no_vacuum_full;
 mod no_with_recursive_without_limit;
@@ -144,6 +145,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-set-not-null",
     "no-set-search-path",
     "no-temporary-table",
+    "no-truncate-cascade",
     "no-unlogged-table",
     "no-vacuum-full",
     "no-with-recursive-without-limit",
@@ -247,6 +249,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-temporary-table",
         run: no_temporary_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-truncate-cascade",
+        run: no_truncate_cascade::run,
         uses_parse_error: false,
     },
     RuleDef {
