@@ -79,6 +79,7 @@ mod require_named_constraint;
 mod require_on_delete_action;
 mod require_primary_key;
 mod require_schema_qualified_table;
+mod require_table_columns;
 mod require_trailing_semicolon;
 mod require_where_in_delete;
 mod require_where_in_update;
@@ -257,6 +258,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "require-on-delete-action",
     "require-primary-key",
     "require-schema-qualified-table",
+    "require-table-columns",
     "require-trailing-semicolon",
     "require-where-in-delete",
     "require-where-in-update",
@@ -644,6 +646,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-schema-qualified-table",
         run: require_schema_qualified_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-table-columns",
+        run: require_table_columns::run,
         uses_parse_error: false,
     },
     RuleDef {
