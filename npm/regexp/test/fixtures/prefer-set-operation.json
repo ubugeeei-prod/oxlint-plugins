@@ -1,0 +1,68 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-set-operation.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-set-operation.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a\\b/"
+    },
+    {
+      "code": "/a\\b/u"
+    },
+    {
+      "code": "/a\\b/v"
+    },
+    {
+      "code": "/(?!a)\\w/"
+    },
+    {
+      "code": "/(?!a)\\w/u"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(?!a)\\w/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround can be combined with '\\w' using a set operation.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[\\w--a]/v"
+    },
+    {
+      "code": "/\\w(?<=\\d)/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround can be combined with '\\w' using a set operation.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[\\w&&\\d]/v"
+    },
+    {
+      "code": "/(?!-)&/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This lookaround can be combined with '&' using a set operation.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[\\&--\\-]/v"
+    }
+  ]
+}
