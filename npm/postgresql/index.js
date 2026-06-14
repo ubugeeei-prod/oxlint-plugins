@@ -144,6 +144,28 @@ const ruleMeta = Object.freeze({
         'Avoid `REINDEX CONCURRENTLY`. Concurrent reindex cannot run inside a transaction; use plain `REINDEX` when the migration tool wraps each step in BEGIN/COMMIT.',
     },
   },
+  'consistent-text-over-varchar': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `text` vs `varchar(n)` column types (either always require `text`, or always require a bounded type)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferText:
+        'Use `text` instead of `varchar(n)`. PostgreSQL stores both the same way; the length cap is enforced by a constraint that you cannot relax without a full table rewrite. Move the limit into a CHECK constraint.',
+      unexpectedText:
+        "Use `varchar(n)` (or another bounded string type) instead of `text`. Useful for projects that intentionally cap every string column's length at the type level.",
+    },
+  },
   'no-add-check-constraint-without-not-valid': {
     type: 'problem',
     description:
