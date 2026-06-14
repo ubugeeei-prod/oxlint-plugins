@@ -11646,19 +11646,19 @@
       },
       {
         "name": "no-alphabetical-sort",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-alphabetical-sort (Sonar key S2871). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S2871). Flags a sort()/toSorted() call with no compare function whose receiver is provably an array: a direct array literal ([3,1,2].sort()) or an identifier resolving via semantic analysis to a never-reassigned array-literal binding (const a=[3,1,2]; a.sort()). Receivers whose array-ness cannot be proven are conservatively skipped (the upstream rule is type-aware; without TS types we under-report rather than risk false positives on non-array .sort methods). Uses oxc_semantic (built only when this rule or no-misleading-array-reverse is active). No upstream source, fixtures, tests, or messages were consulted."
       },
       {
         "name": "no-angular-bypass-sanitization",
