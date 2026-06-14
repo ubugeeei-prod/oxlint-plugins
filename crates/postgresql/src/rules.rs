@@ -3,6 +3,7 @@
 
 use crate::RuleDef;
 
+mod consistent_between_over_and;
 mod consistent_create_or_replace;
 mod consistent_explicit_inner_join;
 mod consistent_identity_over_serial;
@@ -162,6 +163,7 @@ pub const RULE_NAMES: [&str; 89] = [
 
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
+    "consistent-between-over-and",
     "consistent-create-or-replace",
     "consistent-explicit-inner-join",
     "consistent-identity-over-serial",
@@ -228,6 +230,11 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
 pub(crate) const REGISTRY: &[RuleDef] = &[
+    RuleDef {
+        name: "consistent-between-over-and",
+        run: consistent_between_over_and::run,
+        uses_parse_error: false,
+    },
     RuleDef {
         name: "consistent-create-or-replace",
         run: consistent_create_or_replace::run,

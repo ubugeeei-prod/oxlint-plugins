@@ -17,6 +17,27 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'consistent-between-over-and': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `x BETWEEN a AND b` vs `x >= a AND x <= b` for closed-interval range checks',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferBetween: 'Use `{{lhs}} BETWEEN {{lower}} AND {{upper}}` instead of `>= ... AND <=`.',
+      unexpectedBetween:
+        'Use `{{lhs}} >= {{lower}} AND {{lhs}} <= {{upper}}` instead of `BETWEEN`. Some teams prefer explicit comparisons so the inclusive bounds are obvious to readers.',
+    },
+  },
   'consistent-create-or-replace': {
     type: 'suggestion',
     description:
