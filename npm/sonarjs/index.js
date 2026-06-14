@@ -14,6 +14,9 @@ const DOCS_BASE = 'https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm
 const diagnosticsCache = new WeakMap();
 
 const messages = Object.freeze({
+  'array-callback-without-return': {
+    addReturn: 'Add a "return" statement to this callback.',
+  },
   'no-nested-template-literals': {
     nestedTemplateLiteral:
       'Do not nest template literals. Extract the inner template literal into a separate variable.',
@@ -312,6 +315,8 @@ const messages = Object.freeze({
 });
 
 const ruleDescriptions = Object.freeze({
+  'array-callback-without-return':
+    'Require a return statement in callbacks of array methods that build a result',
   'no-nested-template-literals': 'Disallow nested template literals',
   'no-nested-switch': 'Disallow nested switch statements',
   'no-nested-conditional': 'Disallow nested conditional (ternary) expressions',
@@ -478,6 +483,7 @@ const ruleDescriptions = Object.freeze({
 });
 
 const ruleTypes = Object.freeze({
+  'array-callback-without-return': 'suggestion',
   'no-nested-template-literals': 'suggestion',
   'no-nested-switch': 'suggestion',
   'no-nested-conditional': 'suggestion',
@@ -565,6 +571,7 @@ const ruleTypes = Object.freeze({
 });
 
 const recommendedRuleConfig = Object.freeze({
+  'array-callback-without-return': 'error',
   'no-nested-template-literals': 'error',
   'no-nested-switch': 'error',
   'no-nested-conditional': 'error',

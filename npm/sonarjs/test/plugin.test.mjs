@@ -178,6 +178,7 @@ describe('sonarjs plugin shape', () => {
       'no-equals-in-for-termination',
       'reduce-initial-value',
       'no-parameter-reassignment',
+      'array-callback-without-return',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -262,6 +263,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-equals-in-for-termination']).toBe('object');
     expect(typeof plugin.rules['reduce-initial-value']).toBe('object');
     expect(typeof plugin.rules['no-parameter-reassignment']).toBe('object');
+    expect(typeof plugin.rules['array-callback-without-return']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -354,6 +356,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-equals-in-for-termination']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/reduce-initial-value']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-parameter-reassignment']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/array-callback-without-return']).toBe('error');
   });
 });
 
@@ -2433,5 +2436,67 @@ describe('no-parameter-reassignment rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-parameter-reassignment)');
+  });
+});
+
+describe('array-callback-without-return rule', () => {
+  it('reports a map callback (function expression) that never returns', () => {
+    const source = '[1, 2].map(function (x) { console.log(x); });';
+    const reports = runRule('array-callback-without-return', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('addReturn');
+  });
+
+  it('reports a filter arrow with a block body and no return', () => {
+    const source = 'arr.filter((x) => { doStuff(x); });';
+    const reports = runRule('array-callback-without-return', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('addReturn');
+  });
+
+  it('reports a sort comparator that only throws', () => {
+    const source = 'arr.sort((a, b) => { throw new Error("x"); });';
+    const reports = runRule('array-callback-without-return', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('addReturn');
+  });
+
+  it('does not report an arrow with an expression body', () => {
+    const source = '[1, 2].map((x) => x + 1);';
+    const reports = runRule('array-callback-without-return', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a callback that returns a value', () => {
+    const source = 'arr.filter(function (x) { return x > 0; });';
+    const reports = runRule('array-callback-without-return', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a value return nested in control flow', () => {
+    const source = 'arr.map((x) => { if (x) { return x; } });';
+    const reports = runRule('array-callback-without-return', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a forEach callback (method not covered)', () => {
+    const source = 'arr.forEach((x) => { log(x); });';
+    const reports = runRule('array-callback-without-return', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the callback is an identifier', () => {
+    const source = 'arr.map(fn);';
+    const reports = runRule('array-callback-without-return', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports array-callback-without-return through the CLI', () => {
+    const source = '[1, 2].map(function (x) { console.log(x); });';
+    const result = runOxlint('array-callback-without-return', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(array-callback-without-return)');
   });
 });

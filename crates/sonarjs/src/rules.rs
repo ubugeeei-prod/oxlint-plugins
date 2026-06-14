@@ -3,6 +3,7 @@
 
 mod anchor_precedence;
 mod arguments_usage;
+mod array_callback_without_return;
 mod array_constructor;
 mod bitwise_operators;
 mod class_name;

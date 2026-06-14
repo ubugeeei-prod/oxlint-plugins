@@ -4488,3 +4488,81 @@ fn does_not_report_no_parameter_reassignment_classic_for_counter() {
     let diagnostics = scan("no-parameter-reassignment", source);
     assert!(diagnostics.is_empty());
 }
+
+// array-callback-without-return tests
+
+#[test]
+fn reports_array_callback_without_return_map_function_no_return() {
+    let source = "[1, 2].map(function (x) { console.log(x); });";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "array-callback-without-return");
+    assert_eq!(diagnostics[0].message_id, "addReturn");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_array_callback_without_return_filter_arrow_block_no_return() {
+    let source = "arr.filter((x) => { doStuff(x); });";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "addReturn");
+}
+
+#[test]
+fn reports_array_callback_without_return_bare_return_does_not_count() {
+    let source = "arr.map((x) => { if (x) { return; } });";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "addReturn");
+}
+
+#[test]
+fn reports_array_callback_without_return_ignores_nested_function_return() {
+    let source = "arr.map((x) => { function inner() { return x; } });";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "addReturn");
+}
+
+#[test]
+fn does_not_report_array_callback_without_return_arrow_expression_body() {
+    let source = "[1, 2].map((x) => x + 1);";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_callback_without_return_function_with_return() {
+    let source = "arr.filter(function (x) { return x > 0; });";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_callback_without_return_value_return_in_control_flow() {
+    let source = "arr.map((x) => { if (x) { return x; } });";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_callback_without_return_value_return_in_try() {
+    let source = "arr.map(function (x) { try { return x; } catch (e) {} });";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_callback_without_return_for_each() {
+    let source = "arr.forEach((x) => { log(x); });";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_callback_without_return_identifier_callback() {
+    let source = "arr.map(fn);";
+    let diagnostics = scan("array-callback-without-return", source);
+    assert!(diagnostics.is_empty());
+}

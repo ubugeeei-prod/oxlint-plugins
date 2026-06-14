@@ -439,6 +439,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_call_expression(&mut self, it: &CallExpression<'a>) {
         self.check_no_skipped_tests_call(it);
+        self.check_array_callback_without_return(it);
         self.check_array_constructor_call(it);
         self.check_no_nested_incdec_call(it);
         self.check_code_eval_call(it);
