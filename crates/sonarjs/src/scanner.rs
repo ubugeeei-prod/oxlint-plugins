@@ -3,12 +3,12 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, BindingIdentifier, CatchClause, ConditionalExpression,
-    DoWhileStatement, ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function,
-    FunctionBody, IdentifierReference, IfStatement, LabeledStatement, LogicalExpression,
-    NewExpression, RegExpLiteral, StaticMemberExpression, SwitchCase, SwitchStatement,
-    TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, UnaryExpression,
-    WhileStatement, YieldExpression,
+    AssignmentExpression, BinaryExpression, BindingIdentifier, CallExpression, CatchClause,
+    ConditionalExpression, DoWhileStatement, ExpressionStatement, ForInStatement, ForOfStatement,
+    ForStatement, Function, FunctionBody, IdentifierReference, IfStatement, LabeledStatement,
+    LogicalExpression, NewExpression, RegExpLiteral, StaticMemberExpression, SwitchCase,
+    SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral,
+    UnaryExpression, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -197,7 +197,13 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_static_member_expression(&mut self, it: &StaticMemberExpression<'a>) {
         self.check_no_exclusive_tests(it);
+        self.check_no_skipped_tests_member(it);
         walk::walk_static_member_expression(self, it);
+    }
+
+    fn visit_call_expression(&mut self, it: &CallExpression<'a>) {
+        self.check_no_skipped_tests_call(it);
+        walk::walk_call_expression(self, it);
     }
 
     fn visit_labeled_statement(&mut self, it: &LabeledStatement<'a>) {

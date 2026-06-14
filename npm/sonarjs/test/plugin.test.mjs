@@ -128,6 +128,7 @@ describe('sonarjs plugin shape', () => {
       'prefer-immediate-return',
       'no-redundant-jump',
       'no-primitive-wrappers',
+      'no-skipped-tests',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -163,6 +164,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['prefer-immediate-return']).toBe('object');
     expect(typeof plugin.rules['no-redundant-jump']).toBe('object');
     expect(typeof plugin.rules['no-primitive-wrappers']).toBe('object');
+    expect(typeof plugin.rules['no-skipped-tests']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -198,6 +200,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/prefer-immediate-return']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-redundant-jump']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-primitive-wrappers']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-skipped-tests']).toBe('error');
   });
 });
 
@@ -781,5 +784,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-primitive-wrappers)');
+  });
+
+  it('reports no-skipped-tests for describe.skip through the adapter', () => {
+    const source = "describe.skip('x', () => {});";
+    const reports = runRule('no-skipped-tests', source, { filename: 'sample.js' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('skippedTest');
+  });
+
+  it('reports no-skipped-tests through the CLI', () => {
+    const source = "xit('x', () => {});";
+    const result = runOxlint('no-skipped-tests', source, 'sample.js');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-skipped-tests)');
   });
 });
