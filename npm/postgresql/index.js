@@ -29,6 +29,18 @@ const ruleMeta = Object.freeze({
         '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
     },
   },
+  'no-drop-database': {
+    type: 'problem',
+    description:
+      'Disallow `DROP DATABASE`; it is catastrophic if run by accident and should not live in versioned SQL',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDropDatabase:
+        '`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
