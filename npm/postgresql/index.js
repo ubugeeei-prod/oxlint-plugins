@@ -639,6 +639,31 @@ const ruleMeta = Object.freeze({
         'Table-level CHECK / UNIQUE / FOREIGN KEY / EXCLUSION constraints should be named with `CONSTRAINT <name>`. Auto-generated names are unpredictable across environments and make later `DROP CONSTRAINT` / `ALTER CONSTRAINT` migrations brittle.',
     },
   },
+  'require-on-delete-action': {
+    type: 'suggestion',
+    description: 'Require an explicit `ON DELETE` clause on every foreign-key constraint',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allowed: {
+            type: 'array',
+            items: { enum: ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL', 'SET DEFAULT'] },
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingOnDelete:
+        'Foreign-key constraint is missing an explicit `ON DELETE` clause; the implicit default is `NO ACTION`. Make the choice explicit so reviewers can see what happens to dependent rows.',
+      disallowedAction:
+        "`ON DELETE {{action}}` is not in the `allowed` list ({{allowedList}}). Either change the action or extend the rule's `allowed` option.",
+    },
+  },
   'require-primary-key': {
     type: 'suggestion',
     description: 'Require every `CREATE TABLE` to have a PRIMARY KEY',
