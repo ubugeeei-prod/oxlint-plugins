@@ -140,6 +140,7 @@ describe('sonarjs plugin shape', () => {
       'no-inconsistent-returns',
       'no-same-line-conditional',
       'no-nested-assignment',
+      'no-nested-incdec',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -187,6 +188,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-inconsistent-returns']).toBe('object');
     expect(typeof plugin.rules['no-same-line-conditional']).toBe('object');
     expect(typeof plugin.rules['no-nested-assignment']).toBe('object');
+    expect(typeof plugin.rules['no-nested-incdec']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -236,6 +238,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-inconsistent-returns']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-same-line-conditional']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-assignment']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-nested-incdec']).toBe('error');
   });
 });
 
@@ -1023,5 +1026,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-nested-assignment)');
+  });
+
+  it('reports no-nested-incdec through the adapter', () => {
+    const source = 'foo(i++);';
+    const reports = runRule('no-nested-incdec', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('nestedIncDec');
+  });
+
+  it('reports no-nested-incdec through the CLI', () => {
+    const source = 'foo(i++);';
+    const result = runOxlint('no-nested-incdec', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-nested-incdec)');
   });
 });

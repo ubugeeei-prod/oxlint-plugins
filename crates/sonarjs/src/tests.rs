@@ -2132,3 +2132,40 @@ fn does_not_report_no_nested_assignment_for_compound_assignment_in_condition() {
     let diagnostics = scan("no-nested-assignment", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_nested_incdec_for_increment_call_argument() {
+    let source = "foo(i++);";
+    let diagnostics = scan("no-nested-incdec", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-nested-incdec");
+    assert_eq!(diagnostics[0].message_id, "nestedIncDec");
+}
+
+#[test]
+fn reports_no_nested_incdec_for_decrement_method_argument() {
+    let source = "arr.push(--count);";
+    let diagnostics = scan("no-nested-incdec", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_nested_incdec_for_constructor_argument() {
+    let source = "new Widget(n++);";
+    let diagnostics = scan("no-nested-incdec", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_nested_incdec_for_standalone_statement() {
+    let source = "i++;";
+    let diagnostics = scan("no-nested-incdec", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_nested_incdec_for_for_loop_update() {
+    let source = "for (let i = 0; i < n; i++) { use(i); }";
+    let diagnostics = scan("no-nested-incdec", source);
+    assert!(diagnostics.is_empty());
+}

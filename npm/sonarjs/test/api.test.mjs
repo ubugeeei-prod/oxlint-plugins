@@ -49,6 +49,7 @@ const expectedRuleNames = [
   'no-inconsistent-returns',
   'no-same-line-conditional',
   'no-nested-assignment',
+  'no-nested-incdec',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1738,6 +1739,38 @@ describe('sonarjs native API', () => {
   it('does not report no-nested-assignment for an equality comparison in a condition', () => {
     const source = 'if (x === compute()) {\n  use(x);\n}';
     const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-nested-incdec for an increment used as a call argument', () => {
+    const source = 'foo(i++);';
+    const diagnostics = scan('no-nested-incdec', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-nested-incdec');
+    expect(diagnostics[0].messageId).toBe('nestedIncDec');
+  });
+
+  it('reports no-nested-incdec for a decrement used as a method call argument', () => {
+    const source = 'arr.push(--count);';
+    const diagnostics = scan('no-nested-incdec', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports no-nested-incdec for an increment used as a constructor argument', () => {
+    const source = 'new Widget(n++);';
+    const diagnostics = scan('no-nested-incdec', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-nested-incdec for a standalone increment statement', () => {
+    const source = 'i++;';
+    const diagnostics = scan('no-nested-incdec', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-nested-incdec for the update clause of a for loop', () => {
+    const source = 'for (let i = 0; i < n; i++) {\n  use(i);\n}';
+    const diagnostics = scan('no-nested-incdec', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
