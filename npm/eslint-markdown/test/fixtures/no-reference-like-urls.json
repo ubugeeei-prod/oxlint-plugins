@@ -1,0 +1,1090 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-reference-like-urls.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/commonmark"
+  },
+  "valid": [
+    {
+      "code": "[Mercury](https://example.com/mercury/)"
+    },
+    {
+      "code": "[Mercury](https://example.com/mercury/ \"Go to Mercury\")"
+    },
+    {
+      "code": "![Venus](https://example.com/venus/)"
+    },
+    {
+      "code": "![Venus](https://example.com/venus/ \"Go to Venus\")"
+    },
+    {
+      "code": "[text][mercury]"
+    },
+    {
+      "code": "[mercury]: https://example.com/mercury/"
+    },
+    {
+      "code": "[Mercury](mercury) is the first planet.\n\n[venus]: https://example.com/venus/"
+    },
+    {
+      "code": "[Planet 1](https://example.com/planet1/)\n[Planet 2](https://example.com/planet2/)\n\n[planet1]: https://example.com/planet1/\n[planet2]: https://example.com/planet2/"
+    },
+    {
+      "code": "`[Mercury](mercury) is the first planet.`\n`![Mercury](mercury) is the first planet.`\n\n[mercury]: https://example.com/mercury/"
+    },
+    {
+      "code": "```markdown\n[Mercury](mercury)\n![Mercury](mercury)\n\n[mercury]: https://example.com/mercury/\n```"
+    },
+    {
+      "code": "<div>[Mercury](mercury)</div>\n\n<div>![Mercury](mercury)</div>\n\n[mercury]: https://example.com/mercury/"
+    },
+    {
+      "code": "\\[Mercury](mercury)\n[Mercury\\](mercury)\n![Mercury\\](mercury)\n[Mercury]\\(mercury)\n![Mercury]\\(mercury)\n\n[mercury]: https://example.com/mercury/"
+    },
+    {
+      "code": "[foo bar](foo bar)\n![foo bar](foo bar)\n\n[foo bar]: https://example.com/foo-bar"
+    },
+    {
+      "code": "[link](<uri>)\n\n   [uri]: https://example.com/uri"
+    },
+    {
+      "code": "![image](<uri>)\n\n[uri]: https://example.com/uri"
+    },
+    {
+      "code": "<http://foo>\n\n[http://foo]: hi"
+    },
+    {
+      "code": "http://foo\n\n[http://foo]: hi"
+    },
+    {
+      "code": "# Heading with [Mercury](mercury)\n# Heading with ![Mercury](mercury)\n\n[venus]: https://example.com/venus/"
+    },
+    {
+      "code": "# Heading with [Mercury][mercury]\n# Heading with ![Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "Heading with [Mercury](mercury)\n===============================\nHeading with ![Mercury](mercury)\n================================\n\n[venus]: https://example.com/venus/"
+    },
+    {
+      "code": "Heading with [Mercury][mercury]\n===============================\nHeading with ![Mercury][mercury]\n================================\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "| Planet  | Link                |\n|---------|---------------------|\n| Mercury | [Mercury](mercury)  |\n| Mercury | ![Mercury](mercury) |\n\n[venus]: https://example.com/venus/"
+    },
+    {
+      "code": "| Planet  | Link                |\n|---------|---------------------|\n| Mercury | [Mercury][mercury]  |\n| Mercury | ![Mercury][mercury] |\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\[Mercury](mercury)\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\[Mercury](mercury)\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\\\\\[Mercury](mercury)\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\[Mercury](mercury)\n\n[mercury]: https://example.com/mercury"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "[Mercury](  mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "[Mercury][  mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "[Mercury](\tmercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": "[Mercury][\tmercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "[Mercury](\nmercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "[Mercury][\nmercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "[Mercury](\r\nmercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "[Mercury][\r\nmercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "[Mercury](\rmercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "[Mercury][\rmercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "![Mercury](\nmercury)\n\n[mercury]: https://example.com/mercury.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "![Mercury][\nmercury]\n\n[mercury]: https://example.com/mercury.jpg"
+    },
+    {
+      "code": "![Mercury](\r\nmercury)\n\n[mercury]: https://example.com/mercury.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "![Mercury][\r\nmercury]\n\n[mercury]: https://example.com/mercury.jpg"
+    },
+    {
+      "code": "![Mercury](\rmercury)\n\n[mercury]: https://example.com/mercury.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "![Mercury][\rmercury]\n\n[mercury]: https://example.com/mercury.jpg"
+    },
+    {
+      "code": "![Mercury](  mercury)\n\n[mercury]: https://example.com/mercury.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": "![Mercury][  mercury]\n\n[mercury]: https://example.com/mercury.jpg"
+    },
+    {
+      "code": "![Mercury](\tmercury)\n\n[mercury]: https://example.com/mercury.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "![Mercury][\tmercury]\n\n[mercury]: https://example.com/mercury.jpg"
+    },
+    {
+      "code": "[Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "[Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "[**Mercury**](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": "[**Mercury**][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "[Mercury](MERCURY)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "[Mercury][MERCURY]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "[Mercury](MeRcUrY)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "[Mercury][MeRcUrY]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "[Mercury](<mercury>)\n\n[<mercury>]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "[Mercury][<mercury>]\n\n[<mercury>]: https://example.com/mercury"
+    },
+    {
+      "code": "![Venus](venus)\n\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "output": "![Venus][venus]\n\n[venus]: https://example.com/venus.jpg"
+    },
+    {
+      "code": "![Venus](VENUS)\n\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "output": "![Venus][VENUS]\n\n[venus]: https://example.com/venus.jpg"
+    },
+    {
+      "code": "![Venus](VeNuS)\n\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "output": "![Venus][VeNuS]\n\n[venus]: https://example.com/venus.jpg"
+    },
+    {
+      "code": "![Venus](<venus>)\n\n[<venus>]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "output": "![Venus][<venus>]\n\n[<venus>]: https://example.com/venus.jpg"
+    },
+    {
+      "code": "![**Mercury** is a planet](mercury)\n\n[mercury]: https://example.com/mercury.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 36
+        }
+      ],
+      "output": "![**Mercury** is a planet][mercury]\n\n[mercury]: https://example.com/mercury.jpg"
+    },
+    {
+      "code": "![Mercury](mercury) is the first planet from the sun.\n\n[mercury]: https://example.com/mercury/",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": "![Mercury][mercury] is the first planet from the sun.\n\n[mercury]: https://example.com/mercury/"
+    },
+    {
+      "code": "[Mercury](mercury) is the first planet from the sun.\n\n[mercury]: https://example.com/mercury/",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "[Mercury][mercury] is the first planet from the sun.\n\n[mercury]: https://example.com/mercury/"
+    },
+    {
+      "code": "[Planet 1](planet1) and [Planet 2](planet2) are neighbors.\n\n[planet1]: https://example.com/planet1/\n[planet2]: https://example.com/planet2/",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 20
+        },
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 44
+        }
+      ],
+      "output": "[Planet 1][planet1] and [Planet 2][planet2] are neighbors.\n\n[planet1]: https://example.com/planet1/\n[planet2]: https://example.com/planet2/"
+    },
+    {
+      "code": "[Mercury](mercury) is the first planet and ![Venus](venus) is the second.\n\n[mercury]: https://example.com/mercury\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 19
+        },
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 44,
+          "endLine": 1,
+          "endColumn": 59
+        }
+      ],
+      "output": "[Mercury][mercury] is the first planet and ![Venus][venus] is the second.\n\n[mercury]: https://example.com/mercury\n[venus]: https://example.com/venus.jpg"
+    },
+    {
+      "code": "[Mercury](mercury \"\")\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": "[Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "![Venus](venus \"\")\n\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "![Venus][venus]\n\n[venus]: https://example.com/venus.jpg"
+    },
+    {
+      "code": "[Mercury](mercury '')\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": "[Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "![Venus](venus '')\n\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "![Venus][venus]\n\n[venus]: https://example.com/venus.jpg"
+    },
+    {
+      "code": "[Mercury](mercury ())\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": "[Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "![Venus](venus ())\n\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "![Venus][venus]\n\n[venus]: https://example.com/venus.jpg"
+    },
+    {
+      "code": "[Mercury](mercury \"Go to Mercury\")\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ]
+    },
+    {
+      "code": "![Venus](venus \"Venus Image\")\n\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 30
+        }
+      ]
+    },
+    {
+      "code": "[Mercury](mercury 'Go to Mercury')\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ]
+    },
+    {
+      "code": "![Venus](venus 'Venus Image')\n\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 30
+        }
+      ]
+    },
+    {
+      "code": "[Mercury](mercury (Go to Mercury))\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ]
+    },
+    {
+      "code": "![Venus](venus (Venus Image))\n\n[venus]: https://example.com/venus.jpg",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 30
+        }
+      ]
+    },
+    {
+      "code": "\\\\[Mercury](mercury)\n\n[mercury]: https://example.com/mercury/",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "\\\\[Mercury][mercury]\n\n[mercury]: https://example.com/mercury/"
+    },
+    {
+      "code": "\\\\![Venus](venus)\n\n[venus]: https://example.com/venus/",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "output": "\\\\![Venus][venus]\n\n[venus]: https://example.com/venus/"
+    },
+    {
+      "code": "[Click Me\n](test)\n\n[test]: https://abc.com",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "[Click Me\n][test]\n\n[test]: https://abc.com"
+    },
+    {
+      "code": "![Click Me\n](test)\n\n[test]: https://abc.com",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "![Click Me\n][test]\n\n[test]: https://abc.com"
+    },
+    {
+      "code": "[Mercury](@mercury)\n![Mercury](@mercury)\n\n[@mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 20
+        },
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 21
+        }
+      ],
+      "output": "[Mercury][@mercury]\n![Mercury][@mercury]\n\n[@mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "# Heading with [Mercury](mercury)\n# Heading with ![Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 34
+        },
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 2,
+          "column": 16,
+          "endLine": 2,
+          "endColumn": 35
+        }
+      ],
+      "output": "# Heading with [Mercury][mercury]\n# Heading with ![Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "Heading with [Mercury](mercury)\n===============================\nHeading with ![Mercury](mercury)\n================================\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 32
+        },
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 3,
+          "column": 14,
+          "endLine": 3,
+          "endColumn": 33
+        }
+      ],
+      "output": "Heading with [Mercury][mercury]\n===============================\nHeading with ![Mercury][mercury]\n================================\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "| Planet  | Link                |\n|---------|---------------------|\n| Mercury | [Mercury](mercury)  |\n| Mercury | ![Mercury](mercury) |\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 3,
+          "column": 13,
+          "endLine": 3,
+          "endColumn": 31
+        },
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 4,
+          "column": 13,
+          "endLine": 4,
+          "endColumn": 32
+        }
+      ],
+      "output": "| Planet  | Link                |\n|---------|---------------------|\n| Mercury | [Mercury][mercury]  |\n| Mercury | ![Mercury][mercury] |\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\![Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "\\![Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\![Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 5,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": "\\\\\\![Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\\\\\![Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "output": "\\\\\\\\\\![Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\![Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": "\\\\\\\\\\\\\\![Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\[Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "\\\\[Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\\\[Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 5,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": "\\\\\\\\[Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\\\\\\\[Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "output": "\\\\\\\\\\\\[Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\![Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": "\\\\![Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\\\![Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 5,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "output": "\\\\\\\\![Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "\\\\\\\\\\\\![Mercury](mercury)\n\n[mercury]: https://example.com/mercury",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "image",
+            "prefix": "!"
+          },
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "output": "\\\\\\\\\\\\![Mercury][mercury]\n\n[mercury]: https://example.com/mercury"
+    },
+    {
+      "code": "[link](GRÜẞE)\n\n[Grüsse]: https://example.com/",
+      "errors": [
+        {
+          "messageId": "referenceLikeUrl",
+          "data": {
+            "type": "link",
+            "prefix": ""
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ],
+      "output": "[link][GRÜẞE]\n\n[Grüsse]: https://example.com/"
+    }
+  ]
+}

@@ -1,0 +1,406 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-bare-urls.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/gfm"
+  },
+  "valid": [
+    {
+      "code": "<https://www.google.com/>"
+    },
+    {
+      "code": "<user@example.com>"
+    },
+    {
+      "code": "[text [undefined] text](https://example.com)."
+    },
+    {
+      "code": "[is-a-valid]: https://example.com"
+    },
+    {
+      "code": "<a href=\"https://example.com\">link</a>."
+    },
+    {
+      "code": "<a href=\"https://example.com\">https://example.com</a>"
+    },
+    {
+      "code": "<a href=\"https://example.com\">Text https://example.com</a>"
+    },
+    {
+      "code": "This is not a bare [link]( https://example.com )"
+    },
+    {
+      "code": "Nor is [link](https://example.com/path-with(parens))."
+    },
+    {
+      "code": "Or <https://example.com/path-with(parens)>."
+    },
+    {
+      "code": "<element-name first-attribute=\" https://example.com/first \" second-attribute=\" https://example.com/second \">\n    Text\n</element-name>"
+    },
+    {
+      "code": "<element-name\n    first-attribute=\" https://example.com/first \"\n    second-attribute=\" https://example.com/second \"></element-name>"
+    },
+    {
+      "code": "Not <code>https://example.com</code> bare."
+    },
+    {
+      "code": "Not <pre>https://example.com</pre> bare."
+    },
+    {
+      "code": "<p>\nNot bare due to being in an HTML block:\nhttps://example.com\n<code>https://example.com</code>\n<pre>https://example.com</pre>\n</p>"
+    },
+    {
+      "code": "<div>\nhttps://example.com\n</div>"
+    },
+    {
+      "code": "<div>\nhttps://example.com\n\n</div>"
+    },
+    {
+      "code": "Text [link to https://example.com site](https://example.com) text."
+    },
+    {
+      "code": "Image ![for https://example.com site](https://example.com) text."
+    },
+    {
+      "code": "Links with spaces inside angle brackets are okay: [blue jay](<https://en.wikipedia.org/wiki/Blue jay>)"
+    },
+    {
+      "code": "[link \\[is-not-a-valid\\] link](https://example.com)"
+    },
+    {
+      "code": "text <https://example.com/dir/dir>"
+    },
+    {
+      "code": "```text\nCode https://example.com/code?type=fence code\n```"
+    },
+    {
+      "code": "       Code https://example.com/code?type=indent code"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "https://www.example.com/",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "output": "<https://www.example.com/>"
+    },
+    {
+      "code": "user@example.com",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "output": "<user@example.com>"
+    },
+    {
+      "code": "text https://www.google.com/",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "output": "text <https://www.google.com/>"
+    },
+    {
+      "code": "hTtPs://gOoGlE.cOm/",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": "<hTtPs://gOoGlE.cOm/>"
+    },
+    {
+      "code": "(https://example.com)",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "(<https://example.com>)"
+    },
+    {
+      "code": "# https://www.example.com/",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": "# <https://www.example.com/>"
+    },
+    {
+      "code": "| Link                 |\n|----------------------|\n| https://example.com/ |",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 3,
+          "column": 3,
+          "endLine": 3,
+          "endColumn": 23
+        }
+      ],
+      "output": "| Link                 |\n|----------------------|\n| <https://example.com/> |"
+    },
+    {
+      "code": "[link that [is-a-valid] link](https://example.com)\n\n[is-a-valid]: https://example.com",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 31,
+          "endLine": 1,
+          "endColumn": 50
+        }
+      ],
+      "output": "[link that [is-a-valid] link](<https://example.com>)\n\n[is-a-valid]: https://example.com"
+    },
+    {
+      "code": "Text <https://example.com/brackets> text https://example.com/bare text",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 42,
+          "endLine": 1,
+          "endColumn": 66
+        }
+      ],
+      "output": "Text <https://example.com/brackets> text <https://example.com/bare> text"
+    },
+    {
+      "code": "> https://example.com/",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": "> <https://example.com/>"
+    },
+    {
+      "code": "Text https://example.com/first more text https://example.com/second",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 31
+        },
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 42,
+          "endLine": 1,
+          "endColumn": 68
+        }
+      ],
+      "output": "Text <https://example.com/first> more text <https://example.com/second>"
+    },
+    {
+      "code": "Text https://example.com/first\nmore text https://example.com/second",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 31
+        },
+        {
+          "messageId": "bareUrl",
+          "line": 2,
+          "column": 11,
+          "endLine": 2,
+          "endColumn": 37
+        }
+      ],
+      "output": "Text <https://example.com/first>\nmore text <https://example.com/second>"
+    },
+    {
+      "code": "Text <a>https://example.com</a> https://example.com",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 33,
+          "endLine": 1,
+          "endColumn": 52
+        }
+      ],
+      "output": "Text <a>https://example.com</a> <https://example.com>"
+    },
+    {
+      "code": "<br> Another violation: https://example.com. <br>",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 44
+        }
+      ],
+      "output": "<br> Another violation: <https://example.com>. <br>"
+    },
+    {
+      "code": "<br> Another violation: https://example.com. <br />",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 44
+        }
+      ],
+      "output": "<br> Another violation: <https://example.com>. <br />"
+    },
+    {
+      "code": "<br /> Another violation: https://example.com. <br />",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 27,
+          "endLine": 1,
+          "endColumn": 46
+        }
+      ],
+      "output": "<br /> Another violation: <https://example.com>. <br />"
+    },
+    {
+      "code": "<div>\n\nhttps://example.com\n</div>",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 20
+        }
+      ],
+      "output": "<div>\n\n<https://example.com>\n</div>"
+    },
+    {
+      "code": "<div>\n\nhttps://example.com\n\n</div>",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 20
+        }
+      ],
+      "output": "<div>\n\n<https://example.com>\n\n</div>"
+    },
+    {
+      "code": "text **<a>https://example.com</a>** *https://example.com*",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 38,
+          "endLine": 1,
+          "endColumn": 57
+        }
+      ],
+      "output": "text **<a>https://example.com</a>** *<https://example.com>*"
+    },
+    {
+      "code": "text <>https://example.com</> https://example.com",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 27
+        },
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 31,
+          "endLine": 1,
+          "endColumn": 50
+        }
+      ],
+      "output": "text <><https://example.com></> <https://example.com>"
+    },
+    {
+      "code": "<!DOCTYPE html>\nhttps://example.com",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 20
+        }
+      ],
+      "output": "<!DOCTYPE html>\n<https://example.com>"
+    },
+    {
+      "code": "hi <!-- comment --> https://example.com <!-- comment -->",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 40
+        }
+      ],
+      "output": "hi <!-- comment --> <https://example.com> <!-- comment -->"
+    },
+    {
+      "code": "hi <!-- comment --> https://example.com <!-- comment --> <a>https://example.com</a>",
+      "errors": [
+        {
+          "messageId": "bareUrl",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 40
+        }
+      ],
+      "output": "hi <!-- comment --> <https://example.com> <!-- comment --> <a>https://example.com</a>"
+    }
+  ]
+}

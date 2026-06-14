@@ -1,0 +1,930 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-missing-link-fragments.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/gfm"
+  },
+  "valid": [
+    {
+      "code": "# Heading Name\n[Link](#heading-name)"
+    },
+    {
+      "code": "# Heading Name\n[Link][reference]\n\n[reference]: #heading-name"
+    },
+    {
+      "code": "# Heading Name $E=mc^2$\n[Link](#heading-name-emc2)",
+      "languageOptions": {
+        "math": true
+      }
+    },
+    {
+      "code": "# Heading Name $(A \\\\cdot x)[i] = \\\\sum_{j=1}^{n} A[i][j] , x[j]$\n[Link](#heading-name-a-cdot-xi--sum_j1n-aij--xj)",
+      "languageOptions": {
+        "math": true
+      }
+    },
+    {
+      "code": "# Heading Name {#custom-name}\n[Link](#custom-name)"
+    },
+    {
+      "code": "<h1>heading 1</h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1</h1 >\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1</h1  >\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1</h1   >\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1</h1\n>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<H1>heading 1</H1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>HEADING 1</h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>HeAdInG 1</h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>{ } scss-to-css</h1>\n\n[Link](#--scss-to-css)"
+    },
+    {
+      "code": "<h1>scss-to-css</h1>\n\n[Link](#scss-to-css)"
+    },
+    {
+      "code": "<h1>heading <strong>1</strong></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <strong><em>1</em></strong></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading  <strong><em>1</em></strong></h1>\n\n[Link](#heading--1)"
+    },
+    {
+      "code": "<h1>heading  <strong><em> 1 </em></strong></h1>\n\n[Link](#heading---1-)"
+    },
+    {
+      "code": "<h1>heading <em>1</em></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em >1</em></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em  >1</em></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em>1</em ></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em>1</em  ></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em>1< /em></h1>\n\n[Link](#heading-1-em)"
+    },
+    {
+      "code": "<h1>heading < em>1</em></h1>\n\n[Link](#heading--em1)"
+    },
+    {
+      "code": "<h1>heading <  em>1</em></h1>\n\n[Link](#heading---em1)"
+    },
+    {
+      "code": "<h1>heading <EM>1</EM></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em data-test=\"test\">1</em></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em data-test=\"test >\">1</em></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em data-test='test >'>1</em></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em data-test=\"test <>\">1</em></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em>1</em data-test=\"test\"></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em>1</em data-test=\"test >\"></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em>1</em data-test=\"test <>\"></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em data-test=\"test\">1</em data-test=\"test\"></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em data-test=\"test >\">1</em data-test=\"test >\"></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading <em data-test=\"test <>\">1</em data-test=\"test <>\"></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1<br></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1< br></h1>\n\n[Link](#heading-1-br)"
+    },
+    {
+      "code": "<h1>heading 1<  br></h1>\n\n[Link](#heading-1--br)"
+    },
+    {
+      "code": "<h1>heading 1<   br></h1>\n\n[Link](#heading-1---br)"
+    },
+    {
+      "code": "<h1>heading 1<br ></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1<br  ></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1<br/></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1<br /></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1<br  /></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1<br/ ></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1>heading 1<br/  ></h1>\n\n[Link](#heading-1)"
+    },
+    {
+      "code": "<h1 id=\"foo\">bar</h1>\n\n[Link](#foo)\n[Link](#bar)"
+    },
+    {
+      "code": "<h1 name=\"foo\">bar</h1>\n\n[Link](#foo)\n[Link](#bar)"
+    },
+    {
+      "code": "<h2>heading 2</h2>\n\n[Link](#heading-2)"
+    },
+    {
+      "code": "<H2>heading 2</H2>\n\n[Link](#heading-2)"
+    },
+    {
+      "code": "<h3>heading 3</h3>\n\n[Link](#heading-3)"
+    },
+    {
+      "code": "<H3>heading 3</H3>\n\n[Link](#heading-3)"
+    },
+    {
+      "code": "<h4>heading 4</h4>\n\n[Link](#heading-4)"
+    },
+    {
+      "code": "<H4>heading 4</H4>\n\n[Link](#heading-4)"
+    },
+    {
+      "code": "<h5>heading 5</h5>\n\n[Link](#heading-5)"
+    },
+    {
+      "code": "<H5>heading 5</H5>\n\n[Link](#heading-5)"
+    },
+    {
+      "code": "<h6>heading 6</h6>\n\n[Link](#heading-6)"
+    },
+    {
+      "code": "<H6>heading 6</H6>\n\n[Link](#heading-6)"
+    },
+    {
+      "code": "<a id=\"bookmark\"></a>\n[Link](#bookmark)"
+    },
+    {
+      "code": "<a ID=\"bookmark\"></a>\n[Link](#bookmark)"
+    },
+    {
+      "code": "<a Id=\"bookmark\"></a>\n[Link](#bookmark)"
+    },
+    {
+      "code": "<a name=\"old-style\"></a>\n[Link](#old-style)"
+    },
+    {
+      "code": "<a NAME=\"old-style\"></a>\n[Link](#old-style)"
+    },
+    {
+      "code": "<a NaMe=\"old-style\"></a>\n[Link](#old-style)"
+    },
+    {
+      "code": "<h1 id=\"bookmark\">Bookmark</h1>\n<h1 name=\"old-style\">Old Style</h1>\n<h2 id=\"bookmark-2\">Bookmark 2</h2>\n<h2 name=\"old-style-2\">Old Style 2</h2>\n<h3 id=\"bookmark-3\">Bookmark 3</h3>\n<h3 name=\"old-style-3\">Old Style 3</h3>\n<h4 id=\"bookmark-4\">Bookmark 4</h4>\n<h4 name=\"old-style-4\">Old Style 4</h4>\n<h5 id=\"bookmark-5\">Bookmark 5</h5>\n<h5 name=\"old-style-5\">Old Style 5</h5>\n<h6 id=\"bookmark-6\">Bookmark 6</h6>\n<h6 name=\"old-style-6\">Old Style 6</h6>\n\n[Link](#bookmark)\n[Link](#old-style)\n[Link](#bookmark-2)\n[Link](#old-style-2)\n[Link](#bookmark-3)\n[Link](#old-style-3)\n[Link](#bookmark-4)\n[Link](#old-style-4)\n[Link](#bookmark-5)\n[Link](#old-style-5)\n[Link](#bookmark-6)\n[Link](#old-style-6)"
+    },
+    {
+      "code": "<h1 id=bookmark>Bookmark</h1>\n<h1 name=old-style>Old Style</h1>\n<h2 id = bookmark-2>Bookmark 2</h2>\n<h2 name = old-style-2>Old Style 2</h2>\n<h3 id= bookmark-3>Bookmark 3</h3>\n<h3 name= old-style-3>Old Style 3</h3>\n<h4 id =bookmark-4>Bookmark 4</h4>\n<h4 name =old-style-4>Old Style 4</h4>\n<h5 id='bookmark-5'>Bookmark 5</h5>\n<h5 name='old-style-5'>Old Style 5</h5>\n<h6 id = 'bookmark-6'>Bookmark 6</h6>\n<h6 name = 'old-style-6'>Old Style 6</h6>\n<h6 id= 'bookmark-7'>Bookmark 7</h6>\n<h6 name= 'old-style-7'>Old Style 7</h6>\n<h6 id ='bookmark-8'>Bookmark 8</h6>\n<h6 name ='old-style-8'>Old Style 8</h6>\n<h6 id=\"bookmark-9\">Bookmark 9</h6>\n<h6 name=\"old-style-9\">Old Style 9</h6>\n<h6 id = \"bookmark-10\">Bookmark 10</h6>\n<h6 name = \"old-style-10\">Old Style 10</h6>\n<h6 id= \"bookmark-11\">Bookmark 11</h6>\n<h6 name= \"old-style-11\">Old Style 11</h6>\n<h6 id =\"bookmark-12\">Bookmark 12</h6>\n<h6 name =\"old-style-12\">Old Style 12</h6>\n\n[Link](#bookmark)\n[Link](#old-style)\n[Link](#bookmark-2)\n[Link](#old-style-2)\n[Link](#bookmark-3)\n[Link](#old-style-3)\n[Link](#bookmark-4)\n[Link](#old-style-4)\n[Link](#bookmark-5)\n[Link](#old-style-5)\n[Link](#bookmark-6)\n[Link](#old-style-6)\n[Link](#bookmark-7)\n[Link](#old-style-7)\n[Link](#bookmark-8)\n[Link](#old-style-8)\n[Link](#bookmark-9)\n[Link](#old-style-9)\n[Link](#bookmark-10)\n[Link](#old-style-10)\n[Link](#bookmark-11)\n[Link](#old-style-11)\n[Link](#bookmark-12)\n[Link](#old-style-12)"
+    },
+    {
+      "code": "# foo bar baz\n# foo-bar-baz\n\n[Link](#foo-bar-baz)\n[Link](#foo-bar-baz-1)"
+    },
+    {
+      "code": "[Link](#top)"
+    },
+    {
+      "code": "# Sample Code Section\n\n```js\n// Line 1: Function declaration\nfunction add(a, b) {\n\t// Line 2: Add numbers\n\treturn a + b;\n}\n\n// Line 3: Function call\nconst result = add(1, 2);\n\n// Line 4: Log result\nconsole.log(result);\n```\n\n[Reference Line 2](#L6)\n[Reference Lines 2-4](#L6-L12)\n[Reference Line with Column](#L6C13)\n[Reference Line Range with Columns](#L6C13-L8C1)"
+    },
+    {
+      "code": "# Heading Name\n[Link](#HEADING-NAME)"
+    },
+    {
+      "code": "# Heading Name\n[Link](#HeAdInG-nAmE)"
+    },
+    {
+      "code": "# Heading Name\n[Link](#Heading-Name)"
+    },
+    {
+      "code": "[Link](#figure-1)\n[Link](#figure-2)",
+      "options": [
+        {
+          "allowPattern": "^figure-"
+        }
+      ]
+    },
+    {
+      "code": "# Duplicate\n[Link](#duplicate)\n# Duplicate\n[Link to second Duplicate](#duplicate-1)\n# Duplicate {#custom-dup}\n[Link to custom Duplicate](#custom-dup)\n# Duplicate\n[Link to third Duplicate](#duplicate-2)"
+    },
+    {
+      "code": "# Special & < > Characters!\n[Link](#special----characters)"
+    },
+    {
+      "code": "[External](https://example.com)"
+    },
+    {
+      "code": "[Root](/)"
+    },
+    {
+      "code": "[Empty]()"
+    },
+    {
+      "code": "[Link](#)"
+    },
+    {
+      "code": "# First Heading\n## Second Heading\n### Third Heading\n\n[Link 1](#first-heading)\n[Link 2](#second-heading)\n[Link 3](#third-heading)"
+    },
+    {
+      "code": "<div id=\"section1\">Content</div>\n[Link](#section1)"
+    },
+    {
+      "code": "# Heading with `inline code`\n[Link](#heading-with-inline-code)\n\n# Heading with *italic text*\n[Link](#heading-with-italic-text)\n\n# Heading with _italic too_\n[Link](#heading-with-italic-too)\n\n# Heading with **bold text**\n[Link](#heading-with-bold-text)\n\n# Heading with __bold too__\n[Link](#heading-with-bold-too)\n\n# Heading with ~strikethrough~\n[Link](#heading-with-strikethrough)"
+    },
+    {
+      "code": "# Heading with 🚀 emoji\n[Link](#heading-with--emoji)\n\n# Héading with àccènt chàrâctérs\n[Link](#héading-with-àccènt-chàrâctérs)\n\n# Mix: _Héading_ with 🚀 & `code`\n[Link](#mix-héading-with---code)"
+    },
+    {
+      "code": "<h1>👍 scss-to-css</h1>\n\n[Link](#-scss-to-css)"
+    },
+    {
+      "code": "# Hèading\n[Link](#h%C3%A8ading)\n\n# Hèading with `inline code`\n[Link](#h%C3%A8ading-with-inline-code)\n\n# Héading with _italic_\n[Link](#h%C3%A9ading-with-italic)\n\n# Héading with **bold**\n[Link](#h%C3%A9ading-with-bold)\n\n# Heading Name {#custom-namé}\n[Link](#custom-nam%C3%A9)\n\n<div id=\"réal-id\"></div>\n\n[Link](#r%C3%A9al-id)"
+    },
+    {
+      "code": "# Héading Name\n[Link](#H%C3%89ADING-NAME)",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ]
+    },
+    {
+      "code": "[Link](#figur%C3%A9-1)\n[Link](#figur%C3%A9-2)",
+      "options": [
+        {
+          "allowPattern": "^figuré-"
+        }
+      ]
+    },
+    {
+      "code": "<div id=\"HtmlCaseCheck\"></div>\n[Link](#htmlcasecheck)",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ]
+    },
+    {
+      "code": "<!-- <div id=\"commented-out\"></div> -->\n<div id=\"real-id\"></div>\n[Link](#real-id)"
+    },
+    {
+      "code": "# Heading with _italic_\n[Link](#heading-with-italic)\n\n# Heading with **bold**\n[Link](#heading-with-bold)\n\n# foo_\n[Link](#foo_)"
+    },
+    {
+      "code": "# <picture></picture> Heading Name\n[Link](#-heading-name)"
+    },
+    {
+      "code": "# Heading Name <picture></picture>\n[Link](#heading-name-)"
+    },
+    {
+      "code": "# Heading <picture></picture> Name\n[Link](#heading--name)"
+    },
+    {
+      "code": "# <span>Text</span> Heading Name\n[Link](#text-heading-name)"
+    },
+    {
+      "code": "# ![alt text](img.png) Heading Name\n[Link](#-heading-name)"
+    },
+    {
+      "code": "# Heading Name ![alt text](img.png)\n[Link](#heading-name-)"
+    },
+    {
+      "code": "# <picture></picture> Heading Name\n[Link](#-HEADING-NAME)",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "[Invalid](#non-existent)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "non-existent"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "[Invalid][reference]\n\n[reference]: #non-existent",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "non-existent"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 27
+        }
+      ]
+    },
+    {
+      "code": "<h1>heading 1</h1>\n\n[Invalid](#non-existent)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "non-existent"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "< h1>heading 1</h1>\n\n         ^^^----------------\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 5,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<  h1>heading 1</h1>\n\n         ^^^^----------------\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 5,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h1>heading 1</ h1>\n\n      --------------^^^--\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 5,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h1>heading 1</  h1>\n\n      --------------^^^^--\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 5,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h1>heading 1</   h1>\n\n      --------------^^^^^--\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 5,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h1>heading 1</\n      h1>\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h1>heading <em>1</ em></h1>\n\n      ------------------^^^-------\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 5,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h1>heading <em>1</  em></h1>\n\n      ------------------^^^^------\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 5,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h7>heading 1</h7>\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h8>heading 1</h8>\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h1>heading 1</h2>\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<h3>heading 1</h6>\n\n[Invalid](#heading-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-1"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "# Heading Name\n[Invalid](#HEADING-NAME)",
+      "options": [
+        {
+          "ignoreCase": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "HEADING-NAME"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "# Heading\n[Invalid](#wrong-heading)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "wrong-heading"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 26
+        }
+      ]
+    },
+    {
+      "code": "# Heading\n[Invalid 1](#wrong1)\n[Invalid 2](#wrong2)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "wrong1"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 21
+        },
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "wrong2"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 21
+        }
+      ]
+    },
+    {
+      "code": "# Heading {#Invalid-ID-With-Caps}\n[Link](#Invalid-ID-With-Caps)",
+      "options": [
+        {
+          "ignoreCase": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "Invalid-ID-With-Caps"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 30
+        }
+      ]
+    },
+    {
+      "code": "# Heading\n[Invalid](#heading@#$%)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading@#$%"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "```js\n// Some code\n```\n[Invalid Format](#L2O)  // Using O instead of 0",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "L2O"
+          },
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 23
+        }
+      ]
+    },
+    {
+      "code": "[Invalid Format](#l20)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "l20"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ]
+    },
+    {
+      "code": "[Invalid Format](#l20-l30)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "l20-l30"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ]
+    },
+    {
+      "code": "# Only One Like This\n[Invalid Link](#only-one-like-this-1)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "only-one-like-this-1"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 38
+        }
+      ]
+    },
+    {
+      "code": "<!-- <div id=\"only-in-comment\"></div> -->\n[Link](#only-in-comment)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "only-in-comment"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "<h1 id=bookmark>Bookmark</h1>\n\n[Link](#notfound)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "notfound"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "<h2 id = bookmark-2>Bookmark 2</h2>\n\n[Link](#notfound)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "notfound"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "<h3 name=old-style-3>Old Style 3</h3>\n\n[Link](#notfound)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "notfound"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "<h4 id=\"bookmark-4\">Bookmark 4</h4>\n\n[Link](#notfound)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "notfound"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "<h5 id = \"bookmark-5\">Bookmark 5</h5>\n\n[Link](#notfound)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "notfound"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "<h1 id=\"one\">\n<!-- comment <h1 id=\"two\"> </h1> -->\n</h1>\n\n[Link](#two)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "two"
+          },
+          "line": 5,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 13
+        }
+      ]
+    },
+    {
+      "code": "# foo\n\n## foo\n\n[Link](#foo)\n\n[Link](#foo-1)\n\n[Link](#foo-2)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "foo-2"
+          },
+          "line": 9,
+          "column": 1,
+          "endLine": 9,
+          "endColumn": 15
+        }
+      ]
+    },
+    {
+      "code": "# foo\n\n## foo-1\n\n### foo-1\n\n[Link](#foo)\n\n[Link](#foo-1)\n\n[Link](#foo-1-1)\n\n[Link](#foo-2)\n\n[Link](#foo-1-2)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "foo-2"
+          },
+          "line": 13,
+          "column": 1,
+          "endLine": 13,
+          "endColumn": 15
+        },
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "foo-1-2"
+          },
+          "line": 15,
+          "column": 1,
+          "endLine": 15,
+          "endColumn": 17
+        }
+      ]
+    },
+    {
+      "code": "# Heading With Space\n[Invalid](#heading%20with%20space)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading%20with%20space"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 35
+        }
+      ]
+    },
+    {
+      "code": "# fóo\n\n## fóo\n\n[Link](#f%C3%B3o)\n\n[Link](#f%C3%B3o-1)\n\n[Link](#f%C3%B3o-2)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "f%C3%B3o-2"
+          },
+          "line": 9,
+          "column": 1,
+          "endLine": 9,
+          "endColumn": 20
+        }
+      ]
+    },
+    {
+      "code": "# <picture></picture> Heading Name\n[Link](#heading-name)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-name"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "# ![alt text](img.png) Heading Name\n[Link](#heading-name)",
+      "errors": [
+        {
+          "messageId": "invalidFragment",
+          "data": {
+            "fragment": "heading-name"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 22
+        }
+      ]
+    }
+  ]
+}

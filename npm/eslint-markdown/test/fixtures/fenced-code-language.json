@@ -1,0 +1,557 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/fenced-code-language.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/commonmark"
+  },
+  "valid": [
+    {
+      "code": "```js\nconsole.log(\"Hello, world!\");\n```"
+    },
+    {
+      "code": "```javascript\nconsole.log(\"Hello, world!\");\n```"
+    },
+    {
+      "code": "~~~js\nconsole.log(\"Hello, world!\");\n~~~"
+    },
+    {
+      "code": "~~~javascript\nconsole.log(\"Hello, world!\");\n~~~"
+    },
+    {
+      "code": "\n    console.log(\"Hello, world!\");\n        "
+    },
+    {
+      "code": "```js\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ]
+    },
+    {
+      "code": "```js foo\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ]
+    },
+    {
+      "code": "``` js\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ]
+    },
+    {
+      "code": "```JS\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["JS"]
+        }
+      ]
+    },
+    {
+      "code": "~~~js\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ]
+    },
+    {
+      "code": "~~~js foo\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ]
+    },
+    {
+      "code": "~~~ js\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ]
+    },
+    {
+      "code": "~~~JS\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": [
+        {
+          "required": ["JS"]
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "```\nconsole.log(\"Hello, world!\");\n```",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "code": " ```\nconsole.log(\"Hello, world!\");\n```",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "  ```\nconsole.log(\"Hello, world!\");\n```",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "   ```\nconsole.log(\"Hello, world!\");\n```",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "```     \nconsole.log('Hello, world!');\n```",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "code": "```\t\t\nconsole.log('Hello, world!');\n```",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "code": "~~~\nconsole.log(\"Hello, world!\");\n~~~",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "code": " ~~~\nconsole.log(\"Hello, world!\");\n~~~",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "  ~~~\nconsole.log(\"Hello, world!\");\n~~~",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "   ~~~\nconsole.log(\"Hello, world!\");\n~~~",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "~~~     \nconsole.log('Hello, world!');\n~~~",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "code": "~~~\t\t\nconsole.log('Hello, world!');\n~~~",
+      "errors": [
+        {
+          "messageId": "missingLanguage",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "code": "```javascript\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ]
+    },
+    {
+      "code": " ```javascript\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ]
+    },
+    {
+      "code": "  ```javascript\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ]
+    },
+    {
+      "code": "   ```javascript\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ]
+    },
+    {
+      "code": "````javascript\nconsole.log(\"Hello, world!\");\n````",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ]
+    },
+    {
+      "code": " ````javascript\nconsole.log(\"Hello, world!\");\n````",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ]
+    },
+    {
+      "code": "  ````javascript\nconsole.log(\"Hello, world!\");\n````",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ]
+    },
+    {
+      "code": "   ````javascript\nconsole.log(\"Hello, world!\");\n````",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "```js\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["JS"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "js"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "``` js\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["JS"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "js"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "```js foo\nconsole.log(\"Hello, world!\");\n```",
+      "options": [
+        {
+          "required": ["foo"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "js"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "~~~javascript\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ]
+    },
+    {
+      "code": "~~~~javascript\nconsole.log(\"Hello, world!\");\n~~~~",
+      "options": [
+        {
+          "required": ["js"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "javascript"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ]
+    },
+    {
+      "code": "~~~js\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": [
+        {
+          "required": ["JS"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "js"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "~~~ js\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": [
+        {
+          "required": ["JS"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "js"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "~~~js foo\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": [
+        {
+          "required": ["foo"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedLanguage",
+          "data": {
+            "lang": "js"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    }
+  ]
+}

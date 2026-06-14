@@ -1,0 +1,386 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/table-column-count.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/gfm"
+  },
+  "valid": [
+    {
+      "code": "| Header | Header |\n| ------ | ------ |\n| Cell   | Cell   |\n| Cell   | Cell   |"
+    },
+    {
+      "code": "| Header | Header | Header |\n| ------ | ------ | ------ |\n| Cell   | Cell   |\n| Cell   |        |"
+    },
+    {
+      "code": "| A | B |\n|---|---|\n|   |   |\n| C |   |"
+    },
+    {
+      "code": "Just some text. | not a table |"
+    },
+    {
+      "code": "| Header | Header |\n| ------ | ------ | ----- |\n| Cell   | Cell   |"
+    },
+    {
+      "code": "| Header | Header |\n| ------ | ------ |"
+    },
+    {
+      "code": "Some text before.\n\n| H1 | H2 |\n|----|----|\n| D1 | D2 |\n\nSome text after."
+    },
+    {
+      "code": "| Valid | Table |\n| ----- | ----- |\n| Row   | Here  |"
+    },
+    {
+      "code": "| abc | defghi |\n:-: | -----------:\nbar | baz"
+    },
+    {
+      "code": "| f|oo  |\n| ------ |\n| b `|` az |\n| b **|** im |"
+    },
+    {
+      "code": "| abc | def |\n| --- | --- |\n| bar | baz |\n> bar"
+    },
+    {
+      "code": "| abc | def |\n| --- | --- |"
+    },
+    {
+      "code": "| Header | Header |\n| ------ | ------ |\n| Cell   | Cell   |\n| Cell   | Cell   |",
+      "options": [
+        {
+          "checkMissingCells": true
+        }
+      ]
+    },
+    {
+      "code": "| Header | Header |\n| ------ | ------ |\n| Cell   |        |\n| Cell   | Cell   |",
+      "options": [
+        {
+          "checkMissingCells": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "| Head1 | Head2 |\n| ----- | ----- |\n| R1C1  | R1C2  | R2C3  |",
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "3",
+            "expectedCells": "2"
+          },
+          "line": 3,
+          "column": 17,
+          "endLine": 3,
+          "endColumn": 26
+        }
+      ]
+    },
+    {
+      "code": "| Head1 | Head2 |\n| ----- | ----- |\n| R1C1  | R1C2  | R2C3  | R3C4 |",
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "4",
+            "expectedCells": "2"
+          },
+          "line": 3,
+          "column": 17,
+          "endLine": 3,
+          "endColumn": 33
+        }
+      ]
+    },
+    {
+      "code": "| A |\n| - |\n| 1 | 2 |",
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "2",
+            "expectedCells": "1"
+          },
+          "line": 3,
+          "column": 5,
+          "endLine": 3,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "Some introductory text.\n\n| Header1 | Header2 |\n| ------- | ------- |\n| Data1   | Data2   | Data3 |\n| D4      | D5      |\n\nSome concluding text.",
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "3",
+            "expectedCells": "2"
+          },
+          "line": 5,
+          "column": 21,
+          "endLine": 5,
+          "endColumn": 30
+        }
+      ]
+    },
+    {
+      "code": "| abc | defghi |\n:-: | -----------:\nbar | baz\nbar | baz | bad",
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "3",
+            "expectedCells": "2"
+          },
+          "line": 4,
+          "column": 11,
+          "endLine": 4,
+          "endColumn": 16
+        }
+      ]
+    },
+    {
+      "code": "| abc | def |\n| --- | --- |\n| bar | baz | Extra |\n> This is a blockquote after",
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "3",
+            "expectedCells": "2"
+          },
+          "line": 3,
+          "column": 13,
+          "endLine": 3,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "| abc | def |\n| --- | --- |\n| bar | baz | Extra1 |\n| bar | baz | Extra2 |",
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "3",
+            "expectedCells": "2"
+          },
+          "line": 3,
+          "column": 13,
+          "endLine": 3,
+          "endColumn": 23
+        },
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "3",
+            "expectedCells": "2"
+          },
+          "line": 4,
+          "column": 13,
+          "endLine": 4,
+          "endColumn": 23
+        }
+      ]
+    },
+    {
+      "code": "| abc | def |\n| --- | --- |\n| bar | baz | Extra1 |\n   | bar | baz |\n| bar | baz | Extra2 |",
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "3",
+            "expectedCells": "2"
+          },
+          "line": 3,
+          "column": 13,
+          "endLine": 3,
+          "endColumn": 23
+        },
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "3",
+            "expectedCells": "2"
+          },
+          "line": 5,
+          "column": 13,
+          "endLine": 5,
+          "endColumn": 23
+        }
+      ]
+    },
+    {
+      "code": "| Header | Header | Header |\n| ------ | ------ | ------ |\n| Cell   | Cell   |",
+      "options": [
+        {
+          "checkMissingCells": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingCells",
+          "data": {
+            "actualCells": "2",
+            "expectedCells": "3"
+          },
+          "line": 3,
+          "column": 19,
+          "endLine": 3,
+          "endColumn": 20
+        }
+      ]
+    },
+    {
+      "code": "| Col A | Col B | Col C |\n| ----- | ----- | ----- |\n| Cell  |       | Cell  |\n| Cell  | Cell  |",
+      "options": [
+        {
+          "checkMissingCells": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingCells",
+          "data": {
+            "actualCells": "2",
+            "expectedCells": "3"
+          },
+          "line": 4,
+          "column": 17,
+          "endLine": 4,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "| Col A | Col B | Col C |\n| ----- | ----- | ----- |\n| Cell  |\n| Cell  | Cell  |\n| Cell  | Cell  | Cell  |",
+      "options": [
+        {
+          "checkMissingCells": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingCells",
+          "data": {
+            "actualCells": "1",
+            "expectedCells": "3"
+          },
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 10
+        },
+        {
+          "messageId": "missingCells",
+          "data": {
+            "actualCells": "2",
+            "expectedCells": "3"
+          },
+          "line": 4,
+          "column": 17,
+          "endLine": 4,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "| Table |\n| ----- |\n| Cell  | Cell  |\n| Cell  |\n| Cell  | Cell  |",
+      "options": [
+        {
+          "checkMissingCells": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "2",
+            "expectedCells": "1"
+          },
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 18
+        },
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "2",
+            "expectedCells": "1"
+          },
+          "line": 5,
+          "column": 9,
+          "endLine": 5,
+          "endColumn": 18
+        }
+      ]
+    },
+    {
+      "code": "| Table | Header |\n| ----- | ------ |\n| Cell  | Cell   | Cell   |\n| Cell  |\n| Cell  | Cell   |",
+      "options": [
+        {
+          "checkMissingCells": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "3",
+            "expectedCells": "2"
+          },
+          "line": 3,
+          "column": 18,
+          "endLine": 3,
+          "endColumn": 28
+        },
+        {
+          "messageId": "missingCells",
+          "data": {
+            "actualCells": "1",
+            "expectedCells": "2"
+          },
+          "line": 4,
+          "column": 9,
+          "endLine": 4,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "| Table | Header | Header |\n| ----- | ------ | ------ |\n| Cell  | Cell   | Cell   |\n| Cell  | Cell   | Cell   | Cell   |\n| Cell  |",
+      "options": [
+        {
+          "checkMissingCells": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "extraCells",
+          "data": {
+            "actualCells": "4",
+            "expectedCells": "3"
+          },
+          "line": 4,
+          "column": 27,
+          "endLine": 4,
+          "endColumn": 37
+        },
+        {
+          "messageId": "missingCells",
+          "data": {
+            "actualCells": "1",
+            "expectedCells": "3"
+          },
+          "line": 5,
+          "column": 9,
+          "endLine": 5,
+          "endColumn": 10
+        }
+      ]
+    }
+  ]
+}
