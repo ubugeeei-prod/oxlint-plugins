@@ -4999,19 +4999,19 @@
       },
       {
         "name": "consistent-jsonb-over-json",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule consistent-jsonb-over-json."
+        "notes": "Rust port validated against upstream test fixtures."
       },
       {
         "name": "consistent-reindex-concurrently",

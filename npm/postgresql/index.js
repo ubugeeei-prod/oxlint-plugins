@@ -122,6 +122,28 @@ const ruleMeta = Object.freeze({
         'Use a serial pseudo-type (e.g. `bigserial`) instead of `GENERATED ... AS IDENTITY`. Useful for projects that need to keep compatibility with tooling that does not understand identity columns.',
     },
   },
+  'consistent-jsonb-over-json': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `jsonb` vs `json` column types (either always require `jsonb`, or always forbid it)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferJsonb:
+        'Use `jsonb` instead of `json`. `jsonb` stores the parsed representation, supports indexing, and is what almost every application actually wants.',
+      unexpectedJsonb:
+        "Use `json` instead of `jsonb`. Useful when the project intentionally relies on `json`'s preservation of key order, whitespace, and duplicate keys.",
+    },
+  },
   'consistent-reindex-concurrently': {
     type: 'problem',
     description:

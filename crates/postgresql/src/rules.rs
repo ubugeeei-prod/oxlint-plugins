@@ -8,6 +8,7 @@ mod consistent_between_over_and;
 mod consistent_create_or_replace;
 mod consistent_explicit_inner_join;
 mod consistent_identity_over_serial;
+mod consistent_jsonb_over_json;
 mod consistent_reindex_concurrently;
 mod no_add_check_constraint_without_not_valid;
 mod no_add_column_not_null_without_default;
@@ -172,6 +173,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "consistent-create-or-replace",
     "consistent-explicit-inner-join",
     "consistent-identity-over-serial",
+    "consistent-jsonb-over-json",
     "consistent-reindex-concurrently",
     "no-add-check-constraint-without-not-valid",
     "no-add-column-not-null-without-default",
@@ -261,6 +263,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "consistent-identity-over-serial",
         run: consistent_identity_over_serial::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-jsonb-over-json",
+        run: consistent_jsonb_over_json::run,
         uses_parse_error: false,
     },
     RuleDef {
