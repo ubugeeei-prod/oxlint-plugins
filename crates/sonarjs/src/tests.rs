@@ -1395,3 +1395,71 @@ fn does_not_report_no_redundant_optional_for_optional_property_with_null_not_und
     let diagnostics = scan("no-redundant-optional", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_prefer_immediate_return_for_const_declared_then_returned() {
+    let source = "function f() { const x = compute(); return x; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "prefer-immediate-return");
+    assert_eq!(diagnostics[0].message_id, "preferImmediateReturn");
+}
+
+#[test]
+fn reports_prefer_immediate_return_for_const_declared_then_thrown() {
+    let source = "function f() { const e = new Error(); throw e; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferImmediateReturn");
+}
+
+#[test]
+fn reports_prefer_immediate_return_for_arrow_function_block_body() {
+    let source = "const g = () => { const x = 1; return x; };";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferImmediateReturn");
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_for_direct_return() {
+    let source = "function f() { return compute(); }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_statement_between_decl_and_return() {
+    let source = "function f() { const x = 1; doStuff(); return x; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_return_uses_different_identifier() {
+    let source = "function f() { const x = 1; return y; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_return_is_not_bare_identifier() {
+    let source = "function f() { const x = 1; return x + 1; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_declaration_has_two_declarators() {
+    let source = "function f() { const x = 1, y = 2; return x; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_declarator_has_no_init() {
+    // `let x;` has no initializer — there is nothing to inline
+    let source = "function f() { let x; return x; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
