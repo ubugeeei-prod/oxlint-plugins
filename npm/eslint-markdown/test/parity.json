@@ -20,10 +20,6 @@
     "no-reversed-media-syntax": {
       "level": "off",
       "note": "Broad divergence detecting reversed `(text)[url]` link/image syntax."
-    },
-    "no-space-in-emphasis": {
-      "level": "off",
-      "note": "Fundamentally different emphasis-marker scan; large divergence in spans and counts."
     }
   }
 }

@@ -13,6 +13,7 @@ const MDAST_RULES: &[&str] = &[
     "no-empty-definitions",
     "no-missing-atx-heading-space",
     "no-missing-label-refs",
+    "no-space-in-emphasis",
     "no-unused-definitions",
     "require-alt-text",
 ];
@@ -71,9 +72,6 @@ pub const RULE_NAMES: [&str; 21] = [
     "require-alt-text",
     "table-column-count",
 ];
-
-const EMPHASIS_MARKERS: &[&str] = &["***", "**", "*", "___", "__", "_"];
-const EMPHASIS_AND_STRIKE_MARKERS: &[&str] = &["***", "**", "*", "___", "__", "_", "~~", "~"];
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ScanOptions {
@@ -334,8 +332,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("no-reversed-media-syntax") {
         scan_reversed_media(source_text, &line_index, &facts, &mut diagnostics);
     }
-    if options.is_enabled("no-space-in-emphasis") {
-        scan_space_in_emphasis(source_text, &line_index, &facts, options, &mut diagnostics);
+    if options.is_enabled("no-space-in-emphasis")
+        && let Some(tree) = &mdast
+    {
+        scan_space_in_emphasis(source_text, &line_index, tree, options, &mut diagnostics);
     }
     if options.is_enabled("no-unused-definitions")
         && let Some(tree) = &mdast
@@ -1772,50 +1772,163 @@ fn scan_reversed_media(
 fn scan_space_in_emphasis(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     options: &ScanOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let markers = if options.check_strikethrough {
-        EMPHASIS_AND_STRIKE_MARKERS
-    } else {
-        EMPHASIS_MARKERS
-    };
-    for line in &facts.lines {
-        if line.in_fence {
-            continue;
+    // (highlight-start offset for sorting, Diagnostic). ESLint reports messages
+    // sorted by position, so collect then sort.
+    let mut found: SmallVec<[(usize, Diagnostic); 16]> = SmallVec::new();
+    visit_mdast(tree, &mut |node| {
+        if matches!(
+            node,
+            mdast::Node::Heading(_) | mdast::Node::Paragraph(_) | mdast::Node::TableCell(_)
+        ) {
+            scan_emphasis_container(
+                source_text,
+                line_index,
+                node,
+                options.check_strikethrough,
+                &mut found,
+            );
         }
-        for marker in markers {
-            let mut search_start = 0;
-            while let Some(index) = line.text[search_start..].find(marker) {
-                let marker_start = search_start + index;
-                let marker_end = marker_start + marker.len();
-                let after = line.text.as_bytes().get(marker_end).copied();
-                let before = marker_start
-                    .checked_sub(1)
-                    .and_then(|idx| line.text.as_bytes().get(idx))
-                    .copied();
-                let violation =
-                    matches!(after, Some(b' ' | b'\t')) || matches!(before, Some(b' ' | b'\t'));
-                if violation {
-                    diagnostics.push(Diagnostic {
-                        rule_name: "no-space-in-emphasis",
-                        message_id: "spaceInEmphasis",
-                        data: DiagnosticData::default(),
-                        loc: line_index.loc_for_span(
-                            source_text,
-                            ByteSpan {
-                                start: line.start + marker_start,
-                                end: line.start + marker_end,
-                            },
-                        ),
-                        fix: None,
-                    });
+    });
+    found.sort_by_key(|(offset, _)| *offset);
+    diagnostics.extend(found.into_iter().map(|(_, diagnostic)| diagnostic));
+}
+
+// Emphasis markers grouped by `(marker char, length)` to their `(start, end)`
+// source spans, in first-seen order.
+type MarkerGroups = SmallVec<[((u8, usize), SmallVec<[(usize, usize); 4]>); 6]>;
+
+fn scan_emphasis_container(
+    source_text: &str,
+    line_index: &LineIndex,
+    node: &mdast::Node,
+    check_strikethrough: bool,
+    found: &mut SmallVec<[(usize, Diagnostic); 16]>,
+) {
+    let Some(span) = node_span(node) else {
+        return;
+    };
+    // Mask the container source so only the *direct* text children remain (real
+    // emphasis/links/etc. become spaces); emphasis-like markers that survive
+    // here were NOT parsed as emphasis (typically because of surrounding space).
+    let mut buffer = SmallVec::<[u8; 256]>::from_elem(b' ', span.end - span.start);
+    if let Some(children) = node.children() {
+        for child in children {
+            if matches!(child, mdast::Node::Text(_))
+                && let Some(child_span) = node_span(child)
+            {
+                let bytes = source_text.as_bytes();
+                let rel = child_span.start - span.start;
+                if let Some(slot) = buffer.get_mut(rel..rel + (child_span.end - child_span.start)) {
+                    slot.copy_from_slice(&bytes[child_span.start..child_span.end]);
                 }
-                search_start = marker_end;
             }
         }
     }
+
+    // Scan emphasis markers in the masked buffer, grouped by marker (char, len).
+    let mut groups: MarkerGroups = SmallVec::new();
+    let mut index = 0;
+    while index < buffer.len() {
+        let ch = buffer[index];
+        let is_marker = ch == b'*' || ch == b'_' || (check_strikethrough && ch == b'~');
+        if is_marker {
+            let backslashes = buffer[..index]
+                .iter()
+                .rev()
+                .take_while(|byte| **byte == b'\\')
+                .count();
+            if backslashes % 2 == 0 {
+                let run = buffer[index..]
+                    .iter()
+                    .take_while(|byte| **byte == ch)
+                    .count();
+                let len = run.min(if ch == b'~' { 2 } else { 3 });
+                let start = span.start + index;
+                let key = (ch, len);
+                match groups.iter_mut().find(|(group_key, _)| *group_key == key) {
+                    Some((_, positions)) => positions.push((start, start + len)),
+                    None => {
+                        let mut positions = SmallVec::new();
+                        positions.push((start, start + len));
+                        groups.push((key, positions));
+                    }
+                }
+                index += len;
+                continue;
+            }
+        }
+        index += 1;
+    }
+
+    // For each marker group, treat consecutive markers as open/close pairs and
+    // flag a space just inside either marker.
+    for (_, positions) in &groups {
+        let mut pair = 0;
+        while pair + 1 < positions.len() {
+            let (open_start, open_end) = positions[pair];
+            report_emphasis_space(
+                source_text,
+                line_index,
+                open_end,
+                open_start,
+                open_end + 2,
+                found,
+            );
+            let (close_start, close_end) = positions[pair + 1];
+            report_emphasis_space(
+                source_text,
+                line_index,
+                close_start.wrapping_sub(1),
+                close_start.saturating_sub(2),
+                close_end,
+                found,
+            );
+            pair += 2;
+        }
+    }
+}
+
+// Report a space-around-marker violation when `check_offset` is a space/tab:
+// highlight `[highlight_start, highlight_end]` and remove the single space.
+fn report_emphasis_space(
+    source_text: &str,
+    line_index: &LineIndex,
+    check_offset: usize,
+    highlight_start: usize,
+    highlight_end: usize,
+    found: &mut SmallVec<[(usize, Diagnostic); 16]>,
+) {
+    if !source_text
+        .as_bytes()
+        .get(check_offset)
+        .is_some_and(|byte| matches!(byte, b' ' | b'\t'))
+    {
+        return;
+    }
+    found.push((
+        highlight_start,
+        Diagnostic {
+            rule_name: "no-space-in-emphasis",
+            message_id: "spaceInEmphasis",
+            data: DiagnosticData::default(),
+            loc: line_index.loc_for_span(
+                source_text,
+                ByteSpan {
+                    start: highlight_start,
+                    end: highlight_end,
+                },
+            ),
+            fix: Some(DiagnosticFix {
+                start: utf16_offset(source_text, check_offset),
+                end: utf16_offset(source_text, check_offset + 1),
+                replacement: CompactString::new(""),
+            }),
+        },
+    ));
 }
 
 fn scan_unused_definitions(
