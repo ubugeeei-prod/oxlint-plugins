@@ -1252,6 +1252,8 @@ name = "oxlint-plugins-unocss"
 version = "0.0.0"
 dependencies = [
  "oxc_allocator",
+ "oxc_ast",
+ "oxc_ast_visit",
  "oxc_parser",
  "oxc_span",
  "oxlint-plugins-_carton",
