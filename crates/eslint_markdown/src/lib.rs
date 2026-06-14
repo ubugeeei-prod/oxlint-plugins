@@ -7,7 +7,7 @@ use regex::Regex;
 // Rules whose logic is driven by the markdown-rs mdast tree (mirroring upstream's
 // mdast-based rules) rather than the regex `MarkdownFacts`. The tree is parsed
 // once per scan only when one of these rules is active.
-const MDAST_RULES: &[&str] = &["require-alt-text"];
+const MDAST_RULES: &[&str] = &["no-empty-definitions", "require-alt-text"];
 
 // Parse the source into an mdast tree with the same constructs upstream enables
 // for `markdown/gfm` (GFM tables, autolink literals, footnotes, strikethrough).
@@ -275,8 +275,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("no-duplicate-headings") {
         scan_duplicate_headings(source_text, &line_index, &facts, options, &mut diagnostics);
     }
-    if options.is_enabled("no-empty-definitions") {
-        scan_empty_definitions(source_text, &line_index, &facts, options, &mut diagnostics);
+    if options.is_enabled("no-empty-definitions")
+        && let Some(tree) = &mdast
+    {
+        scan_empty_definitions(source_text, &line_index, tree, options, &mut diagnostics);
     }
     if options.is_enabled("no-empty-images") {
         scan_empty_media(source_text, &line_index, &facts, true, &mut diagnostics);
@@ -920,38 +922,85 @@ fn scan_duplicate_headings(
 fn scan_empty_definitions(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     options: &ScanOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    for definition in &facts.definitions {
-        if definition.is_footnote {
-            if options.check_footnote_definitions
-                && !is_allowed(&options.allow_footnote_definitions, &definition.identifier)
-                && definition.url.trim().is_empty()
+    visit_mdast(tree, &mut |node| match node {
+        // A link definition with no destination (`[x]:`, `[x]: <>`) or a bare
+        // fragment (`[x]: #`).
+        mdast::Node::Definition(definition) => {
+            let label = definition.label.as_deref().unwrap_or("");
+            let identifier = normalize_identifier(label);
+            if (definition.url.is_empty() || definition.url == "#")
+                && !is_allowed(&options.allow_definitions, &identifier)
             {
-                diagnostics.push(definition_diagnostic(
-                    "no-empty-definitions",
+                push_empty_definition(
+                    "emptyDefinition",
+                    source_text,
+                    line_index,
+                    node_span(node),
+                    &identifier,
+                    label.trim(),
+                    diagnostics,
+                );
+            }
+        }
+        // A footnote definition with no content, or whose only content is HTML
+        // comments.
+        mdast::Node::FootnoteDefinition(definition) if options.check_footnote_definitions => {
+            let label = definition.label.as_deref().unwrap_or("");
+            let identifier = normalize_identifier(label);
+            let empty = definition.children.is_empty()
+                || definition
+                    .children
+                    .iter()
+                    .all(|child| matches!(child, mdast::Node::Html(html) if is_only_comments(&html.value)));
+            if empty && !is_allowed(&options.allow_footnote_definitions, &identifier) {
+                push_empty_definition(
                     "emptyFootnoteDefinition",
                     source_text,
                     line_index,
-                    definition,
-                    None,
-                ));
+                    node_span(node),
+                    &identifier,
+                    label,
+                    diagnostics,
+                );
             }
-        } else if !is_allowed(&options.allow_definitions, &definition.identifier)
-            && (definition.url.trim().is_empty() || matches!(definition.url.as_str(), "#" | "<>"))
-        {
-            diagnostics.push(definition_diagnostic(
-                "no-empty-definitions",
-                "emptyDefinition",
-                source_text,
-                line_index,
-                definition,
-                None,
-            ));
         }
+        _ => {}
+    });
+}
+
+#[allow(clippy::too_many_arguments)]
+fn push_empty_definition(
+    message_id: &'static str,
+    source_text: &str,
+    line_index: &LineIndex,
+    span: Option<ByteSpan>,
+    identifier: &str,
+    label: &str,
+    diagnostics: &mut SmallVec<[Diagnostic; 32]>,
+) {
+    if let Some(span) = span {
+        diagnostics.push(Diagnostic {
+            rule_name: "no-empty-definitions",
+            message_id,
+            data: DiagnosticData {
+                identifier: Some(CompactString::from(identifier)),
+                label: Some(CompactString::from(label)),
+                ..DiagnosticData::default()
+            },
+            loc: line_index.loc_for_span(source_text, span),
+            fix: None,
+        });
     }
+}
+
+// True when the string contains only HTML comments (plus whitespace), matching
+// upstream `isOnlyComments`.
+fn is_only_comments(value: &str) -> bool {
+    strip_html_comments(value).trim().is_empty()
 }
 
 fn scan_empty_media(
@@ -1803,8 +1852,15 @@ fn normalize_identifier(value: &str) -> CompactString {
                 previous_space = true;
             }
         } else {
-            for lower in ch.to_lowercase() {
-                out.push(lower);
+            // Mirror micromark's `normalizeIdentifier(...).toLowerCase()`, i.e.
+            // `.toLowerCase().toUpperCase().toLowerCase()`, so case-folds such as
+            // ß/ẞ -> "ss" match upstream's identifiers.
+            for lowered in ch.to_lowercase() {
+                for uppered in lowered.to_uppercase() {
+                    for refolded in uppered.to_lowercase() {
+                        out.push(refolded);
+                    }
+                }
             }
             previous_space = false;
         }
