@@ -1297,3 +1297,55 @@ fn does_not_report_inverted_boolean_check_for_negated_arithmetic() {
     let diagnostics = scan("no-inverted-boolean-check", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_useless_catch_for_catch_that_only_rethrows() {
+    let source = "try { f(); } catch (e) { throw e; }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-useless-catch");
+    assert_eq!(diagnostics[0].message_id, "uselessCatch");
+}
+
+#[test]
+fn reports_no_useless_catch_when_finally_is_present() {
+    let source = "try { f(); } catch (err) { throw err; } finally { g(); }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "uselessCatch");
+}
+
+#[test]
+fn does_not_report_no_useless_catch_when_body_has_two_statements() {
+    let source = "try { f(); } catch (e) { log(e); throw e; }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_catch_when_throw_is_new_expression() {
+    let source = "try { f(); } catch (e) { throw new Error(); }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_catch_when_throw_is_member_expression() {
+    let source = "try { f(); } catch (e) { throw e.cause; }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_catch_when_no_throw_in_body() {
+    let source = "try { f(); } catch (e) { handle(e); }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_catch_for_destructured_param() {
+    let source = "try { f(); } catch ({ message }) { throw message; }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}

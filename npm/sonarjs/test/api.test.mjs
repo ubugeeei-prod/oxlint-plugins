@@ -32,6 +32,7 @@ const expectedRuleNames = [
   'no-small-switch',
   'prefer-default-last',
   'no-inverted-boolean-check',
+  'no-useless-catch',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1055,6 +1056,45 @@ describe('sonarjs native API', () => {
   it('does not report no-inverted-boolean-check for !(a + b) (arithmetic, not comparison)', () => {
     const source = 'const r = !(a + b);';
     const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-useless-catch for catch that only rethrows', () => {
+    const source = 'try { f(); } catch (e) { throw e; }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-useless-catch');
+    expect(diagnostics[0].messageId).toBe('uselessCatch');
+  });
+
+  it('reports no-useless-catch for catch that only rethrows when finally is present', () => {
+    const source = 'try { f(); } catch (err) { throw err; } finally { g(); }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('uselessCatch');
+  });
+
+  it('does not report no-useless-catch when catch body has two statements', () => {
+    const source = 'try { f(); } catch (e) { log(e); throw e; }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-useless-catch when throw argument is a new expression', () => {
+    const source = 'try { f(); } catch (e) { throw new Error(); }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-useless-catch when throw argument is a member expression', () => {
+    const source = 'try { f(); } catch (e) { throw e.cause; }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-useless-catch when catch body has no throw', () => {
+    const source = 'try { f(); } catch (e) { handle(e); }';
+    const diagnostics = scan('no-useless-catch', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

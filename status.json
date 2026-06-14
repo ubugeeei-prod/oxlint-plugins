@@ -13246,19 +13246,19 @@
       },
       {
         "name": "no-useless-catch",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-useless-catch (Sonar key S2737). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S2737. Reports a catch clause whose entire body is a single rethrow of the caught identifier; destructured params, multi-statement bodies, and throws of other values are excluded. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-useless-increment",

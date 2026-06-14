@@ -120,6 +120,9 @@ const messages = Object.freeze({
     invertedBooleanCheck:
       'Use the opposite comparison operator instead of negating this comparison.',
   },
+  'no-useless-catch': {
+    uselessCatch: "Remove this useless 'catch' clause; it only rethrows the caught exception.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -173,6 +176,8 @@ const ruleDescriptions = Object.freeze({
     "Require the 'default' clause of a switch statement to appear as the last clause for readability",
   'no-inverted-boolean-check':
     'Disallow negating a comparison expression; use the opposite comparison operator instead',
+  'no-useless-catch':
+    "Disallow 'catch' clauses that only rethrow the caught exception; remove them and let the error propagate naturally",
 });
 
 const ruleTypes = Object.freeze({
@@ -205,6 +210,7 @@ const ruleTypes = Object.freeze({
   'no-small-switch': 'suggestion',
   'prefer-default-last': 'suggestion',
   'no-inverted-boolean-check': 'suggestion',
+  'no-useless-catch': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -237,6 +243,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-small-switch': 'error',
   'prefer-default-last': 'error',
   'no-inverted-boolean-check': 'error',
+  'no-useless-catch': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
