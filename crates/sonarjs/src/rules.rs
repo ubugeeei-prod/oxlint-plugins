@@ -89,6 +89,7 @@ mod reduce_initial_value;
 mod shorthand_property_grouping;
 mod single_char_in_character_classes;
 mod single_character_alternation;
+mod standard_input;
 mod todo_tag;
 mod too_many_break_or_continue_in_loop;
 mod updated_loop_counter;

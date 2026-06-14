@@ -459,6 +459,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_exclusive_tests(it);
         self.check_no_skipped_tests_member(it);
         self.check_process_argv(it);
+        self.check_standard_input(it);
         walk::walk_static_member_expression(self, it);
     }
 

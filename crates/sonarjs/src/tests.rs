@@ -3537,6 +3537,44 @@ fn does_not_report_process_argv_for_bare_identifier() {
 }
 
 #[test]
+fn reports_standard_input_for_direct_access() {
+    let source = "const x = process.stdin;";
+    let diagnostics = scan("standard-input", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "standard-input");
+    assert_eq!(diagnostics[0].message_id, "standardInput");
+}
+
+#[test]
+fn reports_standard_input_for_on_call() {
+    let source = "process.stdin.on('data', cb);";
+    let diagnostics = scan("standard-input", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "standardInput");
+}
+
+#[test]
+fn does_not_report_standard_input_for_different_property() {
+    let source = "process.stdout;";
+    let diagnostics = scan("standard-input", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_standard_input_for_different_object() {
+    let source = "foo.stdin;";
+    let diagnostics = scan("standard-input", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_standard_input_for_bare_identifier() {
+    let source = "stdin;";
+    let diagnostics = scan("standard-input", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn reports_no_hardcoded_ip_for_private_ipv4() {
     let diagnostics = scan("no-hardcoded-ip", r#"const ip = "192.168.1.1";"#);
     assert_eq!(diagnostics.len(), 1);

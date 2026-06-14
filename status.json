@@ -13934,19 +13934,19 @@
       },
       {
         "name": "standard-input",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule standard-input (Sonar key S4829). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port from RSPEC S4829. Security hotspot: flags reads of the bare process.stdin member access (process.stdin, process.stdin.on(...), process.stdin.read()) once each. Other standard-input forms (require('readline'), fs.readSync(0, ...), fd 0) and a destructured { stdin } = process are out of scope. No options."
       },
       {
         "name": "stateful-regex",
