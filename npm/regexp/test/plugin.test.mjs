@@ -268,6 +268,11 @@ const validCases = [
   ['no-misleading-capturing-group', 'no capturing group', 'const re = /a+a+/;\n'],
   ['no-misleading-capturing-group', 'different atoms', 'const re = /\\d+(\\w*)/u;\n'],
   ['no-misleading-capturing-group', 'group body is plus', 'const re = /\\d+(\\d+)/u;\n'],
+  // no-super-linear-backtracking
+  ['no-super-linear-backtracking', 'top-level quantifiers', 'const re = /a+b+a+b+/u;\n'],
+  ['no-super-linear-backtracking', 'anchored inner', 'const re = /(?:a+b)+/u;\n'],
+  ['no-super-linear-backtracking', 'outer not quantified', 'const re = /(?:a+)b/u;\n'],
+  ['no-super-linear-backtracking', 'inner not quantified', 'const re = /(?:a)+/u;\n'],
 ];
 
 const invalidCases = [
@@ -778,6 +783,19 @@ const invalidCases = [
     'literal atom already included',
     'const re = /a+(a*)/u;\n',
     ['removeQuant'],
+  ],
+  // no-super-linear-backtracking
+  [
+    'no-super-linear-backtracking',
+    'non-capturing nested unbounded',
+    'const re = /b(?:a+)+b/u;\n',
+    ['self'],
+  ],
+  [
+    'no-super-linear-backtracking',
+    'capturing nested unbounded',
+    'const re = /(a*)*/u;\n',
+    ['self'],
   ],
 ];
 

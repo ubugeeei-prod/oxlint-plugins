@@ -321,6 +321,11 @@ const messages = Object.freeze({
     removeQuant:
       'This quantifier is already included by the preceding quantifier, so the capturing group misleadingly captures less text than its pattern suggests.',
   },
+  'no-super-linear-backtracking': {
+    self: 'This quantifier can reach itself through the surrounding loop, causing exponential backtracking.',
+    trade:
+      'This quantifier exchanges characters with another quantifier, causing polynomial backtracking.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -449,6 +454,8 @@ const ruleDescriptions = Object.freeze({
     'prefer lookarounds over capturing groups (narrow: both-ends `(B1)MID(B2)` replace whose replacement re-emits `$1` and `$2` at the edges)',
   'no-misleading-capturing-group':
     'disallow capturing groups that do not capture the whole pattern (narrow: `A<greedy>(A*)` where the prefix already consumes every `A`)',
+  'no-super-linear-backtracking':
+    'disallow exponential and polynomial backtracking (narrow: nested unbounded quantifiers `(X+)+` and similar)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -531,6 +538,7 @@ const ruleTypes = Object.freeze({
   'prefer-result-array-groups': 'suggestion',
   'prefer-lookaround': 'suggestion',
   'no-misleading-capturing-group': 'problem',
+  'no-super-linear-backtracking': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -559,6 +567,7 @@ const recommendedRuleConfig = Object.freeze({
   'simplify-set-operations': 'error',
   'no-unused-capturing-group': 'error',
   'no-misleading-capturing-group': 'error',
+  'no-super-linear-backtracking': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
@@ -721,7 +730,8 @@ function ruleCategory(ruleName) {
     ruleName === 'strict' ||
     ruleName === 'no-useless-assertions' ||
     ruleName === 'no-contradiction-with-assertion' ||
-    ruleName === 'no-misleading-capturing-group'
+    ruleName === 'no-misleading-capturing-group' ||
+    ruleName === 'no-super-linear-backtracking'
   ) {
     return 'Possible Errors';
   }

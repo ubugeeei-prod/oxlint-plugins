@@ -85,6 +85,7 @@ describe('regexp native API', () => {
       'prefer-result-array-groups',
       'prefer-lookaround',
       'no-misleading-capturing-group',
+      'no-super-linear-backtracking',
     ]);
   });
 
