@@ -9,21 +9,21 @@
   "valid": [
     {
       "name": "column-not-null",
-      "code": "-- NOT NULL on a column is allowed without an explicit name.\nCREATE TABLE items (id int PRIMARY KEY, code text NOT NULL);\n"
+      "code": "-- NOT NULL on a column is allowed without an explicit name.\nCREATE TABLE items (id int PRIMARY KEY, code text NOT NULL);"
     },
     {
       "name": "named-add-fk",
-      "code": "ALTER TABLE orders\n  ADD CONSTRAINT orders_customer_fk\n  FOREIGN KEY (customer_id) REFERENCES customers (id) NOT VALID;\n"
+      "code": "ALTER TABLE orders\n  ADD CONSTRAINT orders_customer_fk\n  FOREIGN KEY (customer_id) REFERENCES customers (id) NOT VALID;"
     },
     {
       "name": "named-unique",
-      "code": "CREATE TABLE items (\n  id int,\n  code text,\n  CONSTRAINT items_code_unique UNIQUE (code)\n);\n"
+      "code": "CREATE TABLE items (\n  id int,\n  code text,\n  CONSTRAINT items_code_unique UNIQUE (code)\n);"
     }
   ],
   "invalid": [
     {
       "name": "alter-add-check",
-      "code": "ALTER TABLE items ADD CHECK (length(code) > 0);\n",
+      "code": "ALTER TABLE items ADD CHECK (length(code) > 0);",
       "errors": [
         {
           "messageId": "requireNamedConstraint",
@@ -38,7 +38,7 @@
     },
     {
       "name": "create-table-unique",
-      "code": "CREATE TABLE items (id int, code text, UNIQUE (code));\n",
+      "code": "CREATE TABLE items (id int, code text, UNIQUE (code));",
       "errors": [
         {
           "messageId": "requireNamedConstraint",

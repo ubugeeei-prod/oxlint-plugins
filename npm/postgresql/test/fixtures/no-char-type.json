@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "text",
-      "code": "CREATE TABLE t (code TEXT);\n"
+      "code": "CREATE TABLE t (code TEXT);"
     }
   ],
   "invalid": [
     {
       "name": "bpchar",
-      "code": "CREATE TABLE t (code BPCHAR(3));\n",
+      "code": "CREATE TABLE t (code BPCHAR(3));",
       "errors": [
         {
           "messageId": "noChar",
@@ -30,7 +30,7 @@
     },
     {
       "name": "char-n",
-      "code": "CREATE TABLE t (code CHAR(3));\n",
+      "code": "CREATE TABLE t (code CHAR(3));",
       "errors": [
         {
           "messageId": "noChar",

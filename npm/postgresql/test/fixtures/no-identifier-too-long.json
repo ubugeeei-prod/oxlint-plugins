@@ -9,15 +9,15 @@
   "valid": [
     {
       "name": "anonymous-index",
-      "code": "-- `CREATE INDEX ON foo (bar)` lets PostgreSQL pick the name — `idxname` is\n-- unset on the IndexStmt, so there is nothing for this rule to flag.\nCREATE INDEX ON aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (bar);\n"
+      "code": "-- `CREATE INDEX ON foo (bar)` lets PostgreSQL pick the name — `idxname` is\n-- unset on the IndexStmt, so there is nothing for this rule to flag.\nCREATE INDEX ON aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (bar);"
     },
     {
       "name": "at-limit",
-      "code": "-- Identifier at the exact 63-byte boundary is fine.\nCREATE TABLE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (\n  id BIGSERIAL PRIMARY KEY\n);\n"
+      "code": "-- Identifier at the exact 63-byte boundary is fine.\nCREATE TABLE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (\n  id BIGSERIAL PRIMARY KEY\n);"
     },
     {
       "name": "custom-max",
-      "code": "-- A user who compiled PostgreSQL with a larger NAMEDATALEN can raise `max`.\n-- This identifier is 64 bytes — over the default 63 but under the override.\nCREATE TABLE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (\n  id BIGSERIAL PRIMARY KEY\n);\n",
+      "code": "-- A user who compiled PostgreSQL with a larger NAMEDATALEN can raise `max`.\n-- This identifier is 64 bytes — over the default 63 but under the override.\nCREATE TABLE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (\n  id BIGSERIAL PRIMARY KEY\n);",
       "options": [
         {
           "max": 128
@@ -26,17 +26,17 @@
     },
     {
       "name": "short-names",
-      "code": "CREATE TABLE users (\n  id BIGSERIAL PRIMARY KEY,\n  email TEXT NOT NULL,\n  CONSTRAINT users_email_uniq UNIQUE (email)\n);\n\nCREATE INDEX idx_users_email ON users (email);\n\nCREATE SCHEMA app;\n\nCREATE SEQUENCE app.order_seq;\n\nCREATE OR REPLACE FUNCTION app.touch_updated_at() RETURNS trigger AS $$ BEGIN RETURN new; END; $$ LANGUAGE plpgsql;\n\nCREATE VIEW active_users AS SELECT id FROM users;\n\nCREATE TRIGGER trg_users_touch BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION app.touch_updated_at();\n\nALTER TABLE users RENAME TO accounts;\n"
+      "code": "CREATE TABLE users (\n  id BIGSERIAL PRIMARY KEY,\n  email TEXT NOT NULL,\n  CONSTRAINT users_email_uniq UNIQUE (email)\n);\n\nCREATE INDEX idx_users_email ON users (email);\n\nCREATE SCHEMA app;\n\nCREATE SEQUENCE app.order_seq;\n\nCREATE OR REPLACE FUNCTION app.touch_updated_at() RETURNS trigger AS $$ BEGIN RETURN new; END; $$ LANGUAGE plpgsql;\n\nCREATE VIEW active_users AS SELECT id FROM users;\n\nCREATE TRIGGER trg_users_touch BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION app.touch_updated_at();\n\nALTER TABLE users RENAME TO accounts;"
     },
     {
       "name": "unnamed-constraint",
-      "code": "-- An unnamed constraint has no user-supplied name to compare against the limit;\n-- PostgreSQL will generate one, separately covered by `require-named-constraint`.\nALTER TABLE items ADD CHECK (length(code) > 0);\n\nCREATE TABLE items2 (\n  id BIGSERIAL PRIMARY KEY,\n  code TEXT,\n  CHECK (length(code) > 0)\n);\n"
+      "code": "-- An unnamed constraint has no user-supplied name to compare against the limit;\n-- PostgreSQL will generate one, separately covered by `require-named-constraint`.\nALTER TABLE items ADD CHECK (length(code) > 0);\n\nCREATE TABLE items2 (\n  id BIGSERIAL PRIMARY KEY,\n  code TEXT,\n  CHECK (length(code) > 0)\n);"
     }
   ],
   "invalid": [
     {
       "name": "column-name",
-      "code": "CREATE TABLE users (\n  id BIGSERIAL PRIMARY KEY,\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa TEXT\n);\n",
+      "code": "CREATE TABLE users (\n  id BIGSERIAL PRIMARY KEY,\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa TEXT\n);",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -51,7 +51,7 @@
     },
     {
       "name": "constraint-alter-add",
-      "code": "ALTER TABLE items\n  ADD CONSTRAINT aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n    CHECK (length(code) > 0);\n",
+      "code": "ALTER TABLE items\n  ADD CONSTRAINT aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n    CHECK (length(code) > 0);",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -66,7 +66,7 @@
     },
     {
       "name": "constraint-table-level",
-      "code": "CREATE TABLE items (\n  id BIGSERIAL PRIMARY KEY,\n  code TEXT,\n  CONSTRAINT aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa CHECK (length(code) > 0)\n);\n",
+      "code": "CREATE TABLE items (\n  id BIGSERIAL PRIMARY KEY,\n  code TEXT,\n  CONSTRAINT aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa CHECK (length(code) > 0)\n);",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -81,7 +81,7 @@
     },
     {
       "name": "custom-max-stricter",
-      "code": "-- With `max: 10`, the 11-byte table name `looong_table` exceeds the limit.\nCREATE TABLE looong_table (\n  id BIGSERIAL PRIMARY KEY\n);\n",
+      "code": "-- With `max: 10`, the 11-byte table name `looong_table` exceeds the limit.\nCREATE TABLE looong_table (\n  id BIGSERIAL PRIMARY KEY\n);",
       "options": [
         {
           "max": 10
@@ -101,7 +101,7 @@
     },
     {
       "name": "function-name",
-      "code": "CREATE OR REPLACE FUNCTION aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa()\n  RETURNS void AS $$ BEGIN END; $$ LANGUAGE plpgsql;\n",
+      "code": "CREATE OR REPLACE FUNCTION aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa()\n  RETURNS void AS $$ BEGIN END; $$ LANGUAGE plpgsql;",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -116,7 +116,7 @@
     },
     {
       "name": "index-name",
-      "code": "CREATE INDEX aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n  ON items (code);\n",
+      "code": "CREATE INDEX aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n  ON items (code);",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -131,7 +131,7 @@
     },
     {
       "name": "multibyte-overflow",
-      "code": "-- 22 instances of the 3-byte character '長' = 66 bytes, which is over the\n-- 63-byte limit even though it is only 22 characters long. The rule must\n-- count bytes, not characters.\nCREATE TABLE \"長長長長長長長長長長長長長長長長長長長長長長\" (\n  id BIGSERIAL PRIMARY KEY\n);\n",
+      "code": "-- 22 instances of the 3-byte character '長' = 66 bytes, which is over the\n-- 63-byte limit even though it is only 22 characters long. The rule must\n-- count bytes, not characters.\nCREATE TABLE \"長長長長長長長長長長長長長長長長長長長長長長\" (\n  id BIGSERIAL PRIMARY KEY\n);",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -146,7 +146,7 @@
     },
     {
       "name": "rename-to",
-      "code": "ALTER TABLE users\n  RENAME TO aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;\n",
+      "code": "ALTER TABLE users\n  RENAME TO aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -161,7 +161,7 @@
     },
     {
       "name": "schema-name",
-      "code": "CREATE SCHEMA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;\n",
+      "code": "CREATE SCHEMA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -176,7 +176,7 @@
     },
     {
       "name": "sequence-name",
-      "code": "CREATE SEQUENCE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;\n",
+      "code": "CREATE SEQUENCE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -191,7 +191,7 @@
     },
     {
       "name": "table-name",
-      "code": "-- 64-byte table name — one over the default 63-byte limit.\nCREATE TABLE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (\n  id BIGSERIAL PRIMARY KEY\n);\n",
+      "code": "-- 64-byte table name — one over the default 63-byte limit.\nCREATE TABLE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (\n  id BIGSERIAL PRIMARY KEY\n);",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -206,7 +206,7 @@
     },
     {
       "name": "trigger-name",
-      "code": "CREATE TRIGGER aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n  BEFORE INSERT ON items\n  FOR EACH ROW EXECUTE FUNCTION noop();\n",
+      "code": "CREATE TRIGGER aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n  BEFORE INSERT ON items\n  FOR EACH ROW EXECUTE FUNCTION noop();",
       "errors": [
         {
           "messageId": "identifierTooLong",
@@ -221,7 +221,7 @@
     },
     {
       "name": "view-name",
-      "code": "CREATE VIEW aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS SELECT 1;\n",
+      "code": "CREATE VIEW aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS SELECT 1;",
       "errors": [
         {
           "messageId": "identifierTooLong",

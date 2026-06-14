@@ -9,21 +9,21 @@
   "valid": [
     {
       "name": "coalesce",
-      "code": "SELECT COALESCE(nickname, full_name) AS display FROM users;\n"
+      "code": "SELECT COALESCE(nickname, full_name) AS display FROM users;"
     },
     {
       "name": "different-branches",
-      "code": "SELECT CASE WHEN created_at IS NULL THEN 'unknown' ELSE 'set' END AS status\nFROM users;\n"
+      "code": "SELECT CASE WHEN created_at IS NULL THEN 'unknown' ELSE 'set' END AS status\nFROM users;"
     },
     {
       "name": "multi-arm",
-      "code": "SELECT CASE\n  WHEN nickname IS NULL THEN full_name\n  WHEN length(nickname) = 0 THEN full_name\n  ELSE nickname\nEND AS display\nFROM users;\n"
+      "code": "SELECT CASE\n  WHEN nickname IS NULL THEN full_name\n  WHEN length(nickname) = 0 THEN full_name\n  ELSE nickname\nEND AS display\nFROM users;"
     }
   ],
   "invalid": [
     {
       "name": "is-not-null",
-      "code": "SELECT CASE WHEN nickname IS NOT NULL THEN nickname ELSE full_name END AS display\nFROM users;\n",
+      "code": "SELECT CASE WHEN nickname IS NOT NULL THEN nickname ELSE full_name END AS display\nFROM users;",
       "errors": [
         {
           "messageId": "preferCoalesceOverCase",
@@ -38,7 +38,7 @@
     },
     {
       "name": "is-null",
-      "code": "SELECT CASE WHEN nickname IS NULL THEN full_name ELSE nickname END AS display\nFROM users;\n",
+      "code": "SELECT CASE WHEN nickname IS NULL THEN full_name ELSE nickname END AS display\nFROM users;",
       "errors": [
         {
           "messageId": "preferCoalesceOverCase",

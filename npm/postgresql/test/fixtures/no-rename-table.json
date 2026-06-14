@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "create-table",
-      "code": "CREATE TABLE users (id BIGINT PRIMARY KEY);\n"
+      "code": "CREATE TABLE users (id BIGINT PRIMARY KEY);"
     }
   ],
   "invalid": [
     {
       "name": "rename-table",
-      "code": "ALTER TABLE legacy_users RENAME TO users;\n",
+      "code": "ALTER TABLE legacy_users RENAME TO users;",
       "errors": [
         {
           "messageId": "noRenameTable",

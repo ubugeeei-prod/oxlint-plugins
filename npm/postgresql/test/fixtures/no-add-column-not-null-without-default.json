@@ -9,21 +9,21 @@
   "valid": [
     {
       "name": "add-identity",
-      "code": "ALTER TABLE users ADD COLUMN id bigint GENERATED ALWAYS AS IDENTITY NOT NULL;\n"
+      "code": "ALTER TABLE users ADD COLUMN id bigint GENERATED ALWAYS AS IDENTITY NOT NULL;"
     },
     {
       "name": "add-not-null-with-default",
-      "code": "ALTER TABLE users ADD COLUMN status text NOT NULL DEFAULT 'active';\n"
+      "code": "ALTER TABLE users ADD COLUMN status text NOT NULL DEFAULT 'active';"
     },
     {
       "name": "add-nullable",
-      "code": "ALTER TABLE users ADD COLUMN status text;\n"
+      "code": "ALTER TABLE users ADD COLUMN status text;"
     }
   ],
   "invalid": [
     {
       "name": "add-not-null",
-      "code": "ALTER TABLE users ADD COLUMN status text NOT NULL;\n",
+      "code": "ALTER TABLE users ADD COLUMN status text NOT NULL;",
       "errors": [
         {
           "messageId": "noAddColumnNotNullWithoutDefault",

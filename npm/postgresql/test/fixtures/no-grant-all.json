@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "explicit-privileges",
-      "code": "GRANT SELECT ON t TO u;\nGRANT SELECT, INSERT, UPDATE ON t TO u;\n-- REVOKE ALL is the safe direction; not flagged.\nREVOKE ALL ON t FROM u;\n"
+      "code": "GRANT SELECT ON t TO u;\nGRANT SELECT, INSERT, UPDATE ON t TO u;\n-- REVOKE ALL is the safe direction; not flagged.\nREVOKE ALL ON t FROM u;"
     }
   ],
   "invalid": [
     {
       "name": "grant-all",
-      "code": "GRANT ALL ON t TO u;\nGRANT ALL PRIVILEGES ON t TO PUBLIC;\n",
+      "code": "GRANT ALL ON t TO u;\nGRANT ALL PRIVILEGES ON t TO PUBLIC;",
       "errors": [
         {
           "messageId": "noGrantAll",

@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "no-rule",
-      "code": "CREATE TRIGGER t_trg BEFORE UPDATE ON t FOR EACH ROW EXECUTE FUNCTION t_trg_fn();\nCREATE VIEW v AS SELECT * FROM t;\n"
+      "code": "CREATE TRIGGER t_trg BEFORE UPDATE ON t FOR EACH ROW EXECUTE FUNCTION t_trg_fn();\nCREATE VIEW v AS SELECT * FROM t;"
     }
   ],
   "invalid": [
     {
       "name": "create-rule",
-      "code": "CREATE RULE noop AS ON UPDATE TO t DO INSTEAD NOTHING;\n",
+      "code": "CREATE RULE noop AS ON UPDATE TO t DO INSTEAD NOTHING;",
       "errors": [
         {
           "messageId": "noRule",

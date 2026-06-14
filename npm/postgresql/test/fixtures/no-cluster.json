@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "vacuum",
-      "code": "VACUUM users;\n"
+      "code": "VACUUM users;"
     }
   ],
   "invalid": [
     {
       "name": "cluster",
-      "code": "CLUSTER users USING users_pkey;\n",
+      "code": "CLUSTER users USING users_pkey;",
       "errors": [
         {
           "messageId": "noCluster",

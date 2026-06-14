@@ -19,6 +19,7 @@ mod no_grant_all;
 mod no_grant_to_public;
 mod no_group_by_ordinal;
 mod no_having_without_group_by;
+mod no_identifier_too_long;
 mod no_implicit_join;
 mod no_leading_wildcard_like;
 mod no_natural_join;
@@ -160,6 +161,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-grant-to-public",
     "no-group-by-ordinal",
     "no-having-without-group-by",
+    "no-identifier-too-long",
     "no-implicit-join",
     "no-leading-wildcard-like",
     "no-natural-join",
@@ -271,6 +273,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "no-having-without-group-by",
         run: no_having_without_group_by::run,
         uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-identifier-too-long",
+        run: no_identifier_too_long::run,
+        uses_parse_error: true,
     },
     RuleDef {
         name: "no-implicit-join",

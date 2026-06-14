@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "with-not-valid",
-      "code": "ALTER TABLE t ADD CONSTRAINT c CHECK (x > 0) NOT VALID;\n-- Non-CHECK constraints are out of scope.\nALTER TABLE t ADD CONSTRAINT pk PRIMARY KEY (id);\n"
+      "code": "ALTER TABLE t ADD CONSTRAINT c CHECK (x > 0) NOT VALID;\n-- Non-CHECK constraints are out of scope.\nALTER TABLE t ADD CONSTRAINT pk PRIMARY KEY (id);"
     }
   ],
   "invalid": [
     {
       "name": "synchronous-check",
-      "code": "ALTER TABLE t ADD CONSTRAINT c CHECK (x > 0);\n",
+      "code": "ALTER TABLE t ADD CONSTRAINT c CHECK (x > 0);",
       "errors": [
         {
           "messageId": "checkNotValid",

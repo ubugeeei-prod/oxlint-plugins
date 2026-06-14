@@ -9,11 +9,11 @@
   "valid": [
     {
       "name": "concurrent",
-      "code": "CREATE INDEX CONCURRENTLY idx_users_email ON users (email);\n"
+      "code": "CREATE INDEX CONCURRENTLY idx_users_email ON users (email);"
     },
     {
       "name": "never-without-concurrently",
-      "code": "CREATE INDEX idx_users_email ON users (email);\nCREATE UNIQUE INDEX idx_users_uid ON users (uid);\n",
+      "code": "CREATE INDEX idx_users_email ON users (email);\nCREATE UNIQUE INDEX idx_users_uid ON users (uid);",
       "options": [
         {
           "style": "never"
@@ -24,7 +24,7 @@
   "invalid": [
     {
       "name": "missing-concurrently",
-      "code": "CREATE INDEX idx_users_email ON users (email);\n",
+      "code": "CREATE INDEX idx_users_email ON users (email);",
       "errors": [
         {
           "messageId": "preferConcurrently",
@@ -39,7 +39,7 @@
     },
     {
       "name": "never-with-concurrently",
-      "code": "CREATE INDEX CONCURRENTLY idx_users_email ON users (email);\nCREATE UNIQUE INDEX CONCURRENTLY idx_users_uid ON users (uid);\n",
+      "code": "CREATE INDEX CONCURRENTLY idx_users_email ON users (email);\nCREATE UNIQUE INDEX CONCURRENTLY idx_users_uid ON users (uid);",
       "options": [
         {
           "style": "never"

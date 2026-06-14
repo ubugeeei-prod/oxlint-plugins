@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "int-column",
-      "code": "CREATE TABLE products (id bigint PRIMARY KEY);\n"
+      "code": "CREATE TABLE products (id bigint PRIMARY KEY);"
     },
     {
       "name": "with-precision",
-      "code": "CREATE TABLE products (price numeric(10,2));\n"
+      "code": "CREATE TABLE products (price numeric(10,2));"
     }
   ],
   "invalid": [
     {
       "name": "bare-decimal",
-      "code": "CREATE TABLE products (price decimal);\n",
+      "code": "CREATE TABLE products (price decimal);",
       "errors": [
         {
           "messageId": "noNumericWithoutPrecision",
@@ -34,7 +34,7 @@
     },
     {
       "name": "bare-numeric",
-      "code": "CREATE TABLE products (price numeric);\n",
+      "code": "CREATE TABLE products (price numeric);",
       "errors": [
         {
           "messageId": "noNumericWithoutPrecision",

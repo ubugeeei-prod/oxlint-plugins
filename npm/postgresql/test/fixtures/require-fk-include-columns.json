@@ -9,7 +9,7 @@
   "valid": [
     {
       "name": "alter-table-add-fk",
-      "code": "-- ALTER TABLE ADD CONSTRAINT FK that includes `tenant_id`.\nALTER TABLE orders\n  ADD CONSTRAINT orders_user_fk\n  FOREIGN KEY (tenant_id, user_id) REFERENCES users (tenant_id, id);\n",
+      "code": "-- ALTER TABLE ADD CONSTRAINT FK that includes `tenant_id`.\nALTER TABLE orders\n  ADD CONSTRAINT orders_user_fk\n  FOREIGN KEY (tenant_id, user_id) REFERENCES users (tenant_id, id);",
       "options": [
         {
           "columns": ["tenant_id"]
@@ -18,7 +18,7 @@
     },
     {
       "name": "composite-fk-includes-tenant",
-      "code": "-- Table-level composite FK that includes `tenant_id`.\nCREATE TABLE orders (\n  tenant_id bigint NOT NULL,\n  id        bigint NOT NULL,\n  user_id   bigint NOT NULL,\n  PRIMARY KEY (tenant_id, id),\n  FOREIGN KEY (tenant_id, user_id) REFERENCES users (tenant_id, id)\n);\n",
+      "code": "-- Table-level composite FK that includes `tenant_id`.\nCREATE TABLE orders (\n  tenant_id bigint NOT NULL,\n  id        bigint NOT NULL,\n  user_id   bigint NOT NULL,\n  PRIMARY KEY (tenant_id, id),\n  FOREIGN KEY (tenant_id, user_id) REFERENCES users (tenant_id, id)\n);",
       "options": [
         {
           "columns": ["tenant_id"]
@@ -27,7 +27,7 @@
     },
     {
       "name": "excluded-by-referenced-table-pattern",
-      "code": "-- The referenced table `tenants` is shared across tenants by definition,\n-- so an FK to it does not need to carry `tenant_id`.\nCREATE TABLE orders (\n  id        bigserial PRIMARY KEY,\n  tenant_id bigint NOT NULL REFERENCES tenants (id)\n);\n",
+      "code": "-- The referenced table `tenants` is shared across tenants by definition,\n-- so an FK to it does not need to carry `tenant_id`.\nCREATE TABLE orders (\n  id        bigserial PRIMARY KEY,\n  tenant_id bigint NOT NULL REFERENCES tenants (id)\n);",
       "options": [
         {
           "columns": ["tenant_id"],
@@ -37,7 +37,7 @@
     },
     {
       "name": "excluded-by-table-pattern",
-      "code": "-- `audit_*` tables are excluded by `excludeTablePattern`, so a missing\n-- `tenant_id` is not reported.\nCREATE TABLE audit_events (\n  id      bigserial PRIMARY KEY,\n  user_id bigint REFERENCES users (id)\n);\n",
+      "code": "-- `audit_*` tables are excluded by `excludeTablePattern`, so a missing\n-- `tenant_id` is not reported.\nCREATE TABLE audit_events (\n  id      bigserial PRIMARY KEY,\n  user_id bigint REFERENCES users (id)\n);",
       "options": [
         {
           "columns": ["tenant_id"],
@@ -47,7 +47,7 @@
     },
     {
       "name": "no-fk",
-      "code": "-- No FK constraints — nothing to flag.\nCREATE TABLE orders (\n  id        bigserial PRIMARY KEY,\n  tenant_id bigint NOT NULL,\n  amount    numeric(10, 2)\n);\n",
+      "code": "-- No FK constraints — nothing to flag.\nCREATE TABLE orders (\n  id        bigserial PRIMARY KEY,\n  tenant_id bigint NOT NULL,\n  amount    numeric(10, 2)\n);",
       "options": [
         {
           "columns": ["tenant_id"]
@@ -58,7 +58,7 @@
   "invalid": [
     {
       "name": "alter-table-add-fk-missing-tenant",
-      "code": "-- ALTER TABLE ADD CONSTRAINT FK without `tenant_id`.\nALTER TABLE orders\n  ADD CONSTRAINT orders_user_fk\n  FOREIGN KEY (user_id) REFERENCES users (id);\n",
+      "code": "-- ALTER TABLE ADD CONSTRAINT FK without `tenant_id`.\nALTER TABLE orders\n  ADD CONSTRAINT orders_user_fk\n  FOREIGN KEY (user_id) REFERENCES users (id);",
       "options": [
         {
           "columns": ["tenant_id"]
@@ -78,7 +78,7 @@
     },
     {
       "name": "inline-fk-on-non-tenant-column",
-      "code": "-- Column-level (inline) FK on a non-tenant column — the FK's referencing\n-- column list is just `[user_id]`, which is missing `tenant_id`.\nCREATE TABLE orders (\n  tenant_id bigint NOT NULL,\n  id        bigserial PRIMARY KEY,\n  user_id   bigint REFERENCES users (id)\n);\n",
+      "code": "-- Column-level (inline) FK on a non-tenant column — the FK's referencing\n-- column list is just `[user_id]`, which is missing `tenant_id`.\nCREATE TABLE orders (\n  tenant_id bigint NOT NULL,\n  id        bigserial PRIMARY KEY,\n  user_id   bigint REFERENCES users (id)\n);",
       "options": [
         {
           "columns": ["tenant_id"]
@@ -98,7 +98,7 @@
     },
     {
       "name": "table-level-fk-missing-tenant",
-      "code": "-- Table-level FK that does not include `tenant_id`.\nCREATE TABLE orders (\n  tenant_id bigint NOT NULL,\n  id        bigint NOT NULL,\n  user_id   bigint NOT NULL,\n  PRIMARY KEY (tenant_id, id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n",
+      "code": "-- Table-level FK that does not include `tenant_id`.\nCREATE TABLE orders (\n  tenant_id bigint NOT NULL,\n  id        bigint NOT NULL,\n  user_id   bigint NOT NULL,\n  PRIMARY KEY (tenant_id, id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);",
       "options": [
         {
           "columns": ["tenant_id"]

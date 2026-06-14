@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "count-star-is-fine",
-      "code": "SELECT count(*) FROM users;\n"
+      "code": "SELECT count(*) FROM users;"
     },
     {
       "name": "explicit-columns",
-      "code": "SELECT id, name FROM users LIMIT 10;\n"
+      "code": "SELECT id, name FROM users LIMIT 10;"
     }
   ],
   "invalid": [
     {
       "name": "qualified-star",
-      "code": "SELECT u.* FROM users u;\n",
+      "code": "SELECT u.* FROM users u;",
       "errors": [
         {
           "messageId": "noSelectStar",
@@ -34,7 +34,7 @@
     },
     {
       "name": "select-star",
-      "code": "SELECT * FROM users;\n",
+      "code": "SELECT * FROM users;",
       "errors": [
         {
           "messageId": "noSelectStar",

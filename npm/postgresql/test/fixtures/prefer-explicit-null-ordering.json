@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "no-direction",
-      "code": "-- No explicit ASC/DESC: rule does not fire.\nSELECT id FROM users ORDER BY created_at;\n"
+      "code": "-- No explicit ASC/DESC: rule does not fire.\nSELECT id FROM users ORDER BY created_at;"
     },
     {
       "name": "with-nulls-last",
-      "code": "SELECT id FROM users ORDER BY created_at DESC NULLS LAST;\n"
+      "code": "SELECT id FROM users ORDER BY created_at DESC NULLS LAST;"
     }
   ],
   "invalid": [
     {
       "name": "desc",
-      "code": "SELECT id FROM users ORDER BY created_at DESC;\n",
+      "code": "SELECT id FROM users ORDER BY created_at DESC;",
       "errors": [
         {
           "messageId": "preferExplicitNullOrdering",

@@ -9,11 +9,11 @@
   "valid": [
     {
       "name": "already-between",
-      "code": "SELECT * FROM t WHERE x BETWEEN 1 AND 10;\n-- Strict inequalities are not equivalent to BETWEEN; do not flag.\nSELECT * FROM t WHERE x > 1 AND x < 10;\n-- Different lhs: not in scope.\nSELECT * FROM t WHERE x >= 1 AND y <= 10;\n-- More than two conjuncts: not in scope.\nSELECT * FROM t WHERE x >= 1 AND x <= 10 AND y > 0;\n"
+      "code": "SELECT * FROM t WHERE x BETWEEN 1 AND 10;\n-- Strict inequalities are not equivalent to BETWEEN; do not flag.\nSELECT * FROM t WHERE x > 1 AND x < 10;\n-- Different lhs: not in scope.\nSELECT * FROM t WHERE x >= 1 AND y <= 10;\n-- More than two conjuncts: not in scope.\nSELECT * FROM t WHERE x >= 1 AND x <= 10 AND y > 0;"
     },
     {
       "name": "never-and-pair",
-      "code": "SELECT 1 WHERE x >= 1 AND x <= 10;\n",
+      "code": "SELECT 1 WHERE x >= 1 AND x <= 10;",
       "options": [
         {
           "style": "never"
@@ -24,7 +24,7 @@
   "invalid": [
     {
       "name": "and-pair",
-      "code": "SELECT * FROM t WHERE x >= 1 AND x <= 10;\n",
+      "code": "SELECT * FROM t WHERE x >= 1 AND x <= 10;",
       "errors": [
         {
           "messageId": "preferBetween",
@@ -39,7 +39,7 @@
     },
     {
       "name": "cast-bounds",
-      "code": "SELECT 1 WHERE x >= '1900-01-01'::TIMESTAMPTZ AND x <= '2299-12-31'::TIMESTAMPTZ;\n",
+      "code": "SELECT 1 WHERE x >= '1900-01-01'::TIMESTAMPTZ AND x <= '2299-12-31'::TIMESTAMPTZ;",
       "errors": [
         {
           "messageId": "preferBetween",
@@ -54,7 +54,7 @@
     },
     {
       "name": "never-between",
-      "code": "SELECT 1 WHERE x BETWEEN 1 AND 10;\n",
+      "code": "SELECT 1 WHERE x BETWEEN 1 AND 10;",
       "options": [
         {
           "style": "never"
