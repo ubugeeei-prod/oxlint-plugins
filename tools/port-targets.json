@@ -1,5 +1,5 @@
 {
-  "$note": "Port-target manifest for ESLint plugins and adjacent upstream packages used by flyle-nexus (eslint-plugin-svelte is intentionally excluded; it is handled by rsvelte. eslint-plugin-vue is intentionally excluded; it is handled by vize). This file is the single source of truth for tools/tasks/enumerate-port-rules.ts (rule enumeration) and .github/workflows/track-upstream-releases.yml (release follow-up issues). baselineVersion is the upstream npm version flyle-nexus currently uses and the version the port should target first.",
+  "$note": "Port-target manifest for ESLint plugins and adjacent upstream packages (eslint-plugin-svelte is intentionally excluded; it is handled by rsvelte. eslint-plugin-vue is intentionally excluded; it is handled by vize). This file is the single source of truth for tools/tasks/enumerate-port-rules.ts (rule enumeration) and .github/workflows/track-upstream-releases.yml (release follow-up issues). baselineVersion is the upstream npm version the port should target first.",
   "submoduleRoot": "upstream",
   "plugins": [
     {
@@ -394,7 +394,7 @@
         "exclude": ["index.ts", ".test.ts", "_.ts", "uno.config.ts"]
       },
       "docsUrlTemplate": "https://unocss.dev/integrations/eslint",
-      "notes": "Pulled in via @unocss/eslint-config in flyle-nexus."
+      "notes": "Pulled in via @unocss/eslint-config."
     },
     {
       "id": "eslint-json",
