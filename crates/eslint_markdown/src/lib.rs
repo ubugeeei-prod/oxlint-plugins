@@ -475,6 +475,10 @@ fn collect_definitions(facts: &mut MarkdownFacts<'_>) {
         if line.in_fence {
             continue;
         }
+        // Lines indented >= 4 columns are indented code blocks, not definitions.
+        if indent_columns(line.text) >= 4 {
+            continue;
+        }
         let trimmed = line.text.trim_start();
         let Some(rest) = trimmed.strip_prefix('[') else {
             continue;
@@ -1514,6 +1518,20 @@ fn is_allowed(values: &[CompactString], identifier: &CompactString) -> bool {
 fn split_indent(line: &str) -> (usize, &str) {
     let indent = line.bytes().take_while(|byte| *byte == b' ').count();
     (indent, &line[indent..])
+}
+
+// Leading-whitespace width in columns, expanding tabs to the next multiple of 4
+// (CommonMark tab stop). A width >= 4 marks an indented code block.
+fn indent_columns(line: &str) -> usize {
+    let mut columns = 0;
+    for byte in line.bytes() {
+        match byte {
+            b' ' => columns += 1,
+            b'\t' => columns += 4 - (columns % 4),
+            _ => break,
+        }
+    }
+    columns
 }
 
 fn split_fence_info(info: &str) -> (Option<CompactString>, Option<CompactString>) {
