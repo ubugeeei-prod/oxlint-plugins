@@ -537,6 +537,25 @@ const ruleMeta = Object.freeze({
         'Use `EXISTS (...)` instead of `IN (subquery)`. `IN` returns NULL when the subquery has any NULL row, which silently turns the row into a no-match; `EXISTS` is unambiguously boolean.',
     },
   },
+  'prefer-not-equals-operator': {
+    type: 'layout',
+    description: 'Enforce a single style for the not-equal operator (`<>` or `!=`)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          operator: { enum: ['<>', '!='] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferAngle: 'Use `<>` instead of `!=`.',
+      preferBang: 'Use `!=` instead of `<>`.',
+    },
+  },
   'require-if-exists': {
     type: 'suggestion',
     description:
