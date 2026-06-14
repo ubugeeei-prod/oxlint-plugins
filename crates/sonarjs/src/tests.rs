@@ -4744,3 +4744,50 @@ fn does_not_report_misplaced_loop_counter_call_condition_no_identifier() {
     let diagnostics = scan("misplaced-loop-counter", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_array_delete_on_resolved_array_variable() {
+    let source = "const a = [1, 2, 3];\ndelete a[0];";
+    let diagnostics = scan("no-array-delete", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-array-delete");
+    assert_eq!(diagnostics[0].message_id, "noArrayDelete");
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+}
+
+#[test]
+fn reports_no_array_delete_on_array_literal() {
+    let source = "delete [1, 2][0];";
+    let diagnostics = scan("no-array-delete", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noArrayDelete");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn does_not_report_no_array_delete_on_object_property() {
+    let source = "const o = { x: 1 };\ndelete o.x;";
+    let diagnostics = scan("no-array-delete", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_array_delete_on_non_array_computed() {
+    let source = "const o = {};\ndelete o['x'];";
+    let diagnostics = scan("no-array-delete", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_array_delete_on_static_member() {
+    let source = "const a = [1, 2, 3];\ndelete a.foo;";
+    let diagnostics = scan("no-array-delete", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_array_delete_on_unprovable_receiver() {
+    let source = "function f(p) {\n  delete p[0];\n}";
+    let diagnostics = scan("no-array-delete", source);
+    assert!(diagnostics.is_empty());
+}

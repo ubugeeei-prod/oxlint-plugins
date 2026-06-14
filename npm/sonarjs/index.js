@@ -323,6 +323,10 @@ const messages = Object.freeze({
     misplacedCounter:
       "This loop's update clause does not modify any variable checked in its condition.",
   },
+  'no-array-delete': {
+    noArrayDelete:
+      'Use Array.prototype.splice() to remove this element instead of the delete operator.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -497,6 +501,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow updating a classic "for" loop counter inside the loop body (reassignment, compound assignment, or increment/decrement); advance the counter only in the update clause',
   'misplaced-loop-counter':
     'Disallow a classic "for" loop whose update clause modifies only variable(s) absent from the loop condition (e.g. "i < 10" with "j++"), since the tested counter is never advanced by the header',
+  'no-array-delete':
+    'Disallow the "delete" operator on array elements (e.g. "delete arr[0]"), which leaves a hole without updating the array length; use Array.prototype.splice() instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -588,6 +594,7 @@ const ruleTypes = Object.freeze({
   'no-wildcard-import': 'suggestion',
   'updated-loop-counter': 'suggestion',
   'misplaced-loop-counter': 'suggestion',
+  'no-array-delete': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -679,6 +686,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-wildcard-import': 'error',
   'updated-loop-counter': 'error',
   'misplaced-loop-counter': 'error',
+  'no-array-delete': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
