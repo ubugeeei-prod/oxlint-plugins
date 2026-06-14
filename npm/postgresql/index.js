@@ -511,6 +511,18 @@ const ruleMeta = Object.freeze({
         'Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.',
     },
   },
+  'prefer-coalesce-over-case': {
+    type: 'suggestion',
+    description:
+      'Prefer `COALESCE(x, y)` over `CASE WHEN x IS NULL THEN y ELSE x END` (and its IS NOT NULL mirror)',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      preferCoalesceOverCase:
+        '`CASE WHEN ... IS NULL THEN ... ELSE ... END` is a verbose `COALESCE`. Use `COALESCE(x, fallback)` instead.',
+    },
+  },
   'prefer-current-timestamp-over-now': {
     type: 'layout',
     description:
