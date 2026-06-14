@@ -39,6 +39,8 @@
     "build:workspace": "pnpm --recursive --if-present build",
     "docs:build": "pnpm --filter @oxlint-plugins/docs build",
     "docs:dev": "pnpm --filter @oxlint-plugins/docs dev",
+    "docs:readme": "node tools/tasks/generate-readme-coverage.ts",
+    "docs:readme:check": "node tools/tasks/generate-readme-coverage.ts --check",
     "fmt:rust": "cargo fmt --all",
     "fmt:rust:check": "cargo fmt --all --check",
     "license": "pnpm run license:node && pnpm run license:rust",
