@@ -93,6 +93,7 @@ const expectedRuleNames = [
   'misplaced-loop-counter',
   'no-array-delete',
   'no-literal-call',
+  'shorthand-property-grouping',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2560,6 +2561,36 @@ describe('no-literal-call rule', () => {
 
   it('does not report an object expression called', () => {
     const diagnostics = scan('no-literal-call', '({})();');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('shorthand-property-grouping rule', () => {
+  it('reports shorthand properties split by a regular property', () => {
+    const diagnostics = scan('shorthand-property-grouping', 'const o = { a, x: 1, b };');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('shorthand-property-grouping');
+    expect(diagnostics[0].messageId).toBe('groupShorthand');
+  });
+
+  it('reports a lone shorthand property in the middle', () => {
+    const diagnostics = scan('shorthand-property-grouping', 'const o = { x: 1, a, y: 2 };');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('groupShorthand');
+  });
+
+  it('does not report shorthand grouped at the beginning', () => {
+    const diagnostics = scan('shorthand-property-grouping', 'const o = { a, b, x: 1 };');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report shorthand grouped at the end', () => {
+    const diagnostics = scan('shorthand-property-grouping', 'const o = { x: 1, a, b };');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an object with no shorthand properties', () => {
+    const diagnostics = scan('shorthand-property-grouping', 'const o = { x: 1, y: 2 };');
     expect(diagnostics).toHaveLength(0);
   });
 });

@@ -10,11 +10,12 @@ use oxc_ast::ast::{
     ExportAllDeclaration, ExportNamedDeclaration, Expression, ExpressionStatement, ForInStatement,
     ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
     ImportDeclaration, ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment,
-    LabeledStatement, LogicalExpression, NewExpression, Program, PropertyDefinition, RegExpLiteral,
-    ReturnStatement, SimpleAssignmentTarget, Statement, StaticBlock, StaticMemberExpression,
-    StringLiteral, SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature,
-    TSUnionType, TaggedTemplateExpression, TemplateLiteral, ThisExpression, TryStatement,
-    UnaryExpression, UpdateExpression, VariableDeclarator, WhileStatement, YieldExpression,
+    LabeledStatement, LogicalExpression, NewExpression, ObjectExpression, Program,
+    PropertyDefinition, RegExpLiteral, ReturnStatement, SimpleAssignmentTarget, Statement,
+    StaticBlock, StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement,
+    TSIntersectionType, TSPropertySignature, TSUnionType, TaggedTemplateExpression,
+    TemplateLiteral, ThisExpression, TryStatement, UnaryExpression, UpdateExpression,
+    VariableDeclarator, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_semantic::{AstNodes, Scoping, SymbolId};
@@ -535,6 +536,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_this_expression(&mut self, it: &ThisExpression) {
         self.check_global_this(it.span);
         walk::walk_this_expression(self, it);
+    }
+
+    fn visit_object_expression(&mut self, it: &ObjectExpression<'a>) {
+        self.check_shorthand_property_grouping(it);
+        walk::walk_object_expression(self, it);
     }
 
     fn visit_property_definition(&mut self, it: &PropertyDefinition<'a>) {

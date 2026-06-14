@@ -330,6 +330,10 @@ const messages = Object.freeze({
   'no-literal-call': {
     noLiteralCall: 'This literal cannot be called as a function and throws a TypeError at runtime.',
   },
+  'shorthand-property-grouping': {
+    groupShorthand:
+      'Group all shorthand properties together at the beginning or end of this object declaration.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -508,6 +512,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow the "delete" operator on array elements (e.g. "delete arr[0]"), which leaves a hole without updating the array length; use Array.prototype.splice() instead',
   'no-literal-call':
     'Disallow calling a literal as a function or using it as a tagged-template tag (e.g. "true()" or "true`x`"); a literal is never callable and always throws a TypeError at runtime',
+  'shorthand-property-grouping':
+    'Require shorthand object properties to be grouped as one contiguous block at the beginning or end of the object literal, rather than interleaved with regular "key: value" properties',
 });
 
 const ruleTypes = Object.freeze({
@@ -601,6 +607,7 @@ const ruleTypes = Object.freeze({
   'misplaced-loop-counter': 'suggestion',
   'no-array-delete': 'suggestion',
   'no-literal-call': 'problem',
+  'shorthand-property-grouping': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -694,6 +701,7 @@ const recommendedRuleConfig = Object.freeze({
   'misplaced-loop-counter': 'error',
   'no-array-delete': 'error',
   'no-literal-call': 'error',
+  'shorthand-property-grouping': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
