@@ -17,7 +17,7 @@
 use serde_json::Value;
 
 use crate::ast::is_type;
-use crate::tokenize::{TokenKind, tokenize};
+use crate::tokenize::TokenKind;
 use crate::{DiagnosticDatum, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -36,8 +36,7 @@ fn node_range_start(node: &Value) -> u32 {
 /// `node.range[0]` forward. Returns `None` if no such token is found.
 fn find_create_loc(node: &Value, ctx: &RuleContext) -> Option<DiagnosticLoc> {
     let start_off = node_range_start(node);
-    let tokenized = tokenize(ctx.source);
-    let tok = tokenized.tokens.iter().find(|t| {
+    let tok = ctx.tokens.iter().find(|t| {
         t.start >= start_off
             && t.kind == TokenKind::Keyword
             && t.value.eq_ignore_ascii_case("CREATE")

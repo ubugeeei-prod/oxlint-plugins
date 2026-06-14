@@ -8,7 +8,7 @@
 
 use serde_json::Value;
 
-use crate::tokenize::{TokenKind, tokenize};
+use crate::tokenize::TokenKind;
 use crate::{DiagnosticFix, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -18,8 +18,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         return;
     }
 
-    let tokenized = tokenize(ctx.source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     for (i, token) in tokens.iter().enumerate() {
         // `now()` — three-token sequence: Identifier "now", "(", ")".

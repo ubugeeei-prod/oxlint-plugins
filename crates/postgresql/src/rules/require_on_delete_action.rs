@@ -4,7 +4,7 @@
 use serde_json::Value;
 
 use crate::ast::{is_type, str_field};
-use crate::tokenize::{TokenKind, tokenize};
+use crate::tokenize::TokenKind;
 use crate::{DiagnosticDatum, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -118,8 +118,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         _ => return,
     };
 
-    let tokenized = tokenize(ctx.source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     // Find the first token at or after the constraint start.
     let Some(start_idx) = tokens.iter().position(|t| t.start >= constraint_start) else {

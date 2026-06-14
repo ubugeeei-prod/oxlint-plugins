@@ -11,7 +11,7 @@ use serde_json::Value;
 
 use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
 
-use crate::tokenize::{TokenKind, tokenize};
+use crate::tokenize::TokenKind;
 use crate::{DiagnosticDatum, DiagnosticFix, DiagnosticLoc, RuleContext};
 
 // Node types whose `range[0]` is a general identifier (only the first token
@@ -200,8 +200,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
     // `transformType = null` in upstream when types_mode == "skip".
     let apply_types = types_mode != "skip";
 
-    let tokenized = tokenize(ctx.source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     // Phase 1: collect AST position exemptions.
     let mut positions = Positions::new();

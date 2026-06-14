@@ -7,7 +7,7 @@
 
 use serde_json::Value;
 
-use crate::tokenize::{Token, TokenKind, tokenize};
+use crate::tokenize::{Token, TokenKind};
 use crate::{DiagnosticFix, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -100,8 +100,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         .unwrap_or("operator");
     let target_operator = form != "function";
 
-    let tokenized = tokenize(source);
-    let tokens = &tokenized.tokens;
+    let tokens = ctx.tokens;
 
     // Collect all TypeCast nodes across all statements.
     let mut type_casts: SmallVec<[&Value; 16]> = SmallVec::new();

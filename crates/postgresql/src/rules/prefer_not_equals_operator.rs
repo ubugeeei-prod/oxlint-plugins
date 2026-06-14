@@ -8,7 +8,7 @@
 
 use serde_json::Value;
 
-use crate::tokenize::{TokenKind, tokenize};
+use crate::tokenize::TokenKind;
 use crate::{DiagnosticFix, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -32,8 +32,8 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         "preferBang"
     };
 
-    let Tokenized { tokens, .. } = tokenize(ctx.source);
-    for token in &tokens {
+    let tokens = ctx.tokens;
+    for token in tokens {
         if token.kind != TokenKind::Operator {
             continue;
         }
@@ -54,5 +54,3 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         ctx.report_loc(loc, message_id, SmallVec::new(), Some(fix));
     }
 }
-
-use crate::tokenize::Tokenized;

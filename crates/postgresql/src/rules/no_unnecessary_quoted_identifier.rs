@@ -11,7 +11,6 @@
 
 use serde_json::Value;
 
-use crate::tokenize::{Tokenized, tokenize};
 use crate::{DiagnosticDatum, DiagnosticFix, DiagnosticLoc, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -59,8 +58,8 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         return;
     }
 
-    let Tokenized { tokens, .. } = tokenize(ctx.source);
-    for token in &tokens {
+    let tokens = ctx.tokens;
+    for token in tokens {
         // The parser emits `"..."` as a String-typed token; distinguish it from
         // a `'...'` literal by the opening quote.
         if !token.value.starts_with('"') {
