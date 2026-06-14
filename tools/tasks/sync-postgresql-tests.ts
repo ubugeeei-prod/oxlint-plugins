@@ -60,7 +60,10 @@ type Case = {
 };
 
 function readText(path: string): string {
-  return readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
+  // Trim matches upstream test-utils.ts (`readSql(...).trim()`) so that
+  // `code` and the YAML-derived `output` share the same baseline (no trailing
+  // newline), making autofix output comparisons exact.
+  return readFileSync(path, 'utf8').replace(/\r\n/g, '\n').trim();
 }
 
 function readMeta(path: string): FixtureMeta {

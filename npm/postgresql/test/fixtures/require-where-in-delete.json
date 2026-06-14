@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "delete-with-returning",
-      "code": "DELETE FROM users WHERE created_at < now() - interval '30 days' RETURNING id;\n"
+      "code": "DELETE FROM users WHERE created_at < now() - interval '30 days' RETURNING id;"
     },
     {
       "name": "delete-with-where",
-      "code": "DELETE FROM users WHERE id = 1;\n"
+      "code": "DELETE FROM users WHERE id = 1;"
     }
   ],
   "invalid": [
     {
       "name": "delete-without-where",
-      "code": "DELETE FROM users;\n",
+      "code": "DELETE FROM users;",
       "errors": [
         {
           "messageId": "missingWhere",

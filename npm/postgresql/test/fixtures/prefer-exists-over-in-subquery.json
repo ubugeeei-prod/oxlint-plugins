@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "exists-form",
-      "code": "SELECT * FROM t WHERE EXISTS (SELECT 1 FROM other WHERE other.id = t.x);\nSELECT * FROM t WHERE x IN (1, 2, 3);\nSELECT * FROM t WHERE x = 1;\n"
+      "code": "SELECT * FROM t WHERE EXISTS (SELECT 1 FROM other WHERE other.id = t.x);\nSELECT * FROM t WHERE x IN (1, 2, 3);\nSELECT * FROM t WHERE x = 1;"
     }
   ],
   "invalid": [
     {
       "name": "in-subquery",
-      "code": "SELECT * FROM t WHERE x IN (SELECT id FROM other);\nSELECT * FROM t WHERE x = ANY (SELECT id FROM other);\n",
+      "code": "SELECT * FROM t WHERE x IN (SELECT id FROM other);\nSELECT * FROM t WHERE x = ANY (SELECT id FROM other);",
       "errors": [
         {
           "messageId": "preferExists",

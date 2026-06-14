@@ -9,7 +9,7 @@
   "valid": [
     {
       "name": "allow-list",
-      "code": "CREATE TABLE t (\n  \"userId\" int,\n  \"createdAt\" timestamptz\n);\n",
+      "code": "CREATE TABLE t (\n  \"userId\" int,\n  \"createdAt\" timestamptz\n);",
       "options": [
         {
           "allow": ["userId", "createdAt"]
@@ -18,17 +18,17 @@
     },
     {
       "name": "case-folded",
-      "code": "CREATE TABLE t (CamelCol INT);\n"
+      "code": "CREATE TABLE t (CamelCol INT);"
     },
     {
       "name": "snake",
-      "code": "CREATE TABLE t (id INT PRIMARY KEY, created_at TIMESTAMPTZ);\n"
+      "code": "CREATE TABLE t (id INT PRIMARY KEY, created_at TIMESTAMPTZ);"
     }
   ],
   "invalid": [
     {
       "name": "allow-list-partial",
-      "code": "CREATE TABLE t (\n  \"userId\" int,\n  \"createdAt\" timestamptz\n);\n",
+      "code": "CREATE TABLE t (\n  \"userId\" int,\n  \"createdAt\" timestamptz\n);",
       "options": [
         {
           "allow": ["userId"]
@@ -48,7 +48,7 @@
     },
     {
       "name": "quoted-camel",
-      "code": "CREATE TABLE t (\"CamelCol\" INT);\n",
+      "code": "CREATE TABLE t (\"CamelCol\" INT);",
       "errors": [
         {
           "messageId": "notSnakeCase",

@@ -9,21 +9,21 @@
   "valid": [
     {
       "name": "bigint-pk",
-      "code": "CREATE TABLE users (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, name text);\n"
+      "code": "CREATE TABLE users (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, name text);"
     },
     {
       "name": "int-not-pk",
-      "code": "-- An int `id` column that is not a primary key is not flagged.\nCREATE TABLE event_count (id int, count int);\n"
+      "code": "-- An int `id` column that is not a primary key is not flagged.\nCREATE TABLE event_count (id int, count int);"
     },
     {
       "name": "uuid-pk",
-      "code": "CREATE TABLE users (id uuid PRIMARY KEY, name text);\n"
+      "code": "CREATE TABLE users (id uuid PRIMARY KEY, name text);"
     }
   ],
   "invalid": [
     {
       "name": "int-pk",
-      "code": "CREATE TABLE users (id int PRIMARY KEY, name text);\n",
+      "code": "CREATE TABLE users (id int PRIMARY KEY, name text);",
       "errors": [
         {
           "messageId": "preferBigintId",
@@ -38,7 +38,7 @@
     },
     {
       "name": "serial-pk",
-      "code": "CREATE TABLE users (id serial PRIMARY KEY, name text);\n",
+      "code": "CREATE TABLE users (id serial PRIMARY KEY, name text);",
       "errors": [
         {
           "messageId": "preferBigintId",
@@ -53,7 +53,7 @@
     },
     {
       "name": "table-pk",
-      "code": "CREATE TABLE users (id int, name text, PRIMARY KEY (id));\n",
+      "code": "CREATE TABLE users (id int, name text, PRIMARY KEY (id));",
       "errors": [
         {
           "messageId": "preferBigintId",

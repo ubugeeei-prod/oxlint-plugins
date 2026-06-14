@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "standard-timestamp",
-      "code": "INSERT INTO events (created_at) VALUES (CURRENT_TIMESTAMP);\nSELECT now FROM noise_metric_table;\n"
+      "code": "INSERT INTO events (created_at) VALUES (CURRENT_TIMESTAMP);\nSELECT now FROM noise_metric_table;"
     }
   ],
   "invalid": [
     {
       "name": "local-timestamp",
-      "code": "SELECT LOCALTIMESTAMP, LOCALTIME FROM t;\n",
+      "code": "SELECT LOCALTIMESTAMP, LOCALTIME FROM t;",
       "errors": [
         {
           "messageId": "preferCurrentTimestampOverLocal",
@@ -38,7 +38,7 @@
     },
     {
       "name": "now-call",
-      "code": "INSERT INTO events (created_at) VALUES (now());\n",
+      "code": "INSERT INTO events (created_at) VALUES (now());",
       "errors": [
         {
           "messageId": "preferCurrentTimestamp",

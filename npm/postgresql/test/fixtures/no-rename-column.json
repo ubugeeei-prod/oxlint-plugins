@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "add-column",
-      "code": "ALTER TABLE users ADD COLUMN email text;\n"
+      "code": "ALTER TABLE users ADD COLUMN email text;"
     }
   ],
   "invalid": [
     {
       "name": "rename-column",
-      "code": "ALTER TABLE users RENAME COLUMN email_address TO email;\n",
+      "code": "ALTER TABLE users RENAME COLUMN email_address TO email;",
       "errors": [
         {
           "messageId": "noRenameColumn",

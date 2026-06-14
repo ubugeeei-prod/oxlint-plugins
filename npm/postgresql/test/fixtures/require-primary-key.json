@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "inline-pk",
-      "code": "CREATE TABLE t (id INT PRIMARY KEY);\n"
+      "code": "CREATE TABLE t (id INT PRIMARY KEY);"
     },
     {
       "name": "table-level-pk",
-      "code": "CREATE TABLE t (id INT, name TEXT, PRIMARY KEY (id));\n"
+      "code": "CREATE TABLE t (id INT, name TEXT, PRIMARY KEY (id));"
     }
   ],
   "invalid": [
     {
       "name": "no-pk",
-      "code": "CREATE TABLE t (id INT, name TEXT);\n",
+      "code": "CREATE TABLE t (id INT, name TEXT);",
       "errors": [
         {
           "messageId": "missingPrimaryKey",

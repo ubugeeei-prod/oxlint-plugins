@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "persistent",
-      "code": "CREATE TABLE staging (id int);\n"
+      "code": "CREATE TABLE staging (id int);"
     }
   ],
   "invalid": [
     {
       "name": "temp",
-      "code": "CREATE TEMP TABLE staging (id int);\n",
+      "code": "CREATE TEMP TABLE staging (id int);",
       "errors": [
         {
           "messageId": "noTemporaryTable",

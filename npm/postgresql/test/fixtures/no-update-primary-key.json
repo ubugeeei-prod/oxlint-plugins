@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "no-pk-update",
-      "code": "UPDATE users SET name = 'foo' WHERE id = 1;\nUPDATE orders SET total = 100, status = 'paid' WHERE id = 2;\n-- non-PK column happens to share a name with another table's PK pattern\n-- (orders.user_id is a foreign key, not the orders PK by the heuristic)\nUPDATE orders SET user_id = 5 WHERE id = 3;\n"
+      "code": "UPDATE users SET name = 'foo' WHERE id = 1;\nUPDATE orders SET total = 100, status = 'paid' WHERE id = 2;\n-- non-PK column happens to share a name with another table's PK pattern\n-- (orders.user_id is a foreign key, not the orders PK by the heuristic)\nUPDATE orders SET user_id = 5 WHERE id = 3;"
     }
   ],
   "invalid": [
     {
       "name": "custom-pk-name",
-      "code": "UPDATE users SET uuid = '...' WHERE name = 'a';\n",
+      "code": "UPDATE users SET uuid = '...' WHERE name = 'a';",
       "options": [
         {
           "pkColumnNames": ["uuid"]
@@ -35,7 +35,7 @@
     },
     {
       "name": "update-id",
-      "code": "UPDATE users SET id = 99 WHERE id = 1;\nUPDATE orders SET orders_id = 99 WHERE orders_id = 1;\n",
+      "code": "UPDATE users SET id = 99 WHERE id = 1;\nUPDATE orders SET orders_id = 99 WHERE orders_id = 1;",
       "errors": [
         {
           "messageId": "noUpdatePk",

@@ -218,6 +218,26 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-identifier-too-long': {
+    type: 'problem',
+    description:
+      "Disallow identifiers longer than PostgreSQL's `NAMEDATALEN - 1` limit (default 63 bytes)",
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          max: { type: 'integer', minimum: 1 },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      identifierTooLong:
+        'Identifier `{{name}}` is {{length}} bytes, which exceeds the {{max}}-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.',
+    },
+  },
   'no-implicit-join': {
     type: 'suggestion',
     description:

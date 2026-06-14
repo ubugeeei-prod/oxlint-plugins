@@ -9,15 +9,15 @@
   "valid": [
     {
       "name": "always-timestamp-with-time-zone",
-      "code": "CREATE TABLE t (created_at TIMESTAMP WITH TIME ZONE);\n"
+      "code": "CREATE TABLE t (created_at TIMESTAMP WITH TIME ZONE);"
     },
     {
       "name": "always-timestamptz",
-      "code": "CREATE TABLE t (created_at TIMESTAMPTZ);\n"
+      "code": "CREATE TABLE t (created_at TIMESTAMPTZ);"
     },
     {
       "name": "never-timestamp",
-      "code": "CREATE TABLE t (created_at TIMESTAMP);\n",
+      "code": "CREATE TABLE t (created_at TIMESTAMP);",
       "options": [
         {
           "style": "never"
@@ -28,7 +28,7 @@
   "invalid": [
     {
       "name": "always-timestamp",
-      "code": "CREATE TABLE t (created_at TIMESTAMP);\n",
+      "code": "CREATE TABLE t (created_at TIMESTAMP);",
       "errors": [
         {
           "messageId": "preferTimestamptz",
@@ -43,7 +43,7 @@
     },
     {
       "name": "never-timestamptz",
-      "code": "CREATE TABLE t (created_at TIMESTAMPTZ);\nCREATE TABLE u (created_at TIMESTAMP WITH TIME ZONE);\n",
+      "code": "CREATE TABLE t (created_at TIMESTAMPTZ);\nCREATE TABLE u (created_at TIMESTAMP WITH TIME ZONE);",
       "options": [
         {
           "style": "never"

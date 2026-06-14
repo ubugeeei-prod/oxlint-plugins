@@ -9,7 +9,7 @@
   "valid": [
     {
       "name": "never-varchar",
-      "code": "CREATE TABLE t (name varchar(255));\n",
+      "code": "CREATE TABLE t (name varchar(255));",
       "options": [
         {
           "style": "never"
@@ -18,17 +18,17 @@
     },
     {
       "name": "text-column",
-      "code": "CREATE TABLE users (name TEXT);\n"
+      "code": "CREATE TABLE users (name TEXT);"
     },
     {
       "name": "unlimited-varchar",
-      "code": "CREATE TABLE users (name VARCHAR);\n"
+      "code": "CREATE TABLE users (name VARCHAR);"
     }
   ],
   "invalid": [
     {
       "name": "never-text",
-      "code": "CREATE TABLE t (name text);\n",
+      "code": "CREATE TABLE t (name text);",
       "options": [
         {
           "style": "never"
@@ -48,7 +48,7 @@
     },
     {
       "name": "varchar-n",
-      "code": "CREATE TABLE users (name VARCHAR(255));\n",
+      "code": "CREATE TABLE users (name VARCHAR(255));",
       "errors": [
         {
           "messageId": "preferText",

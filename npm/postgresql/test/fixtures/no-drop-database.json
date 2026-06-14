@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "drop-table",
-      "code": "DROP TABLE archive;\n"
+      "code": "DROP TABLE archive;"
     }
   ],
   "invalid": [
     {
       "name": "drop-database",
-      "code": "DROP DATABASE archive_2023;\n",
+      "code": "DROP DATABASE archive_2023;",
       "errors": [
         {
           "messageId": "noDropDatabase",

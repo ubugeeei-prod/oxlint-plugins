@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "with-limit",
-      "code": "WITH RECURSIVE r AS (\n  SELECT 1 AS n\n  UNION ALL\n  SELECT n + 1 FROM r\n) SELECT * FROM r LIMIT 10;\n-- Non-recursive CTEs are out of scope.\nWITH r AS (SELECT 1 AS n) SELECT * FROM r;\n"
+      "code": "WITH RECURSIVE r AS (\n  SELECT 1 AS n\n  UNION ALL\n  SELECT n + 1 FROM r\n) SELECT * FROM r LIMIT 10;\n-- Non-recursive CTEs are out of scope.\nWITH r AS (SELECT 1 AS n) SELECT * FROM r;"
     }
   ],
   "invalid": [
     {
       "name": "no-limit",
-      "code": "WITH RECURSIVE r AS (\n  SELECT 1 AS n\n  UNION ALL\n  SELECT n + 1 FROM r\n) SELECT * FROM r;\n",
+      "code": "WITH RECURSIVE r AS (\n  SELECT 1 AS n\n  UNION ALL\n  SELECT n + 1 FROM r\n) SELECT * FROM r;",
       "errors": [
         {
           "messageId": "noLimit",

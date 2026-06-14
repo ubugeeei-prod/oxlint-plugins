@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "inner-join-on",
-      "code": "SELECT 1 FROM a JOIN b ON a.id = b.id;\n"
+      "code": "SELECT 1 FROM a JOIN b ON a.id = b.id;"
     },
     {
       "name": "inner-join-using",
-      "code": "SELECT 1 FROM a INNER JOIN b USING (id);\n"
+      "code": "SELECT 1 FROM a INNER JOIN b USING (id);"
     }
   ],
   "invalid": [
     {
       "name": "cross-join",
-      "code": "SELECT 1 FROM a CROSS JOIN b;\n",
+      "code": "SELECT 1 FROM a CROSS JOIN b;",
       "errors": [
         {
           "messageId": "noCrossJoin",

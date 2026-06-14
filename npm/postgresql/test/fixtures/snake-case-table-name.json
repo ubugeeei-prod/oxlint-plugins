@@ -9,7 +9,7 @@
   "valid": [
     {
       "name": "allow-list",
-      "code": "CREATE TABLE LegacyOrders (id int);\n",
+      "code": "CREATE TABLE LegacyOrders (id int);",
       "options": [
         {
           "allow": ["LegacyOrders"]
@@ -18,17 +18,17 @@
     },
     {
       "name": "case-folded",
-      "code": "CREATE TABLE UserAccounts (id INT PRIMARY KEY);\n"
+      "code": "CREATE TABLE UserAccounts (id INT PRIMARY KEY);"
     },
     {
       "name": "snake",
-      "code": "CREATE TABLE user_accounts (id INT PRIMARY KEY);\n"
+      "code": "CREATE TABLE user_accounts (id INT PRIMARY KEY);"
     }
   ],
   "invalid": [
     {
       "name": "quoted-camel",
-      "code": "CREATE TABLE \"UserAccounts\" (id INT PRIMARY KEY);\n",
+      "code": "CREATE TABLE \"UserAccounts\" (id INT PRIMARY KEY);",
       "errors": [
         {
           "messageId": "notSnakeCase",
