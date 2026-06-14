@@ -226,7 +226,10 @@ impl<'a> ExportNode<'a> {
     }
     fn source_str(&self) -> &str {
         match self {
-            ExportNode::Named(d) => d.source.as_ref().expect("export-from").value.as_str(),
+            // `ExportNode::Named` is only constructed for export-from nodes
+            // (`is_export_from_named` guarantees `source.is_some()`); fall back to
+            // an empty key rather than panicking if that invariant ever changes.
+            ExportNode::Named(d) => d.source.as_ref().map_or("", |s| s.value.as_str()),
             ExportNode::All(d) => d.source.value.as_str(),
         }
     }

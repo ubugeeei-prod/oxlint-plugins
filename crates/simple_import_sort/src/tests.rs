@@ -192,3 +192,20 @@ fn preserves_blank_lines_inside_block_comments() {
         "import /* x\n\ny */ a from \"a\"\nimport b from \"b\""
     );
 }
+
+#[test]
+fn newline_style_follows_the_first_newline() {
+    // Upstream `guessNewline` uses the FIRST newline in the file. Here the first
+    // line ends in LF, so inserted separators are LF even though a later line
+    // uses CRLF — must not switch the whole file to CRLF.
+    let source = "import b from 'b';\nimport a from 'a';\r\n";
+    let diagnostics =
+        scan_simple_import_sort(source, "fixture.js", &SimpleImportSortOptions::default());
+
+    assert_eq!(diagnostics.len(), 1);
+    let fix = diagnostics[0].fix.as_ref().expect("fix");
+    assert_eq!(
+        fix.replacement.as_str(),
+        "import a from 'a';\nimport b from 'b';"
+    );
+}

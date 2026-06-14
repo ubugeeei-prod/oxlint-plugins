@@ -893,10 +893,13 @@ pub(crate) fn needs_starting_newline(tokens: &[Token]) -> bool {
 // ---------------------------------------------------------------------------
 
 pub(crate) fn guess_newline(source_text: &str) -> &'static str {
-    if source_text.contains("\r\n") {
-        "\r\n"
-    } else {
-        "\n"
+    // Mirror upstream `guessNewline` = `/(\r?\n)/.exec(text)`: the FIRST newline
+    // in the file decides the style (not "any CRLF anywhere"), so a file whose
+    // first line ends in LF is treated as LF even if a later line uses CRLF.
+    match source_text.find('\n') {
+        Some(index) if index > 0 && source_text.as_bytes()[index - 1] == b'\r' => "\r\n",
+        Some(_) => "\n",
+        None => "\n",
     }
 }
 
