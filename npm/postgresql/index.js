@@ -17,6 +17,346 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'align-column-definitions': {
+    type: 'layout',
+    description:
+      'Align column definitions vertically inside `CREATE TABLE` so that name, type, and constraints share consistent column offsets',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { gap: { type: 'integer', minimum: 1 } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      misaligned: 'Column definitions in this CREATE TABLE are not vertically aligned.',
+    },
+  },
+  'align-values': {
+    type: 'layout',
+    description:
+      'Align column values vertically inside multi-row `INSERT ... VALUES (...)` so that each tuple position shares a consistent width across rows',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { gap: { type: 'integer', minimum: 1 } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      misaligned:
+        'VALUES rows are not vertically aligned: column widths can shrink to fit the current rows.',
+    },
+  },
+  'consistent-as-for-column-alias': {
+    type: 'layout',
+    description:
+      'Enforce a consistent stance on the `AS` keyword before column aliases in `SELECT` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferAs: 'Use `AS` before the column alias `{{alias}}`.',
+      unexpectedAs: 'Omit `AS` before the column alias `{{alias}}`.',
+    },
+  },
+  'consistent-as-for-table-alias': {
+    type: 'layout',
+    description:
+      'Enforce a consistent stance on the `AS` keyword before table aliases (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferAs: 'Use `AS` before the table alias `{{alias}}`.',
+      unexpectedAs: 'Omit `AS` before the table alias `{{alias}}`.',
+    },
+  },
+  'consistent-between-over-and': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `x BETWEEN a AND b` vs `x >= a AND x <= b` for closed-interval range checks',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferBetween: 'Use `{{lhs}} BETWEEN {{lower}} AND {{upper}}` instead of `>= ... AND <=`.',
+      unexpectedBetween:
+        'Use `{{lhs}} >= {{lower}} AND {{lhs}} <= {{upper}}` instead of `BETWEEN`. Some teams prefer explicit comparisons so the inclusive bounds are obvious to readers.',
+    },
+  },
+  'consistent-create-index-concurrently': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `CONCURRENTLY` for `CREATE INDEX` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferConcurrently:
+        'Use `CREATE INDEX CONCURRENTLY`. A plain `CREATE INDEX` takes a `SHARE` lock on the target table for the duration of the build — readers are unaffected, but every writer is blocked. Concurrent index builds cannot run inside a transaction, so a migration tool that wraps each step in BEGIN/COMMIT needs an explicit opt-out here.',
+      unexpectedConcurrently:
+        'Avoid `CREATE INDEX CONCURRENTLY`. Concurrent index builds cannot run inside a transaction, so they conflict with migration tools that wrap each step in BEGIN/COMMIT; drop the keyword and use a plain `CREATE INDEX`.',
+    },
+  },
+  'consistent-create-or-replace': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `CREATE OR REPLACE` for `FUNCTION` / `PROCEDURE` / `VIEW` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferOrReplace:
+        'Use `CREATE OR REPLACE {{kind}}` so re-running this migration does not abort with `relation already exists`.',
+      unexpectedOrReplace:
+        'Avoid `CREATE OR REPLACE {{kind}}`; drop and re-create the object explicitly so unintended overwrites are surfaced.',
+    },
+  },
+  'consistent-drop-index-concurrently': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `CONCURRENTLY` for `DROP INDEX` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferConcurrently:
+        'Use `DROP INDEX CONCURRENTLY` to avoid an `ACCESS EXCLUSIVE` lock on the table for the entire drop.',
+      unexpectedConcurrently:
+        'Avoid `DROP INDEX CONCURRENTLY`. Concurrent drops cannot run inside a transaction, so they conflict with migration tools that wrap each step in BEGIN/COMMIT.',
+    },
+  },
+  'consistent-explicit-inner-join': {
+    type: 'layout',
+    description:
+      'Enforce a consistent stance on the explicit `INNER` keyword in `INNER JOIN` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferInnerJoin: 'Write `INNER JOIN` explicitly instead of bare `JOIN`.',
+      unexpectedInnerJoin: 'Omit the redundant `INNER`; use bare `JOIN` for inner joins.',
+    },
+  },
+  'consistent-explicit-outer-join': {
+    type: 'layout',
+    description:
+      'Enforce a consistent stance on the explicit `OUTER` keyword in `LEFT/RIGHT/FULL OUTER JOIN` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferOuterJoin: 'Write `{{side}} OUTER JOIN` explicitly instead of `{{side}} JOIN`.',
+      unexpectedOuterJoin:
+        'Omit the redundant `OUTER`; use `{{side}} JOIN` instead of `{{side}} OUTER JOIN`.',
+    },
+  },
+  'consistent-fk-not-valid': {
+    type: 'problem',
+    description:
+      'Enforce a consistent stance on `NOT VALID` for `ALTER TABLE ... ADD FOREIGN KEY` (either always require it, or always forbid it)',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferFkNotValid:
+        'Adding a foreign key without `NOT VALID` validates every existing row under an `ACCESS EXCLUSIVE` lock that blocks writers. Use `ADD CONSTRAINT ... FOREIGN KEY (...) REFERENCES ... NOT VALID`, then `ALTER TABLE ... VALIDATE CONSTRAINT` in a separate migration (`VALIDATE` only takes a `SHARE UPDATE EXCLUSIVE` lock).',
+      unexpectedFkNotValid:
+        "Avoid `NOT VALID` on foreign keys. The constraint is added in a non-validated state and won't reject existing violations until you remember to run `VALIDATE CONSTRAINT`; some projects prefer to fail loudly at constraint-add time instead.",
+    },
+  },
+  'consistent-identity-over-serial': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `GENERATED ... AS IDENTITY` vs `SERIAL` / `BIGSERIAL` / `SMALLSERIAL`',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferIdentity:
+        'Use `GENERATED ALWAYS AS IDENTITY` (SQL standard) instead of `{{type}}`. The serial pseudo-types create a separately-owned sequence that breaks under pg_dump round-trips and does not honor column privileges.',
+      unexpectedIdentity:
+        'Use a serial pseudo-type (e.g. `bigserial`) instead of `GENERATED ... AS IDENTITY`. Useful for projects that need to keep compatibility with tooling that does not understand identity columns.',
+    },
+  },
+  'consistent-jsonb-over-json': {
+    type: 'suggestion',
+    description: 'Enforce a consistent stance on `jsonb` vs `json` for column types',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferJsonb:
+        'Use `jsonb` instead of `json`. `jsonb` stores the parsed representation, supports indexing, and is what almost every application actually wants.',
+      unexpectedJsonb:
+        "Use `json` instead of `jsonb`. Useful when the project intentionally relies on `json`'s preservation of key order, whitespace, and duplicate keys.",
+    },
+  },
+  'consistent-reindex-concurrently': {
+    type: 'problem',
+    description:
+      'Enforce a consistent stance on `CONCURRENTLY` for `REINDEX` (either always require it, or always forbid it)',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferReindexConcurrently:
+        '`REINDEX` without `CONCURRENTLY` takes a `SHARE` lock (table) or `ACCESS EXCLUSIVE` (index), blocking writers for the rebuild. Use `REINDEX (TABLE|INDEX) CONCURRENTLY ...` (PG ≥ 12) so writers keep working.',
+      unexpectedReindexConcurrently:
+        'Avoid `REINDEX CONCURRENTLY`. Concurrent reindex cannot run inside a transaction; use plain `REINDEX` when the migration tool wraps each step in BEGIN/COMMIT.',
+    },
+  },
+  'consistent-text-over-varchar': {
+    type: 'suggestion',
+    description: 'Enforce a consistent stance on `text` vs `varchar(n)` for string columns',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferText:
+        'Use `text` instead of `varchar(n)`. PostgreSQL stores both the same way; the length cap is enforced by a constraint that you cannot relax without a full table rewrite. Move the limit into a CHECK constraint.',
+      unexpectedText:
+        "Use `varchar(n)` (or another bounded string type) instead of `text`. Useful for projects that intentionally cap every string column's length at the type level.",
+    },
+  },
+  'consistent-timestamptz': {
+    type: 'suggestion',
+    description: 'Enforce a consistent stance on `timestamptz` vs `timestamp` (without time zone)',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { style: { enum: ['always', 'never'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferTimestamptz:
+        'Use `timestamptz` (or `TIMESTAMP WITH TIME ZONE`) instead of `timestamp`. `timestamp` is timezone-naive: it stores the wall-clock value you handed in and assumes every reader and writer share the same convention, so two clients on different `TimeZone` settings will disagree on which instant the row represents.',
+      unexpectedTimestamptz:
+        "Use `timestamp` instead of `timestamptz` (or `TIMESTAMP WITH TIME ZONE`). When the project treats every timestamp as UTC at the application layer, `timestamp` avoids the implicit conversions `timestamptz` performs against each session's `TimeZone` setting.",
+    },
+  },
+  'no-add-check-constraint-without-not-valid': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... ADD CONSTRAINT ... CHECK (...)` without `NOT VALID`; the synchronous form holds `ACCESS EXCLUSIVE` on the table for the entire validating scan',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      checkNotValid:
+        'Add this CHECK constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not block writers under `ACCESS EXCLUSIVE`.',
+    },
+  },
+  'no-add-column-not-null-without-default': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ADD COLUMN ... NOT NULL` without a `DEFAULT` because the migration fails outright on any non-empty table',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noAddColumnNotNullWithoutDefault:
+        '`ADD COLUMN ... NOT NULL` without a `DEFAULT` aborts the migration on any table that already has rows. Either supply a `DEFAULT`, or add the column nullable first, backfill, and then `ALTER COLUMN ... SET NOT NULL` in a follow-up.',
+    },
+  },
+  'no-add-unique-constraint-directly': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... ADD CONSTRAINT ... UNIQUE (...)` written inline; build the index with `CREATE UNIQUE INDEX CONCURRENTLY` first, then promote it via `ADD CONSTRAINT ... UNIQUE USING INDEX <name>`',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      useIndexFirst:
+        "Build this UNIQUE constraint's index with `CREATE UNIQUE INDEX CONCURRENTLY` first, then promote it via `ALTER TABLE ... ADD CONSTRAINT ... UNIQUE USING INDEX <name>`. The inline form blocks writers under `ACCESS EXCLUSIVE` for the entire index build.",
+    },
+  },
   'no-alter-column-type': {
     type: 'problem',
     description:
@@ -29,6 +369,17 @@ const ruleMeta = Object.freeze({
         '`ALTER COLUMN ... TYPE` can rewrite the entire table under an ACCESS EXCLUSIVE lock. For non-trivial tables, add a new column, dual-write, backfill, and swap — or use `USING` only for known-safe conversions in a separate migration.',
     },
   },
+  'no-char-type': {
+    type: 'suggestion',
+    description: 'Disallow the blank-padded `char(n)` / `bpchar` column type',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noChar:
+        'Avoid `char(n)`. PostgreSQL pads stored values to `n` with trailing spaces and trims on read, which surprises every comparison and round-trip. Use `text` instead.',
+    },
+  },
   'no-cluster': {
     type: 'problem',
     description:
@@ -39,6 +390,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noCluster:
         '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
+    },
+  },
+  'no-composite-primary-key': {
+    type: 'problem',
+    description:
+      'Disallow composite (multi-column) PRIMARY KEY constraints; use a single surrogate key and a UNIQUE constraint on the natural columns instead',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCompositePk:
+        'Composite PRIMARY KEY is not allowed. Use a single-column surrogate key (e.g. `id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY`) and enforce the natural key with a `UNIQUE` constraint. Composite primary keys complicate joins, ORM mapping, and foreign-key references.',
     },
   },
   'no-create-role': {
@@ -112,6 +475,29 @@ const ruleMeta = Object.freeze({
         '`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table.',
     },
   },
+  'no-drop-schema-cascade': {
+    type: 'problem',
+    description:
+      'Disallow `DROP SCHEMA ... CASCADE`; it silently removes every object in the schema',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDropSchemaCascade:
+        "`DROP SCHEMA ... CASCADE` removes every table, view, function, and sequence in the schema with no preview. List the objects you actually want to drop instead, or drop the schema only when it's already empty.",
+    },
+  },
+  'no-drop-table-cascade': {
+    type: 'problem',
+    description: 'Disallow `DROP TABLE ... CASCADE` because it silently removes dependent objects',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCascade:
+        'Avoid `DROP TABLE ... CASCADE`. CASCADE silently removes dependent objects (views, foreign keys, sequences); list them explicitly so reviewers can see the blast radius.',
+    },
+  },
   'no-equality-with-null': {
     type: 'problem',
     description:
@@ -171,6 +557,24 @@ const ruleMeta = Object.freeze({
         '`HAVING` without `GROUP BY` collapses the query to one aggregate row over the whole table. If that is intended, put the predicate in `WHERE`. Otherwise, add a `GROUP BY`.',
     },
   },
+  'no-identifier-too-long': {
+    type: 'problem',
+    description:
+      "Disallow identifiers longer than PostgreSQL's `NAMEDATALEN - 1` limit (default 63 bytes)",
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { max: { type: 'integer', minimum: 1 } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      identifierTooLong:
+        'Identifier `{{name}}` is {{length}} bytes, which exceeds the {{max}}-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
@@ -207,6 +611,17 @@ const ruleMeta = Object.freeze({
         '`LIKE`/`ILIKE` patterns that begin with `%` cannot use a B-tree index and force a sequential scan. If you need substring search, use a `pg_trgm` GIN index, full-text search, or rework the schema so the prefix is indexable.',
     },
   },
+  'no-money-type': {
+    type: 'problem',
+    description: 'Disallow the `money` column type',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noMoney:
+        'Avoid `money`. Its output format and precision depend on `lc_monetary`, so the same row looks different on different servers and round-trips badly. Store amounts as `numeric` and keep the currency in a separate column.',
+    },
+  },
   'no-natural-join': {
     type: 'problem',
     description: 'Disallow `NATURAL JOIN`',
@@ -216,6 +631,29 @@ const ruleMeta = Object.freeze({
     messages: {
       noNaturalJoin:
         'Avoid `NATURAL JOIN`. The join columns are implicit — any future column with a matching name on both sides silently changes the result. Use `JOIN ... USING (...)` or `JOIN ... ON ...` and name the columns.',
+    },
+  },
+  'no-not-in-subquery': {
+    type: 'problem',
+    description:
+      'Disallow `NOT IN (subquery)` because NULL values in the subquery silently return zero rows',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noNotInSubquery:
+        '`NOT IN (subquery)` returns no rows if the subquery yields any NULL — almost certainly not what you want. Use `NOT EXISTS (SELECT 1 FROM ... WHERE ...)` instead; it handles NULL correctly.',
+    },
+  },
+  'no-numeric-without-precision': {
+    type: 'suggestion',
+    description: 'Require an explicit precision (and scale) on `NUMERIC` / `DECIMAL` columns',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noNumericWithoutPrecision:
+        "`NUMERIC` / `DECIMAL` without precision accepts unbounded magnitude and rejects nothing — it's a missed opportunity to encode the column's domain. Declare `NUMERIC(precision, scale)`.",
     },
   },
   'no-on-delete-cascade': {
@@ -278,6 +716,18 @@ const ruleMeta = Object.freeze({
         "Avoid `CREATE RULE`. PostgreSQL's rule system has surprising semantics around row counts, RETURNING, and updatable views; use a trigger or an updatable view instead.",
     },
   },
+  'no-security-definer-without-search-path': {
+    type: 'problem',
+    description:
+      "Disallow `SECURITY DEFINER` functions that do not pin `search_path`; an attacker who controls a schema in the caller's `search_path` can shadow built-in objects and escalate privileges",
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingSearchPath:
+        "`SECURITY DEFINER` function must `SET search_path = ...` (e.g. `pg_catalog, pg_temp`) so an attacker-controlled schema in the caller's `search_path` cannot shadow built-in objects called from inside the function body.",
+    },
+  },
   'no-select-into': {
     type: 'suggestion',
     description:
@@ -326,6 +776,18 @@ const ruleMeta = Object.freeze({
         '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
     },
   },
+  'no-time-type': {
+    type: 'suggestion',
+    description:
+      'Disallow `TIME` / `TIME WITH TIME ZONE` columns; they rarely model a real-world value correctly',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noTimeType:
+        '`TIME` and `TIME WITH TIME ZONE` rarely model anything correctly: `time` has no date so cannot disambiguate around DST, and `timetz` stores an offset that is meaningless without a date. Use `timestamptz` for points in time, `interval` for durations, or store an opaque `text` if all you need is a display value.',
+    },
+  },
   'no-truncate-cascade': {
     type: 'problem',
     description:
@@ -350,6 +812,49 @@ const ruleMeta = Object.freeze({
         '`UNLOGGED` tables skip WAL: they are truncated on crash, not replicated to standbys, and not restored from base backups. If a cache table is what you want, document it explicitly and disable this rule for that file.',
     },
   },
+  'no-unnecessary-quoted-identifier': {
+    type: 'layout',
+    description:
+      'Disallow unnecessary double-quoting of identifiers (e.g. `"users"` when `users` would mean the same thing)',
+    recommended: false,
+    fixable: 'code',
+    schema: [],
+    messages: {
+      unnecessaryQuoting:
+        'The identifier `"{{inner}}"` does not need quoting; `{{inner}}` means the same thing.',
+    },
+  },
+  'no-update-primary-key': {
+    type: 'problem',
+    description: 'Disallow `UPDATE ... SET <pk> = ...` for columns the rule treats as primary keys',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          pkColumnNames: { type: 'array', items: { type: 'string' }, uniqueItems: true },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      noUpdatePk:
+        'Avoid `UPDATE` on the primary-key column `{{name}}`. Primary keys are intended to be immutable; FK references and external systems can hold the old value.',
+    },
+  },
+  'no-update-without-from-binding': {
+    type: 'problem',
+    description:
+      'Disallow `UPDATE ... FROM other_table` without a `WHERE` clause; without a join condition the FROM table forms a Cartesian product with the target table and updates every row of the target as many times as `other_table` has rows',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingJoin:
+        '`UPDATE ... FROM` without a `WHERE` clause produces a Cartesian product with the target table; add a `WHERE t.x = other.x` condition to bind the rows.',
+    },
+  },
   'no-vacuum-full': {
     type: 'problem',
     description:
@@ -360,6 +865,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noVacuumFull:
         '`VACUUM FULL` takes `ACCESS EXCLUSIVE` and rewrites the whole table; the table is unavailable for the duration. For shrinking a bloated table on a live database, use `pg_repack` or `pg_squeeze`. A plain `VACUUM` (no `FULL`) is fine.',
+    },
+  },
+  'no-volatile-default-on-add-column': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... ADD COLUMN ... DEFAULT <volatile>()`; volatile defaults force a full table rewrite under `ACCESS EXCLUSIVE` because the stable-default short-cut cannot be used',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noVolatileDefault:
+        '`{{fn}}()` is VOLATILE — using it as a column DEFAULT on `ADD COLUMN` forces PostgreSQL to rewrite the entire table under `ACCESS EXCLUSIVE`. Add the column without a default, then `UPDATE` rows in batches.',
     },
   },
   'no-with-recursive-without-limit': {
@@ -374,6 +891,199 @@ const ruleMeta = Object.freeze({
         'Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.',
     },
   },
+  'plpgsql-keyword-case': {
+    type: 'layout',
+    description:
+      'Enforce a consistent case (upper or lower) for SQL and PL/pgSQL keywords inside PL/pgSQL function bodies',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { case: { enum: ['upper', 'lower'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      expectedUpper: "PL/pgSQL keyword '{{actual}}' should be uppercase: '{{expected}}'.",
+      expectedLower: "PL/pgSQL keyword '{{actual}}' should be lowercase: '{{expected}}'.",
+    },
+  },
+  'prefer-add-constraint-not-valid': {
+    type: 'suggestion',
+    description:
+      'Prefer `ADD CONSTRAINT ... NOT VALID` followed by a separate `VALIDATE CONSTRAINT` to avoid an `ACCESS EXCLUSIVE` lock on the full table while it is being scanned',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      notValid:
+        'Add this constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not hold `ACCESS EXCLUSIVE` on the table.',
+    },
+  },
+  'prefer-bigint-id': {
+    type: 'suggestion',
+    description:
+      'Prefer `bigint` for primary-key `id` columns; `int` / `smallint` primary keys risk silent overflow on growing tables',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      preferBigintId:
+        'Primary-key `id` columns should be `bigint`. `int` overflows at 2.1 billion rows and the migration to widen it later requires a table rewrite under `ACCESS EXCLUSIVE`. Declare the column as `bigint GENERATED ALWAYS AS IDENTITY` from the start.',
+    },
+  },
+  'prefer-cast-operator': {
+    type: 'layout',
+    description:
+      'Enforce a single style for type casts (`x::int` operator form vs `CAST(x AS int)` function form)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { form: { enum: ['operator', 'function'] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferOperator: 'Use `<expr>::type` operator form instead of `CAST(...)`.',
+      preferFunction: 'Use `CAST(<expr> AS type)` instead of the `::` operator.',
+    },
+  },
+  'prefer-coalesce-over-case': {
+    type: 'suggestion',
+    description:
+      'Prefer `COALESCE(x, y)` over `CASE WHEN x IS NULL THEN y ELSE x END` (and its IS NOT NULL mirror)',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      preferCoalesceOverCase:
+        '`CASE WHEN ... IS NULL THEN ... ELSE ... END` is a verbose `COALESCE`. Use `COALESCE(x, fallback)` instead.',
+    },
+  },
+  'prefer-current-timestamp-over-now': {
+    type: 'layout',
+    description:
+      "Prefer SQL-standard `CURRENT_TIMESTAMP` / `CURRENT_TIME` over PostgreSQL's `now()` and the timezone-naive `LOCALTIMESTAMP` / `LOCALTIME`",
+    recommended: false,
+    fixable: 'code',
+    schema: [],
+    messages: {
+      preferCurrentTimestamp: 'Use the SQL-standard `CURRENT_TIMESTAMP` instead of `now()`.',
+      preferCurrentTimestampOverLocal:
+        'Use `CURRENT_TIMESTAMP` instead of `LOCALTIMESTAMP`. `LOCALTIMESTAMP` returns a timezone-naive `timestamp`; `CURRENT_TIMESTAMP` returns `timestamptz`, which is what most apps actually want.',
+      preferCurrentTimeOverLocal:
+        'Use `CURRENT_TIME` instead of `LOCALTIME`. `LOCALTIME` returns a timezone-naive `time`; `CURRENT_TIME` returns `timetz`.',
+    },
+  },
+  'prefer-exists-over-in-subquery': {
+    type: 'suggestion',
+    description:
+      'Prefer `EXISTS (...)` over `... IN (subquery)` so NULL handling is unambiguous and the planner can use a semi-join',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      preferExists:
+        'Use `EXISTS (...)` instead of `IN (subquery)`. `IN` returns NULL when the subquery has any NULL row, which silently turns the row into a no-match; `EXISTS` is unambiguously boolean.',
+    },
+  },
+  'prefer-explicit-null-ordering': {
+    type: 'suggestion',
+    description:
+      'When `ORDER BY` specifies an explicit direction, require an explicit `NULLS FIRST` / `NULLS LAST` so null ordering is not implicit',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      preferExplicitNullOrdering:
+        "`ORDER BY ... ASC|DESC` without `NULLS FIRST` / `NULLS LAST` relies on PostgreSQL's implicit ordering (NULLS LAST for ASC, NULLS FIRST for DESC), which trips up cross-database readers. Add an explicit `NULLS FIRST` / `NULLS LAST`.",
+    },
+  },
+  'prefer-in-list-over-or': {
+    type: 'suggestion',
+    description: 'Prefer `x IN (a, b, c)` over a chain of `x = a OR x = b OR x = c`',
+    recommended: false,
+    fixable: 'code',
+    schema: [],
+    messages: {
+      preferIn: 'Combine these `=` checks on `{{lhs}}` into a single `IN (...)` clause.',
+    },
+  },
+  'prefer-keyword-case': {
+    type: 'layout',
+    description: 'Enforce a consistent case (upper or lower) for SQL keywords',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          case: { enum: ['upper', 'lower'] },
+          types: { enum: ['upper', 'lower', 'skip'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      expectedUpper: "SQL keyword '{{actual}}' should be uppercase: '{{expected}}'.",
+      expectedLower: "SQL keyword '{{actual}}' should be lowercase: '{{expected}}'.",
+    },
+  },
+  'prefer-not-equals-operator': {
+    type: 'layout',
+    description: 'Enforce a single style for the not-equal operator (`<>` or `!=`)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: { operator: { enum: ['<>', '!='] } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferAngle: 'Use `<>` instead of `!=`.',
+      preferBang: 'Use `!=` instead of `<>`.',
+    },
+  },
+  'require-fk-include-columns': {
+    type: 'problem',
+    description:
+      'Require every foreign-key constraint to include a configured set of columns (e.g. `tenant_id` in a multi-tenant database)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          columns: { type: 'array', items: { type: 'string' }, uniqueItems: true, minItems: 1 },
+          excludeTablePattern: { type: 'string' },
+          excludeReferencedTablePattern: { type: 'string' },
+        },
+        required: ['columns'],
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingFkColumn:
+        'Foreign-key constraint on `{{table}}` references `{{refTable}}` but does not include `{{missing}}`. In a multi-tenant database every FK should carry the tenant key so a child row cannot point at a parent in a different tenant.',
+    },
+  },
+  'require-if-exists': {
+    type: 'suggestion',
+    description:
+      'Require `IF EXISTS` on every `DROP` statement so re-running a migration on a database that already lost the object does not error',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingIfExists:
+        'Add `IF EXISTS` to this `DROP` so re-running the migration on a database that already lost the object does not abort.',
+    },
+  },
   'require-limit': {
     type: 'suggestion',
     description: 'Require LIMIT clause in SELECT statements',
@@ -383,6 +1093,110 @@ const ruleMeta = Object.freeze({
     messages: {
       missingLimit:
         'SELECT statement should include a LIMIT clause to prevent excessive data retrieval',
+    },
+  },
+  'require-named-constraint': {
+    type: 'suggestion',
+    description:
+      'Require an explicit name on table-level CHECK, UNIQUE, FOREIGN KEY, and EXCLUSION constraints',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      requireNamedConstraint:
+        'Table-level CHECK / UNIQUE / FOREIGN KEY / EXCLUSION constraints should be named with `CONSTRAINT <name>`. Auto-generated names are unpredictable across environments and make later `DROP CONSTRAINT` / `ALTER CONSTRAINT` migrations brittle.',
+    },
+  },
+  'require-on-delete-action': {
+    type: 'suggestion',
+    description: 'Require an explicit `ON DELETE` clause on every foreign-key constraint',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allowed: {
+            type: 'array',
+            items: { enum: ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL', 'SET DEFAULT'] },
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingOnDelete:
+        'Foreign-key constraint is missing an explicit `ON DELETE` clause; the implicit default is `NO ACTION`. Make the choice explicit so reviewers can see what happens to dependent rows.',
+      disallowedAction:
+        "`ON DELETE {{action}}` is not in the `allowed` list ({{allowedList}}). Either change the action or extend the rule's `allowed` option.",
+    },
+  },
+  'require-primary-key': {
+    type: 'suggestion',
+    description: 'Require every `CREATE TABLE` to declare a primary key',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingPrimaryKey:
+        'Table `{{table}}` has no PRIMARY KEY. Tables without one cannot be replicated cleanly, cannot be sharded predictably, and break almost every ORM. Add one as either a column constraint or a table-level constraint.',
+    },
+  },
+  'require-schema-qualified-table': {
+    type: 'suggestion',
+    description:
+      'Require `CREATE TABLE` to use a schema-qualified name (e.g. `audit.events`) so the target schema is explicit',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      requireSchemaQualifiedTable:
+        '`CREATE TABLE` should specify a schema (e.g. `audit.events`). Without one, the target depends on `search_path` and may land in an unintended schema. The rule is off by default in `recommended` because many projects intentionally use the `public` schema.',
+    },
+  },
+  'require-table-columns': {
+    type: 'problem',
+    description:
+      'Require every `CREATE TABLE` to include a configured set of columns (e.g. multi-tenant / audit columns like `tenant_id`, `created_at`, `updated_by`)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          columns: { type: 'array', items: { type: 'string' }, uniqueItems: true, minItems: 1 },
+          overrides: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                pattern: { type: 'string' },
+                columns: { type: 'array', items: { type: 'string' }, uniqueItems: true },
+              },
+              required: ['pattern', 'columns'],
+              additionalProperties: false,
+            },
+          },
+          exclude: { type: 'string' },
+        },
+        required: ['columns'],
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingColumn:
+        '`CREATE TABLE {{table}}` is missing required column `{{missing}}`. {{rationale}}',
+    },
+  },
+  'require-trailing-semicolon': {
+    type: 'layout',
+    description: 'Require a trailing `;` at the end of the SQL file',
+    recommended: false,
+    fixable: 'code',
+    schema: [],
+    messages: {
+      missingSemicolon: 'Missing trailing `;` at the end of the file.',
     },
   },
   'require-where-in-delete': {
@@ -405,6 +1219,40 @@ const ruleMeta = Object.freeze({
     messages: {
       missingWhere:
         'UPDATE without WHERE rewrites every row in the table. Add a WHERE clause to scope the change.',
+    },
+  },
+  'snake-case-column-name': {
+    type: 'suggestion',
+    description: 'Require column names to be snake_case',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { allow: { type: 'array', items: { type: 'string' }, uniqueItems: true } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      notSnakeCase:
+        'Column name `{{name}}` is not snake_case. PostgreSQL preserves the case of quoted identifiers; using a mixed-case quoted name forces every consumer to quote-match it.',
+    },
+  },
+  'snake-case-table-name': {
+    type: 'suggestion',
+    description: 'Require table names to be snake_case',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: { allow: { type: 'array', items: { type: 'string' }, uniqueItems: true } },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      notSnakeCase:
+        'Table name `{{name}}` is not snake_case. PostgreSQL folds unquoted identifiers to lower case but preserves the case of quoted identifiers; mixing the two leads to `relation "BadName" does not exist` errors that are confusing to debug.',
     },
   },
 });

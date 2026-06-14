@@ -94,7 +94,10 @@ export function runRule(ruleName, testCase) {
     throw new Error(`Unknown rule: ${ruleName}`);
   }
 
-  const code = testCase.code;
+  // Upstream's RuleTester lints `readSql(...).trim()`, so the captured fixture
+  // `code` (which keeps its trailing newline) must be trimmed to reproduce the
+  // expected error columns and autofix `output` exactly.
+  const code = testCase.code.trim();
   const sourceCode = {
     text: code,
     getText() {

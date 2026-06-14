@@ -3,39 +3,93 @@
 
 use crate::RuleDef;
 
+mod align_column_definitions;
+mod align_values;
+mod consistent_as_for_column_alias;
+mod consistent_as_for_table_alias;
+mod consistent_between_over_and;
+mod consistent_create_index_concurrently;
+mod consistent_create_or_replace;
+mod consistent_drop_index_concurrently;
+mod consistent_explicit_inner_join;
+mod consistent_explicit_outer_join;
+mod consistent_fk_not_valid;
+mod consistent_identity_over_serial;
+mod consistent_jsonb_over_json;
+mod consistent_reindex_concurrently;
+mod consistent_text_over_varchar;
+mod consistent_timestamptz;
+mod no_add_check_constraint_without_not_valid;
+mod no_add_column_not_null_without_default;
+mod no_add_unique_constraint_directly;
 mod no_alter_column_type;
+mod no_char_type;
 mod no_cluster;
+mod no_composite_primary_key;
 mod no_create_role;
 mod no_cross_join;
 mod no_distinct_on_without_order_by;
 mod no_drop_column;
 mod no_drop_database;
 mod no_drop_not_null;
+mod no_drop_schema_cascade;
+mod no_drop_table_cascade;
 mod no_equality_with_null;
 mod no_grant_all;
 mod no_grant_to_public;
 mod no_group_by_ordinal;
 mod no_having_without_group_by;
+mod no_identifier_too_long;
 mod no_implicit_join;
 mod no_leading_wildcard_like;
+mod no_money_type;
 mod no_natural_join;
+mod no_not_in_subquery;
+mod no_numeric_without_precision;
 mod no_on_delete_cascade;
 mod no_order_by_ordinal;
 mod no_rename_column;
 mod no_rename_table;
 mod no_rule;
+mod no_security_definer_without_search_path;
 mod no_select_into;
 mod no_select_star;
 mod no_set_not_null;
 mod no_set_search_path;
 mod no_temporary_table;
+mod no_time_type;
 mod no_truncate_cascade;
 mod no_unlogged_table;
+mod no_unnecessary_quoted_identifier;
+mod no_update_primary_key;
+mod no_update_without_from_binding;
 mod no_vacuum_full;
+mod no_volatile_default_on_add_column;
 mod no_with_recursive_without_limit;
+mod plpgsql_keyword_case;
+mod prefer_add_constraint_not_valid;
+mod prefer_bigint_id;
+mod prefer_cast_operator;
+mod prefer_coalesce_over_case;
+mod prefer_current_timestamp_over_now;
+mod prefer_exists_over_in_subquery;
+mod prefer_explicit_null_ordering;
+mod prefer_in_list_over_or;
+mod prefer_keyword_case;
+mod prefer_not_equals_operator;
+mod require_fk_include_columns;
+mod require_if_exists;
 mod require_limit;
+mod require_named_constraint;
+mod require_on_delete_action;
+mod require_primary_key;
+mod require_schema_qualified_table;
+mod require_table_columns;
+mod require_trailing_semicolon;
 mod require_where_in_delete;
 mod require_where_in_update;
+mod snake_case_column_name;
+mod snake_case_table_name;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
 /// know the full surface even while only a subset is implemented.
@@ -133,51 +187,210 @@ pub const RULE_NAMES: [&str; 89] = [
 
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
+    "align-column-definitions",
+    "align-values",
+    "consistent-as-for-column-alias",
+    "consistent-as-for-table-alias",
+    "consistent-between-over-and",
+    "consistent-create-index-concurrently",
+    "consistent-create-or-replace",
+    "consistent-drop-index-concurrently",
+    "consistent-explicit-inner-join",
+    "consistent-explicit-outer-join",
+    "consistent-fk-not-valid",
+    "consistent-identity-over-serial",
+    "consistent-jsonb-over-json",
+    "consistent-reindex-concurrently",
+    "consistent-text-over-varchar",
+    "consistent-timestamptz",
+    "no-add-check-constraint-without-not-valid",
+    "no-add-column-not-null-without-default",
+    "no-add-unique-constraint-directly",
     "no-alter-column-type",
+    "no-char-type",
     "no-cluster",
+    "no-composite-primary-key",
     "no-create-role",
     "no-cross-join",
     "no-distinct-on-without-order-by",
     "no-drop-column",
     "no-drop-database",
     "no-drop-not-null",
+    "no-drop-schema-cascade",
+    "no-drop-table-cascade",
     "no-equality-with-null",
     "no-grant-all",
     "no-grant-to-public",
     "no-group-by-ordinal",
     "no-having-without-group-by",
+    "no-identifier-too-long",
     "no-implicit-join",
     "no-leading-wildcard-like",
+    "no-money-type",
     "no-natural-join",
+    "no-not-in-subquery",
+    "no-numeric-without-precision",
     "no-on-delete-cascade",
     "no-order-by-ordinal",
     "no-rename-column",
     "no-rename-table",
     "no-rule",
+    "no-security-definer-without-search-path",
     "no-select-into",
     "no-select-star",
     "no-set-not-null",
     "no-set-search-path",
     "no-temporary-table",
+    "no-time-type",
     "no-truncate-cascade",
     "no-unlogged-table",
+    "no-unnecessary-quoted-identifier",
+    "no-update-primary-key",
+    "no-update-without-from-binding",
     "no-vacuum-full",
+    "no-volatile-default-on-add-column",
     "no-with-recursive-without-limit",
+    "plpgsql-keyword-case",
+    "prefer-add-constraint-not-valid",
+    "prefer-bigint-id",
+    "prefer-cast-operator",
+    "prefer-coalesce-over-case",
+    "prefer-current-timestamp-over-now",
+    "prefer-exists-over-in-subquery",
+    "prefer-explicit-null-ordering",
+    "prefer-in-list-over-or",
+    "prefer-keyword-case",
+    "prefer-not-equals-operator",
+    "require-fk-include-columns",
+    "require-if-exists",
     "require-limit",
+    "require-named-constraint",
+    "require-on-delete-action",
+    "require-primary-key",
+    "require-schema-qualified-table",
+    "require-table-columns",
+    "require-trailing-semicolon",
     "require-where-in-delete",
     "require-where-in-update",
+    "snake-case-column-name",
+    "snake-case-table-name",
 ];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
 pub(crate) const REGISTRY: &[RuleDef] = &[
+    RuleDef {
+        name: "align-column-definitions",
+        run: align_column_definitions::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "align-values",
+        run: align_values::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-as-for-column-alias",
+        run: consistent_as_for_column_alias::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-as-for-table-alias",
+        run: consistent_as_for_table_alias::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-between-over-and",
+        run: consistent_between_over_and::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-create-index-concurrently",
+        run: consistent_create_index_concurrently::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-create-or-replace",
+        run: consistent_create_or_replace::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
+        name: "consistent-drop-index-concurrently",
+        run: consistent_drop_index_concurrently::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-explicit-inner-join",
+        run: consistent_explicit_inner_join::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
+        name: "consistent-explicit-outer-join",
+        run: consistent_explicit_outer_join::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
+        name: "consistent-fk-not-valid",
+        run: consistent_fk_not_valid::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-identity-over-serial",
+        run: consistent_identity_over_serial::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-jsonb-over-json",
+        run: consistent_jsonb_over_json::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-reindex-concurrently",
+        run: consistent_reindex_concurrently::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-text-over-varchar",
+        run: consistent_text_over_varchar::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-timestamptz",
+        run: consistent_timestamptz::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-add-check-constraint-without-not-valid",
+        run: no_add_check_constraint_without_not_valid::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-add-column-not-null-without-default",
+        run: no_add_column_not_null_without_default::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-add-unique-constraint-directly",
+        run: no_add_unique_constraint_directly::run,
+        uses_parse_error: false,
+    },
     RuleDef {
         name: "no-alter-column-type",
         run: no_alter_column_type::run,
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-char-type",
+        run: no_char_type::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-cluster",
         run: no_cluster::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-composite-primary-key",
+        run: no_composite_primary_key::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -211,6 +424,16 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-drop-schema-cascade",
+        run: no_drop_schema_cascade::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-drop-table-cascade",
+        run: no_drop_table_cascade::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-equality-with-null",
         run: no_equality_with_null::run,
         uses_parse_error: false,
@@ -236,6 +459,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-identifier-too-long",
+        run: no_identifier_too_long::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
         name: "no-implicit-join",
         run: no_implicit_join::run,
         uses_parse_error: false,
@@ -246,8 +474,23 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-money-type",
+        run: no_money_type::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-natural-join",
         run: no_natural_join::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-not-in-subquery",
+        run: no_not_in_subquery::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-numeric-without-precision",
+        run: no_numeric_without_precision::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -276,6 +519,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-security-definer-without-search-path",
+        run: no_security_definer_without_search_path::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-select-into",
         run: no_select_into::run,
         uses_parse_error: false,
@@ -301,6 +549,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-time-type",
+        run: no_time_type::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-truncate-cascade",
         run: no_truncate_cascade::run,
         uses_parse_error: false,
@@ -311,8 +564,28 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-unnecessary-quoted-identifier",
+        run: no_unnecessary_quoted_identifier::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
+        name: "no-update-primary-key",
+        run: no_update_primary_key::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-update-without-from-binding",
+        run: no_update_without_from_binding::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-vacuum-full",
         run: no_vacuum_full::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-volatile-default-on-add-column",
+        run: no_volatile_default_on_add_column::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -321,9 +594,104 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "plpgsql-keyword-case",
+        run: plpgsql_keyword_case::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
+        name: "prefer-add-constraint-not-valid",
+        run: prefer_add_constraint_not_valid::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-bigint-id",
+        run: prefer_bigint_id::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-cast-operator",
+        run: prefer_cast_operator::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-coalesce-over-case",
+        run: prefer_coalesce_over_case::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-current-timestamp-over-now",
+        run: prefer_current_timestamp_over_now::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
+        name: "prefer-exists-over-in-subquery",
+        run: prefer_exists_over_in_subquery::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-explicit-null-ordering",
+        run: prefer_explicit_null_ordering::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-in-list-over-or",
+        run: prefer_in_list_over_or::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-keyword-case",
+        run: prefer_keyword_case::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
+        name: "prefer-not-equals-operator",
+        run: prefer_not_equals_operator::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
+        name: "require-fk-include-columns",
+        run: require_fk_include_columns::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-if-exists",
+        run: require_if_exists::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "require-limit",
         run: require_limit::run,
         uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-named-constraint",
+        run: require_named_constraint::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-on-delete-action",
+        run: require_on_delete_action::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-primary-key",
+        run: require_primary_key::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-schema-qualified-table",
+        run: require_schema_qualified_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-table-columns",
+        run: require_table_columns::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-trailing-semicolon",
+        run: require_trailing_semicolon::run,
+        uses_parse_error: true,
     },
     RuleDef {
         name: "require-where-in-delete",
@@ -333,6 +701,16 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-where-in-update",
         run: require_where_in_update::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "snake-case-column-name",
+        run: snake_case_column_name::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "snake-case-table-name",
+        run: snake_case_table_name::run,
         uses_parse_error: false,
     },
 ];

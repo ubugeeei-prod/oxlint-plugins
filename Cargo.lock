@@ -1316,6 +1316,7 @@ dependencies = [
  "oxlint-plugins-_carton",
  "pg_query",
  "phf",
+ "regex",
  "serde_json",
 ]
 

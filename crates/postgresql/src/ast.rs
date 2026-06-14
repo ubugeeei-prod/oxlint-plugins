@@ -33,3 +33,19 @@ pub fn array_field<'a>(node: &'a Value, key: &str) -> Option<&'a [Value]> {
 pub fn str_field<'a>(node: &'a Value, key: &str) -> Option<&'a str> {
     node.get(key).and_then(Value::as_str)
 }
+
+/// The name of a `TypeName` node, mirroring upstream `getTypeName`: the enriched
+/// AST keys the `names` list as `"0"`, `"1"`, … of `String` nodes; the type is
+/// the last segment's `sval` (`"1"` if present, else `"0"`), so `varchar`'s
+/// `pg_catalog.varchar` resolves to `varchar` and a bare `money` to `money`.
+#[allow(dead_code, reason = "shared accessor used by rules added in later PRs")]
+pub fn type_name(type_name: Option<&Value>) -> Option<&str> {
+    let names = type_name?;
+    let sval = |key: &str| {
+        names
+            .get(key)
+            .and_then(|segment| segment.get("sval"))
+            .and_then(Value::as_str)
+    };
+    sval("1").or_else(|| sval("0"))
+}
