@@ -259,6 +259,9 @@ const messages = Object.freeze({
   'no-hardcoded-ip': {
     hardcodedIp: 'Make this IP address configurable rather than hardcoding it in source code.',
   },
+  'no-global-this': {
+    noGlobalThis: 'Remove this use of the global "this" object.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -394,6 +397,9 @@ const ruleDescriptions = Object.freeze({
     'Disallow Math.random() in security-sensitive contexts; use a cryptographically secure random number generator instead',
   'no-hardcoded-ip':
     'Disallow hardcoded IP addresses in string literals; make them configurable instead',
+  'no-global-this':
+    'Disallow references to the global "this" object outside of any function or class scope ' +
+    'that rebinds "this"; prefer accessing global properties directly',
 });
 
 const ruleTypes = Object.freeze({
@@ -467,6 +473,7 @@ const ruleTypes = Object.freeze({
   'prefer-promise-shorthand': 'suggestion',
   'pseudo-random': 'suggestion',
   'no-hardcoded-ip': 'suggestion',
+  'no-global-this': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -540,6 +547,7 @@ const recommendedRuleConfig = Object.freeze({
   'prefer-promise-shorthand': 'error',
   'pseudo-random': 'error',
   'no-hardcoded-ip': 'error',
+  'no-global-this': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

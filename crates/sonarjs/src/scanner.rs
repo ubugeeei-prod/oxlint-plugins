@@ -3,15 +3,16 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    ArrowFunctionExpression, AssignmentExpression, BinaryExpression, BindingIdentifier,
-    BlockStatement, BreakStatement, CallExpression, CatchClause, Class, ConditionalExpression,
-    ContinueStatement, DoWhileStatement, ExportAllDeclaration, ExportNamedDeclaration,
-    ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function, FunctionBody,
-    IdentifierReference, IfStatement, ImportDeclaration, ImportExpression, JSXAttribute,
-    JSXAttributeValue, JSXElement, JSXFragment, LabeledStatement, LogicalExpression, NewExpression,
-    Program, RegExpLiteral, ReturnStatement, Statement, StaticMemberExpression, StringLiteral,
-    SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType,
-    TemplateLiteral, TryStatement, UnaryExpression, WhileStatement, YieldExpression,
+    AccessorProperty, ArrowFunctionExpression, AssignmentExpression, BinaryExpression,
+    BindingIdentifier, BlockStatement, BreakStatement, CallExpression, CatchClause, Class,
+    ConditionalExpression, ContinueStatement, DoWhileStatement, ExportAllDeclaration,
+    ExportNamedDeclaration, ExpressionStatement, ForInStatement, ForOfStatement, ForStatement,
+    Function, FunctionBody, IdentifierReference, IfStatement, ImportDeclaration, ImportExpression,
+    JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment, LabeledStatement, LogicalExpression,
+    NewExpression, Program, PropertyDefinition, RegExpLiteral, ReturnStatement, Statement,
+    StaticBlock, StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement,
+    TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, ThisExpression,
+    TryStatement, UnaryExpression, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -93,6 +94,12 @@ pub(crate) struct Scanner<'a> {
     /// `no-nested-functions`. Incremented on entry to any function-like node and
     /// decremented on exit. Depth 1 = outermost function in the file.
     pub(crate) function_nesting_depth: u32,
+    /// Number of `this`-rebinding scopes currently open on the traversal stack,
+    /// used by `no-global-this`. Incremented on entry to a regular (non-arrow)
+    /// function, class field/property initializer, or class static block.
+    /// A `ThisExpression` encountered when this depth is zero refers to the
+    /// global object and is flagged.
+    pub(crate) this_binding_depth: u32,
     /// Stack of open breakable contexts (loops and switch statements), used by
     /// `too-many-break-or-continue-in-loop` to count jumps that target each
     /// loop. One frame is pushed on entry to each loop or switch and popped on
@@ -413,12 +420,37 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);
         self.enter_nested_function(it.span);
+        self.enter_this_binding_scope();
         walk::walk_function(self, it, flags);
+        self.leave_this_binding_scope();
         self.leave_nested_function();
         self.leave_cyclomatic_scope();
         self.leave_return_scope();
         self.leave_generator(it, track);
         self.check_max_lines_per_function(it.span);
+    }
+
+    fn visit_this_expression(&mut self, it: &ThisExpression) {
+        self.check_global_this(it.span);
+        walk::walk_this_expression(self, it);
+    }
+
+    fn visit_property_definition(&mut self, it: &PropertyDefinition<'a>) {
+        self.enter_this_binding_scope();
+        walk::walk_property_definition(self, it);
+        self.leave_this_binding_scope();
+    }
+
+    fn visit_static_block(&mut self, it: &StaticBlock<'a>) {
+        self.enter_this_binding_scope();
+        walk::walk_static_block(self, it);
+        self.leave_this_binding_scope();
+    }
+
+    fn visit_accessor_property(&mut self, it: &AccessorProperty<'a>) {
+        self.enter_this_binding_scope();
+        walk::walk_accessor_property(self, it);
+        self.leave_this_binding_scope();
     }
 
     fn visit_arrow_function_expression(&mut self, it: &ArrowFunctionExpression<'a>) {

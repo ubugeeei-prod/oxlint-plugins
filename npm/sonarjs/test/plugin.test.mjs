@@ -164,6 +164,7 @@ describe('sonarjs plugin shape', () => {
       'prefer-promise-shorthand',
       'pseudo-random',
       'no-hardcoded-ip',
+      'no-global-this',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -234,6 +235,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['prefer-promise-shorthand']).toBe('object');
     expect(typeof plugin.rules['pseudo-random']).toBe('object');
     expect(typeof plugin.rules['no-hardcoded-ip']).toBe('object');
+    expect(typeof plugin.rules['no-global-this']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -312,6 +314,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/prefer-promise-shorthand']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/pseudo-random']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-ip']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-global-this']).toBe('error');
   });
 });
 
@@ -1716,5 +1719,48 @@ describe('no-hardcoded-ip rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-hardcoded-ip)');
+  });
+});
+
+describe('no-global-this rule', () => {
+  it('reports no-global-this for a top-level this expression through the adapter', () => {
+    const source = 'this.foo = 1;';
+    const reports = runRule('no-global-this', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noGlobalThis');
+  });
+
+  it('reports no-global-this for this inside a top-level arrow through the adapter', () => {
+    const source = 'const f = () => this.x;';
+    const reports = runRule('no-global-this', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noGlobalThis');
+  });
+
+  it('does not report no-global-this for this inside a regular function', () => {
+    const source = 'function f() { return this.x; }';
+    const reports = runRule('no-global-this', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report no-global-this for this inside a class field initializer', () => {
+    const source = 'class C { x = this.y; }';
+    const reports = runRule('no-global-this', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report no-global-this for this inside a class static block', () => {
+    const source = 'class C { static { this.z(); } }';
+    const reports = runRule('no-global-this', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-global-this through the CLI', () => {
+    const source = 'this.foo = 1;';
+    const result = runOxlint('no-global-this', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-global-this)');
   });
 });

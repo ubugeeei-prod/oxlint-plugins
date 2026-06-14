@@ -35,6 +35,7 @@ mod no_empty_character_class;
 mod no_empty_group;
 mod no_exclusive_tests;
 mod no_function_declaration_in_block;
+mod no_global_this;
 mod no_hardcoded_ip;
 mod no_identical_conditions;
 mod no_identical_expressions;
