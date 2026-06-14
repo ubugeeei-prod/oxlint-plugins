@@ -350,6 +350,18 @@ const ruleMeta = Object.freeze({
         '`UNLOGGED` tables skip WAL: they are truncated on crash, not replicated to standbys, and not restored from base backups. If a cache table is what you want, document it explicitly and disable this rule for that file.',
     },
   },
+  'no-update-without-from-binding': {
+    type: 'problem',
+    description:
+      'Disallow `UPDATE ... FROM` without a `WHERE` clause (Cartesian product with the target table)',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingJoin:
+        '`UPDATE ... FROM` without a `WHERE` clause produces a Cartesian product with the target table; add a `WHERE t.x = other.x` condition to bind the rows.',
+    },
+  },
   'no-vacuum-full': {
     type: 'problem',
     description:
