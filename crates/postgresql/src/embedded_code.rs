@@ -149,12 +149,13 @@ fn find_body_token(tokens: &[Token], start_search_from: u32) -> Option<BodyToken
             // u32. The closing `$` of the opening tag sits one past its index in
             // the `$`-stripped remainder.
             let tag_length = (after_dollar.find('$')? + 2) as u32;
-            // The token always spans at least its opening tag, so subtracting
-            // the tag length from `token.end` never underflows.
-            debug_assert!(token.end >= token.start + tag_length);
+            // The token normally spans both tags, but guard the subtraction
+            // anyway: an unterminated literal scanned to EOF could be shorter
+            // than two tags, and a wrapped `u32` would corrupt the range.
+            let inner_end = token.end.checked_sub(tag_length)?;
             return Some(BodyTokenInfo {
                 inner_start: token.start + tag_length,
-                inner_end: token.end - tag_length,
+                inner_end,
                 quote_style: "dollar",
             });
         }
@@ -164,7 +165,7 @@ fn find_body_token(tokens: &[Token], start_search_from: u32) -> Option<BodyToken
             // contents (sourceMap support for `''` escapes is deferred upstream).
             return Some(BodyTokenInfo {
                 inner_start: token.start + 1,
-                inner_end: token.end - 1,
+                inner_end: token.end.checked_sub(1)?,
                 quote_style: "single",
             });
         }

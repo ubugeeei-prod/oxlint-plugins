@@ -163,9 +163,14 @@ mod tests {
 
     // The following mirror upstream `src/utils.test.ts` (`createLineMap` /
     // `createByteToCharOffset`) so position resolution and byte↔unit conversion
-    // track upstream exactly. ESLint columns are UTF-16 code units; upstream's
-    // negative-offset JS edge case is not representable in this `u32` API and is
-    // intentionally omitted (offsets are never negative in practice).
+    // track upstream exactly. ESLint columns are UTF-16 code units. Three
+    // upstream cases are intentionally not ported:
+    //   * the negative-offset case — not representable in this `u32` API (and
+    //     offsets are never negative in practice);
+    //   * the `lineMap.code` property — `Source` stores UTF-16 units, not the
+    //     original string, so there is no equivalent field;
+    //   * the large-document "performance comparison" — redundant correctness
+    //     coverage already exercised by the position tests below.
     fn pos(code: &str, offset: u32) -> (u32, u32) {
         let p = Source::new(code).position(offset);
         (p.line, p.column)
