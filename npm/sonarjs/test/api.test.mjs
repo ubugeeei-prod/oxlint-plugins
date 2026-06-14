@@ -42,6 +42,7 @@ const expectedRuleNames = [
   'no-unthrown-error',
   'no-tab',
   'fixme-tag',
+  'todo-tag',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1503,6 +1504,39 @@ describe('sonarjs native API', () => {
   it('does not report fixme-tag for source with no comments', () => {
     const source = 'const a = 1;';
     const diagnostics = scan('fixme-tag', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports todo-tag for a line comment containing TODO', () => {
+    const source = '// TODO do x';
+    const diagnostics = scan('todo-tag', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('todo-tag');
+    expect(diagnostics[0].messageId).toBe('todoTag');
+  });
+
+  it('reports todo-tag for a block comment containing TODO', () => {
+    const source = '/* TODO: later */';
+    const diagnostics = scan('todo-tag', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('todoTag');
+  });
+
+  it('does not report todo-tag for a comment containing FIXME but not TODO', () => {
+    const source = '// FIXME do x';
+    const diagnostics = scan('todo-tag', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report todo-tag for lowercase todo (case-sensitive match only)', () => {
+    const source = '// todo';
+    const diagnostics = scan('todo-tag', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report todo-tag for source with no comments', () => {
+    const source = 'const a = 1;';
+    const diagnostics = scan('todo-tag', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

@@ -40,3 +40,4 @@ mod prefer_default_last;
 mod prefer_immediate_return;
 mod prefer_single_boolean_return;
 mod prefer_while;
+mod todo_tag;
