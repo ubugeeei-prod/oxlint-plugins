@@ -1,0 +1,1626 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-space-in-emphasis.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/gfm"
+  },
+  "valid": [
+    {
+      "code": "Line with *Normal emphasis*"
+    },
+    {
+      "code": "Line with **Normal strong**"
+    },
+    {
+      "code": "Line with ***Normal strong and emphasis***"
+    },
+    {
+      "code": "Line with _Normal emphasis_"
+    },
+    {
+      "code": "Line with __Normal strong__"
+    },
+    {
+      "code": "Line with ___Normal strong and emphasis___"
+    },
+    {
+      "code": "Line with ~Normal strikethrough~"
+    },
+    {
+      "code": "Line with ~~Normal strikethrough~~"
+    },
+    {
+      "code": "Line with ~~*strikethrough and emphasis*~~"
+    },
+    {
+      "code": "But not with escaped\\* asterisks\\* \\_and \\_underscores."
+    },
+    {
+      "code": "But not with escaped\\~ tildes\\~ either."
+    },
+    {
+      "code": "* Emphasis* with left space is recognized as a list"
+    },
+    {
+      "code": "* List item *with emphasis* on the\n  first and *second lines*."
+    },
+    {
+      "code": "* List item with\n  *hanging* emphasis"
+    },
+    {
+      "code": "***strong emph***"
+    },
+    {
+      "code": "***strong** in emph*"
+    },
+    {
+      "code": "***emph* in strong**"
+    },
+    {
+      "code": "**in strong *emph***"
+    },
+    {
+      "code": "*in emph **strong***"
+    },
+    {
+      "code": "**in strong * emph*** (internal spaces are not detected)"
+    },
+    {
+      "code": "*in emph ** strong*** (internal spaces are not detected)"
+    },
+    {
+      "code": "***strong ** in emph* (internal spaces are not detected)"
+    },
+    {
+      "code": "***emph * in strong** (internal spaces are not detected)"
+    },
+    {
+      "code": "Text *emph***strong** text"
+    },
+    {
+      "code": "```markdown\n      Violations * are * allowed in code blocks where emphasis does not apply.\n      ```"
+    },
+    {
+      "code": "```markdown\n      Violations ~~ are ~~ allowed in code blocks where strikethrough does not apply.\n      ```"
+    },
+    {
+      "code": "Emphasis `inside * code * blocks` is okay."
+    },
+    {
+      "code": "Emphasis `* inside` code `blocks *` is okay."
+    },
+    {
+      "code": "Emphasis `inside *` code `* blocks` is okay."
+    },
+    {
+      "code": "Emphasis `inside _ code _ blocks` is okay."
+    },
+    {
+      "code": "Emphasis `_ inside` code `blocks _` is okay."
+    },
+    {
+      "code": "Emphasis `inside _` code `_ blocks` is okay."
+    },
+    {
+      "code": "Mixed `code_span` scenarios are _also_ okay."
+    },
+    {
+      "code": "Mixed `code*span` scenarios are *also* okay."
+    },
+    {
+      "code": "Mixed `code*span` scenarios are _also_ okay."
+    },
+    {
+      "code": "Mixed `code_span` scenarios are *also* okay."
+    },
+    {
+      "code": "Text ~ strikethrough ~ with spaces"
+    },
+    {
+      "code": "Text ~~ strikethrough ~~ with spaces"
+    },
+    {
+      "code": "[Link](under_score) followed by _underscore_"
+    },
+    {
+      "code": "[Link](un_der_score) followed by _underscore_"
+    },
+    {
+      "code": "[Link](un_der_sco_re) followed by _underscore_"
+    },
+    {
+      "code": "[Link](star*star) followed by *star*"
+    },
+    {
+      "code": "* [Link](star*star) followed by *star*"
+    },
+    {
+      "code": "Text [Link](under_score) text _underscore_ text [Link](st*ar) text *star* text"
+    },
+    {
+      "code": "[Link [link] link](under_score) followed by _underscore_"
+    },
+    {
+      "code": "**under_score** text *under_score*"
+    },
+    {
+      "code": "*under_score* text **under_score**"
+    },
+    {
+      "code": "__star*star__ text _star*star_"
+    },
+    {
+      "code": "_star*star_ text __star*star__"
+    },
+    {
+      "code": "*_emphasis* text *emphasis*"
+    },
+    {
+      "code": "*emphasis_* text *emphasis*"
+    },
+    {
+      "code": "*emphasis* text *_emphasis*"
+    },
+    {
+      "code": "*emphasis* text *emphasis_*"
+    },
+    {
+      "code": "text \\*emphasis* text *emphasis* text"
+    },
+    {
+      "code": "text *emphasis\\* text *emphasis* text"
+    },
+    {
+      "code": "text *emphasis* text \\*emphasis* text"
+    },
+    {
+      "code": "text *emphasis* text *emphasis\\* text"
+    },
+    {
+      "code": "text *star*_underscore_ text **star**_underscore_ text"
+    },
+    {
+      "code": "text **star**_underscore_ text *star*_underscore_ text"
+    },
+    {
+      "code": "text **star**_underscore_ text **star**_underscore_ text"
+    },
+    {
+      "code": "text *star*_underscore_ text *star*__underscore__ text"
+    },
+    {
+      "code": "text *star*__underscore__ text *star*_underscore_ text"
+    },
+    {
+      "code": "text *star*__underscore__ text *star*__underscore__ text"
+    },
+    {
+      "code": "text _underscore_*star* text __underscore__*star* text"
+    },
+    {
+      "code": "text __underscore__*star* text _underscore_*star* text"
+    },
+    {
+      "code": "text __underscore__*star* text __underscore__*star* text"
+    },
+    {
+      "code": "text _underscore_*star* text _underscore_**star** text"
+    },
+    {
+      "code": "text _underscore_**star** text _underscore_*star* text"
+    },
+    {
+      "code": "text _underscore_**star** text _underscore_**star** text"
+    },
+    {
+      "code": "text ~~strike~~*star* text ~strike~**star** text"
+    },
+    {
+      "code": "text ~~strike~~_underscore_ text ~strike~__underscore__ text"
+    },
+    {
+      "code": "> * List with *emphasis* in blockquote\n>\n> > * List with *emphasis* in blockquote"
+    },
+    {
+      "code": "`* text *`"
+    },
+    {
+      "code": "`** text **`"
+    },
+    {
+      "code": "`*** text ***`"
+    },
+    {
+      "code": "`**** text ****`"
+    },
+    {
+      "code": "`***** text *****`"
+    },
+    {
+      "code": "`****** text ******`"
+    },
+    {
+      "code": "`******* text *******`"
+    },
+    {
+      "code": "under_score\n_underscore_"
+    },
+    {
+      "code": "st*ar\n*star*"
+    },
+    {
+      "code": "under_score\n*star*"
+    },
+    {
+      "code": "st*ar\n_underscore_"
+    },
+    {
+      "code": "*star*\n_underscore_"
+    },
+    {
+      "code": "_underscore_\n*star*"
+    },
+    {
+      "code": "[reference_link]\n_first_ and _second_\n\n[reference_link]: https://example.com"
+    },
+    {
+      "code": "[reference_link]\n*first* and *second*\n\n[reference_link]: https://example.com"
+    },
+    {
+      "code": "[reference*link]\n_first_ and _second_\n\n[reference*link]: https://example.com"
+    },
+    {
+      "code": "[reference*link]\n*first* and *second*\n\n[reference*link]: https://example.com"
+    },
+    {
+      "code": "text [reference_link] under _ score text\n\n[reference_link]: https://example.com"
+    },
+    {
+      "code": "text [reference*link] star * star text\n\n[reference*link]: https://example.com"
+    },
+    {
+      "code": "***text\n*text*\n***"
+    },
+    {
+      "code": "*** text\n*text*\n***"
+    },
+    {
+      "code": "*** text\n\\*text\\*\n***"
+    },
+    {
+      "code": "*** text\n**text**\n***"
+    },
+    {
+      "code": "| Table | Table |\n| ----- | ----- |\n| star  | x * y |\n| under | x _ y |"
+    },
+    {
+      "code": "| Table | Table |\n| ----- | ----- |\n| star  | x * y |\n| star  | x * y |\n| under | x _ y |\n| under | x _ y |"
+    },
+    {
+      "code": "| Table | Table                     |\n| ----- | ------------------------- |\n| star  | text *text* text          |\n| under | text _text_ text          |\n| strike| text ~text~ text          |"
+    },
+    {
+      "code": "| Table | Table |\n| ----- | ----- |\n| x * y | x * y |\n| x** y | x** y |\n| x _ y | x _ y |\n| x__ y | x__ y |"
+    },
+    {
+      "code": "```yaml /* autogenerated */\n# YAML...\n```"
+    },
+    {
+      "code": "new_value from *old_value* and *older_value*."
+    },
+    {
+      "code": ":ballot_box_with_check: _Emoji syntax_"
+    },
+    {
+      "code": "some_snake_case_function() is _called_"
+    },
+    {
+      "code": "_~/.ssh/id_rsa_ and _emphasis_"
+    },
+    {
+      "code": "Partial *em*phasis of a *wo*rd."
+    },
+    {
+      "code": "<p>\nEmphasis inside * HTML * content\n</p>"
+    },
+    {
+      "code": "Emphasis <p data=\"inside * attribute * content\"></p>"
+    },
+    {
+      "code": "Embedded underscore is okay:\nText _emphas_i_s_ text _emphasis_"
+    },
+    {
+      "code": "Text *emphasis\nemphasis* text"
+    },
+    {
+      "code": "Text *emphasis* *emphasis\nemphasis* *emphasis* text"
+    },
+    {
+      "code": "Text *emphasis* text *emphasis\nemphasis* text *emphasis* text"
+    },
+    {
+      "code": "Text *emphasis* *emphasis\nemphasis* *emphasis* *emphasis\nemphasis* text *emphasis\nemphasis* text *emphasis* text"
+    },
+    {
+      "code": "Text text\ntext *emphasis\nemphasis emphasis\nemphasis* text\ntext text"
+    },
+    {
+      "code": "Text * asterisk"
+    },
+    {
+      "code": "* Item *emphasis* item\n* Item *emphasis* item\n* Item *emphasis\n  emphasis* item\n* Item *emphasis* item"
+    },
+    {
+      "code": "* Item * asterisk\n* Item * asterisk"
+    },
+    {
+      "code": "Emphasis `inside\nof * code *\nblocks` is okay."
+    },
+    {
+      "code": "Emphasis `* inside`\ncode\n`blocks *` is okay."
+    },
+    {
+      "code": "Emphasis `inside *`\ncode\n`* blocks` is okay."
+    },
+    {
+      "code": "Emphasis `inside\n_ code _\nblocks` is okay."
+    },
+    {
+      "code": "Emphasis `_ inside`\ncode\n`blocks _` is okay."
+    },
+    {
+      "code": "Emphasis `inside _`\ncode\n`_ blocks` is okay."
+    },
+    {
+      "code": "Mixed `code_span`\nscenarios\nare _also_ okay."
+    },
+    {
+      "code": "Mixed `code*span`\nscenarios\nare *also* okay."
+    },
+    {
+      "code": "This paragraph\ncontains *a* mix\nof `*` emphasis\nscenarios and *should*\nnot trigger `*` any\nviolations at *all*."
+    },
+    {
+      "code": "This paragraph\ncontains `a * slightly\nmore complicated\nmulti-line emphasis\nscenario * that\nshould * not trigger\nviolations * either`."
+    },
+    {
+      "code": "Escaped asterisks \\* should \\* be ignored."
+    },
+    {
+      "code": "Escaped asterisks \\* should * be ignored."
+    },
+    {
+      "code": "Escaped asterisks * should \\* be ignored."
+    },
+    {
+      "code": "Escaped underscores \\_ should \\_ be ignored."
+    },
+    {
+      "code": "Escaped underscores \\_ should _ be ignored."
+    },
+    {
+      "code": "Escaped underscores _ should \\_ be ignored."
+    },
+    {
+      "code": "Escaped asterisks \\** should ** be ignored."
+    },
+    {
+      "code": "Escaped asterisks *\\* should ** be ignored."
+    },
+    {
+      "code": "Escaped underscores \\__ should __ be ignored."
+    },
+    {
+      "code": "Escaped underscores _\\_ should __ be ignored."
+    },
+    {
+      "code": "Escaped asterisks ** should \\** be ignored."
+    },
+    {
+      "code": "Escaped asterisks ** should *\\* be ignored."
+    },
+    {
+      "code": "Escaped underscores __ should \\__ be ignored."
+    },
+    {
+      "code": "Escaped underscores __ should _\\_ be ignored."
+    },
+    {
+      "code": "Escaped tildes \\~ should \\~ be ignored."
+    },
+    {
+      "code": "Escaped tildes \\~~ should ~~ be ignored."
+    },
+    {
+      "code": "This is * some * text"
+    },
+    {
+      "code": "$(f * g)(x) + (h * k)(x)$",
+      "languageOptions": {
+        "math": true
+      }
+    },
+    {
+      "code": "$$\n(f * g)(x) + (h * k)(x)\n$$",
+      "languageOptions": {
+        "math": true
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "code": "Broken * emphasis * with spaces",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": "Broken *emphasis* with spaces"
+    },
+    {
+      "code": "Broken ** strong ** with spaces",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": "Broken **strong** with spaces"
+    },
+    {
+      "code": "Broken *** strong and emphasis *** with spaces",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 13
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ],
+      "output": "Broken ***strong and emphasis*** with spaces"
+    },
+    {
+      "code": "Broken _ emphasis _ with spaces",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": "Broken _emphasis_ with spaces"
+    },
+    {
+      "code": "Broken __ strong __ with spaces",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": "Broken __strong__ with spaces"
+    },
+    {
+      "code": "Broken ___ strong and emphasis ___ with spaces",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 13
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ],
+      "output": "Broken ___strong and emphasis___ with spaces"
+    },
+    {
+      "code": "Mixed *ok emphasis* and * broken emphasis *",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 28
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 41,
+          "endLine": 1,
+          "endColumn": 44
+        }
+      ],
+      "output": "Mixed *ok emphasis* and *broken emphasis*"
+    },
+    {
+      "code": "Mixed **ok strong** and ** broken strong **",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 29
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 40,
+          "endLine": 1,
+          "endColumn": 44
+        }
+      ],
+      "output": "Mixed **ok strong** and **broken strong**"
+    },
+    {
+      "code": "Mixed ***ok strong and emphasis*** and *** broken strong and emphasis ***",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 40,
+          "endLine": 1,
+          "endColumn": 45
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 69,
+          "endLine": 1,
+          "endColumn": 74
+        }
+      ],
+      "output": "Mixed ***ok strong and emphasis*** and ***broken strong and emphasis***"
+    },
+    {
+      "code": "Mixed _ok emphasis_ and _ broken emphasis _",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 28
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 41,
+          "endLine": 1,
+          "endColumn": 44
+        }
+      ],
+      "output": "Mixed _ok emphasis_ and _broken emphasis_"
+    },
+    {
+      "code": "Mixed __ok strong__ and __ broken strong __",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 29
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 40,
+          "endLine": 1,
+          "endColumn": 44
+        }
+      ],
+      "output": "Mixed __ok strong__ and __broken strong__"
+    },
+    {
+      "code": "Mixed ___ok strong and emphasis___ and ___ broken strong and emphasis ___",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 40,
+          "endLine": 1,
+          "endColumn": 45
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 69,
+          "endLine": 1,
+          "endColumn": 74
+        }
+      ],
+      "output": "Mixed ___ok strong and emphasis___ and ___broken strong and emphasis___"
+    },
+    {
+      "code": "Mixed *ok emphasis* **ok strong** * broken emphasis *",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 35,
+          "endLine": 1,
+          "endColumn": 38
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 51,
+          "endLine": 1,
+          "endColumn": 54
+        }
+      ],
+      "output": "Mixed *ok emphasis* **ok strong** *broken emphasis*"
+    },
+    {
+      "code": "Multiple * broken emphasis * _ broken emphasis _",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 26,
+          "endLine": 1,
+          "endColumn": 29
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 33
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 46,
+          "endLine": 1,
+          "endColumn": 49
+        }
+      ],
+      "output": "Multiple *broken emphasis* _broken emphasis_"
+    },
+    {
+      "code": "One-sided *broken emphasis *",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 26,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "output": "One-sided *broken emphasis*"
+    },
+    {
+      "code": "One-sided * broken emphasis*",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 11,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ],
+      "output": "One-sided *broken emphasis*"
+    },
+    {
+      "code": "Will _flag on _words with underscores before them.",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "output": "Will _flag on_words with underscores before them."
+    },
+    {
+      "code": "The same goes for words* with asterisks* after them.",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": "The same goes for words*with asterisks* after them."
+    },
+    {
+      "code": "** Strong** with left space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ],
+      "output": "**Strong** with left space"
+    },
+    {
+      "code": "*** Strong and emphasis*** with left space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ],
+      "output": "***Strong and emphasis*** with left space"
+    },
+    {
+      "code": "_ Emphasis_ with left space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ],
+      "output": "_Emphasis_ with left space"
+    },
+    {
+      "code": "__ Strong__ with left space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ],
+      "output": "__Strong__ with left space"
+    },
+    {
+      "code": "___ Strong and emphasis___ with left space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ],
+      "output": "___Strong and emphasis___ with left space"
+    },
+    {
+      "code": "*Emphasis * with right space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "output": "*Emphasis* with right space"
+    },
+    {
+      "code": "**Strong ** with right space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "output": "**Strong** with right space"
+    },
+    {
+      "code": "***Strong and emphasis *** with right space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 22,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": "***Strong and emphasis*** with right space"
+    },
+    {
+      "code": "_Emphasis _ with right space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "output": "_Emphasis_ with right space"
+    },
+    {
+      "code": "__Strong __ with right space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "output": "__Strong__ with right space"
+    },
+    {
+      "code": "___Strong and emphasis ___ with right space",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 22,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": "___Strong and emphasis___ with right space"
+    },
+    {
+      "code": "**Multiple ** spaces **in ** emphasis **at ** once.",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 14
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 29
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 42,
+          "endLine": 1,
+          "endColumn": 46
+        }
+      ],
+      "output": "**Multiple** spaces **in** emphasis **at** once."
+    },
+    {
+      "code": "This is * an ambiguous * scenario",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 22,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "output": "This is *an ambiguous* scenario"
+    },
+    {
+      "code": "* List * item*",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ],
+      "output": "* List *item*"
+    },
+    {
+      "code": "* List *item *",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 12,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ],
+      "output": "* List *item*"
+    },
+    {
+      "code": "* List * item *",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "output": "* List *item*"
+    },
+    {
+      "code": "*** strong emph***",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ],
+      "output": "***strong emph***"
+    },
+    {
+      "code": "***strong emph ***",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "***strong emph***"
+    },
+    {
+      "code": "Text * emph***strong** text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ],
+      "output": "Text *emph***strong** text"
+    },
+    {
+      "code": "Text *emph ***strong** text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": "Text *emph***strong** text"
+    },
+    {
+      "code": "Text *emph*** strong** text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 12,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "output": "Text *emph***strong** text"
+    },
+    {
+      "code": "Text *emph***strong ** text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 19,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": "Text *emph***strong** text"
+    },
+    {
+      "code": "Emphasis <b>inside * HTML * content</b>",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 23
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ],
+      "output": "Emphasis <b>inside *HTML* content</b>"
+    },
+    {
+      "code": "Emphasis <p data=\"* attribute *\">* HTML *</p>",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 34,
+          "endLine": 1,
+          "endColumn": 37
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 39,
+          "endLine": 1,
+          "endColumn": 42
+        }
+      ],
+      "output": "Emphasis <p data=\"* attribute *\">*HTML*</p>"
+    },
+    {
+      "code": "Text * emphasis\nemphasis* text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ],
+      "output": "Text *emphasis\nemphasis* text"
+    },
+    {
+      "code": "Text *emphasis\nemphasis * text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "Text *emphasis\nemphasis* text"
+    },
+    {
+      "code": "Text * emphasis\nemphasis * text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "Text *emphasis\nemphasis* text"
+    },
+    {
+      "code": "Text * emphasis * * emphasis\nemphasis * * emphasis * text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 18
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 19,
+          "endLine": 1,
+          "endColumn": 22
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 11
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 2,
+          "column": 12,
+          "endLine": 2,
+          "endColumn": 15
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 2,
+          "column": 21,
+          "endLine": 2,
+          "endColumn": 24
+        }
+      ],
+      "output": "Text *emphasis* *emphasis\nemphasis* *emphasis* text"
+    },
+    {
+      "code": "Text text\ntext * emphasis\nemphasis emphasis\nemphasis * text\ntext text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 2,
+          "column": 6,
+          "endLine": 2,
+          "endColumn": 9
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 4,
+          "column": 8,
+          "endLine": 4,
+          "endColumn": 11
+        }
+      ],
+      "output": "Text text\ntext *emphasis\nemphasis emphasis\nemphasis* text\ntext text"
+    },
+    {
+      "code": "Text ** bold\nbold ** text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 10
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 2,
+          "column": 4,
+          "endLine": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "Text **bold\nbold** text"
+    },
+    {
+      "code": "Text _ **bold** _",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "output": "Text _**bold**_"
+    },
+    {
+      "code": "This is * italic with __ bold __ markdown *",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 27
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 29,
+          "endLine": 1,
+          "endColumn": 33
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 41,
+          "endLine": 1,
+          "endColumn": 44
+        }
+      ],
+      "output": "This is *italic with __bold__ markdown*"
+    },
+    {
+      "code": "This is _\temphasized\t_ text",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": "This is _emphasized_ text"
+    },
+    {
+      "code": "# Broken * emphasis * with spaces",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 19,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": "# Broken *emphasis* with spaces"
+    },
+    {
+      "code": "Broken * emphasis * with spaces\n===============",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": "Broken *emphasis* with spaces\n==============="
+    },
+    {
+      "code": "| Table | Table                     |\n| ----- | ------------------------- |\n| star  | text * text* text          |\n| star  | text *text * text          |\n| under | text _ text_ text          |\n| under | text _text _ text          |",
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 3,
+          "column": 16,
+          "endLine": 3,
+          "endColumn": 19
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 4,
+          "column": 20,
+          "endLine": 4,
+          "endColumn": 23
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 5,
+          "column": 16,
+          "endLine": 5,
+          "endColumn": 19
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 6,
+          "column": 20,
+          "endLine": 6,
+          "endColumn": 23
+        }
+      ],
+      "output": "| Table | Table                     |\n| ----- | ------------------------- |\n| star  | text *text* text          |\n| star  | text *text* text          |\n| under | text _text_ text          |\n| under | text _text_ text          |"
+    },
+    {
+      "code": "Broken ~ strikethrough ~ with spaces",
+      "options": [
+        {
+          "checkStrikethrough": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 22,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "output": "Broken ~strikethrough~ with spaces"
+    },
+    {
+      "code": "Broken ~~ strikethrough ~~ with spaces",
+      "options": [
+        {
+          "checkStrikethrough": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": "Broken ~~strikethrough~~ with spaces"
+    },
+    {
+      "code": "Mixed ~~ok strikethrough~~ and ~~ broken strikethrough ~~",
+      "options": [
+        {
+          "checkStrikethrough": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 32,
+          "endLine": 1,
+          "endColumn": 36
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 54,
+          "endLine": 1,
+          "endColumn": 58
+        }
+      ],
+      "output": "Mixed ~~ok strikethrough~~ and ~~broken strikethrough~~"
+    },
+    {
+      "code": "Mixed ~ strikethrough ~ and * emphasis * with spaces",
+      "options": [
+        {
+          "checkStrikethrough": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 10
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 24
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 29,
+          "endLine": 1,
+          "endColumn": 32
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 38,
+          "endLine": 1,
+          "endColumn": 41
+        }
+      ],
+      "output": "Mixed ~strikethrough~ and *emphasis* with spaces"
+    },
+    {
+      "code": "Mixed ~ok strikethrough~ and ~ broken strikethrough ~",
+      "options": [
+        {
+          "checkStrikethrough": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 33
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 51,
+          "endLine": 1,
+          "endColumn": 54
+        }
+      ],
+      "output": "Mixed ~ok strikethrough~ and ~broken strikethrough~"
+    },
+    {
+      "code": "# Broken ~ strikethrough ~ with spaces",
+      "options": [
+        {
+          "checkStrikethrough": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": "# Broken ~strikethrough~ with spaces"
+    },
+    {
+      "code": "| Table | Table                     |\n| ----- | ------------------------- |\n| strike | text ~ text~ text          |\n| strike | text ~text ~ text          |",
+      "options": [
+        {
+          "checkStrikethrough": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 3,
+          "column": 17,
+          "endLine": 3,
+          "endColumn": 20
+        },
+        {
+          "messageId": "spaceInEmphasis",
+          "line": 4,
+          "column": 21,
+          "endLine": 4,
+          "endColumn": 24
+        }
+      ],
+      "output": "| Table | Table                     |\n| ----- | ------------------------- |\n| strike | text ~text~ text          |\n| strike | text ~text~ text          |"
+    }
+  ]
+}

@@ -1,0 +1,608 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-empty-definitions.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/gfm"
+  },
+  "valid": [
+    {
+      "code": "[foo]: bar"
+    },
+    {
+      "code": "[foo]: #bar"
+    },
+    {
+      "code": "[foo]: http://bar.com"
+    },
+    {
+      "code": "[foo]: <https://bar.com>"
+    },
+    {
+      "code": "[//]: # (This is a comment 1)"
+    },
+    {
+      "code": "[//]: <> (This is a comment 2)"
+    },
+    {
+      "code": "[^note]: This is a footnote."
+    },
+    {
+      "code": "[^note]: ![]()"
+    },
+    {
+      "code": "[^note]: [text](url)"
+    },
+    {
+      "code": "[^note]:\n    Content"
+    },
+    {
+      "code": "[^note]:\n    > blockquote"
+    },
+    {
+      "code": "[^note]: <span></span>"
+    },
+    {
+      "code": "\\[^note]:"
+    },
+    {
+      "code": "[\\^note]:"
+    },
+    {
+      "code": "[^note\\]:"
+    },
+    {
+      "code": "[^note]\\:"
+    },
+    {
+      "code": "[^foo]: <span></span> <!-- comment -->"
+    },
+    {
+      "code": "[^foo]: content <!-- comment -->"
+    },
+    {
+      "code": "[^foo]: <!-- comment --> content"
+    },
+    {
+      "code": "[^foo]: <!-- comment --> content <!-- comment -->"
+    },
+    {
+      "code": "[^foo]: <!-- comm\n    ent --> content <!-- comment -->"
+    },
+    {
+      "code": "[foo]: #",
+      "options": [
+        {
+          "allowDefinitions": ["foo"]
+        }
+      ]
+    },
+    {
+      "code": "[bar]: <>",
+      "options": [
+        {
+          "allowDefinitions": ["bar"]
+        }
+      ]
+    },
+    {
+      "code": "[foo]: #\n[bar]: <>",
+      "options": [
+        {
+          "allowDefinitions": ["foo", "bar"]
+        }
+      ]
+    },
+    {
+      "code": "[^note]:",
+      "options": [
+        {
+          "checkFootnoteDefinitions": false
+        }
+      ]
+    },
+    {
+      "code": "[^note]:",
+      "options": [
+        {
+          "checkFootnoteDefinitions": true,
+          "allowFootnoteDefinitions": ["note"]
+        }
+      ]
+    },
+    {
+      "code": "[FOO]: #",
+      "options": [
+        {
+          "allowDefinitions": ["FOO"]
+        }
+      ]
+    },
+    {
+      "code": "[foo]: #",
+      "options": [
+        {
+          "allowDefinitions": ["FOO"]
+        }
+      ]
+    },
+    {
+      "code": "[FOO]: #",
+      "options": [
+        {
+          "allowDefinitions": ["foo"]
+        }
+      ]
+    },
+    {
+      "code": "[   foo   ]: #",
+      "options": [
+        {
+          "allowDefinitions": ["foo"]
+        }
+      ]
+    },
+    {
+      "code": "[foo]: #",
+      "options": [
+        {
+          "allowDefinitions": ["   foo   "]
+        }
+      ]
+    },
+    {
+      "code": "[foo bar]: #",
+      "options": [
+        {
+          "allowDefinitions": ["foo\t\r\nbar"]
+        }
+      ]
+    },
+    {
+      "code": "[FOO]: <>",
+      "options": [
+        {
+          "allowDefinitions": ["FOO"]
+        }
+      ]
+    },
+    {
+      "code": "[foo]: <>",
+      "options": [
+        {
+          "allowDefinitions": ["FOO"]
+        }
+      ]
+    },
+    {
+      "code": "[FOO]: <>",
+      "options": [
+        {
+          "allowDefinitions": ["foo"]
+        }
+      ]
+    },
+    {
+      "code": "[   foo   ]: <>",
+      "options": [
+        {
+          "allowDefinitions": ["foo"]
+        }
+      ]
+    },
+    {
+      "code": "[foo]: <>",
+      "options": [
+        {
+          "allowDefinitions": ["   foo   "]
+        }
+      ]
+    },
+    {
+      "code": "[foo bar]: <>",
+      "options": [
+        {
+          "allowDefinitions": ["foo\t\r\nbar"]
+        }
+      ]
+    },
+    {
+      "code": "[^NOTE]:",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["NOTE"]
+        }
+      ]
+    },
+    {
+      "code": "[^note]:",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["NOTE"]
+        }
+      ]
+    },
+    {
+      "code": "[^NOTE]:",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["note"]
+        }
+      ]
+    },
+    {
+      "code": "[^note]:",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["   note   "]
+        }
+      ]
+    },
+    {
+      "code": "[Grüsse]: #",
+      "options": [
+        {
+          "allowDefinitions": ["GRÜẞE"]
+        }
+      ]
+    },
+    {
+      "code": "[Grüsse]: <>",
+      "options": [
+        {
+          "allowDefinitions": ["GRÜẞE"]
+        }
+      ]
+    },
+    {
+      "code": "[^Grüsse]:",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["GRÜẞE"]
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "[foo]: #",
+      "errors": [
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[Foo]: #",
+      "errors": [
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "Foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[  Foo  ]: #",
+      "errors": [
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "Foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ]
+    },
+    {
+      "code": "[foo]: <>",
+      "errors": [
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "[foo]: #\n[bar]: <>",
+      "errors": [
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        },
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "bar",
+            "label": "bar"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "[^note]:",
+      "errors": [
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "note",
+            "label": "note"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[^Note]:",
+      "errors": [
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "note",
+            "label": "Note"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[^note]:   ",
+      "errors": [
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "note",
+            "label": "note"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ]
+    },
+    {
+      "code": "[^note]:\n",
+      "errors": [
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "note",
+            "label": "note"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[^a]:\n[^b]:",
+      "errors": [
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "a",
+            "label": "a"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        },
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "b",
+            "label": "b"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "[foo]: #\n[^note]:",
+      "errors": [
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        },
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "note",
+            "label": "note"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[foo]: #\n[^note]:",
+      "options": [
+        {
+          "checkFootnoteDefinitions": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[^foo]: <!-- comment -->",
+      "errors": [
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "[^foo]: <!-- comment\n    -->",
+      "errors": [
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "[^foo]: <!-- comment -->\n    <!-- another comment -->",
+      "errors": [
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 29
+        }
+      ]
+    },
+    {
+      "code": "[//]: #\n[foo]: #",
+      "errors": [
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[foo]: #",
+      "options": [
+        {
+          "allowDefinitions": ["bar"],
+          "allowFootnoteDefinitions": ["foo"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "emptyDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[^foo]:",
+      "options": [
+        {
+          "allowDefinitions": ["foo"],
+          "allowFootnoteDefinitions": ["bar"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "emptyFootnoteDefinition",
+          "data": {
+            "identifier": "foo",
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 8
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,677 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-reversed-media-syntax.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/commonmark"
+  },
+  "valid": [
+    {
+      "code": "[foo](bar)"
+    },
+    {
+      "code": "[foo](#bar)"
+    },
+    {
+      "code": "[foo](http://bar.com)"
+    },
+    {
+      "code": "![foo](bar)"
+    },
+    {
+      "code": "![foo](#bar)"
+    },
+    {
+      "code": "![foo](http://bar.com)"
+    },
+    {
+      "code": "(foo)[bar\r\n]"
+    },
+    {
+      "code": "(foo)[bar\r]"
+    },
+    {
+      "code": "(foo)[bar\n]"
+    },
+    {
+      "code": "(foo)[bar](http://bar.com)"
+    },
+    {
+      "code": "\t\tmyObj.getFiles(test)[0]"
+    },
+    {
+      "code": "```js\nmyObj.getFiles(test)[0];\n```"
+    },
+    {
+      "code": "`myobj.getFiles(test)[0]`"
+    },
+    {
+      "code": "Some long text about foo\n# Split,\n`myobj.getFiles(test)[0]`"
+    },
+    {
+      "code": "&lpar;reversed&rpar;[link]"
+    },
+    {
+      "code": "a &rpar; a &lpar; a &rpar;[a]~"
+    },
+    {
+      "code": "a<pre>&rpar; a &lpar; a &rpar;[a]~</pre>"
+    },
+    {
+      "code": "\\(foo)[bar]"
+    },
+    {
+      "code": "\\\\\\(foo)[bar]"
+    },
+    {
+      "code": "\\\\\\\\\\(foo)[bar]"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\(foo)[bar]"
+    },
+    {
+      "code": "(foo\\)[bar]"
+    },
+    {
+      "code": "(foo\\\\\\)[bar]"
+    },
+    {
+      "code": "(foo\\\\\\\\\\)[bar]"
+    },
+    {
+      "code": "(foo\\\\\\\\\\\\\\)[bar]"
+    },
+    {
+      "code": "(foo)\\[bar]"
+    },
+    {
+      "code": "(foo)\\\\\\[bar]"
+    },
+    {
+      "code": "(foo)\\\\\\\\\\[bar]"
+    },
+    {
+      "code": "(foo)\\\\\\\\\\\\\\[bar]"
+    },
+    {
+      "code": "(foo)[bar\\]"
+    },
+    {
+      "code": "(foo)[bar\\\\\\]"
+    },
+    {
+      "code": "(foo)[bar\\\\\\\\\\]"
+    },
+    {
+      "code": "(foo)[bar\\\\\\\\\\\\\\]"
+    },
+    {
+      "code": "text [foo](bar) text [foo](bar) text"
+    },
+    {
+      "code": "text [foo](bar)[foo](bar) text"
+    },
+    {
+      "code": "🎉 [foo](bar)"
+    },
+    {
+      "code": "text 🎉🎉 [foo](bar) text"
+    },
+    {
+      "code": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉 `(foo)[bar]`"
+    },
+    {
+      "code": "text [foo](bar)[foo](bar)[foo](bar) text"
+    },
+    {
+      "code": "text (text `func()[index]`) text"
+    },
+    {
+      "code": "hi <span class=\"foo(bar)[baz]\">hi</span>"
+    },
+    {
+      "code": "( <!-- hi)[ --> ]"
+    },
+    {
+      "code": "( <img data-custom = \")[\" alt=\"alt\"> ]"
+    },
+    {
+      "code": "( ![image)[]]()"
+    },
+    {
+      "code": "(`)[`]"
+    },
+    {
+      "code": "(`)[]`"
+    },
+    {
+      "code": "# [ESLint](https://eslint.org/)"
+    },
+    {
+      "code": "# ![A beautiful sunset](sunset.png)"
+    },
+    {
+      "code": "![()[]](hi)"
+    },
+    {
+      "code": "![(hi)[something]](hi)"
+    },
+    {
+      "code": "![()[]](https://example.com)"
+    },
+    {
+      "code": "![()[]][ref]\n\n[ref]: https://example.com"
+    },
+    {
+      "code": "![(hi)[something]][ref]\n\n[ref]: https://example.com"
+    },
+    {
+      "code": "[()[]][ref]\n\n[ref]: https://example.com"
+    },
+    {
+      "code": "[(hi)[something]][ref]\n\n[ref]: https://example.com"
+    },
+    {
+      "code": "| ESLint                        | Sunset                            |\n| ----------------------------- | --------------------------------- |\n| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |"
+    },
+    {
+      "code": "$(A \\cdot x)[i] = \\sum_{j=1}^{n} A[i][j] , x[j]$",
+      "languageOptions": {
+        "math": true
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "code": "()[]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ],
+      "output": "[]()"
+    },
+    {
+      "code": "(foo)[]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 8
+        }
+      ],
+      "output": "[foo]()"
+    },
+    {
+      "code": "!()[foo]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ],
+      "output": "![](foo)"
+    },
+    {
+      "code": "(foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ],
+      "output": "[foo](bar)"
+    },
+    {
+      "code": "(foo)[#bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "output": "[foo](#bar)"
+    },
+    {
+      "code": "(foo)[http://bar.com]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": "[foo](http://bar.com)"
+    },
+    {
+      "code": "!(foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "output": "![foo](bar)"
+    },
+    {
+      "code": "!(foo)[#bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": "![foo](#bar)"
+    },
+    {
+      "code": "!(foo)[http://bar.com]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": "![foo](http://bar.com)"
+    },
+    {
+      "code": "(*foo*)[]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": "[*foo*]()"
+    },
+    {
+      "code": "(**foo**)[]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "output": "[**foo**]()"
+    },
+    {
+      "code": "(~~foo~~)[]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "output": "[~~foo~~]()"
+    },
+    {
+      "code": "(`foo`)[]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": "[`foo`]()"
+    },
+    {
+      "code": "[^1]: !(Footnote alt)[https://example.com]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 43
+        }
+      ],
+      "output": "[^1]: ![Footnote alt](https://example.com)"
+    },
+    {
+      "code": "[^1]: (Footnote text)[https://example.com]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 43
+        }
+      ],
+      "output": "[^1]: [Footnote text](https://example.com)"
+    },
+    {
+      "code": "(fo\no)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "[fo\no](bar)"
+    },
+    {
+      "code": "(foo\n)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "[foo\n](bar)"
+    },
+    {
+      "code": "(foo)[bar]\n!(foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 11
+        },
+        {
+          "messageId": "reversedSyntax",
+          "line": 2,
+          "column": 2,
+          "endLine": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "[foo](bar)\n![foo](bar)"
+    },
+    {
+      "code": "`code code\ncode`\n(foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 11
+        }
+      ],
+      "output": "`code code\ncode`\n[foo](bar)"
+    },
+    {
+      "code": "text\ntext `code\ncode code\ncode` text\ntext (foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 5,
+          "column": 6,
+          "endLine": 5,
+          "endColumn": 16
+        }
+      ],
+      "output": "text\ntext `code\ncode code\ncode` text\ntext [foo](bar)"
+    },
+    {
+      "code": "text (text(foo)[bar] text",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 11,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "text (text[foo](bar) text"
+    },
+    {
+      "code": "(text foo())[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "output": "[text foo()](bar)"
+    },
+    {
+      "code": "text (foo)[bar] text !(baz)[qux] text",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 16
+        },
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ],
+      "output": "text [foo](bar) text ![baz](qux) text"
+    },
+    {
+      "code": "abcd\n  \\a()[]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 2,
+          "column": 5,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "abcd\n  \\a[]()"
+    },
+    {
+      "code": "🎉 (foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ],
+      "output": "🎉 [foo](bar)"
+    },
+    {
+      "code": "text 🎉🎉 (foo)[bar] text",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 11,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "text 🎉🎉 [foo](bar) text"
+    },
+    {
+      "code": "🎉🎉🎉🎉🎉🎉🎉🎉 `a` (foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 22,
+          "endLine": 1,
+          "endColumn": 32
+        }
+      ],
+      "output": "🎉🎉🎉🎉🎉🎉🎉🎉 `a` [foo](bar)"
+    },
+    {
+      "code": "[link1](#link \"`\") ()[] [link2](#link \"`\")",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "output": "[link1](#link \"`\") []() [link2](#link \"`\")"
+    },
+    {
+      "code": "\\\\(foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": "\\\\[foo](bar)"
+    },
+    {
+      "code": "\\\\\\\\(foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 5,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ],
+      "output": "\\\\\\\\[foo](bar)"
+    },
+    {
+      "code": "\\\\\\\\\\\\(foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "output": "\\\\\\\\\\\\[foo](bar)"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\\\(foo)[bar]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": "\\\\\\\\\\\\\\\\[foo](bar)"
+    },
+    {
+      "code": "# (ESLint)[https://eslint.org/]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 32
+        }
+      ],
+      "output": "# [ESLint](https://eslint.org/)"
+    },
+    {
+      "code": "# !(A beautiful sunset)[sunset.png]",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 36
+        }
+      ],
+      "output": "# ![A beautiful sunset](sunset.png)"
+    },
+    {
+      "code": "Setext Heading\n  (ESLint)[https://eslint.org/]\n===",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 32
+        }
+      ],
+      "output": "Setext Heading\n  [ESLint](https://eslint.org/)\n==="
+    },
+    {
+      "code": "| ESLint                        | Sunset                            |\n| ----------------------------- | --------------------------------- |\n| (ESLint)[https://eslint.org/] | !(A beautiful sunset)[sunset.png] |",
+      "errors": [
+        {
+          "messageId": "reversedSyntax",
+          "line": 3,
+          "column": 3,
+          "endLine": 3,
+          "endColumn": 32
+        },
+        {
+          "messageId": "reversedSyntax",
+          "line": 3,
+          "column": 36,
+          "endLine": 3,
+          "endColumn": 68
+        }
+      ],
+      "output": "| ESLint                        | Sunset                            |\n| ----------------------------- | --------------------------------- |\n| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |"
+    }
+  ]
+}

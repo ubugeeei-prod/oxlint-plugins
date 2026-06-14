@@ -1,0 +1,425 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-unused-definitions.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/gfm"
+  },
+  "valid": [
+    {
+      "code": ""
+    },
+    {
+      "code": "   "
+    },
+    {
+      "code": "\n[Mercury][mercury]\n\n[mercury]: https://example.com/mercury/\n"
+    },
+    {
+      "code": "\n[mercury][]\n\n[mercury]: https://example.com/mercury/\n"
+    },
+    {
+      "code": "\n[mercury]\n\n[mercury]: https://example.com/mercury/\n"
+    },
+    {
+      "code": "\n[Mercury][mercury]\n\n[mercury]: https://example.com/mercury/\n[Mercury]: https://example.com/venus/\n"
+    },
+    {
+      "code": "\n[Mercury][mercury]        \n\n[mercury]: https://example.com/mercury/\n[   mercury       ]: https://example.com/venus/\n"
+    },
+    {
+      "code": "\n![Venus Image][venus]\n\n[venus]: https://example.com/venus.jpg        \n"
+    },
+    {
+      "code": "\n![venus][]\n\n[venus]: https://example.com/venus.jpg\n"
+    },
+    {
+      "code": "\n![venus]\n\n[venus]: https://example.com/venus.jpg\n"
+    },
+    {
+      "code": "\nMercury[^mercury]\n\n[^mercury]: Hello, Mercury!\n"
+    },
+    {
+      "code": "\nMercury[^mercury]\n\n[^mercury]: Hello, Mercury!\n[^Mercury]: Hello, Venus!\n"
+    },
+    {
+      "code": "\nMercury[^mercury]\n\n[^mercury]: https://example.com/mercury/\n[    ^mercury       ]: https://example.com/venus/\n"
+    },
+    {
+      "code": "\n[//]: # (This is a comment 1)\n[//]: <> (This is a comment 2)\n"
+    },
+    {
+      "code": "\n[Alpha][alpha] and [Alpha][^alpha]\n\n[alpha]: bravo\n\n[^alpha]: bravo\n"
+    },
+    {
+      "code": "\n[mercury]: https://example.com/mercury/\n[mercury]: https://example.com/venus/\n",
+      "options": [
+        {
+          "allowDefinitions": ["mercury"]
+        }
+      ]
+    },
+    {
+      "code": "\n[^mercury]: Hello, Mercury!\n[^mercury]: Hello, Venus!\n",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["mercury"]
+        }
+      ]
+    },
+    {
+      "code": "[MERCURY]: https://example.com/mercury/",
+      "options": [
+        {
+          "allowDefinitions": ["MERCURY"]
+        }
+      ]
+    },
+    {
+      "code": "[mercury]: https://example.com/mercury/",
+      "options": [
+        {
+          "allowDefinitions": ["MERCURY"]
+        }
+      ]
+    },
+    {
+      "code": "[MERCURY]: https://example.com/mercury/",
+      "options": [
+        {
+          "allowDefinitions": ["mercury"]
+        }
+      ]
+    },
+    {
+      "code": "[   mercury   ]: https://example.com/mercury/",
+      "options": [
+        {
+          "allowDefinitions": ["mercury"]
+        }
+      ]
+    },
+    {
+      "code": "[mercury]: https://example.com/mercury/",
+      "options": [
+        {
+          "allowDefinitions": ["   mercury   "]
+        }
+      ]
+    },
+    {
+      "code": "[foo bar]: https://example.com/foo-bar/",
+      "options": [
+        {
+          "allowDefinitions": ["foo\t\r\nbar"]
+        }
+      ]
+    },
+    {
+      "code": "[^MERCURY]: Hello, Mercury!",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["MERCURY"]
+        }
+      ]
+    },
+    {
+      "code": "[^mercury]: Hello, Mercury!",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["MERCURY"]
+        }
+      ]
+    },
+    {
+      "code": "[^MERCURY]: Hello, Mercury!",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["mercury"]
+        }
+      ]
+    },
+    {
+      "code": "[^mercury]: Hello, Mercury!",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["   mercury   "]
+        }
+      ]
+    },
+    {
+      "code": "[^mercury]: Hello, Mercury!",
+      "options": [
+        {
+          "checkFootnoteDefinitions": false
+        }
+      ]
+    },
+    {
+      "code": "[^mercury]: Hello, Mercury!",
+      "options": [
+        {
+          "checkFootnoteDefinitions": true,
+          "allowFootnoteDefinitions": ["mercury"]
+        }
+      ]
+    },
+    {
+      "code": "[Grüsse]: https://example.com/",
+      "options": [
+        {
+          "allowDefinitions": ["GRÜẞE"]
+        }
+      ]
+    },
+    {
+      "code": "[^Grüsse]: Grüsse",
+      "options": [
+        {
+          "allowFootnoteDefinitions": ["GRÜẞE"]
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n[mercury]: https://example.com/mercury/\n",
+      "errors": [
+        {
+          "messageId": "unusedDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 40
+        }
+      ]
+    },
+    {
+      "code": "\n[Mercury]: https://example.com/mercury/\n",
+      "errors": [
+        {
+          "messageId": "unusedDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "Mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 40
+        }
+      ]
+    },
+    {
+      "code": "\n[  Mercury  ]: https://example.com/mercury/\n",
+      "errors": [
+        {
+          "messageId": "unusedDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "Mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 44
+        }
+      ]
+    },
+    {
+      "code": "\n[mercury]: https://example.com/mercury/\n[mercury]: https://example.com/venus/\n[mercury]: https://example.com/earth/\n",
+      "errors": [
+        {
+          "messageId": "unusedDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 40
+        },
+        {
+          "messageId": "unusedDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 38
+        },
+        {
+          "messageId": "unusedDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 38
+        }
+      ]
+    },
+    {
+      "code": "\n[mercury]: https://example.com/mercury/\n",
+      "options": [
+        {
+          "allowDefinitions": ["venus"],
+          "allowFootnoteDefinitions": ["mercury"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unusedDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 40
+        }
+      ]
+    },
+    {
+      "code": "\n[^mercury]: Hello, Mercury!\n",
+      "errors": [
+        {
+          "messageId": "unusedFootnoteDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 28
+        }
+      ]
+    },
+    {
+      "code": "\n[^Mercury]: Hello, Mercury!\n",
+      "errors": [
+        {
+          "messageId": "unusedFootnoteDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "Mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 28
+        }
+      ]
+    },
+    {
+      "code": "\n[^mercury]: Hello, Mercury!\n[^mercury]: Hello, Venus!\n[^mercury]: Hello, Earth!\n",
+      "errors": [
+        {
+          "messageId": "unusedFootnoteDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 28
+        },
+        {
+          "messageId": "unusedFootnoteDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 26
+        },
+        {
+          "messageId": "unusedFootnoteDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 26
+        }
+      ]
+    },
+    {
+      "code": "\n[^mercury]: Hello, Mercury!\n",
+      "options": [
+        {
+          "allowDefinitions": ["mercury"],
+          "allowFootnoteDefinitions": ["venus"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unusedFootnoteDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 28
+        }
+      ]
+    },
+    {
+      "code": "\n[^mercury]: Hello, Mercury!\n",
+      "options": [
+        {
+          "checkFootnoteDefinitions": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unusedFootnoteDefinition",
+          "data": {
+            "identifier": "mercury",
+            "label": "mercury"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 28
+        }
+      ]
+    },
+    {
+      "code": "\nHello, [Mercury][mercury]! \nI am living on [Earth][earth] and I am going to [Mars][mars].\n\n[mercury]: https://example.com/mercury/\n[earth]: https://example.com/earth/\n[mars]: https://example.com/mars/\n\n[//]: # (comment about mars)\n\n[jupiter]: https://example.com/jupiter/\n\n[//]: # (comment about jupiter)\n\n[mercury]: https://example.com/venus/\n",
+      "errors": [
+        {
+          "messageId": "unusedDefinition",
+          "data": {
+            "identifier": "jupiter",
+            "label": "jupiter"
+          },
+          "line": 11,
+          "column": 1,
+          "endLine": 11,
+          "endColumn": 40
+        }
+      ]
+    }
+  ]
+}

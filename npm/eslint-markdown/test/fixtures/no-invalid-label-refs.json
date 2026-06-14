@@ -1,0 +1,256 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-invalid-label-refs.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/commonmark"
+  },
+  "valid": [
+    {
+      "code": "[*foo*]"
+    },
+    {
+      "code": "[foo]\n\n[foo]: http://bar.com"
+    },
+    {
+      "code": "[foo][ foo ]\n\n[foo]: http://bar.com"
+    },
+    {
+      "code": "![foo][foo]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "[foo][]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "![foo][]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "[  foo ][]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "[eslint][\n\n]"
+    },
+    {
+      "code": "[*eslint*][]\n\n[*eslint*]: http://bar.com"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "[foo][ ]\n\n[foo]: http://bar.com/image.jpg",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "![foo][ ]\n\n[foo]: http://bar.com/image.jpg",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "[\nfoo\n][\n]\n\n[foo]: http://bar.com/image.jpg",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "foo"
+          },
+          "line": 3,
+          "column": 2,
+          "endLine": 4,
+          "endColumn": 2
+        }
+      ]
+    },
+    {
+      "code": "[\nfoo\n][\n ]\n\n[foo]: http://bar.com/image.jpg",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "foo"
+          },
+          "line": 3,
+          "column": 2,
+          "endLine": 4,
+          "endColumn": 3
+        }
+      ]
+    },
+    {
+      "code": "[foo][ ]\n[bar][ ]\n\n[foo]: http://foo.com\n[bar]: http://bar.com",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        },
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "bar"
+          },
+          "line": 2,
+          "column": 6,
+          "endLine": 2,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[foo][ ]\n![bar][ ]\n\n[foo]: http://foo.com\n[bar]: http://bar.com",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        },
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "bar"
+          },
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "- - - [foo][ ]\n\n[foo]: http://foo.com",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 12,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ]
+    },
+    {
+      "code": "eslint [eslint][ ]",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "eslint"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ]
+    },
+    {
+      "code": "\\\\eslint [eslint][ ]",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "eslint"
+          },
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ]
+    },
+    {
+      "code": "es\\\\lint\\\\ [eslint][ ]",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "eslint"
+          },
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ]
+    },
+    {
+      "code": "[eslint][ ]",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "eslint"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ]
+    },
+    {
+      "code": "[eslint][\n]",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "eslint"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 2,
+          "endColumn": 2
+        }
+      ]
+    },
+    {
+      "code": "[*eslint*][ ]",
+      "errors": [
+        {
+          "messageId": "invalidLabelRef",
+          "data": {
+            "label": "*eslint*"
+          },
+          "line": 1,
+          "column": 11,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ]
+    }
+  ]
+}

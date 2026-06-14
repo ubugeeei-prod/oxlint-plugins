@@ -1,0 +1,298 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/fenced-code-meta.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/commonmark"
+  },
+  "valid": [
+    {
+      "code": "```\nconsole.log(\"Hello, world!\");\n```"
+    },
+    {
+      "code": "```js foo\nconsole.log(\"Hello, world!\");\n```"
+    },
+    {
+      "code": "``` js   foo\nconsole.log(\"Hello, world!\");\n```"
+    },
+    {
+      "code": "```\nconsole.log(\"Hello, world!\");\n```",
+      "options": ["never"]
+    },
+    {
+      "code": "```js\nconsole.log(\"Hello, world!\");\n```",
+      "options": ["never"]
+    },
+    {
+      "code": "``` js\nconsole.log(\"Hello, world!\");\n```",
+      "options": ["never"]
+    },
+    {
+      "code": "~~~\nconsole.log(\"Hello, world!\");\n~~~"
+    },
+    {
+      "code": "~~~js foo\nconsole.log(\"Hello, world!\");\n~~~"
+    },
+    {
+      "code": "~~~ js   foo\nconsole.log(\"Hello, world!\");\n~~~"
+    },
+    {
+      "code": "~~~\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": ["never"]
+    },
+    {
+      "code": "~~~js\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": ["never"]
+    },
+    {
+      "code": "~~~ js\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": ["never"]
+    },
+    {
+      "code": "\tconsole.log(\"Hello, world!\");"
+    },
+    {
+      "code": "\tconsole.log(\"Hello, world!\");",
+      "options": ["never"]
+    },
+    {
+      "code": "\n    console.log(\"Hello, world!\")\n"
+    },
+    {
+      "code": "\n    console.log(\"Hello, world!\")\n",
+      "options": ["never"]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "```javascript\nconsole.log(\"Hello, world!\");\n```",
+      "errors": [
+        {
+          "messageId": "missingMetadata",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ]
+    },
+    {
+      "code": "~~~javascript\nconsole.log(\"Hello, world!\");\n~~~",
+      "errors": [
+        {
+          "messageId": "missingMetadata",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ]
+    },
+    {
+      "code": "``` js  \nconsole.log(\"Hello, world!\");\n```",
+      "errors": [
+        {
+          "messageId": "missingMetadata",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "~~~ js  \nconsole.log(\"Hello, world!\");\n~~~",
+      "errors": [
+        {
+          "messageId": "missingMetadata",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "  ```javascript\nconsole.log('Hello, world!');\n```",
+      "errors": [
+        {
+          "messageId": "missingMetadata",
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ]
+    },
+    {
+      "code": "  ~~~javascript\nconsole.log('Hello, world!');\n~~~",
+      "errors": [
+        {
+          "messageId": "missingMetadata",
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ]
+    },
+    {
+      "code": "```js title=\"example.js\"\nconsole.log(\"Hello, world!\");\n```",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "~~~js title=\"example.js\"\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "  ```js title='example.js'\nconsole.log('Hello, world!');\n```",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ]
+    },
+    {
+      "code": "  ~~~js title='example.js'\nconsole.log('Hello, world!');\n~~~",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ]
+    },
+    {
+      "code": "```js foo bar\nconsole.log(\"Hello, world!\");\n```",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ]
+    },
+    {
+      "code": "~~~js foo bar\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ]
+    },
+    {
+      "code": "``` js foo\nconsole.log(\"Hello, world!\");\n```",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "~~~ js foo\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "```js js\nconsole.log(\"Hello, world!\");\n```",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "~~~js js\nconsole.log(\"Hello, world!\");\n~~~",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "``` js   foo   \nconsole.log(\"Hello, world!\");\n```",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ]
+    },
+    {
+      "code": "~~~ js   foo   \nconsole.log(\"Hello, world!\");\n~~~",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "disallowedMetadata",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ]
+    }
+  ]
+}
