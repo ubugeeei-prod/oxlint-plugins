@@ -212,6 +212,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_call_expression(&mut self, it: &CallExpression<'a>) {
         self.check_no_skipped_tests_call(it);
+        self.check_array_constructor_call(it);
         walk::walk_call_expression(self, it);
     }
 
@@ -228,6 +229,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_new_expression(&mut self, it: &NewExpression<'a>) {
         self.check_no_primitive_wrappers(it);
+        self.check_array_constructor_new(it);
         walk::walk_new_expression(self, it);
     }
 

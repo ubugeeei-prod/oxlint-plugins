@@ -135,6 +135,7 @@ describe('sonarjs plugin shape', () => {
       'fixme-tag',
       'todo-tag',
       'no-sonar-comments',
+      'array-constructor',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -177,6 +178,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['fixme-tag']).toBe('object');
     expect(typeof plugin.rules['todo-tag']).toBe('object');
     expect(typeof plugin.rules['no-sonar-comments']).toBe('object');
+    expect(typeof plugin.rules['array-constructor']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -219,6 +221,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/fixme-tag']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/todo-tag']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-sonar-comments']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/array-constructor']).toBe('error');
   });
 });
 
@@ -921,5 +924,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-sonar-comments)');
+  });
+
+  it('reports array-constructor for a multi-argument call through the adapter', () => {
+    const source = 'const a = Array(1, 2, 3);';
+    const reports = runRule('array-constructor', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('arrayConstructor');
+  });
+
+  it('reports array-constructor through the CLI', () => {
+    const source = 'const a = new Array(1, 2, 3);';
+    const result = runOxlint('array-constructor', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(array-constructor)');
   });
 });
