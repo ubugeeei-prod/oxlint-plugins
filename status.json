@@ -5655,19 +5655,19 @@
       },
       {
         "name": "no-syntax-error",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-syntax-error."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-syntax-error; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-temporary-table",
@@ -8615,7 +8615,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pattern-level scan via first_literal_control_character: walks the pattern chars and reports the first raw character with code point < 0x20 or 0x7F (i.e. an actual control byte). Unlike no-control-character, this helper does NOT decode escape sequences \u2014 `\\xHH` reaching the regex engine as four characters is not flagged, only literal control bytes that landed in the pattern via a host-language escape like `\\u0001` in a JS string literal."
+        "notes": "Pattern-level scan via first_literal_control_character: walks the pattern chars and reports the first raw character with code point < 0x20 or 0x7F (i.e. an actual control byte). Unlike no-control-character, this helper does NOT decode escape sequences — `\\xHH` reaching the regex engine as four characters is not flagged, only literal control bytes that landed in the pattern via a host-language escape like `\\u0001` in a JS string literal."
       },
       {
         "name": "grapheme-string-literal",
@@ -8887,7 +8887,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Byte-walker port that flags a character-class element or quantifier target only when the engine matches it as MULTIPLE code points: a multi-code-point grapheme placed literally in a class or after a quantifier (combining/variation-selector/ZWJ/regional-indicator/skin-tone sequence, upstream 'Multi'), or a single astral character seen as a surrogate pair in non-`u`/`v` mode (upstream 'Surrogate'). A single code point \u2014 a lone ZWJ (U+200D), combining mark, variation selector, lone surrogate, or an astral char under the `u`/`v` flag \u2014 never flags, matching upstream's per-grapheme `getProblem`. Only literal code points are inspected; escapes (`\\uXXXX`, `\\u{...}`), v-mode `\\q{...}` string disjunctions, and nested classes are skipped because their raw source is ASCII. Grapheme clustering is approximated with the joiner/modifier ranges that turn several code points into one user-perceived character; when uncertain a code point is its own grapheme, which can only narrow detection."
+        "notes": "Byte-walker port that flags a character-class element or quantifier target only when the engine matches it as MULTIPLE code points: a multi-code-point grapheme placed literally in a class or after a quantifier (combining/variation-selector/ZWJ/regional-indicator/skin-tone sequence, upstream 'Multi'), or a single astral character seen as a surrogate pair in non-`u`/`v` mode (upstream 'Surrogate'). A single code point — a lone ZWJ (U+200D), combining mark, variation selector, lone surrogate, or an astral char under the `u`/`v` flag — never flags, matching upstream's per-grapheme `getProblem`. Only literal code points are inspected; escapes (`\\uXXXX`, `\\u{...}`), v-mode `\\q{...}` string disjunctions, and nested classes are skipped because their raw source is ASCII. Grapheme clustering is approximated with the joiner/modifier ranges that turn several code points into one user-perceived character; when uncertain a code point is its own grapheme, which can only narrow detection."
       },
       {
         "name": "no-missing-g-flag",
@@ -9159,7 +9159,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "PatternAnalysis gains has_unescaped_dot and has_unescaped_anchor (set by the existing walker on `.` / `^` / `$` outside character classes). After scanning, the rule consults the flags string: `s` without `.` is inert, and `m` without `^`/`$` is inert. Other flags (`i`, etc.) are deferred \u2014 they need richer letter/case analysis."
+        "notes": "PatternAnalysis gains has_unescaped_dot and has_unescaped_anchor (set by the existing walker on `.` / `^` / `$` outside character classes). After scanning, the rule consults the flags string: `s` without `.` is inert, and `m` without `^`/`$` is inert. Other flags (`i`, etc.) are deferred — they need richer letter/case analysis."
       },
       {
         "name": "no-useless-lazy",
@@ -10074,7 +10074,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule argument-type (Sonar key S3782). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule argument-type (Sonar key S3782). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "arguments-order",
@@ -10090,7 +10090,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule arguments-order (Sonar key S2234). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule arguments-order (Sonar key S2234). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "arguments-usage",
@@ -10122,7 +10122,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule array-callback-without-return (Sonar key S3796). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule array-callback-without-return (Sonar key S3796). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "array-constructor",
@@ -10154,7 +10154,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule arrow-function-convention (Sonar key S3524). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule arrow-function-convention (Sonar key S3524). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "assertions-in-tests",
@@ -10170,7 +10170,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule assertions-in-tests (Sonar key S2699). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule assertions-in-tests (Sonar key S2699). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-apigateway-public-api",
@@ -10186,7 +10186,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-apigateway-public-api (Sonar key S6333). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-apigateway-public-api (Sonar key S6333). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-ec2-rds-dms-public",
@@ -10202,7 +10202,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-ec2-rds-dms-public (Sonar key S6329). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-ec2-rds-dms-public (Sonar key S6329). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-ec2-unencrypted-ebs-volume",
@@ -10218,7 +10218,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-ec2-unencrypted-ebs-volume (Sonar key S6275). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-ec2-unencrypted-ebs-volume (Sonar key S6275). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-efs-unencrypted",
@@ -10234,7 +10234,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-efs-unencrypted (Sonar key S6332). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-efs-unencrypted (Sonar key S6332). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-iam-all-privileges",
@@ -10250,7 +10250,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-iam-all-privileges (Sonar key S6302). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-iam-all-privileges (Sonar key S6302). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-iam-all-resources-accessible",
@@ -10266,7 +10266,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-iam-all-resources-accessible (Sonar key S6304). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-iam-all-resources-accessible (Sonar key S6304). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-iam-privilege-escalation",
@@ -10282,7 +10282,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-iam-privilege-escalation (Sonar key S6317). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-iam-privilege-escalation (Sonar key S6317). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-iam-public-access",
@@ -10298,7 +10298,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-iam-public-access (Sonar key S6270). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-iam-public-access (Sonar key S6270). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-opensearchservice-domain",
@@ -10314,7 +10314,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-opensearchservice-domain (Sonar key S6308). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-opensearchservice-domain (Sonar key S6308). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-rds-unencrypted-databases",
@@ -10330,7 +10330,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-rds-unencrypted-databases (Sonar key S6303). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-rds-unencrypted-databases (Sonar key S6303). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-restricted-ip-admin-access",
@@ -10346,7 +10346,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-restricted-ip-admin-access (Sonar key S6321). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-restricted-ip-admin-access (Sonar key S6321). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-s3-bucket-granted-access",
@@ -10362,7 +10362,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-s3-bucket-granted-access (Sonar key S6265). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-s3-bucket-granted-access (Sonar key S6265). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-s3-bucket-insecure-http",
@@ -10378,7 +10378,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-s3-bucket-insecure-http (Sonar key S6249). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-s3-bucket-insecure-http (Sonar key S6249). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-s3-bucket-public-access",
@@ -10394,7 +10394,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-s3-bucket-public-access (Sonar key S6281). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-s3-bucket-public-access (Sonar key S6281). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-s3-bucket-server-encryption",
@@ -10410,7 +10410,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-s3-bucket-server-encryption (Sonar key S6245). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-s3-bucket-server-encryption (Sonar key S6245). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-s3-bucket-versioning",
@@ -10426,7 +10426,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-s3-bucket-versioning (Sonar key S6252). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-s3-bucket-versioning (Sonar key S6252). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-sagemaker-unencrypted-notebook",
@@ -10442,7 +10442,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-sagemaker-unencrypted-notebook (Sonar key S6319). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-sagemaker-unencrypted-notebook (Sonar key S6319). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-sns-unencrypted-topics",
@@ -10458,7 +10458,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-sns-unencrypted-topics (Sonar key S6327). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-sns-unencrypted-topics (Sonar key S6327). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-sqs-unencrypted-queue",
@@ -10474,7 +10474,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule aws-sqs-unencrypted-queue (Sonar key S6330). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule aws-sqs-unencrypted-queue (Sonar key S6330). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "bitwise-operators",
@@ -10490,7 +10490,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule bitwise-operators (Sonar key S1529). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule bitwise-operators (Sonar key S1529). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "block-scoped-var",
@@ -10506,7 +10506,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule block-scoped-var (Sonar key S2392). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule block-scoped-var (Sonar key S2392). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "bool-param-default",
@@ -10522,7 +10522,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule bool-param-default (Sonar key S4798). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule bool-param-default (Sonar key S4798). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "call-argument-line",
@@ -10538,7 +10538,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule call-argument-line (Sonar key S1472). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule call-argument-line (Sonar key S1472). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "certificate-transparency",
@@ -10554,7 +10554,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule certificate-transparency (Sonar key S5742). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule certificate-transparency (Sonar key S5742). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "chai-determinate-assertion",
@@ -10570,7 +10570,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule chai-determinate-assertion (Sonar key S6092). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule chai-determinate-assertion (Sonar key S6092). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "class-name",
@@ -10634,7 +10634,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule cognitive-complexity (Sonar key S3776). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule cognitive-complexity (Sonar key S3776). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "comma-or-logical-or-case",
@@ -10666,7 +10666,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule comment-regex (Sonar key S124). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule comment-regex (Sonar key S124). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "concise-regex",
@@ -10682,7 +10682,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule concise-regex (Sonar key S6353). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule concise-regex (Sonar key S6353). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "conditional-indentation",
@@ -10698,7 +10698,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule conditional-indentation (Sonar key S3973). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule conditional-indentation (Sonar key S3973). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "confidential-information-logging",
@@ -10714,7 +10714,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule confidential-information-logging (Sonar key S5757). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule confidential-information-logging (Sonar key S5757). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "constructor-for-side-effects",
@@ -10730,7 +10730,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (Sonar key S1848). Reports a NewExpression used as a bare ExpressionStatement \u2014 the constructed object is immediately discarded. Implemented via visit_expression_statement + get_inner_expression(). No upstream source, tests, fixtures, or messages consulted."
+        "notes": "Clean-room port (Sonar key S1848). Reports a NewExpression used as a bare ExpressionStatement — the constructed object is immediately discarded. Implemented via visit_expression_statement + get_inner_expression(). No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "content-length",
@@ -10746,7 +10746,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule content-length (Sonar key S5693). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule content-length (Sonar key S5693). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "content-security-policy",
@@ -10762,7 +10762,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule content-security-policy (Sonar key S5728). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule content-security-policy (Sonar key S5728). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "cookie-no-httponly",
@@ -10778,7 +10778,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule cookie-no-httponly (Sonar key S3330). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule cookie-no-httponly (Sonar key S3330). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "cookies",
@@ -10794,7 +10794,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule cookies (Sonar key S2255). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule cookies (Sonar key S2255). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "cors",
@@ -10810,7 +10810,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule cors (Sonar key S5122). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule cors (Sonar key S5122). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "csrf",
@@ -10826,7 +10826,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule csrf (Sonar key S4502). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule csrf (Sonar key S4502). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "cyclomatic-complexity",
@@ -10858,7 +10858,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule declarations-in-global-scope (Sonar key S3798). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule declarations-in-global-scope (Sonar key S3798). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "deprecation",
@@ -10874,7 +10874,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule deprecation (Sonar key S1874). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule deprecation (Sonar key S1874). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "destructuring-assignment-syntax",
@@ -10890,7 +10890,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule destructuring-assignment-syntax (Sonar key S3514). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule destructuring-assignment-syntax (Sonar key S3514). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "different-types-comparison",
@@ -10906,7 +10906,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule different-types-comparison (Sonar key S3403). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule different-types-comparison (Sonar key S3403). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "disabled-auto-escaping",
@@ -10922,7 +10922,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule disabled-auto-escaping (Sonar key S5247). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule disabled-auto-escaping (Sonar key S5247). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "disabled-resource-integrity",
@@ -10938,7 +10938,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule disabled-resource-integrity (Sonar key S5725). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule disabled-resource-integrity (Sonar key S5725). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "disabled-timeout",
@@ -10954,7 +10954,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule disabled-timeout (Sonar key S6080). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule disabled-timeout (Sonar key S6080). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "dns-prefetching",
@@ -10970,7 +10970,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule dns-prefetching (Sonar key S5743). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule dns-prefetching (Sonar key S5743). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "dompurify-unsafe-config",
@@ -10986,7 +10986,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule dompurify-unsafe-config (Sonar key S8479). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule dompurify-unsafe-config (Sonar key S8479). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "duplicates-in-character-class",
@@ -11018,7 +11018,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule dynamically-constructed-templates (Sonar key S7790). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule dynamically-constructed-templates (Sonar key S7790). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "elseif-without-else",
@@ -11050,7 +11050,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (Sonar key S5842). Flags repetition quantifiers (* + {n,} {n,m} with m\u22652) whose body can match the empty string. matches_empty predicate covers Quantifier/Group/Disjunction/zero-width/backref nodes. No upstream source, tests, or messages were consulted."
+        "notes": "Clean-room port (Sonar key S5842). Flags repetition quantifiers (* + {n,} {n,m} with m≥2) whose body can match the empty string. matches_empty predicate covers Quantifier/Group/Disjunction/zero-width/backref nodes. No upstream source, tests, or messages were consulted."
       },
       {
         "name": "encryption",
@@ -11066,7 +11066,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule encryption (Sonar key S4787). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule encryption (Sonar key S4787). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "encryption-secure-mode",
@@ -11082,7 +11082,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule encryption-secure-mode (Sonar key S5542). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule encryption-secure-mode (Sonar key S5542). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "existing-groups",
@@ -11098,7 +11098,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule existing-groups (Sonar key S6328). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule existing-groups (Sonar key S6328). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "expression-complexity",
@@ -11114,7 +11114,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule expression-complexity (Sonar key S1067). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule expression-complexity (Sonar key S1067). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "file-header",
@@ -11130,7 +11130,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule file-header (Sonar key S1451). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule file-header (Sonar key S1451). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "file-name-differ-from-class",
@@ -11146,7 +11146,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule file-name-differ-from-class (Sonar key S3317). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule file-name-differ-from-class (Sonar key S3317). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "file-permissions",
@@ -11162,7 +11162,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule file-permissions (Sonar key S2612). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule file-permissions (Sonar key S2612). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "file-uploads",
@@ -11178,7 +11178,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule file-uploads (Sonar key S2598). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule file-uploads (Sonar key S2598). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "fixme-tag",
@@ -11194,7 +11194,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (Sonar key S1134). Case-sensitive substring match for all-caps FIXME in comment text. Lowercase/mixed-case variants (fixme, FixMe) are intentionally excluded \u2014 case-insensitive matching would require allocation in the Rust core and is a follow-up. One diagnostic per comment containing FIXME, at the comment span."
+        "notes": "Clean-room port (Sonar key S1134). Case-sensitive substring match for all-caps FIXME in comment text. Lowercase/mixed-case variants (fixme, FixMe) are intentionally excluded — case-insensitive matching would require allocation in the Rust core and is a follow-up. One diagnostic per comment containing FIXME, at the comment span."
       },
       {
         "name": "for-in",
@@ -11226,7 +11226,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule for-loop-increment-sign (Sonar key S2251). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule for-loop-increment-sign (Sonar key S2251). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "frame-ancestors",
@@ -11242,7 +11242,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule frame-ancestors (Sonar key S5732). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule frame-ancestors (Sonar key S5732). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "function-inside-loop",
@@ -11258,7 +11258,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule function-inside-loop (Sonar key S1515). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule function-inside-loop (Sonar key S1515). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "function-name",
@@ -11274,7 +11274,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule function-name (Sonar key S100). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule function-name (Sonar key S100). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "function-return-type",
@@ -11290,7 +11290,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule function-return-type (Sonar key S3800). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule function-return-type (Sonar key S3800). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "future-reserved-words",
@@ -11306,7 +11306,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule future-reserved-words (Sonar key S1527). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule future-reserved-words (Sonar key S1527). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "generator-without-yield",
@@ -11338,7 +11338,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule hardcoded-secret-signatures (Sonar key S6437). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule hardcoded-secret-signatures (Sonar key S6437). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "hashing",
@@ -11354,7 +11354,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule hashing (Sonar key S4790). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule hashing (Sonar key S4790). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "hidden-files",
@@ -11370,7 +11370,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule hidden-files (Sonar key S5691). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule hidden-files (Sonar key S5691). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "in-operator-type-error",
@@ -11386,7 +11386,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule in-operator-type-error (Sonar key S3785). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule in-operator-type-error (Sonar key S3785). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "inconsistent-function-call",
@@ -11402,7 +11402,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule inconsistent-function-call (Sonar key S3686). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule inconsistent-function-call (Sonar key S3686). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "index-of-compare-to-positive-number",
@@ -11434,7 +11434,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule insecure-cookie (Sonar key S2092). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule insecure-cookie (Sonar key S2092). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "insecure-jwt-token",
@@ -11450,7 +11450,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule insecure-jwt-token (Sonar key S5659). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule insecure-jwt-token (Sonar key S5659). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "inverted-assertion-arguments",
@@ -11466,7 +11466,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule inverted-assertion-arguments (Sonar key S3415). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule inverted-assertion-arguments (Sonar key S3415). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "jsx-no-leaked-render",
@@ -11482,7 +11482,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule jsx-no-leaked-render (Sonar key S6439). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule jsx-no-leaked-render (Sonar key S6439). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "label-position",
@@ -11498,7 +11498,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule label-position (Sonar key S1439). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule label-position (Sonar key S1439). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "link-with-target-blank",
@@ -11514,7 +11514,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule link-with-target-blank (Sonar key S5148). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule link-with-target-blank (Sonar key S5148). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "max-lines",
@@ -11546,7 +11546,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port of S138. Counts code lines (non-blank, non-comment-only) over the function's own line span. Reports FunctionDeclaration, FunctionExpression, and ArrowFunctionExpression when the count strictly exceeds the configurable maximum (default 200). IIFEs (function/arrow that is the direct callee of a CallExpression) are never reported. JSX-containing functions (any function whose subtree contains a JSXElement or JSXFragment) are never reported \u2014 this is a deliberate broadening of SonarJS's React-component exclusion; we exclude any JSX-containing function rather than only capitalized-name components, so we never over-report."
+        "notes": "Clean-room port of S138. Counts code lines (non-blank, non-comment-only) over the function's own line span. Reports FunctionDeclaration, FunctionExpression, and ArrowFunctionExpression when the count strictly exceeds the configurable maximum (default 200). IIFEs (function/arrow that is the direct callee of a CallExpression) are never reported. JSX-containing functions (any function whose subtree contains a JSXElement or JSXFragment) are never reported — this is a deliberate broadening of SonarJS's React-component exclusion; we exclude any JSX-containing function rather than only capitalized-name components, so we never over-report."
       },
       {
         "name": "max-switch-cases",
@@ -11578,7 +11578,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (Sonar key S4622). Reports a TypeScript union type whose direct member count exceeds 3. Threshold is fixed at the SonarJS default of 3 (MAX_UNION_SIZE); per-rule options infrastructure for configurability is a follow-up task. Each TSUnionType node is counted per-node \u2014 nested parenthesized unions are not flattened. No upstream source, tests, fixtures, or messages were consulted or copied."
+        "notes": "Clean-room port (Sonar key S4622). Reports a TypeScript union type whose direct member count exceeds 3. Threshold is fixed at the SonarJS default of 3 (MAX_UNION_SIZE); per-rule options infrastructure for configurability is a follow-up task. Each TSUnionType node is counted per-node — nested parenthesized unions are not flattened. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "misplaced-loop-counter",
@@ -11594,7 +11594,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule misplaced-loop-counter (Sonar key S1994). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule misplaced-loop-counter (Sonar key S1994). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "nested-control-flow",
@@ -11626,7 +11626,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule new-operator-misuse (Sonar key S2999). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule new-operator-misuse (Sonar key S2999). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-all-duplicated-branches",
@@ -11674,7 +11674,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-angular-bypass-sanitization (Sonar key S6268). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-angular-bypass-sanitization (Sonar key S6268). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-array-delete",
@@ -11690,7 +11690,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-array-delete (Sonar key S2870). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-array-delete (Sonar key S2870). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-associative-arrays",
@@ -11706,7 +11706,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-associative-arrays (Sonar key S3579). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-associative-arrays (Sonar key S3579). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-async-constructor",
@@ -11722,7 +11722,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-async-constructor (Sonar key S7059). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-async-constructor (Sonar key S7059). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-built-in-override",
@@ -11738,7 +11738,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (Sonar key S2424). Detects binding declarations and simple assignments that override or shadow standard ECMAScript built-in globals (Object, Array, Math, etc. \u2014 a fixed set of 40 names documented in the rule source). Member-expression targets such as Math.PI = 3 are intentionally excluded. No upstream source, tests, fixtures, or messages were consulted or copied."
+        "notes": "Clean-room port (Sonar key S2424). Detects binding declarations and simple assignments that override or shadow standard ECMAScript built-in globals (Object, Array, Math, etc. — a fixed set of 40 names documented in the rule source). Member-expression targets such as Math.PI = 3 are intentionally excluded. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-case-label-in-switch",
@@ -11754,7 +11754,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (Sonar key S1219). Detects labeled statements appearing directly in the consequent list of a switch case, where they almost certainly represent a mistyped 'case' clause. Only direct children of SwitchCase.consequent are flagged; labels nested inside a block within a case are intentionally out of scope. Overlap with no-labels is intentional \u2014 both rules may fire when both are enabled. No upstream source, tests, fixtures, or messages were consulted or copied."
+        "notes": "Clean-room port (Sonar key S1219). Detects labeled statements appearing directly in the consequent list of a switch case, where they almost certainly represent a mistyped 'case' clause. Only direct children of SwitchCase.consequent are flagged; labels nested inside a block within a case are intentionally out of scope. Overlap with no-labels is intentional — both rules may fire when both are enabled. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-clear-text-protocols",
@@ -11770,7 +11770,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-clear-text-protocols (Sonar key S5332). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-clear-text-protocols (Sonar key S5332). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-code-after-done",
@@ -11786,7 +11786,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-code-after-done (Sonar key S6079). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-code-after-done (Sonar key S6079). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-collapsible-if",
@@ -11834,7 +11834,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-commented-code (Sonar key S125). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-commented-code (Sonar key S125). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-control-regex",
@@ -11850,7 +11850,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (Sonar key S6324). Flags control characters (U+0000\u2013U+001F) written as \\x, \\u/\\u{}, or \\c escapes anywhere in a regex literal including inside character classes. Named escapes \\t\\n\\r\\v\\f (CharacterKind::SingleEscape) are not flagged. Literal raw control chars and octal escapes are a documented follow-up (false negatives, not false positives). No upstream source, fixtures, tests, or messages were consulted or copied."
+        "notes": "Clean-room port (Sonar key S6324). Flags control characters (U+0000–U+001F) written as \\x, \\u/\\u{}, or \\c escapes anywhere in a regex literal including inside character classes. Named escapes \\t\\n\\r\\v\\f (CharacterKind::SingleEscape) are not flagged. Literal raw control chars and octal escapes are a documented follow-up (false negatives, not false positives). No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-dead-store",
@@ -11866,7 +11866,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-dead-store (Sonar key S1854). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-dead-store (Sonar key S1854). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-delete-var",
@@ -11930,7 +11930,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-duplicated-branches (Sonar key S1871). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-duplicated-branches (Sonar key S1871). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-element-overwrite",
@@ -11946,7 +11946,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-element-overwrite (Sonar key S4143). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-element-overwrite (Sonar key S4143). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-empty-after-reluctant",
@@ -11962,7 +11962,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-empty-after-reluctant (Sonar key S6019). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-empty-after-reluctant (Sonar key S6019). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-empty-alternatives",
@@ -12010,7 +12010,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-empty-collection (Sonar key S4158). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-empty-collection (Sonar key S4158). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-empty-group",
@@ -12042,7 +12042,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-empty-test-file (Sonar key S2187). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-empty-test-file (Sonar key S2187). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-equals-in-for-termination",
@@ -12058,7 +12058,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-equals-in-for-termination (Sonar key S888). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-equals-in-for-termination (Sonar key S888). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-exclusive-tests",
@@ -12090,7 +12090,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-extra-arguments (Sonar key S930). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-extra-arguments (Sonar key S930). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-fallthrough",
@@ -12106,7 +12106,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-fallthrough (Sonar key S128). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-fallthrough (Sonar key S128). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-for-in-iterable",
@@ -12154,7 +12154,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (Sonar key S2990). Flags ThisExpression when this_binding_depth==0 (global this). Increments depth on enter of regular functions (visit_function), class field initializers (visit_property_definition), class accessor properties (visit_accessor_property), and class static blocks (visit_static_block). Arrow functions do NOT increment depth. Computed property key context (this in [this.x] = 1) is treated conservatively as non-global (not flagged) \u2014 parity risk noted. Super/decorator contexts are not specially handled."
+        "notes": "Clean-room port (Sonar key S2990). Flags ThisExpression when this_binding_depth==0 (global this). Increments depth on enter of regular functions (visit_function), class field initializers (visit_property_definition), class accessor properties (visit_accessor_property), and class static blocks (visit_static_block). Arrow functions do NOT increment depth. Computed property key context (this in [this.x] = 1) is treated conservatively as non-global (not flagged) — parity risk noted. Super/decorator contexts are not specially handled."
       },
       {
         "name": "no-globals-shadowing",
@@ -12170,7 +12170,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-globals-shadowing (Sonar key S2137). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-globals-shadowing (Sonar key S2137). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-gratuitous-expressions",
@@ -12186,7 +12186,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-gratuitous-expressions (Sonar key S2589). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-gratuitous-expressions (Sonar key S2589). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-hardcoded-ip",
@@ -12218,7 +12218,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-hardcoded-passwords (Sonar key S2068). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-hardcoded-passwords (Sonar key S2068). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-hardcoded-secrets",
@@ -12234,7 +12234,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-hardcoded-secrets (Sonar key S6418). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-hardcoded-secrets (Sonar key S6418). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-hook-setter-in-body",
@@ -12250,7 +12250,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-hook-setter-in-body (Sonar key S6442). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-hook-setter-in-body (Sonar key S6442). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-identical-conditions",
@@ -12298,7 +12298,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-identical-functions (Sonar key S4144). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-identical-functions (Sonar key S4144). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-ignored-exceptions",
@@ -12314,7 +12314,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-ignored-exceptions (Sonar key S2486). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-ignored-exceptions (Sonar key S2486). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-ignored-return",
@@ -12330,7 +12330,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-ignored-return (Sonar key S2201). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-ignored-return (Sonar key S2201). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-implicit-dependencies",
@@ -12346,7 +12346,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-implicit-dependencies (Sonar key S4328). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-implicit-dependencies (Sonar key S4328). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-implicit-global",
@@ -12362,7 +12362,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-implicit-global (Sonar key S2703). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-implicit-global (Sonar key S2703). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-in-misuse",
@@ -12378,7 +12378,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-in-misuse (Sonar key S4619). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-in-misuse (Sonar key S4619). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-incomplete-assertions",
@@ -12394,7 +12394,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-incomplete-assertions (Sonar key S2970). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-incomplete-assertions (Sonar key S2970). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-inconsistent-returns",
@@ -12426,7 +12426,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-incorrect-string-concat (Sonar key S3402). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-incorrect-string-concat (Sonar key S3402). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-internal-api-use",
@@ -12442,7 +12442,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-internal-api-use (Sonar key S6627). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-internal-api-use (Sonar key S6627). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-intrusive-permissions",
@@ -12458,7 +12458,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-intrusive-permissions (Sonar key S5604). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-intrusive-permissions (Sonar key S5604). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-invalid-regexp",
@@ -12474,7 +12474,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-invalid-regexp (Sonar key S5856). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-invalid-regexp (Sonar key S5856). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-invariant-returns",
@@ -12490,7 +12490,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-invariant-returns (Sonar key S3516). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-invariant-returns (Sonar key S3516). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-inverted-boolean-check",
@@ -12522,7 +12522,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-ip-forward (Sonar key S5759). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-ip-forward (Sonar key S5759). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-labels",
@@ -12554,7 +12554,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-literal-call (Sonar key S6958). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-literal-call (Sonar key S6958). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-mime-sniff",
@@ -12570,7 +12570,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-mime-sniff (Sonar key S5734). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-mime-sniff (Sonar key S5734). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-misleading-array-reverse",
@@ -12602,7 +12602,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-misleading-character-class (Sonar key S5868). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-misleading-character-class (Sonar key S5868). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-mixed-content",
@@ -12618,7 +12618,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-mixed-content (Sonar key S5730). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-mixed-content (Sonar key S5730). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-nested-assignment",
@@ -12698,7 +12698,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port of upstream rule no-nested-switch (Sonar key S1821). Reports a switch statement nested inside another switch. SonarJS upstream is LGPL-3.0; implemented from observed behavior only \u2014 no upstream source, fixtures, tests, or messages were copied."
+        "notes": "Clean-room port of upstream rule no-nested-switch (Sonar key S1821). Reports a switch statement nested inside another switch. SonarJS upstream is LGPL-3.0; implemented from observed behavior only — no upstream source, fixtures, tests, or messages were copied."
       },
       {
         "name": "no-nested-template-literals",
@@ -12714,7 +12714,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port of upstream rule no-nested-template-literals (Sonar key S4624). Reports a template literal nested in another template literal's interpolations. SonarJS upstream is LGPL-3.0; implemented from observed behavior only \u2014 no upstream source, fixtures, tests, or messages were copied."
+        "notes": "Clean-room port of upstream rule no-nested-template-literals (Sonar key S4624). Reports a template literal nested in another template literal's interpolations. SonarJS upstream is LGPL-3.0; implemented from observed behavior only — no upstream source, fixtures, tests, or messages were copied."
       },
       {
         "name": "no-os-command-from-path",
@@ -12730,7 +12730,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-os-command-from-path (Sonar key S4036). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-os-command-from-path (Sonar key S4036). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-parameter-reassignment",
@@ -12746,7 +12746,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-parameter-reassignment (Sonar key S1226). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-parameter-reassignment (Sonar key S1226). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-primitive-wrappers",
@@ -12762,7 +12762,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (S1533). Reports NewExpression whose callee is an identifier named Number, String, or Boolean. Rust core uses visit_new_expression + get_inner_expression(); NAPI adapter wires the rule into the plugin. Tests authored independently \u2014 no upstream source, fixtures, or messages copied."
+        "notes": "Clean-room port (S1533). Reports NewExpression whose callee is an identifier named Number, String, or Boolean. Rust core uses visit_new_expression + get_inner_expression(); NAPI adapter wires the rule into the plugin. Tests authored independently — no upstream source, fixtures, or messages copied."
       },
       {
         "name": "no-redundant-assignments",
@@ -12778,7 +12778,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-redundant-assignments (Sonar key S4165). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-redundant-assignments (Sonar key S4165). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-redundant-boolean",
@@ -12842,7 +12842,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-redundant-parentheses (Sonar key S1110). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-redundant-parentheses (Sonar key S1110). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-reference-error",
@@ -12858,7 +12858,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-reference-error (Sonar key S3827). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-reference-error (Sonar key S3827). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-referrer-policy",
@@ -12874,7 +12874,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-referrer-policy (Sonar key S5736). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-referrer-policy (Sonar key S5736). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-regex-spaces",
@@ -12906,7 +12906,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-require-or-define (Sonar key S3533). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-require-or-define (Sonar key S3533). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-return-type-any",
@@ -12922,7 +12922,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-return-type-any (Sonar key S4324). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-return-type-any (Sonar key S4324). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-same-argument-assert",
@@ -12938,7 +12938,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-same-argument-assert (Sonar key S5863). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-same-argument-assert (Sonar key S5863). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-same-line-conditional",
@@ -12970,7 +12970,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-selector-parameter (Sonar key S2301). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-selector-parameter (Sonar key S2301). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-session-cookies-on-static-assets",
@@ -12986,7 +12986,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-session-cookies-on-static-assets (Sonar key S8441). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-session-cookies-on-static-assets (Sonar key S8441). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-skipped-tests",
@@ -13050,7 +13050,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Clean-room port (Sonar key S105). Raw text scan of self.source_text bytes \u2014 one diagnostic per source line at the first tab character on that line. Tabs anywhere on a line (including inside strings and comments) are counted. Implemented via check_no_tab called from visit_program before the AST walk. No upstream source, fixtures, tests, or messages were consulted or copied."
+        "notes": "Clean-room port (Sonar key S105). Raw text scan of self.source_text bytes — one diagnostic per source line at the first tab character on that line. Tabs anywhere on a line (including inside strings and comments) are counted. Implemented via check_no_tab called from visit_program before the AST walk. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-table-as-layout",
@@ -13066,7 +13066,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-table-as-layout (Sonar key S5257). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-table-as-layout (Sonar key S5257). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-try-promise",
@@ -13082,7 +13082,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-try-promise (Sonar key S4822). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-try-promise (Sonar key S4822). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-undefined-argument",
@@ -13098,7 +13098,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-undefined-argument (Sonar key S4623). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-undefined-argument (Sonar key S4623). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-undefined-assignment",
@@ -13114,7 +13114,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-undefined-assignment (Sonar key S2138). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-undefined-assignment (Sonar key S2138). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-unenclosed-multiline-block",
@@ -13130,7 +13130,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-unenclosed-multiline-block (Sonar key S2681). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-unenclosed-multiline-block (Sonar key S2681). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-uniq-key",
@@ -13146,7 +13146,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-uniq-key (Sonar key S6486). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-uniq-key (Sonar key S6486). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-unsafe-unzip",
@@ -13162,7 +13162,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-unsafe-unzip (Sonar key S5042). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-unsafe-unzip (Sonar key S5042). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-unthrown-error",
@@ -13194,7 +13194,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-unused-collection (Sonar key S4030). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-unused-collection (Sonar key S4030). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-unused-function-argument",
@@ -13210,7 +13210,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-unused-function-argument (Sonar key S1172). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-unused-function-argument (Sonar key S1172). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-unused-vars",
@@ -13226,7 +13226,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-unused-vars (Sonar key S1481). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-unused-vars (Sonar key S1481). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-use-of-empty-return-value",
@@ -13242,7 +13242,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-use-of-empty-return-value (Sonar key S3699). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-use-of-empty-return-value (Sonar key S3699). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-useless-catch",
@@ -13290,7 +13290,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-intersection (Sonar key S4335). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-useless-intersection (Sonar key S4335). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-useless-react-setstate",
@@ -13306,7 +13306,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-react-setstate (Sonar key S6443). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-useless-react-setstate (Sonar key S6443). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-variable-usage-before-declaration",
@@ -13322,7 +13322,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-variable-usage-before-declaration (Sonar key S1526). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-variable-usage-before-declaration (Sonar key S1526). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-vue-bypass-sanitization",
@@ -13338,7 +13338,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-vue-bypass-sanitization (Sonar key S6299). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-vue-bypass-sanitization (Sonar key S6299). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-weak-cipher",
@@ -13354,7 +13354,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-weak-cipher (Sonar key S5547). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-weak-cipher (Sonar key S5547). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-weak-keys",
@@ -13370,7 +13370,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-weak-keys (Sonar key S4426). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-weak-keys (Sonar key S4426). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-wildcard-import",
@@ -13386,7 +13386,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-wildcard-import (Sonar key S2208). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule no-wildcard-import (Sonar key S2208). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "non-existent-operator",
@@ -13418,7 +13418,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule non-number-in-arithmetic-expression (Sonar key S3760). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule non-number-in-arithmetic-expression (Sonar key S3760). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "null-dereference",
@@ -13434,7 +13434,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule null-dereference (Sonar key S2259). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule null-dereference (Sonar key S2259). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "object-alt-content",
@@ -13450,7 +13450,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule object-alt-content (Sonar key S5264). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule object-alt-content (Sonar key S5264). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "operation-returning-nan",
@@ -13466,7 +13466,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule operation-returning-nan (Sonar key S3757). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule operation-returning-nan (Sonar key S3757). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "os-command",
@@ -13482,7 +13482,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule os-command (Sonar key S4721). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule os-command (Sonar key S4721). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "post-message",
@@ -13498,7 +13498,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule post-message (Sonar key S2819). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule post-message (Sonar key S2819). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "prefer-default-last",
@@ -13546,7 +13546,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-object-literal (Sonar key S2428). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule prefer-object-literal (Sonar key S2428). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "prefer-promise-shorthand",
@@ -13578,7 +13578,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-read-only-props (Sonar key S6759). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule prefer-read-only-props (Sonar key S6759). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "prefer-regexp-exec",
@@ -13594,7 +13594,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-regexp-exec (Sonar key S6594). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule prefer-regexp-exec (Sonar key S6594). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "prefer-single-boolean-return",
@@ -13626,7 +13626,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-type-guard (Sonar key S4322). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule prefer-type-guard (Sonar key S4322). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "prefer-while",
@@ -13658,7 +13658,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule process-argv (Sonar key S4823). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule process-argv (Sonar key S4823). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "production-debug",
@@ -13674,7 +13674,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule production-debug (Sonar key S4507). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule production-debug (Sonar key S4507). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "pseudo-random",
@@ -13706,7 +13706,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule public-static-readonly (Sonar key S1444). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule public-static-readonly (Sonar key S1444). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "publicly-writable-directories",
@@ -13722,7 +13722,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule publicly-writable-directories (Sonar key S5443). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule publicly-writable-directories (Sonar key S5443). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "reduce-initial-value",
@@ -13738,7 +13738,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule reduce-initial-value (Sonar key S6959). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule reduce-initial-value (Sonar key S6959). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "redundant-type-aliases",
@@ -13754,7 +13754,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule redundant-type-aliases (Sonar key S6564). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule redundant-type-aliases (Sonar key S6564). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "regex-complexity",
@@ -13770,7 +13770,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule regex-complexity (Sonar key S5843). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule regex-complexity (Sonar key S5843). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "regular-expr",
@@ -13786,7 +13786,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule regular-expr (Sonar key S4784). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule regular-expr (Sonar key S4784). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "review-blockchain-mnemonic",
@@ -13802,7 +13802,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule review-blockchain-mnemonic (Sonar key S7639). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule review-blockchain-mnemonic (Sonar key S7639). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "session-regeneration",
@@ -13818,7 +13818,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule session-regeneration (Sonar key S5876). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule session-regeneration (Sonar key S5876). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "shorthand-property-grouping",
@@ -13834,7 +13834,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule shorthand-property-grouping (Sonar key S3499). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule shorthand-property-grouping (Sonar key S3499). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "single-char-in-character-classes",
@@ -13882,7 +13882,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule slow-regex (Sonar key S5852). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule slow-regex (Sonar key S5852). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "sockets",
@@ -13898,7 +13898,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule sockets (Sonar key S4818). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule sockets (Sonar key S4818). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "sql-queries",
@@ -13914,7 +13914,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule sql-queries (Sonar key S2077). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule sql-queries (Sonar key S2077). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "stable-tests",
@@ -13930,7 +13930,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule stable-tests (Sonar key S5973). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule stable-tests (Sonar key S5973). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "standard-input",
@@ -13946,7 +13946,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule standard-input (Sonar key S4829). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule standard-input (Sonar key S4829). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "stateful-regex",
@@ -13962,7 +13962,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule stateful-regex (Sonar key S6351). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule stateful-regex (Sonar key S6351). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "strict-transport-security",
@@ -13978,7 +13978,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule strict-transport-security (Sonar key S5739). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule strict-transport-security (Sonar key S5739). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "strings-comparison",
@@ -13994,7 +13994,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule strings-comparison (Sonar key S3003). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule strings-comparison (Sonar key S3003). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "table-header",
@@ -14010,7 +14010,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule table-header (Sonar key S5256). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule table-header (Sonar key S5256). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "table-header-reference",
@@ -14026,7 +14026,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule table-header-reference (Sonar key S5260). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule table-header-reference (Sonar key S5260). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "test-check-exception",
@@ -14042,7 +14042,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule test-check-exception (Sonar key S5958). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule test-check-exception (Sonar key S5958). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "todo-tag",
@@ -14090,7 +14090,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule unicode-aware-regex (Sonar key S5867). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule unicode-aware-regex (Sonar key S5867). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "unused-import",
@@ -14106,7 +14106,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule unused-import (Sonar key S1128). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule unused-import (Sonar key S1128). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "unused-named-groups",
@@ -14122,7 +14122,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule unused-named-groups (Sonar key S5860). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule unused-named-groups (Sonar key S5860). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "unverified-certificate",
@@ -14138,7 +14138,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule unverified-certificate (Sonar key S4830). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule unverified-certificate (Sonar key S4830). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "unverified-hostname",
@@ -14154,7 +14154,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule unverified-hostname (Sonar key S5527). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule unverified-hostname (Sonar key S5527). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "updated-const-var",
@@ -14170,7 +14170,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule updated-const-var (Sonar key S3500). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule updated-const-var (Sonar key S3500). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "updated-loop-counter",
@@ -14186,7 +14186,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule updated-loop-counter (Sonar key S2310). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule updated-loop-counter (Sonar key S2310). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "use-type-alias",
@@ -14202,7 +14202,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule use-type-alias (Sonar key S4323). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule use-type-alias (Sonar key S4323). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "useless-string-operation",
@@ -14218,7 +14218,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule useless-string-operation (Sonar key S1154). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule useless-string-operation (Sonar key S1154). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "values-not-convertible-to-numbers",
@@ -14234,7 +14234,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule values-not-convertible-to-numbers (Sonar key S3758). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule values-not-convertible-to-numbers (Sonar key S3758). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "variable-name",
@@ -14250,7 +14250,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule variable-name (Sonar key S117). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule variable-name (Sonar key S117). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "void-use",
@@ -14282,7 +14282,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule weak-ssl (Sonar key S4423). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule weak-ssl (Sonar key S4423). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "web-sql-database",
@@ -14298,7 +14298,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule web-sql-database (Sonar key S2817). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule web-sql-database (Sonar key S2817). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "x-powered-by",
@@ -14314,7 +14314,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule x-powered-by (Sonar key S5689). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule x-powered-by (Sonar key S5689). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "xml-parser-xxe",
@@ -14330,7 +14330,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule xml-parser-xxe (Sonar key S2755). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule xml-parser-xxe (Sonar key S2755). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "xpath",
@@ -14346,7 +14346,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule xpath (Sonar key S4817). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Pending port of upstream rule xpath (Sonar key S4817). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       }
     ]
   },
