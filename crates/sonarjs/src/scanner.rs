@@ -6,8 +6,8 @@ use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, BindingIdentifier, CatchClause, ConditionalExpression,
     ExpressionStatement, ForInStatement, ForStatement, Function, IdentifierReference, IfStatement,
     LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression, SwitchCase,
-    SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
-    YieldExpression,
+    SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral,
+    UnaryExpression, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -160,6 +160,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_ts_intersection_type(&mut self, it: &TSIntersectionType<'a>) {
         self.check_no_duplicate_in_composite(&it.types);
         walk::walk_ts_intersection_type(self, it);
+    }
+
+    fn visit_ts_property_signature(&mut self, it: &TSPropertySignature<'a>) {
+        self.check_no_redundant_optional(it);
+        walk::walk_ts_property_signature(self, it);
     }
 
     fn visit_identifier_reference(&mut self, it: &IdentifierReference<'a>) {

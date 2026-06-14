@@ -123,6 +123,10 @@ const messages = Object.freeze({
   'no-useless-catch': {
     uselessCatch: "Remove this useless 'catch' clause; it only rethrows the caught exception.",
   },
+  'no-redundant-optional': {
+    redundantOptional:
+      "Remove this redundant 'undefined' type; the '?' optional marker already allows it.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -178,6 +182,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow negating a comparison expression; use the opposite comparison operator instead',
   'no-useless-catch':
     "Disallow 'catch' clauses that only rethrow the caught exception; remove them and let the error propagate naturally",
+  'no-redundant-optional':
+    "Disallow optional property signatures whose type annotation already includes 'undefined'; the '?' marker already permits undefined",
 });
 
 const ruleTypes = Object.freeze({
@@ -211,6 +217,7 @@ const ruleTypes = Object.freeze({
   'prefer-default-last': 'suggestion',
   'no-inverted-boolean-check': 'suggestion',
   'no-useless-catch': 'suggestion',
+  'no-redundant-optional': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -244,6 +251,7 @@ const recommendedRuleConfig = Object.freeze({
   'prefer-default-last': 'error',
   'no-inverted-boolean-check': 'error',
   'no-useless-catch': 'error',
+  'no-redundant-optional': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
