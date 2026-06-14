@@ -49,6 +49,7 @@ mod prefer_not_equals_operator;
 mod require_if_exists;
 mod require_limit;
 mod require_named_constraint;
+mod require_on_delete_action;
 mod require_primary_key;
 mod require_schema_qualified_table;
 mod require_trailing_semicolon;
@@ -198,6 +199,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "require-if-exists",
     "require-limit",
     "require-named-constraint",
+    "require-on-delete-action",
     "require-primary-key",
     "require-schema-qualified-table",
     "require-trailing-semicolon",
@@ -436,6 +438,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-named-constraint",
         run: require_named_constraint::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-on-delete-action",
+        run: require_on_delete_action::run,
         uses_parse_error: false,
     },
     RuleDef {
