@@ -67,6 +67,7 @@ mod no_volatile_default_on_add_column;
 mod no_with_recursive_without_limit;
 mod prefer_add_constraint_not_valid;
 mod prefer_bigint_id;
+mod prefer_cast_operator;
 mod prefer_coalesce_over_case;
 mod prefer_current_timestamp_over_now;
 mod prefer_exists_over_in_subquery;
@@ -248,6 +249,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-with-recursive-without-limit",
     "prefer-add-constraint-not-valid",
     "prefer-bigint-id",
+    "prefer-cast-operator",
     "prefer-coalesce-over-case",
     "prefer-current-timestamp-over-now",
     "prefer-exists-over-in-subquery",
@@ -591,6 +593,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "prefer-bigint-id",
         run: prefer_bigint_id::run,
         uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-cast-operator",
+        run: prefer_cast_operator::run,
+        uses_parse_error: true,
     },
     RuleDef {
         name: "prefer-coalesce-over-case",

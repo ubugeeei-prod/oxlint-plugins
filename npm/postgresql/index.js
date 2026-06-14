@@ -926,6 +926,26 @@ const ruleMeta = Object.freeze({
         'Primary-key `id` columns should be `bigint`. `int` overflows at 2.1 billion rows and the migration to widen it later requires a table rewrite under `ACCESS EXCLUSIVE`. Declare the column as `bigint GENERATED ALWAYS AS IDENTITY` from the start.',
     },
   },
+  'prefer-cast-operator': {
+    type: 'layout',
+    description:
+      'Enforce a single style for type casts (`x::int` operator form vs `CAST(x AS int)` function form)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          form: { enum: ['operator', 'function'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferOperator: 'Use `<expr>::type` operator form instead of `CAST(...)`.',
+      preferFunction: 'Use `CAST(<expr> AS type)` instead of the `::` operator.',
+    },
+  },
   'prefer-coalesce-over-case': {
     type: 'suggestion',
     description:
