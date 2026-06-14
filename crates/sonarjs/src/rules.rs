@@ -25,6 +25,7 @@ mod max_lines;
 mod max_lines_per_function;
 mod max_switch_cases;
 mod max_union_size;
+mod misplaced_loop_counter;
 mod nested_control_flow;
 mod no_all_duplicated_branches;
 mod no_alphabetical_sort;

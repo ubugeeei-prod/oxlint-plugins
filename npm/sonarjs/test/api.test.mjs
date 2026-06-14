@@ -90,6 +90,7 @@ const expectedRuleNames = [
   'array-callback-without-return',
   'no-wildcard-import',
   'updated-loop-counter',
+  'misplaced-loop-counter',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2441,6 +2442,36 @@ describe('for-loop-increment-sign rule', () => {
 
   it('does not report when the update variable differs from the counter', () => {
     const diagnostics = scan('for-loop-increment-sign', 'for (let i = 0, j = 0; i < 10; j++) {}');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('misplaced-loop-counter rule', () => {
+  it('reports when the update increments a variable absent from the condition', () => {
+    const diagnostics = scan('misplaced-loop-counter', 'for (let i = 0; i < 10; j++) {}');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('misplaced-loop-counter');
+    expect(diagnostics[0].messageId).toBe('misplacedCounter');
+  });
+
+  it('reports a compound assignment to a non-condition variable', () => {
+    const diagnostics = scan('misplaced-loop-counter', 'for (let i = 0; i < 10; k += 1) {}');
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report when the update advances the condition counter', () => {
+    const diagnostics = scan('misplaced-loop-counter', 'for (let i = 0; i < 10; i++) {}');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a comma update that overlaps the condition', () => {
+    const source = 'for (let i = 0, j = 0; i < 10 && j < 5; i++, j++) {}';
+    const diagnostics = scan('misplaced-loop-counter', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a loop with no test or update', () => {
+    const diagnostics = scan('misplaced-loop-counter', 'for (;;) {}');
     expect(diagnostics).toHaveLength(0);
   });
 });
