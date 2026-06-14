@@ -1018,10 +1018,10 @@ const ruleMeta = Object.freeze({
     },
   },
   'require-index-on-fk-column': {
-    type: 'suggestion',
+    type: 'problem',
     description:
-      'Require a covering index on every foreign-key leading column so that parent-row deletes and updates do not trigger a sequential scan of the child table',
-    recommended: true,
+      'Require an index on every foreign-key column; without it a `DELETE` or `UPDATE` on the referenced table sequentially scans the referencing table to enforce the constraint',
+    recommended: false,
     fixable: undefined,
     schema: [],
     messages: {
