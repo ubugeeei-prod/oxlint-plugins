@@ -1006,6 +1006,26 @@ const ruleMeta = Object.freeze({
       preferIn: 'Combine these `=` checks on `{{lhs}}` into a single `IN (...)` clause.',
     },
   },
+  'prefer-keyword-case': {
+    type: 'layout',
+    description: 'Enforce a consistent case (upper or lower) for SQL keywords',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          case: { enum: ['upper', 'lower'] },
+          types: { enum: ['upper', 'lower', 'skip'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      expectedUpper: "SQL keyword '{{actual}}' should be uppercase: '{{expected}}'.",
+      expectedLower: "SQL keyword '{{actual}}' should be lowercase: '{{expected}}'.",
+    },
+  },
   'prefer-not-equals-operator': {
     type: 'layout',
     description: 'Enforce a single style for the not-equal operator (`<>` or `!=`)',

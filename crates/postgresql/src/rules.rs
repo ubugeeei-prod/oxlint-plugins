@@ -73,6 +73,7 @@ mod prefer_current_timestamp_over_now;
 mod prefer_exists_over_in_subquery;
 mod prefer_explicit_null_ordering;
 mod prefer_in_list_over_or;
+mod prefer_keyword_case;
 mod prefer_not_equals_operator;
 mod require_fk_include_columns;
 mod require_if_exists;
@@ -255,6 +256,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "prefer-exists-over-in-subquery",
     "prefer-explicit-null-ordering",
     "prefer-in-list-over-or",
+    "prefer-keyword-case",
     "prefer-not-equals-operator",
     "require-fk-include-columns",
     "require-if-exists",
@@ -623,6 +625,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "prefer-in-list-over-or",
         run: prefer_in_list_over_or::run,
         uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-keyword-case",
+        run: prefer_keyword_case::run,
+        uses_parse_error: true,
     },
     RuleDef {
         name: "prefer-not-equals-operator",
