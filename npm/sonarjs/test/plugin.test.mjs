@@ -189,6 +189,7 @@ describe('sonarjs plugin shape', () => {
       'standard-input',
       'no-code-after-done',
       'function-inside-loop',
+      'no-useless-intersection',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -284,6 +285,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['standard-input']).toBe('object');
     expect(typeof plugin.rules['no-code-after-done']).toBe('object');
     expect(typeof plugin.rules['function-inside-loop']).toBe('object');
+    expect(typeof plugin.rules['no-useless-intersection']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -387,6 +389,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/standard-input']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-code-after-done']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/function-inside-loop']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-useless-intersection']).toBe('error');
   });
 });
 
@@ -521,6 +524,44 @@ describe('function-inside-loop rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(function-inside-loop)');
+  });
+});
+
+describe('no-useless-intersection rule', () => {
+  it('reports an "any" member in an intersection', () => {
+    const reports = runRule('no-useless-intersection', 'type T = string & any;');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('uselessIntersection');
+  });
+
+  it('reports a "never" member in an intersection', () => {
+    const reports = runRule('no-useless-intersection', 'type T = number & never;');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('uselessIntersection');
+  });
+
+  it('reports an "unknown" member in an intersection', () => {
+    const reports = runRule('no-useless-intersection', 'type T = string & unknown;');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('uselessIntersection');
+  });
+
+  it('does not report an intersection without keyword members', () => {
+    const reports = runRule('no-useless-intersection', 'type T = A & B;');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a union containing "any"', () => {
+    const reports = runRule('no-useless-intersection', 'type T = string | any;');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-useless-intersection through the CLI', () => {
+    const result = runOxlint('no-useless-intersection', 'type T = string & any;', 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-useless-intersection)');
   });
 });
 

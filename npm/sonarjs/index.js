@@ -346,6 +346,10 @@ const messages = Object.freeze({
   'function-inside-loop': {
     noFunctionInLoop: 'Refactor this code; do not define functions inside loops.',
   },
+  'no-useless-intersection': {
+    uselessIntersection:
+      'Remove this "any", "never", or "unknown" member; it makes the whole intersection type pointless.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -534,6 +538,8 @@ const ruleDescriptions = Object.freeze({
     'Flag statements that run after a "done()" callback call in a Mocha test or hook, since the test is already finished and the trailing code executes unexpectedly',
   'function-inside-loop':
     'Flag functions (declarations, expressions, or arrow functions) defined inside a loop, since such closures are error-prone and inefficient; immediately invoked function expressions are exempt',
+  'no-useless-intersection':
+    'Disallow a TypeScript intersection type that contains an "any", "never", or "unknown" keyword member, which collapses or is absorbed by the intersection and makes it pointless (syntactic keyword cases only; type-aware subtype/supertype redundancy is out of scope)',
 });
 
 const ruleTypes = Object.freeze({
@@ -632,6 +638,7 @@ const ruleTypes = Object.freeze({
   'standard-input': 'suggestion',
   'no-code-after-done': 'suggestion',
   'function-inside-loop': 'suggestion',
+  'no-useless-intersection': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -730,6 +737,7 @@ const recommendedRuleConfig = Object.freeze({
   'standard-input': 'error',
   'no-code-after-done': 'error',
   'function-inside-loop': 'error',
+  'no-useless-intersection': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

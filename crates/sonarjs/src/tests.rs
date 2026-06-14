@@ -5218,3 +5218,50 @@ fn function_inside_loop_does_not_report_function_outside_any_loop() {
     let diagnostics = scan("function-inside-loop", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_useless_intersection_reports_any_member() {
+    let source = "type T = string & any;";
+    let diagnostics = scan("no-useless-intersection", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-useless-intersection");
+    assert_eq!(diagnostics[0].message_id, "uselessIntersection");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn no_useless_intersection_reports_never_member() {
+    let source = "type U = number & never;";
+    let diagnostics = scan("no-useless-intersection", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "uselessIntersection");
+}
+
+#[test]
+fn no_useless_intersection_reports_unknown_member() {
+    let source = "type V = string & unknown;";
+    let diagnostics = scan("no-useless-intersection", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "uselessIntersection");
+}
+
+#[test]
+fn no_useless_intersection_reports_each_keyword_member() {
+    let source = "type W = any & string & never;";
+    let diagnostics = scan("no-useless-intersection", source);
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
+fn no_useless_intersection_does_not_report_without_keyword_member() {
+    let source = "type X = A & B;";
+    let diagnostics = scan("no-useless-intersection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_useless_intersection_does_not_report_union_with_any() {
+    let source = "type Y = string | any;";
+    let diagnostics = scan("no-useless-intersection", source);
+    assert!(diagnostics.is_empty());
+}
