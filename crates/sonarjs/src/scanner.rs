@@ -109,6 +109,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_unary_expression(&mut self, it: &UnaryExpression<'a>) {
         self.check_no_redundant_boolean_unary(it);
         self.check_no_delete_var(it);
+        self.check_no_inverted_boolean_check(it);
         walk::walk_unary_expression(self, it);
     }
 

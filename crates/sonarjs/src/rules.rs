@@ -20,6 +20,7 @@ mod no_empty_character_class;
 mod no_exclusive_tests;
 mod no_identical_conditions;
 mod no_identical_expressions;
+mod no_inverted_boolean_check;
 mod no_labels;
 mod no_nested_conditional;
 mod no_nested_switch;

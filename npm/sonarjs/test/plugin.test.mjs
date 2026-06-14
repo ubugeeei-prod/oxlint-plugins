@@ -122,6 +122,7 @@ describe('sonarjs plugin shape', () => {
       'prefer-while',
       'no-small-switch',
       'prefer-default-last',
+      'no-inverted-boolean-check',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -151,6 +152,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['prefer-while']).toBe('object');
     expect(typeof plugin.rules['no-small-switch']).toBe('object');
     expect(typeof plugin.rules['prefer-default-last']).toBe('object');
+    expect(typeof plugin.rules['no-inverted-boolean-check']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -180,6 +182,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/prefer-while']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-small-switch']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-default-last']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-inverted-boolean-check']).toBe('error');
   });
 });
 
@@ -661,5 +664,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(prefer-default-last)');
+  });
+
+  it('reports no-inverted-boolean-check for !(a === b) through the adapter', () => {
+    const source = 'const r = !(a === b);';
+    const reports = runRule('no-inverted-boolean-check', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('invertedBooleanCheck');
+  });
+
+  it('reports no-inverted-boolean-check through the CLI', () => {
+    const source = 'const r = !(a === b);';
+    const result = runOxlint('no-inverted-boolean-check', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-inverted-boolean-check)');
   });
 });

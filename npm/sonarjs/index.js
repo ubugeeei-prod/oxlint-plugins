@@ -116,6 +116,10 @@ const messages = Object.freeze({
   'prefer-default-last': {
     defaultLast: "Move this 'default' clause to the end of the switch statement.",
   },
+  'no-inverted-boolean-check': {
+    invertedBooleanCheck:
+      'Use the opposite comparison operator instead of negating this comparison.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -167,6 +171,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow switch statements with fewer than two real 'case' clauses; use an 'if' statement instead (default clause not counted)",
   'prefer-default-last':
     "Require the 'default' clause of a switch statement to appear as the last clause for readability",
+  'no-inverted-boolean-check':
+    'Disallow negating a comparison expression; use the opposite comparison operator instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -198,6 +204,7 @@ const ruleTypes = Object.freeze({
   'prefer-while': 'suggestion',
   'no-small-switch': 'suggestion',
   'prefer-default-last': 'suggestion',
+  'no-inverted-boolean-check': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -229,6 +236,7 @@ const recommendedRuleConfig = Object.freeze({
   'prefer-while': 'error',
   'no-small-switch': 'error',
   'prefer-default-last': 'error',
+  'no-inverted-boolean-check': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
