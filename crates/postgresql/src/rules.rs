@@ -16,6 +16,7 @@ mod no_group_by_ordinal;
 mod no_having_without_group_by;
 mod no_implicit_join;
 mod no_leading_wildcard_like;
+mod no_on_delete_cascade;
 mod no_order_by_ordinal;
 mod no_rename_column;
 mod no_rename_table;
@@ -142,6 +143,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-having-without-group-by",
     "no-implicit-join",
     "no-leading-wildcard-like",
+    "no-on-delete-cascade",
     "no-order-by-ordinal",
     "no-rename-column",
     "no-rename-table",
@@ -225,6 +227,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-leading-wildcard-like",
         run: no_leading_wildcard_like::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-on-delete-cascade",
+        run: no_on_delete_cascade::run,
         uses_parse_error: false,
     },
     RuleDef {

@@ -184,6 +184,18 @@ const ruleMeta = Object.freeze({
         '`LIKE`/`ILIKE` patterns that begin with `%` cannot use a B-tree index and force a sequential scan. If you need substring search, use a `pg_trgm` GIN index, full-text search, or rework the schema so the prefix is indexable.',
     },
   },
+  'no-on-delete-cascade': {
+    type: 'problem',
+    description:
+      'Disallow `ON DELETE CASCADE` on foreign keys; cascading deletes are easy to write but can wipe out far more rows than the author intended',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCascade:
+        'Avoid `ON DELETE CASCADE`. The deletion will silently propagate through every dependent row; prefer an explicit `RESTRICT` or `SET NULL` action and handle the cleanup in application code.',
+    },
+  },
   'no-order-by-ordinal': {
     type: 'suggestion',
     description:
