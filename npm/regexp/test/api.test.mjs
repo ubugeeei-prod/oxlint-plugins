@@ -79,6 +79,7 @@ describe('regexp native API', () => {
       'no-contradiction-with-assertion',
       'no-useless-set-operand',
       'prefer-set-operation',
+      'simplify-set-operations',
     ]);
   });
 

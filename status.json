@@ -9627,7 +9627,7 @@
       },
       {
         "name": "simplify-set-operations",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,

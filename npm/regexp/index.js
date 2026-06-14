@@ -296,6 +296,10 @@ const messages = Object.freeze({
     unexpected:
       'This character + lookaround can be expressed as a v-mode set operation (`[Y&&X]` or `[Y--X]`).',
   },
+  'simplify-set-operations': {
+    unexpected:
+      'This set operation can be simplified (an intersection with a negated class is a subtraction, or De Morgan applies).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -412,6 +416,8 @@ const ruleDescriptions = Object.freeze({
     'disallow unnecessary elements in expression character classes (narrow: shorthand `&&`/`--` operands that are disjoint or subsets)',
   'prefer-set-operation':
     'prefer character class set operations instead of lookarounds (narrow: v-mode char lookaround adjacent to a char element)',
+  'simplify-set-operations':
+    'simplify unnecessarily complex set operations (narrow: v-mode `&&` intersection with a negated nested-class operand)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -488,6 +494,7 @@ const ruleTypes = Object.freeze({
   'no-contradiction-with-assertion': 'problem',
   'no-useless-set-operand': 'suggestion',
   'prefer-set-operation': 'suggestion',
+  'simplify-set-operations': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -513,6 +520,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-contradiction-with-assertion': 'error',
   'no-useless-set-operand': 'error',
   'prefer-set-operation': 'error',
+  'simplify-set-operations': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
