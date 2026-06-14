@@ -929,7 +929,7 @@ const ruleMeta = Object.freeze({
   'prefer-cast-operator': {
     type: 'layout',
     description:
-      'Enforce a consistent style for PostgreSQL type casts — either the `::` operator form or the `CAST(... AS ...)` function form',
+      'Enforce a single style for type casts (`x::int` operator form vs `CAST(x AS int)` function form)',
     recommended: false,
     fixable: 'code',
     schema: [
