@@ -29,6 +29,18 @@ const ruleMeta = Object.freeze({
         '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
     },
   },
+  'no-drop-column': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... DROP COLUMN` — every reader of the dropped column breaks at deploy time',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDropColumn:
+        '`DROP COLUMN` breaks every running app that still references the column. Roll it out as a two-step migration: stop reading the column in the application, deploy, then drop it in a follow-up release.',
+    },
+  },
   'no-drop-database': {
     type: 'problem',
     description:
