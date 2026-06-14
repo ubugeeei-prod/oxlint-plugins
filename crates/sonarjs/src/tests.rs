@@ -2051,3 +2051,33 @@ fn reports_no_inconsistent_returns_only_for_inner_scope() {
     let diagnostics = scan("no-inconsistent-returns", source);
     assert_eq!(diagnostics.len(), 1);
 }
+
+#[test]
+fn reports_no_same_line_conditional_for_if_on_closing_brace_line() {
+    let source = "if (a) {\n  doA();\n} if (b) {\n  doB();\n}";
+    let diagnostics = scan("no-same-line-conditional", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-same-line-conditional");
+    assert_eq!(diagnostics[0].message_id, "sameLineConditional");
+}
+
+#[test]
+fn does_not_report_no_same_line_conditional_for_if_on_new_line() {
+    let source = "if (a) {\n  doA();\n}\nif (b) {\n  doB();\n}";
+    let diagnostics = scan("no-same-line-conditional", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_same_line_conditional_for_else_if_chain() {
+    let source = "if (a) {\n  doA();\n} else if (b) {\n  doB();\n}";
+    let diagnostics = scan("no-same-line-conditional", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_same_line_conditional_when_preceding_is_not_if() {
+    let source = "doA(); if (b) {\n  doB();\n}";
+    let diagnostics = scan("no-same-line-conditional", source);
+    assert!(diagnostics.is_empty());
+}

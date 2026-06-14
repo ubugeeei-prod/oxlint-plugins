@@ -171,6 +171,10 @@ const messages = Object.freeze({
     inconsistentReturns:
       'Refactor this function to use "return" consistently, either always with a value or always without.',
   },
+  'no-same-line-conditional': {
+    sameLineConditional:
+      'Move this "if" to a new line or add the missing "else" to clarify the intent.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -254,6 +258,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow function declarations nested directly inside a block; use a function expression or move it to the top level',
   'no-inconsistent-returns':
     'Disallow mixing value returns and bare returns in the same function; return a value on all paths or none',
+  'no-same-line-conditional':
+    'Disallow an "if" statement placed on the same line as the closing brace of a preceding sibling "if"',
 });
 
 const ruleTypes = Object.freeze({
@@ -301,6 +307,7 @@ const ruleTypes = Object.freeze({
   'array-constructor': 'suggestion',
   'no-function-declaration-in-block': 'suggestion',
   'no-inconsistent-returns': 'suggestion',
+  'no-same-line-conditional': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -348,6 +355,7 @@ const recommendedRuleConfig = Object.freeze({
   'array-constructor': 'error',
   'no-function-declaration-in-block': 'error',
   'no-inconsistent-returns': 'error',
+  'no-same-line-conditional': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

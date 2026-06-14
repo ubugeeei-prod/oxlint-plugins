@@ -47,6 +47,7 @@ const expectedRuleNames = [
   'array-constructor',
   'no-function-declaration-in-block',
   'no-inconsistent-returns',
+  'no-same-line-conditional',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1673,5 +1674,31 @@ describe('sonarjs native API', () => {
       'function outer() {\n  return 1;\n  function inner() {\n    if (a) return;\n    return 2;\n  }\n}';
     const diagnostics = scan('no-inconsistent-returns', source);
     expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports no-same-line-conditional for an if on the closing brace line', () => {
+    const source = 'if (a) {\n  doA();\n} if (b) {\n  doB();\n}';
+    const diagnostics = scan('no-same-line-conditional', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-same-line-conditional');
+    expect(diagnostics[0].messageId).toBe('sameLineConditional');
+  });
+
+  it('does not report no-same-line-conditional for an if on a new line', () => {
+    const source = 'if (a) {\n  doA();\n}\nif (b) {\n  doB();\n}';
+    const diagnostics = scan('no-same-line-conditional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-same-line-conditional for an else-if chain', () => {
+    const source = 'if (a) {\n  doA();\n} else if (b) {\n  doB();\n}';
+    const diagnostics = scan('no-same-line-conditional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-same-line-conditional when the preceding statement is not an if', () => {
+    const source = 'doA(); if (b) {\n  doB();\n}';
+    const diagnostics = scan('no-same-line-conditional', source);
+    expect(diagnostics).toHaveLength(0);
   });
 });

@@ -84,11 +84,13 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_fixme_tag(&it.comments);
         self.check_todo_tag(&it.comments);
         self.check_no_sonar_comments(&it.comments);
+        self.check_no_same_line_conditional(&it.body);
         walk::walk_program(self, it);
     }
 
     fn visit_block_statement(&mut self, it: &BlockStatement<'a>) {
         self.check_no_function_declaration_in_block(it);
+        self.check_no_same_line_conditional(&it.body);
         walk::walk_block_statement(self, it);
     }
 
@@ -113,6 +115,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_switch_case(&mut self, it: &SwitchCase<'a>) {
         self.check_comma_or_logical_or_case(it);
+        self.check_no_same_line_conditional(&it.consequent);
         walk::walk_switch_case(self, it);
     }
 
@@ -277,6 +280,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_function_body(&mut self, it: &FunctionBody<'a>) {
         self.check_prefer_immediate_return(it);
         self.check_redundant_return(it);
+        self.check_no_same_line_conditional(&it.statements);
         walk::walk_function_body(self, it);
     }
 }
