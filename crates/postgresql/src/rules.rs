@@ -10,6 +10,7 @@ mod no_distinct_on_without_order_by;
 mod no_drop_column;
 mod no_drop_database;
 mod no_drop_not_null;
+mod no_group_by_ordinal;
 mod no_implicit_join;
 mod no_order_by_ordinal;
 mod no_rename_column;
@@ -128,6 +129,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-drop-column",
     "no-drop-database",
     "no-drop-not-null",
+    "no-group-by-ordinal",
     "no-implicit-join",
     "no-order-by-ordinal",
     "no-rename-column",
@@ -179,6 +181,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-drop-not-null",
         run: no_drop_not_null::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-group-by-ordinal",
+        run: no_group_by_ordinal::run,
         uses_parse_error: false,
     },
     RuleDef {

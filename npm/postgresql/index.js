@@ -101,6 +101,18 @@ const ruleMeta = Object.freeze({
         '`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table.',
     },
   },
+  'no-group-by-ordinal': {
+    type: 'suggestion',
+    description:
+      'Disallow `GROUP BY <position>` (positional/ordinal references); use the column name or expression instead',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noGroupByOrdinal:
+        '`GROUP BY <position>` silently breaks when the SELECT list changes. Use the column name or the expression itself.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
