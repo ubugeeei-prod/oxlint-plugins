@@ -362,6 +362,17 @@ const ruleMeta = Object.freeze({
         'Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.',
     },
   },
+  'prefer-exists-over-in-subquery': {
+    type: 'suggestion',
+    description: 'Prefer `EXISTS (...)` over `IN (subquery)` to avoid NULL-related surprises',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      preferExists:
+        'Use `EXISTS (...)` instead of `IN (subquery)`. `IN` returns NULL when the subquery has any NULL row, which silently turns the row into a no-match; `EXISTS` is unambiguously boolean.',
+    },
+  },
   'require-limit': {
     type: 'suggestion',
     description: 'Require LIMIT clause in SELECT statements',

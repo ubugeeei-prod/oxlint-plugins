@@ -32,6 +32,7 @@ mod no_truncate_cascade;
 mod no_unlogged_table;
 mod no_vacuum_full;
 mod no_with_recursive_without_limit;
+mod prefer_exists_over_in_subquery;
 mod require_limit;
 mod require_where_in_delete;
 mod require_where_in_update;
@@ -161,6 +162,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-unlogged-table",
     "no-vacuum-full",
     "no-with-recursive-without-limit",
+    "prefer-exists-over-in-subquery",
     "require-limit",
     "require-where-in-delete",
     "require-where-in-update",
@@ -311,6 +313,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-with-recursive-without-limit",
         run: no_with_recursive_without_limit::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-exists-over-in-subquery",
+        run: prefer_exists_over_in_subquery::run,
         uses_parse_error: false,
     },
     RuleDef {
