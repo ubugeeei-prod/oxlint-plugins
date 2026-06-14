@@ -29,6 +29,18 @@ const ruleMeta = Object.freeze({
         'Add this CHECK constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not block writers under `ACCESS EXCLUSIVE`.',
     },
   },
+  'no-add-unique-constraint-directly': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... ADD CONSTRAINT ... UNIQUE (...)` directly; build the index with `CREATE UNIQUE INDEX CONCURRENTLY` first, then promote it',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      useIndexFirst:
+        "Build this UNIQUE constraint's index with `CREATE UNIQUE INDEX CONCURRENTLY` first, then promote it via `ALTER TABLE ... ADD CONSTRAINT ... UNIQUE USING INDEX <name>`. The inline form blocks writers under `ACCESS EXCLUSIVE` for the entire index build.",
+    },
+  },
   'no-alter-column-type': {
     type: 'problem',
     description:
