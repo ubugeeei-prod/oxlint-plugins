@@ -24,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 86] = [
+pub const RULE_NAMES: [&str; 87] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -111,6 +111,7 @@ pub const RULE_NAMES: [&str; 86] = [
     "no-parameter-reassignment",
     "array-callback-without-return",
     "no-wildcard-import",
+    "updated-loop-counter",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -146,7 +147,8 @@ pub fn scan_sonarjs(
         || options.has_rule("no-for-in-iterable")
         || options.has_rule("no-associative-arrays")
         || options.has_rule("reduce-initial-value")
-        || options.has_rule("no-parameter-reassignment");
+        || options.has_rule("no-parameter-reassignment")
+        || options.has_rule("updated-loop-counter");
     let semantic = needs_semantic.then(|| {
         SemanticBuilder::new()
             .build(&parser_return.program)
@@ -180,6 +182,7 @@ pub fn scan_sonarjs(
         this_binding_depth: 0,
         breakable_stack: SmallVec::new(),
         pending_loop_label: None,
+        loop_counter_symbols: SmallVec::new(),
     };
     scanner.visit_program(&parser_return.program);
     scanner.diagnostics
