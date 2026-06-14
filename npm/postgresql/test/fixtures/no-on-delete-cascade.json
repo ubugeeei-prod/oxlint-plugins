@@ -1,0 +1,40 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-on-delete-cascade",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "no-cascade",
+      "code": "CREATE TABLE t (\n  id integer,\n  fid integer REFERENCES other(id),\n  fid2 integer REFERENCES other(id) ON DELETE RESTRICT,\n  fid3 integer REFERENCES other(id) ON DELETE SET NULL\n);\nALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (fid) REFERENCES other(id) ON DELETE NO ACTION;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "cascade",
+      "code": "CREATE TABLE t (\n  id integer,\n  fid integer REFERENCES other(id) ON DELETE CASCADE\n);\nALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (fid) REFERENCES other(id) ON DELETE CASCADE;\n",
+      "errors": [
+        {
+          "messageId": "noCascade",
+          "message": "Avoid `ON DELETE CASCADE`. The deletion will silently propagate through every dependent row; prefer an explicit `RESTRICT` or `SET NULL` action and handle the cleanup in application code.",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 25
+        },
+        {
+          "messageId": "noCascade",
+          "message": "Avoid `ON DELETE CASCADE`. The deletion will silently propagate through every dependent row; prefer an explicit `RESTRICT` or `SET NULL` action and handle the cleanup in application code.",
+          "line": 5,
+          "column": 19,
+          "endLine": 5,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    }
+  ]
+}

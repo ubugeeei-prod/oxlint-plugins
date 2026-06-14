@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-distinct-on-without-order-by",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "distinct-on-with-order",
+      "code": "SELECT DISTINCT ON (customer_id) customer_id, amount\nFROM orders\nORDER BY customer_id, created_at DESC;\n"
+    },
+    {
+      "name": "plain-distinct",
+      "code": "SELECT DISTINCT customer_id FROM orders;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "distinct-on-no-order",
+      "code": "SELECT DISTINCT ON (customer_id) customer_id, amount FROM orders;\n",
+      "errors": [
+        {
+          "messageId": "noDistinctOnWithoutOrderBy",
+          "message": "`DISTINCT ON (...)` keeps an arbitrary row from each group unless `ORDER BY` is specified. Add an `ORDER BY` whose leading columns match the `DISTINCT ON` expressions.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 65
+        }
+      ],
+      "output": null
+    }
+  ]
+}

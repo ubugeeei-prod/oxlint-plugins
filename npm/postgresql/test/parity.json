@@ -1,0 +1,4 @@
+{
+  "_doc": "Per-rule upstream-parity enforcement for the eslint-plugin-postgresql port. Levels: 'full' (default for any implemented rule not listed here) enforces exact parity for every captured valid/invalid case; 'off' quarantines a rule whose Rust core still diverges from upstream, registering its cases as skipped until promoted back to 'full'. Rules not yet implemented in Rust are skipped automatically. The end state is zero 'off' entries.",
+  "rules": {}
+}

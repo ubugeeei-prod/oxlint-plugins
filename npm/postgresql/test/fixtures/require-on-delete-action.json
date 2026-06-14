@@ -1,0 +1,69 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/require-on-delete-action",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "allowed-restrict-only",
+      "code": "ALTER TABLE child ADD FOREIGN KEY (parent_id) REFERENCES parent (id) ON DELETE RESTRICT;\nALTER TABLE child2 ADD FOREIGN KEY (parent_id) REFERENCES parent (id) ON DELETE NO ACTION;\n",
+      "options": [
+        {
+          "allowed": ["RESTRICT", "NO ACTION"]
+        }
+      ]
+    },
+    {
+      "name": "explicit-actions",
+      "code": "CREATE TABLE t (\n  id integer,\n  fid1 integer REFERENCES other(id) ON DELETE NO ACTION,\n  fid2 integer REFERENCES other(id) ON DELETE RESTRICT,\n  fid3 integer REFERENCES other(id) ON DELETE SET NULL,\n  fid4 integer REFERENCES other(id) ON DELETE SET DEFAULT\n);\nALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (fid1) REFERENCES other(id) ON DELETE RESTRICT;\nALTER TABLE t ADD CONSTRAINT fk2 FOREIGN KEY (fid2) REFERENCES other(id) ON UPDATE CASCADE ON DELETE SET NULL;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "allowed-disallows-cascade",
+      "code": "ALTER TABLE child ADD FOREIGN KEY (parent_id) REFERENCES parent (id) ON DELETE CASCADE;\n",
+      "options": [
+        {
+          "allowed": ["RESTRICT", "NO ACTION"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedAction",
+          "message": "`ON DELETE CASCADE` is not in the `allowed` list (RESTRICT, NO ACTION). Either change the action or extend the rule's `allowed` option.",
+          "line": 1,
+          "column": 80,
+          "endLine": 1,
+          "endColumn": 87
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "missing-on-delete",
+      "code": "CREATE TABLE t (\n  fid integer REFERENCES other(id)\n);\nALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (fid) REFERENCES other(id);\n",
+      "errors": [
+        {
+          "messageId": "missingOnDelete",
+          "message": "Foreign-key constraint is missing an explicit `ON DELETE` clause; the implicit default is `NO ACTION`. Make the choice explicit so reviewers can see what happens to dependent rows.",
+          "line": 2,
+          "column": 15,
+          "endLine": 2,
+          "endColumn": 35
+        },
+        {
+          "messageId": "missingOnDelete",
+          "message": "Foreign-key constraint is missing an explicit `ON DELETE` clause; the implicit default is `NO ACTION`. Make the choice explicit so reviewers can see what happens to dependent rows.",
+          "line": 4,
+          "column": 19,
+          "endLine": 4,
+          "endColumn": 71
+        }
+      ],
+      "output": null
+    }
+  ]
+}

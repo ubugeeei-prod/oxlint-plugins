@@ -1,0 +1,80 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-jsonb-over-json",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "jsonb-column",
+      "code": "CREATE TABLE events (payload JSONB);\n"
+    },
+    {
+      "name": "never-json",
+      "code": "CREATE TABLE t (payload json);\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    },
+    {
+      "name": "other-column",
+      "code": "CREATE TABLE events (id INT);\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "json-column",
+      "code": "CREATE TABLE events (payload JSON);\n",
+      "errors": [
+        {
+          "messageId": "preferJsonb",
+          "message": "Use `jsonb` instead of `json`. `jsonb` stores the parsed representation, supports indexing, and is what almost every application actually wants.",
+          "line": 1,
+          "column": 22,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "never-jsonb",
+      "code": "CREATE TABLE t (payload jsonb);\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedJsonb",
+          "message": "Use `json` instead of `jsonb`. Useful when the project intentionally relies on `json`'s preservation of key order, whitespace, and duplicate keys.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "qualified-json",
+      "code": "CREATE TABLE events (payload pg_catalog.json);\n",
+      "errors": [
+        {
+          "messageId": "preferJsonb",
+          "message": "Use `jsonb` instead of `json`. `jsonb` stores the parsed representation, supports indexing, and is what almost every application actually wants.",
+          "line": 1,
+          "column": 22,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    }
+  ]
+}

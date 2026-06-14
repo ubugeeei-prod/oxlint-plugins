@@ -1,0 +1,109 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/require-table-columns",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "excluded-table",
+      "code": "-- Matches `exclude` pattern (`^audit_`) — no check is performed.\nCREATE TABLE audit_events (\n  id   bigserial PRIMARY KEY,\n  data jsonb\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id", "created_at", "updated_at"],
+          "exclude": "^audit_"
+        }
+      ]
+    },
+    {
+      "name": "has-all-required",
+      "code": "-- All required columns are present.\nCREATE TABLE orders (\n  id         bigserial PRIMARY KEY,\n  tenant_id  bigint NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  created_by bigint NOT NULL,\n  updated_at timestamptz NOT NULL DEFAULT current_timestamp,\n  updated_by bigint NOT NULL\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id", "created_at", "created_by", "updated_at", "updated_by"]
+        }
+      ]
+    },
+    {
+      "name": "override-temporal",
+      "code": "-- `*_temporal` tables follow an override that only requires\n-- `tenant_id`, `created_at`, `created_by`, `updated_at` (no\n-- `updated_by`), because rows are append-only.\nCREATE TABLE orders_temporal (\n  id         bigserial PRIMARY KEY,\n  tenant_id  bigint NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  created_by bigint NOT NULL,\n  updated_at timestamptz NOT NULL DEFAULT current_timestamp\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id", "created_at", "created_by", "updated_at", "updated_by"],
+          "overrides": [
+            {
+              "pattern": "^.+_temporal$",
+              "columns": ["tenant_id", "created_at", "created_by", "updated_at"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing-multiple-columns",
+      "code": "-- Missing `tenant_id`, `created_by`, and `updated_by`.\nCREATE TABLE orders (\n  id         bigserial PRIMARY KEY,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  updated_at timestamptz NOT NULL DEFAULT current_timestamp\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id", "created_at", "created_by", "updated_at", "updated_by"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingColumn",
+          "message": "`CREATE TABLE orders` is missing required column `tenant_id`. Required by the default column list.",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 2
+        },
+        {
+          "messageId": "missingColumn",
+          "message": "`CREATE TABLE orders` is missing required column `created_by`. Required by the default column list.",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 2
+        },
+        {
+          "messageId": "missingColumn",
+          "message": "`CREATE TABLE orders` is missing required column `updated_by`. Required by the default column list.",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 2
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "override-temporal-missing-column",
+      "code": "-- `*_temporal` override requires `[tenant_id, created_at, created_by,\n-- updated_at]`. This table is missing `updated_at`.\nCREATE TABLE orders_temporal (\n  id         bigserial PRIMARY KEY,\n  tenant_id  bigint NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  created_by bigint NOT NULL\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id", "created_at", "created_by", "updated_at", "updated_by"],
+          "overrides": [
+            {
+              "pattern": "^.+_temporal$",
+              "columns": ["tenant_id", "created_at", "created_by", "updated_at"]
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingColumn",
+          "message": "`CREATE TABLE orders_temporal` is missing required column `updated_at`. Required by the override for pattern `^.+_temporal$`.",
+          "line": 1,
+          "column": 1,
+          "endLine": 8,
+          "endColumn": 2
+        }
+      ],
+      "output": null
+    }
+  ]
+}

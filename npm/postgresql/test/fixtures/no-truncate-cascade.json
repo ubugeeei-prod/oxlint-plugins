@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-truncate-cascade",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "truncate-restrict",
+      "code": "TRUNCATE users RESTRICT;\n"
+    },
+    {
+      "name": "truncate",
+      "code": "TRUNCATE users;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "truncate-cascade",
+      "code": "TRUNCATE users CASCADE;\n",
+      "errors": [
+        {
+          "messageId": "noCascade",
+          "message": "`TRUNCATE ... CASCADE` also truncates every table that has a foreign key referencing this one. List the dependent tables explicitly so reviewers can see what gets emptied.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": null
+    }
+  ]
+}

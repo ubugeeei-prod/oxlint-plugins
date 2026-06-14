@@ -37,6 +37,10 @@ const nativePackages = [
     binding: 'npm/eslint-markdown/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-postgresql',
+    binding: 'npm/postgresql/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-security',
     binding: 'npm/security/native.js',
   },

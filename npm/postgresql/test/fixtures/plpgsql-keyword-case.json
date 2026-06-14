@@ -1,0 +1,116 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/plpgsql-keyword-case",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "diagnostic-names-as-identifiers",
+      "code": "CREATE FUNCTION example() RETURNS TRIGGER\nLANGUAGE PLPGSQL\nAS $$\nDECLARE\n  row_count INTEGER;\n  column_name TEXT;\n  table_name TEXT;\n  schema_name TEXT;\n  message_text TEXT;\nBEGIN\n  SELECT COUNT(*) INTO row_count FROM some_table;\n  IF row_count > 0 THEN\n    RAISE NOTICE 'rows: %', row_count;\n  END IF;\n  SELECT 'a', 'b', 'c'\n    INTO column_name, table_name, schema_name;\n  RETURN NEW;\nEND;\n$$;\n"
+    },
+    {
+      "name": "get-diagnostics-upper",
+      "code": "CREATE FUNCTION example() RETURNS void\nLANGUAGE PLPGSQL\nAS $$\nDECLARE\n  affected INTEGER;\n  state TEXT;\nBEGIN\n  UPDATE some_table SET x = 1;\n  GET DIAGNOSTICS affected = ROW_COUNT;\n  GET STACKED DIAGNOSTICS state = RETURNED_SQLSTATE;\n  RAISE NOTICE '%, %', affected, state;\nEND;\n$$;\n"
+    },
+    {
+      "name": "identifier-clash-keywords-not-folded",
+      "code": "-- PostgreSQL has many UNRESERVED / COL_NAME / TYPE_FUNC_NAME keywords\n-- that can legitimately be used as column / variable names — `role`,\n-- `value`, `name`, `date`, `text`, `key`, `type`, etc. The rule must not\n-- case-fold them, because doing so silently corrupts the SQL.\n--\n-- Regression: previously this rule walked every word that matched the\n-- combined kwlist and PL/pgSQL kwlist, which uppercased `NEW.role` into\n-- `NEW.ROLE`, `NEW.value` into `NEW.VALUE`, and the column list of\n-- `INSERT INTO foo (role, value, name)` inside PL/pgSQL bodies. The fix\n-- restricts case-folding to the reserved subset of keywords.\nCREATE FUNCTION fn() RETURNS TRIGGER LANGUAGE plpgsql AS $$\nBEGIN\n  IF NEW.role IS NOT NULL THEN\n    INSERT INTO foo (id, role, value, name, date, text)\n    VALUES (NEW.id, NEW.role, NEW.value, NEW.name, NEW.date, NEW.text);\n  END IF;\n  RETURN NEW;\nEND;\n$$;\n"
+    },
+    {
+      "name": "non-plpgsql-language",
+      "code": "-- The rule only touches plpgsql bodies. A SQL function body's keyword\n-- casing is not in scope here.\nCREATE FUNCTION add_one(n integer) RETURNS integer AS $$\n  select n + 1;\n$$ LANGUAGE sql;\n"
+    },
+    {
+      "name": "upper-default",
+      "code": "CREATE FUNCTION foo() RETURNS void AS $$\nDECLARE\n  user_count INTEGER;\nBEGIN\n  IF user_count IS NULL THEN\n    RAISE NOTICE 'select from where stays alone';\n  END IF;\n  -- the comment also stays alone: select from where\nEND;\n$$ LANGUAGE plpgsql;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "get-diagnostics-lower-output.expected",
+      "code": "CREATE FUNCTION example() RETURNS void\nLANGUAGE PLPGSQL\nAS $$\nDECLARE\n  affected INTEGER;\nBEGIN\n  UPDATE some_table SET x = 1;\n  GET DIAGNOSTICS affected = ROW_COUNT;\nEND;\n$$;\n",
+      "errors": [],
+      "output": null
+    },
+    {
+      "name": "get-diagnostics-lower",
+      "code": "CREATE FUNCTION example() RETURNS void\nLANGUAGE PLPGSQL\nAS $$\nDECLARE\n  affected INTEGER;\nBEGIN\n  UPDATE some_table SET x = 1;\n  GET DIAGNOSTICS affected = row_count;\nEND;\n$$;\n",
+      "errors": [],
+      "output": null
+    },
+    {
+      "name": "lowercase-keywords",
+      "code": "CREATE FUNCTION foo() RETURNS void AS $$\ndeclare\n  user_count integer;\nbegin\n  if user_count is null then\n    raise notice 'hello';\n  end if;\nend;\n$$ LANGUAGE plpgsql;\n",
+      "errors": [
+        {
+          "messageId": "expectedUpper",
+          "message": "PL/pgSQL keyword 'declare' should be uppercase: 'DECLARE'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 8
+        },
+        {
+          "messageId": "expectedUpper",
+          "message": "PL/pgSQL keyword 'begin' should be uppercase: 'BEGIN'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 6
+        },
+        {
+          "messageId": "expectedUpper",
+          "message": "PL/pgSQL keyword 'if' should be uppercase: 'IF'.",
+          "line": 5,
+          "column": 3,
+          "endLine": 5,
+          "endColumn": 5
+        },
+        {
+          "messageId": "expectedUpper",
+          "message": "PL/pgSQL keyword 'null' should be uppercase: 'NULL'.",
+          "line": 5,
+          "column": 20,
+          "endLine": 5,
+          "endColumn": 24
+        },
+        {
+          "messageId": "expectedUpper",
+          "message": "PL/pgSQL keyword 'then' should be uppercase: 'THEN'.",
+          "line": 5,
+          "column": 25,
+          "endLine": 5,
+          "endColumn": 29
+        },
+        {
+          "messageId": "expectedUpper",
+          "message": "PL/pgSQL keyword 'end' should be uppercase: 'END'.",
+          "line": 7,
+          "column": 3,
+          "endLine": 7,
+          "endColumn": 6
+        },
+        {
+          "messageId": "expectedUpper",
+          "message": "PL/pgSQL keyword 'if' should be uppercase: 'IF'.",
+          "line": 7,
+          "column": 7,
+          "endLine": 7,
+          "endColumn": 9
+        },
+        {
+          "messageId": "expectedUpper",
+          "message": "PL/pgSQL keyword 'end' should be uppercase: 'END'.",
+          "line": 8,
+          "column": 1,
+          "endLine": 8,
+          "endColumn": 4
+        }
+      ],
+      "output": "CREATE FUNCTION foo() RETURNS void AS $$\nDECLARE\n  user_count integer;\nBEGIN\n  IF user_count is NULL THEN\n    raise notice 'hello';\n  END IF;\nEND;\n$$ LANGUAGE plpgsql;"
+    }
+  ]
+}

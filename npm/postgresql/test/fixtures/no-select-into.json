@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-select-into",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "create-table-as",
+      "code": "CREATE TABLE archived_users AS SELECT id, name FROM users WHERE inactive;\n"
+    },
+    {
+      "name": "plain-select",
+      "code": "SELECT id, name FROM users WHERE inactive;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "select-into",
+      "code": "SELECT id, name INTO archived_users FROM users WHERE inactive;\n",
+      "errors": [
+        {
+          "messageId": "noSelectInto",
+          "message": "`SELECT ... INTO target FROM ...` creates a new table whose semantics differ from a regular `SELECT` and conflict with PL/pgSQL's `SELECT INTO variable`. Use `CREATE TABLE target AS SELECT ...` so the intent is explicit.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 62
+        }
+      ],
+      "output": null
+    }
+  ]
+}

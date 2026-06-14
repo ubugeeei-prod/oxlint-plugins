@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-with-recursive-without-limit",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "with-limit",
+      "code": "WITH RECURSIVE r AS (\n  SELECT 1 AS n\n  UNION ALL\n  SELECT n + 1 FROM r\n) SELECT * FROM r LIMIT 10;\n-- Non-recursive CTEs are out of scope.\nWITH r AS (SELECT 1 AS n) SELECT * FROM r;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "no-limit",
+      "code": "WITH RECURSIVE r AS (\n  SELECT 1 AS n\n  UNION ALL\n  SELECT n + 1 FROM r\n) SELECT * FROM r;\n",
+      "errors": [
+        {
+          "messageId": "noLimit",
+          "message": "Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.",
+          "line": 1,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 18
+        }
+      ],
+      "output": null
+    }
+  ]
+}

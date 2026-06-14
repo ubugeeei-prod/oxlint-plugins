@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/require-where-in-update",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "update-with-where",
+      "code": "UPDATE users SET name = 'a' WHERE id = 1;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "update-without-where",
+      "code": "UPDATE users SET active = false;\n",
+      "errors": [
+        {
+          "messageId": "missingWhere",
+          "message": "UPDATE without WHERE rewrites every row in the table. Add a WHERE clause to scope the change.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 32
+        }
+      ],
+      "output": null
+    }
+  ]
+}

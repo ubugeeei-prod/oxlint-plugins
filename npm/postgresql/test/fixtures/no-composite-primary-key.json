@@ -1,0 +1,59 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-composite-primary-key",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "inline-pk",
+      "code": "CREATE TABLE t (id INT PRIMARY KEY, name TEXT);\n"
+    },
+    {
+      "name": "no-pk",
+      "code": "CREATE TABLE t (id INT, name TEXT, UNIQUE (id, name));\n"
+    },
+    {
+      "name": "single-col-alter-add-pk",
+      "code": "ALTER TABLE t ADD CONSTRAINT t_pkey PRIMARY KEY (id);\n"
+    },
+    {
+      "name": "single-col-table-level-pk",
+      "code": "CREATE TABLE t (id INT, name TEXT, PRIMARY KEY (id));\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "composite-pk-alter",
+      "code": "ALTER TABLE t ADD CONSTRAINT t_pkey PRIMARY KEY (a, b);\n",
+      "errors": [
+        {
+          "messageId": "noCompositePk",
+          "message": "Composite PRIMARY KEY is not allowed. Use a single-column surrogate key (e.g. `id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY`) and enforce the natural key with a `UNIQUE` constraint. Composite primary keys complicate joins, ORM mapping, and foreign-key references.",
+          "line": 1,
+          "column": 19,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "composite-pk-create",
+      "code": "CREATE TABLE t (a INT, b INT, name TEXT, PRIMARY KEY (a, b));\n",
+      "errors": [
+        {
+          "messageId": "noCompositePk",
+          "message": "Composite PRIMARY KEY is not allowed. Use a single-column surrogate key (e.g. `id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY`) and enforce the natural key with a `UNIQUE` constraint. Composite primary keys complicate joins, ORM mapping, and foreign-key references.",
+          "line": 1,
+          "column": 42,
+          "endLine": 1,
+          "endColumn": 49
+        }
+      ],
+      "output": null
+    }
+  ]
+}

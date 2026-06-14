@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-money-type",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "numeric",
+      "code": "CREATE TABLE t (price NUMERIC(10, 2));\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "money",
+      "code": "CREATE TABLE t (price MONEY);\n",
+      "errors": [
+        {
+          "messageId": "noMoney",
+          "message": "Avoid `money`. Its output format and precision depend on `lc_monetary`, so the same row looks different on different servers and round-trips badly. Store amounts as `numeric` and keep the currency in a separate column.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": null
+    }
+  ]
+}

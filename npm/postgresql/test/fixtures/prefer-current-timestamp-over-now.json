@@ -1,0 +1,55 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/prefer-current-timestamp-over-now",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "standard-timestamp",
+      "code": "INSERT INTO events (created_at) VALUES (CURRENT_TIMESTAMP);\nSELECT now FROM noise_metric_table;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "local-timestamp",
+      "code": "SELECT LOCALTIMESTAMP, LOCALTIME FROM t;\n",
+      "errors": [
+        {
+          "messageId": "preferCurrentTimestampOverLocal",
+          "message": "Use `CURRENT_TIMESTAMP` instead of `LOCALTIMESTAMP`. `LOCALTIMESTAMP` returns a timezone-naive `timestamp`; `CURRENT_TIMESTAMP` returns `timestamptz`, which is what most apps actually want.",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 22
+        },
+        {
+          "messageId": "preferCurrentTimeOverLocal",
+          "message": "Use `CURRENT_TIME` instead of `LOCALTIME`. `LOCALTIME` returns a timezone-naive `time`; `CURRENT_TIME` returns `timetz`.",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ],
+      "output": "SELECT CURRENT_TIMESTAMP, CURRENT_TIME FROM t;"
+    },
+    {
+      "name": "now-call",
+      "code": "INSERT INTO events (created_at) VALUES (now());\n",
+      "errors": [
+        {
+          "messageId": "preferCurrentTimestamp",
+          "message": "Use the SQL-standard `CURRENT_TIMESTAMP` instead of `now()`.",
+          "line": 1,
+          "column": 41,
+          "endLine": 1,
+          "endColumn": 46
+        }
+      ],
+      "output": "INSERT INTO events (created_at) VALUES (CURRENT_TIMESTAMP);"
+    }
+  ]
+}

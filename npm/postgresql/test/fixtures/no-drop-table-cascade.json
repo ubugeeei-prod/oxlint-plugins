@@ -1,0 +1,40 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-drop-table-cascade",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "drop-schema-cascade",
+      "code": "DROP SCHEMA public CASCADE;\n"
+    },
+    {
+      "name": "drop-table-restrict",
+      "code": "DROP TABLE users RESTRICT;\n"
+    },
+    {
+      "name": "drop-table",
+      "code": "DROP TABLE users;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "drop-table-cascade",
+      "code": "DROP TABLE users CASCADE;\n",
+      "errors": [
+        {
+          "messageId": "noCascade",
+          "message": "Avoid `DROP TABLE ... CASCADE`. CASCADE silently removes dependent objects (views, foreign keys, sequences); list them explicitly so reviewers can see the blast radius.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    }
+  ]
+}

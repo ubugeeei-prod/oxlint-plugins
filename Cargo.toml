@@ -11,6 +11,7 @@ members = [
   "crates/mocha",
   "crates/perfectionist",
   "crates/playwright",
+  "crates/postgresql",
   "crates/react_hooks",
   "crates/react_refresh",
   "crates/regexp",
@@ -33,6 +34,7 @@ members = [
   "npm/no-forbidden-identifiers",
   "npm/perfectionist",
   "npm/playwright",
+  "npm/postgresql",
   "npm/react-hooks",
   "npm/react-refresh",
   "npm/regexp",
@@ -83,6 +85,7 @@ oxlint-plugins-functional = { path = "crates/functional", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
 oxlint-plugins-perfectionist = { path = "crates/perfectionist", version = "0.0.0" }
 oxlint-plugins-playwright = { path = "crates/playwright", version = "0.0.0" }
+oxlint-plugins-postgresql = { path = "crates/postgresql", version = "0.0.0" }
 oxlint-plugins-react-hooks = { path = "crates/react_hooks", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-regexp = { path = "crates/regexp", version = "0.0.0" }
@@ -96,6 +99,7 @@ oxlint-plugins-unocss = { path = "crates/unocss", version = "0.0.0" }
 oxlint-plugins-unused-imports = { path = "crates/unused_imports", version = "0.0.0" }
 regex = "1.12.2"
 phf = { version = "0.13.1", features = ["macros"] }
+pg_query = "6.1.1"
 rustc-hash = "2.1.1"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.145"

@@ -1,0 +1,120 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/require-fk-include-columns",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "alter-table-add-fk",
+      "code": "-- ALTER TABLE ADD CONSTRAINT FK that includes `tenant_id`.\nALTER TABLE orders\n  ADD CONSTRAINT orders_user_fk\n  FOREIGN KEY (tenant_id, user_id) REFERENCES users (tenant_id, id);\n",
+      "options": [
+        {
+          "columns": ["tenant_id"]
+        }
+      ]
+    },
+    {
+      "name": "composite-fk-includes-tenant",
+      "code": "-- Table-level composite FK that includes `tenant_id`.\nCREATE TABLE orders (\n  tenant_id bigint NOT NULL,\n  id        bigint NOT NULL,\n  user_id   bigint NOT NULL,\n  PRIMARY KEY (tenant_id, id),\n  FOREIGN KEY (tenant_id, user_id) REFERENCES users (tenant_id, id)\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id"]
+        }
+      ]
+    },
+    {
+      "name": "excluded-by-referenced-table-pattern",
+      "code": "-- The referenced table `tenants` is shared across tenants by definition,\n-- so an FK to it does not need to carry `tenant_id`.\nCREATE TABLE orders (\n  id        bigserial PRIMARY KEY,\n  tenant_id bigint NOT NULL REFERENCES tenants (id)\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id"],
+          "excludeReferencedTablePattern": "^tenants$"
+        }
+      ]
+    },
+    {
+      "name": "excluded-by-table-pattern",
+      "code": "-- `audit_*` tables are excluded by `excludeTablePattern`, so a missing\n-- `tenant_id` is not reported.\nCREATE TABLE audit_events (\n  id      bigserial PRIMARY KEY,\n  user_id bigint REFERENCES users (id)\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id"],
+          "excludeTablePattern": "^audit_"
+        }
+      ]
+    },
+    {
+      "name": "no-fk",
+      "code": "-- No FK constraints — nothing to flag.\nCREATE TABLE orders (\n  id        bigserial PRIMARY KEY,\n  tenant_id bigint NOT NULL,\n  amount    numeric(10, 2)\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id"]
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "alter-table-add-fk-missing-tenant",
+      "code": "-- ALTER TABLE ADD CONSTRAINT FK without `tenant_id`.\nALTER TABLE orders\n  ADD CONSTRAINT orders_user_fk\n  FOREIGN KEY (user_id) REFERENCES users (id);\n",
+      "options": [
+        {
+          "columns": ["tenant_id"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingFkColumn",
+          "message": "Foreign-key constraint on `orders` references `users` but does not include `tenant_id`. In a multi-tenant database every FK should carry the tenant key so a child row cannot point at a parent in a different tenant.",
+          "line": 3,
+          "column": 7,
+          "endLine": 4,
+          "endColumn": 41
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "inline-fk-on-non-tenant-column",
+      "code": "-- Column-level (inline) FK on a non-tenant column — the FK's referencing\n-- column list is just `[user_id]`, which is missing `tenant_id`.\nCREATE TABLE orders (\n  tenant_id bigint NOT NULL,\n  id        bigserial PRIMARY KEY,\n  user_id   bigint REFERENCES users (id)\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingFkColumn",
+          "message": "Foreign-key constraint on `orders` references `users` but does not include `tenant_id`. In a multi-tenant database every FK should carry the tenant key so a child row cannot point at a parent in a different tenant.",
+          "line": 6,
+          "column": 20,
+          "endLine": 6,
+          "endColumn": 30
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "table-level-fk-missing-tenant",
+      "code": "-- Table-level FK that does not include `tenant_id`.\nCREATE TABLE orders (\n  tenant_id bigint NOT NULL,\n  id        bigint NOT NULL,\n  user_id   bigint NOT NULL,\n  PRIMARY KEY (tenant_id, id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n",
+      "options": [
+        {
+          "columns": ["tenant_id"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingFkColumn",
+          "message": "Foreign-key constraint on `orders` references `users` but does not include `tenant_id`. In a multi-tenant database every FK should carry the tenant key so a child row cannot point at a parent in a different tenant.",
+          "line": 7,
+          "column": 3,
+          "endLine": 7,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    }
+  ]
+}

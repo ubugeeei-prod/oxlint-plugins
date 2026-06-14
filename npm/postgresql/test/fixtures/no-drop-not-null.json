@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-drop-not-null",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "drop-default",
+      "code": "ALTER TABLE users ALTER COLUMN status DROP DEFAULT;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "drop-not-null",
+      "code": "ALTER TABLE users ALTER COLUMN email DROP NOT NULL;\n",
+      "errors": [
+        {
+          "messageId": "noDropNotNull",
+          "message": "`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 51
+        }
+      ],
+      "output": null
+    }
+  ]
+}

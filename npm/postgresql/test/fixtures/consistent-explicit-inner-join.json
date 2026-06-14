@@ -1,0 +1,61 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-explicit-inner-join",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "explicit-inner",
+      "code": "SELECT u.id FROM users u INNER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u CROSS JOIN regions r;\nSELECT u.id FROM users u NATURAL JOIN profiles p;\nSELECT u.id FROM users u LEFT JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u LEFT OUTER JOIN orders o ON o.user_id = u.id;\n"
+    },
+    {
+      "name": "never-bare-join",
+      "code": "SELECT a.id FROM a JOIN b ON a.id = b.id;\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "bare-join",
+      "code": "SELECT u.id FROM users u JOIN orders o ON o.user_id = u.id;\n",
+      "errors": [
+        {
+          "messageId": "preferInnerJoin",
+          "message": "Write `INNER JOIN` explicitly instead of bare `JOIN`.",
+          "line": 1,
+          "column": 26,
+          "endLine": 1,
+          "endColumn": 30
+        }
+      ],
+      "output": "SELECT u.id FROM users u INNER JOIN orders o ON o.user_id = u.id;"
+    },
+    {
+      "name": "never-inner-join",
+      "code": "SELECT a.id FROM a INNER JOIN b ON a.id = b.id;\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedInnerJoin",
+          "message": "Omit the redundant `INNER`; use bare `JOIN` for inner joins.",
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 30
+        }
+      ],
+      "output": "SELECT a.id FROM a JOIN b ON a.id = b.id;"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-drop-schema-cascade",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "plain",
+      "code": "DROP SCHEMA staging;\n"
+    },
+    {
+      "name": "restrict",
+      "code": "DROP SCHEMA staging RESTRICT;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "cascade",
+      "code": "DROP SCHEMA staging CASCADE;\n",
+      "errors": [
+        {
+          "messageId": "noDropSchemaCascade",
+          "message": "`DROP SCHEMA ... CASCADE` removes every table, view, function, and sequence in the schema with no preview. List the objects you actually want to drop instead, or drop the schema only when it's already empty.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ],
+      "output": null
+    }
+  ]
+}

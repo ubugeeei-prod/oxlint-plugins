@@ -1,0 +1,86 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-syntax-error",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "basic-select",
+      "code": "SELECT * FROM users;"
+    },
+    {
+      "name": "create-table",
+      "code": "CREATE TABLE users (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(100),\n    email VARCHAR(255)\n);"
+    },
+    {
+      "name": "delete-statement",
+      "code": "DELETE FROM users WHERE id = 1;"
+    },
+    {
+      "name": "insert-statement",
+      "code": "INSERT INTO users (name, email) VALUES ('John', 'john@example.com');"
+    },
+    {
+      "name": "join-query",
+      "code": "SELECT u.name, p.title\nFROM users u\n    JOIN posts p ON u.id = p.user_id\nWHERE\n    u.active = true;"
+    },
+    {
+      "name": "update-statement",
+      "code": "UPDATE users SET name = 'Jane' WHERE id = 1;"
+    },
+    {
+      "name": "where-with-parentheses",
+      "code": "SELECT name FROM users WHERE ( age > 18 AND status = 'active' );"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "invalid-keyword",
+      "code": "INVALID_KEYWORD * FROM users;",
+      "errors": [
+        {
+          "messageId": "syntaxError",
+          "message": "PostgreSQL syntax error: syntax error at or near \"INVALID_KEYWORD\"",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 30
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "syntax-error",
+      "code": "SELECT FROM WHERE;",
+      "errors": [
+        {
+          "messageId": "syntaxError",
+          "message": "PostgreSQL syntax error: syntax error at or near \"WHERE\"",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "unterminated-string",
+      "code": "SELECT 'unterminated string FROM users;",
+      "errors": [
+        {
+          "messageId": "syntaxError",
+          "message": "PostgreSQL syntax error: Unexpected token 'u', \"unterminat\"... is not valid JSON",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 40
+        }
+      ],
+      "output": null
+    }
+  ]
+}
