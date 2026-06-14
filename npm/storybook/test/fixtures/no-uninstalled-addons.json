@@ -1,0 +1,215 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/no-uninstalled-addons.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n    export default {\n      addons: [\n        \"@storybook/addon-links\",\n        \"@storybook/addon-essentials\",\n        \"@storybook/addon-interactions\",\n        \"@storybook/preset-create-react-app\"\n      ]\n    }\n  ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n    export default {\n      addons: [\n        \"@storybook/addon-links\",\n        \"@storybook/addon-essentials\",\n        \"@storybook/addon-interactions\",\n        \"@storybook/preset-create-react-app\"\n      ]\n    } satisfies StorybookConfig\n  ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n     const config: StorybookConfig = {\n        addons: [\n        \"@storybook/addon-links\",\n        \"@storybook/addon-essentials\",\n        \"@storybook/addon-interactions\",\n        \"@storybook/preset-create-react-app\"\n        ]\n      }\n      export default config\n  ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n    export const addons = [\n      \"@storybook/addon-links\",\n      \"@storybook/addon-essentials\",\n      \"@storybook/addon-interactions\",\n    ]\n  ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n    module.exports = {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n        ]\n      }\n  ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n    module.exports = {\n        addons: [\n          \"storybook-addon-valid-addon/register\",\n          \"addon-without-the-prefix/preset\",\n        ]\n      }\n  ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n    module.exports = {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          \"storybook-addon-valid-addon\",\n        ]\n      }\n  ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n    module.exports = {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          \"addon-without-the-prefix\",\n        ]\n      }\n  ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      module.exports = {\n          addons: [\n            \"../my-local-addon\",\n            \"../my-local-addon/index.cjs\",\n            \"/Users/foo/my-local-addon/index.js\",\n            \"/mount/foo/my-local-addon/index.js\",\n            \"C:\\Users\\foo\\my-local-addon/index.js\",\n            \"D:\\Users\\foo\\my-local-addon/index.js\",\n          ]\n        }\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n    module.exports = {\n        addons: [\n          {\n            name: \"@storybook/addon-links\",\n          },\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          {\n            name: \"addon-without-the-prefix\",\n          },\n          {\n            name: \"storybook-addon-valid-addon/register.js\",\n          },\n        ]\n      }\n  ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      module.exports = {\n          addons: [\n            \"@storybook/addon-links\",\n            \"@storybook/addon-essentials\",\n            \"@storybook/addon-interactions\",\n            \"@storybook/not-installed-addon\",\n          ]\n        }\n    ",
+      "filename": "MyComponent.stories.js",
+      "options": [
+        {
+          "packageJsonLocation": "",
+          "ignore": ["@storybook/not-installed-addon"]
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n      module.exports = {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          '@storybook/not-installed-addon'\n        ]\n      }\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "@storybook/not-installed-addon",
+            "packageJsonPath": "storybook/"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      module.exports = {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          {\n            name: '@storybook/not-installed-addon'\n          }\n        ]\n      }\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "@storybook/not-installed-addon",
+            "packageJsonPath": "storybook/"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      module.exports = {\n        addons: [\n          \"@storybook/addon-links\",\n          {\n            name: \"@storybook/addon-esentials\",\n          },\n          \"@storybook/addon-interactions\",\n        ]\n      }\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "@storybook/addon-esentials",
+            "packageJsonPath": "storybook/"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      module.exports = {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/adon-essentials\",\n          \"@storybook/addon-interactions\",\n        ]\n      }\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "@storybook/adon-essentials",
+            "packageJsonPath": "storybook/"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      module.exports = {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          \"addon-withut-the-prefix\",\n          \"@storybook/addon-esentials\",\n        ]\n      }\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "addon-withut-the-prefix",
+            "packageJsonPath": "storybook/"
+          }
+        },
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "@storybook/addon-esentials",
+            "packageJsonPath": "storybook/"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      export default {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          \"addon-withut-the-prefix\",\n          \"@storybook/addon-esentials\",\n        ]\n      }\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "addon-withut-the-prefix",
+            "packageJsonPath": "storybook/"
+          }
+        },
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "@storybook/addon-esentials",
+            "packageJsonPath": "storybook/"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      export default {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          \"addon-withut-the-prefix\",\n          \"@storybook/addon-esentials\",\n        ]\n      } satisfies StorybookConfig\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "addon-withut-the-prefix",
+            "packageJsonPath": "storybook/"
+          }
+        },
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "@storybook/addon-esentials",
+            "packageJsonPath": "storybook/"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      const config: StorybookConfig = {\n        addons: [\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          \"addon-withut-the-prefix\",\n          \"@storybook/addon-esentials\",\n        ]\n      }\n      export default config\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "addon-withut-the-prefix",
+            "packageJsonPath": "storybook/"
+          }
+        },
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "@storybook/addon-esentials",
+            "packageJsonPath": "storybook/"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        export const addons = [\n          \"../my-local-addon\",\n          \"@storybook/addon-links\",\n          \"@storybook/addon-essentials\",\n          \"@storybook/addon-interactions\",\n          \"addon-withut-the-prefix\",\n          \"@storybook/addon-esentials\",\n        ]\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "addon-withut-the-prefix",
+            "packageJsonPath": "storybook/"
+          }
+        },
+        {
+          "messageId": "addonIsNotInstalled",
+          "data": {
+            "addonName": "@storybook/addon-esentials",
+            "packageJsonPath": "storybook/"
+          }
+        }
+      ]
+    }
+  ]
+}

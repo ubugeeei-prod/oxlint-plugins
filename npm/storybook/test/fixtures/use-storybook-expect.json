@@ -1,0 +1,60 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/use-storybook-expect.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "import { expect } from '@storybook/jest';\n\nDefault.play = () => {\n  expect(123).toEqual(123);\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "import { expect } from '@storybook/jest';\n\nexport const Basic = {\n  ...Default,\n  play: async (context) => {\n    expect(123).toEqual(123);\n  },\n};",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "import { expect } from '@storybook/test';\n\nDefault.play = () => {\n  expect(123).toEqual(123);\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "import { expect } from '@storybook/test';\n\nexport const Basic = {\n  ...Default,\n  play: async (context) => {\n    expect(123).toEqual(123);\n  },\n};",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "import { expect } from 'storybook/test';\n\nDefault.play = () => {\n  expect(123).toEqual(123);\n}",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "Default.play = () => {\n  expect(123).toEqual(123);\n}",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "useExpectFromStorybook"
+        }
+      ]
+    },
+    {
+      "code": "const someInteraction = () => {\n  expect(123).toEqual(123);\n}\nDefault.play = someInteraction",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "useExpectFromStorybook"
+        }
+      ]
+    },
+    {
+      "code": "export const Basic = {\n  ...Default,\n  play: async (context) => {\n    expect(123).toEqual(123);\n  },\n};",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "useExpectFromStorybook"
+        }
+      ]
+    }
+  ]
+}

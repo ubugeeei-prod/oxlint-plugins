@@ -693,6 +693,15 @@ impl<'a> Scanner<'a> {
 
     fn scan_variable_declaration(&mut self, declaration: &'a VariableDeclaration<'a>) {
         for declarator in &declaration.declarations {
+            // Upstream await-interactions resets its "userEvent came from storybook"
+            // flag on EVERY `userEvent` variable declarator (nested ones included),
+            // disabling the rule when `userEvent` is locally redefined. The prepass
+            // only sees top-level declarations, so catch nested bindings here. A
+            // `const`/`let` is always declared before it is used (TDZ), so the flag
+            // is set before any `userEvent` call in scope is checked.
+            if binding_identifier_name(&declarator.id) == Some("userEvent") {
+                self.user_event_is_non_storybook = true;
+            }
             if let Some(init) = &declarator.init {
                 self.scan_expression(init, ParentKind::Other);
             }

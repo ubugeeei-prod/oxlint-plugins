@@ -35,6 +35,11 @@ const expectedRuleNames = [
   'no-useless-catch',
   'no-redundant-optional',
   'prefer-immediate-return',
+  'no-redundant-jump',
+  'no-primitive-wrappers',
+  'no-skipped-tests',
+  'prefer-single-boolean-return',
+  'no-unthrown-error',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1189,6 +1194,239 @@ describe('sonarjs native API', () => {
   it('does not report prefer-immediate-return when the declaration has two declarators', () => {
     const source = 'function f() { const x = 1, y = 2; return x; }';
     const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-redundant-jump for trailing continue in a for(;;) loop body', () => {
+    const source = 'for (;;) { foo(); continue; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-redundant-jump');
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump for trailing continue in a while loop body', () => {
+    const source = 'while (x) { foo(); continue; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump for trailing continue in a do-while loop body', () => {
+    const source = 'do { foo(); continue; } while (x);';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump for trailing continue in a for-of loop body', () => {
+    const source = 'for (const a of b) { foo(); continue; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump for trailing return; in a function body', () => {
+    const source = 'function f() { foo(); return; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('does not report no-redundant-jump when continue is not the last statement', () => {
+    const source = 'for (;;) { if (x) continue; foo(); }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-redundant-jump for return with a value', () => {
+    const source = 'function f() { foo(); return x; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-redundant-jump for a labeled continue', () => {
+    const source = 'outer: for (;;) { foo(); continue outer; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-primitive-wrappers for new Number(1)', () => {
+    const source = 'const n = new Number(1);';
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-primitive-wrappers');
+    expect(diagnostics[0].messageId).toBe('primitiveWrapper');
+  });
+
+  it('reports no-primitive-wrappers for new String("x")', () => {
+    const source = "const s = new String('x');";
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('primitiveWrapper');
+  });
+
+  it('reports no-primitive-wrappers for new Boolean(false)', () => {
+    const source = 'const b = new Boolean(false);';
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('primitiveWrapper');
+  });
+
+  it('does not report no-primitive-wrappers for Number(1) (call, no new)', () => {
+    const source = 'const n = Number(1);';
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-primitive-wrappers for new Array(3) (not a primitive wrapper)', () => {
+    const source = 'const a = new Array(3);';
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-primitive-wrappers for new Foo() (unknown constructor)', () => {
+    const source = 'const f = new Foo();';
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-skipped-tests for describe.skip(...)', () => {
+    const source = "describe.skip('x', () => {});";
+    const diagnostics = scan('no-skipped-tests', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-skipped-tests');
+    expect(diagnostics[0].messageId).toBe('skippedTest');
+  });
+
+  it('reports no-skipped-tests for it.skip(...)', () => {
+    const source = "it.skip('x', () => {});";
+    const diagnostics = scan('no-skipped-tests', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('skippedTest');
+  });
+
+  it('reports no-skipped-tests for xit(...)', () => {
+    const source = "xit('x', () => {});";
+    const diagnostics = scan('no-skipped-tests', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('skippedTest');
+  });
+
+  it('reports no-skipped-tests for xdescribe(...)', () => {
+    const source = "xdescribe('x', () => {});";
+    const diagnostics = scan('no-skipped-tests', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('skippedTest');
+  });
+
+  it('does not report no-skipped-tests for it(...) (no skip)', () => {
+    const source = "it('x', () => {});";
+    const diagnostics = scan('no-skipped-tests', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-skipped-tests for foo.skip() (unknown runner)', () => {
+    const source = 'foo.skip();';
+    const diagnostics = scan('no-skipped-tests', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-skipped-tests for xfoo() (not in x-set)', () => {
+    const source = 'xfoo();';
+    const diagnostics = scan('no-skipped-tests', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports prefer-single-boolean-return for if/else both returning bool literals (block form)', () => {
+    const source = 'function f() { if (c) { return true; } else { return false; } }';
+    const diagnostics = scan('prefer-single-boolean-return', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('prefer-single-boolean-return');
+    expect(diagnostics[0].messageId).toBe('preferSingleBooleanReturn');
+  });
+
+  it('reports prefer-single-boolean-return for if/else both returning bool literals (bare form)', () => {
+    const source = 'function f() { if (c) return true; else return false; }';
+    const diagnostics = scan('prefer-single-boolean-return', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('preferSingleBooleanReturn');
+  });
+
+  it('reports prefer-single-boolean-return for if/else with inverted bool literals', () => {
+    const source = 'function f() { if (c) { return false; } else { return true; } }';
+    const diagnostics = scan('prefer-single-boolean-return', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('preferSingleBooleanReturn');
+  });
+
+  it('does not report prefer-single-boolean-return when there is no else branch', () => {
+    const source = 'function f() { if (c) { return true; } }';
+    const diagnostics = scan('prefer-single-boolean-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-single-boolean-return when consequent returns a non-literal', () => {
+    const source = 'function f() { if (c) { return x; } else { return false; } }';
+    const diagnostics = scan('prefer-single-boolean-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-single-boolean-return for an else-if chain', () => {
+    const source = 'function f() { if (c) return true; else if (d) return x; }';
+    const diagnostics = scan('prefer-single-boolean-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-single-boolean-return when consequent block has two statements', () => {
+    const source = 'function f() { if (c) { return true; bar(); } else { return false; } }';
+    const diagnostics = scan('prefer-single-boolean-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-unthrown-error for new Error as a bare statement', () => {
+    const source = "new Error('boom');";
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-unthrown-error');
+    expect(diagnostics[0].messageId).toBe('unthrownError');
+  });
+
+  it('reports no-unthrown-error for new TypeError as a bare statement', () => {
+    const source = "new TypeError('x');";
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('unthrownError');
+  });
+
+  it('reports no-unthrown-error for a user-defined Error subtype as a bare statement', () => {
+    const source = 'new MyError();';
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('unthrownError');
+  });
+
+  it('does not report no-unthrown-error when the error is thrown', () => {
+    const source = "throw new Error('boom');";
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-unthrown-error when the error is assigned to a variable', () => {
+    const source = 'const e = new Error();';
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-unthrown-error for new Foo() (callee does not end with Error)', () => {
+    const source = 'new Foo();';
+    const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-unthrown-error when the error is passed as a call argument', () => {
+    const source = 'foo(new Error());';
+    const diagnostics = scan('no-unthrown-error', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
