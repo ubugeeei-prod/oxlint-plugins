@@ -385,6 +385,18 @@ const ruleMeta = Object.freeze({
         'SELECT statement should include a LIMIT clause to prevent excessive data retrieval',
     },
   },
+  'require-named-constraint': {
+    type: 'suggestion',
+    description:
+      'Require an explicit `CONSTRAINT <name>` on table-level CHECK / UNIQUE / FOREIGN KEY / EXCLUSION constraints',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      requireNamedConstraint:
+        'Table-level CHECK / UNIQUE / FOREIGN KEY / EXCLUSION constraints should be named with `CONSTRAINT <name>`. Auto-generated names are unpredictable across environments and make later `DROP CONSTRAINT` / `ALTER CONSTRAINT` migrations brittle.',
+    },
+  },
   'require-where-in-delete': {
     type: 'problem',
     description: 'Require a WHERE clause in DELETE statements',
