@@ -409,6 +409,29 @@ const ruleMeta = Object.freeze({
         '`UNLOGGED` tables skip WAL: they are truncated on crash, not replicated to standbys, and not restored from base backups. If a cache table is what you want, document it explicitly and disable this rule for that file.',
     },
   },
+  'no-update-primary-key': {
+    type: 'problem',
+    description: 'Disallow `UPDATE ... SET <pk> = ...` for columns the rule treats as primary keys',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          pkColumnNames: {
+            type: 'array',
+            items: { type: 'string' },
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      noUpdatePk:
+        'Avoid `UPDATE` on the primary-key column `{{name}}`. Primary keys are intended to be immutable; FK references and external systems can hold the old value.',
+    },
+  },
   'no-update-without-from-binding': {
     type: 'problem',
     description:
