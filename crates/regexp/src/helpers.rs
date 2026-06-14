@@ -2709,6 +2709,53 @@ pub(crate) fn has_unnecessary_general_category_key(pattern: &str) -> bool {
     false
 }
 
+/// Narrow-form detector for `no-super-linear-move`.
+///
+/// Returns `true` when the pattern *begins* with an atom immediately followed
+/// by an unbounded greedy quantifier (`*`, `+`, or `{n,}`) and there is a
+/// non-empty "rejecting" suffix after that quantifier — e.g. `/a*:/`,
+/// `/\w+x/`. Because the leading greedy quantifier is not anchored to the
+/// absolute start of input, a non-matching suffix forces the engine to retry
+/// the quantifier from every successive start position, giving quadratic
+/// scanning time.
+///
+/// Soundness constraints:
+/// * The quantified atom must be at byte offset 0, so any leading `^` anchor or
+///   `\b`/lookbehind assertion (which would bound the start) precludes a match
+///   — `/^a*:/`, `/\ba*:/` are never flagged.
+/// * There must be at least one byte after the quantifier (a potential
+///   rejecting suffix); `/a*/`, `/[\q{abc}]+/` with nothing after are never
+///   flagged.
+///
+/// The caller additionally excludes the sticky (`y`) flag, matching upstream's
+/// default `ignoreSticky: true`. Broader cases (`^…` under the `m` flag,
+/// quantifiers after a leading assertion) are deferred to stay valid-sound.
+pub(crate) fn has_super_linear_move(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    // The quantified atom must start at offset 0.
+    let Some((_, atom_end)) = misleading_atom_at(bytes, 0) else {
+        return false;
+    };
+    let Some(after_quant) = greedy_quantifier_end(bytes, atom_end) else {
+        return false;
+    };
+    // A non-empty suffix must follow the quantifier.
+    if after_quant >= bytes.len() {
+        return false;
+    }
+    // The suffix must begin with a *required* element so it can actually
+    // reject. The first suffix atom must not itself be optional (`?`) or
+    // zero-or-more (`*`) — those can match empty, leaving nothing to reject and
+    // making the pattern equivalent to a bare `/a*/` (an upstream valid shape).
+    let Some((_, suffix_atom_end)) = misleading_atom_at(bytes, after_quant) else {
+        // A non-atom suffix (group/anchor/etc.) is conservatively treated as a
+        // potential rejecting suffix; the clearest invalid cases all have a
+        // literal/class suffix, so requiring an atom keeps us sound.
+        return false;
+    };
+    !matches!(bytes.get(suffix_atom_end), Some(b'?') | Some(b'*'))
+}
+
 /// Narrow-form detector for `no-super-linear-backtracking`.
 ///
 /// Returns `true` for the canonical nested-unbounded-quantifier shape

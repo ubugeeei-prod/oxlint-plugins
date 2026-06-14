@@ -19,11 +19,12 @@ use crate::helpers::{
     first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, group_prefix,
     has_assertion_contradiction, has_mergeable_quantifier_concatenation,
     has_misleading_capturing_group, has_preferable_set_operation, has_simplifiable_set_operation,
-    has_standalone_backslash, has_super_linear_backtracking, has_unnecessary_general_category_key,
-    has_useless_set_operand, has_useless_word_boundary, mention_char,
-    pattern_ends_with_lazy_quantifier, pattern_has_capturing_group_and_no_backreference,
-    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, prefer_lookaround_groups,
-    skip_escape, sorted_flags, string_literal_value_with_span,
+    has_standalone_backslash, has_super_linear_backtracking, has_super_linear_move,
+    has_unnecessary_general_category_key, has_useless_set_operand, has_useless_word_boundary,
+    mention_char, pattern_ends_with_lazy_quantifier,
+    pattern_has_capturing_group_and_no_backreference, pattern_has_empty_string_literal,
+    pattern_is_safe_to_add_i_flag, prefer_lookaround_groups, skip_escape, sorted_flags,
+    string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -1133,6 +1134,15 @@ impl<'a> Scanner<'a> {
         // outer loop and cause exponential backtracking.
         if has_super_linear_backtracking(pattern) {
             self.report("no-super-linear-backtracking", "self", span);
+        }
+
+        // `no-super-linear-move` (narrow form): a leading unbounded greedy
+        // quantifier (`a*…`, `\w+…`) followed by a required rejecting suffix,
+        // not anchored to the absolute start, scans in quadratic time. The
+        // sticky (`y`) flag anchors each match and is excluded, matching the
+        // upstream default `ignoreSticky: true`.
+        if !flags.contains('y') && has_super_linear_move(pattern) {
+            self.report("no-super-linear-move", "unexpected", span);
         }
 
         // `no-potentially-useless-backreference` (narrow form): only flag the

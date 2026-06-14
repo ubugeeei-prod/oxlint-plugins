@@ -122,8 +122,49 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-lookaround",
             "no-misleading-capturing-group",
             "no-super-linear-backtracking",
+            "no-super-linear-move",
         ]
     );
+}
+
+mod no_super_linear_move {
+    use super::*;
+
+    #[test]
+    fn reports_leading_unbounded_quantifier_with_rejecting_suffix() {
+        for src in [
+            // Literal atom with literal suffix: `/a*:/`.
+            "const re = /a*:/;",
+            // Shorthand with literal suffix: `/\\w+x/`.
+            "const re = /\\w+x/;",
+            // Class atom with suffix: `/[a-z]+;/`.
+            "const re = /[a-z]+;/;",
+            // Open-ended brace: `/a{2,}b/`.
+            "const re = /a{2,}b/;",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "no-super-linear-move").as_slice(),
+                &["unexpected"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_safe_or_unsupported_shapes() {
+        // No leading quantifier.
+        assert!(rule_ids_for("const re = /regexp/;", "no-super-linear-move").is_empty());
+        // Leading assertion `\b` anchors the start.
+        assert!(rule_ids_for("const re = /\\ba*:/;", "no-super-linear-move").is_empty());
+        // `^` anchor at the start.
+        assert!(rule_ids_for("const re = /^a*:/;", "no-super-linear-move").is_empty());
+        // No rejecting suffix.
+        assert!(rule_ids_for("const re = /a*/;", "no-super-linear-move").is_empty());
+        // Suffix is optional (`b*`) — nothing rejects.
+        assert!(rule_ids_for("const re = /a*b*/;", "no-super-linear-move").is_empty());
+        // Sticky `y` flag anchors each match.
+        assert!(rule_ids_for("const re = /a*b/y;", "no-super-linear-move").is_empty());
+    }
 }
 
 mod no_super_linear_backtracking {
