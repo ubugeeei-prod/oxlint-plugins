@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // Oxlint plugin port of eslint-plugin-postgresql (MIT).
 // SQL is parsed (libpg_query, PostgreSQL 17) and every rule runs in Rust through
@@ -7,133 +7,146 @@
 // adapter and native API while keeping CLI integration disabled in status
 // metadata (mirroring the @eslint/json and @eslint/markdown ports).
 
-const { eslintCompatPlugin } = require('@oxlint/plugins');
-const { implementedPostgresqlRuleNames, scanPostgresql } = require('./api.js');
+const { eslintCompatPlugin } = require("@oxlint/plugins");
+const { implementedPostgresqlRuleNames, scanPostgresql } = require("./api.js");
 
-const PLUGIN_NAME = 'postgresql';
-const DOCS_BASE = 'https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql';
+const PLUGIN_NAME = "postgresql";
+const DOCS_BASE =
+  "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql";
 const diagnosticsCache = new WeakMap();
 
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
-  'no-cluster': {
-    type: 'problem',
+  "no-cluster": {
+    type: "problem",
     description:
-      'Disallow the `CLUSTER` statement: it takes ACCESS EXCLUSIVE, rewrites the table, and is not maintained afterwards',
+      "Disallow the `CLUSTER` statement: it takes ACCESS EXCLUSIVE, rewrites the table, and is not maintained afterwards",
     recommended: true,
     fixable: undefined,
     schema: [],
     messages: {
       noCluster:
-        '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
+        "`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.",
     },
   },
-  'no-distinct-on-without-order-by': {
-    type: 'problem',
+  "no-distinct-on-without-order-by": {
+    type: "problem",
     description:
-      'Disallow `SELECT DISTINCT ON (...)` without an `ORDER BY`; the surviving row in each group is otherwise non-deterministic',
+      "Disallow `SELECT DISTINCT ON (...)` without an `ORDER BY`; the surviving row in each group is otherwise non-deterministic",
     recommended: true,
     fixable: undefined,
     schema: [],
     messages: {
       noDistinctOnWithoutOrderBy:
-        '`DISTINCT ON (...)` keeps an arbitrary row from each group unless `ORDER BY` is specified. Add an `ORDER BY` whose leading columns match the `DISTINCT ON` expressions.',
+        "`DISTINCT ON (...)` keeps an arbitrary row from each group unless `ORDER BY` is specified. Add an `ORDER BY` whose leading columns match the `DISTINCT ON` expressions.",
     },
   },
-  'no-drop-database': {
-    type: 'problem',
+  "no-drop-database": {
+    type: "problem",
     description:
-      'Disallow `DROP DATABASE`; it is catastrophic if run by accident and should not live in versioned SQL',
+      "Disallow `DROP DATABASE`; it is catastrophic if run by accident and should not live in versioned SQL",
     recommended: true,
     fixable: undefined,
     schema: [],
     messages: {
       noDropDatabase:
-        '`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.',
+        "`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.",
     },
   },
-  'no-select-star': {
-    type: 'suggestion',
+  "no-group-by-ordinal": {
+    type: "suggestion",
     description:
-      'Disallow `SELECT *` in queries to keep result schemas stable when the underlying table changes',
+      "Disallow `GROUP BY <position>` (positional/ordinal references); use the column name or expression instead",
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noGroupByOrdinal:
+        "`GROUP BY <position>` silently breaks when the SELECT list changes. Use the column name or the expression itself.",
+    },
+  },
+  "no-select-star": {
+    type: "suggestion",
+    description:
+      "Disallow `SELECT *` in queries to keep result schemas stable when the underlying table changes",
     recommended: false,
     fixable: undefined,
     schema: [],
     messages: {
       noSelectStar:
-        'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
+        "Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.",
     },
   },
-  'no-implicit-join': {
-    type: 'suggestion',
+  "no-implicit-join": {
+    type: "suggestion",
     description:
-      'Disallow comma-separated FROM clauses (implicit cross joins); use explicit JOIN syntax',
+      "Disallow comma-separated FROM clauses (implicit cross joins); use explicit JOIN syntax",
     recommended: true,
     fixable: undefined,
     schema: [],
     messages: {
       noImplicitJoin:
-        'Comma-separated tables in `FROM` are an implicit cross join. Use explicit `JOIN ... ON ...` so the join condition lives next to the join.',
+        "Comma-separated tables in `FROM` are an implicit cross join. Use explicit `JOIN ... ON ...` so the join condition lives next to the join.",
     },
   },
-  'no-rename-column': {
-    type: 'problem',
+  "no-rename-column": {
+    type: "problem",
     description:
-      'Disallow `ALTER TABLE ... RENAME COLUMN` — every deployed reader of the old name breaks at deploy time',
+      "Disallow `ALTER TABLE ... RENAME COLUMN` — every deployed reader of the old name breaks at deploy time",
     recommended: true,
     fixable: undefined,
     schema: [],
     messages: {
       noRenameColumn:
-        '`RENAME COLUMN` breaks every running app that still selects/inserts by the old name. The safer pattern is to add a new column, dual-write, backfill, and drop the old one across separate deploys.',
+        "`RENAME COLUMN` breaks every running app that still selects/inserts by the old name. The safer pattern is to add a new column, dual-write, backfill, and drop the old one across separate deploys.",
     },
   },
-  'no-set-not-null': {
-    type: 'problem',
+  "no-set-not-null": {
+    type: "problem",
     description:
-      'Disallow `ALTER COLUMN ... SET NOT NULL` because it scans the whole table under ACCESS EXCLUSIVE',
+      "Disallow `ALTER COLUMN ... SET NOT NULL` because it scans the whole table under ACCESS EXCLUSIVE",
     recommended: true,
     fixable: undefined,
     schema: [],
     messages: {
       noSetNotNull:
-        '`SET NOT NULL` scans the whole table for nulls under an `ACCESS EXCLUSIVE` lock. The safe pattern in production is to add a `CHECK (col IS NOT NULL) NOT VALID` constraint, `VALIDATE CONSTRAINT` separately, then `SET NOT NULL` (PG ≥ 12 reuses the validated CHECK and skips the scan).',
+        "`SET NOT NULL` scans the whole table for nulls under an `ACCESS EXCLUSIVE` lock. The safe pattern in production is to add a `CHECK (col IS NOT NULL) NOT VALID` constraint, `VALIDATE CONSTRAINT` separately, then `SET NOT NULL` (PG ≥ 12 reuses the validated CHECK and skips the scan).",
     },
   },
-  'no-set-search-path': {
-    type: 'suggestion',
+  "no-set-search-path": {
+    type: "suggestion",
     description:
-      'Disallow `SET search_path = ...` in versioned SQL; qualify identifiers with their schema instead',
+      "Disallow `SET search_path = ...` in versioned SQL; qualify identifiers with their schema instead",
     recommended: true,
     fixable: undefined,
     schema: [],
     messages: {
       noSetSearchPath:
-        '`SET search_path` makes name resolution depend on session state and is a known foot-gun for security-definer functions and CREATE statements. Qualify identifiers with their schema (`audit.events`, `public.users`) instead.',
+        "`SET search_path` makes name resolution depend on session state and is a known foot-gun for security-definer functions and CREATE statements. Qualify identifiers with their schema (`audit.events`, `public.users`) instead.",
     },
   },
-  'no-temporary-table': {
-    type: 'suggestion',
+  "no-temporary-table": {
+    type: "suggestion",
     description:
-      'Disallow `CREATE TEMPORARY TABLE` in versioned SQL — temp tables exist for the session only and rarely belong in migration files',
+      "Disallow `CREATE TEMPORARY TABLE` in versioned SQL — temp tables exist for the session only and rarely belong in migration files",
     recommended: true,
     fixable: undefined,
     schema: [],
     messages: {
       noTemporaryTable:
-        '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
+        "`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.",
     },
   },
-  'require-limit': {
-    type: 'suggestion',
-    description: 'Require LIMIT clause in SELECT statements',
+  "require-limit": {
+    type: "suggestion",
+    description: "Require LIMIT clause in SELECT statements",
     recommended: true,
     fixable: undefined,
     schema: [],
     messages: {
       missingLimit:
-        'SELECT statement should include a LIMIT clause to prevent excessive data retrieval',
+        "SELECT statement should include a LIMIT clause to prevent excessive data retrieval",
     },
   },
 });
@@ -143,26 +156,34 @@ const recommendedRuleNames = Object.freeze(
   implementedRuleNames.filter((name) => ruleMeta[name]?.recommended === true),
 );
 const recommendedRuleConfig = Object.freeze(
-  Object.fromEntries(recommendedRuleNames.map((name) => [`${PLUGIN_NAME}/${name}`, 'error'])),
+  Object.fromEntries(
+    recommendedRuleNames.map((name) => [`${PLUGIN_NAME}/${name}`, "error"]),
+  ),
 );
 const allRuleConfig = Object.freeze(
-  Object.fromEntries(implementedRuleNames.map((name) => [`${PLUGIN_NAME}/${name}`, 'error'])),
+  Object.fromEntries(
+    implementedRuleNames.map((name) => [`${PLUGIN_NAME}/${name}`, "error"]),
+  ),
 );
 
 const rules = Object.freeze(
-  Object.fromEntries(implementedRuleNames.map((name) => [name, createPostgresqlRule(name)])),
+  Object.fromEntries(
+    implementedRuleNames.map((name) => [name, createPostgresqlRule(name)]),
+  ),
 );
 
 const plugin = eslintCompatPlugin({
   meta: {
-    name: 'eslint-plugin-postgresql',
-    version: '0.22.1',
+    name: "eslint-plugin-postgresql",
+    version: "0.22.1",
   },
   rules,
-  rulesConfig: Object.fromEntries(implementedRuleNames.map((name) => [name, 0])),
+  rulesConfig: Object.fromEntries(
+    implementedRuleNames.map((name) => [name, 0]),
+  ),
   configs: {
-    recommended: configFromRuleConfig('recommended', recommendedRuleConfig),
-    all: configFromRuleConfig('all', allRuleConfig),
+    recommended: configFromRuleConfig("recommended", recommendedRuleConfig),
+    all: configFromRuleConfig("all", allRuleConfig),
   },
 });
 
@@ -181,7 +202,7 @@ function createPostgresqlRule(ruleName) {
   const meta = ruleMeta[ruleName] ?? {};
   return {
     meta: {
-      type: meta.type ?? 'suggestion',
+      type: meta.type ?? "suggestion",
       docs: {
         description: meta.description,
         recommended: meta.recommended === true,
@@ -215,9 +236,10 @@ function diagnosticsForRule(context, ruleName) {
   const cacheKey = `${ruleName}\0${JSON.stringify(options)}`;
   let diagnostics = bySource.get(cacheKey);
   if (!diagnostics) {
-    diagnostics = scanPostgresql(sourceCode.text, { ruleNames: [ruleName], options }).filter(
-      (diagnostic) => diagnostic.ruleName === ruleName,
-    );
+    diagnostics = scanPostgresql(sourceCode.text, {
+      ruleNames: [ruleName],
+      options,
+    }).filter((diagnostic) => diagnostic.ruleName === ruleName);
     bySource.set(cacheKey, diagnostics);
   }
 

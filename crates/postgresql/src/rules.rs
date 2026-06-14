@@ -6,6 +6,7 @@ use crate::RuleDef;
 mod no_cluster;
 mod no_distinct_on_without_order_by;
 mod no_drop_database;
+mod no_group_by_ordinal;
 mod no_implicit_join;
 mod no_rename_column;
 mod no_select_star;
@@ -113,6 +114,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-cluster",
     "no-distinct-on-without-order-by",
     "no-drop-database",
+    "no-group-by-ordinal",
     "no-implicit-join",
     "no-rename-column",
     "no-select-star",
@@ -137,6 +139,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-drop-database",
         run: no_drop_database::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-group-by-ordinal",
+        run: no_group_by_ordinal::run,
         uses_parse_error: false,
     },
     RuleDef {
