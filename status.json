@@ -11774,19 +11774,19 @@
       },
       {
         "name": "no-code-after-done",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-code-after-done (Sonar key S6079). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S6079. Flags the first statement that runs after a top-level done() call inside a Mocha test/hook callback (it/test/specify/before/after/beforeEach/afterEach and it/test/specify .only/.skip) whose parameter list declares a plain 'done' identifier. Only the top level of the callback body is inspected (no recursion into nested blocks/functions); a trailing bare 'return;' is exempt. Reported at the offending statement span. Message and tests independently authored."
       },
       {
         "name": "no-collapsible-if",

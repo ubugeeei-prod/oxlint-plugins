@@ -5059,3 +5059,71 @@ fn does_not_report_shorthand_property_grouping_spread_then_shorthand() {
     let diagnostics = scan("shorthand-property-grouping", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_code_after_done_for_statement_after_done() {
+    let source = "it('t', function (done) { done(); foo(); });";
+    let diagnostics = scan("no-code-after-done", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-code-after-done");
+    assert_eq!(diagnostics[0].message_id, "noCodeAfterDone");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_code_after_done_for_arrow_hook_callback() {
+    let source = "beforeEach((done) => { done(); cleanup(); });";
+    let diagnostics = scan("no-code-after-done", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noCodeAfterDone");
+}
+
+#[test]
+fn reports_no_code_after_done_for_it_only_member_call() {
+    let source = "it.only('t', function (done) { done(); foo(); });";
+    let diagnostics = scan("no-code-after-done", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noCodeAfterDone");
+}
+
+#[test]
+fn does_not_report_no_code_after_done_when_done_is_last() {
+    let source = "it('t', function (done) { foo(); done(); });";
+    let diagnostics = scan("no-code-after-done", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_code_after_done_when_nothing_after_done() {
+    let source = "it('t', function (done) { done(); });";
+    let diagnostics = scan("no-code-after-done", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_code_after_done_for_trailing_bare_return() {
+    let source = "it('t', function (done) { done(); return; });";
+    let diagnostics = scan("no-code-after-done", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_code_after_done_without_done_param() {
+    let source = "it('t', function () { foo(); });";
+    let diagnostics = scan("no-code-after-done", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_code_after_done_for_non_mocha_call() {
+    let source = "register(function (done) { done(); foo(); });";
+    let diagnostics = scan("no-code-after-done", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_code_after_done_for_nested_done_call() {
+    let source = "it('t', function (done) { if (x) { done(); foo(); } });";
+    let diagnostics = scan("no-code-after-done", source);
+    assert!(diagnostics.is_empty());
+}
