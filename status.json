@@ -9531,19 +9531,19 @@
       },
       {
         "name": "prefer-result-array-groups",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-result-array-groups."
+        "notes": "Narrow form: flags `arr[N]` numeric access (N>=1, integer literal) when N maps to a named capturing group of the backing regex literal. Sources resolved one hop via scoping: inline `<regexLiteral>.exec(x)[N]`, `var arr = <regexLiteral>.exec(x)`, or `var arr = <knownString>.match(<regexLiteral>)` (non-g). Reuses named_group_mask. Unnamed groups, index 0, g-flag match, unknown receivers, and `.groups` access are never flagged."
       },
       {
         "name": "prefer-set-operation",

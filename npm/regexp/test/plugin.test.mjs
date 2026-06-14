@@ -237,6 +237,27 @@ const validCases = [
   ['no-unused-capturing-group', 'variable receiver', 'const re = /(\\d)/;\nre.test(foo);\n'],
   ['no-unused-capturing-group', 'replace reads $1', "'a'.replace(/(\\d)/, '$1');\n"],
   ['no-unused-capturing-group', 'match indexed', "const m = 'a'.match(/(\\d)/);\nm[1];\n"],
+  // prefer-result-array-groups
+  [
+    'prefer-result-array-groups',
+    'unnamed group indexed',
+    "const arr = 'str'.match(/a(b)c/);\nconst p1 = arr[1];\n",
+  ],
+  [
+    'prefer-result-array-groups',
+    'already uses groups',
+    "const arr = 'str'.match(/a(?<foo>b)c/);\nconst p1 = arr.groups.foo;\n",
+  ],
+  [
+    'prefer-result-array-groups',
+    'g flag match',
+    "const arr = 'str'.match(/a(?<foo>b)c/g);\nconst p1 = arr[1];\n",
+  ],
+  [
+    'prefer-result-array-groups',
+    'unknown receiver match',
+    'const arr = unknown.match(/a(?<foo>b)c/);\nconst p1 = arr[1];\n',
+  ],
 ];
 
 const invalidCases = [
@@ -708,6 +729,19 @@ const invalidCases = [
     'named capturing group in test literal',
     '/(?<y>\\d{4})/.test(foo);\n',
     ['unusedCapturingGroup'],
+  ],
+  // prefer-result-array-groups
+  [
+    'prefer-result-array-groups',
+    'match result numeric index to named group',
+    "const arr = 'str'.match(/a(?<foo>b)c/);\nconst p1 = arr[1];\n",
+    ['unexpected'],
+  ],
+  [
+    'prefer-result-array-groups',
+    'inline exec numeric index to named group',
+    '/(?<foo>foo)/u.exec(str)[1];\n',
+    ['unexpected'],
   ],
 ];
 

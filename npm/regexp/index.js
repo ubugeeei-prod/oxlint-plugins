@@ -308,6 +308,10 @@ const messages = Object.freeze({
     unusedCapturingGroup: 'Capturing group is defined but never used.',
     makeNonCapturing: 'Making this a non-capturing group.',
   },
+  'prefer-result-array-groups': {
+    unexpected:
+      'Unexpected indexed access for a named capturing group from a regexp result array; use the `groups` property instead.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -430,6 +434,8 @@ const ruleDescriptions = Object.freeze({
     'enforce consistent naming of unicode properties (narrow: flag a redundant explicit `gc=` / `General_Category=` key)',
   'no-unused-capturing-group':
     'disallow unused capturing group (narrow: a capturing group in a regex literal used only as `/(...)/.test(x)`)',
+  'prefer-result-array-groups':
+    'enforce using result array `groups` (narrow: numeric index of a match/exec result mapping to a named group)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -509,6 +515,7 @@ const ruleTypes = Object.freeze({
   'simplify-set-operations': 'suggestion',
   'unicode-property': 'suggestion',
   'no-unused-capturing-group': 'suggestion',
+  'prefer-result-array-groups': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -683,7 +690,8 @@ function ruleCategory(ruleName) {
     ruleName === 'prefer-predefined-assertion' ||
     ruleName === 'negation' ||
     ruleName === 'no-useless-lazy' ||
-    ruleName === 'unicode-property'
+    ruleName === 'unicode-property' ||
+    ruleName === 'prefer-result-array-groups'
   ) {
     return 'Stylistic Issues';
   }

@@ -3,6 +3,7 @@
 //! `traversal.rs` and rely on helpers in `helpers.rs` / `pattern.rs`.
 
 use oxc_allocator::Allocator;
+use oxc_ast::AstKind;
 use oxc_ast::ast::{
     Argument, CallExpression, Expression, NewExpression, RegExpLiteral, StaticMemberExpression,
 };
@@ -268,6 +269,120 @@ impl<'a> Scanner<'a> {
         self.check_no_useless_dollar_replacements(call);
         self.check_prefer_escape_replacement_dollar_char(call);
         self.check_no_unused_capturing_group(call);
+    }
+
+    /// `prefer-result-array-groups` (narrow form): when a match-array result
+    /// of a regex that has *named* capture groups is indexed numerically
+    /// (`arr[N]`) and index `N` maps to a named group, the named-group access
+    /// (`arr.groups.<name>`) is clearer.
+    ///
+    /// Sound, single-hop subset (no full type tracker):
+    /// * Inline: `<regexLiteral>.exec(x)[N]` / `...?.[N]`.
+    /// * One variable hop: `arr[N]` where `arr` is declared `const/let/var arr =
+    ///   <src>` and `<src>` is `<regexLiteral>.exec(x)` or
+    ///   `<knownString>.match(<regexLiteral>)`.
+    ///
+    /// Soundness guards:
+    /// * `N` must be a non-negative integer literal `>= 1` (index 0 is the whole
+    ///   match, never a group).
+    /// * Group `N` of the literal must be a *named* group (bit `N` set in the
+    ///   named-group mask). Unnamed groups have no named alternative.
+    /// * For `.match`, the regex must NOT carry the `g` flag — a global
+    ///   `.match` returns a flat string array with no group indexing.
+    ///
+    /// Anything that is not one of these exact shapes (unknown receiver chains,
+    /// multi-hop aliases, `.groups` access, non-numeric index) is left alone.
+    pub(crate) fn check_prefer_result_array_groups(
+        &mut self,
+        member: &'a oxc_ast::ast::ComputedMemberExpression<'a>,
+    ) {
+        // The index must be a numeric literal `N >= 1`.
+        let Expression::NumericLiteral(index) = member.expression.get_inner_expression() else {
+            return;
+        };
+        let value = index.value;
+        if value < 1.0 || value.fract() != 0.0 || value > 31.0 {
+            return;
+        }
+        let n = value as u32;
+
+        let Some(mask) = self.array_source_named_mask(&member.object) else {
+            return;
+        };
+        if mask & (1 << n) != 0 {
+            self.report("prefer-result-array-groups", "unexpected", member.span);
+        }
+    }
+
+    /// Returns the named-group bitmask (bits 1..=9, see [`named_group_mask`]) of
+    /// the regex literal backing `expr` when `expr` is a recognised match-array
+    /// source, otherwise `None`.
+    ///
+    /// Recognised sources (one hop max):
+    /// * `<regexLiteral>.exec(...)` — flags irrelevant to result shape.
+    /// * `<knownString>.match(<regexLiteral>)` — only when the literal has no
+    ///   `g` flag.
+    /// * An identifier resolving to a `const/let/var` initialised with one of
+    ///   the above.
+    fn array_source_named_mask(&self, expr: &Expression<'a>) -> Option<u32> {
+        match expr.get_inner_expression() {
+            Expression::CallExpression(call) => self.call_result_named_mask(call),
+            Expression::Identifier(ident) => {
+                let reference_id = ident.reference_id.get()?;
+                let symbol_id = self.scoping.get_reference(reference_id).symbol_id()?;
+                let decl_node_id = self.scoping.symbol_declaration(symbol_id);
+                let AstKind::VariableDeclarator(declarator) =
+                    self.nodes.get_node(decl_node_id).kind()
+                else {
+                    return None;
+                };
+                let init = declarator.init.as_ref()?;
+                match init.get_inner_expression() {
+                    Expression::CallExpression(call) => self.call_result_named_mask(call),
+                    _ => None,
+                }
+            }
+            _ => None,
+        }
+    }
+
+    /// Returns the named-group bitmask of the regex literal driving a
+    /// `.exec()` / `.match()` call, when the call matches the narrow shapes
+    /// (see [`Self::check_prefer_result_array_groups`]). `None` otherwise.
+    fn call_result_named_mask(&self, call: &'a CallExpression<'a>) -> Option<u32> {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return None;
+        };
+        let method = member.property.name.as_str();
+        if method == "exec" {
+            // `<regexLiteral>.exec(x)` — the receiver is the regex literal.
+            let Expression::RegExpLiteral(literal) = member.object.get_inner_expression() else {
+                return None;
+            };
+            let mask = named_group_mask(literal.regex.pattern.text.as_str());
+            (mask != 0).then_some(mask)
+        } else if method == "match" {
+            // `<knownString>.match(<regexLiteral>)`.
+            if !self.receiver_is_known_string(&member.object) {
+                return None;
+            }
+            let arg0 = call.arguments.first().and_then(Argument::as_expression)?;
+            let Expression::RegExpLiteral(literal) = arg0.get_inner_expression() else {
+                return None;
+            };
+            let flags = literal
+                .raw
+                .as_ref()
+                .and_then(|raw| raw.as_str().rsplit_once('/').map(|(_, flags)| flags))
+                .unwrap_or("");
+            if flags.contains('g') {
+                return None;
+            }
+            let mask = named_group_mask(literal.regex.pattern.text.as_str());
+            (mask != 0).then_some(mask)
+        } else {
+            None
+        }
     }
 
     /// `no-unused-capturing-group` (narrow form): a capturing group whose
