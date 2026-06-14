@@ -133,6 +133,51 @@ fn collator_handles_accents() {
 }
 
 #[test]
+fn import_attributes_with_clause_is_not_treated_as_specifiers() {
+    // A `with { … }` import-attributes clause on a default import must not be
+    // mistaken for the specifier list. No blank lines → no change → no report.
+    let sorted = "import foo from \"./data.json\" with {\n  type: \"json\"\n}";
+    assert!(
+        scan_simple_import_sort(sorted, "file.ts", &SimpleImportSortOptions::default()).is_empty()
+    );
+
+    // A blank line inside the `with` block collapses (upstream token model), but
+    // the attribute content is preserved — never dropped.
+    let blank = "import foo from \"./data.json\" with {\n\n  type: \"json\"\n}";
+    let diagnostics =
+        scan_simple_import_sort(blank, "file.ts", &SimpleImportSortOptions::default());
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0]
+            .fix
+            .as_ref()
+            .expect("fix")
+            .replacement
+            .as_str(),
+        "import foo from \"./data.json\" with {\n  type: \"json\"\n}"
+    );
+}
+
+#[test]
+fn comment_brace_is_not_mistaken_for_specifier_brace() {
+    // A `{` inside a comment before the first specifier must not be picked as the
+    // specifier open brace (would otherwise shatter the comment / specifiers).
+    let source = "import { /* { */ b, a } from \"mod\"";
+    let diagnostics =
+        scan_simple_import_sort(source, "file.js", &SimpleImportSortOptions::default());
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0]
+            .fix
+            .as_ref()
+            .expect("fix")
+            .replacement
+            .as_str(),
+        "import { /* { */ a,b } from \"mod\""
+    );
+}
+
+#[test]
 fn preserves_blank_lines_inside_block_comments() {
     // Upstream treats a block comment as a single token, so a blank line *inside*
     // it must survive even though blank lines between tokens are collapsed.

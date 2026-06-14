@@ -8,6 +8,8 @@ use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 use unicode_normalization::UnicodeNormalization;
 
+use crate::types::LineIndex;
+
 // ---------------------------------------------------------------------------
 // Constants (mirrors imports.js / exports.js)
 // ---------------------------------------------------------------------------
@@ -388,22 +390,6 @@ pub(crate) fn compare(a: &str, b: &str) -> i32 {
 }
 
 // ---------------------------------------------------------------------------
-// Line number helpers
-// ---------------------------------------------------------------------------
-
-/// Get the 1-based line number for a byte offset.
-pub(crate) fn line_of(source_text: &str, offset: u32) -> u32 {
-    let offset = (offset as usize).min(source_text.len());
-    let mut line = 1u32;
-    for b in source_text[..offset].bytes() {
-        if b == b'\n' {
-            line += 1;
-        }
-    }
-    line
-}
-
-// ---------------------------------------------------------------------------
 // Comment helpers
 // ---------------------------------------------------------------------------
 
@@ -423,6 +409,7 @@ pub(crate) fn comment_text<'a>(source_text: &'a str, comment: &Comment) -> &'a s
 pub(crate) fn comments_before_node<'a>(
     all_comments: &'a [Comment],
     source_text: &str,
+    line_index: &LineIndex,
     node_start: u32,
     node_start_line: u32,
     last_line: u32,
@@ -437,8 +424,8 @@ pub(crate) fn comments_before_node<'a>(
         if comment.span.end > node_start {
             continue;
         }
-        let c_start_line = line_of(source_text, comment.span.start);
-        let c_end_line = line_of(source_text, comment.span.end);
+        let c_start_line = line_index.line_for_offset(source_text, comment.span.start);
+        let c_end_line = line_index.line_for_offset(source_text, comment.span.end);
         if c_start_line <= node_start_line
             && c_end_line > last_line
             && (!is_first_node || c_start_line > last_line)
@@ -453,6 +440,7 @@ pub(crate) fn comments_before_node<'a>(
 pub(crate) fn comments_after_node<'a>(
     all_comments: &'a [Comment],
     source_text: &str,
+    line_index: &LineIndex,
     node_end: u32,
     node_end_line: u32,
     // If `Some(pos)`, only include comments that start BEFORE this position.
@@ -470,7 +458,7 @@ pub(crate) fn comments_after_node<'a>(
         {
             break;
         }
-        let c_end_line = line_of(source_text, comment.span.end);
+        let c_end_line = line_index.line_for_offset(source_text, comment.span.end);
         if c_end_line == node_end_line {
             result.push(comment);
         } else {
@@ -1049,47 +1037,24 @@ pub(crate) fn print_with_sorted_specifiers(
         .get(node_start as usize..node_end as usize)
         .unwrap_or("");
 
-    // Try to find { and } positions for blank-line collapsing.
-    // We need these even for ≤1 specifiers because upstream's getAllTokens
-    // still calls parseWhitespace on every inter-token gap, collapsing blank lines.
-    let brace_positions: Option<(usize, usize)> =
-        find_brace_positions(source_text, node_start, node_end, specifier_spans);
-
-    // ≤1 specifiers: no reordering needed, but still collapse blank lines.
+    // ≤1 specifiers: no reordering possible. Upstream returns
+    // `printTokens(getAllTokens(node))`, i.e. the whole node re-emitted with
+    // `parseWhitespace` applied to every inter-token gap — which is exactly
+    // `collapse_blank_lines_in_mixed_text` over the node text (it preserves
+    // string literals and comments verbatim and collapses blank lines elsewhere).
+    // This also correctly handles `import "x" with { … }` import attributes and
+    // empty `import { } from "x"` lists without mistaking a `with`-clause `{` or
+    // a comment `{` for a specifier brace.
     if specifier_spans.len() <= 1 {
-        let Some((open_rel, close_rel)) = brace_positions else {
-            // No braces found (e.g. `import def from "x"`, `import "side-effect"`).
-            // Still collapse blank lines in the node text (upstream's getAllTokens
-            // applies parseWhitespace to every inter-token gap, including gaps that
-            // don't involve specifiers, such as the gap before a trailing `;`).
-            return collapse_blank_lines_in_mixed_text(node_text);
-        };
-
-        let open_brace_end_abs = node_start + open_rel as u32 + 1;
-        let close_brace_start_abs = node_start + close_rel as u32;
-
-        // Collapse blank lines in all three regions
-        let prefix = collapse_blank_lines_in_mixed_text(&node_text[..open_rel + 1]);
-        let interior = {
-            let tokens = tokenize_specifier_interior(
-                source_text,
-                open_brace_end_abs,
-                close_brace_start_abs,
-                specifier_spans,
-                all_comments,
-            );
-            print_tokens(&tokens)
-        };
-        let suffix = collapse_blank_lines_in_mixed_text(&node_text[close_rel..]);
-
-        let mut out = CompactString::new("");
-        out.push_str(&prefix);
-        out.push_str(&interior);
-        out.push_str(&suffix);
-        return out;
+        return collapse_blank_lines_in_mixed_text(node_text);
     }
 
-    let Some((open_rel_in_node, close_rel_in_node)) = brace_positions else {
+    // >1 specifiers: locate the specifier braces (comment/string-aware so a `{`
+    // inside a comment, or a later `with { … }` brace, is never mistaken for the
+    // specifier list) and reorder the interior.
+    let Some((open_rel_in_node, close_rel_in_node)) =
+        find_brace_positions(source_text, node_start, specifier_spans)
+    else {
         return CompactString::from(node_text);
     };
 
@@ -1183,43 +1148,73 @@ pub(crate) fn print_with_sorted_specifiers(
 
 /// Find the positions of the specifier-list `{` and `}` within the node text.
 ///
-/// Returns `(open_rel, close_rel)` as byte offsets from `node_start`, where
-/// `open_rel` points to `{` and `close_rel` points to `}`.
+/// Locate the specifier-list braces of an import/export with >1 specifiers.
 ///
-/// When `specifier_spans` is non-empty, uses them to bound the search.
-/// When empty (no specifiers), searches the whole node text.
+/// Returns `(open_rel, close_rel)` as byte offsets from `node_start`. The open
+/// brace is the first real `{` in the statement and the close brace is the first
+/// real `}` at/after the last specifier — "real" meaning not inside a string
+/// literal or comment, so a `{`/`}` inside a comment, or a later `with { … }`
+/// import-attributes brace, is never mistaken for the specifier list.
 fn find_brace_positions(
     source_text: &str,
     node_start: u32,
-    node_end: u32,
     specifier_spans: &[Span],
 ) -> Option<(usize, usize)> {
-    let node_text = source_text.get(node_start as usize..node_end as usize)?;
-
-    if specifier_spans.is_empty() {
-        // No specifiers: find `{` and `}` in the node text.
-        // Use the FIRST `{` and the corresponding `}`.
-        let open_rel = node_text.find('{')?;
-        let close_rel = node_text.rfind('}')?;
-        if close_rel <= open_rel {
-            return None;
-        }
-        return Some((open_rel, close_rel));
-    }
-
-    let first_spec_start = specifier_spans[0].start;
     let last_spec_end = specifier_spans[specifier_spans.len() - 1].end;
+    let node_text = source_text.get(node_start as usize..)?;
 
-    // Find `{` before first specifier
-    let before_first = source_text.get(node_start as usize..first_spec_start as usize)?;
-    let open_rel = before_first.rfind('{')?;
-
-    // Find `}` after last specifier
-    let after_last = source_text.get(last_spec_end as usize..node_end as usize)?;
-    let close_offset_in_after = after_last.find('}')?;
-    let close_rel = (last_spec_end - node_start) as usize + close_offset_in_after;
-
+    let open_rel = find_real_byte(node_text, 0, b'{')?;
+    let close_from = (last_spec_end.saturating_sub(node_start)) as usize;
+    let close_rel = find_real_byte(node_text, close_from, b'}')?;
+    if close_rel <= open_rel {
+        return None;
+    }
     Some((open_rel, close_rel))
+}
+
+/// Index of the first `target` byte at/after `from` that is not inside a string
+/// literal (`"…"`/`'…'`) or comment (`/*…*/`, `//…`). `target` must not be a
+/// string/comment delimiter (`{`/`}` are the only callers).
+fn find_real_byte(text: &str, from: usize, target: u8) -> Option<usize> {
+    let bytes = text.as_bytes();
+    let len = bytes.len();
+    let mut i = from;
+    while i < len {
+        let b = bytes[i];
+        if b == target {
+            return Some(i);
+        }
+        match b {
+            b'"' | b'\'' => {
+                i += 1;
+                while i < len {
+                    if bytes[i] == b'\\' {
+                        i += 2;
+                        continue;
+                    }
+                    let end = bytes[i] == b;
+                    i += 1;
+                    if end {
+                        break;
+                    }
+                }
+            }
+            b'/' if i + 1 < len && bytes[i + 1] == b'*' => {
+                i += 2;
+                while i < len && !(bytes[i] == b'*' && i + 1 < len && bytes[i + 1] == b'/') {
+                    i += 1;
+                }
+                i = (i + 2).min(len);
+            }
+            b'/' if i + 1 < len && bytes[i + 1] == b'/' => {
+                while i < len && bytes[i] != b'\n' && bytes[i] != b'\r' {
+                    i += 1;
+                }
+            }
+            _ => i += 1,
+        }
+    }
+    None
 }
 
 /// Trim after tokens for the last specifier when it had a comma but now doesn't.
