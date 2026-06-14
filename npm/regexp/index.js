@@ -259,6 +259,23 @@ const messages = Object.freeze({
     potentiallyUselessBackreference:
       'Some paths leading to the backreference do not go through the referenced capturing group or the captured text might be reset before reaching the backreference.',
   },
+  strict: {
+    invalidControlEscape:
+      'Invalid or incomplete control escape sequence. Either use a valid control escape sequence or escape the standalone backslash.',
+    incompleteEscapeSequence:
+      'Incomplete escape sequence {{expr}}. Either use a valid escape sequence or remove the useless escaping.',
+    invalidPropertyEscape:
+      'Invalid property escape sequence {{expr}}. Either use a valid property escape sequence or remove the useless escaping.',
+    incompleteBackreference:
+      'Incomplete backreference {{expr}}. Either use a valid backreference or remove the useless escaping.',
+    unescapedSourceCharacter: 'Unescaped source character {{expr}}.',
+    octalEscape: 'Invalid legacy octal escape sequence {{expr}}. Use a hexadecimal escape instead.',
+    uselessEscape: 'Useless identity escapes with non-syntax characters are forbidden.',
+    invalidRange:
+      'Invalid character class range. A character set cannot be the minimum or maximum of a character class range.',
+    quantifiedAssertion: 'Assertion are not allowed to be quantified directly.',
+    regexMessage: '{{message}}.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -364,6 +381,7 @@ const ruleDescriptions = Object.freeze({
   'no-standalone-backslash': 'disallow standalone backslashes (`\\`)',
   'no-potentially-useless-backreference':
     'disallow backreferences to capturing groups that might not have matched (narrow: optional/star-quantified groups)',
+  strict: 'disallow not strictly valid regular expressions (narrow: escape and quantifier checks)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -434,6 +452,7 @@ const ruleTypes = Object.freeze({
   'no-misleading-unicode-character': 'problem',
   'no-standalone-backslash': 'suggestion',
   'no-potentially-useless-backreference': 'problem',
+  strict: 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -453,6 +472,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-non-standard-flag': 'error',
   'no-invisible-character': 'error',
   'no-potentially-useless-backreference': 'warn',
+  strict: 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
@@ -608,7 +628,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-dupe-disjunctions' ||
     ruleName === 'no-useless-backreference' ||
     ruleName === 'no-misleading-unicode-character' ||
-    ruleName === 'no-potentially-useless-backreference'
+    ruleName === 'no-potentially-useless-backreference' ||
+    ruleName === 'strict'
   ) {
     return 'Possible Errors';
   }

@@ -73,6 +73,7 @@ describe('regexp native API', () => {
       'no-misleading-unicode-character',
       'no-standalone-backslash',
       'no-potentially-useless-backreference',
+      'strict',
     ]);
   });
 
