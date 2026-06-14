@@ -23,6 +23,7 @@ mod no_exclusive_tests;
 mod no_function_declaration_in_block;
 mod no_identical_conditions;
 mod no_identical_expressions;
+mod no_inconsistent_returns;
 mod no_inverted_boolean_check;
 mod no_labels;
 mod no_nested_conditional;

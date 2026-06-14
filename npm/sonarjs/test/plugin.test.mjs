@@ -137,6 +137,7 @@ describe('sonarjs plugin shape', () => {
       'no-sonar-comments',
       'array-constructor',
       'no-function-declaration-in-block',
+      'no-inconsistent-returns',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -181,6 +182,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-sonar-comments']).toBe('object');
     expect(typeof plugin.rules['array-constructor']).toBe('object');
     expect(typeof plugin.rules['no-function-declaration-in-block']).toBe('object');
+    expect(typeof plugin.rules['no-inconsistent-returns']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -227,6 +229,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-function-declaration-in-block']).toBe(
       'error',
     );
+    expect(plugin.configs.recommended.rules['sonarjs/no-inconsistent-returns']).toBe('error');
   });
 });
 
@@ -963,5 +966,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-function-declaration-in-block)');
+  });
+
+  it('reports no-inconsistent-returns through the adapter', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  return x.value;\n}';
+    const reports = runRule('no-inconsistent-returns', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('inconsistentReturns');
+  });
+
+  it('reports no-inconsistent-returns through the CLI', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  return x.value;\n}';
+    const result = runOxlint('no-inconsistent-returns', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-inconsistent-returns)');
   });
 });

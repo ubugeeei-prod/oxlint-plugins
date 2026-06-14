@@ -167,6 +167,10 @@ const messages = Object.freeze({
     noFunctionDeclarationInBlock:
       'Move this function declaration out of the block, or use a function expression instead.',
   },
+  'no-inconsistent-returns': {
+    inconsistentReturns:
+      'Refactor this function to use "return" consistently, either always with a value or always without.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -248,6 +252,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow the Array constructor in favor of array literals, except for the single-argument length form',
   'no-function-declaration-in-block':
     'Disallow function declarations nested directly inside a block; use a function expression or move it to the top level',
+  'no-inconsistent-returns':
+    'Disallow mixing value returns and bare returns in the same function; return a value on all paths or none',
 });
 
 const ruleTypes = Object.freeze({
@@ -294,6 +300,7 @@ const ruleTypes = Object.freeze({
   'no-sonar-comments': 'suggestion',
   'array-constructor': 'suggestion',
   'no-function-declaration-in-block': 'suggestion',
+  'no-inconsistent-returns': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -340,6 +347,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-sonar-comments': 'error',
   'array-constructor': 'error',
   'no-function-declaration-in-block': 'error',
+  'no-inconsistent-returns': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

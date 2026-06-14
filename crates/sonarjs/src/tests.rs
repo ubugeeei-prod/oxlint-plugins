@@ -2014,3 +2014,40 @@ fn does_not_report_no_function_declaration_in_block_for_function_expression() {
     let diagnostics = scan("no-function-declaration-in-block", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_inconsistent_returns_for_mixed_returns() {
+    let source = "function f(x) { if (!x) return; return x.value; }";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-inconsistent-returns");
+    assert_eq!(diagnostics[0].message_id, "inconsistentReturns");
+}
+
+#[test]
+fn reports_no_inconsistent_returns_for_mixed_returns_in_arrow() {
+    let source = "const f = (x) => { if (!x) return; return 1; };";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_inconsistent_returns_when_all_returns_have_values() {
+    let source = "function f(x) { if (!x) return 0; return x.value; }";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_inconsistent_returns_when_all_returns_are_bare() {
+    let source = "function f(x) { if (!x) return; doWork(); return; }";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_no_inconsistent_returns_only_for_inner_scope() {
+    let source = "function outer() { return 1; function inner() { if (a) return; return 2; } }";
+    let diagnostics = scan("no-inconsistent-returns", source);
+    assert_eq!(diagnostics.len(), 1);
+}
