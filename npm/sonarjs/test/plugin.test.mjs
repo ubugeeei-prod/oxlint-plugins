@@ -187,6 +187,7 @@ describe('sonarjs plugin shape', () => {
       'shorthand-property-grouping',
       'process-argv',
       'standard-input',
+      'no-code-after-done',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -280,6 +281,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['shorthand-property-grouping']).toBe('object');
     expect(typeof plugin.rules['process-argv']).toBe('object');
     expect(typeof plugin.rules['standard-input']).toBe('object');
+    expect(typeof plugin.rules['no-code-after-done']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -381,6 +383,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/shorthand-property-grouping']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/process-argv']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/standard-input']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-code-after-done']).toBe('error');
   });
 });
 
@@ -411,6 +414,55 @@ describe('too-many-break-or-continue-in-loop rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(too-many-break-or-continue-in-loop)');
+  });
+});
+
+describe('no-code-after-done rule', () => {
+  it('reports a statement after a done() call in a test callback', () => {
+    const src = "it('t', function (done) { done(); foo(); });";
+    const reports = runRule('no-code-after-done', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noCodeAfterDone');
+  });
+
+  it('reports a statement after done() in an arrow hook callback', () => {
+    const src = 'beforeEach((done) => { done(); cleanup(); });';
+    const reports = runRule('no-code-after-done', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noCodeAfterDone');
+  });
+
+  it('does not report when done() is the last statement', () => {
+    const src = "it('t', function (done) { foo(); done(); });";
+    const reports = runRule('no-code-after-done', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a trailing bare return after done()', () => {
+    const src = "it('t', function (done) { done(); return; });";
+    const reports = runRule('no-code-after-done', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a callback without a done parameter', () => {
+    const src = "it('t', function () { foo(); });";
+    const reports = runRule('no-code-after-done', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the call is not a Mocha construct', () => {
+    const src = 'register(function (done) { done(); foo(); });';
+    const reports = runRule('no-code-after-done', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-code-after-done through the CLI', () => {
+    const src = "it('t', function (done) { done(); foo(); });";
+    const result = runOxlint('no-code-after-done', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-code-after-done)');
   });
 });
 

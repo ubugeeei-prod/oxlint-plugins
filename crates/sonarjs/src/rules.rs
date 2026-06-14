@@ -33,6 +33,7 @@ mod no_array_delete;
 mod no_associative_arrays;
 mod no_built_in_override;
 mod no_case_label_in_switch;
+mod no_code_after_done;
 mod no_collapsible_if;
 mod no_collection_size_mischeck;
 mod no_control_regex;

@@ -340,6 +340,9 @@ const messages = Object.freeze({
   'standard-input': {
     standardInput: 'Make sure that reading from the standard input is safe here.',
   },
+  'no-code-after-done': {
+    noCodeAfterDone: 'Refactor this test; the code after the "done()" call will run unexpectedly.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -524,6 +527,8 @@ const ruleDescriptions = Object.freeze({
     'Flag reads of process.argv, since using command-line arguments is security-sensitive and should be reviewed',
   'standard-input':
     'Flag reads of process.stdin, since reading from the standard input is security-sensitive and should be reviewed',
+  'no-code-after-done':
+    'Flag statements that run after a "done()" callback call in a Mocha test or hook, since the test is already finished and the trailing code executes unexpectedly',
 });
 
 const ruleTypes = Object.freeze({
@@ -620,6 +625,7 @@ const ruleTypes = Object.freeze({
   'shorthand-property-grouping': 'suggestion',
   'process-argv': 'suggestion',
   'standard-input': 'suggestion',
+  'no-code-after-done': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -716,6 +722,7 @@ const recommendedRuleConfig = Object.freeze({
   'shorthand-property-grouping': 'error',
   'process-argv': 'error',
   'standard-input': 'error',
+  'no-code-after-done': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

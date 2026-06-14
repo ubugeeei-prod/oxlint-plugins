@@ -96,6 +96,7 @@ const expectedRuleNames = [
   'shorthand-property-grouping',
   'process-argv',
   'standard-input',
+  'no-code-after-done',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
