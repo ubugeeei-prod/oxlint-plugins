@@ -273,6 +273,13 @@ const validCases = [
   ['no-super-linear-backtracking', 'anchored inner', 'const re = /(?:a+b)+/u;\n'],
   ['no-super-linear-backtracking', 'outer not quantified', 'const re = /(?:a+)b/u;\n'],
   ['no-super-linear-backtracking', 'inner not quantified', 'const re = /(?:a)+/u;\n'],
+  // no-super-linear-move
+  ['no-super-linear-move', 'no leading quantifier', 'const re = /regexp/u;\n'],
+  ['no-super-linear-move', 'leading word boundary', 'const re = /\\ba*:/u;\n'],
+  ['no-super-linear-move', 'caret anchor', 'const re = /^a*:/u;\n'],
+  ['no-super-linear-move', 'no rejecting suffix', 'const re = /a*/u;\n'],
+  ['no-super-linear-move', 'optional suffix', 'const re = /a*b*/u;\n'],
+  ['no-super-linear-move', 'sticky flag', 'const re = /a*b/y;\n'],
 ];
 
 const invalidCases = [
@@ -797,6 +804,9 @@ const invalidCases = [
     'const re = /(a*)*/u;\n',
     ['self'],
   ],
+  // no-super-linear-move
+  ['no-super-linear-move', 'leading star with suffix', 'const re = /a*:/u;\n', ['unexpected']],
+  ['no-super-linear-move', 'leading plus shorthand', 'const re = /\\w+x/u;\n', ['unexpected']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

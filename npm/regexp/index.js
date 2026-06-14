@@ -326,6 +326,10 @@ const messages = Object.freeze({
     trade:
       'This quantifier exchanges characters with another quantifier, causing polynomial backtracking.',
   },
+  'no-super-linear-move': {
+    unexpected:
+      'This leading unbounded quantifier with a rejecting suffix causes quadratic scanning time because the quantifier is retried from every start position.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -456,6 +460,8 @@ const ruleDescriptions = Object.freeze({
     'disallow capturing groups that do not capture the whole pattern (narrow: `A<greedy>(A*)` where the prefix already consumes every `A`)',
   'no-super-linear-backtracking':
     'disallow exponential and polynomial backtracking (narrow: nested unbounded quantifiers `(X+)+` and similar)',
+  'no-super-linear-move':
+    'disallow quantifiers that cause quadratic moves (narrow: a leading unbounded quantifier with a required rejecting suffix)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -539,6 +545,7 @@ const ruleTypes = Object.freeze({
   'prefer-lookaround': 'suggestion',
   'no-misleading-capturing-group': 'problem',
   'no-super-linear-backtracking': 'problem',
+  'no-super-linear-move': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -731,7 +738,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-useless-assertions' ||
     ruleName === 'no-contradiction-with-assertion' ||
     ruleName === 'no-misleading-capturing-group' ||
-    ruleName === 'no-super-linear-backtracking'
+    ruleName === 'no-super-linear-backtracking' ||
+    ruleName === 'no-super-linear-move'
   ) {
     return 'Possible Errors';
   }

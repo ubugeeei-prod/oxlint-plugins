@@ -9003,19 +9003,19 @@
       },
       {
         "name": "no-super-linear-move",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-super-linear-move."
+        "notes": "Narrow form: a leading unbounded greedy quantifier on the first atom (offset 0, so any `^`/`\\b`/lookbehind start anchor precludes it) followed by a required rejecting suffix whose first atom is not itself optional (`?`/`*`). Such a pattern scans in quadratic time because the quantifier is retried from every start position. The sticky (`y`) flag is excluded to match the upstream default ignoreSticky:true. `^`-under-m, leading-assertion, and partial-usage cases are deferred to stay valid-sound."
       },
       {
         "name": "no-trivially-nested-assertion",
