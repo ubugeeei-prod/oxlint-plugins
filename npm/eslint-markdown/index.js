@@ -427,7 +427,10 @@ function dataForReport(data) {
     }
   }
   if (out.linkType != null) {
+    // The native diagnostic carries the node kind as `linkType`; upstream reports
+    // it as `type`.
     out.type = out.linkType;
+    delete out.linkType;
   }
   return out;
 }
