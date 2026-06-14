@@ -2687,3 +2687,33 @@ fn does_not_report_single_char_in_character_classes_for_negated_class() {
     let diagnostics = scan("single-char-in-character-classes", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_duplicates_in_character_class_for_repeated_char() {
+    let source = "const r = /[aa]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "duplicates-in-character-class");
+    assert_eq!(diagnostics[0].message_id, "duplicateCharacter");
+}
+
+#[test]
+fn reports_duplicates_in_character_class_for_non_adjacent_repeat() {
+    let source = "const r = /[abca]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_duplicates_in_character_class_for_distinct_chars() {
+    let source = "const r = /[abc]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_duplicates_in_character_class_for_range() {
+    let source = "const r = /[a-z]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert!(diagnostics.is_empty());
+}

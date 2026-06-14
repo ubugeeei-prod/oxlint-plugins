@@ -274,6 +274,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_regex_spaces(it);
         self.check_no_control_regex(it);
         self.check_single_char_in_character_classes(it);
+        self.check_duplicates_in_character_class(it);
         walk::walk_reg_exp_literal(self, it);
     }
 

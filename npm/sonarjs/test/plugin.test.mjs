@@ -152,6 +152,7 @@ describe('sonarjs plugin shape', () => {
       'no-regex-spaces',
       'no-control-regex',
       'single-char-in-character-classes',
+      'duplicates-in-character-class',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -211,6 +212,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-regex-spaces']).toBe('object');
     expect(typeof plugin.rules['no-control-regex']).toBe('object');
     expect(typeof plugin.rules['single-char-in-character-classes']).toBe('object');
+    expect(typeof plugin.rules['duplicates-in-character-class']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -274,6 +276,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/single-char-in-character-classes']).toBe(
       'error',
     );
+    expect(plugin.configs.recommended.rules['sonarjs/duplicates-in-character-class']).toBe('error');
   });
 });
 
@@ -1297,5 +1300,21 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(single-char-in-character-classes)');
+  });
+
+  it('reports duplicates-in-character-class through the adapter', () => {
+    const source = 'const r = /[aa]/;';
+    const reports = runRule('duplicates-in-character-class', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('duplicateCharacter');
+  });
+
+  it('reports duplicates-in-character-class through the CLI', () => {
+    const result = runOxlint('duplicates-in-character-class', 'const r = /[aa]/;');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(duplicates-in-character-class)');
   });
 });
