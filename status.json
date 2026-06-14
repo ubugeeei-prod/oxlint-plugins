@@ -13550,19 +13550,19 @@
       },
       {
         "name": "prefer-promise-shorthand",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule prefer-promise-shorthand (Sonar key S4634). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port from public RSPEC S4634 description only. Flags new Promise(fn) where fn immediately calls resolve/reject with 0 or 1 args."
       },
       {
         "name": "prefer-read-only-props",

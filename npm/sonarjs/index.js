@@ -249,6 +249,9 @@ const messages = Object.freeze({
     codeEval:
       'Review this use of dynamic code execution; it can introduce security vulnerabilities.',
   },
+  'prefer-promise-shorthand': {
+    preferShorthand: 'Replace this trivial promise with Promise.resolve or Promise.reject.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -378,6 +381,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow dynamic code execution via eval() or the Function constructor, which can introduce security vulnerabilities',
   'void-use':
     "Disallow the 'void' operator; write 'undefined' directly or restructure the code to avoid discarding values",
+  'prefer-promise-shorthand':
+    'Disallow new Promise(executor) when the executor immediately calls resolve or reject with at most one argument; use Promise.resolve or Promise.reject instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -448,6 +453,7 @@ const ruleTypes = Object.freeze({
   'too-many-break-or-continue-in-loop': 'suggestion',
   'code-eval': 'suggestion',
   'void-use': 'suggestion',
+  'prefer-promise-shorthand': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -518,6 +524,7 @@ const recommendedRuleConfig = Object.freeze({
   'too-many-break-or-continue-in-loop': 'error',
   'code-eval': 'error',
   'void-use': 'error',
+  'prefer-promise-shorthand': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

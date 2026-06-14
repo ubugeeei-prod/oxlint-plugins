@@ -70,6 +70,7 @@ const expectedRuleNames = [
   'too-many-break-or-continue-in-loop',
   'code-eval',
   'void-use',
+  'prefer-promise-shorthand',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
