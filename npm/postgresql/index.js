@@ -80,6 +80,28 @@ const ruleMeta = Object.freeze({
         'Avoid `CREATE OR REPLACE {{kind}}`; drop and re-create the object explicitly so unintended overwrites are surfaced.',
     },
   },
+  'consistent-drop-index-concurrently': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `CONCURRENTLY` for `DROP INDEX` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferConcurrently:
+        'Use `DROP INDEX CONCURRENTLY` to avoid an `ACCESS EXCLUSIVE` lock on the table for the entire drop.',
+      unexpectedConcurrently:
+        'Avoid `DROP INDEX CONCURRENTLY`. Concurrent drops cannot run inside a transaction, so they conflict with migration tools that wrap each step in BEGIN/COMMIT.',
+    },
+  },
   'consistent-explicit-inner-join': {
     type: 'layout',
     description:

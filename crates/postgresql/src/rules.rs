@@ -6,6 +6,7 @@ use crate::RuleDef;
 mod consistent_as_for_column_alias;
 mod consistent_between_over_and;
 mod consistent_create_or_replace;
+mod consistent_drop_index_concurrently;
 mod consistent_explicit_inner_join;
 mod consistent_identity_over_serial;
 mod consistent_reindex_concurrently;
@@ -170,6 +171,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "consistent-as-for-column-alias",
     "consistent-between-over-and",
     "consistent-create-or-replace",
+    "consistent-drop-index-concurrently",
     "consistent-explicit-inner-join",
     "consistent-identity-over-serial",
     "consistent-reindex-concurrently",
@@ -251,6 +253,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "consistent-create-or-replace",
         run: consistent_create_or_replace::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-drop-index-concurrently",
+        run: consistent_drop_index_concurrently::run,
         uses_parse_error: false,
     },
     RuleDef {
