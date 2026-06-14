@@ -12126,19 +12126,19 @@
       },
       {
         "name": "no-function-declaration-in-block",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-function-declaration-in-block (Sonar key S1530). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S1530). Flags a FunctionDeclaration that is a direct statement child of a BlockStatement (if/loop/try bodies, bare blocks); reported via check_no_function_declaration_in_block from visit_block_statement. Function bodies are FunctionBody nodes (not BlockStatement) so top-of-function declarations are not flagged; ambient `declare function` is skipped. Narrow form: function declarations directly in a switch-case body are a documented follow-up. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-global-this",

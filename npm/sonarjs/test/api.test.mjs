@@ -45,6 +45,7 @@ const expectedRuleNames = [
   'todo-tag',
   'no-sonar-comments',
   'array-constructor',
+  'no-function-declaration-in-block',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1603,6 +1604,38 @@ describe('sonarjs native API', () => {
   it('does not report array-constructor for an array literal', () => {
     const source = 'const a = [1, 2, 3];';
     const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-function-declaration-in-block for a function declared in an if block', () => {
+    const source = 'if (cond) {\n  function f() {}\n}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-function-declaration-in-block');
+    expect(diagnostics[0].messageId).toBe('noFunctionDeclarationInBlock');
+  });
+
+  it('reports no-function-declaration-in-block for a function declared in a bare block', () => {
+    const source = '{\n  function f() {}\n}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-function-declaration-in-block for a top-level declaration', () => {
+    const source = 'function f() {}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-function-declaration-in-block for a nested function body declaration', () => {
+    const source = 'function outer() {\n  function inner() {}\n}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-function-declaration-in-block for a function expression in a block', () => {
+    const source = 'if (cond) {\n  const f = function () {};\n}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

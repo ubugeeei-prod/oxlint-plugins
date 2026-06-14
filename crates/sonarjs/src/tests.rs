@@ -1978,3 +1978,39 @@ fn does_not_report_array_constructor_for_unrelated_member_call() {
     let diagnostics = scan("array-constructor", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_function_declaration_in_block_for_if_block() {
+    let source = "if (cond) { function f() {} }";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noFunctionDeclarationInBlock");
+}
+
+#[test]
+fn reports_no_function_declaration_in_block_for_bare_block() {
+    let source = "{ function f() {} }";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_function_declaration_in_block_for_top_level() {
+    let source = "function f() {}";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_function_declaration_in_block_for_nested_function_body() {
+    let source = "function outer() { function inner() {} }";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_function_declaration_in_block_for_function_expression() {
+    let source = "if (cond) { const f = function () {}; }";
+    let diagnostics = scan("no-function-declaration-in-block", source);
+    assert!(diagnostics.is_empty());
+}
