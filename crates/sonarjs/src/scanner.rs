@@ -2,20 +2,23 @@
 //! sonarjs port. Traversal uses the Oxc visitor so every node is reached; each
 //! `check_*` rule body lives under [`crate::rules`].
 
+use oxc_ast::AstKind;
 use oxc_ast::ast::{
     AccessorProperty, ArrowFunctionExpression, AssignmentExpression, BinaryExpression,
-    BindingIdentifier, BlockStatement, BreakStatement, CallExpression, CatchClause, Class,
-    ConditionalExpression, ContinueStatement, DoWhileStatement, ExportAllDeclaration,
-    ExportNamedDeclaration, ExpressionStatement, ForInStatement, ForOfStatement, ForStatement,
-    Function, FunctionBody, IdentifierReference, IfStatement, ImportDeclaration, ImportExpression,
-    JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment, LabeledStatement, LogicalExpression,
-    NewExpression, Program, PropertyDefinition, RegExpLiteral, ReturnStatement, Statement,
-    StaticBlock, StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement,
+    BindingIdentifier, BindingPattern, BlockStatement, BreakStatement, CallExpression, CatchClause,
+    Class, ConditionalExpression, ContinueStatement, DoWhileStatement, ExportAllDeclaration,
+    ExportNamedDeclaration, Expression, ExpressionStatement, ForInStatement, ForOfStatement,
+    ForStatement, Function, FunctionBody, IdentifierReference, IfStatement, ImportDeclaration,
+    ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment, LabeledStatement,
+    LogicalExpression, NewExpression, Program, PropertyDefinition, RegExpLiteral, ReturnStatement,
+    Statement, StaticBlock, StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement,
     TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, ThisExpression,
-    TryStatement, UnaryExpression, WhileStatement, YieldExpression,
+    TryStatement, UnaryExpression, VariableDeclarator, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
+use oxc_semantic::{AstNodes, Scoping};
 use oxc_span::Span;
+use oxc_syntax::operator::AssignmentOperator;
 use oxc_syntax::scope::ScopeFlags;
 use oxlint_plugins_carton::SmallVec;
 
@@ -45,6 +48,13 @@ pub(crate) struct Scanner<'a> {
     pub(crate) line_index: LineIndex,
     pub(crate) options: &'a SonarjsOptions,
     pub(crate) diagnostics: SmallVec<[Diagnostic; 32]>,
+    /// Scoping information from semantic analysis, present only when a rule that
+    /// needs reference resolution (currently `no-misleading-array-reverse`) is
+    /// enabled. Used to resolve an identifier use to its declaration symbol.
+    pub(crate) scoping: Option<&'a Scoping>,
+    /// AST nodes from semantic analysis, paired with `scoping`. Used to look up
+    /// a symbol's declaration site (e.g. the `VariableDeclarator` initialiser).
+    pub(crate) nodes: Option<&'a AstNodes<'a>>,
     /// Number of template literals currently open on the traversal stack.
     pub(crate) template_literal_depth: u32,
     /// Number of switch statements currently open on the traversal stack.
@@ -116,6 +126,35 @@ pub(crate) struct Scanner<'a> {
 impl<'a> Scanner<'a> {
     pub(crate) fn text(&self, span: Span) -> &'a str {
         &self.source_text[span.start as usize..span.end as usize]
+    }
+
+    /// Conservatively resolves an identifier use to its declaration's
+    /// initializer expression, or `None` when ambiguous/unsupported.
+    ///
+    /// Returns `None` unless semantic analysis ran, the reference resolves to a
+    /// single never-reassigned symbol, and that symbol is declared by a simple
+    /// `let`/`const`/`var` binding identifier with an initializer. The mutation
+    /// guard ensures the initializer still reflects the symbol's value at the
+    /// use site, so callers can treat the returned expression as authoritative.
+    pub(crate) fn resolve_identifier_initializer(
+        &self,
+        ident: &IdentifierReference<'a>,
+    ) -> Option<&'a Expression<'a>> {
+        let scoping = self.scoping?;
+        let nodes = self.nodes?;
+        let reference_id = ident.reference_id.get()?;
+        let symbol_id = scoping.get_reference(reference_id).symbol_id()?;
+        if scoping.symbol_is_mutated(symbol_id) {
+            return None;
+        }
+        let decl = scoping.symbol_declaration(symbol_id);
+        let AstKind::VariableDeclarator(declarator) = nodes.get_node(decl).kind() else {
+            return None;
+        };
+        if !matches!(declarator.id, BindingPattern::BindingIdentifier(_)) {
+            return None;
+        }
+        declarator.init.as_ref()
     }
 }
 
@@ -321,7 +360,17 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_class_prototype(it);
         self.check_no_nested_assignment_chain(it);
         self.check_no_useless_increment(it);
+        if matches!(it.operator, AssignmentOperator::Assign) {
+            self.check_no_misleading_array_reverse(&it.right);
+        }
         walk::walk_assignment_expression(self, it);
+    }
+
+    fn visit_variable_declarator(&mut self, it: &VariableDeclarator<'a>) {
+        if let Some(init) = &it.init {
+            self.check_no_misleading_array_reverse(init);
+        }
+        walk::walk_variable_declarator(self, it);
     }
 
     fn visit_ts_union_type(&mut self, it: &TSUnionType<'a>) {

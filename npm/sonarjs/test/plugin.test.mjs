@@ -167,6 +167,7 @@ describe('sonarjs plugin shape', () => {
       'no-global-this',
       'single-character-alternation',
       'empty-string-repetition',
+      'no-misleading-array-reverse',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -240,6 +241,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-global-this']).toBe('object');
     expect(typeof plugin.rules['single-character-alternation']).toBe('object');
     expect(typeof plugin.rules['empty-string-repetition']).toBe('object');
+    expect(typeof plugin.rules['no-misleading-array-reverse']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -321,6 +323,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-global-this']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/single-character-alternation']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/empty-string-repetition']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-misleading-array-reverse']).toBe('error');
   });
 });
 
@@ -1881,5 +1884,48 @@ describe('empty-string-repetition rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(empty-string-repetition)');
+  });
+});
+
+describe('no-misleading-array-reverse rule', () => {
+  it('reports assigning the result of reverse() on a known array variable', () => {
+    const source = 'const a = [3, 1, 2];\nconst b = a.reverse();';
+    const reports = runRule('no-misleading-array-reverse', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('misleadingReverse');
+  });
+
+  it('reports assigning the result of sort() on a known array variable', () => {
+    const source = 'const a = [3, 1, 2];\nlet b;\nb = a.sort();';
+    const reports = runRule('no-misleading-array-reverse', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('misleadingReverse');
+  });
+
+  it('does not report a bare reverse() statement', () => {
+    const source = 'const a = [3, 1, 2];\na.reverse();';
+    const reports = runRule('no-misleading-array-reverse', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report reverse() on a fresh array literal', () => {
+    const source = 'const b = [3, 1, 2].reverse();';
+    const reports = runRule('no-misleading-array-reverse', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report reverse() on an unresolvable receiver', () => {
+    const source = 'function f(a) {\n  return a.reverse();\n}';
+    const reports = runRule('no-misleading-array-reverse', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-misleading-array-reverse through the CLI', () => {
+    const source = 'const a = [3, 1, 2];\nconst b = a.reverse();';
+    const result = runOxlint('no-misleading-array-reverse', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-misleading-array-reverse)');
   });
 });
