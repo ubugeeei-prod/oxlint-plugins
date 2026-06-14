@@ -36,6 +36,7 @@ mod napi_abi {
         pub check_missing_table_cells: Option<bool>,
         pub math: Option<bool>,
         pub frontmatter: Option<bool>,
+        pub commonmark: Option<bool>,
     }
 
     #[napi(object)]
@@ -131,6 +132,7 @@ mod napi_abi {
             check_missing_table_cells: options.check_missing_table_cells.unwrap_or(false),
             math: options.math.unwrap_or(false),
             frontmatter: options.frontmatter.unwrap_or(false),
+            commonmark: options.commonmark.unwrap_or(false),
         };
 
         if core_options.rule_names.is_empty() && default_rule_names {
