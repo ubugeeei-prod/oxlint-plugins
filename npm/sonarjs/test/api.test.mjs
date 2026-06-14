@@ -35,6 +35,7 @@ const expectedRuleNames = [
   'no-useless-catch',
   'no-redundant-optional',
   'prefer-immediate-return',
+  'no-redundant-jump',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1189,6 +1190,60 @@ describe('sonarjs native API', () => {
   it('does not report prefer-immediate-return when the declaration has two declarators', () => {
     const source = 'function f() { const x = 1, y = 2; return x; }';
     const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-redundant-jump for trailing continue in a for(;;) loop body', () => {
+    const source = 'for (;;) { foo(); continue; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-redundant-jump');
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump for trailing continue in a while loop body', () => {
+    const source = 'while (x) { foo(); continue; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump for trailing continue in a do-while loop body', () => {
+    const source = 'do { foo(); continue; } while (x);';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump for trailing continue in a for-of loop body', () => {
+    const source = 'for (const a of b) { foo(); continue; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump for trailing return; in a function body', () => {
+    const source = 'function f() { foo(); return; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantJump');
+  });
+
+  it('does not report no-redundant-jump when continue is not the last statement', () => {
+    const source = 'for (;;) { if (x) continue; foo(); }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-redundant-jump for return with a value', () => {
+    const source = 'function f() { foo(); return x; }';
+    const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-redundant-jump for a labeled continue', () => {
+    const source = 'outer: for (;;) { foo(); continue outer; }';
+    const diagnostics = scan('no-redundant-jump', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

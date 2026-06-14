@@ -126,6 +126,7 @@ describe('sonarjs plugin shape', () => {
       'no-useless-catch',
       'no-redundant-optional',
       'prefer-immediate-return',
+      'no-redundant-jump',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -159,6 +160,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-useless-catch']).toBe('object');
     expect(typeof plugin.rules['no-redundant-optional']).toBe('object');
     expect(typeof plugin.rules['prefer-immediate-return']).toBe('object');
+    expect(typeof plugin.rules['no-redundant-jump']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -192,6 +194,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-catch']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-redundant-optional']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-immediate-return']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-redundant-jump']).toBe('error');
   });
 });
 
@@ -741,5 +744,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(prefer-immediate-return)');
+  });
+
+  it('reports no-redundant-jump for trailing continue through the adapter', () => {
+    const source = 'for (;;) { foo(); continue; }';
+    const reports = runRule('no-redundant-jump', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump through the CLI', () => {
+    const source = 'function f() { foo(); return; }';
+    const result = runOxlint('no-redundant-jump', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-redundant-jump)');
   });
 });
