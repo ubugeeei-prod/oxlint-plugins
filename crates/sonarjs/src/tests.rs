@@ -1665,3 +1665,57 @@ fn does_not_report_no_skipped_tests_for_xfoo_not_in_x_set() {
     let diagnostics = scan("no-skipped-tests", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_prefer_single_boolean_return_block_form() {
+    let source = "function f() { if (c) { return true; } else { return false; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "prefer-single-boolean-return");
+    assert_eq!(diagnostics[0].message_id, "preferSingleBooleanReturn");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_prefer_single_boolean_return_bare_form() {
+    let source = "function f() { if (c) return true; else return false; }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferSingleBooleanReturn");
+}
+
+#[test]
+fn reports_prefer_single_boolean_return_inverted() {
+    let source = "function f() { if (c) { return false; } else { return true; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferSingleBooleanReturn");
+}
+
+#[test]
+fn does_not_report_prefer_single_boolean_return_no_else() {
+    let source = "function f() { if (c) { return true; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_single_boolean_return_non_literal_consequent() {
+    let source = "function f() { if (c) { return x; } else { return false; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_single_boolean_return_else_if_chain() {
+    let source = "function f() { if (c) return true; else if (d) return x; }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_single_boolean_return_block_has_two_statements() {
+    let source = "function f() { if (c) { return true; bar(); } else { return false; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert!(diagnostics.is_empty());
+}
