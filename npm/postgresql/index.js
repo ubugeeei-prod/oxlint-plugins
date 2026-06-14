@@ -41,6 +41,17 @@ const ruleMeta = Object.freeze({
         '`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.',
     },
   },
+  'no-grant-to-public': {
+    type: 'problem',
+    description: 'Disallow GRANT statements that target the `PUBLIC` pseudo-role',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noPublic:
+        'Avoid `GRANT ... TO PUBLIC`. The PUBLIC role covers every current and future role in the database, including ones added later for unrelated services. Name the role(s) you actually want to grant to.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
