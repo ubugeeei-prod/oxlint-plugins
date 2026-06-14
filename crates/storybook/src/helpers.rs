@@ -412,11 +412,17 @@ pub(crate) fn to_pascal_case(name: &str) -> CompactString {
 }
 
 pub(crate) fn story_name_from_export(name: &str) -> CompactString {
+    // Faithful port of `@storybook/csf`'s `toStartCaseStr`: `_`, `-` and `.` become
+    // word separators; spaces are inserted at camelCase / acronym / letter↔digit
+    // boundaries; the first letter of every word is upper-cased; and runs of spaces
+    // collapse with the result trimmed. `previous` tracks the ORIGINAL character so
+    // boundary detection runs on the pre-capitalised text (matching upstream's
+    // ordered regex passes, which capitalise last).
     let mut out = CompactString::new("");
     let mut previous: Option<char> = None;
     let mut chars = name.chars().peekable();
     while let Some(ch) = chars.next() {
-        if matches!(ch, '_' | '-') {
+        if matches!(ch, '_' | '-' | '.') {
             if !out.ends_with(' ') && !out.is_empty() {
                 out.push(' ');
             }
@@ -434,8 +440,16 @@ pub(crate) fn story_name_from_export(name: &str) -> CompactString {
                 out.push(' ');
             }
         }
-        out.push(ch);
+        // Upper-case the first letter of each word (start of output or after a space).
+        if out.is_empty() || out.ends_with(' ') {
+            out.push(ch.to_ascii_uppercase());
+        } else {
+            out.push(ch);
+        }
         previous = Some(ch);
+    }
+    while out.ends_with(' ') {
+        out.pop();
     }
     out
 }
