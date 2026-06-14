@@ -12,10 +12,6 @@
     "prefer-pascal-case": {
       "fixOutput": [0, 1, 2],
       "reason": "The port's autofix renames the export declaration identifier but not its other references (`primary.foo` stays lowercase); upstream's suggestion renames every reference."
-    },
-    "story-exports": {
-      "valid": [5],
-      "reason": "Port false-positives (shouldHaveStoryExportWithFilters) on a valid file that uses includeStories/excludeStories filters."
     }
   }
 }
