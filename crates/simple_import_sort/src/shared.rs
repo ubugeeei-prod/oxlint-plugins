@@ -158,6 +158,76 @@ pub(crate) fn remove_blank_lines(whitespace: &str) -> CompactString {
     print_tokens(&parse_whitespace(whitespace))
 }
 
+/// Collapse blank lines in the text of a single import/export statement.
+///
+/// Mirrors what upstream `getAllTokens` achieves: each gap *between* AST tokens
+/// is run through `parseWhitespace`, collapsing blank lines (two or more
+/// consecutive newlines → one). Crucially, string literals and comments are
+/// individual tokens in upstream and are emitted verbatim, so whitespace *inside*
+/// them must NOT be collapsed. We reproduce that with a tiny scanner that emits
+/// string literals (`"…"`/`'…'`) and comments (`/* … */`, `// …`) untouched and
+/// only collapses whitespace runs in the surrounding code. This is sound for
+/// import/export statements, which contain no regex/division `/` ambiguity.
+pub(crate) fn collapse_blank_lines_in_mixed_text(text: &str) -> CompactString {
+    let mut out = CompactString::new("");
+    let bytes = text.as_bytes();
+    let len = bytes.len();
+    let mut i = 0usize;
+    while i < len {
+        let b = bytes[i];
+        match b {
+            b' ' | b'\t' | b'\n' | b'\r' => {
+                let start = i;
+                while i < len && matches!(bytes[i], b' ' | b'\t' | b'\n' | b'\r') {
+                    i += 1;
+                }
+                out.push_str(&remove_blank_lines(&text[start..i]));
+            }
+            b'"' | b'\'' => {
+                // String literal: copy verbatim through the matching unescaped quote.
+                let start = i;
+                i += 1;
+                while i < len {
+                    if bytes[i] == b'\\' {
+                        i += 2;
+                        continue;
+                    }
+                    if bytes[i] == b {
+                        i += 1;
+                        break;
+                    }
+                    i += 1;
+                }
+                out.push_str(&text[start..i.min(len)]);
+            }
+            b'/' if i + 1 < len && bytes[i + 1] == b'*' => {
+                // Block comment: copy verbatim through `*/`.
+                let start = i;
+                i += 2;
+                while i < len && !(bytes[i] == b'*' && i + 1 < len && bytes[i + 1] == b'/') {
+                    i += 1;
+                }
+                i = (i + 2).min(len);
+                out.push_str(&text[start..i]);
+            }
+            b'/' if i + 1 < len && bytes[i + 1] == b'/' => {
+                // Line comment: copy verbatim up to (not including) the newline.
+                let start = i;
+                while i < len && bytes[i] != b'\n' && bytes[i] != b'\r' {
+                    i += 1;
+                }
+                out.push_str(&text[start..i]);
+            }
+            _ => {
+                let ch = text[i..].chars().next().unwrap_or('\0');
+                out.push(ch);
+                i += ch.len_utf8();
+            }
+        }
+    }
+    out
+}
+
 /// Mirrors `printTokens`: join token.code.
 pub(crate) fn print_tokens(tokens: &[Token]) -> CompactString {
     let mut out = CompactString::new("");
@@ -209,7 +279,34 @@ fn base_fold(s: &str) -> CompactString {
     out
 }
 
+/// ASCII collation rank table mirroring ICU DUCET order for the chars that
+/// appear in our sort keys after `source_sort_key` transformation.
+///
+/// ICU root collation differs from codepoint order for several ASCII chars.
+/// Empirically verified via `Intl.Collator("en", {sensitivity:"base", numeric:true})`:
+///   NUL < _ < - < , < . < [ < ] < @ < / < # < ~  (all before digits, digits before letters)
+///
+/// Returns `None` for chars not in the table (fall back to codepoint order).
+fn icu_ascii_rank(c: char) -> Option<u8> {
+    match c {
+        '\0' => Some(0),
+        '_' => Some(1),
+        '-' => Some(2),
+        ',' => Some(3),
+        '.' => Some(4),
+        '[' => Some(5),
+        ']' => Some(6),
+        '@' => Some(7),
+        '/' => Some(8),
+        '#' => Some(9),
+        '~' => Some(10),
+        _ => None,
+    }
+}
+
 /// Compare two pre-folded strings with numeric segments (numeric: true).
+/// Uses an explicit ICU-ordered rank table for ASCII punctuation chars that
+/// differ from codepoint order; falls back to codepoint for other chars.
 fn collator_compare_base_numeric(a: &str, b: &str) -> i32 {
     let mut ai = a.chars().peekable();
     let mut bi = b.chars().peekable();
@@ -231,7 +328,26 @@ fn collator_compare_base_numeric(a: &str, b: &str) -> i32 {
                     ai.next();
                     bi.next();
                     if ac != bc {
-                        return if ac < bc { -1 } else { 1 };
+                        // Use ICU rank table for chars in our domain
+                        let ra = icu_ascii_rank(ac);
+                        let rb = icu_ascii_rank(bc);
+                        let cmp = match (ra, rb) {
+                            (Some(ra), Some(rb)) => ra.cmp(&rb),
+                            (Some(_), None) => {
+                                // table char vs non-table char: table chars are all
+                                // punctuation/special → come before digits and letters
+                                std::cmp::Ordering::Less
+                            }
+                            (None, Some(_)) => std::cmp::Ordering::Greater,
+                            (None, None) => ac.cmp(&bc),
+                        };
+                        if cmp != std::cmp::Ordering::Equal {
+                            return if cmp == std::cmp::Ordering::Less {
+                                -1
+                            } else {
+                                1
+                            };
+                        }
                     }
                 }
             }
@@ -339,11 +455,20 @@ pub(crate) fn comments_after_node<'a>(
     source_text: &str,
     node_end: u32,
     node_end_line: u32,
+    // If `Some(pos)`, only include comments that start BEFORE this position.
+    // Used to exclude comments that belong to the next import/export node.
+    next_node_start: Option<u32>,
 ) -> SmallVec<[&'a Comment; 4]> {
     let mut result: SmallVec<[&'a Comment; 4]> = SmallVec::new();
     for comment in all_comments {
         if comment.span.start < node_end {
             continue;
+        }
+        // Stop at the next node if provided
+        if let Some(nns) = next_node_start
+            && comment.span.start >= nns
+        {
+            break;
         }
         let c_end_line = line_of(source_text, comment.span.end);
         if c_end_line == node_end_line {
@@ -562,16 +687,19 @@ pub(crate) fn import_style(decl: &ImportDeclaration<'_>, source_text: &str) -> u
 }
 
 fn has_open_brace_specifiers(source_text: &str, decl: &ImportDeclaration<'_>) -> bool {
+    // Returns true if the import has a `{ ... }` specifier list (even if empty or
+    // containing only comments). OXC gives empty `specifiers` when only comments
+    // are present (e.g. `import { /* X */ } from "pkg"`), so we cannot rely solely
+    // on `specifiers.is_empty()` – we check the source text for a `{` before `from`.
     let text = source_text
         .get(decl.span.start as usize..decl.span.end as usize)
         .unwrap_or("");
-    if let Some(open) = text.find('{')
-        && let Some(close_offset) = text[open..].find('}')
-    {
-        let between = &text[open + 1..open + close_offset];
-        return between.trim().is_empty();
-    }
-    false
+    // Find `{` before the `from` keyword
+    let from_pos = text
+        .find(" from ")
+        .or_else(|| text.find("\tfrom "))
+        .unwrap_or(text.len());
+    text[..from_pos].contains('{')
 }
 
 // ---------------------------------------------------------------------------
@@ -818,7 +946,11 @@ pub(crate) fn tokenize_specifier_interior(
         let spec_text = source_text
             .get(span.start as usize..span.end as usize)
             .unwrap_or("");
-        tokens.push(Token::identifier(spec_text));
+        // Collapse blank lines within the specifier text (e.g. `a\n\n  as\n\n  b`→`a\n  as\n  b`).
+        // Upstream's getAllTokens tokenizes the specifier into individual keyword/identifier
+        // tokens and calls parseWhitespace on each inter-token gap, achieving the same effect.
+        let spec_text_collapsed = collapse_blank_lines_in_mixed_text(spec_text);
+        tokens.push(Token::identifier(&spec_text_collapsed));
         cursor = span.end;
     }
     scan_gap_tokens(
@@ -917,40 +1049,53 @@ pub(crate) fn print_with_sorted_specifiers(
         .get(node_start as usize..node_end as usize)
         .unwrap_or("");
 
-    // ≤1 specifiers: no reordering needed
+    // Try to find { and } positions for blank-line collapsing.
+    // We need these even for ≤1 specifiers because upstream's getAllTokens
+    // still calls parseWhitespace on every inter-token gap, collapsing blank lines.
+    let brace_positions: Option<(usize, usize)> =
+        find_brace_positions(source_text, node_start, node_end, specifier_spans);
+
+    // ≤1 specifiers: no reordering needed, but still collapse blank lines.
     if specifier_spans.len() <= 1 {
-        return CompactString::from(node_text);
+        let Some((open_rel, close_rel)) = brace_positions else {
+            // No braces found (e.g. `import def from "x"`, `import "side-effect"`).
+            // Still collapse blank lines in the node text (upstream's getAllTokens
+            // applies parseWhitespace to every inter-token gap, including gaps that
+            // don't involve specifiers, such as the gap before a trailing `;`).
+            return collapse_blank_lines_in_mixed_text(node_text);
+        };
+
+        let open_brace_end_abs = node_start + open_rel as u32 + 1;
+        let close_brace_start_abs = node_start + close_rel as u32;
+
+        // Collapse blank lines in all three regions
+        let prefix = collapse_blank_lines_in_mixed_text(&node_text[..open_rel + 1]);
+        let interior = {
+            let tokens = tokenize_specifier_interior(
+                source_text,
+                open_brace_end_abs,
+                close_brace_start_abs,
+                specifier_spans,
+                all_comments,
+            );
+            print_tokens(&tokens)
+        };
+        let suffix = collapse_blank_lines_in_mixed_text(&node_text[close_rel..]);
+
+        let mut out = CompactString::new("");
+        out.push_str(&prefix);
+        out.push_str(&interior);
+        out.push_str(&suffix);
+        return out;
     }
 
-    // Find { and } within the node text (absolute positions)
-    // We need the FIRST `{` that is the specifier list open brace,
-    // and the LAST `}` before `from` (to exclude `with { ... }` clauses).
-    // Strategy: find all specifier spans and use them to bound the search.
-    let first_spec_start = specifier_spans[0].start;
-    let last_spec_end = specifier_spans[specifier_spans.len() - 1].end;
-
-    // Find `{` before first specifier
-    let before_first = source_text
-        .get(node_start as usize..first_spec_start as usize)
-        .unwrap_or("");
-    let open_rel = before_first.rfind('{');
-
-    // Find `}` after last specifier
-    let after_last = source_text
-        .get(last_spec_end as usize..node_end as usize)
-        .unwrap_or("");
-    let close_offset = after_last.find('}');
-
-    let (Some(open_rel), Some(close_offset_in_after)) = (open_rel, close_offset) else {
+    let Some((open_rel_in_node, close_rel_in_node)) = brace_positions else {
         return CompactString::from(node_text);
     };
 
-    let open_brace_abs = node_start + open_rel as u32; // position of `{`
+    let open_brace_abs = node_start + open_rel_in_node as u32; // position of `{`
     let open_brace_end = open_brace_abs + 1; // position after `{`
-    let close_brace_start = last_spec_end + close_offset_in_after as u32; // position of `}`
-
-    let open_rel_in_node = open_rel;
-    let close_rel_in_node = (close_brace_start - node_start) as usize;
+    let close_brace_start = node_start + close_rel_in_node as u32; // position of `}`
 
     // Tokenize the interior
     let interior_tokens = tokenize_specifier_interior(
@@ -1023,14 +1168,58 @@ pub(crate) fn print_with_sorted_specifiers(
         sorted_tokens.push(Token::newline(newline));
     }
 
-    // Reconstruct the full node text
+    // Reconstruct the full node text, collapsing blank lines in prefix and suffix
+    let prefix = collapse_blank_lines_in_mixed_text(&node_text[..open_rel_in_node + 1]);
+    let suffix = collapse_blank_lines_in_mixed_text(&node_text[close_rel_in_node..]);
+
     let mut out = CompactString::new("");
-    out.push_str(&node_text[..open_rel_in_node + 1]); // up to and including `{`
+    out.push_str(&prefix);
     out.push_str(&print_tokens(&items_result.before));
     out.push_str(&print_tokens(&sorted_tokens));
     out.push_str(&print_tokens(&items_result.after));
-    out.push_str(&node_text[close_rel_in_node..]); // from `}` onwards
+    out.push_str(&suffix);
     out
+}
+
+/// Find the positions of the specifier-list `{` and `}` within the node text.
+///
+/// Returns `(open_rel, close_rel)` as byte offsets from `node_start`, where
+/// `open_rel` points to `{` and `close_rel` points to `}`.
+///
+/// When `specifier_spans` is non-empty, uses them to bound the search.
+/// When empty (no specifiers), searches the whole node text.
+fn find_brace_positions(
+    source_text: &str,
+    node_start: u32,
+    node_end: u32,
+    specifier_spans: &[Span],
+) -> Option<(usize, usize)> {
+    let node_text = source_text.get(node_start as usize..node_end as usize)?;
+
+    if specifier_spans.is_empty() {
+        // No specifiers: find `{` and `}` in the node text.
+        // Use the FIRST `{` and the corresponding `}`.
+        let open_rel = node_text.find('{')?;
+        let close_rel = node_text.rfind('}')?;
+        if close_rel <= open_rel {
+            return None;
+        }
+        return Some((open_rel, close_rel));
+    }
+
+    let first_spec_start = specifier_spans[0].start;
+    let last_spec_end = specifier_spans[specifier_spans.len() - 1].end;
+
+    // Find `{` before first specifier
+    let before_first = source_text.get(node_start as usize..first_spec_start as usize)?;
+    let open_rel = before_first.rfind('{')?;
+
+    // Find `}` after last specifier
+    let after_last = source_text.get(last_spec_end as usize..node_end as usize)?;
+    let close_offset_in_after = after_last.find('}')?;
+    let close_rel = (last_spec_end - node_start) as usize + close_offset_in_after;
+
+    Some((open_rel, close_rel))
 }
 
 /// Trim after tokens for the last specifier when it had a comma but now doesn't.
