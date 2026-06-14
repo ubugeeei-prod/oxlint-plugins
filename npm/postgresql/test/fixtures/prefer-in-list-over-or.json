@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/prefer-in-list-over-or",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "already-in",
+      "code": "SELECT * FROM t WHERE x IN (1, 2, 3);\n-- Mixed lhs: cannot collapse.\nSELECT * FROM t WHERE x = 1 OR y = 2;\n-- Single equality: nothing to combine.\nSELECT * FROM t WHERE x = 1;\n-- AND chain: not in scope.\nSELECT * FROM t WHERE x = 1 AND y = 2;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "or-chain",
+      "code": "SELECT * FROM t WHERE x = 1 OR x = 2 OR x = 3;\n",
+      "errors": [
+        {
+          "messageId": "preferIn",
+          "message": "Combine these `=` checks on `x` into a single `IN (...)` clause.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 46
+        }
+      ],
+      "output": "SELECT * FROM t WHERE x IN (1, 2, 3);"
+    }
+  ]
+}

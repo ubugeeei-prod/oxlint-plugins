@@ -1,0 +1,44 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/require-trailing-semicolon",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "create-table-with-not-null",
+      "code": "-- Regression for #143: the parser's per-statement range[1] for a\n-- single CREATE TABLE pointed mid-NOT-NULL on the last column. The\n-- rule used to insert `;` between NOT and NULL there. The rewrite to\n-- a file-level check makes this fixture a no-op.\nCREATE TABLE t (\n  a  TEXT     NOT NULL,\n  b  TEXT     NOT NULL,\n  c  INTEGER  NOT NULL\n);\n"
+    },
+    {
+      "name": "multi-statement",
+      "code": "SELECT id FROM users;\nINSERT INTO events (kind) VALUES ('login');\nUPDATE users SET active = FALSE WHERE id = 1;\n"
+    },
+    {
+      "name": "parse-error-stays-untouched",
+      "code": "-- Regression test for #136: SET ... = NULL is rejected by libpg-query.\n-- The rule must skip parse-error stmts so autofix does not append a\n-- run of `;` characters to the file.\nSET LOCAL app.admin = 'true';\nSET plv8.start_proc = NULL;\n"
+    },
+    {
+      "name": "with-semicolons",
+      "code": "SELECT id FROM users;\nINSERT INTO events (kind) VALUES ('login');\nUPDATE users SET active = FALSE WHERE id = 1;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing-semicolon",
+      "code": "SELECT id FROM users\n",
+      "errors": [
+        {
+          "messageId": "missingSemicolon",
+          "message": "Missing trailing `;` at the end of the file.",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": "SELECT id FROM users;"
+    }
+  ]
+}

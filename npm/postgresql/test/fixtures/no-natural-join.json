@@ -1,0 +1,51 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-natural-join",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "join-on",
+      "code": "SELECT 1 FROM a JOIN b ON a.id = b.id;\n"
+    },
+    {
+      "name": "join-using",
+      "code": "SELECT 1 FROM a JOIN b USING (id);\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "natural-join",
+      "code": "SELECT 1 FROM a NATURAL JOIN b;\n",
+      "errors": [
+        {
+          "messageId": "noNaturalJoin",
+          "message": "Avoid `NATURAL JOIN`. The join columns are implicit — any future column with a matching name on both sides silently changes the result. Use `JOIN ... USING (...)` or `JOIN ... ON ...` and name the columns.",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 31
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "natural-left-join",
+      "code": "SELECT 1 FROM a NATURAL LEFT JOIN b;\n",
+      "errors": [
+        {
+          "messageId": "noNaturalJoin",
+          "message": "Avoid `NATURAL JOIN`. The join columns are implicit — any future column with a matching name on both sides silently changes the result. Use `JOIN ... USING (...)` or `JOIN ... ON ...` and name the columns.",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 36
+        }
+      ],
+      "output": null
+    }
+  ]
+}

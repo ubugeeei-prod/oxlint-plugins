@@ -1,0 +1,69 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-fk-not-valid",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "add-check-without-fk",
+      "code": "ALTER TABLE orders ADD CONSTRAINT positive_amount CHECK (amount > 0);\n"
+    },
+    {
+      "name": "add-fk-not-valid",
+      "code": "ALTER TABLE orders\n  ADD CONSTRAINT orders_customer_fk FOREIGN KEY (customer_id) REFERENCES customers (id) NOT VALID;\n"
+    },
+    {
+      "name": "never-validating",
+      "code": "ALTER TABLE child ADD CONSTRAINT fk FOREIGN KEY (parent_id) REFERENCES parent (id);\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    },
+    {
+      "name": "validate",
+      "code": "ALTER TABLE orders VALIDATE CONSTRAINT orders_customer_fk;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "add-fk",
+      "code": "ALTER TABLE orders\n  ADD CONSTRAINT orders_customer_fk FOREIGN KEY (customer_id) REFERENCES customers (id);\n",
+      "errors": [
+        {
+          "messageId": "preferFkNotValid",
+          "message": "Adding a foreign key without `NOT VALID` validates every existing row under an `ACCESS EXCLUSIVE` lock that blocks writers. Use `ADD CONSTRAINT ... FOREIGN KEY (...) REFERENCES ... NOT VALID`, then `ALTER TABLE ... VALIDATE CONSTRAINT` in a separate migration (`VALIDATE` only takes a `SHARE UPDATE EXCLUSIVE` lock).",
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 83
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "never-not-valid",
+      "code": "ALTER TABLE child ADD CONSTRAINT fk FOREIGN KEY (parent_id) REFERENCES parent (id) NOT VALID;\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedFkNotValid",
+          "message": "Avoid `NOT VALID` on foreign keys. The constraint is added in a non-validated state and won't reject existing violations until you remember to run `VALIDATE CONSTRAINT`; some projects prefer to fail loudly at constraint-add time instead.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 78
+        }
+      ],
+      "output": null
+    }
+  ]
+}

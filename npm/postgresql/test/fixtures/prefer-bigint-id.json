@@ -1,0 +1,70 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/prefer-bigint-id",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "bigint-pk",
+      "code": "CREATE TABLE users (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, name text);\n"
+    },
+    {
+      "name": "int-not-pk",
+      "code": "-- An int `id` column that is not a primary key is not flagged.\nCREATE TABLE event_count (id int, count int);\n"
+    },
+    {
+      "name": "uuid-pk",
+      "code": "CREATE TABLE users (id uuid PRIMARY KEY, name text);\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "int-pk",
+      "code": "CREATE TABLE users (id int PRIMARY KEY, name text);\n",
+      "errors": [
+        {
+          "messageId": "preferBigintId",
+          "message": "Primary-key `id` columns should be `bigint`. `int` overflows at 2.1 billion rows and the migration to widen it later requires a table rewrite under `ACCESS EXCLUSIVE`. Declare the column as `bigint GENERATED ALWAYS AS IDENTITY` from the start.",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "serial-pk",
+      "code": "CREATE TABLE users (id serial PRIMARY KEY, name text);\n",
+      "errors": [
+        {
+          "messageId": "preferBigintId",
+          "message": "Primary-key `id` columns should be `bigint`. `int` overflows at 2.1 billion rows and the migration to widen it later requires a table rewrite under `ACCESS EXCLUSIVE`. Declare the column as `bigint GENERATED ALWAYS AS IDENTITY` from the start.",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "table-pk",
+      "code": "CREATE TABLE users (id int, name text, PRIMARY KEY (id));\n",
+      "errors": [
+        {
+          "messageId": "preferBigintId",
+          "message": "Primary-key `id` columns should be `bigint`. `int` overflows at 2.1 billion rows and the migration to widen it later requires a table rewrite under `ACCESS EXCLUSIVE`. Declare the column as `bigint GENERATED ALWAYS AS IDENTITY` from the start.",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": null
+    }
+  ]
+}

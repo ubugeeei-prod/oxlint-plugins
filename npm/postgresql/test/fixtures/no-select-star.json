@@ -1,0 +1,51 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-select-star",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "count-star-is-fine",
+      "code": "SELECT count(*) FROM users;\n"
+    },
+    {
+      "name": "explicit-columns",
+      "code": "SELECT id, name FROM users LIMIT 10;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "qualified-star",
+      "code": "SELECT u.* FROM users u;\n",
+      "errors": [
+        {
+          "messageId": "noSelectStar",
+          "message": "Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "select-star",
+      "code": "SELECT * FROM users;\n",
+      "errors": [
+        {
+          "messageId": "noSelectStar",
+          "message": "Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    }
+  ]
+}

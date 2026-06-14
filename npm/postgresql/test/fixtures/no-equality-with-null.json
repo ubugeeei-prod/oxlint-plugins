@@ -1,0 +1,56 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-equality-with-null",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "is-null",
+      "code": "SELECT * FROM t WHERE x IS NULL;\nSELECT * FROM t WHERE x IS NOT NULL;\nSELECT * FROM t WHERE x = 1;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "eq-null",
+      "code": "SELECT * FROM t WHERE x = NULL;\nSELECT * FROM t WHERE x <> NULL;\nSELECT * FROM t WHERE x != NULL;\nSELECT * FROM t WHERE NULL = x;\n",
+      "errors": [
+        {
+          "messageId": "useIsNull",
+          "message": "`= NULL` always evaluates to NULL (treated as false). Use `IS NULL` / `IS NOT NULL` instead.",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 26
+        },
+        {
+          "messageId": "useIsNull",
+          "message": "`<> NULL` always evaluates to NULL (treated as false). Use `IS NULL` / `IS NOT NULL` instead.",
+          "line": 2,
+          "column": 25,
+          "endLine": 2,
+          "endColumn": 27
+        },
+        {
+          "messageId": "useIsNull",
+          "message": "`<> NULL` always evaluates to NULL (treated as false). Use `IS NULL` / `IS NOT NULL` instead.",
+          "line": 3,
+          "column": 25,
+          "endLine": 3,
+          "endColumn": 27
+        },
+        {
+          "messageId": "useIsNull",
+          "message": "`= NULL` always evaluates to NULL (treated as false). Use `IS NULL` / `IS NOT NULL` instead.",
+          "line": 4,
+          "column": 28,
+          "endLine": 4,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-drop-index-concurrently",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "concurrently",
+      "code": "DROP INDEX CONCURRENTLY idx_users;\nDROP INDEX CONCURRENTLY IF EXISTS idx_orders;\n-- Non-index DROPs are out of scope.\nDROP TABLE old_table;\n"
+    },
+    {
+      "name": "never-no-concurrently",
+      "code": "DROP INDEX idx_users;\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "never-concurrently",
+      "code": "DROP INDEX CONCURRENTLY idx_users;\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedConcurrently",
+          "message": "Avoid `DROP INDEX CONCURRENTLY`. Concurrent drops cannot run inside a transaction, so they conflict with migration tools that wrap each step in BEGIN/COMMIT.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "no-concurrently",
+      "code": "DROP INDEX idx_users;\n",
+      "errors": [
+        {
+          "messageId": "preferConcurrently",
+          "message": "Use `DROP INDEX CONCURRENTLY` to avoid an `ACCESS EXCLUSIVE` lock on the table for the entire drop.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": null
+    }
+  ]
+}

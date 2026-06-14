@@ -1,0 +1,59 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/require-limit",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "complex-select-with-limit",
+      "code": "SELECT u.id, u.name, p.title\nFROM users u\n    JOIN posts p ON u.id = p.user_id\nWHERE\n    u.active = true\nORDER BY p.created_at DESC\nLIMIT 50;"
+    },
+    {
+      "name": "insert-values-not-flagged",
+      "code": "-- Regression for #159: INSERT ... VALUES (...) is rewritten by\n-- libpg-query into a SelectStmt with `valuesLists`, but LIMIT has no\n-- meaning there.\nINSERT INTO t (id, name) VALUES\n  (1, 'alpha'),\n  (2, 'beta');\n"
+    },
+    {
+      "name": "select-with-limit-and-offset",
+      "code": "SELECT id, name FROM users WHERE active = true LIMIT 20 OFFSET 10;"
+    },
+    {
+      "name": "select-with-limit",
+      "code": "SELECT * FROM users LIMIT 10;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "complex-select-without-limit",
+      "code": "SELECT u.id, u.name, p.title\nFROM users u\n    JOIN posts p ON u.id = p.user_id\nWHERE\n    u.active = true\nORDER BY p.created_at DESC;",
+      "errors": [
+        {
+          "messageId": "missingLimit",
+          "message": "SELECT statement should include a LIMIT clause to prevent excessive data retrieval",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "select-without-limit",
+      "code": "SELECT * FROM users;",
+      "errors": [
+        {
+          "messageId": "missingLimit",
+          "message": "SELECT statement should include a LIMIT clause to prevent excessive data retrieval",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    }
+  ]
+}

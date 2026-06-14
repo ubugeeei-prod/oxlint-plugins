@@ -1,0 +1,40 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-grant-all",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "explicit-privileges",
+      "code": "GRANT SELECT ON t TO u;\nGRANT SELECT, INSERT, UPDATE ON t TO u;\n-- REVOKE ALL is the safe direction; not flagged.\nREVOKE ALL ON t FROM u;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "grant-all",
+      "code": "GRANT ALL ON t TO u;\nGRANT ALL PRIVILEGES ON t TO PUBLIC;\n",
+      "errors": [
+        {
+          "messageId": "noGrantAll",
+          "message": "`GRANT ALL` (or `GRANT ALL PRIVILEGES`) is opaque — list the privileges you actually need (e.g. `SELECT, INSERT, UPDATE`) so the grant is auditable and adding a new PostgreSQL privilege in a future release does not silently extend it.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 20
+        },
+        {
+          "messageId": "noGrantAll",
+          "message": "`GRANT ALL` (or `GRANT ALL PRIVILEGES`) is opaque — list the privileges you actually need (e.g. `SELECT, INSERT, UPDATE`) so the grant is auditable and adding a new PostgreSQL privilege in a future release does not silently extend it.",
+          "line": 1,
+          "column": 21,
+          "endLine": 2,
+          "endColumn": 36
+        }
+      ],
+      "output": null
+    }
+  ]
+}

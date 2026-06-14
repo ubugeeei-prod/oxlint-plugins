@@ -1,0 +1,65 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/snake-case-column-name",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "allow-list",
+      "code": "CREATE TABLE t (\n  \"userId\" int,\n  \"createdAt\" timestamptz\n);\n",
+      "options": [
+        {
+          "allow": ["userId", "createdAt"]
+        }
+      ]
+    },
+    {
+      "name": "case-folded",
+      "code": "CREATE TABLE t (CamelCol INT);\n"
+    },
+    {
+      "name": "snake",
+      "code": "CREATE TABLE t (id INT PRIMARY KEY, created_at TIMESTAMPTZ);\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "allow-list-partial",
+      "code": "CREATE TABLE t (\n  \"userId\" int,\n  \"createdAt\" timestamptz\n);\n",
+      "options": [
+        {
+          "allow": ["userId"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "notSnakeCase",
+          "message": "Column name `createdAt` is not snake_case. PostgreSQL preserves the case of quoted identifiers; using a mixed-case quoted name forces every consumer to quote-match it.",
+          "line": 3,
+          "column": 3,
+          "endLine": 3,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "quoted-camel",
+      "code": "CREATE TABLE t (\"CamelCol\" INT);\n",
+      "errors": [
+        {
+          "messageId": "notSnakeCase",
+          "message": "Column name `CamelCol` is not snake_case. PostgreSQL preserves the case of quoted identifiers; using a mixed-case quoted name forces every consumer to quote-match it.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    }
+  ]
+}

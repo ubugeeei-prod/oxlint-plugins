@@ -1,0 +1,95 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-identity-over-serial",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "identity-column",
+      "code": "CREATE TABLE t (id INT GENERATED ALWAYS AS IDENTITY);\n"
+    },
+    {
+      "name": "never-serial",
+      "code": "CREATE TABLE t (id bigserial PRIMARY KEY);\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    },
+    {
+      "name": "plain-int",
+      "code": "CREATE TABLE t (id INT);\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "bigserial",
+      "code": "CREATE TABLE t (id BIGSERIAL);\n",
+      "errors": [
+        {
+          "messageId": "preferIdentity",
+          "message": "Use `GENERATED ALWAYS AS IDENTITY` (SQL standard) instead of `bigserial`. The serial pseudo-types create a separately-owned sequence that breaks under pg_dump round-trips and does not honor column privileges.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "never-identity",
+      "code": "CREATE TABLE t (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY);\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedIdentity",
+          "message": "Use a serial pseudo-type (e.g. `bigserial`) instead of `GENERATED ... AS IDENTITY`. Useful for projects that need to keep compatibility with tooling that does not understand identity columns.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "serial",
+      "code": "CREATE TABLE t (id SERIAL);\n",
+      "errors": [
+        {
+          "messageId": "preferIdentity",
+          "message": "Use `GENERATED ALWAYS AS IDENTITY` (SQL standard) instead of `serial`. The serial pseudo-types create a separately-owned sequence that breaks under pg_dump round-trips and does not honor column privileges.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "smallserial",
+      "code": "CREATE TABLE t (id SMALLSERIAL);\n",
+      "errors": [
+        {
+          "messageId": "preferIdentity",
+          "message": "Use `GENERATED ALWAYS AS IDENTITY` (SQL standard) instead of `smallserial`. The serial pseudo-types create a separately-owned sequence that breaks under pg_dump round-trips and does not honor column privileges.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    }
+  ]
+}

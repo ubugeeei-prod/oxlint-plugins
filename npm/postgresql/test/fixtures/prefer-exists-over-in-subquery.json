@@ -1,0 +1,40 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/prefer-exists-over-in-subquery",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "exists-form",
+      "code": "SELECT * FROM t WHERE EXISTS (SELECT 1 FROM other WHERE other.id = t.x);\nSELECT * FROM t WHERE x IN (1, 2, 3);\nSELECT * FROM t WHERE x = 1;\n"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "in-subquery",
+      "code": "SELECT * FROM t WHERE x IN (SELECT id FROM other);\nSELECT * FROM t WHERE x = ANY (SELECT id FROM other);\n",
+      "errors": [
+        {
+          "messageId": "preferExists",
+          "message": "Use `EXISTS (...)` instead of `IN (subquery)`. `IN` returns NULL when the subquery has any NULL row, which silently turns the row into a no-match; `EXISTS` is unambiguously boolean.",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 27
+        },
+        {
+          "messageId": "preferExists",
+          "message": "Use `EXISTS (...)` instead of `IN (subquery)`. `IN` returns NULL when the subquery has any NULL row, which silently turns the row into a no-match; `EXISTS` is unambiguously boolean.",
+          "line": 2,
+          "column": 25,
+          "endLine": 2,
+          "endColumn": 26
+        }
+      ],
+      "output": null
+    }
+  ]
+}

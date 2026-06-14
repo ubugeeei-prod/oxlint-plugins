@@ -1,0 +1,61 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-as-for-table-alias",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "explicit-as",
+      "code": "SELECT u.id FROM users AS u WHERE u.active = TRUE;\nSELECT u.id FROM public.users AS u JOIN orders AS o ON o.user_id = u.id;\nSELECT u.id FROM users WHERE active = TRUE;\n"
+    },
+    {
+      "name": "never-no-as",
+      "code": "SELECT u.id FROM users u;\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "bare-alias",
+      "code": "SELECT u.id FROM users u WHERE u.active = TRUE;\n",
+      "errors": [
+        {
+          "messageId": "preferAs",
+          "message": "Use `AS` before the table alias `u`.",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "output": "SELECT u.id FROM users AS u WHERE u.active = TRUE;"
+    },
+    {
+      "name": "never-with-as",
+      "code": "SELECT u.id FROM users AS u;\n",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedAs",
+          "message": "Omit `AS` before the table alias `u`.",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "output": "SELECT u.id FROM users u;"
+    }
+  ]
+}
