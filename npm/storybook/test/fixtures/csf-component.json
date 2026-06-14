@@ -1,0 +1,48 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/csf-component.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export default { title: 'Button', component: Button }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { title: 'Button', component: Button } as ComponentMeta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "export default { title: 'Button' }",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "missingComponentProperty"
+        }
+      ]
+    },
+    {
+      "code": "export default { title: 'Button' } as ComponentMeta<typeof Button>",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "missingComponentProperty"
+        }
+      ]
+    },
+    {
+      "code": "\n        const meta = { title: 'Button' } as Meta<typeof Button>\n        export default meta\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "missingComponentProperty"
+        }
+      ]
+    }
+  ]
+}

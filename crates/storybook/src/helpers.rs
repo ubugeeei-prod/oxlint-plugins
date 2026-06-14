@@ -12,6 +12,7 @@ use oxc_ast::ast::{
     Expression, FormalParameters, ImportDeclaration, ImportDeclarationSpecifier, ModuleExportName,
     ObjectExpression, ObjectProperty, ObjectPropertyKind, PropertyKey, StaticMemberExpression,
 };
+use oxc_semantic::SymbolId;
 use oxc_span::{GetSpan, Span};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -50,6 +51,13 @@ pub(crate) fn property_key_name<'a>(key: &'a PropertyKey<'a>) -> Option<&'a str>
         PropertyKey::StaticIdentifier(identifier) => Some(identifier.name.as_str()),
         PropertyKey::StringLiteral(literal) => Some(literal.value.as_str()),
         PropertyKey::Identifier(identifier) => Some(identifier.name.as_str()),
+        _ => None,
+    }
+}
+
+pub(crate) fn binding_symbol_id(pattern: &BindingPattern<'_>) -> Option<SymbolId> {
+    match pattern {
+        BindingPattern::BindingIdentifier(identifier) => identifier.symbol_id.get(),
         _ => None,
     }
 }
@@ -274,45 +282,70 @@ pub(crate) fn is_play_call(call: &CallExpression<'_>) -> bool {
 }
 
 pub(crate) fn story_filters_from_meta(meta: &ObjectExpression<'_>) -> StoryFilters {
+    // Upstream builds `{ excludeStories: getDescriptor(meta, ...), includeStories:
+    // getDescriptor(meta, ...) }` inside a try/catch and discards the WHOLE config
+    // if either call throws (`getDescriptor` throws on a non-literal array element
+    // such as `includeStories: [MyComponent.name]`), so the file is treated as
+    // having no filter. Mirror that: if either descriptor fails to resolve, return
+    // empty (unfiltered) filters.
+    let include = match find_object_property(meta, "includeStories") {
+        Some(property) => descriptor_from_expression(&property.value),
+        None => Ok(None),
+    };
+    let exclude = match find_object_property(meta, "excludeStories") {
+        Some(property) => descriptor_from_expression(&property.value),
+        None => Ok(None),
+    };
+    let (Ok(include), Ok(exclude)) = (include, exclude) else {
+        return StoryFilters::default();
+    };
+
     let mut filters = StoryFilters::default();
-    if let Some(property) = find_object_property(meta, "includeStories")
-        && let Some(descriptor) = descriptor_from_expression(&property.value)
-    {
+    if let Some(descriptor) = include {
         filters.include.push(descriptor);
         filters.has_filter = true;
     }
-    if let Some(property) = find_object_property(meta, "excludeStories")
-        && let Some(descriptor) = descriptor_from_expression(&property.value)
-    {
+    if let Some(descriptor) = exclude {
         filters.exclude.push(descriptor);
         filters.has_filter = true;
     }
     filters
 }
 
-pub(crate) fn descriptor_from_expression(expression: &Expression<'_>) -> Option<Descriptor> {
+/// Returned by [`descriptor_from_expression`] when upstream `getDescriptor` would
+/// throw, signalling the whole filter config must be discarded.
+pub(crate) struct InvalidDescriptor;
+
+// Mirrors upstream `getDescriptor`. `Ok(Some(_))` is a resolved filter, `Ok(None)`
+// means the property is not a descriptor shape upstream recognises (no filter), and
+// `Err(_)` means upstream `getDescriptor` would throw — an array containing a
+// non-string-literal element (or a hole/spread), which discards the whole config.
+pub(crate) fn descriptor_from_expression(
+    expression: &Expression<'_>,
+) -> Result<Option<Descriptor>, InvalidDescriptor> {
     match expression.get_inner_expression() {
         Expression::ArrayExpression(array) => {
             let mut names = SmallVec::new();
             for element in &array.elements {
-                if let Some(Expression::StringLiteral(literal)) = element
+                let Some(Expression::StringLiteral(literal)) = element
                     .as_expression()
                     .map(Expression::get_inner_expression)
-                {
-                    names.push(CompactString::from(literal.value.as_str()));
-                }
+                else {
+                    return Err(InvalidDescriptor);
+                };
+                names.push(CompactString::from(literal.value.as_str()));
             }
-            Some(Descriptor::Names(names))
+            Ok(Some(Descriptor::Names(names)))
         }
         Expression::StringLiteral(literal) => {
             let mut names = SmallVec::new();
             names.push(CompactString::from(literal.value.as_str()));
-            Some(Descriptor::Names(names))
+            Ok(Some(Descriptor::Names(names)))
         }
-        Expression::RegExpLiteral(literal) => Some(Descriptor::Regex(CompactString::from(
+        Expression::RegExpLiteral(literal) => Ok(Some(Descriptor::Regex(CompactString::from(
             literal.regex.pattern.text.as_str(),
-        ))),
-        _ => None,
+        )))),
+        _ => Ok(None),
     }
 }
 
@@ -395,6 +428,7 @@ pub(crate) fn story_name_from_export(name: &str) -> CompactString {
             if !out.ends_with(' ')
                 && ((prev.is_ascii_lowercase() && ch.is_ascii_uppercase())
                     || (prev.is_ascii_digit() && ch.is_ascii_alphabetic())
+                    || (prev.is_ascii_alphabetic() && ch.is_ascii_digit())
                     || (prev.is_ascii_uppercase() && ch.is_ascii_uppercase() && next_is_lower))
             {
                 out.push(' ');
