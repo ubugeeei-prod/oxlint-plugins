@@ -156,6 +156,7 @@ describe('sonarjs plugin shape', () => {
       'anchor-precedence',
       'cyclomatic-complexity',
       'no-collection-size-mischeck',
+      'index-of-compare-to-positive-number',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -219,6 +220,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['anchor-precedence']).toBe('object');
     expect(typeof plugin.rules['cyclomatic-complexity']).toBe('object');
     expect(typeof plugin.rules['no-collection-size-mischeck']).toBe('object');
+    expect(typeof plugin.rules['index-of-compare-to-positive-number']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -286,6 +288,9 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/anchor-precedence']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/cyclomatic-complexity']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-collection-size-mischeck']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/index-of-compare-to-positive-number']).toBe(
+      'error',
+    );
   });
 });
 
@@ -1399,5 +1404,24 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-collection-size-mischeck)');
+  });
+
+  it('reports index-of-compare-to-positive-number through the adapter', () => {
+    const reports = runRule('index-of-compare-to-positive-number', 'const b = a.indexOf(x) > 0;');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('indexOfPositive');
+  });
+
+  it('does not report index-of-compare-to-positive-number for indexOf >= 0', () => {
+    const reports = runRule('index-of-compare-to-positive-number', 'const b = a.indexOf(x) >= 0;');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports index-of-compare-to-positive-number through the CLI', () => {
+    const result = runOxlint('index-of-compare-to-positive-number', 'const b = a.indexOf(x) > 0;');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(index-of-compare-to-positive-number)');
   });
 });

@@ -231,6 +231,10 @@ const messages = Object.freeze({
     collectionSizeMischeck:
       'This size/length comparison is always true or always false; fix the comparison.',
   },
+  'index-of-compare-to-positive-number': {
+    indexOfPositive:
+      'This "indexOf" check ignores index 0; compare against -1 or use ">= 0" instead.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -350,6 +354,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow functions whose cyclomatic complexity exceeds the configured threshold (the "threshold" option; default 10); each if/for/while/do-while/case/catch/ternary/logical-operator adds +1',
   'no-collection-size-mischeck':
     'Disallow comparisons of collection .length or .size against 0 with < or >= that are always false or always true',
+  'index-of-compare-to-positive-number':
+    'Disallow comparing the result of indexOf or lastIndexOf against a positive number, which silently excludes the element at index 0',
 });
 
 const ruleTypes = Object.freeze({
@@ -415,6 +421,7 @@ const ruleTypes = Object.freeze({
   'no-duplicate-string': 'suggestion',
   'cyclomatic-complexity': 'suggestion',
   'no-collection-size-mischeck': 'suggestion',
+  'index-of-compare-to-positive-number': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -480,6 +487,7 @@ const recommendedRuleConfig = Object.freeze({
   'anchor-precedence': 'error',
   'cyclomatic-complexity': 'error',
   'no-collection-size-mischeck': 'error',
+  'index-of-compare-to-positive-number': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

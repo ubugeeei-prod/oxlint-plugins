@@ -65,6 +65,7 @@ const expectedRuleNames = [
   'anchor-precedence',
   'cyclomatic-complexity',
   'no-collection-size-mischeck',
+  'index-of-compare-to-positive-number',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2080,5 +2081,30 @@ describe('sonarjs native API', () => {
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0].ruleName).toBe('no-collection-size-mischeck');
     expect(diagnostics[0].messageId).toBe('collectionSizeMischeck');
+  });
+
+  it('reports index-of-compare-to-positive-number for indexOf > 0', () => {
+    const diagnostics = scan('index-of-compare-to-positive-number', 'const b = a.indexOf(x) > 0;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('index-of-compare-to-positive-number');
+    expect(diagnostics[0].messageId).toBe('indexOfPositive');
+  });
+
+  it('does not report index-of-compare-to-positive-number for indexOf >= 0', () => {
+    const diagnostics = scan('index-of-compare-to-positive-number', 'const b = a.indexOf(x) >= 0;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report index-of-compare-to-positive-number for indexOf > -1', () => {
+    const diagnostics = scan('index-of-compare-to-positive-number', 'const b = a.indexOf(x) > -1;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report index-of-compare-to-positive-number for indexOf === -1', () => {
+    const diagnostics = scan(
+      'index-of-compare-to-positive-number',
+      'const b = a.indexOf(x) === -1;',
+    );
+    expect(diagnostics).toHaveLength(0);
   });
 });

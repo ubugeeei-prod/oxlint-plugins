@@ -2922,3 +2922,86 @@ fn collection_size_mischeck_no_report_lte_zero() {
     let diagnostics = scan("no-collection-size-mischeck", source);
     assert!(diagnostics.is_empty());
 }
+
+// index-of-compare-to-positive-number
+
+#[test]
+fn index_of_compare_gt_zero() {
+    let source = "const b = a.indexOf(x) > 0;";
+    let diagnostics = scan("index-of-compare-to-positive-number", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "index-of-compare-to-positive-number"
+    );
+    assert_eq!(diagnostics[0].message_id, "indexOfPositive");
+}
+
+#[test]
+fn index_of_compare_gt_positive_number() {
+    let source = "const b = a.indexOf(x) > 2;";
+    let diagnostics = scan("index-of-compare-to-positive-number", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "index-of-compare-to-positive-number"
+    );
+    assert_eq!(diagnostics[0].message_id, "indexOfPositive");
+}
+
+#[test]
+fn last_index_of_compare_gt_zero() {
+    let source = "const b = a.lastIndexOf(x) > 0;";
+    let diagnostics = scan("index-of-compare-to-positive-number", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "index-of-compare-to-positive-number"
+    );
+    assert_eq!(diagnostics[0].message_id, "indexOfPositive");
+}
+
+#[test]
+fn index_of_compare_reversed_lt() {
+    let source = "const b = 0 < a.indexOf(x);";
+    let diagnostics = scan("index-of-compare-to-positive-number", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "index-of-compare-to-positive-number"
+    );
+    assert_eq!(diagnostics[0].message_id, "indexOfPositive");
+}
+
+#[test]
+fn index_of_compare_gte_one() {
+    let source = "const b = a.indexOf(x) >= 1;";
+    let diagnostics = scan("index-of-compare-to-positive-number", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "index-of-compare-to-positive-number"
+    );
+    assert_eq!(diagnostics[0].message_id, "indexOfPositive");
+}
+
+#[test]
+fn index_of_compare_gte_zero_no_report() {
+    let source = "const b = a.indexOf(x) >= 0;";
+    let diagnostics = scan("index-of-compare-to-positive-number", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn index_of_compare_strict_eq_no_report() {
+    let source = "const b = a.indexOf(x) === -1;";
+    let diagnostics = scan("index-of-compare-to-positive-number", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn index_of_compare_gt_neg_one_no_report() {
+    let source = "const b = a.indexOf(x) > -1;";
+    let diagnostics = scan("index-of-compare-to-positive-number", source);
+    assert!(diagnostics.is_empty());
+}
