@@ -2603,3 +2603,51 @@ fn does_not_report_no_regex_spaces_for_spaces_inside_character_class() {
     let diagnostics = scan("no-regex-spaces", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_control_regex_for_hex_escape() {
+    let source = "const r = /\\x1f/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-control-regex");
+    assert_eq!(diagnostics[0].message_id, "controlCharacter");
+}
+
+#[test]
+fn reports_no_control_regex_for_unicode_escape() {
+    let source = "const r = /\\u001f/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-control-regex");
+    assert_eq!(diagnostics[0].message_id, "controlCharacter");
+}
+
+#[test]
+fn reports_no_control_regex_for_control_letter_escape() {
+    let source = "const r = /\\cA/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-control-regex");
+    assert_eq!(diagnostics[0].message_id, "controlCharacter");
+}
+
+#[test]
+fn reports_no_control_regex_for_range_in_character_class() {
+    let source = "const r = /[\\x00-\\x1f]/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
+fn does_not_report_no_control_regex_for_named_escape_tab() {
+    let source = "const r = /\\t/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_control_regex_for_hex_above_control_range() {
+    let source = "const r = /\\x20/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert!(diagnostics.is_empty());
+}

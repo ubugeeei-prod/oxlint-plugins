@@ -82,6 +82,10 @@ const messages = Object.freeze({
   'no-regex-spaces': {
     multipleSpaces: 'Use a quantifier (e.g. " {3}") instead of multiple consecutive spaces.',
   },
+  'no-control-regex': {
+    controlCharacter:
+      'Remove this control character from the regular expression or write it as a conventional escape.',
+  },
   'generator-without-yield': {
     generatorWithoutYield:
       "This generator contains no 'yield'; either add a 'yield' or convert it to a regular function.",
@@ -243,6 +247,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow empty alternatives in a regular expression alternation (a stray, leading, or trailing "|")',
   'no-regex-spaces':
     'Disallow multiple consecutive spaces in a regular expression; use an explicit quantifier instead',
+  'no-control-regex':
+    'Disallow control characters written as \\x, \\u, or \\c escapes in regular expressions',
   'generator-without-yield':
     "Disallow generator functions that contain no 'yield' expression and therefore behave like plain functions",
   'no-exclusive-tests':
@@ -339,6 +345,7 @@ const ruleTypes = Object.freeze({
   'no-empty-group': 'suggestion',
   'no-empty-alternatives': 'suggestion',
   'no-regex-spaces': 'suggestion',
+  'no-control-regex': 'suggestion',
   'generator-without-yield': 'problem',
   'no-exclusive-tests': 'problem',
   'no-built-in-override': 'problem',
@@ -398,6 +405,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-empty-group': 'error',
   'no-empty-alternatives': 'error',
   'no-regex-spaces': 'error',
+  'no-control-regex': 'error',
   'generator-without-yield': 'error',
   'no-exclusive-tests': 'error',
   'no-built-in-override': 'error',

@@ -272,6 +272,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_empty_group(it);
         self.check_no_empty_alternatives(it);
         self.check_no_regex_spaces(it);
+        self.check_no_control_regex(it);
         walk::walk_reg_exp_literal(self, it);
     }
 
