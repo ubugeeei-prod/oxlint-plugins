@@ -4791,3 +4791,114 @@ fn does_not_report_no_array_delete_on_unprovable_receiver() {
     let diagnostics = scan("no-array-delete", source);
     assert!(diagnostics.is_empty());
 }
+
+// no-literal-call tests
+
+#[test]
+fn reports_no_literal_call_for_boolean_literal() {
+    let source = "true();";
+    let diagnostics = scan("no-literal-call", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-literal-call");
+    assert_eq!(diagnostics[0].message_id, "noLiteralCall");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_literal_call_for_number_literal() {
+    let source = "(42)();";
+    let diagnostics = scan("no-literal-call", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_literal_call_for_string_literal() {
+    let source = "(\"foo\")();";
+    let diagnostics = scan("no-literal-call", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_literal_call_for_null_literal() {
+    let source = "(null)();";
+    let diagnostics = scan("no-literal-call", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_literal_call_for_regex_literal() {
+    let source = "(/re/)();";
+    let diagnostics = scan("no-literal-call", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_literal_call_for_bigint_literal() {
+    let source = "(1n)();";
+    let diagnostics = scan("no-literal-call", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_literal_call_for_template_literal_callee() {
+    let source = "`foo`();";
+    let diagnostics = scan("no-literal-call", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_literal_call_for_tagged_template_literal_tag() {
+    let source = "true`text`;";
+    let diagnostics = scan("no-literal-call", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noLiteralCall");
+}
+
+#[test]
+fn does_not_report_no_literal_call_for_identifier_call() {
+    let source = "foo();";
+    let diagnostics = scan("no-literal-call", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_literal_call_for_member_call() {
+    let source = "obj.method();";
+    let diagnostics = scan("no-literal-call", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_literal_call_for_iife() {
+    let source = "(() => {})();";
+    let diagnostics = scan("no-literal-call", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_literal_call_for_function_expression_call() {
+    let source = "(function f() {})();";
+    let diagnostics = scan("no-literal-call", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_literal_call_for_object_or_array_callee() {
+    let source = "({})();\n[]();";
+    let diagnostics = scan("no-literal-call", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_literal_call_for_callable_tagged_template() {
+    let source = "foo`text`;";
+    let diagnostics = scan("no-literal-call", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_literal_call_for_plain_template_literal() {
+    let source = "const x = `foo`;";
+    let diagnostics = scan("no-literal-call", source);
+    assert!(diagnostics.is_empty());
+}

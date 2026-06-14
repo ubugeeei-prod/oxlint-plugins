@@ -92,6 +92,7 @@ const expectedRuleNames = [
   'updated-loop-counter',
   'misplaced-loop-counter',
   'no-array-delete',
+  'no-literal-call',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2529,6 +2530,36 @@ describe('no-array-delete rule', () => {
 
   it('does not report delete on an unprovable receiver', () => {
     const diagnostics = scan('no-array-delete', 'function f(p) {\n  delete p[0];\n}');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-literal-call rule', () => {
+  it('reports a boolean literal called as a function', () => {
+    const diagnostics = scan('no-literal-call', 'true();');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-literal-call');
+    expect(diagnostics[0].messageId).toBe('noLiteralCall');
+  });
+
+  it('reports a string literal called as a function', () => {
+    const diagnostics = scan('no-literal-call', '("foo")();');
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports a literal used as a tagged-template tag', () => {
+    const diagnostics = scan('no-literal-call', 'true`text`;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noLiteralCall');
+  });
+
+  it('does not report an ordinary function call', () => {
+    const diagnostics = scan('no-literal-call', 'foo();');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an object expression called', () => {
+    const diagnostics = scan('no-literal-call', '({})();');
     expect(diagnostics).toHaveLength(0);
   });
 });

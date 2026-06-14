@@ -327,6 +327,9 @@ const messages = Object.freeze({
     noArrayDelete:
       'Use Array.prototype.splice() to remove this element instead of the delete operator.',
   },
+  'no-literal-call': {
+    noLiteralCall: 'This literal cannot be called as a function and throws a TypeError at runtime.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -503,6 +506,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow a classic "for" loop whose update clause modifies only variable(s) absent from the loop condition (e.g. "i < 10" with "j++"), since the tested counter is never advanced by the header',
   'no-array-delete':
     'Disallow the "delete" operator on array elements (e.g. "delete arr[0]"), which leaves a hole without updating the array length; use Array.prototype.splice() instead',
+  'no-literal-call':
+    'Disallow calling a literal as a function or using it as a tagged-template tag (e.g. "true()" or "true`x`"); a literal is never callable and always throws a TypeError at runtime',
 });
 
 const ruleTypes = Object.freeze({
@@ -595,6 +600,7 @@ const ruleTypes = Object.freeze({
   'updated-loop-counter': 'suggestion',
   'misplaced-loop-counter': 'suggestion',
   'no-array-delete': 'suggestion',
+  'no-literal-call': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -687,6 +693,7 @@ const recommendedRuleConfig = Object.freeze({
   'updated-loop-counter': 'error',
   'misplaced-loop-counter': 'error',
   'no-array-delete': 'error',
+  'no-literal-call': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

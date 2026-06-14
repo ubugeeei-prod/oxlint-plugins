@@ -53,6 +53,7 @@ mod no_identical_expressions;
 mod no_inconsistent_returns;
 mod no_inverted_boolean_check;
 mod no_labels;
+mod no_literal_call;
 mod no_misleading_array_reverse;
 mod no_nested_assignment;
 mod no_nested_conditional;
