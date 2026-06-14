@@ -192,6 +192,17 @@ const ruleMeta = Object.freeze({
         '`ALTER COLUMN ... TYPE` can rewrite the entire table under an ACCESS EXCLUSIVE lock. For non-trivial tables, add a new column, dual-write, backfill, and swap — or use `USING` only for known-safe conversions in a separate migration.',
     },
   },
+  'no-char-type': {
+    type: 'suggestion',
+    description: 'Disallow the blank-padded `char(n)` / `bpchar` column type',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noChar:
+        'Avoid `char(n)`. PostgreSQL pads stored values to `n` with trailing spaces and trims on read, which surprises every comparison and round-trip. Use `text` instead.',
+    },
+  },
   'no-cluster': {
     type: 'problem',
     description:
