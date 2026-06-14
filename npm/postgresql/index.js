@@ -65,6 +65,18 @@ const ruleMeta = Object.freeze({
         '`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.',
     },
   },
+  'no-drop-not-null': {
+    type: 'suggestion',
+    description:
+      'Disallow `ALTER COLUMN ... DROP NOT NULL` — relaxing a NOT NULL constraint surprises every consumer that already assumes the column is non-null',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDropNotNull:
+        '`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
