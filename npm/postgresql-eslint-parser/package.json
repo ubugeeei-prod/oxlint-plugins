@@ -1,0 +1,96 @@
+{
+  "name": "@oxlint-plugins/postgresql-eslint-parser",
+  "version": "0.0.0",
+  "description": "Rust-backed port of postgresql-eslint-parser: an ESLint custom parser for PostgreSQL SQL, powered by libpg_query (PostgreSQL 17).",
+  "keywords": [
+    "eslint",
+    "eslint-parser",
+    "libpg_query",
+    "napi-rs",
+    "parser",
+    "postgresql",
+    "rust",
+    "sql"
+  ],
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
+    "directory": "npm/postgresql-eslint-parser"
+  },
+  "files": [
+    "index.js",
+    "api.js",
+    "api.d.ts",
+    "processor.js",
+    "processor.d.ts",
+    "native.js",
+    "native.d.ts",
+    "*.node",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "index.js",
+  "types": "api.d.ts",
+  "exports": {
+    ".": {
+      "types": "./api.d.ts",
+      "require": "./index.js",
+      "default": "./index.js"
+    },
+    "./api": {
+      "types": "./api.d.ts",
+      "require": "./api.js",
+      "default": "./api.js"
+    },
+    "./processor": {
+      "types": "./processor.d.ts",
+      "require": "./processor.js",
+      "default": "./processor.js"
+    },
+    "./native": {
+      "types": "./native.d.ts",
+      "require": "./native.js",
+      "default": "./native.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "napi build --platform --release --js native.js --dts native.d.ts",
+    "build:debug": "napi build --platform --js native.js --dts native.d.ts",
+    "prepack": "pnpm run build"
+  },
+  "napi": {
+    "binaryName": "postgresql_eslint_parser",
+    "targets": [
+      "x86_64-unknown-linux-gnu",
+      "aarch64-unknown-linux-gnu",
+      "x86_64-apple-darwin",
+      "aarch64-apple-darwin"
+    ]
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

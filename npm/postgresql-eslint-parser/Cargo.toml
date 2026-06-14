@@ -1,0 +1,30 @@
+[package]
+name = "postgresql-eslint-parser-napi"
+description = "NAPI wrapper for the postgresql-eslint-parser oxlint port."
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "postgresql_eslint_parser"
+
+[dependencies]
+napi.workspace = true
+napi-derive.workspace = true
+oxlint-plugins-postgresql.workspace = true
+
+[build-dependencies]
+napi-build.workspace = true
+
+[lints.rust]
+unused_must_use = "deny"
+
+[lints.clippy]
+dbg_macro = "deny"
+disallowed_types = "warn"
+todo = "deny"
+unwrap_used = "deny"

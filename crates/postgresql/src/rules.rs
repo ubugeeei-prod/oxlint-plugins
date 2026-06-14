@@ -4,10 +4,17 @@
 use crate::RuleDef;
 
 mod no_cluster;
+mod no_distinct_on_without_order_by;
 mod no_drop_database;
 mod no_having_without_group_by;
+mod no_implicit_join;
+mod no_rename_column;
 mod no_select_star;
 mod no_set_not_null;
+mod no_set_search_path;
+mod no_temporary_table;
+mod no_vacuum_full;
+mod require_limit;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
 /// know the full surface even while only a subset is implemented.
@@ -106,10 +113,17 @@ pub const RULE_NAMES: [&str; 89] = [
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-cluster",
+    "no-distinct-on-without-order-by",
     "no-drop-database",
     "no-having-without-group-by",
+    "no-implicit-join",
+    "no-rename-column",
     "no-select-star",
     "no-set-not-null",
+    "no-set-search-path",
+    "no-temporary-table",
+    "no-vacuum-full",
+    "require-limit",
 ];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
@@ -117,6 +131,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-cluster",
         run: no_cluster::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-distinct-on-without-order-by",
+        run: no_distinct_on_without_order_by::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -130,6 +149,16 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-implicit-join",
+        run: no_implicit_join::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-rename-column",
+        run: no_rename_column::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-select-star",
         run: no_select_star::run,
         uses_parse_error: false,
@@ -137,6 +166,26 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-set-not-null",
         run: no_set_not_null::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-set-search-path",
+        run: no_set_search_path::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-temporary-table",
+        run: no_temporary_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-vacuum-full",
+        run: no_vacuum_full::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-limit",
+        run: require_limit::run,
         uses_parse_error: false,
     },
 ];
