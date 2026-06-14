@@ -16,7 +16,15 @@ export type UnocssDiagnostic = {
   messageId: string;
   loc: UnocssDiagnosticLoc;
   fix?: UnocssDiagnosticFix | null;
+  /** Blocklisted utility name (set for `blocklist` diagnostics). */
   name?: string | null;
+  /**
+   * Blocklist reason, echoed verbatim from the matched `blocklist` option
+   * entry's `reason` (empty string when none). The bundled plugin supplies it
+   * pre-formatted with a leading `": "` so it splices into the default
+   * `"{{name}}" is in blocklist{{reason}}` template; a direct API caller gets
+   * back exactly the string it passed.
+   */
   reason?: string | null;
   prefix?: string | null;
 };

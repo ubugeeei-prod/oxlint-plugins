@@ -134,6 +134,13 @@ describe('sonarjs plugin shape', () => {
       'no-tab',
       'fixme-tag',
       'todo-tag',
+      'no-sonar-comments',
+      'array-constructor',
+      'no-function-declaration-in-block',
+      'no-inconsistent-returns',
+      'no-same-line-conditional',
+      'no-nested-assignment',
+      'no-nested-incdec',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -175,6 +182,13 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-tab']).toBe('object');
     expect(typeof plugin.rules['fixme-tag']).toBe('object');
     expect(typeof plugin.rules['todo-tag']).toBe('object');
+    expect(typeof plugin.rules['no-sonar-comments']).toBe('object');
+    expect(typeof plugin.rules['array-constructor']).toBe('object');
+    expect(typeof plugin.rules['no-function-declaration-in-block']).toBe('object');
+    expect(typeof plugin.rules['no-inconsistent-returns']).toBe('object');
+    expect(typeof plugin.rules['no-same-line-conditional']).toBe('object');
+    expect(typeof plugin.rules['no-nested-assignment']).toBe('object');
+    expect(typeof plugin.rules['no-nested-incdec']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -216,6 +230,15 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-tab']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/fixme-tag']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/todo-tag']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-sonar-comments']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/array-constructor']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-function-declaration-in-block']).toBe(
+      'error',
+    );
+    expect(plugin.configs.recommended.rules['sonarjs/no-inconsistent-returns']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-same-line-conditional']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-nested-assignment']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-nested-incdec']).toBe('error');
   });
 });
 
@@ -901,5 +924,124 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(todo-tag)');
+  });
+
+  it('reports no-sonar-comments for a NOSONAR comment through the adapter', () => {
+    const source = '// NOSONAR suppress this';
+    const reports = runRule('no-sonar-comments', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noSonarComments');
+  });
+
+  it('reports no-sonar-comments through the CLI', () => {
+    const source = '// NOSONAR suppress this';
+    const result = runOxlint('no-sonar-comments', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-sonar-comments)');
+  });
+
+  it('reports array-constructor for a multi-argument call through the adapter', () => {
+    const source = 'const a = Array(1, 2, 3);';
+    const reports = runRule('array-constructor', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('arrayConstructor');
+  });
+
+  it('reports array-constructor through the CLI', () => {
+    const source = 'const a = new Array(1, 2, 3);';
+    const result = runOxlint('array-constructor', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(array-constructor)');
+  });
+
+  it('reports no-function-declaration-in-block through the adapter', () => {
+    const source = 'if (cond) {\n  function f() {}\n}';
+    const reports = runRule('no-function-declaration-in-block', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noFunctionDeclarationInBlock');
+  });
+
+  it('reports no-function-declaration-in-block through the CLI', () => {
+    const source = 'if (cond) {\n  function f() {}\n}';
+    const result = runOxlint('no-function-declaration-in-block', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-function-declaration-in-block)');
+  });
+
+  it('reports no-inconsistent-returns through the adapter', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  return x.value;\n}';
+    const reports = runRule('no-inconsistent-returns', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('inconsistentReturns');
+  });
+
+  it('reports no-inconsistent-returns through the CLI', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  return x.value;\n}';
+    const result = runOxlint('no-inconsistent-returns', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-inconsistent-returns)');
+  });
+
+  it('reports no-same-line-conditional through the adapter', () => {
+    const source = 'if (a) {\n  doA();\n} if (b) {\n  doB();\n}';
+    const reports = runRule('no-same-line-conditional', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('sameLineConditional');
+  });
+
+  it('reports no-same-line-conditional through the CLI', () => {
+    const source = 'if (a) {\n  doA();\n} if (b) {\n  doB();\n}';
+    const result = runOxlint('no-same-line-conditional', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-same-line-conditional)');
+  });
+
+  it('reports no-nested-assignment through the adapter', () => {
+    const source = 'if (x = compute()) {\n  use(x);\n}';
+    const reports = runRule('no-nested-assignment', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('nestedAssignment');
+  });
+
+  it('reports no-nested-assignment through the CLI', () => {
+    const source = 'if (x = compute()) {\n  use(x);\n}';
+    const result = runOxlint('no-nested-assignment', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-nested-assignment)');
+  });
+
+  it('reports no-nested-incdec through the adapter', () => {
+    const source = 'foo(i++);';
+    const reports = runRule('no-nested-incdec', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('nestedIncDec');
+  });
+
+  it('reports no-nested-incdec through the CLI', () => {
+    const source = 'foo(i++);';
+    const result = runOxlint('no-nested-incdec', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-nested-incdec)');
   });
 });

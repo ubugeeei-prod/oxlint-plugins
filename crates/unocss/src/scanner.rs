@@ -1,20 +1,19 @@
-//! Scanner driver: walks literals and JSX tags to emit unocss diagnostics.
+//! Scanner driver: walks the oxc AST to emit unocss diagnostics.
+//!
+//! The actual AST traversal is performed by [`crate::visitor::UnocssVisitor`].
+//! This module consumes the collected spans and runs the per-rule check logic.
 
+use oxc_ast::ast::Program;
+use oxc_ast_visit::Visit;
 use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 use regex::Regex;
 
-use crate::literals::{
-    collect_literals, is_jsx_class_literal, is_uno_call_literal, variable_name_in_statement,
-};
 use crate::ordering::{
     is_unocss_token, join_tokens, prefix_with_space, sort_class_tokens, sorted_class_string,
 };
-use crate::tags::{
-    IGNORED_ATTRIBUTIFY_ATTRIBUTES, find_tag_end, is_attr_name_part, is_identifier_part,
-    is_identifier_start, skip_attribute_value,
-};
 use crate::types::{Diagnostic, DiagnosticFix, LineIndex, LiteralSpan, ReportData, UnocssOptions};
+use crate::visitor::{OpeningElement, UnocssVisitor};
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,
@@ -25,142 +24,60 @@ pub(crate) struct Scanner<'a> {
 }
 
 impl<'a> Scanner<'a> {
-    pub(crate) fn scan_literals(&mut self) {
-        for literal in collect_literals(self.source_text) {
-            if literal.content.trim().is_empty() || literal.content.contains('\\') {
-                continue;
-            }
-
-            let class_context = is_jsx_class_literal(self.source_text, literal);
-            if class_context {
-                self.check_blocklist(literal);
-                self.check_class_compile(literal);
-            }
-
-            if class_context
-                || is_uno_call_literal(
-                    self.source_text,
-                    literal.full_start,
-                    &self.options.uno_functions,
-                )
-                || self.is_uno_variable_literal(literal.full_start)
-            {
-                self.check_order(literal);
-            }
-        }
-    }
-
-    pub(crate) fn scan_attributify(&mut self) {
-        let bytes = self.source_text.as_bytes();
-        let mut index = 0;
-        while index < bytes.len() {
-            if bytes[index] != b'<' || index + 1 >= bytes.len() || bytes[index + 1] == b'/' {
-                index += 1;
-                continue;
-            }
-            if !is_identifier_start(bytes[index + 1]) {
-                index += 1;
-                continue;
-            }
-
-            let Some(tag_end) = find_tag_end(self.source_text, index + 1) else {
-                break;
-            };
-            self.check_tag_attributify(index, tag_end);
-            index = tag_end + 1;
-        }
-    }
-
-    fn check_tag_attributify(&mut self, tag_start: usize, tag_end: usize) {
-        let mut cursor = tag_start + 1;
-        let bytes = self.source_text.as_bytes();
-        while cursor < tag_end && is_identifier_part(bytes[cursor]) {
-            cursor += 1;
-        }
-
-        let mut attrs: SmallVec<[(CompactString, usize, usize); 8]> = SmallVec::new();
-        while cursor < tag_end {
-            while cursor < tag_end && bytes[cursor].is_ascii_whitespace() {
-                cursor += 1;
-            }
-            if cursor >= tag_end || bytes[cursor] == b'/' {
-                break;
-            }
-            if !is_identifier_start(bytes[cursor]) && bytes[cursor] != b':' {
-                cursor += 1;
-                continue;
-            }
-
-            let name_start = cursor;
-            cursor += 1;
-            while cursor < tag_end && is_attr_name_part(bytes[cursor]) {
-                cursor += 1;
-            }
-            let name_end = cursor;
-            let name = &self.source_text[name_start..name_end];
-            while cursor < tag_end && bytes[cursor].is_ascii_whitespace() {
-                cursor += 1;
-            }
-
-            if cursor < tag_end && bytes[cursor] == b'=' {
-                cursor = skip_attribute_value(self.source_text, cursor + 1, tag_end);
-                continue;
-            }
-
-            let lower = name.to_ascii_lowercase();
-            if IGNORED_ATTRIBUTIFY_ATTRIBUTES.contains(&lower.as_str()) {
-                continue;
-            }
-
-            self.check_blocked_token(name, Span::new(name_start as u32, name_end as u32));
-            if is_unocss_token(name) {
-                attrs.push((CompactString::from(name), name_start, name_end));
-            }
-        }
-
-        if attrs.len() < 2 {
-            return;
-        }
-
-        let names: SmallVec<[&str; 8]> = attrs.iter().map(|(name, _, _)| name.as_str()).collect();
-        let sorted = sort_class_tokens(names.as_slice());
-        let sorted_text = join_tokens(sorted.as_slice());
-        let input_text = join_tokens(names.as_slice());
-        if sorted_text == input_text {
-            return;
-        }
-
-        let contiguous = attrs
-            .windows(2)
-            .all(|pair| self.source_text[pair[0].2..pair[1].1].trim().is_empty());
-        let fix = if contiguous {
-            let start = attrs[0].1;
-            let end = attrs[attrs.len() - 1].2;
-            Some(DiagnosticFix {
-                start: start as u32,
-                end: end as u32,
-                replacement: sorted_text,
-            })
-        } else {
-            None
+    /// Run all rule checks by first collecting AST-based spans via the visitor,
+    /// then applying per-rule logic.
+    ///
+    /// Diagnostic ordering (preserved from old scanner):
+    ///  1. For each class literal: blocklist (per-token), enforce-class-compile, order.
+    ///  2. For each call/variable literal: order only.
+    ///  3. For each JSX opening element: order-attributify.
+    pub(crate) fn run(&mut self, program: &Program<'a>) {
+        // Run the AST visitor in a scoped block so its immutable borrows of
+        // `self.options.uno_functions` / `self.variable_regexes` end before the
+        // `&mut self` check calls below. The collected spans borrow only
+        // `source_text` (lifetime `'a`), not `self`, so they move out cleanly.
+        let (class_literals, call_literals, opening_elements) = {
+            let mut visitor = UnocssVisitor::new(
+                self.source_text,
+                &self.options.uno_functions,
+                &self.variable_regexes,
+            );
+            visitor.visit_program(program);
+            (
+                visitor.class_literals,
+                visitor.call_literals,
+                visitor.opening_elements,
+            )
         };
-        self.report(
-            "order-attributify",
-            "invalid-order",
-            Span::new(tag_start as u32, tag_end as u32),
-            ReportData {
-                fix,
-                ..ReportData::default()
-            },
-        );
+
+        // Phase 1 – class literals.
+        for lit in class_literals {
+            self.check_blocklist(lit);
+            self.check_class_compile(lit);
+            self.check_order(lit);
+        }
+
+        // Phase 2 – call / variable literals (order only).
+        for lit in call_literals {
+            self.check_order(lit);
+        }
+
+        // Phase 3 – attributify (after all literal diagnostics).
+        for elem in opening_elements {
+            self.check_element_attributify(&elem);
+        }
     }
+
+    // ── Rule implementations ────────────────────────────────────────────────
 
     fn check_blocklist(&mut self, literal: LiteralSpan<'_>) {
         for token in literal.content.split_whitespace() {
-            self.check_blocked_token(
-                token,
-                Span::new(literal.content_start as u32, literal.content_end as u32),
-            );
+            // `split_whitespace` yields subslices of `content`, so the token's
+            // byte offset within the literal is its pointer distance from the
+            // content start. Report the precise token span, not the whole string.
+            let offset = token.as_ptr() as usize - literal.content.as_ptr() as usize;
+            let start = literal.content_start + offset;
+            self.check_blocked_token(token, Span::new(start as u32, (start + token.len()) as u32));
         }
     }
 
@@ -239,17 +156,62 @@ impl<'a> Scanner<'a> {
         );
     }
 
-    fn is_uno_variable_literal(&self, start: usize) -> bool {
-        let statement_start = self.source_text[..start]
-            .rfind(';')
-            .map_or(0, |index| index + 1);
-        let statement = &self.source_text[statement_start..start];
-        let Some(name) = variable_name_in_statement(statement) else {
-            return false;
-        };
-        self.variable_regexes
+    fn check_element_attributify(&mut self, elem: &OpeningElement) {
+        let attrs = &elem.valueless_attrs;
+
+        // Blocklist check for every valueless attribute (mirrors old scanner).
+        for (name, span) in attrs {
+            self.check_blocked_token(name.as_str(), *span);
+        }
+
+        // Filter to UnoCSS tokens only for order-attributify.
+        let uno_attrs: SmallVec<[(CompactString, Span); 8]> = attrs
             .iter()
-            .any(|regex| regex.is_match(name))
+            .filter(|(name, _)| is_unocss_token(name.as_str()))
+            .cloned()
+            .collect();
+
+        if uno_attrs.len() < 2 {
+            return;
+        }
+
+        let names: SmallVec<[&str; 8]> = uno_attrs.iter().map(|(n, _)| n.as_str()).collect();
+        let sorted = sort_class_tokens(names.as_slice());
+        let sorted_text = join_tokens(sorted.as_slice());
+        let input_text = join_tokens(names.as_slice());
+        if sorted_text == input_text {
+            return;
+        }
+
+        // Build a fix only when the attrs are contiguous in source. `get`
+        // guards against any degenerate (reversed/out-of-range) span pair so a
+        // parser edge case can never panic at the NAPI boundary.
+        let contiguous = uno_attrs.windows(2).all(|pair| {
+            let range = pair[0].1.end as usize..pair[1].1.start as usize;
+            self.source_text
+                .get(range)
+                .is_some_and(|between| between.trim().is_empty())
+        });
+        let fix = if contiguous {
+            let start = uno_attrs[0].1.start;
+            let end = uno_attrs[uno_attrs.len() - 1].1.end;
+            Some(DiagnosticFix {
+                start,
+                end,
+                replacement: sorted_text,
+            })
+        } else {
+            None
+        };
+        self.report(
+            "order-attributify",
+            "invalid-order",
+            elem.span,
+            ReportData {
+                fix,
+                ..ReportData::default()
+            },
+        );
     }
 
     fn report(
