@@ -15,6 +15,7 @@ mod no_implicit_join;
 mod no_leading_wildcard_like;
 mod no_order_by_ordinal;
 mod no_rename_column;
+mod no_rename_table;
 mod no_rule;
 mod no_select_into;
 mod no_select_star;
@@ -135,6 +136,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-leading-wildcard-like",
     "no-order-by-ordinal",
     "no-rename-column",
+    "no-rename-table",
     "no-rule",
     "no-select-into",
     "no-select-star",
@@ -208,6 +210,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-rename-column",
         run: no_rename_column::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-rename-table",
+        run: no_rename_table::run,
         uses_parse_error: false,
     },
     RuleDef {

@@ -173,6 +173,18 @@ const ruleMeta = Object.freeze({
         '`RENAME COLUMN` breaks every running app that still selects/inserts by the old name. The safer pattern is to add a new column, dual-write, backfill, and drop the old one across separate deploys.',
     },
   },
+  'no-rename-table': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... RENAME TO` — every deployed reader of the old name breaks at deploy time',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noRenameTable:
+        "`RENAME TO` breaks every running app that still queries the old name. The safer pattern is `CREATE VIEW old AS SELECT * FROM new` so old callers keep working until they're migrated, then drop the view in a separate deploy.",
+    },
+  },
   'no-rule': {
     type: 'problem',
     description:
