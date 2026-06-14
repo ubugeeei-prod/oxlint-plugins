@@ -1,0 +1,3051 @@
+{
+  "__generated": {
+    "source": "postgresql-eslint-parser",
+    "ref": "postgresql-eslint-parser@0.5.4",
+    "sourceDir": "upstream/postgresql-eslint-parser/tests/fixtures",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-parser-tests.ts"
+  },
+  "input": "-- Triggers test\nCREATE OR REPLACE FUNCTION update_modified_column()\nRETURNS TRIGGER AS $$\nBEGIN\n    NEW.updated_at = NOW();\n    RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER update_users_modtime\n    BEFORE UPDATE ON users\n    FOR EACH ROW\n    EXECUTE FUNCTION update_modified_column();\n\n-- Audit trigger\nCREATE OR REPLACE FUNCTION audit_changes()\nRETURNS TRIGGER AS $$\nBEGIN\n    IF TG_OP = 'DELETE' THEN\n        INSERT INTO audit_log (table_name, operation, old_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD), NOW(), current_user);\n        RETURN OLD;\n    ELSIF TG_OP = 'UPDATE' THEN\n        INSERT INTO audit_log (table_name, operation, old_data, new_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD), row_to_json(NEW), NOW(), current_user);\n        RETURN NEW;\n    ELSIF TG_OP = 'INSERT' THEN\n        INSERT INTO audit_log (table_name, operation, new_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(NEW), NOW(), current_user);\n        RETURN NEW;\n    END IF;\n    RETURN NULL;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER audit_users_changes\n    AFTER INSERT OR UPDATE OR DELETE ON users\n    FOR EACH ROW\n    EXECUTE FUNCTION audit_changes();\n\n-- Conditional trigger\nCREATE OR REPLACE FUNCTION check_order_total()\nRETURNS TRIGGER AS $$\nBEGIN\n    IF NEW.total_amount < 0 THEN\n        RAISE EXCEPTION 'Order total cannot be negative';\n    END IF;\n    \n    IF NEW.total_amount > 10000 THEN\n        INSERT INTO high_value_orders (order_id, flagged_at)\n        VALUES (NEW.id, NOW());\n    END IF;\n    \n    RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER check_order_total_trigger\n    BEFORE INSERT OR UPDATE ON orders\n    FOR EACH ROW\n    WHEN (NEW.total_amount IS NOT NULL)\n    EXECUTE FUNCTION check_order_total();\n\n-- INSTEAD OF trigger for views\nCREATE OR REPLACE FUNCTION user_order_summary_update()\nRETURNS TRIGGER AS $$\nBEGIN\n    UPDATE users \n    SET full_name = NEW.user_name\n    WHERE id = NEW.user_id;\n    \n    IF NEW.order_count <> OLD.order_count THEN\n        RAISE NOTICE 'Cannot directly update order count through this view';\n    END IF;\n    \n    RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER user_order_summary_update_trigger\n    INSTEAD OF UPDATE ON user_order_summary_view\n    FOR EACH ROW\n    EXECUTE FUNCTION user_order_summary_update(); ",
+  "ast": {
+    "type": "Program",
+    "range": [0, 2380],
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 83,
+        "column": 50
+      }
+    },
+    "body": [
+      {
+        "type": "CreateFunctionStmt",
+        "replace": true,
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "update_modified_column",
+            "range": [0, 165],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 0
+              },
+              "end": {
+                "line": 8,
+                "column": 19
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "0": {
+            "type": "String",
+            "sval": "trigger",
+            "range": [77, 84],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 8
+              },
+              "end": {
+                "line": 3,
+                "column": 15
+              }
+            }
+          },
+          "typemod": -1,
+          "type": "names",
+          "range": [77, 84],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 8
+            },
+            "end": {
+              "line": 3,
+              "column": 15
+            }
+          }
+        },
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nBEGIN\n    NEW.updated_at = NOW();\n    RETURN NEW;\nEND;\n",
+                  "range": [85, 87],
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 16
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 18
+                    }
+                  }
+                }
+              ],
+              "range": [85, 87],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 16
+                },
+                "end": {
+                  "line": 3,
+                  "column": 18
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [85, 87],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 16
+              },
+              "end": {
+                "line": 3,
+                "column": 18
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [149, 157],
+              "loc": {
+                "start": {
+                  "line": 8,
+                  "column": 3
+                },
+                "end": {
+                  "line": 8,
+                  "column": 11
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [149, 157],
+            "loc": {
+              "start": {
+                "line": 8,
+                "column": 3
+              },
+              "end": {
+                "line": 8,
+                "column": 11
+              }
+            }
+          }
+        ],
+        "range": [0, 165],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 8,
+            "column": 19
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nBEGIN\n    NEW.updated_at = NOW();\n    RETURN NEW;\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [90, 146],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 21
+            },
+            "end": {
+              "line": 8,
+              "column": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "CreateTrigStmt",
+        "trigname": "update_users_modtime",
+        "relation": {
+          "relname": "users",
+          "inh": true,
+          "relpersistence": "p",
+          "range": [225, 230],
+          "loc": {
+            "start": {
+              "line": 11,
+              "column": 21
+            },
+            "end": {
+              "line": 11,
+              "column": 26
+            }
+          }
+        },
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "update_modified_column",
+            "range": [166, 293],
+            "loc": {
+              "start": {
+                "line": 8,
+                "column": 20
+              },
+              "end": {
+                "line": 13,
+                "column": 45
+              }
+            }
+          }
+        ],
+        "row": true,
+        "timing": 2,
+        "events": 16,
+        "range": [166, 293],
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 20
+          },
+          "end": {
+            "line": 13,
+            "column": 45
+          }
+        }
+      },
+      {
+        "type": "CreateFunctionStmt",
+        "replace": true,
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "audit_changes",
+            "range": [294, 1116],
+            "loc": {
+              "start": {
+                "line": 13,
+                "column": 46
+              },
+              "end": {
+                "line": 34,
+                "column": 19
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "0": {
+            "type": "String",
+            "sval": "trigger",
+            "range": [364, 371],
+            "loc": {
+              "start": {
+                "line": 17,
+                "column": 8
+              },
+              "end": {
+                "line": 17,
+                "column": 15
+              }
+            }
+          },
+          "typemod": -1,
+          "type": "names",
+          "range": [364, 371],
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 8
+            },
+            "end": {
+              "line": 17,
+              "column": 15
+            }
+          }
+        },
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nBEGIN\n    IF TG_OP = 'DELETE' THEN\n        INSERT INTO audit_log (table_name, operation, old_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD), NOW(), current_user);\n        RETURN OLD;\n    ELSIF TG_OP = 'UPDATE' THEN\n        INSERT INTO audit_log (table_name, operation, old_data, new_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD), row_to_json(NEW), NOW(), current_user);\n        RETURN NEW;\n    ELSIF TG_OP = 'INSERT' THEN\n        INSERT INTO audit_log (table_name, operation, new_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(NEW), NOW(), current_user);\n        RETURN NEW;\n    END IF;\n    RETURN NULL;\nEND;\n",
+                  "range": [372, 374],
+                  "loc": {
+                    "start": {
+                      "line": 17,
+                      "column": 16
+                    },
+                    "end": {
+                      "line": 17,
+                      "column": 18
+                    }
+                  }
+                }
+              ],
+              "range": [372, 374],
+              "loc": {
+                "start": {
+                  "line": 17,
+                  "column": 16
+                },
+                "end": {
+                  "line": 17,
+                  "column": 18
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [372, 374],
+            "loc": {
+              "start": {
+                "line": 17,
+                "column": 16
+              },
+              "end": {
+                "line": 17,
+                "column": 18
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [1100, 1108],
+              "loc": {
+                "start": {
+                  "line": 34,
+                  "column": 3
+                },
+                "end": {
+                  "line": 34,
+                  "column": 11
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [1100, 1108],
+            "loc": {
+              "start": {
+                "line": 34,
+                "column": 3
+              },
+              "end": {
+                "line": 34,
+                "column": 11
+              }
+            }
+          }
+        ],
+        "range": [294, 1116],
+        "loc": {
+          "start": {
+            "line": 13,
+            "column": 46
+          },
+          "end": {
+            "line": 34,
+            "column": 19
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nBEGIN\n    IF TG_OP = 'DELETE' THEN\n        INSERT INTO audit_log (table_name, operation, old_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD), NOW(), current_user);\n        RETURN OLD;\n    ELSIF TG_OP = 'UPDATE' THEN\n        INSERT INTO audit_log (table_name, operation, old_data, new_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD), row_to_json(NEW), NOW(), current_user);\n        RETURN NEW;\n    ELSIF TG_OP = 'INSERT' THEN\n        INSERT INTO audit_log (table_name, operation, new_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(NEW), NOW(), current_user);\n        RETURN NEW;\n    END IF;\n    RETURN NULL;\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [377, 1097],
+          "loc": {
+            "start": {
+              "line": 17,
+              "column": 21
+            },
+            "end": {
+              "line": 34,
+              "column": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "CreateTrigStmt",
+        "trigname": "audit_users_changes",
+        "relation": {
+          "relname": "users",
+          "inh": true,
+          "relpersistence": "p",
+          "range": [1194, 1199],
+          "loc": {
+            "start": {
+              "line": 37,
+              "column": 40
+            },
+            "end": {
+              "line": 37,
+              "column": 45
+            }
+          }
+        },
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "audit_changes",
+            "range": [1117, 1253],
+            "loc": {
+              "start": {
+                "line": 34,
+                "column": 20
+              },
+              "end": {
+                "line": 39,
+                "column": 36
+              }
+            }
+          }
+        ],
+        "row": true,
+        "events": 28,
+        "range": [1117, 1253],
+        "loc": {
+          "start": {
+            "line": 34,
+            "column": 20
+          },
+          "end": {
+            "line": 39,
+            "column": 36
+          }
+        }
+      },
+      {
+        "type": "CreateFunctionStmt",
+        "replace": true,
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "check_order_total",
+            "range": [1254, 1649],
+            "loc": {
+              "start": {
+                "line": 39,
+                "column": 37
+              },
+              "end": {
+                "line": 56,
+                "column": 19
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "0": {
+            "type": "String",
+            "sval": "trigger",
+            "range": [1334, 1341],
+            "loc": {
+              "start": {
+                "line": 43,
+                "column": 8
+              },
+              "end": {
+                "line": 43,
+                "column": 15
+              }
+            }
+          },
+          "typemod": -1,
+          "type": "names",
+          "range": [1334, 1341],
+          "loc": {
+            "start": {
+              "line": 43,
+              "column": 8
+            },
+            "end": {
+              "line": 43,
+              "column": 15
+            }
+          }
+        },
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nBEGIN\n    IF NEW.total_amount < 0 THEN\n        RAISE EXCEPTION 'Order total cannot be negative';\n    END IF;\n    \n    IF NEW.total_amount > 10000 THEN\n        INSERT INTO high_value_orders (order_id, flagged_at)\n        VALUES (NEW.id, NOW());\n    END IF;\n    \n    RETURN NEW;\nEND;\n",
+                  "range": [1342, 1344],
+                  "loc": {
+                    "start": {
+                      "line": 43,
+                      "column": 16
+                    },
+                    "end": {
+                      "line": 43,
+                      "column": 18
+                    }
+                  }
+                }
+              ],
+              "range": [1342, 1344],
+              "loc": {
+                "start": {
+                  "line": 43,
+                  "column": 16
+                },
+                "end": {
+                  "line": 43,
+                  "column": 18
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [1342, 1344],
+            "loc": {
+              "start": {
+                "line": 43,
+                "column": 16
+              },
+              "end": {
+                "line": 43,
+                "column": 18
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [1633, 1641],
+              "loc": {
+                "start": {
+                  "line": 56,
+                  "column": 3
+                },
+                "end": {
+                  "line": 56,
+                  "column": 11
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [1633, 1641],
+            "loc": {
+              "start": {
+                "line": 56,
+                "column": 3
+              },
+              "end": {
+                "line": 56,
+                "column": 11
+              }
+            }
+          }
+        ],
+        "range": [1254, 1649],
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 37
+          },
+          "end": {
+            "line": 56,
+            "column": 19
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nBEGIN\n    IF NEW.total_amount < 0 THEN\n        RAISE EXCEPTION 'Order total cannot be negative';\n    END IF;\n    \n    IF NEW.total_amount > 10000 THEN\n        INSERT INTO high_value_orders (order_id, flagged_at)\n        VALUES (NEW.id, NOW());\n    END IF;\n    \n    RETURN NEW;\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [1347, 1630],
+          "loc": {
+            "start": {
+              "line": 43,
+              "column": 21
+            },
+            "end": {
+              "line": 56,
+              "column": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "CreateTrigStmt",
+        "trigname": "check_order_total_trigger",
+        "relation": {
+          "relname": "orders",
+          "inh": true,
+          "relpersistence": "p",
+          "range": [1724, 1730],
+          "loc": {
+            "start": {
+              "line": 59,
+              "column": 31
+            },
+            "end": {
+              "line": 59,
+              "column": 37
+            }
+          }
+        },
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "check_order_total",
+            "range": [1650, 1828],
+            "loc": {
+              "start": {
+                "line": 56,
+                "column": 20
+              },
+              "end": {
+                "line": 62,
+                "column": 40
+              }
+            }
+          }
+        ],
+        "row": true,
+        "timing": 2,
+        "events": 20,
+        "whenClause": {
+          "type": "NullTest",
+          "arg": {
+            "type": "ColumnRef",
+            "fields": [
+              {
+                "type": "String",
+                "sval": "new",
+                "range": [1758, 1761],
+                "loc": {
+                  "start": {
+                    "line": 61,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 61,
+                    "column": 13
+                  }
+                }
+              },
+              {
+                "type": "String",
+                "sval": "total_amount",
+                "range": [1758, 1761],
+                "loc": {
+                  "start": {
+                    "line": 61,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 61,
+                    "column": 13
+                  }
+                }
+              }
+            ],
+            "range": [1758, 1761],
+            "loc": {
+              "start": {
+                "line": 61,
+                "column": 10
+              },
+              "end": {
+                "line": 61,
+                "column": 13
+              }
+            }
+          },
+          "nulltesttype": "IS_NOT_NULL",
+          "range": [1775, 1777],
+          "loc": {
+            "start": {
+              "line": 61,
+              "column": 27
+            },
+            "end": {
+              "line": 61,
+              "column": 29
+            }
+          }
+        },
+        "range": [1650, 1828],
+        "loc": {
+          "start": {
+            "line": 56,
+            "column": 20
+          },
+          "end": {
+            "line": 62,
+            "column": 40
+          }
+        }
+      },
+      {
+        "type": "CreateFunctionStmt",
+        "replace": true,
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "user_order_summary_update",
+            "range": [1829, 2212],
+            "loc": {
+              "start": {
+                "line": 62,
+                "column": 41
+              },
+              "end": {
+                "line": 78,
+                "column": 19
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "0": {
+            "type": "String",
+            "sval": "trigger",
+            "range": [1926, 1933],
+            "loc": {
+              "start": {
+                "line": 66,
+                "column": 8
+              },
+              "end": {
+                "line": 66,
+                "column": 15
+              }
+            }
+          },
+          "typemod": -1,
+          "type": "names",
+          "range": [1926, 1933],
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 8
+            },
+            "end": {
+              "line": 66,
+              "column": 15
+            }
+          }
+        },
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nBEGIN\n    UPDATE users \n    SET full_name = NEW.user_name\n    WHERE id = NEW.user_id;\n    \n    IF NEW.order_count <> OLD.order_count THEN\n        RAISE NOTICE 'Cannot directly update order count through this view';\n    END IF;\n    \n    RETURN NEW;\nEND;\n",
+                  "range": [1934, 1936],
+                  "loc": {
+                    "start": {
+                      "line": 66,
+                      "column": 16
+                    },
+                    "end": {
+                      "line": 66,
+                      "column": 18
+                    }
+                  }
+                }
+              ],
+              "range": [1934, 1936],
+              "loc": {
+                "start": {
+                  "line": 66,
+                  "column": 16
+                },
+                "end": {
+                  "line": 66,
+                  "column": 18
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [1934, 1936],
+            "loc": {
+              "start": {
+                "line": 66,
+                "column": 16
+              },
+              "end": {
+                "line": 66,
+                "column": 18
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [2196, 2204],
+              "loc": {
+                "start": {
+                  "line": 78,
+                  "column": 3
+                },
+                "end": {
+                  "line": 78,
+                  "column": 11
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [2196, 2204],
+            "loc": {
+              "start": {
+                "line": 78,
+                "column": 3
+              },
+              "end": {
+                "line": 78,
+                "column": 11
+              }
+            }
+          }
+        ],
+        "range": [1829, 2212],
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 41
+          },
+          "end": {
+            "line": 78,
+            "column": 19
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nBEGIN\n    UPDATE users \n    SET full_name = NEW.user_name\n    WHERE id = NEW.user_id;\n    \n    IF NEW.order_count <> OLD.order_count THEN\n        RAISE NOTICE 'Cannot directly update order count through this view';\n    END IF;\n    \n    RETURN NEW;\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [1939, 2193],
+          "loc": {
+            "start": {
+              "line": 66,
+              "column": 21
+            },
+            "end": {
+              "line": 78,
+              "column": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "CreateTrigStmt",
+        "trigname": "user_order_summary_update_trigger",
+        "relation": {
+          "relname": "user_order_summary_view",
+          "inh": true,
+          "relpersistence": "p",
+          "range": [2289, 2312],
+          "loc": {
+            "start": {
+              "line": 81,
+              "column": 25
+            },
+            "end": {
+              "line": 81,
+              "column": 48
+            }
+          }
+        },
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "user_order_summary_update",
+            "range": [2213, 2378],
+            "loc": {
+              "start": {
+                "line": 78,
+                "column": 20
+              },
+              "end": {
+                "line": 83,
+                "column": 48
+              }
+            }
+          }
+        ],
+        "row": true,
+        "timing": 64,
+        "events": 16,
+        "range": [2213, 2378],
+        "loc": {
+          "start": {
+            "line": 78,
+            "column": 20
+          },
+          "end": {
+            "line": 83,
+            "column": 48
+          }
+        }
+      }
+    ],
+    "tokens": [
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [17, 23],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [24, 26],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 7
+          },
+          "end": {
+            "line": 2,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "REPLACE",
+        "range": [27, 34],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 10
+          },
+          "end": {
+            "line": 2,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [35, 43],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 18
+          },
+          "end": {
+            "line": 2,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "update_modified_column",
+        "range": [44, 66],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 27
+          },
+          "end": {
+            "line": 2,
+            "column": 49
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [66, 67],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 49
+          },
+          "end": {
+            "line": 2,
+            "column": 50
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [67, 68],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 50
+          },
+          "end": {
+            "line": 2,
+            "column": 51
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "RETURNS",
+        "range": [69, 76],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 0
+          },
+          "end": {
+            "line": 3,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "TRIGGER",
+        "range": [77, 84],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 8
+          },
+          "end": {
+            "line": 3,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [85, 87],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 16
+          },
+          "end": {
+            "line": 3,
+            "column": 18
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$$\nBEGIN\n    NEW.updated_at = NOW();\n    RETURN NEW;\nEND;\n$$",
+        "range": [88, 148],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 19
+          },
+          "end": {
+            "line": 8,
+            "column": 2
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [149, 157],
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 3
+          },
+          "end": {
+            "line": 8,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [158, 165],
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 12
+          },
+          "end": {
+            "line": 8,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [165, 166],
+        "loc": {
+          "start": {
+            "line": 8,
+            "column": 19
+          },
+          "end": {
+            "line": 8,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [168, 174],
+        "loc": {
+          "start": {
+            "line": 10,
+            "column": 0
+          },
+          "end": {
+            "line": 10,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "TRIGGER",
+        "range": [175, 182],
+        "loc": {
+          "start": {
+            "line": 10,
+            "column": 7
+          },
+          "end": {
+            "line": 10,
+            "column": 14
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "update_users_modtime",
+        "range": [183, 203],
+        "loc": {
+          "start": {
+            "line": 10,
+            "column": 15
+          },
+          "end": {
+            "line": 10,
+            "column": 35
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "BEFORE",
+        "range": [208, 214],
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 4
+          },
+          "end": {
+            "line": 11,
+            "column": 10
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "UPDATE",
+        "range": [215, 221],
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 11
+          },
+          "end": {
+            "line": 11,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "ON",
+        "range": [222, 224],
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 18
+          },
+          "end": {
+            "line": 11,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "users",
+        "range": [225, 230],
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 21
+          },
+          "end": {
+            "line": 11,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FOR",
+        "range": [235, 238],
+        "loc": {
+          "start": {
+            "line": 12,
+            "column": 4
+          },
+          "end": {
+            "line": 12,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "EACH",
+        "range": [239, 243],
+        "loc": {
+          "start": {
+            "line": 12,
+            "column": 8
+          },
+          "end": {
+            "line": 12,
+            "column": 12
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "ROW",
+        "range": [244, 247],
+        "loc": {
+          "start": {
+            "line": 12,
+            "column": 13
+          },
+          "end": {
+            "line": 12,
+            "column": 16
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "EXECUTE",
+        "range": [252, 259],
+        "loc": {
+          "start": {
+            "line": 13,
+            "column": 4
+          },
+          "end": {
+            "line": 13,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [260, 268],
+        "loc": {
+          "start": {
+            "line": 13,
+            "column": 12
+          },
+          "end": {
+            "line": 13,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "update_modified_column",
+        "range": [269, 291],
+        "loc": {
+          "start": {
+            "line": 13,
+            "column": 21
+          },
+          "end": {
+            "line": 13,
+            "column": 43
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [291, 292],
+        "loc": {
+          "start": {
+            "line": 13,
+            "column": 43
+          },
+          "end": {
+            "line": 13,
+            "column": 44
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [292, 293],
+        "loc": {
+          "start": {
+            "line": 13,
+            "column": 44
+          },
+          "end": {
+            "line": 13,
+            "column": 45
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [293, 294],
+        "loc": {
+          "start": {
+            "line": 13,
+            "column": 45
+          },
+          "end": {
+            "line": 13,
+            "column": 46
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [313, 319],
+        "loc": {
+          "start": {
+            "line": 16,
+            "column": 0
+          },
+          "end": {
+            "line": 16,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [320, 322],
+        "loc": {
+          "start": {
+            "line": 16,
+            "column": 7
+          },
+          "end": {
+            "line": 16,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "REPLACE",
+        "range": [323, 330],
+        "loc": {
+          "start": {
+            "line": 16,
+            "column": 10
+          },
+          "end": {
+            "line": 16,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [331, 339],
+        "loc": {
+          "start": {
+            "line": 16,
+            "column": 18
+          },
+          "end": {
+            "line": 16,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "audit_changes",
+        "range": [340, 353],
+        "loc": {
+          "start": {
+            "line": 16,
+            "column": 27
+          },
+          "end": {
+            "line": 16,
+            "column": 40
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [353, 354],
+        "loc": {
+          "start": {
+            "line": 16,
+            "column": 40
+          },
+          "end": {
+            "line": 16,
+            "column": 41
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [354, 355],
+        "loc": {
+          "start": {
+            "line": 16,
+            "column": 41
+          },
+          "end": {
+            "line": 16,
+            "column": 42
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "RETURNS",
+        "range": [356, 363],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 0
+          },
+          "end": {
+            "line": 17,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "TRIGGER",
+        "range": [364, 371],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 8
+          },
+          "end": {
+            "line": 17,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [372, 374],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 16
+          },
+          "end": {
+            "line": 17,
+            "column": 18
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$$\nBEGIN\n    IF TG_OP = 'DELETE' THEN\n        INSERT INTO audit_log (table_name, operation, old_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD), NOW(), current_user);\n        RETURN OLD;\n    ELSIF TG_OP = 'UPDATE' THEN\n        INSERT INTO audit_log (table_name, operation, old_data, new_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD), row_to_json(NEW), NOW(), current_user);\n        RETURN NEW;\n    ELSIF TG_OP = 'INSERT' THEN\n        INSERT INTO audit_log (table_name, operation, new_data, changed_at, changed_by)\n        VALUES (TG_TABLE_NAME, TG_OP, row_to_json(NEW), NOW(), current_user);\n        RETURN NEW;\n    END IF;\n    RETURN NULL;\nEND;\n$$",
+        "range": [375, 1099],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 19
+          },
+          "end": {
+            "line": 34,
+            "column": 2
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [1100, 1108],
+        "loc": {
+          "start": {
+            "line": 34,
+            "column": 3
+          },
+          "end": {
+            "line": 34,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [1109, 1116],
+        "loc": {
+          "start": {
+            "line": 34,
+            "column": 12
+          },
+          "end": {
+            "line": 34,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [1116, 1117],
+        "loc": {
+          "start": {
+            "line": 34,
+            "column": 19
+          },
+          "end": {
+            "line": 34,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [1119, 1125],
+        "loc": {
+          "start": {
+            "line": 36,
+            "column": 0
+          },
+          "end": {
+            "line": 36,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "TRIGGER",
+        "range": [1126, 1133],
+        "loc": {
+          "start": {
+            "line": 36,
+            "column": 7
+          },
+          "end": {
+            "line": 36,
+            "column": 14
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "audit_users_changes",
+        "range": [1134, 1153],
+        "loc": {
+          "start": {
+            "line": 36,
+            "column": 15
+          },
+          "end": {
+            "line": 36,
+            "column": 34
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "AFTER",
+        "range": [1158, 1163],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 4
+          },
+          "end": {
+            "line": 37,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "INSERT",
+        "range": [1164, 1170],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 10
+          },
+          "end": {
+            "line": 37,
+            "column": 16
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [1171, 1173],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 17
+          },
+          "end": {
+            "line": 37,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "UPDATE",
+        "range": [1174, 1180],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 20
+          },
+          "end": {
+            "line": 37,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [1181, 1183],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 27
+          },
+          "end": {
+            "line": 37,
+            "column": 29
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "DELETE",
+        "range": [1184, 1190],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 30
+          },
+          "end": {
+            "line": 37,
+            "column": 36
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "ON",
+        "range": [1191, 1193],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 37
+          },
+          "end": {
+            "line": 37,
+            "column": 39
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "users",
+        "range": [1194, 1199],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 40
+          },
+          "end": {
+            "line": 37,
+            "column": 45
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FOR",
+        "range": [1204, 1207],
+        "loc": {
+          "start": {
+            "line": 38,
+            "column": 4
+          },
+          "end": {
+            "line": 38,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "EACH",
+        "range": [1208, 1212],
+        "loc": {
+          "start": {
+            "line": 38,
+            "column": 8
+          },
+          "end": {
+            "line": 38,
+            "column": 12
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "ROW",
+        "range": [1213, 1216],
+        "loc": {
+          "start": {
+            "line": 38,
+            "column": 13
+          },
+          "end": {
+            "line": 38,
+            "column": 16
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "EXECUTE",
+        "range": [1221, 1228],
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 4
+          },
+          "end": {
+            "line": 39,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [1229, 1237],
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 12
+          },
+          "end": {
+            "line": 39,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "audit_changes",
+        "range": [1238, 1251],
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 21
+          },
+          "end": {
+            "line": 39,
+            "column": 34
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [1251, 1252],
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 34
+          },
+          "end": {
+            "line": 39,
+            "column": 35
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [1252, 1253],
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 35
+          },
+          "end": {
+            "line": 39,
+            "column": 36
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [1253, 1254],
+        "loc": {
+          "start": {
+            "line": 39,
+            "column": 36
+          },
+          "end": {
+            "line": 39,
+            "column": 37
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [1279, 1285],
+        "loc": {
+          "start": {
+            "line": 42,
+            "column": 0
+          },
+          "end": {
+            "line": 42,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [1286, 1288],
+        "loc": {
+          "start": {
+            "line": 42,
+            "column": 7
+          },
+          "end": {
+            "line": 42,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "REPLACE",
+        "range": [1289, 1296],
+        "loc": {
+          "start": {
+            "line": 42,
+            "column": 10
+          },
+          "end": {
+            "line": 42,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [1297, 1305],
+        "loc": {
+          "start": {
+            "line": 42,
+            "column": 18
+          },
+          "end": {
+            "line": 42,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "check_order_total",
+        "range": [1306, 1323],
+        "loc": {
+          "start": {
+            "line": 42,
+            "column": 27
+          },
+          "end": {
+            "line": 42,
+            "column": 44
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [1323, 1324],
+        "loc": {
+          "start": {
+            "line": 42,
+            "column": 44
+          },
+          "end": {
+            "line": 42,
+            "column": 45
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [1324, 1325],
+        "loc": {
+          "start": {
+            "line": 42,
+            "column": 45
+          },
+          "end": {
+            "line": 42,
+            "column": 46
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "RETURNS",
+        "range": [1326, 1333],
+        "loc": {
+          "start": {
+            "line": 43,
+            "column": 0
+          },
+          "end": {
+            "line": 43,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "TRIGGER",
+        "range": [1334, 1341],
+        "loc": {
+          "start": {
+            "line": 43,
+            "column": 8
+          },
+          "end": {
+            "line": 43,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [1342, 1344],
+        "loc": {
+          "start": {
+            "line": 43,
+            "column": 16
+          },
+          "end": {
+            "line": 43,
+            "column": 18
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$$\nBEGIN\n    IF NEW.total_amount < 0 THEN\n        RAISE EXCEPTION 'Order total cannot be negative';\n    END IF;\n    \n    IF NEW.total_amount > 10000 THEN\n        INSERT INTO high_value_orders (order_id, flagged_at)\n        VALUES (NEW.id, NOW());\n    END IF;\n    \n    RETURN NEW;\nEND;\n$$",
+        "range": [1345, 1632],
+        "loc": {
+          "start": {
+            "line": 43,
+            "column": 19
+          },
+          "end": {
+            "line": 56,
+            "column": 2
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [1633, 1641],
+        "loc": {
+          "start": {
+            "line": 56,
+            "column": 3
+          },
+          "end": {
+            "line": 56,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [1642, 1649],
+        "loc": {
+          "start": {
+            "line": 56,
+            "column": 12
+          },
+          "end": {
+            "line": 56,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [1649, 1650],
+        "loc": {
+          "start": {
+            "line": 56,
+            "column": 19
+          },
+          "end": {
+            "line": 56,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [1652, 1658],
+        "loc": {
+          "start": {
+            "line": 58,
+            "column": 0
+          },
+          "end": {
+            "line": 58,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "TRIGGER",
+        "range": [1659, 1666],
+        "loc": {
+          "start": {
+            "line": 58,
+            "column": 7
+          },
+          "end": {
+            "line": 58,
+            "column": 14
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "check_order_total_trigger",
+        "range": [1667, 1692],
+        "loc": {
+          "start": {
+            "line": 58,
+            "column": 15
+          },
+          "end": {
+            "line": 58,
+            "column": 40
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "BEFORE",
+        "range": [1697, 1703],
+        "loc": {
+          "start": {
+            "line": 59,
+            "column": 4
+          },
+          "end": {
+            "line": 59,
+            "column": 10
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "INSERT",
+        "range": [1704, 1710],
+        "loc": {
+          "start": {
+            "line": 59,
+            "column": 11
+          },
+          "end": {
+            "line": 59,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [1711, 1713],
+        "loc": {
+          "start": {
+            "line": 59,
+            "column": 18
+          },
+          "end": {
+            "line": 59,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "UPDATE",
+        "range": [1714, 1720],
+        "loc": {
+          "start": {
+            "line": 59,
+            "column": 21
+          },
+          "end": {
+            "line": 59,
+            "column": 27
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "ON",
+        "range": [1721, 1723],
+        "loc": {
+          "start": {
+            "line": 59,
+            "column": 28
+          },
+          "end": {
+            "line": 59,
+            "column": 30
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "orders",
+        "range": [1724, 1730],
+        "loc": {
+          "start": {
+            "line": 59,
+            "column": 31
+          },
+          "end": {
+            "line": 59,
+            "column": 37
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FOR",
+        "range": [1735, 1738],
+        "loc": {
+          "start": {
+            "line": 60,
+            "column": 4
+          },
+          "end": {
+            "line": 60,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "EACH",
+        "range": [1739, 1743],
+        "loc": {
+          "start": {
+            "line": 60,
+            "column": 8
+          },
+          "end": {
+            "line": 60,
+            "column": 12
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "ROW",
+        "range": [1744, 1747],
+        "loc": {
+          "start": {
+            "line": 60,
+            "column": 13
+          },
+          "end": {
+            "line": 60,
+            "column": 16
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "WHEN",
+        "range": [1752, 1756],
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 4
+          },
+          "end": {
+            "line": 61,
+            "column": 8
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [1757, 1758],
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 9
+          },
+          "end": {
+            "line": 61,
+            "column": 10
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "NEW",
+        "range": [1758, 1761],
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 10
+          },
+          "end": {
+            "line": 61,
+            "column": 13
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ".",
+        "range": [1761, 1762],
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 13
+          },
+          "end": {
+            "line": 61,
+            "column": 14
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "total_amount",
+        "range": [1762, 1774],
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 14
+          },
+          "end": {
+            "line": 61,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "IS",
+        "range": [1775, 1777],
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 27
+          },
+          "end": {
+            "line": 61,
+            "column": 29
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "NOT",
+        "range": [1778, 1781],
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 30
+          },
+          "end": {
+            "line": 61,
+            "column": 33
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "NULL",
+        "range": [1782, 1786],
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 34
+          },
+          "end": {
+            "line": 61,
+            "column": 38
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [1786, 1787],
+        "loc": {
+          "start": {
+            "line": 61,
+            "column": 38
+          },
+          "end": {
+            "line": 61,
+            "column": 39
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "EXECUTE",
+        "range": [1792, 1799],
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 4
+          },
+          "end": {
+            "line": 62,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [1800, 1808],
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 12
+          },
+          "end": {
+            "line": 62,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "check_order_total",
+        "range": [1809, 1826],
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 21
+          },
+          "end": {
+            "line": 62,
+            "column": 38
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [1826, 1827],
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 38
+          },
+          "end": {
+            "line": 62,
+            "column": 39
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [1827, 1828],
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 39
+          },
+          "end": {
+            "line": 62,
+            "column": 40
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [1828, 1829],
+        "loc": {
+          "start": {
+            "line": 62,
+            "column": 40
+          },
+          "end": {
+            "line": 62,
+            "column": 41
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [1863, 1869],
+        "loc": {
+          "start": {
+            "line": 65,
+            "column": 0
+          },
+          "end": {
+            "line": 65,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [1870, 1872],
+        "loc": {
+          "start": {
+            "line": 65,
+            "column": 7
+          },
+          "end": {
+            "line": 65,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "REPLACE",
+        "range": [1873, 1880],
+        "loc": {
+          "start": {
+            "line": 65,
+            "column": 10
+          },
+          "end": {
+            "line": 65,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [1881, 1889],
+        "loc": {
+          "start": {
+            "line": 65,
+            "column": 18
+          },
+          "end": {
+            "line": 65,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "user_order_summary_update",
+        "range": [1890, 1915],
+        "loc": {
+          "start": {
+            "line": 65,
+            "column": 27
+          },
+          "end": {
+            "line": 65,
+            "column": 52
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [1915, 1916],
+        "loc": {
+          "start": {
+            "line": 65,
+            "column": 52
+          },
+          "end": {
+            "line": 65,
+            "column": 53
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [1916, 1917],
+        "loc": {
+          "start": {
+            "line": 65,
+            "column": 53
+          },
+          "end": {
+            "line": 65,
+            "column": 54
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "RETURNS",
+        "range": [1918, 1925],
+        "loc": {
+          "start": {
+            "line": 66,
+            "column": 0
+          },
+          "end": {
+            "line": 66,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "TRIGGER",
+        "range": [1926, 1933],
+        "loc": {
+          "start": {
+            "line": 66,
+            "column": 8
+          },
+          "end": {
+            "line": 66,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [1934, 1936],
+        "loc": {
+          "start": {
+            "line": 66,
+            "column": 16
+          },
+          "end": {
+            "line": 66,
+            "column": 18
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$$\nBEGIN\n    UPDATE users \n    SET full_name = NEW.user_name\n    WHERE id = NEW.user_id;\n    \n    IF NEW.order_count <> OLD.order_count THEN\n        RAISE NOTICE 'Cannot directly update order count through this view';\n    END IF;\n    \n    RETURN NEW;\nEND;\n$$",
+        "range": [1937, 2195],
+        "loc": {
+          "start": {
+            "line": 66,
+            "column": 19
+          },
+          "end": {
+            "line": 78,
+            "column": 2
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [2196, 2204],
+        "loc": {
+          "start": {
+            "line": 78,
+            "column": 3
+          },
+          "end": {
+            "line": 78,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [2205, 2212],
+        "loc": {
+          "start": {
+            "line": 78,
+            "column": 12
+          },
+          "end": {
+            "line": 78,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [2212, 2213],
+        "loc": {
+          "start": {
+            "line": 78,
+            "column": 19
+          },
+          "end": {
+            "line": 78,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [2215, 2221],
+        "loc": {
+          "start": {
+            "line": 80,
+            "column": 0
+          },
+          "end": {
+            "line": 80,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "TRIGGER",
+        "range": [2222, 2229],
+        "loc": {
+          "start": {
+            "line": 80,
+            "column": 7
+          },
+          "end": {
+            "line": 80,
+            "column": 14
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "user_order_summary_update_trigger",
+        "range": [2230, 2263],
+        "loc": {
+          "start": {
+            "line": 80,
+            "column": 15
+          },
+          "end": {
+            "line": 80,
+            "column": 48
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "INSTEAD",
+        "range": [2268, 2275],
+        "loc": {
+          "start": {
+            "line": 81,
+            "column": 4
+          },
+          "end": {
+            "line": 81,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "OF",
+        "range": [2276, 2278],
+        "loc": {
+          "start": {
+            "line": 81,
+            "column": 12
+          },
+          "end": {
+            "line": 81,
+            "column": 14
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "UPDATE",
+        "range": [2279, 2285],
+        "loc": {
+          "start": {
+            "line": 81,
+            "column": 15
+          },
+          "end": {
+            "line": 81,
+            "column": 21
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "ON",
+        "range": [2286, 2288],
+        "loc": {
+          "start": {
+            "line": 81,
+            "column": 22
+          },
+          "end": {
+            "line": 81,
+            "column": 24
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "user_order_summary_view",
+        "range": [2289, 2312],
+        "loc": {
+          "start": {
+            "line": 81,
+            "column": 25
+          },
+          "end": {
+            "line": 81,
+            "column": 48
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FOR",
+        "range": [2317, 2320],
+        "loc": {
+          "start": {
+            "line": 82,
+            "column": 4
+          },
+          "end": {
+            "line": 82,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "EACH",
+        "range": [2321, 2325],
+        "loc": {
+          "start": {
+            "line": 82,
+            "column": 8
+          },
+          "end": {
+            "line": 82,
+            "column": 12
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "ROW",
+        "range": [2326, 2329],
+        "loc": {
+          "start": {
+            "line": 82,
+            "column": 13
+          },
+          "end": {
+            "line": 82,
+            "column": 16
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "EXECUTE",
+        "range": [2334, 2341],
+        "loc": {
+          "start": {
+            "line": 83,
+            "column": 4
+          },
+          "end": {
+            "line": 83,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [2342, 2350],
+        "loc": {
+          "start": {
+            "line": 83,
+            "column": 12
+          },
+          "end": {
+            "line": 83,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "user_order_summary_update",
+        "range": [2351, 2376],
+        "loc": {
+          "start": {
+            "line": 83,
+            "column": 21
+          },
+          "end": {
+            "line": 83,
+            "column": 46
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [2376, 2377],
+        "loc": {
+          "start": {
+            "line": 83,
+            "column": 46
+          },
+          "end": {
+            "line": 83,
+            "column": 47
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [2377, 2378],
+        "loc": {
+          "start": {
+            "line": 83,
+            "column": 47
+          },
+          "end": {
+            "line": 83,
+            "column": 48
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [2378, 2379],
+        "loc": {
+          "start": {
+            "line": 83,
+            "column": 48
+          },
+          "end": {
+            "line": 83,
+            "column": 49
+          }
+        }
+      }
+    ],
+    "comments": [
+      {
+        "type": "Line",
+        "value": " Triggers test",
+        "range": [0, 16],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 16
+          }
+        }
+      },
+      {
+        "type": "Line",
+        "value": " Audit trigger",
+        "range": [296, 312],
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 0
+          },
+          "end": {
+            "line": 15,
+            "column": 16
+          }
+        }
+      },
+      {
+        "type": "Line",
+        "value": " Conditional trigger",
+        "range": [1256, 1278],
+        "loc": {
+          "start": {
+            "line": 41,
+            "column": 0
+          },
+          "end": {
+            "line": 41,
+            "column": 22
+          }
+        }
+      },
+      {
+        "type": "Line",
+        "value": " INSTEAD OF trigger for views",
+        "range": [1831, 1862],
+        "loc": {
+          "start": {
+            "line": 64,
+            "column": 0
+          },
+          "end": {
+            "line": 64,
+            "column": 31
+          }
+        }
+      }
+    ]
+  },
+  "visitorKeys": {
+    "Program": ["body", "tokens", "comments"],
+    "CreateFunctionStmt": ["funcname", "returnType", "options", "embeddedCode"],
+    "String": [],
+    "names": ["0"],
+    "DefElem": ["arg"],
+    "List": ["items"],
+    "EmbeddedCode": [],
+    "CreateTrigStmt": ["relation", "funcname", "whenClause"],
+    "Unknown": [],
+    "NullTest": ["arg"],
+    "ColumnRef": ["fields"],
+    "Keyword": [],
+    "Identifier": [],
+    "Punctuator": [],
+    "Line": [],
+    "SQLStatement": ["statement"],
+    "SQLParseError": [],
+    "SQLProcedure": []
+  },
+  "scopeManager": null
+}

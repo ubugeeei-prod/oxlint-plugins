@@ -56,6 +56,13 @@ const expectedRuleNames = [
   'nested-control-flow',
   'max-lines-per-function',
   'no-duplicate-string',
+  'no-empty-group',
+  'no-empty-alternatives',
+  'no-regex-spaces',
+  'no-control-regex',
+  'single-char-in-character-classes',
+  'duplicates-in-character-class',
+  'anchor-precedence',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1947,5 +1954,100 @@ describe('sonarjs native API', () => {
       noDuplicateStringThreshold: 3,
     });
     expect(allowed).toHaveLength(0);
+  });
+
+  it('reports no-empty-group for an empty non-capturing group', () => {
+    const diagnostics = scan('no-empty-group', 'const r = /(?:)/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-empty-group');
+    expect(diagnostics[0].messageId).toBe('emptyGroup');
+  });
+
+  it('does not report no-empty-group for a non-empty group', () => {
+    const diagnostics = scan('no-empty-group', 'const r = /(?:abc)/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-empty-alternatives for a trailing empty alternative', () => {
+    const diagnostics = scan('no-empty-alternatives', 'const r = /a|/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-empty-alternatives');
+    expect(diagnostics[0].messageId).toBe('emptyAlternative');
+  });
+
+  it('does not report no-empty-alternatives when all alternatives have content', () => {
+    const diagnostics = scan('no-empty-alternatives', 'const r = /a|b/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-regex-spaces for two consecutive spaces in a regex', () => {
+    const diagnostics = scan('no-regex-spaces', 'const r = /a  b/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-regex-spaces');
+    expect(diagnostics[0].messageId).toBe('multipleSpaces');
+  });
+
+  it('does not report no-regex-spaces for a single space', () => {
+    const diagnostics = scan('no-regex-spaces', 'const r = /a b/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-control-regex for a hex escape control character', () => {
+    const diagnostics = scan('no-control-regex', 'const r = /\\x1f/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-control-regex');
+    expect(diagnostics[0].messageId).toBe('controlCharacter');
+  });
+
+  it('reports single-char-in-character-classes for a one-character class', () => {
+    const diagnostics = scan('single-char-in-character-classes', 'const r = /[a]/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('single-char-in-character-classes');
+    expect(diagnostics[0].messageId).toBe('singleCharInCharacterClass');
+  });
+
+  it('does not report single-char-in-character-classes for a multi-character class', () => {
+    const diagnostics = scan('single-char-in-character-classes', 'const r = /[ab]/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports duplicates-in-character-class for a repeated character', () => {
+    const diagnostics = scan('duplicates-in-character-class', 'const r = /[aa]/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('duplicates-in-character-class');
+    expect(diagnostics[0].messageId).toBe('duplicateCharacter');
+  });
+
+  it('does not report duplicates-in-character-class for distinct characters', () => {
+    const diagnostics = scan('duplicates-in-character-class', 'const r = /[abc]/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports anchor-precedence when ^ anchors only the first of three alternatives', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^a|b|c$/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('anchor-precedence');
+    expect(diagnostics[0].messageId).toBe('anchorPrecedence');
+  });
+
+  it('reports anchor-precedence when ^ anchors only the first of two alternatives', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^a|b/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('anchorPrecedence');
+  });
+
+  it('does not report anchor-precedence for a grouped alternation', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^(a|b|c)$/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report anchor-precedence for the two-branch trim idiom', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^\\s+|\\s+$/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report anchor-precedence when every branch is fully anchored', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^a$|^b$|^c$/;');
+    expect(diagnostics).toHaveLength(0);
   });
 });
