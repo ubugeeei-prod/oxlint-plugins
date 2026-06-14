@@ -185,6 +185,18 @@ const ruleMeta = Object.freeze({
         '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
     },
   },
+  'no-unlogged-table': {
+    type: 'problem',
+    description:
+      'Disallow `CREATE UNLOGGED TABLE` because unlogged tables are truncated on crash and not replicated',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noUnloggedTable:
+        '`UNLOGGED` tables skip WAL: they are truncated on crash, not replicated to standbys, and not restored from base backups. If a cache table is what you want, document it explicitly and disable this rule for that file.',
+    },
+  },
   'no-vacuum-full': {
     type: 'problem',
     description:
