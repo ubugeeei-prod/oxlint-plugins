@@ -124,6 +124,18 @@ const ruleMeta = Object.freeze({
         '`{{op}} NULL` always evaluates to NULL (treated as false). Use `IS NULL` / `IS NOT NULL` instead.',
     },
   },
+  'no-grant-all': {
+    type: 'problem',
+    description:
+      'Disallow `GRANT ALL` / `GRANT ALL PRIVILEGES`; enumerate the privileges actually needed so the grant is auditable and a future PG release adding a new privilege does not silently extend it',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noGrantAll:
+        '`GRANT ALL` (or `GRANT ALL PRIVILEGES`) is opaque — list the privileges you actually need (e.g. `SELECT, INSERT, UPDATE`) so the grant is auditable and adding a new PostgreSQL privilege in a future release does not silently extend it.',
+    },
+  },
   'no-grant-to-public': {
     type: 'problem',
     description: 'Disallow GRANT statements that target the `PUBLIC` pseudo-role',
