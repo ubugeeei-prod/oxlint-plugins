@@ -1,0 +1,68 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/no-renderer-packages.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "import { something } from '@storybook/react-vite';\n\nexport const MyStory = {\n  // ...\n};",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "import { something } from '@storybook/vue3-webpack5';\n\nexport const MyStory = {\n  // ...\n};",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "import { something } from '@storybook/web-components-vite';\n\nexport const MyStory = {\n  // ...\n};",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "import React from 'react';\nimport { something } from 'some-other-package';\n\nexport const MyStory = {\n  // ...\n};",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "import { something } from '@storybook/react';\n\nexport const MyStory = {\n  // ...\n};",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "noRendererPackages",
+          "data": {
+            "rendererPackage": "@storybook/react",
+            "suggestions": "@storybook/nextjs, @storybook/react-vite, @storybook/nextjs-vite, @storybook/react-webpack5, @storybook/react-native-web-vite"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import { something } from '@storybook/vue3';\n\nexport const MyStory = {\n  // ...\n};",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "noRendererPackages",
+          "data": {
+            "rendererPackage": "@storybook/vue3",
+            "suggestions": "@storybook/vue3-vite, @storybook/vue3-webpack5"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import { something } from '@storybook/web-components';\n\nexport const MyStory = {\n  // ...\n};",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "noRendererPackages",
+          "data": {
+            "rendererPackage": "@storybook/web-components",
+            "suggestions": "@storybook/web-components-vite, @storybook/web-components-webpack5"
+          }
+        }
+      ]
+    }
+  ]
+}

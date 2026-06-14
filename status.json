@@ -12750,19 +12750,19 @@
       },
       {
         "name": "no-primitive-wrappers",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-primitive-wrappers (Sonar key S1533). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (S1533). Reports NewExpression whose callee is an identifier named Number, String, or Boolean. Rust core uses visit_new_expression + get_inner_expression(); NAPI adapter wires the rule into the plugin. Tests authored independently \u2014 no upstream source, fixtures, or messages copied."
       },
       {
         "name": "no-redundant-assignments",
@@ -12798,19 +12798,19 @@
       },
       {
         "name": "no-redundant-jump",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-redundant-jump (Sonar key S3626). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of SonarJS S3626. Reports a trailing unlabeled continue; as the last statement of a loop body block (for, while, do-while, for-in, for-of) and a trailing return; (no value) as the last statement of a function body. Labeled continue and valued return are excluded. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-redundant-optional",
@@ -12990,19 +12990,19 @@
       },
       {
         "name": "no-skipped-tests",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-skipped-tests (Sonar key S1607). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S1607). Covers both .skip member form (describe/it/test/context/suite/specify) and x-prefixed Jasmine calls (xit/xdescribe/xtest/xcontext/xspecify). Both forms share the skippedTest messageId. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-small-switch",
@@ -13598,19 +13598,19 @@
       },
       {
         "name": "prefer-single-boolean-return",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule prefer-single-boolean-return (Sonar key S1126). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S1126). Flags if/else where both branches return a boolean literal; explicit-else form only. Implicit-else form (if (c) return true; return false; with no else keyword) is out of scope and left as a follow-up. Never copied upstream source, fixtures, tests, or messages."
       },
       {
         "name": "prefer-type-guard",

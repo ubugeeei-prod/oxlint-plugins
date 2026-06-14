@@ -1,0 +1,105 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/default-exports.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export default { }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { title: 'Button', component: Button }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { title: 'Button', component: Button } as ComponentMeta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      const meta = { title: 'Button', component: Button }\n      export default meta\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n    const meta: ComponentMeta<typeof Button> = { title: 'Button', component: Button }\n    export default meta\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      import { config } from '#.storybook/preview'\n      const meta = config.meta({})\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      import { storiesOf } from '@storybook/react'\n      storiesOf('Component', module)\n    ",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "export const Primary = () => <button>hello</button>",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "shouldHaveDefaultExport",
+          "suggestions": [
+            {
+              "messageId": "fixSuggestion",
+              "output": "export default {}\nexport const Primary = () => <button>hello</button>"
+            }
+          ]
+        }
+      ],
+      "output": "export default {}\nexport const Primary = () => <button>hello</button>"
+    },
+    {
+      "code": "import { MyComponent, Foo } from './MyComponent'\nexport const Primary = () => <button>hello</button>",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "shouldHaveDefaultExport",
+          "suggestions": [
+            {
+              "messageId": "fixSuggestion",
+              "output": "import { MyComponent, Foo } from './MyComponent'\nexport default { component: MyComponent }\nexport const Primary = () => <button>hello</button>"
+            }
+          ]
+        }
+      ],
+      "output": "import { MyComponent, Foo } from './MyComponent'\nexport default { component: MyComponent }\nexport const Primary = () => <button>hello</button>"
+    },
+    {
+      "code": "import MyComponent from './MyComponent'\nexport const Primary = () => <button>hello</button>",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "shouldHaveDefaultExport",
+          "suggestions": [
+            {
+              "messageId": "fixSuggestion",
+              "output": "import MyComponent from './MyComponent'\nexport default { component: MyComponent }\nexport const Primary = () => <button>hello</button>"
+            }
+          ]
+        }
+      ],
+      "output": "import MyComponent from './MyComponent'\nexport default { component: MyComponent }\nexport const Primary = () => <button>hello</button>"
+    },
+    {
+      "code": "import { MyComponentProps } from './MyComponent'\nexport const Primary = () => <button>hello</button>",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "shouldHaveDefaultExport",
+          "suggestions": [
+            {
+              "messageId": "fixSuggestion",
+              "output": "import { MyComponentProps } from './MyComponent'\nexport default {}\nexport const Primary = () => <button>hello</button>"
+            }
+          ]
+        }
+      ],
+      "output": "import { MyComponentProps } from './MyComponent'\nexport default {}\nexport const Primary = () => <button>hello</button>"
+    }
+  ]
+}

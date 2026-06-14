@@ -3,11 +3,12 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, BindingIdentifier, CatchClause, ConditionalExpression,
-    ExpressionStatement, ForInStatement, ForStatement, Function, FunctionBody, IdentifierReference,
-    IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression,
-    SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType,
-    TemplateLiteral, UnaryExpression, YieldExpression,
+    AssignmentExpression, BinaryExpression, BindingIdentifier, CallExpression, CatchClause,
+    ConditionalExpression, DoWhileStatement, ExpressionStatement, ForInStatement, ForOfStatement,
+    ForStatement, Function, FunctionBody, IdentifierReference, IfStatement, LabeledStatement,
+    LogicalExpression, NewExpression, RegExpLiteral, StaticMemberExpression, SwitchCase,
+    SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral,
+    UnaryExpression, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -126,17 +127,35 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_identical_conditions(it);
         self.check_no_all_duplicated_branches_if(it);
         self.check_elseif_without_else(it);
+        self.check_prefer_single_boolean_return(it);
         walk::walk_if_statement(self, it);
     }
 
     fn visit_for_in_statement(&mut self, it: &ForInStatement<'a>) {
         self.check_for_in(it);
+        self.check_redundant_continue(&it.body);
         walk::walk_for_in_statement(self, it);
     }
 
     fn visit_for_statement(&mut self, it: &ForStatement<'a>) {
         self.check_prefer_while(it);
+        self.check_redundant_continue(&it.body);
         walk::walk_for_statement(self, it);
+    }
+
+    fn visit_while_statement(&mut self, it: &WhileStatement<'a>) {
+        self.check_redundant_continue(&it.body);
+        walk::walk_while_statement(self, it);
+    }
+
+    fn visit_do_while_statement(&mut self, it: &DoWhileStatement<'a>) {
+        self.check_redundant_continue(&it.body);
+        walk::walk_do_while_statement(self, it);
+    }
+
+    fn visit_for_of_statement(&mut self, it: &ForOfStatement<'a>) {
+        self.check_redundant_continue(&it.body);
+        walk::walk_for_of_statement(self, it);
     }
 
     fn visit_binding_identifier(&mut self, it: &BindingIdentifier<'a>) {
@@ -179,7 +198,13 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_static_member_expression(&mut self, it: &StaticMemberExpression<'a>) {
         self.check_no_exclusive_tests(it);
+        self.check_no_skipped_tests_member(it);
         walk::walk_static_member_expression(self, it);
+    }
+
+    fn visit_call_expression(&mut self, it: &CallExpression<'a>) {
+        self.check_no_skipped_tests_call(it);
+        walk::walk_call_expression(self, it);
     }
 
     fn visit_labeled_statement(&mut self, it: &LabeledStatement<'a>) {
@@ -190,6 +215,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_expression_statement(&mut self, it: &ExpressionStatement<'a>) {
         self.check_constructor_for_side_effects(it);
         walk::walk_expression_statement(self, it);
+    }
+
+    fn visit_new_expression(&mut self, it: &NewExpression<'a>) {
+        self.check_no_primitive_wrappers(it);
+        walk::walk_new_expression(self, it);
     }
 
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
@@ -210,6 +240,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_function_body(&mut self, it: &FunctionBody<'a>) {
         self.check_prefer_immediate_return(it);
+        self.check_redundant_return(it);
         walk::walk_function_body(self, it);
     }
 }

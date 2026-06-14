@@ -1463,3 +1463,259 @@ fn does_not_report_prefer_immediate_return_when_declarator_has_no_init() {
     let diagnostics = scan("prefer-immediate-return", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_for_loop() {
+    let source = "for (;;) { foo(); continue; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-redundant-jump");
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_while_loop() {
+    let source = "while (x) { foo(); continue; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_do_while_loop() {
+    let source = "do { foo(); continue; } while (x);";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_for_of_loop() {
+    let source = "for (const a of b) { foo(); continue; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_for_in_loop() {
+    let source = "for (k in o) { foo(); continue; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_return_in_function() {
+    let source = "function f() { foo(); return; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_return_in_arrow_function() {
+    let source = "const g = () => { foo(); return; };";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn does_not_report_redundant_jump_when_continue_is_not_last() {
+    let source = "for (;;) { if (x) continue; foo(); }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_redundant_jump_for_return_with_value() {
+    let source = "function f() { foo(); return x; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_redundant_jump_for_labeled_continue() {
+    let source = "outer: for (;;) { foo(); continue outer; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_redundant_jump_for_non_block_loop_body() {
+    let source = "while (x) foo();";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_no_primitive_wrappers_for_new_number() {
+    let source = "const n = new Number(1);";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-primitive-wrappers");
+    assert_eq!(diagnostics[0].message_id, "primitiveWrapper");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_primitive_wrappers_for_new_string() {
+    let source = "const s = new String('x');";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "primitiveWrapper");
+}
+
+#[test]
+fn reports_no_primitive_wrappers_for_new_boolean() {
+    let source = "const b = new Boolean(false);";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "primitiveWrapper");
+}
+
+#[test]
+fn does_not_report_no_primitive_wrappers_for_call_without_new() {
+    let source = "const n = Number(1);";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_primitive_wrappers_for_new_array() {
+    let source = "const a = new Array(3);";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_primitive_wrappers_for_unknown_constructor() {
+    let source = "const f = new Foo();";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_no_skipped_tests_for_describe_skip() {
+    let source = "describe.skip('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-skipped-tests");
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_skipped_tests_for_it_skip() {
+    let source = "it.skip('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+}
+
+#[test]
+fn reports_no_skipped_tests_for_test_skip() {
+    let source = "test.skip('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+}
+
+#[test]
+fn reports_no_skipped_tests_for_xit() {
+    let source = "xit('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+}
+
+#[test]
+fn reports_no_skipped_tests_for_xdescribe() {
+    let source = "xdescribe('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+}
+
+#[test]
+fn does_not_report_no_skipped_tests_for_it_without_skip() {
+    let source = "it('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_skipped_tests_for_describe_without_skip() {
+    let source = "describe('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_skipped_tests_for_unknown_runner_with_skip() {
+    let source = "foo.skip();";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_skipped_tests_for_xfoo_not_in_x_set() {
+    let source = "xfoo();";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_prefer_single_boolean_return_block_form() {
+    let source = "function f() { if (c) { return true; } else { return false; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "prefer-single-boolean-return");
+    assert_eq!(diagnostics[0].message_id, "preferSingleBooleanReturn");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_prefer_single_boolean_return_bare_form() {
+    let source = "function f() { if (c) return true; else return false; }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferSingleBooleanReturn");
+}
+
+#[test]
+fn reports_prefer_single_boolean_return_inverted() {
+    let source = "function f() { if (c) { return false; } else { return true; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferSingleBooleanReturn");
+}
+
+#[test]
+fn does_not_report_prefer_single_boolean_return_no_else() {
+    let source = "function f() { if (c) { return true; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_single_boolean_return_non_literal_consequent() {
+    let source = "function f() { if (c) { return x; } else { return false; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_single_boolean_return_else_if_chain() {
+    let source = "function f() { if (c) return true; else if (d) return x; }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_single_boolean_return_block_has_two_statements() {
+    let source = "function f() { if (c) { return true; bar(); } else { return false; } }";
+    let diagnostics = scan("prefer-single-boolean-return", source);
+    assert!(diagnostics.is_empty());
+}
