@@ -585,6 +585,16 @@ const ruleMeta = Object.freeze({
         "`ORDER BY ... ASC|DESC` without `NULLS FIRST` / `NULLS LAST` relies on PostgreSQL's implicit ordering (NULLS LAST for ASC, NULLS FIRST for DESC), which trips up cross-database readers. Add an explicit `NULLS FIRST` / `NULLS LAST`.",
     },
   },
+  'prefer-in-list-over-or': {
+    type: 'suggestion',
+    description: 'Prefer `x IN (a, b, c)` over a chain of `x = a OR x = b OR x = c`',
+    recommended: false,
+    fixable: 'code',
+    schema: [],
+    messages: {
+      preferIn: 'Combine these `=` checks on `{{lhs}}` into a single `IN (...)` clause.',
+    },
+  },
   'prefer-not-equals-operator': {
     type: 'layout',
     description: 'Enforce a single style for the not-equal operator (`<>` or `!=`)',
