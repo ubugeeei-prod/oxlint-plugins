@@ -58,6 +58,7 @@ const expectedRuleNames = [
   'no-duplicate-string',
   'no-empty-group',
   'no-empty-alternatives',
+  'no-regex-spaces',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1972,6 +1973,18 @@ describe('sonarjs native API', () => {
 
   it('does not report no-empty-alternatives when all alternatives have content', () => {
     const diagnostics = scan('no-empty-alternatives', 'const r = /a|b/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-regex-spaces for two consecutive spaces in a regex', () => {
+    const diagnostics = scan('no-regex-spaces', 'const r = /a  b/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-regex-spaces');
+    expect(diagnostics[0].messageId).toBe('multipleSpaces');
+  });
+
+  it('does not report no-regex-spaces for a single space', () => {
+    const diagnostics = scan('no-regex-spaces', 'const r = /a b/;');
     expect(diagnostics).toHaveLength(0);
   });
 });

@@ -12878,19 +12878,19 @@
       },
       {
         "name": "no-regex-spaces",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-regex-spaces (Sonar key S6326). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6326). Uses the shared regex_ast helper to walk every Alternative's term sequence, detecting maximal runs of two or more consecutive literal space characters (U+0020). Spaces inside character classes are naturally excluded (they live in CharacterClass.body, not Alternative.body). A quantified space ` {n}` is a single Quantifier term, not multiple Character terms, so it is also naturally excluded. Recurses into capturing groups, non-capturing groups, lookaround assertions, and quantifier bodies. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-require-or-define",

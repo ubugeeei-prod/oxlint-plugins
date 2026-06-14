@@ -149,6 +149,7 @@ describe('sonarjs plugin shape', () => {
       'no-duplicate-string',
       'no-empty-group',
       'no-empty-alternatives',
+      'no-regex-spaces',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -205,6 +206,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-duplicate-string']).toBe('object');
     expect(typeof plugin.rules['no-empty-group']).toBe('object');
     expect(typeof plugin.rules['no-empty-alternatives']).toBe('object');
+    expect(typeof plugin.rules['no-regex-spaces']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -263,6 +265,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-duplicate-string']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-group']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-alternatives']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-regex-spaces']).toBe('error');
   });
 });
 
@@ -1238,5 +1241,21 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-alternatives)');
+  });
+
+  it('reports no-regex-spaces for two consecutive spaces through the adapter', () => {
+    const source = 'const r = /a  b/;';
+    const reports = runRule('no-regex-spaces', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('multipleSpaces');
+  });
+
+  it('reports no-regex-spaces through the CLI', () => {
+    const result = runOxlint('no-regex-spaces', 'const r = /a  b/;');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-regex-spaces)');
   });
 });
