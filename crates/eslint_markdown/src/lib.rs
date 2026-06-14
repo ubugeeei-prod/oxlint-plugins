@@ -995,19 +995,53 @@ fn scan_invalid_label_refs(
     facts: &MarkdownFacts<'_>,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    for label_ref in &facts.label_refs {
-        if label_ref.label.trim().is_empty() {
-            diagnostics.push(Diagnostic {
-                rule_name: "no-invalid-label-refs",
-                message_id: "invalidLabelRef",
-                data: DiagnosticData {
-                    label: Some(label_ref.label.clone()),
-                    ..DiagnosticData::default()
-                },
-                loc: line_index.loc_for_span(source_text, label_ref.span),
-                fix: None,
-            });
+    // Mirror upstream: scan for `][label]` (`labelPattern`), and flag it only
+    // when the trailing reference is whitespace-only (`illegalShorthandTailPattern`
+    // = `/\]\[\s+\]$/`). The reported label is the leading bracket's contents.
+    let Ok(label_re) = Regex::new(r"\]\[([^\]]+)\]") else {
+        return;
+    };
+    let Ok(first_re) = Regex::new(r"!?\[([^\]]+)\]") else {
+        return;
+    };
+    let mut search_from = 0;
+    while search_from < source_text.len() {
+        let Some(mat) = label_re.find_at(source_text, search_from) else {
+            break;
+        };
+        let inner = &mat.as_str()[2..mat.as_str().len() - 1];
+        // A blank line (>= 2 newlines in the whitespace) breaks the paragraph, so
+        // the `][ ]` would span two text nodes and upstream never matches it.
+        let whitespace_only = !inner.is_empty()
+            && inner.chars().all(char::is_whitespace)
+            && inner.bytes().filter(|byte| *byte == b'\n').count() <= 1;
+        if whitespace_only && !in_fenced_range(facts, mat.start()) {
+            // The leading `[` of the reference text, searched across the whole
+            // document like upstream's `lastIndexOf("[", startOffset)`.
+            if let Some(open) = source_text[..mat.start()].rfind('[') {
+                let label = first_re
+                    .captures(&source_text[open..mat.end()])
+                    .and_then(|caps| caps.get(1))
+                    .map_or("", |group| group.as_str().trim());
+                diagnostics.push(Diagnostic {
+                    rule_name: "no-invalid-label-refs",
+                    message_id: "invalidLabelRef",
+                    data: DiagnosticData {
+                        label: Some(CompactString::from(label)),
+                        ..DiagnosticData::default()
+                    },
+                    loc: line_index.loc_for_span(
+                        source_text,
+                        ByteSpan {
+                            start: mat.start() + 1,
+                            end: mat.end(),
+                        },
+                    ),
+                    fix: None,
+                });
+            }
         }
+        search_from = mat.end();
     }
 }
 
