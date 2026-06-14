@@ -167,7 +167,12 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
     }
     for row in &rows {
         for (i, &(s, e)) in row.item_ranges.iter().enumerate() {
-            let w = (e - s) as usize;
+            let w = ctx
+                .source
+                .slice(s, e)
+                .chars()
+                .map(char::len_utf16)
+                .sum::<usize>();
             if w > widths[i] {
                 widths[i] = w;
             }
@@ -190,7 +195,12 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
                 // Non-last column: `"text," padEnd(widths[i] + 1 + gap)`.
                 // widths[i] + 1 accounts for the comma; + gap is the spacing.
                 let pad_to = widths[i] + 1 + gap;
-                let item_len = (e - s) as usize; // UTF-16 units
+                let item_len = ctx
+                    .source
+                    .slice(s, e)
+                    .chars()
+                    .map(char::len_utf16)
+                    .sum::<usize>();
                 let with_comma = item_len + 1; // item + ','
                 expected.push_str(item_text.as_str());
                 expected.push(',');

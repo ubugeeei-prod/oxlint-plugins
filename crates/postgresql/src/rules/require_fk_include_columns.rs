@@ -33,7 +33,9 @@ fn collect_fk_attrs(attrs: &[Value]) -> SmallVec<[&str; 4]> {
 struct FkCandidate<'a> {
     report_node: &'a Value,
     fk_columns: SmallVec<[&'a str; 4]>,
-    table_name: &'a str,
+    /// `None` when `relation.relname` is absent; mirrors upstream `tableName`
+    /// (which is `undefined` / falsy when absent) for the short-circuit guard.
+    table_name: Option<&'a str>,
     ref_table: &'a str,
 }
 
@@ -45,9 +47,11 @@ fn check<'a>(
     exclude_ref_table_pattern: Option<&str>,
     ctx: &mut RuleContext,
 ) {
-    // Skip if the table matches the exclusion pattern.
-    if let Some(pat) = exclude_table_pattern
-        && Regex::new(pat).is_ok_and(|re| re.is_match(candidate.table_name))
+    // Mirror upstream `tableName && excludeTablePattern.test(tableName)`:
+    // only run the regex when table_name is present (non-None / non-empty).
+    if let (Some(pat), Some(name)) = (exclude_table_pattern, candidate.table_name)
+        && !name.is_empty()
+        && Regex::new(pat).is_ok_and(|re| re.is_match(name))
     {
         return;
     }
@@ -58,7 +62,9 @@ fn check<'a>(
         return;
     }
 
-    let table_cs = CompactString::from(candidate.table_name);
+    // When table name is absent, display "(unknown)" in the message, matching
+    // upstream's `tableName || "(unknown)"` fallback.
+    let table_cs = CompactString::from(candidate.table_name.unwrap_or("(unknown)"));
     let ref_cs = CompactString::from(candidate.ref_table);
 
     for &required in required_columns {
@@ -109,8 +115,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         let table_name = node
             .get("relation")
             .and_then(|r| r.get("relname"))
-            .and_then(Value::as_str)
-            .unwrap_or("");
+            .and_then(Value::as_str);
 
         let elts = match array_field(node, "tableElts") {
             Some(e) => e,
@@ -189,8 +194,7 @@ pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
         let table_name = node
             .get("relation")
             .and_then(|r| r.get("relname"))
-            .and_then(Value::as_str)
-            .unwrap_or("");
+            .and_then(Value::as_str);
 
         let cmds = match array_field(node, "cmds") {
             Some(c) => c,

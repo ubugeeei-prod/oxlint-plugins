@@ -29,7 +29,24 @@ pub fn array_field<'a>(node: &'a Value, key: &str) -> Option<&'a [Value]> {
 }
 
 /// Borrow a field expected to be a string.
-#[allow(dead_code, reason = "shared accessor used by rules added in later PRs")]
 pub fn str_field<'a>(node: &'a Value, key: &str) -> Option<&'a str> {
     node.get(key).and_then(Value::as_str)
+}
+
+/// Mirrors upstream `getTypeName` (`src/utils/ast.ts`): the canonical type
+/// name lives at key `"1"` of the typeName map (lower segments are schema
+/// qualifiers such as `pg_catalog`), falling back to key `"0"` for
+/// unqualified names like `money`, `time`, `bpchar`, etc.
+pub fn get_type_name(type_name: &Value) -> Option<&str> {
+    if let Some(v1) = type_name
+        .get("1")
+        .and_then(|v| v.get("sval"))
+        .and_then(Value::as_str)
+    {
+        return Some(v1);
+    }
+    type_name
+        .get("0")
+        .and_then(|v| v.get("sval"))
+        .and_then(Value::as_str)
 }

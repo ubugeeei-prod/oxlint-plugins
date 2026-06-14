@@ -1,21 +1,7 @@
 //! Port of `consistent-jsonb-over-json`
 use crate::RuleContext;
-use crate::ast::is_type;
+use crate::ast::{get_type_name, is_type};
 use serde_json::Value;
-
-fn get_type_name(type_name: &Value) -> Option<&str> {
-    if let Some(v1) = type_name
-        .get("1")
-        .and_then(|v| v.get("sval"))
-        .and_then(Value::as_str)
-    {
-        return Some(v1);
-    }
-    type_name
-        .get("0")
-        .and_then(|v| v.get("sval"))
-        .and_then(Value::as_str)
-}
 
 pub fn run(node: &Value, _ancestors: &[&Value], ctx: &mut RuleContext) {
     if !is_type(node, "ColumnDef") {

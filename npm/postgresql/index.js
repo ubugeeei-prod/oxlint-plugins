@@ -204,7 +204,7 @@ const ruleMeta = Object.freeze({
     },
   },
   'consistent-explicit-outer-join': {
-    type: 'suggestion',
+    type: 'layout',
     description:
       'Enforce a consistent stance on the explicit `OUTER` keyword in outer joins (either always require it, or always forbid it)',
     recommended: false,
@@ -225,10 +225,10 @@ const ruleMeta = Object.freeze({
     },
   },
   'consistent-fk-not-valid': {
-    type: 'suggestion',
+    type: 'problem',
     description:
       'Enforce a consistent stance on `NOT VALID` for `ADD CONSTRAINT ... FOREIGN KEY` (either always require it, or always forbid it)',
-    recommended: false,
+    recommended: true,
     fixable: undefined,
     schema: [
       {
@@ -272,7 +272,7 @@ const ruleMeta = Object.freeze({
     type: 'suggestion',
     description:
       'Enforce a consistent stance on `jsonb` vs `json` column types (either always require `jsonb`, or always forbid it)',
-    recommended: false,
+    recommended: true,
     fixable: undefined,
     schema: [
       {
@@ -316,7 +316,7 @@ const ruleMeta = Object.freeze({
     type: 'suggestion',
     description:
       'Enforce a consistent stance on `text` vs `varchar(n)` column types (either always require `text`, or always require a bounded type)',
-    recommended: false,
+    recommended: true,
     fixable: undefined,
     schema: [
       {
@@ -338,7 +338,7 @@ const ruleMeta = Object.freeze({
     type: 'suggestion',
     description:
       'Enforce a consistent stance on `timestamptz` vs `timestamp` column types (either always require `timestamptz`, or always forbid it)',
-    recommended: false,
+    recommended: true,
     fixable: undefined,
     schema: [
       {
@@ -756,7 +756,7 @@ const ruleMeta = Object.freeze({
     type: 'problem',
     description:
       'Require `SECURITY DEFINER` functions to also `SET search_path = ...` to prevent search-path injection attacks',
-    recommended: true,
+    recommended: false,
     fixable: undefined,
     schema: [],
     messages: {

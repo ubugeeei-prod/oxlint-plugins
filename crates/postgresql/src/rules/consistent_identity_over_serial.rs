@@ -9,31 +9,11 @@
 
 use serde_json::Value;
 
-use crate::ast::is_type;
+use crate::ast::{get_type_name, is_type};
 use crate::{DiagnosticDatum, RuleContext};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 const SERIAL_TYPES: [&str; 3] = ["smallserial", "serial", "bigserial"];
-
-/// Extract the unqualified PostgreSQL type name from a `ColumnDef.typeName`
-/// value (mirrors upstream `getTypeName`). The parser stores qualified names
-/// in numeric-string keys `"0"`, `"1"`, …; the type name is at key `"1"` when
-/// schema-qualified, or `"0"` otherwise.
-fn get_type_name(type_name: &Value) -> Option<&str> {
-    // Try `typeName["1"].sval` first (schema-qualified: pg_catalog.int8, etc.)
-    if let Some(v1) = type_name
-        .get("1")
-        .and_then(|v| v.get("sval"))
-        .and_then(Value::as_str)
-    {
-        return Some(v1);
-    }
-    // Fall back to `typeName["0"].sval`.
-    type_name
-        .get("0")
-        .and_then(|v| v.get("sval"))
-        .and_then(Value::as_str)
-}
 
 /// Returns true when the ColumnDef has any `CONSTR_IDENTITY` constraint
 /// (mirrors upstream `hasIdentity`).
