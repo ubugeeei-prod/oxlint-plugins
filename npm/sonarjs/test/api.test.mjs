@@ -89,6 +89,7 @@ const expectedRuleNames = [
   'no-parameter-reassignment',
   'array-callback-without-return',
   'no-wildcard-import',
+  'updated-loop-counter',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

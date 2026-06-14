@@ -17,7 +17,7 @@ use oxc_ast::ast::{
     VariableDeclarator, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
-use oxc_semantic::{AstNodes, Scoping};
+use oxc_semantic::{AstNodes, Scoping, SymbolId};
 use oxc_span::Span;
 use oxc_syntax::operator::AssignmentOperator;
 use oxc_syntax::scope::ScopeFlags;
@@ -31,6 +31,18 @@ use crate::{Diagnostic, DiagnosticData, DiagnosticFix, LineIndex, SonarjsOptions
 pub(crate) enum BreakableKind {
     Loop,
     Switch,
+}
+
+/// One entry on the loop-counter stack, one per enclosing classic `for` loop
+/// whose update clause names at least one resolvable counter symbol. The
+/// `updated-loop-counter` rule flags writes to these symbols inside the loop
+/// body.
+pub(crate) struct LoopCounterFrame {
+    /// Symbols modified by the loop's update clause (the counters).
+    pub(crate) counters: SmallVec<[SymbolId; 2]>,
+    /// Span of the update-clause expression, so that the counter's own update
+    /// (`i++` in `for (…; i++)`) is excluded from the body-write check.
+    pub(crate) update_span: Span,
 }
 
 /// One entry on the breakable stack, representing an open loop or switch.
@@ -123,6 +135,11 @@ pub(crate) struct Scanner<'a> {
     /// `take`) by the loop/switch visitor and reset to `None` defensively
     /// after each `walk_labeled_statement` completes.
     pub(crate) pending_loop_label: Option<&'a str>,
+    /// Stack of loop-counter frames, one per currently-open classic `for` loop
+    /// whose update clause names a resolvable counter. Pushed on entry and
+    /// popped on exit; `updated-loop-counter` checks every assignment/update
+    /// target against the counters of all active frames.
+    pub(crate) loop_counter_symbols: SmallVec<[LoopCounterFrame; 4]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -315,7 +332,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         let label = self.pending_loop_label.take();
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
+        let counter_frame = self.enter_updated_loop_counter(it);
         walk::walk_for_statement(self, it);
+        self.leave_updated_loop_counter(counter_frame);
         self.leave_nested_control_flow(counted);
         self.leave_breakable_loop();
     }
@@ -372,6 +391,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         }
         if let AssignmentTarget::AssignmentTargetIdentifier(ident) = &it.left {
             self.check_no_parameter_reassignment_assignment(ident, it.span);
+            self.check_updated_loop_counter(ident, it.span);
         }
         walk::walk_assignment_expression(self, it);
     }
@@ -379,6 +399,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_update_expression(&mut self, it: &UpdateExpression<'a>) {
         if let SimpleAssignmentTarget::AssignmentTargetIdentifier(ident) = &it.argument {
             self.check_no_parameter_reassignment_update(ident, it.span);
+            self.check_updated_loop_counter(ident, it.span);
         }
         walk::walk_update_expression(self, it);
     }

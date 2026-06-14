@@ -180,6 +180,7 @@ describe('sonarjs plugin shape', () => {
       'no-parameter-reassignment',
       'array-callback-without-return',
       'no-wildcard-import',
+      'updated-loop-counter',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -266,6 +267,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-parameter-reassignment']).toBe('object');
     expect(typeof plugin.rules['array-callback-without-return']).toBe('object');
     expect(typeof plugin.rules['no-wildcard-import']).toBe('object');
+    expect(typeof plugin.rules['updated-loop-counter']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -360,6 +362,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-parameter-reassignment']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/array-callback-without-return']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-wildcard-import']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/updated-loop-counter']).toBe('error');
   });
 });
 
@@ -2550,5 +2553,67 @@ describe('no-wildcard-import rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-wildcard-import)');
+  });
+});
+
+describe('updated-loop-counter rule', () => {
+  it('reports reassigning the loop counter in the body', () => {
+    const source = 'for (let i = 0; i < 10; i++) { i = 5; }';
+    const reports = runRule('updated-loop-counter', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noCounterUpdate');
+  });
+
+  it('reports compound-assigning the loop counter in the body', () => {
+    const source = 'for (let i = 0; i < 10; i++) { i += 2; }';
+    const reports = runRule('updated-loop-counter', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noCounterUpdate');
+  });
+
+  it('reports decrementing the loop counter inside a branch', () => {
+    const source = 'for (let i = 0; i < 10; i++) { if (x) i--; }';
+    const reports = runRule('updated-loop-counter', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noCounterUpdate');
+  });
+
+  it('does not report a counter touched only by the update clause', () => {
+    const source = 'for (let i = 0; i < 10; i++) {}';
+    const reports = runRule('updated-loop-counter', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a shadowing local of the same name', () => {
+    const source = 'for (let i = 0; i < 10; i++) { let i = 0; i = 5; }';
+    const reports = runRule('updated-loop-counter', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report writing to a different variable', () => {
+    const source = 'for (let i = 0; i < 10; i++) { j = 5; }';
+    const reports = runRule('updated-loop-counter', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a property write on the counter', () => {
+    const source = 'for (let i = 0; i < 10; i++) { i.x = 5; }';
+    const reports = runRule('updated-loop-counter', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report reassigning a for-of loop variable', () => {
+    const source = 'for (const x of xs) { x = 1; }';
+    const reports = runRule('updated-loop-counter', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports updated-loop-counter through the CLI', () => {
+    const source = 'for (let i = 0; i < 10; i++) { i = 5; }';
+    const result = runOxlint('updated-loop-counter', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(updated-loop-counter)');
   });
 });

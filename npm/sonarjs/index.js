@@ -315,6 +315,10 @@ const messages = Object.freeze({
   'no-wildcard-import': {
     noWildcardImport: 'Import only the specific members you need instead of the whole namespace.',
   },
+  'updated-loop-counter': {
+    noCounterUpdate:
+      "Do not update the loop counter inside the loop body; use the for-statement's update clause.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -485,6 +489,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow reassigning a function parameter, caught exception, or for-in/for-of loop variable, which discards the value supplied at runtime; introduce a new local variable instead',
   'no-wildcard-import':
     'Disallow wildcard (namespace) imports such as \'import * as ns from "mod"\'; import only the specific members you need to keep code readable and tree-shakeable',
+  'updated-loop-counter':
+    'Disallow updating a classic "for" loop counter inside the loop body (reassignment, compound assignment, or increment/decrement); advance the counter only in the update clause',
 });
 
 const ruleTypes = Object.freeze({
@@ -574,6 +580,7 @@ const ruleTypes = Object.freeze({
   'reduce-initial-value': 'suggestion',
   'no-parameter-reassignment': 'suggestion',
   'no-wildcard-import': 'suggestion',
+  'updated-loop-counter': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -663,6 +670,7 @@ const recommendedRuleConfig = Object.freeze({
   'reduce-initial-value': 'error',
   'no-parameter-reassignment': 'error',
   'no-wildcard-import': 'error',
+  'updated-loop-counter': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

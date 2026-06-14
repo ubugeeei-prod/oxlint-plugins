@@ -86,4 +86,5 @@ mod single_char_in_character_classes;
 mod single_character_alternation;
 mod todo_tag;
 mod too_many_break_or_continue_in_loop;
+mod updated_loop_counter;
 mod void_use;

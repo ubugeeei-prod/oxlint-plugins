@@ -4489,6 +4489,77 @@ fn does_not_report_no_parameter_reassignment_classic_for_counter() {
     assert!(diagnostics.is_empty());
 }
 
+// updated-loop-counter tests
+
+#[test]
+fn reports_updated_loop_counter_plain_assign() {
+    let source = "for (let i = 0; i < 10; i++) { i = 5; }";
+    let diagnostics = scan("updated-loop-counter", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "updated-loop-counter");
+    assert_eq!(diagnostics[0].message_id, "noCounterUpdate");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_updated_loop_counter_compound_assign() {
+    let source = "for (let i = 0; i < 10; i++) { i += 2; }";
+    let diagnostics = scan("updated-loop-counter", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noCounterUpdate");
+}
+
+#[test]
+fn reports_updated_loop_counter_decrement_in_branch() {
+    let source = "for (let i = 0; i < 10; i++) { if (x) i--; }";
+    let diagnostics = scan("updated-loop-counter", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noCounterUpdate");
+}
+
+#[test]
+fn reports_updated_loop_counter_for_sequence_update() {
+    let source = "for (let i = 0, j = 0; i < 10; i++, j++) { j = 5; }";
+    let diagnostics = scan("updated-loop-counter", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noCounterUpdate");
+}
+
+#[test]
+fn does_not_report_updated_loop_counter_only_in_update_clause() {
+    let source = "for (let i = 0; i < 10; i++) {}";
+    let diagnostics = scan("updated-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_updated_loop_counter_shadowing_local() {
+    let source = "for (let i = 0; i < 10; i++) { let i = 0; i = 5; }";
+    let diagnostics = scan("updated-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_updated_loop_counter_different_variable() {
+    let source = "for (let i = 0; i < 10; i++) { j = 5; }";
+    let diagnostics = scan("updated-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_updated_loop_counter_property_write() {
+    let source = "for (let i = 0; i < 10; i++) { i.x = 5; }";
+    let diagnostics = scan("updated-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_updated_loop_counter_for_of_variable() {
+    let source = "for (const x of xs) { x = 1; }";
+    let diagnostics = scan("updated-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}
+
 // array-callback-without-return tests
 
 #[test]
