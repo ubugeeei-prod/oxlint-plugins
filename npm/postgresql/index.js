@@ -41,6 +41,18 @@ const ruleMeta = Object.freeze({
         '`DISTINCT ON (...)` keeps an arbitrary row from each group unless `ORDER BY` is specified. Add an `ORDER BY` whose leading columns match the `DISTINCT ON` expressions.',
     },
   },
+  'no-drop-column': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... DROP COLUMN` — every reader of the dropped column breaks at deploy time',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDropColumn:
+        '`DROP COLUMN` breaks every running app that still references the column. Roll it out as a two-step migration: stop reading the column in the application, deploy, then drop it in a follow-up release.',
+    },
+  },
   'no-drop-database': {
     type: 'problem',
     description:
