@@ -3450,3 +3450,42 @@ fn does_not_report_prefer_promise_shorthand_arg_is_other_param() {
     let diagnostics = scan("prefer-promise-shorthand", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_pseudo_random_for_math_random_call() {
+    let diagnostics = scan("pseudo-random", "const x = Math.random();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "pseudo-random");
+    assert_eq!(diagnostics[0].message_id, "pseudoRandom");
+}
+
+#[test]
+fn reports_pseudo_random_for_bare_math_random_call() {
+    let diagnostics = scan("pseudo-random", "Math.random();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "pseudoRandom");
+}
+
+#[test]
+fn does_not_report_pseudo_random_for_different_property() {
+    let diagnostics = scan("pseudo-random", "Math.floor(1.5);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_pseudo_random_for_different_object() {
+    let diagnostics = scan("pseudo-random", "foo.random();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_pseudo_random_for_bare_identifier_call() {
+    let diagnostics = scan("pseudo-random", "random();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_pseudo_random_for_bare_reference() {
+    let diagnostics = scan("pseudo-random", "const f = Math.random;");
+    assert!(diagnostics.is_empty());
+}
