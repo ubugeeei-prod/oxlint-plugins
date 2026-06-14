@@ -8859,19 +8859,19 @@
       },
       {
         "name": "no-misleading-capturing-group",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-misleading-capturing-group."
+        "notes": "Narrow form: the canonical already-included shape A<greedy>(A*), where an atom A is greedily quantified (+, *, or {n,}) immediately followed by a capturing group whose body is exactly A* with the byte-identical atom. The preceding greedy quantifier consumes every A so the group always captures empty (removeQuant). Backtracking-ends cases, disjunction-prefixed groups, and non-identical overlapping atoms are deferred to stay valid-sound."
       },
       {
         "name": "no-misleading-unicode-character",

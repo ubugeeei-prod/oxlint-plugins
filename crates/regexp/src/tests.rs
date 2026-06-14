@@ -120,8 +120,65 @@ fn exposes_initial_regexp_rule_names() {
             "no-unused-capturing-group",
             "prefer-result-array-groups",
             "prefer-lookaround",
+            "no-misleading-capturing-group",
         ]
     );
+}
+
+mod no_misleading_capturing_group {
+    use super::*;
+
+    #[test]
+    fn reports_already_included_group() {
+        for src in [
+            // Shorthand: `\d+(\d*)`.
+            "const re = /\\d+(\\d*)/;",
+            // Star prefix: `\w*(\w*)`.
+            "const re = /\\w*(\\w*)/;",
+            // Literal atom: `a+(a*)`.
+            "const re = /a+(a*)/;",
+            // Open-ended brace: `\d{2,}(\d*)`.
+            "const re = /\\d{2,}(\\d*)/;",
+            // Named capture: `\d+(?<rest>\d*)`.
+            "const re = /\\d+(?<rest>\\d*)/;",
+            // Character class atom: `[ab]+([ab]*)`.
+            "const re = /[ab]+([ab]*)/;",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "no-misleading-capturing-group").as_slice(),
+                &["removeQuant"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_safe_or_unsupported_shapes() {
+        // Both quantifiers inside the group.
+        assert!(rule_ids_for("const re = /(a+a+)/;", "no-misleading-capturing-group").is_empty());
+        // No capturing group.
+        assert!(rule_ids_for("const re = /a+a+/;", "no-misleading-capturing-group").is_empty());
+        // Different atoms — not provably the same set.
+        assert!(
+            rule_ids_for("const re = /\\d+(\\w*)/;", "no-misleading-capturing-group").is_empty()
+        );
+        // Group body is `+`, not `*` (cannot capture empty).
+        assert!(
+            rule_ids_for("const re = /\\d+(\\d+)/;", "no-misleading-capturing-group").is_empty()
+        );
+        // Bounded brace prefix `{2,5}` is not open-ended.
+        assert!(
+            rule_ids_for(
+                "const re = /\\d{2,5}(\\d*)/;",
+                "no-misleading-capturing-group"
+            )
+            .is_empty()
+        );
+        // Lazy preceding quantifier.
+        assert!(
+            rule_ids_for("const re = /\\d+?(\\d*)/;", "no-misleading-capturing-group").is_empty()
+        );
+    }
 }
 
 mod prefer_lookaround {

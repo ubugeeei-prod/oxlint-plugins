@@ -2709,6 +2709,169 @@ pub(crate) fn has_unnecessary_general_category_key(pattern: &str) -> bool {
     false
 }
 
+/// Narrow-form detector for `no-misleading-capturing-group`.
+///
+/// Returns `true` when the pattern contains the canonical "already included"
+/// shape `A<greedy>(A*)`: an atom `A` quantified greedily (`+`, `*`, or
+/// `{n,}` — never lazy) immediately followed by a capturing group whose body is
+/// exactly `A*` (the same atom with a `*`). Because the preceding greedy
+/// quantifier consumes every `A`, the group's `*` is always satisfied by the
+/// empty match, so the capturing group misleadingly captures less than its
+/// pattern suggests (upstream's `removeQuant` case, e.g. `\d+(\d*)`).
+///
+/// `A` is one of: a shorthand escape (`\d`, `\w`, `\s`, …), a character class
+/// `[...]`, or a single literal byte. The atom before the quantifier and the
+/// atom inside the group must be byte-for-byte identical, which guarantees the
+/// "same set" relationship soundly without a full character-set analysis.
+///
+/// Deliberately narrow: only the directly-adjacent `A+(A*)` / `A*(A*)` /
+/// `A{n,}(A*)` shape is detected. Backtracking-ends cases (`^(a*).+`),
+/// disjunction-prefixed groups, and non-identical-but-overlapping atoms are
+/// left to a future pass to keep the detector valid-sound.
+pub(crate) fn has_misleading_capturing_group(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        // Try to parse an atom at `index`.
+        if let Some((atom_start, atom_end)) = misleading_atom_at(bytes, index) {
+            // The atom must be followed by a greedy quantifier.
+            if let Some(after_quant) = greedy_quantifier_end(bytes, atom_end) {
+                // …then immediately a capturing group open.
+                if let Some(body_start) = capturing_group_body_start(bytes, after_quant) {
+                    // …whose body is exactly the same atom followed by `*` then `)`.
+                    // The group body must be exactly `A*` then `)`. The `*`
+                    // being immediately followed by `)` also rules out the lazy
+                    // form `*?` (which would have `?` before `)`).
+                    if let Some((inner_start, inner_end)) = misleading_atom_at(bytes, body_start)
+                        && bytes.get(inner_end) == Some(&b'*')
+                        && bytes.get(inner_end + 1) == Some(&b')')
+                        && bytes[atom_start..atom_end] == bytes[inner_start..inner_end]
+                    {
+                        return true;
+                    }
+                }
+            }
+            index = atom_end;
+            continue;
+        }
+        // Skip classes/escapes wholesale so their internals are not misparsed.
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                index = find_class_end(bytes, index).map_or(index + 1, |close| close + 1);
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Parses a single quantifiable atom at `index`: a shorthand escape (`\d` etc.),
+/// a character class `[...]`, or a single literal byte that is not a regex
+/// metacharacter. Returns the `[start, end)` byte range of the atom (without
+/// any quantifier), or `None` when `index` is not the start of such an atom.
+fn misleading_atom_at(bytes: &[u8], index: usize) -> Option<(usize, usize)> {
+    match bytes.get(index)? {
+        b'\\' => {
+            let end = skip_escape(bytes, index);
+            Some((index, end))
+        }
+        b'[' => {
+            let close = find_class_end(bytes, index)?;
+            Some((index, close + 1))
+        }
+        // A literal byte: exclude regex metacharacters and group/quantifier
+        // punctuation so we only treat plain characters as atoms.
+        b if !matches!(
+            b,
+            b'(' | b')'
+                | b'['
+                | b']'
+                | b'{'
+                | b'}'
+                | b'*'
+                | b'+'
+                | b'?'
+                | b'.'
+                | b'|'
+                | b'^'
+                | b'$'
+                | b'\\'
+        ) =>
+        {
+            Some((index, index + 1))
+        }
+        _ => None,
+    }
+}
+
+/// If a *greedy* quantifier (`+`, `*`, or `{n,}` — never followed by a lazy
+/// `?`) begins at `index`, returns the index just past it; otherwise `None`.
+fn greedy_quantifier_end(bytes: &[u8], index: usize) -> Option<usize> {
+    match bytes.get(index)? {
+        b'+' | b'*' => {
+            // Reject the lazy form `+?` / `*?`.
+            if bytes.get(index + 1) == Some(&b'?') {
+                return None;
+            }
+            Some(index + 1)
+        }
+        b'{' => {
+            // `{n,}` (open upper bound) — find the `}` and require a trailing
+            // comma form. Reject lazy `{n,}?`.
+            let mut i = index + 1;
+            let mut saw_comma = false;
+            let mut saw_digit = false;
+            while i < bytes.len() && bytes[i] != b'}' {
+                match bytes[i] {
+                    b',' => saw_comma = true,
+                    d if d.is_ascii_digit() => saw_digit = true,
+                    _ => return None,
+                }
+                i += 1;
+            }
+            if bytes.get(i) != Some(&b'}') || !saw_comma || !saw_digit {
+                return None;
+            }
+            // `{n,m}` (with an explicit upper bound) is not "open"; only `{n,}`
+            // qualifies. Detect an upper bound by a digit after the comma.
+            // Reconstruct: scan again for a digit after the comma.
+            let body = &bytes[index + 1..i];
+            if let Some(comma_pos) = body.iter().position(|&b| b == b',')
+                && body[comma_pos + 1..].iter().any(u8::is_ascii_digit)
+            {
+                return None;
+            }
+            // Reject lazy `{n,}?`.
+            if bytes.get(i + 1) == Some(&b'?') {
+                return None;
+            }
+            Some(i + 1)
+        }
+        _ => None,
+    }
+}
+
+/// If a capturing group opens at `index` (anonymous `(` or named `(?<name>`,
+/// but not `(?:`, `(?=`, `(?!`, `(?<=`, `(?<!`), returns the index of the first
+/// byte of its body; otherwise `None`.
+fn capturing_group_body_start(bytes: &[u8], index: usize) -> Option<usize> {
+    if bytes.get(index) != Some(&b'(') {
+        return None;
+    }
+    if bytes.get(index + 1) == Some(&b'?') {
+        // Named capture `(?<name>` is capturing; everything else with `?` is not.
+        if bytes.get(index + 2) == Some(&b'<')
+            && !matches!(bytes.get(index + 3), Some(b'=') | Some(b'!'))
+        {
+            let rel = bytes[index + 3..].iter().position(|&b| b == b'>')?;
+            return Some(index + 3 + rel + 1);
+        }
+        return None;
+    }
+    Some(index + 1)
+}
+
 /// Reference token that a capturing group expects in a replacement string:
 /// either a numbered backreference (`$N`) or a named one (`$<name>`).
 #[derive(Clone)]

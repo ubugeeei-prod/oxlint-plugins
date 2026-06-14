@@ -263,6 +263,11 @@ const validCases = [
   ['prefer-lookaround', 'adjacent groups empty middle', "'x'.replace(/(Java)(Script)/, '$1$2');\n"],
   ['prefer-lookaround', 'single group not both-ends', "'x'.replace(/(Java)Script/, '$1');\n"],
   ['prefer-lookaround', 'quantifier body not plain', "'x'.replace(/(a+)bc(d)/, '$1x$2');\n"],
+  // no-misleading-capturing-group
+  ['no-misleading-capturing-group', 'quantifiers inside group', 'const re = /(a+a+)/;\n'],
+  ['no-misleading-capturing-group', 'no capturing group', 'const re = /a+a+/;\n'],
+  ['no-misleading-capturing-group', 'different atoms', 'const re = /\\d+(\\w*)/u;\n'],
+  ['no-misleading-capturing-group', 'group body is plus', 'const re = /\\d+(\\d+)/u;\n'],
 ];
 
 const invalidCases = [
@@ -760,6 +765,19 @@ const invalidCases = [
     'named both-ends capture',
     "'x'.replace(/(?<before>love )unicorn(?<after>!)/, '$<before>u$<after>');\n",
     ['preferLookarounds'],
+  ],
+  // no-misleading-capturing-group
+  [
+    'no-misleading-capturing-group',
+    'shorthand already included',
+    'const re = /\\d+(\\d*)/u;\n',
+    ['removeQuant'],
+  ],
+  [
+    'no-misleading-capturing-group',
+    'literal atom already included',
+    'const re = /a+(a*)/u;\n',
+    ['removeQuant'],
   ],
 ];
 
