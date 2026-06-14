@@ -805,6 +805,18 @@ const ruleMeta = Object.freeze({
         'Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.',
     },
   },
+  'prefer-add-constraint-not-valid': {
+    type: 'suggestion',
+    description:
+      'Prefer `ADD CONSTRAINT ... NOT VALID` followed by a separate `VALIDATE CONSTRAINT` to avoid an `ACCESS EXCLUSIVE` lock on the full table while it is being scanned',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      notValid:
+        'Add this constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not hold `ACCESS EXCLUSIVE` on the table.',
+    },
+  },
   'prefer-bigint-id': {
     type: 'suggestion',
     description:
