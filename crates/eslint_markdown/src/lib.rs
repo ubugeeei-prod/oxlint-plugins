@@ -557,6 +557,38 @@ fn collect_html_tags(source_text: &str, facts: &mut MarkdownFacts<'_>) {
     }
 }
 
+// Span from the opening fence start through the end of the language token,
+// matching upstream's `start: node.position.start` + `column + langIndex +
+// lang.length` (where `langIndex` is the offset of the language within the
+// node's text, i.e. on the opening fence line).
+fn fence_lang_span(source_text: &str, fence: &FenceFact, lang: &str) -> ByteSpan {
+    let fence_start = fence.marker_span.start;
+    let fence_line = source_text
+        .get(fence_start..fence.info_span.end)
+        .unwrap_or("");
+    let lang_offset = fence_line.find(lang).unwrap_or(0);
+    ByteSpan {
+        start: fence_start,
+        end: fence_start + lang_offset + lang.len(),
+    }
+}
+
+// Span covering the metadata token on the opening fence line, matching upstream's
+// `start.column + metaIndex` .. `+ meta.trimEnd().length` (where `metaIndex` is
+// `fenceLineText.lastIndexOf(node.meta)`).
+fn fence_meta_span(source_text: &str, fence: &FenceFact, meta: &str) -> ByteSpan {
+    let fence_start = fence.marker_span.start;
+    let fence_line = source_text
+        .get(fence_start..fence.info_span.end)
+        .unwrap_or("");
+    let meta_offset = fence_line.rfind(meta).unwrap_or(0);
+    let start = fence_start + meta_offset;
+    ByteSpan {
+        start,
+        end: start + meta.trim_end().len(),
+    }
+}
+
 fn scan_fenced_code_language(
     source_text: &str,
     line_index: &LineIndex,
@@ -588,7 +620,8 @@ fn scan_fenced_code_language(
                     lang: Some(lang.clone()),
                     ..DiagnosticData::default()
                 },
-                loc: line_index.loc_for_span(source_text, fence.info_span),
+                loc: line_index
+                    .loc_for_span(source_text, fence_lang_span(source_text, fence, lang)),
                 fix: None,
             });
         }
@@ -605,32 +638,32 @@ fn scan_fenced_code_meta(
     for fence in &facts.fences {
         match options.fenced_code_meta_mode {
             MetaMode::Always => {
-                if fence.lang.is_some()
-                    && fence
-                        .meta
-                        .as_ref()
-                        .is_none_or(|meta| meta.trim().is_empty())
+                let Some(lang) = &fence.lang else {
+                    continue;
+                };
+                if fence
+                    .meta
+                    .as_ref()
+                    .is_none_or(|meta| meta.trim().is_empty())
                 {
                     diagnostics.push(Diagnostic {
                         rule_name: "fenced-code-meta",
                         message_id: "missingMetadata",
                         data: DiagnosticData::default(),
-                        loc: line_index.loc_for_span(source_text, fence.info_span),
+                        loc: line_index
+                            .loc_for_span(source_text, fence_lang_span(source_text, fence, lang)),
                         fix: None,
                     });
                 }
             }
             MetaMode::Never => {
-                if fence
-                    .meta
-                    .as_ref()
-                    .is_some_and(|meta| !meta.trim().is_empty())
-                {
+                if let Some(meta) = fence.meta.as_ref().filter(|meta| !meta.trim().is_empty()) {
                     diagnostics.push(Diagnostic {
                         rule_name: "fenced-code-meta",
                         message_id: "disallowedMetadata",
                         data: DiagnosticData::default(),
-                        loc: line_index.loc_for_span(source_text, fence.info_span),
+                        loc: line_index
+                            .loc_for_span(source_text, fence_meta_span(source_text, fence, meta)),
                         fix: None,
                     });
                 }
