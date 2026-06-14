@@ -54,6 +54,7 @@ const expectedRuleNames = [
   'class-name',
   'max-lines',
   'nested-control-flow',
+  'max-lines-per-function',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1906,5 +1907,27 @@ describe('sonarjs native API', () => {
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0].ruleName).toBe('nested-control-flow');
     expect(diagnostics[0].messageId).toBe('nestedControlFlow');
+  });
+
+  it('reports max-lines-per-function for a function over the threshold', () => {
+    const source =
+      'function f() {\n  const a = 1;\n  const b = 2;\n  const c = 3;\n  return a + b + c;\n}';
+    const diagnostics = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['max-lines-per-function'],
+      maxLinesPerFunctionThreshold: 3,
+    });
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('max-lines-per-function');
+    expect(diagnostics[0].messageId).toBe('maxLinesPerFunction');
+  });
+
+  it('does not report max-lines-per-function for a function at exactly the threshold', () => {
+    // 5 code lines (signature + 3 body + closing brace), exactly at the threshold
+    const source = 'function f() {\n  const a = 1;\n  const b = 2;\n  return a + b;\n}';
+    const diagnostics = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['max-lines-per-function'],
+      maxLinesPerFunctionThreshold: 5,
+    });
+    expect(diagnostics).toHaveLength(0);
   });
 });

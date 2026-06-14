@@ -11534,19 +11534,19 @@
       },
       {
         "name": "max-lines-per-function",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule max-lines-per-function (Sonar key S138). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S138. Counts code lines (non-blank, non-comment-only) over the function's own line span. Reports FunctionDeclaration, FunctionExpression, and ArrowFunctionExpression when the count strictly exceeds the configurable maximum (default 200). IIFEs (function/arrow that is the direct callee of a CallExpression) are never reported. JSX-containing functions (any function whose subtree contains a JSXElement or JSXFragment) are never reported \u2014 this is a deliberate broadening of SonarJS's React-component exclusion; we exclude any JSX-containing function rather than only capitalized-name components, so we never over-report."
       },
       {
         "name": "max-switch-cases",

@@ -12,6 +12,7 @@ mod fixme_tag;
 mod for_in;
 mod generator_without_yield;
 mod max_lines;
+mod max_lines_per_function;
 mod max_switch_cases;
 mod max_union_size;
 mod nested_control_flow;

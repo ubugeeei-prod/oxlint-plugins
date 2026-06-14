@@ -145,6 +145,7 @@ describe('sonarjs plugin shape', () => {
       'class-name',
       'max-lines',
       'nested-control-flow',
+      'max-lines-per-function',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -197,6 +198,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['class-name']).toBe('object');
     expect(typeof plugin.rules['max-lines']).toBe('object');
     expect(typeof plugin.rules['nested-control-flow']).toBe('object');
+    expect(typeof plugin.rules['max-lines-per-function']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -251,6 +253,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/class-name']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/max-lines']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/nested-control-flow']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/max-lines-per-function']).toBe('error');
   });
 });
 
@@ -1128,6 +1131,21 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(runRule('max-lines', source, { options: [{ maximum: 3 }] })).toHaveLength(0);
   });
 
+  it('reports max-lines-per-function when function exceeds threshold', () => {
+    const source =
+      'function f() {\n  const a = 1;\n  const b = 2;\n  const c = 3;\n  return a + b + c;\n}';
+    const reports = runRule('max-lines-per-function', source, { options: [{ maximum: 3 }] });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('maxLinesPerFunction');
+  });
+
+  it('does not report max-lines-per-function when function is within threshold', () => {
+    // 5 code lines (signature + 3 body + closing brace), exactly at the threshold
+    const source = 'function f() {\n  const a = 1;\n  const b = 2;\n  return a + b;\n}';
+    const reports = runRule('max-lines-per-function', source, { options: [{ maximum: 5 }] });
+    expect(reports).toHaveLength(0);
+  });
+
   it('reports max-lines through the CLI', () => {
     const source = 'const a = 1;\nconst b = 2;\nconst c = 3;';
     const result = runOxlint('max-lines', source);
@@ -1154,5 +1172,11 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(nested-control-flow)');
+  });
+
+  it('does not report max-lines-per-function for a short function (default 200)', () => {
+    const source = 'function f() { return 1; }';
+    const { diagnostics } = runOxlint('max-lines-per-function', source);
+    expect(diagnostics).toHaveLength(0);
   });
 });

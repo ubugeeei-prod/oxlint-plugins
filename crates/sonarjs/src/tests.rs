@@ -2369,3 +2369,56 @@ fn nested_control_flow_respects_custom_threshold() {
     assert_eq!(diagnostics[0].rule_name, "nested-control-flow");
     assert_eq!(diagnostics[0].message_id, "nestedControlFlow");
 }
+
+#[test]
+fn reports_max_lines_per_function_for_function_over_threshold() {
+    let mut options = options_for("max-lines-per-function");
+    options.max_lines_per_function_threshold = 5;
+    // 6 code lines (signature + 4 body + closing brace) → strictly above 5 → 1 diagnostic
+    let source = "function f() {\n  a;\n  b;\n  c;\n  d;\n}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "max-lines-per-function");
+    assert_eq!(diagnostics[0].message_id, "maxLinesPerFunction");
+}
+
+#[test]
+fn does_not_report_max_lines_per_function_at_exactly_threshold() {
+    let mut options = options_for("max-lines-per-function");
+    options.max_lines_per_function_threshold = 5;
+    // 5 code lines (signature + 3 body + closing brace), exactly at the threshold → 0
+    let source = "function f() {\n  a;\n  b;\n  c;\n}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_count_blank_and_comment_lines_in_function() {
+    let mut options = options_for("max-lines-per-function");
+    options.max_lines_per_function_threshold = 5;
+    // 7 physical lines, but the comment-only and blank lines are excluded →
+    // 5 code lines, exactly at the threshold → 0 diagnostics
+    let source = "function f() {\n  // c\n  a;\n\n  b;\n  c;\n}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_max_lines_per_function_for_iife() {
+    let mut options = options_for("max-lines-per-function");
+    options.max_lines_per_function_threshold = 5;
+    // 6 code lines (above the threshold) but it's an IIFE → 0 diagnostics
+    let source = "(function() {\n  a;\n  b;\n  c;\n  d;\n})();";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_max_lines_per_function_for_jsx_containing_arrow() {
+    let mut options = options_for("max-lines-per-function");
+    options.max_lines_per_function_threshold = 5;
+    // 6 code lines (above the threshold) but the body contains JSX → 0 (parsed as TSX)
+    let source = "const f = () => {\n  a;\n  b;\n  c;\n  return <div />;\n};";
+    let diagnostics = scan_sonarjs(source, "sample.tsx", &options);
+    assert!(diagnostics.is_empty());
+}

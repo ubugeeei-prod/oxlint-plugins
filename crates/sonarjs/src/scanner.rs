@@ -6,10 +6,10 @@ use oxc_ast::ast::{
     ArrowFunctionExpression, AssignmentExpression, BinaryExpression, BindingIdentifier,
     BlockStatement, CallExpression, CatchClause, Class, ConditionalExpression, DoWhileStatement,
     ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function, FunctionBody,
-    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, NewExpression, Program,
-    RegExpLiteral, ReturnStatement, StaticMemberExpression, SwitchCase, SwitchStatement,
-    TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, TryStatement,
-    UnaryExpression, WhileStatement, YieldExpression,
+    IdentifierReference, IfStatement, JSXElement, JSXFragment, LabeledStatement, LogicalExpression,
+    NewExpression, Program, RegExpLiteral, ReturnStatement, StaticMemberExpression, SwitchCase,
+    SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral,
+    TryStatement, UnaryExpression, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -50,6 +50,14 @@ pub(crate) struct Scanner<'a> {
     /// Span-start offsets of `if` statements that are the `else`-branch of a parent
     /// `if` (an `else if`); these do not increment the nesting depth.
     pub(crate) else_if_starts: SmallVec<[u32; 8]>,
+    /// Comment spans for the current file, collected in `visit_program`.
+    pub(crate) comment_spans: SmallVec<[Span; 16]>,
+    /// JSX-tracking frames, one per open function/arrow; `max-lines-per-function`
+    /// skips any function whose frame is `true`.
+    pub(crate) jsx_function_stack: SmallVec<[bool; 8]>,
+    /// Span-start offsets of functions/arrows that are IIFEs (callee of a call);
+    /// `max-lines-per-function` never reports these.
+    pub(crate) iife_function_starts: SmallVec<[u32; 8]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -86,8 +94,11 @@ impl Scanner<'_> {
 
 impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_program(&mut self, it: &Program<'a>) {
+        for comment in &it.comments {
+            self.comment_spans.push(comment.span);
+        }
         self.check_no_tab();
-        self.check_max_lines(&it.comments);
+        self.check_max_lines();
         self.check_fixme_tag(&it.comments);
         self.check_todo_tag(&it.comments);
         self.check_no_sonar_comments(&it.comments);
@@ -263,6 +274,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_skipped_tests_call(it);
         self.check_array_constructor_call(it);
         self.check_no_nested_incdec_call(it);
+        self.record_iife_callee(&it.callee);
         walk::walk_call_expression(self, it);
     }
 
@@ -287,15 +299,19 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
         let track = self.enter_generator(it);
         self.enter_return_scope(it.span);
+        self.jsx_function_stack.push(false);
         walk::walk_function(self, it, flags);
         self.leave_return_scope();
         self.leave_generator(it, track);
+        self.check_max_lines_per_function(it.span);
     }
 
     fn visit_arrow_function_expression(&mut self, it: &ArrowFunctionExpression<'a>) {
         self.enter_return_scope(it.span);
+        self.jsx_function_stack.push(false);
         walk::walk_arrow_function_expression(self, it);
         self.leave_return_scope();
+        self.check_max_lines_per_function(it.span);
     }
 
     fn visit_return_statement(&mut self, it: &ReturnStatement<'a>) {
@@ -306,6 +322,16 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_yield_expression(&mut self, it: &YieldExpression<'a>) {
         self.mark_generator_yield();
         walk::walk_yield_expression(self, it);
+    }
+
+    fn visit_jsx_element(&mut self, it: &JSXElement<'a>) {
+        self.mark_jsx();
+        walk::walk_jsx_element(self, it);
+    }
+
+    fn visit_jsx_fragment(&mut self, it: &JSXFragment<'a>) {
+        self.mark_jsx();
+        walk::walk_jsx_fragment(self, it);
     }
 
     fn visit_catch_clause(&mut self, it: &CatchClause<'a>) {
