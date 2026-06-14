@@ -53,6 +53,17 @@ const ruleMeta = Object.freeze({
         '`CREATE ROLE` / `CREATE USER` belongs in an operator-managed bootstrap (Terraform, Pulumi, a runbook), not in application migrations. Migration files run with whichever role the deploy uses and are not the right place to manage permissions.',
     },
   },
+  'no-cross-join': {
+    type: 'suggestion',
+    description: 'Disallow `CROSS JOIN` (unqualified cartesian product)',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCrossJoin:
+        'Avoid `CROSS JOIN`. Cartesian products are almost always a mistake; use an explicit `JOIN ... ON` with a join condition, or `JOIN ... ON true` if you really do want one.',
+    },
+  },
   'no-distinct-on-without-order-by': {
     type: 'problem',
     description:
