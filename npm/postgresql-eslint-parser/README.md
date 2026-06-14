@@ -35,6 +35,11 @@ The public API mirrors upstream:
 - `parseForESLint(code)` → `{ ast, visitorKeys, scopeManager }` (`scopeManager`
   is always `null`, matching upstream).
 - `parse(code)` → the `Program` AST node.
+- `extractEmbeddedCode(program)` → `EmbeddedCode[]` — collect the embedded PL
+  function bodies from a parsed AST, in source order.
+
+A `./processor` entry point exports `createPlProcessor({ languages })`, an ESLint
+processor that lints those embedded PL bodies as virtual files.
 
 ## Supported platforms
 
