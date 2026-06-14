@@ -79,6 +79,7 @@ const expectedRuleNames = [
   'no-misleading-array-reverse',
   'no-alphabetical-sort',
   'no-for-in-iterable',
+  'no-associative-arrays',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

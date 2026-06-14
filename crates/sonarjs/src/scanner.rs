@@ -362,6 +362,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_class_prototype(it);
         self.check_no_nested_assignment_chain(it);
         self.check_no_useless_increment(it);
+        self.check_no_associative_arrays(it);
         if matches!(it.operator, AssignmentOperator::Assign) {
             self.check_no_misleading_array_reverse(&it.right);
         }

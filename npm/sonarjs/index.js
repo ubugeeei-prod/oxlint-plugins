@@ -281,6 +281,9 @@ const messages = Object.freeze({
     noForInIterable:
       'Use a "for...of" loop instead of a "for...in" loop to iterate over this array.',
   },
+  'no-associative-arrays': {
+    noAssociativeArray: 'Use an object or a Map instead of this array with non-numeric keys.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -431,6 +434,8 @@ const ruleDescriptions = Object.freeze({
     'Require a compare function when calling "sort" or "toSorted" on an array',
   'no-for-in-iterable':
     'Disallow "for...in" loops over arrays; use a "for...of" loop to iterate values instead',
+  'no-associative-arrays':
+    'Disallow assigning non-numeric keys to arrays; use an object or a Map instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -510,6 +515,7 @@ const ruleTypes = Object.freeze({
   'no-misleading-array-reverse': 'suggestion',
   'no-alphabetical-sort': 'suggestion',
   'no-for-in-iterable': 'suggestion',
+  'no-associative-arrays': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -589,6 +595,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-misleading-array-reverse': 'error',
   'no-alphabetical-sort': 'error',
   'no-for-in-iterable': 'error',
+  'no-associative-arrays': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

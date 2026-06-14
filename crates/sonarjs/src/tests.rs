@@ -3992,3 +3992,72 @@ fn does_not_report_for_in_iterable_on_for_of_loop() {
     let diagnostics = scan("no-for-in-iterable", "for (const x of [1, 2, 3]) {}");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_associative_array_computed_string_key() {
+    let diagnostics = scan("no-associative-arrays", "const a = [];\na['key'] = 1;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-associative-arrays");
+    assert_eq!(diagnostics[0].message_id, "noAssociativeArray");
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+}
+
+#[test]
+fn reports_associative_array_static_key() {
+    let diagnostics = scan("no-associative-arrays", "const a = [];\na.foo = 1;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noAssociativeArray");
+}
+
+#[test]
+fn reports_associative_array_on_direct_array_literal() {
+    let diagnostics = scan("no-associative-arrays", "[].foo = 1;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noAssociativeArray");
+}
+
+#[test]
+fn reports_associative_array_for_compound_assignment() {
+    let diagnostics = scan("no-associative-arrays", "const a = [];\na.foo += 1;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noAssociativeArray");
+}
+
+#[test]
+fn does_not_report_associative_array_numeric_index() {
+    let diagnostics = scan("no-associative-arrays", "const a = [];\na[0] = 1;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_associative_array_numeric_string_index() {
+    let diagnostics = scan("no-associative-arrays", "const a = [];\na['0'] = 1;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_associative_array_length_write() {
+    let diagnostics = scan("no-associative-arrays", "const a = [];\na.length = 0;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_associative_array_variable_index() {
+    let diagnostics = scan(
+        "no-associative-arrays",
+        "const a = [];\nlet i = 0;\na[i] = 1;",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_associative_array_on_object_literal() {
+    let diagnostics = scan("no-associative-arrays", "const o = {};\no.foo = 1;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_associative_array_on_unresolvable_parameter() {
+    let diagnostics = scan("no-associative-arrays", "function f(p) {\n  p.foo = 1;\n}");
+    assert!(diagnostics.is_empty());
+}
