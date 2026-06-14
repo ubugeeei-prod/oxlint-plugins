@@ -5303,19 +5303,19 @@
       },
       {
         "name": "no-equality-with-null",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-equality-with-null."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-equality-with-null; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-grant-all",
@@ -5367,19 +5367,19 @@
       },
       {
         "name": "no-having-without-group-by",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-having-without-group-by."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-having-without-group-by; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-identifier-too-long",
@@ -5495,19 +5495,19 @@
       },
       {
         "name": "no-on-delete-cascade",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-on-delete-cascade."
+        "notes": "Ported: Constraint node with contype CONSTR_FOREIGN and fk_del_action \"c\"."
       },
       {
         "name": "no-order-by-ordinal",
