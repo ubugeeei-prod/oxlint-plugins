@@ -20,6 +20,7 @@ mod no_all_duplicated_branches;
 mod no_built_in_override;
 mod no_case_label_in_switch;
 mod no_collapsible_if;
+mod no_control_regex;
 mod no_delete_var;
 mod no_duplicate_in_composite;
 mod no_duplicate_string;

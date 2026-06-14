@@ -11838,19 +11838,19 @@
       },
       {
         "name": "no-control-regex",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-control-regex (Sonar key S6324). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6324). Flags control characters (U+0000\u2013U+001F) written as \\x, \\u/\\u{}, or \\c escapes anywhere in a regex literal including inside character classes. Named escapes \\t\\n\\r\\v\\f (CharacterKind::SingleEscape) are not flagged. Literal raw control chars and octal escapes are a documented follow-up (false negatives, not false positives). No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-dead-store",
