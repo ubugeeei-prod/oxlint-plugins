@@ -20,6 +20,7 @@ mod no_temporary_table;
 mod no_vacuum_full;
 mod no_with_recursive_without_limit;
 mod require_limit;
+mod require_where_in_update;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
 /// know the full surface even while only a subset is implemented.
@@ -134,6 +135,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-vacuum-full",
     "no-with-recursive-without-limit",
     "require-limit",
+    "require-where-in-update",
 ];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
@@ -221,6 +223,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-limit",
         run: require_limit::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-where-in-update",
+        run: require_where_in_update::run,
         uses_parse_error: false,
     },
 ];

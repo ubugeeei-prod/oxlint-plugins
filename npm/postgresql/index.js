@@ -220,6 +220,17 @@ const ruleMeta = Object.freeze({
         'SELECT statement should include a LIMIT clause to prevent excessive data retrieval',
     },
   },
+  'require-where-in-update': {
+    type: 'problem',
+    description: 'Require a WHERE clause in UPDATE statements',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingWhere:
+        'UPDATE without WHERE rewrites every row in the table. Add a WHERE clause to scope the change.',
+    },
+  },
 });
 
 const implementedRuleNames = Object.freeze(implementedPostgresqlRuleNames());
