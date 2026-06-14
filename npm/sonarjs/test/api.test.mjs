@@ -91,6 +91,7 @@ const expectedRuleNames = [
   'no-wildcard-import',
   'updated-loop-counter',
   'misplaced-loop-counter',
+  'no-array-delete',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2499,6 +2500,35 @@ describe('no-equals-in-for-termination rule', () => {
 
   it('does not report a relational condition', () => {
     const diagnostics = scan('no-equals-in-for-termination', 'for (let i = 0; i < 10; i += 2) {}');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-array-delete rule', () => {
+  it('reports delete on a resolved array variable element', () => {
+    const diagnostics = scan('no-array-delete', 'const a = [1, 2, 3];\ndelete a[0];');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-array-delete');
+    expect(diagnostics[0].messageId).toBe('noArrayDelete');
+  });
+
+  it('reports delete on a direct array-literal element', () => {
+    const diagnostics = scan('no-array-delete', 'delete [1, 2][0];');
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report delete on an object property', () => {
+    const diagnostics = scan('no-array-delete', 'const o = { x: 1 };\ndelete o.x;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report delete on a static array member', () => {
+    const diagnostics = scan('no-array-delete', 'const a = [1, 2, 3];\ndelete a.foo;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report delete on an unprovable receiver', () => {
+    const diagnostics = scan('no-array-delete', 'function f(p) {\n  delete p[0];\n}');
     expect(diagnostics).toHaveLength(0);
   });
 });

@@ -182,6 +182,7 @@ describe('sonarjs plugin shape', () => {
       'no-wildcard-import',
       'updated-loop-counter',
       'misplaced-loop-counter',
+      'no-array-delete',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -270,6 +271,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-wildcard-import']).toBe('object');
     expect(typeof plugin.rules['updated-loop-counter']).toBe('object');
     expect(typeof plugin.rules['misplaced-loop-counter']).toBe('object');
+    expect(typeof plugin.rules['no-array-delete']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -366,6 +368,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-wildcard-import']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/updated-loop-counter']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/misplaced-loop-counter']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-array-delete']).toBe('error');
   });
 });
 
@@ -2667,5 +2670,48 @@ describe('misplaced-loop-counter rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(misplaced-loop-counter)');
+  });
+});
+
+describe('no-array-delete rule', () => {
+  it('reports delete on a resolved array variable element', () => {
+    const source = 'const a = [1, 2, 3];\ndelete a[0];';
+    const reports = runRule('no-array-delete', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noArrayDelete');
+  });
+
+  it('reports delete on a direct array-literal element', () => {
+    const source = 'delete [1, 2][0];';
+    const reports = runRule('no-array-delete', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noArrayDelete');
+  });
+
+  it('does not report delete on an object property', () => {
+    const source = 'const o = { x: 1 };\ndelete o.x;';
+    const reports = runRule('no-array-delete', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report delete on a static array member', () => {
+    const source = 'const a = [1, 2, 3];\ndelete a.foo;';
+    const reports = runRule('no-array-delete', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report delete on an unprovable receiver', () => {
+    const source = 'function f(p) {\n  delete p[0];\n}';
+    const reports = runRule('no-array-delete', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-array-delete through the CLI', () => {
+    const source = 'const a = [1, 2, 3];\ndelete a[0];';
+    const result = runOxlint('no-array-delete', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-array-delete)');
   });
 });

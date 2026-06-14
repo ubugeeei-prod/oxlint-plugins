@@ -29,6 +29,7 @@ mod misplaced_loop_counter;
 mod nested_control_flow;
 mod no_all_duplicated_branches;
 mod no_alphabetical_sort;
+mod no_array_delete;
 mod no_associative_arrays;
 mod no_built_in_override;
 mod no_case_label_in_switch;

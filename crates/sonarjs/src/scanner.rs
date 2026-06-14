@@ -282,6 +282,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_delete_var(it);
         self.check_no_inverted_boolean_check(it);
         self.check_void_use(it);
+        self.check_no_array_delete(it);
         walk::walk_unary_expression(self, it);
     }
 
