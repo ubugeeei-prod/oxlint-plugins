@@ -18,6 +18,7 @@ mod fixme_tag;
 mod for_in;
 mod generator_without_yield;
 mod index_of_compare_to_positive_number;
+mod inverted_assertion_arguments;
 mod max_lines;
 mod max_lines_per_function;
 mod max_switch_cases;

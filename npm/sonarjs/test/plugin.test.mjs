@@ -173,6 +173,7 @@ describe('sonarjs plugin shape', () => {
       'no-associative-arrays',
       'bitwise-operators',
       'no-same-argument-assert',
+      'inverted-assertion-arguments',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -252,6 +253,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-associative-arrays']).toBe('object');
     expect(typeof plugin.rules['bitwise-operators']).toBe('object');
     expect(typeof plugin.rules['no-same-argument-assert']).toBe('object');
+    expect(typeof plugin.rules['inverted-assertion-arguments']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -339,6 +341,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-associative-arrays']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/bitwise-operators']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-same-argument-assert']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/inverted-assertion-arguments']).toBe('error');
   });
 });
 
@@ -2152,5 +2155,60 @@ describe('no-same-argument-assert rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-same-argument-assert)');
+  });
+});
+
+describe('inverted-assertion-arguments rule', () => {
+  it('reports assert.equal called with a numeric literal first', () => {
+    const source = 'assert.equal(42, x);';
+    const reports = runRule('inverted-assertion-arguments', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('invertedArguments');
+  });
+
+  it('reports assert.strictEqual called with a string literal first', () => {
+    const source = "assert.strictEqual('foo', bar);";
+    const reports = runRule('inverted-assertion-arguments', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('invertedArguments');
+  });
+
+  it('does not report arguments already in actual/expected order', () => {
+    const source = 'assert.equal(x, 42);';
+    const reports = runRule('inverted-assertion-arguments', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when both arguments are literals', () => {
+    const source = 'assert.equal(1, 2);';
+    const reports = runRule('inverted-assertion-arguments', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when neither argument is a literal', () => {
+    const source = 'assert.equal(x, y);';
+    const reports = runRule('inverted-assertion-arguments', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a generic non-assert call', () => {
+    const source = 'foo(42, x);';
+    const reports = runRule('inverted-assertion-arguments', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an assertion with a single argument', () => {
+    const source = 'assert.ok(x);';
+    const reports = runRule('inverted-assertion-arguments', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports inverted-assertion-arguments through the CLI', () => {
+    const source = 'assert.equal(42, x);';
+    const result = runOxlint('inverted-assertion-arguments', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(inverted-assertion-arguments)');
   });
 });

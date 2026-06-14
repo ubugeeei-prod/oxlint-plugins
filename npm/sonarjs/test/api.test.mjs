@@ -82,6 +82,7 @@ const expectedRuleNames = [
   'no-associative-arrays',
   'bitwise-operators',
   'no-same-argument-assert',
+  'inverted-assertion-arguments',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2370,6 +2371,34 @@ describe('sonarjs native API', () => {
 
   it('does not report no-same-argument-assert for assert.ok(x) (single argument)', () => {
     const diagnostics = scan('no-same-argument-assert', 'assert.ok(x);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports inverted-assertion-arguments for assert.equal(42, x)', () => {
+    const diagnostics = scan('inverted-assertion-arguments', 'assert.equal(42, x);');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('inverted-assertion-arguments');
+    expect(diagnostics[0].messageId).toBe('invertedArguments');
+  });
+
+  it("reports inverted-assertion-arguments for assert.strictEqual('foo', bar)", () => {
+    const diagnostics = scan('inverted-assertion-arguments', "assert.strictEqual('foo', bar);");
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('invertedArguments');
+  });
+
+  it('does not report inverted-assertion-arguments for assert.equal(x, 42) (correct order)', () => {
+    const diagnostics = scan('inverted-assertion-arguments', 'assert.equal(x, 42);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report inverted-assertion-arguments for assert.equal(1, 2) (both literals)', () => {
+    const diagnostics = scan('inverted-assertion-arguments', 'assert.equal(1, 2);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report inverted-assertion-arguments for foo(42, x) (not an assertion call)', () => {
+    const diagnostics = scan('inverted-assertion-arguments', 'foo(42, x);');
     expect(diagnostics).toHaveLength(0);
   });
 });
