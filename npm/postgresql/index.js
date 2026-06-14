@@ -999,6 +999,29 @@ const ruleMeta = Object.freeze({
         'UPDATE without WHERE rewrites every row in the table. Add a WHERE clause to scope the change.',
     },
   },
+  'snake-case-column-name': {
+    type: 'suggestion',
+    description: 'Require column names to be snake_case',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allow: {
+            type: 'array',
+            items: { type: 'string' },
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      notSnakeCase:
+        'Column name `{{name}}` is not snake_case. PostgreSQL preserves the case of quoted identifiers; using a mixed-case quoted name forces every consumer to quote-match it.',
+    },
+  },
   'snake-case-table-name': {
     type: 'suggestion',
     description: 'Require table names to be snake_case',
