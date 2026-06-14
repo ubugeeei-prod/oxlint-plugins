@@ -10110,19 +10110,19 @@
       },
       {
         "name": "array-callback-without-return",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule array-callback-without-return (Sonar key S3796). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S3796). Flags a value-consuming array method (map/filter/every/some/find/findIndex/findLast/findLastIndex/reduce/reduceRight/flatMap/sort) whose first-argument inline function/arrow callback never returns a value. Conservative any-return semantics: flagged only when the block body contains zero value-returning return statements (a bare return; does not count); arrow expression bodies imply a return and are never flagged. Body walk descends through control flow but stops at nested functions. Type-free: keys off method name on any receiver (rare non-array over-report accepted). forEach and Array.from are not covered. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "array-constructor",
