@@ -29,6 +29,18 @@ const ruleMeta = Object.freeze({
         '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
     },
   },
+  'no-rule': {
+    type: 'problem',
+    description:
+      "Disallow `CREATE RULE`; PostgreSQL's rule system is a known foot-gun and is effectively deprecated in favor of triggers and views",
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noRule:
+        "Avoid `CREATE RULE`. PostgreSQL's rule system has surprising semantics around row counts, RETURNING, and updatable views; use a trigger or an updatable view instead.",
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
