@@ -224,6 +224,9 @@ const messages = Object.freeze({
   'no-duplicate-string': {
     duplicateString: 'Define this repeated string literal as a constant to avoid duplication.',
   },
+  'cyclomatic-complexity': {
+    cyclomaticComplexity: 'Refactor this function to reduce its cyclomatic complexity.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -339,6 +342,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow control flow statements (if/for/for-in/for-of/while/do-while/switch/try) nested beyond the configured maximumNestingLevel (default 3); else-if chains do not add a level',
   'no-duplicate-string':
     'Disallow string literals of 10+ characters containing a non-word character from appearing at least threshold (default 3) times in a file; import/export sources and JSX attribute values are excluded',
+  'cyclomatic-complexity':
+    'Disallow functions whose cyclomatic complexity exceeds the configured threshold (the "threshold" option; default 10); each if/for/while/do-while/case/catch/ternary/logical-operator adds +1',
 });
 
 const ruleTypes = Object.freeze({
@@ -402,6 +407,7 @@ const ruleTypes = Object.freeze({
   'max-lines-per-function': 'suggestion',
   'nested-control-flow': 'suggestion',
   'no-duplicate-string': 'suggestion',
+  'cyclomatic-complexity': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -465,6 +471,7 @@ const recommendedRuleConfig = Object.freeze({
   'nested-control-flow': 'error',
   'no-duplicate-string': 'error',
   'anchor-precedence': 'error',
+  'cyclomatic-complexity': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
@@ -557,6 +564,15 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'cyclomatic-complexity') {
+    return [
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   return [];
 }
 
@@ -581,6 +597,9 @@ function scanOptionsForRule(context, ruleName) {
   }
   if (ruleName === 'no-duplicate-string' && Number.isInteger(raw.threshold)) {
     options.noDuplicateStringThreshold = raw.threshold;
+  }
+  if (ruleName === 'cyclomatic-complexity' && Number.isInteger(raw.threshold)) {
+    options.cyclomaticComplexityThreshold = raw.threshold;
   }
   return options;
 }
