@@ -69,12 +69,10 @@ function createAngularEslintRule(ruleName) {
       messages: {
         unexpected: 'Unexpected Angular pattern.',
       },
-      schema: [
-        {
-          type: 'object',
-          additionalProperties: true,
-        },
-      ],
+      // These rules do not yet honor upstream options (the core is a heuristic
+      // scanner). Declare no schema so configured options are surfaced as an
+      // error rather than silently ignored. Tracked for real implementation.
+      schema: [],
     },
     createOnce(context) {
       return {

@@ -24,14 +24,12 @@ import { describe, expect, it } from 'vitest';
 
 const npmDir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'npm');
 
-// Ports whose cores ignore options entirely; tracked for real implementation.
-// perfectionist: configurable sort engine not implemented.
-// angular-eslint: per-rule options (selectors/prefixes/suffixes) not implemented.
-const KNOWN_OPTION_GAPS = new Set(['perfectionist', 'angular-eslint']);
-
-// Note: `playwright` passes this static check because it reads `context.options`
-// as a presence gate, but its core drops the option *values*; that deeper gap is
-// tracked separately and cannot be detected statically.
+// Ports whose cores ignore options entirely. perfectionist, angular-eslint and
+// playwright now declare `schema: []` (options are surfaced as an error rather
+// than silently ignored) until their cores implement options, so they no longer
+// advertise an options schema and are skipped by the check below. Add a plugin
+// here only if it must advertise an options schema before its core can honor it.
+const KNOWN_OPTION_GAPS = new Set();
 
 function read(path) {
   try {
