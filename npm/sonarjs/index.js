@@ -178,6 +178,9 @@ const messages = Object.freeze({
   'no-nested-assignment': {
     nestedAssignment: 'Extract this assignment out of the expression into its own statement.',
   },
+  'no-nested-incdec': {
+    nestedIncDec: 'Extract this increment or decrement operator into a separate statement.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -265,6 +268,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow an "if" statement placed on the same line as the closing brace of a preceding sibling "if"',
   'no-nested-assignment':
     'Disallow assignments inside sub-expressions such as loop and branch conditions or chained assignments',
+  'no-nested-incdec':
+    'Disallow increment and decrement operators used as a function or constructor call argument',
 });
 
 const ruleTypes = Object.freeze({
@@ -314,6 +319,7 @@ const ruleTypes = Object.freeze({
   'no-inconsistent-returns': 'suggestion',
   'no-same-line-conditional': 'suggestion',
   'no-nested-assignment': 'suggestion',
+  'no-nested-incdec': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -363,6 +369,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-inconsistent-returns': 'error',
   'no-same-line-conditional': 'error',
   'no-nested-assignment': 'error',
+  'no-nested-incdec': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
