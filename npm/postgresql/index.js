@@ -17,6 +17,28 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'consistent-reindex-concurrently': {
+    type: 'problem',
+    description:
+      'Enforce a consistent stance on `CONCURRENTLY` for `REINDEX` (either always require it, or always forbid it)',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferReindexConcurrently:
+        '`REINDEX` without `CONCURRENTLY` takes a `SHARE` lock (table) or `ACCESS EXCLUSIVE` (index), blocking writers for the rebuild. Use `REINDEX (TABLE|INDEX) CONCURRENTLY ...` (PG ≥ 12) so writers keep working.',
+      unexpectedReindexConcurrently:
+        'Avoid `REINDEX CONCURRENTLY`. Concurrent reindex cannot run inside a transaction; use plain `REINDEX` when the migration tool wraps each step in BEGIN/COMMIT.',
+    },
+  },
   'no-add-check-constraint-without-not-valid': {
     type: 'problem',
     description:
