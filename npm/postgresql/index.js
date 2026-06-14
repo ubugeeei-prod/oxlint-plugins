@@ -53,6 +53,17 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-natural-join': {
+    type: 'problem',
+    description: 'Disallow `NATURAL JOIN`',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noNaturalJoin:
+        'Avoid `NATURAL JOIN`. The join columns are implicit — any future column with a matching name on both sides silently changes the result. Use `JOIN ... USING (...)` or `JOIN ... ON ...` and name the columns.',
+    },
+  },
   'no-set-not-null': {
     type: 'problem',
     description:
