@@ -147,6 +147,17 @@ const ruleMeta = Object.freeze({
         '`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table.',
     },
   },
+  'no-drop-table-cascade': {
+    type: 'problem',
+    description: 'Disallow `DROP TABLE ... CASCADE` because it silently removes dependent objects',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCascade:
+        'Avoid `DROP TABLE ... CASCADE`. CASCADE silently removes dependent objects (views, foreign keys, sequences); list them explicitly so reviewers can see the blast radius.',
+    },
+  },
   'no-equality-with-null': {
     type: 'problem',
     description:

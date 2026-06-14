@@ -14,6 +14,7 @@ mod no_distinct_on_without_order_by;
 mod no_drop_column;
 mod no_drop_database;
 mod no_drop_not_null;
+mod no_drop_table_cascade;
 mod no_equality_with_null;
 mod no_grant_all;
 mod no_grant_to_public;
@@ -155,6 +156,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-drop-column",
     "no-drop-database",
     "no-drop-not-null",
+    "no-drop-table-cascade",
     "no-equality-with-null",
     "no-grant-all",
     "no-grant-to-public",
@@ -245,6 +247,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-drop-not-null",
         run: no_drop_not_null::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-drop-table-cascade",
+        run: no_drop_table_cascade::run,
         uses_parse_error: false,
     },
     RuleDef {
