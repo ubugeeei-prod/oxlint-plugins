@@ -94,6 +94,41 @@ fn scans_story_exports_and_story_names() {
 }
 
 #[test]
+fn prefer_pascal_case_renames_references() {
+    // The autofix must rename the declaration AND every reference to the export.
+    let source = "export const primary = {};\nprimary.foo = 'bar';";
+    let diagnostics = scan("prefer-pascal-case", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "usePascalCase");
+    assert_eq!(diagnostics[0].fixes.len(), 2);
+}
+
+#[test]
+fn await_interactions_skips_locally_shadowed_user_event() {
+    // A locally declared `userEvent` shadows the storybook import, so upstream does
+    // not require its calls to be awaited.
+    let source = "Basic.play = async () => {\n  const userEvent = { test: () => {} };\n  userEvent.test();\n};";
+    assert_eq!(scan("await-interactions", source).len(), 0);
+}
+
+#[test]
+fn no_redundant_story_name_splits_letter_digit_boundary() {
+    // Upstream `storyNameFromExport('H1') === 'H 1'`, so `H1.storyName = 'H1'` is
+    // NOT redundant. The port must split the letter→digit boundary the same way.
+    let source = "export function H1() {\n  return null;\n}\nH1.storyName = 'H1';";
+    assert_eq!(scan("no-redundant-story-name", source).len(), 0);
+}
+
+#[test]
+fn story_exports_ignores_unresolvable_filter() {
+    // A non-string-literal `includeStories` element makes upstream `getDescriptor`
+    // throw, discarding the filter; the file then has a valid story export.
+    let source = "export default { title: 'C', component: C, includeStories: [C.name] };\n\
+         export const SimpleStory = () => null;";
+    assert_eq!(scan("story-exports", source).len(), 0);
+}
+
+#[test]
 fn scans_imports_and_addons() {
     assert_eq!(
         scan(

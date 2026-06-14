@@ -1,0 +1,99 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/meta-inline-properties.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export default { title: 'Button', args: { primary: true } }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { title: 'Button', args: { primary: true } } as ComponentMeta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n      const title = 'foo';\n      const args = { a: 1 };\n      export default { title, args };\n    ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldHaveInlineProperties",
+          "data": {
+            "property": "title"
+          }
+        },
+        {
+          "messageId": "metaShouldHaveInlineProperties",
+          "data": {
+            "property": "args"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        export default { title: 'a' + 123 };\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldHaveInlineProperties",
+          "data": {
+            "property": "title"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        export default { title: `a ${123}` };\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldHaveInlineProperties",
+          "data": {
+            "property": "title"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const title = 'a'\n\n        export default {\n          title,\n          component: Badge,\n        } as ComponentMeta<typeof Badge>\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldHaveInlineProperties",
+          "data": {
+            "property": "title"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        export default {\n          title: someFunction(),\n        }\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldHaveInlineProperties",
+          "data": {
+            "property": "title"
+          }
+        }
+      ]
+    },
+    {
+      "code": "const title = 'a'\n\nconst meta: ComponentMeta<typeof Badge> = {\n  title,\n  component: Badge,\n}\n\nexport default meta",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldHaveInlineProperties",
+          "data": {
+            "property": "title"
+          }
+        }
+      ]
+    }
+  ]
+}

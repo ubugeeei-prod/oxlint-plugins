@@ -1,0 +1,69 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/hierarchy-separator.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export default {  }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { title: 'Examples.Components' }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { title: 'Examples/Components/Button' }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { title: 'Examples/Components/Button' } as ComponentMeta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { title: 'Examples.Components' } satisfies Meta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default { ...props } as ComponentMeta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "export default { title: 'Examples|Components/Button' }",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "deprecatedHierarchySeparator",
+          "suggestions": [
+            {
+              "messageId": "useCorrectSeparators",
+              "output": "export default { title: 'Examples/Components/Button' }"
+            }
+          ]
+        }
+      ],
+      "output": "export default { title: 'Examples/Components/Button' }"
+    },
+    {
+      "code": "const meta = { title: 'Examples|Components/Button' }\nexport default meta",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "deprecatedHierarchySeparator",
+          "suggestions": [
+            {
+              "messageId": "useCorrectSeparators",
+              "output": "const meta = { title: 'Examples/Components/Button' }\nexport default meta"
+            }
+          ]
+        }
+      ],
+      "output": "const meta = { title: 'Examples/Components/Button' }\nexport default meta"
+    }
+  ]
+}

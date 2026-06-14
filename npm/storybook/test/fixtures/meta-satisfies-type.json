@@ -1,0 +1,69 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/meta-satisfies-type.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export default { title: 'Button', args: { primary: true } } satisfies Meta<typeof Button>",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "const meta = {\n      component: AccountForm,\n    } satisfies Meta<typeof AccountForm>;\n    export default meta;",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "export default { title: 'Button', args: { primary: true } }",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldSatisfyType"
+        }
+      ]
+    },
+    {
+      "code": "\n      const meta = {\n        component: AccountForm,\n      }\n      export default meta;\n    ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldSatisfyType"
+        }
+      ]
+    },
+    {
+      "code": "\n      const meta: Meta<typeof AccountForm> = {\n        component: AccountForm,\n      }\n      export default meta;",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldSatisfyType"
+        }
+      ],
+      "output": "\n      const meta = {\n        component: AccountForm,\n      } satisfies Meta<typeof AccountForm>\n      export default meta;"
+    },
+    {
+      "code": "export default { title: 'Button', args: { primary: true } } as Meta<typeof Button>",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldSatisfyType"
+        }
+      ],
+      "output": "export default { title: 'Button', args: { primary: true } } satisfies Meta<typeof Button>"
+    },
+    {
+      "code": "\n      const meta = ( {\n        component: AccountForm,\n      }) as (Meta<typeof AccountForm> )\n      export default ( meta );",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "metaShouldSatisfyType"
+        }
+      ],
+      "output": "\n      const meta = ( {\n        component: AccountForm,\n      }) satisfies (Meta<typeof AccountForm> )\n      export default ( meta );"
+    }
+  ]
+}
