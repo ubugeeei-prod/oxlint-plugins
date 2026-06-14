@@ -53,6 +53,17 @@ const ruleMeta = Object.freeze({
         '`CREATE ROLE` / `CREATE USER` belongs in an operator-managed bootstrap (Terraform, Pulumi, a runbook), not in application migrations. Migration files run with whichever role the deploy uses and are not the right place to manage permissions.',
     },
   },
+  'no-cross-join': {
+    type: 'suggestion',
+    description: 'Disallow `CROSS JOIN` (unqualified cartesian product)',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCrossJoin:
+        'Avoid `CROSS JOIN`. Cartesian products are almost always a mistake; use an explicit `JOIN ... ON` with a join condition, or `JOIN ... ON true` if you really do want one.',
+    },
+  },
   'no-distinct-on-without-order-by': {
     type: 'problem',
     description:
@@ -113,6 +124,18 @@ const ruleMeta = Object.freeze({
         '`GRANT ALL` (or `GRANT ALL PRIVILEGES`) is opaque — list the privileges you actually need (e.g. `SELECT, INSERT, UPDATE`) so the grant is auditable and adding a new PostgreSQL privilege in a future release does not silently extend it.',
     },
   },
+  'no-group-by-ordinal': {
+    type: 'suggestion',
+    description:
+      'Disallow `GROUP BY <position>` (positional/ordinal references); use the column name or expression instead',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noGroupByOrdinal:
+        '`GROUP BY <position>` silently breaks when the SELECT list changes. Use the column name or the expression itself.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
@@ -135,6 +158,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noImplicitJoin:
         'Comma-separated tables in `FROM` are an implicit cross join. Use explicit `JOIN ... ON ...` so the join condition lives next to the join.',
+    },
+  },
+  'no-leading-wildcard-like': {
+    type: 'suggestion',
+    description:
+      'Disallow `LIKE`/`ILIKE` patterns that begin with `%` because they cannot use a B-tree index and force a full scan',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noLeadingWildcardLike:
+        '`LIKE`/`ILIKE` patterns that begin with `%` cannot use a B-tree index and force a sequential scan. If you need substring search, use a `pg_trgm` GIN index, full-text search, or rework the schema so the prefix is indexable.',
     },
   },
   'no-order-by-ordinal': {
@@ -161,6 +196,18 @@ const ruleMeta = Object.freeze({
         '`RENAME COLUMN` breaks every running app that still selects/inserts by the old name. The safer pattern is to add a new column, dual-write, backfill, and drop the old one across separate deploys.',
     },
   },
+  'no-rename-table': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... RENAME TO` — every deployed reader of the old name breaks at deploy time',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noRenameTable:
+        "`RENAME TO` breaks every running app that still queries the old name. The safer pattern is `CREATE VIEW old AS SELECT * FROM new` so old callers keep working until they're migrated, then drop the view in a separate deploy.",
+    },
+  },
   'no-rule': {
     type: 'problem',
     description:
@@ -171,6 +218,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noRule:
         "Avoid `CREATE RULE`. PostgreSQL's rule system has surprising semantics around row counts, RETURNING, and updatable views; use a trigger or an updatable view instead.",
+    },
+  },
+  'no-select-into': {
+    type: 'suggestion',
+    description:
+      'Disallow `SELECT ... INTO target FROM ...` (creates a new table); use `CREATE TABLE AS SELECT ...` instead',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noSelectInto:
+        "`SELECT ... INTO target FROM ...` creates a new table whose semantics differ from a regular `SELECT` and conflict with PL/pgSQL's `SELECT INTO variable`. Use `CREATE TABLE target AS SELECT ...` so the intent is explicit.",
     },
   },
   'no-set-not-null': {
@@ -207,6 +266,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noTemporaryTable:
         '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
+    },
+  },
+  'no-truncate-cascade': {
+    type: 'problem',
+    description:
+      'Disallow `TRUNCATE ... CASCADE` because it transitively empties referencing tables',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCascade:
+        '`TRUNCATE ... CASCADE` also truncates every table that has a foreign key referencing this one. List the dependent tables explicitly so reviewers can see what gets emptied.',
     },
   },
   'no-unlogged-table': {
@@ -254,6 +325,17 @@ const ruleMeta = Object.freeze({
     messages: {
       missingLimit:
         'SELECT statement should include a LIMIT clause to prevent excessive data retrieval',
+    },
+  },
+  'require-where-in-delete': {
+    type: 'problem',
+    description: 'Require a WHERE clause in DELETE statements',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingWhere:
+        'DELETE without WHERE removes every row in the table. Add a WHERE clause, or use TRUNCATE if you really mean to empty the table.',
     },
   },
   'require-where-in-update': {
