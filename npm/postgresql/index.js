@@ -17,6 +17,18 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'no-add-check-constraint-without-not-valid': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... ADD CONSTRAINT ... CHECK (...)` without `NOT VALID`; the synchronous form holds `ACCESS EXCLUSIVE` on the table for the entire validating scan',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      checkNotValid:
+        'Add this CHECK constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not block writers under `ACCESS EXCLUSIVE`.',
+    },
+  },
   'no-alter-column-type': {
     type: 'problem',
     description:
