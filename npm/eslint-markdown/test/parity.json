@@ -9,10 +9,6 @@
       "level": "off",
       "note": "False positives on URLs inside link/definition labels, HTML attributes, and existing autolinks."
     },
-    "no-duplicate-definitions": {
-      "level": "off",
-      "note": "Treats deeply-indented (code-block) lines as definitions; upstream parses them as indented code."
-    },
     "no-duplicate-headings": {
       "level": "off",
       "note": "Heading-text normalisation differs (closed ATX trailing '#', collapsed inner spaces)."
