@@ -4566,3 +4566,47 @@ fn does_not_report_array_callback_without_return_identifier_callback() {
     let diagnostics = scan("array-callback-without-return", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_wildcard_namespace_import() {
+    let source = "import * as ns from 'mod';";
+    let diagnostics = scan("no-wildcard-import", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noWildcardImport");
+}
+
+#[test]
+fn reports_combined_default_and_wildcard_import() {
+    let source = "import def, * as ns from 'mod';";
+    let diagnostics = scan("no-wildcard-import", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noWildcardImport");
+}
+
+#[test]
+fn does_not_report_named_import() {
+    let source = "import { a, b } from 'mod';";
+    let diagnostics = scan("no-wildcard-import", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_default_import() {
+    let source = "import def from 'mod';";
+    let diagnostics = scan("no-wildcard-import", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_side_effect_import() {
+    let source = "import 'mod';";
+    let diagnostics = scan("no-wildcard-import", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_export_all_reexport() {
+    let source = "export * from 'mod';";
+    let diagnostics = scan("no-wildcard-import", source);
+    assert!(diagnostics.is_empty());
+}

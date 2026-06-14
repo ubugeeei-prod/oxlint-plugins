@@ -179,6 +179,7 @@ describe('sonarjs plugin shape', () => {
       'reduce-initial-value',
       'no-parameter-reassignment',
       'array-callback-without-return',
+      'no-wildcard-import',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -264,6 +265,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['reduce-initial-value']).toBe('object');
     expect(typeof plugin.rules['no-parameter-reassignment']).toBe('object');
     expect(typeof plugin.rules['array-callback-without-return']).toBe('object');
+    expect(typeof plugin.rules['no-wildcard-import']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -357,6 +359,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/reduce-initial-value']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-parameter-reassignment']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/array-callback-without-return']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-wildcard-import']).toBe('error');
   });
 });
 
@@ -2498,5 +2501,54 @@ describe('array-callback-without-return rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(array-callback-without-return)');
+  });
+});
+
+describe('no-wildcard-import rule', () => {
+  it('reports a wildcard namespace import', () => {
+    const source = "import * as ns from 'mod';";
+    const reports = runRule('no-wildcard-import', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noWildcardImport');
+  });
+
+  it('reports a combined default and wildcard import', () => {
+    const source = "import def, * as ns from 'mod';";
+    const reports = runRule('no-wildcard-import', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noWildcardImport');
+  });
+
+  it('does not report a named import', () => {
+    const source = "import { a, b } from 'mod';";
+    const reports = runRule('no-wildcard-import', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a default import', () => {
+    const source = "import def from 'mod';";
+    const reports = runRule('no-wildcard-import', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a side-effect import', () => {
+    const source = "import 'mod';";
+    const reports = runRule('no-wildcard-import', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a re-export (export *)', () => {
+    const source = "export * from 'mod';";
+    const reports = runRule('no-wildcard-import', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-wildcard-import through the CLI', () => {
+    const source = "import * as ns from 'mod';";
+    const result = runOxlint('no-wildcard-import', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-wildcard-import)');
   });
 });

@@ -312,6 +312,9 @@ const messages = Object.freeze({
   'no-parameter-reassignment': {
     noParameterReassignment: 'Introduce a new variable instead of reassigning this parameter.',
   },
+  'no-wildcard-import': {
+    noWildcardImport: 'Import only the specific members you need instead of the whole namespace.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -480,6 +483,8 @@ const ruleDescriptions = Object.freeze({
     'Require an initial value (second argument) when calling "reduce" or "reduceRight" on an array, to avoid a TypeError on empty arrays and a skipped first element',
   'no-parameter-reassignment':
     'Disallow reassigning a function parameter, caught exception, or for-in/for-of loop variable, which discards the value supplied at runtime; introduce a new local variable instead',
+  'no-wildcard-import':
+    'Disallow wildcard (namespace) imports such as \'import * as ns from "mod"\'; import only the specific members you need to keep code readable and tree-shakeable',
 });
 
 const ruleTypes = Object.freeze({
@@ -568,6 +573,7 @@ const ruleTypes = Object.freeze({
   'no-equals-in-for-termination': 'suggestion',
   'reduce-initial-value': 'suggestion',
   'no-parameter-reassignment': 'suggestion',
+  'no-wildcard-import': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -656,6 +662,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-equals-in-for-termination': 'error',
   'reduce-initial-value': 'error',
   'no-parameter-reassignment': 'error',
+  'no-wildcard-import': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
