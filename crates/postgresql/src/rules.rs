@@ -38,6 +38,7 @@ mod no_set_search_path;
 mod no_temporary_table;
 mod no_truncate_cascade;
 mod no_unlogged_table;
+mod no_update_primary_key;
 mod no_update_without_from_binding;
 mod no_vacuum_full;
 mod no_with_recursive_without_limit;
@@ -182,6 +183,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-temporary-table",
     "no-truncate-cascade",
     "no-unlogged-table",
+    "no-update-primary-key",
     "no-update-without-from-binding",
     "no-vacuum-full",
     "no-with-recursive-without-limit",
@@ -371,6 +373,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-unlogged-table",
         run: no_unlogged_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-update-primary-key",
+        run: no_update_primary_key::run,
         uses_parse_error: false,
     },
     RuleDef {
