@@ -74,6 +74,7 @@ describe('regexp native API', () => {
       'no-standalone-backslash',
       'no-potentially-useless-backreference',
       'strict',
+      'no-useless-assertions',
     ]);
   });
 

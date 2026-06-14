@@ -276,6 +276,10 @@ const messages = Object.freeze({
     quantifiedAssertion: 'Assertion are not allowed to be quantified directly.',
     regexMessage: '{{message}}.',
   },
+  'no-useless-assertions': {
+    unexpected:
+      'Useless word-boundary assertion: `\\b`/`\\B` between two characters of the same word class always rejects (`\\b`) or always accepts (`\\B`).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -382,6 +386,8 @@ const ruleDescriptions = Object.freeze({
   'no-potentially-useless-backreference':
     'disallow backreferences to capturing groups that might not have matched (narrow: optional/star-quantified groups)',
   strict: 'disallow not strictly valid regular expressions (narrow: escape and quantifier checks)',
+  'no-useless-assertions':
+    'disallow assertions that are known to always accept (or always reject) (narrow: word-boundary between same-class literals)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -453,6 +459,7 @@ const ruleTypes = Object.freeze({
   'no-standalone-backslash': 'suggestion',
   'no-potentially-useless-backreference': 'problem',
   strict: 'suggestion',
+  'no-useless-assertions': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -473,6 +480,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-invisible-character': 'error',
   'no-potentially-useless-backreference': 'warn',
   strict: 'error',
+  'no-useless-assertions': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
@@ -629,7 +637,8 @@ function ruleCategory(ruleName) {
     ruleName === 'no-useless-backreference' ||
     ruleName === 'no-misleading-unicode-character' ||
     ruleName === 'no-potentially-useless-backreference' ||
-    ruleName === 'strict'
+    ruleName === 'strict' ||
+    ruleName === 'no-useless-assertions'
   ) {
     return 'Possible Errors';
   }

@@ -197,6 +197,14 @@ const validCases = [
   ['strict', 'valid 4-hex unicode escape', 'const re = /\\u000f/;\n'],
   ['strict', 'valid 2-hex hex escape', 'const re = /\\x00/;\n'],
   ['strict', 'valid control escape', 'const re = /\\cA/;\n'],
+  // no-useless-assertions
+  ['no-useless-assertions', 'meaningful boundary . neighbour', 'const re = /\\b.\\b/u;\n'],
+  [
+    'no-useless-assertions',
+    'meaningful boundary group neighbour',
+    'const re = /\\b(?:,|:)\\b/u;\n',
+  ],
+  ['no-useless-assertions', 'real word/non-word transition', 'const re = /a\\b,/u;\n'],
 ];
 
 const invalidCases = [
@@ -539,6 +547,25 @@ const invalidCases = [
   ['strict', '\\x with only 1 hex digit', 'const re = /\\x4/;\n', ['incompleteEscapeSequence']],
   ['strict', '\\p in non-u mode', 'const re = /\\p/;\n', ['invalidPropertyEscape']],
   ['strict', 'quantified assertion', 'const re = /(?!a)+/;\n', ['quantifiedAssertion']],
+  // no-useless-assertions
+  [
+    'no-useless-assertions',
+    'boundary between word chars',
+    'const re = /a\\bb/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-useless-assertions',
+    'non-boundary between word chars',
+    'const re = /a\\Bb/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-useless-assertions',
+    'boundary between non-word chars',
+    'const re = /,\\b,/u;\n',
+    ['unexpected'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

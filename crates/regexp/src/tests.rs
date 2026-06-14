@@ -110,8 +110,47 @@ fn exposes_initial_regexp_rule_names() {
             "no-standalone-backslash",
             "no-potentially-useless-backreference",
             "strict",
+            "no-useless-assertions",
         ]
     );
+}
+
+mod no_useless_assertions {
+    use super::*;
+
+    #[test]
+    fn reports_boundary_between_same_class_literals() {
+        // `\b` between two word chars: always rejects.
+        assert_eq!(
+            rule_ids_for("const a = /a\\bb/u;", "no-useless-assertions").as_slice(),
+            &["unexpected"]
+        );
+        // `\B` between two word chars: always accepts.
+        assert_eq!(
+            rule_ids_for("const a = /a\\Bb/u;", "no-useless-assertions").as_slice(),
+            &["unexpected"]
+        );
+        // `\b` between two non-word chars (comma): always rejects.
+        assert_eq!(
+            rule_ids_for("const a = /,\\b,/u;", "no-useless-assertions").as_slice(),
+            &["unexpected"]
+        );
+        // Mixed-class neighbours (`a` word, `,` non-word) are a real boundary:
+        // `\b` there is meaningful, so it must NOT be flagged.
+        assert!(rule_ids_for("const a = /a\\b,/u;", "no-useless-assertions").is_empty());
+    }
+
+    #[test]
+    fn ignores_decidable_or_unsupported_shapes() {
+        // `\b.\b` — `.` is not a fixed-class literal; upstream-valid.
+        assert!(rule_ids_for("const a = /\\b.\\b/u;", "no-useless-assertions").is_empty());
+        // `\b(?:,|:)\b` — group neighbours; upstream-valid.
+        assert!(rule_ids_for("const a = /\\b(?:,|:)\\b/u;", "no-useless-assertions").is_empty());
+        // word/non-word transition: `\b` is genuinely meaningful, not flagged.
+        assert!(rule_ids_for("const a = /a\\b /u;", "no-useless-assertions").is_empty());
+        // `\b` inside a character class is a backspace, never a boundary.
+        assert!(rule_ids_for("const a = /[a\\bb]/u;", "no-useless-assertions").is_empty());
+    }
 }
 
 mod no_potentially_useless_backreference {
