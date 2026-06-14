@@ -37,6 +37,7 @@ mod no_vacuum_full;
 mod no_with_recursive_without_limit;
 mod prefer_exists_over_in_subquery;
 mod require_limit;
+mod require_named_constraint;
 mod require_where_in_delete;
 mod require_where_in_update;
 
@@ -170,6 +171,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-with-recursive-without-limit",
     "prefer-exists-over-in-subquery",
     "require-limit",
+    "require-named-constraint",
     "require-where-in-delete",
     "require-where-in-update",
 ];
@@ -344,6 +346,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-limit",
         run: require_limit::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-named-constraint",
+        run: require_named_constraint::run,
         uses_parse_error: false,
     },
     RuleDef {
