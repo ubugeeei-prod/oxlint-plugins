@@ -158,6 +158,7 @@ describe('sonarjs plugin shape', () => {
       'no-collection-size-mischeck',
       'index-of-compare-to-positive-number',
       'no-nested-functions',
+      'too-many-break-or-continue-in-loop',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -223,6 +224,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-collection-size-mischeck']).toBe('object');
     expect(typeof plugin.rules['index-of-compare-to-positive-number']).toBe('object');
     expect(typeof plugin.rules['no-nested-functions']).toBe('object');
+    expect(typeof plugin.rules['too-many-break-or-continue-in-loop']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -294,6 +296,39 @@ describe('sonarjs plugin shape', () => {
       'error',
     );
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-functions']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/too-many-break-or-continue-in-loop']).toBe(
+      'error',
+    );
+  });
+});
+
+describe('too-many-break-or-continue-in-loop rule', () => {
+  it('reports when a loop has two break statements targeting it', () => {
+    const src = 'while (a) { if (b) break; if (c) break; }';
+    const reports = runRule('too-many-break-or-continue-in-loop', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('tooManyBreakContinue');
+  });
+
+  it('does not report a loop with only one break', () => {
+    const src = 'while (a) { if (b) break; }';
+    const reports = runRule('too-many-break-or-continue-in-loop', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report breaks that target a nested switch, not the loop', () => {
+    const src = 'while (a) { switch (x) { case 1: break; case 2: break; } }';
+    const reports = runRule('too-many-break-or-continue-in-loop', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports too-many-break-or-continue-in-loop through the CLI', () => {
+    const src = 'while (a) { if (b) break; if (c) break; }';
+    const result = runOxlint('too-many-break-or-continue-in-loop', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(too-many-break-or-continue-in-loop)');
   });
 });
 

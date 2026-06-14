@@ -67,6 +67,7 @@ const expectedRuleNames = [
   'no-collection-size-mischeck',
   'index-of-compare-to-positive-number',
   'no-nested-functions',
+  'too-many-break-or-continue-in-loop',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

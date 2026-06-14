@@ -238,6 +238,10 @@ const messages = Object.freeze({
   'no-nested-functions': {
     noNestedFunctions: 'This function is nested too deeply. Refactor to reduce nesting depth.',
   },
+  'too-many-break-or-continue-in-loop': {
+    tooManyBreakContinue:
+      'Reduce the total number of break and continue statements in this loop to at most one.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -361,6 +365,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow comparing the result of indexOf or lastIndexOf against a positive number, which silently excludes the element at index 0',
   'no-nested-functions':
     'Disallow functions nested more deeply than the configured threshold (the "threshold" option; default 4); applies to function declarations, function expressions, and arrow functions',
+  'too-many-break-or-continue-in-loop':
+    'Disallow more than one break or continue statement targeting the same loop; having two or more jumps makes control flow hard to follow',
 });
 
 const ruleTypes = Object.freeze({
@@ -428,6 +434,7 @@ const ruleTypes = Object.freeze({
   'no-collection-size-mischeck': 'suggestion',
   'index-of-compare-to-positive-number': 'suggestion',
   'no-nested-functions': 'suggestion',
+  'too-many-break-or-continue-in-loop': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -495,6 +502,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-collection-size-mischeck': 'error',
   'index-of-compare-to-positive-number': 'error',
   'no-nested-functions': 'error',
+  'too-many-break-or-continue-in-loop': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
