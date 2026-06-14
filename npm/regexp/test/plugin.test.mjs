@@ -205,6 +205,10 @@ const validCases = [
     'const re = /\\b(?:,|:)\\b/u;\n',
   ],
   ['no-useless-assertions', 'real word/non-word transition', 'const re = /a\\b,/u;\n'],
+  // optimal-quantifier-concatenation
+  ['optimal-quantifier-concatenation', 'bounded optional pair', 'const re = /aa?/u;\n'],
+  ['optimal-quantifier-concatenation', 'distinct shorthands', 'const re = /\\w+\\d{4}/u;\n'],
+  ['optimal-quantifier-concatenation', 'group then shorthand', 'const re = /(\\d)\\d+/u;\n'],
 ];
 
 const invalidCases = [
@@ -564,6 +568,25 @@ const invalidCases = [
     'no-useless-assertions',
     'boundary between non-word chars',
     'const re = /,\\b,/u;\n',
+    ['unexpected'],
+  ],
+  // optimal-quantifier-concatenation
+  [
+    'optimal-quantifier-concatenation',
+    'literal then star of same char',
+    'const re = /aa*/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'optimal-quantifier-concatenation',
+    'star then star of same shorthand',
+    'const re = /\\w*\\w*/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'optimal-quantifier-concatenation',
+    'plus then plus of same char',
+    'const re = /a+a+/u;\n',
     ['unexpected'],
   ],
 ];

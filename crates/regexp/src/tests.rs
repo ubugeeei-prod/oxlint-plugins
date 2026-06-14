@@ -111,8 +111,50 @@ fn exposes_initial_regexp_rule_names() {
             "no-potentially-useless-backreference",
             "strict",
             "no-useless-assertions",
+            "optimal-quantifier-concatenation",
         ]
     );
+}
+
+mod optimal_quantifier_concatenation {
+    use super::*;
+
+    #[test]
+    fn reports_mergeable_same_element_quantifiers() {
+        for src in [
+            "const a = /aa*/u;",
+            "const a = /a*a*/u;",
+            "const a = /\\w\\w*/u;",
+            "const a = /\\w*\\w/u;",
+            "const a = /\\w+\\w/u;",
+            "const a = /a+a+/u;",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "optimal-quantifier-concatenation").as_slice(),
+                &["unexpected"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_bounded_only_or_distinct_elements() {
+        for src in [
+            // Bounded-only pairs upstream keeps.
+            "const a = /aa?/u;",
+            "const a = /\\w?\\w/u;",
+            // Distinct elements.
+            "const a = /\\w+\\d{4}/u;",
+            "const a = /a+b+c+d+/u;",
+            // Group vs shorthand — not the same single element.
+            "const a = /(\\d)\\d+/u;",
+        ] {
+            assert!(
+                rule_ids_for(src, "optimal-quantifier-concatenation").is_empty(),
+                "expected no report for {src}"
+            );
+        }
+    }
 }
 
 mod no_useless_assertions {

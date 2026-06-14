@@ -9291,7 +9291,7 @@
       },
       {
         "name": "optimal-quantifier-concatenation",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
