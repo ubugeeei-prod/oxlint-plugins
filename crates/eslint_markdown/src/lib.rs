@@ -8,6 +8,7 @@ use regex::Regex;
 // mdast-based rules) rather than the regex `MarkdownFacts`. The tree is parsed
 // once per scan only when one of these rules is active.
 const MDAST_RULES: &[&str] = &[
+    "no-bare-urls",
     "no-duplicate-headings",
     "no-empty-definitions",
     "no-missing-atx-heading-space",
@@ -281,8 +282,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("heading-increment") {
         scan_heading_increment(source_text, &line_index, &facts, &mut diagnostics);
     }
-    if options.is_enabled("no-bare-urls") {
-        scan_bare_urls(source_text, &line_index, &facts, &mut diagnostics);
+    if options.is_enabled("no-bare-urls")
+        && let Some(tree) = &mdast
+    {
+        scan_bare_urls(source_text, &line_index, tree, &mut diagnostics);
     }
     if options.is_enabled("no-duplicate-definitions") {
         scan_duplicate_definitions(source_text, &line_index, &facts, options, &mut diagnostics);
@@ -798,55 +801,127 @@ fn scan_heading_increment(
 fn scan_bare_urls(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let Ok(url_re) =
-        Regex::new(r#"(?i)\b(?:https?://[^\s<>()]+|[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,})"#)
-    else {
-        return;
-    };
-    for line in &facts.lines {
-        if line.in_fence || line.text.starts_with("    ") || line.text.starts_with('\t') {
+    // Collect the Link nodes (in document order) that are NOT enclosed in a
+    // matched HTML tag pair within a heading / paragraph / table cell.
+    let mut links: SmallVec<[&mdast::Node; 16]> = SmallVec::new();
+    collect_bare_url_links(tree, &mut links);
+
+    for link in &links {
+        let mdast::Node::Link(link_data) = link else {
+            continue;
+        };
+        let Some(span) = node_span(link) else {
+            continue;
+        };
+        let text = source_text.get(span.start..span.end).unwrap_or("");
+        // A bare URL is a GFM autolink literal whose source text equals its URL
+        // (optionally with an implied `http://` / `mailto:` scheme).
+        let url = link_data.url.as_str();
+        let is_bare = url == text
+            || url.strip_prefix("http://") == Some(text)
+            || url.strip_prefix("mailto:") == Some(text);
+        if !is_bare {
             continue;
         }
-        for mat in url_re.find_iter(line.text) {
-            let start = line.start + mat.start();
-            let mut end = line.start + mat.end();
-            while end > start
-                && source_text
-                    .as_bytes()
-                    .get(end - 1)
-                    .is_some_and(|byte| matches!(byte, b'.' | b',' | b';' | b':' | b'!' | b'?'))
-            {
-                end -= 1;
-            }
-            if end == start {
-                continue;
-            }
-            if is_inside_angle_autolink(source_text, start, end)
-                || is_inside_markdown_destination(&facts.links, start)
-                || is_inside_html_tag(&facts.html_tags, start)
-            {
-                continue;
-            }
-            diagnostics.push(Diagnostic {
-                rule_name: "no-bare-urls",
-                message_id: "bareUrl",
-                data: DiagnosticData::default(),
-                loc: line_index.loc_for_span(source_text, ByteSpan { start, end }),
-                fix: Some(DiagnosticFix {
-                    start: utf16_offset(source_text, start),
-                    end: utf16_offset(source_text, end),
-                    replacement: {
-                        let mut out = CompactString::from("<");
-                        out.push_str(&source_text[start..end]);
-                        out.push('>');
-                        out
-                    },
-                }),
-            });
+        let mut replacement = CompactString::from("<");
+        replacement.push_str(text);
+        replacement.push('>');
+        diagnostics.push(Diagnostic {
+            rule_name: "no-bare-urls",
+            message_id: "bareUrl",
+            data: DiagnosticData::default(),
+            loc: line_index.loc_for_span(source_text, span),
+            fix: Some(DiagnosticFix {
+                start: utf16_offset(source_text, span.start),
+                end: utf16_offset(source_text, span.end),
+                replacement,
+            }),
+        });
+    }
+}
+
+fn collect_bare_url_links<'a>(node: &'a mdast::Node, links: &mut SmallVec<[&'a mdast::Node; 16]>) {
+    if matches!(
+        node,
+        mdast::Node::Heading(_) | mdast::Node::Paragraph(_) | mdast::Node::TableCell(_)
+    ) {
+        let mut tentative: SmallVec<[&mdast::Node; 8]> = SmallVec::new();
+        let mut open_tag: Option<CompactString> = None;
+        collect_container_links(node, &mut tentative, &mut open_tag, links);
+        // Links after an unclosed opening tag are still reported.
+        links.extend(tentative);
+    } else if let Some(children) = node.children() {
+        for child in children {
+            collect_bare_url_links(child, links);
         }
+    }
+}
+
+// Walk a container's descendants in document order, tracking HTML tag pairing:
+// a link between a matched `<tag>`...`</tag>` pair is dropped, every other link
+// is reported.
+fn collect_container_links<'a>(
+    node: &'a mdast::Node,
+    tentative: &mut SmallVec<[&'a mdast::Node; 8]>,
+    open_tag: &mut Option<CompactString>,
+    links: &mut SmallVec<[&'a mdast::Node; 16]>,
+) {
+    let Some(children) = node.children() else {
+        return;
+    };
+    for child in children {
+        match child {
+            mdast::Node::Html(html) => {
+                if let Some((name, is_closing)) = parse_html_tag(&html.value) {
+                    if !is_closing && open_tag.is_none() {
+                        *open_tag = Some(name);
+                    } else if is_closing && open_tag.as_deref() == Some(name.as_str()) {
+                        tentative.clear();
+                        *open_tag = None;
+                    }
+                }
+            }
+            mdast::Node::Link(_) => {
+                if open_tag.is_some() {
+                    tentative.push(child);
+                } else {
+                    links.push(child);
+                }
+            }
+            _ => {}
+        }
+        // Don't descend into a link's own children: links can't nest, but
+        // markdown-rs still parses an autolink literal inside link text, which
+        // upstream (micromark) does not.
+        if !matches!(child, mdast::Node::Link(_)) {
+            collect_container_links(child, tentative, open_tag, links);
+        }
+    }
+}
+
+// Parse an HTML tag's name and whether it is a closing tag, matching upstream's
+// `/^<(?<tagName>[^!>][^/\s>]*)/` + lowercasing.
+fn parse_html_tag(tag_text: &str) -> Option<(CompactString, bool)> {
+    let rest = tag_text.strip_prefix('<')?;
+    let first = rest.chars().next()?;
+    if first == '!' || first == '>' {
+        return None;
+    }
+    let mut name = CompactString::new("");
+    name.push(first);
+    for ch in rest.chars().skip(1) {
+        if ch == '/' || ch.is_whitespace() || ch == '>' {
+            break;
+        }
+        name.push(ch);
+    }
+    let name = lower(name.as_str());
+    match name.strip_prefix('/') {
+        Some(rest) => Some((CompactString::from(rest), true)),
+        None => Some((name, false)),
     }
 }
 
@@ -2246,21 +2321,6 @@ fn in_fenced_range(facts: &MarkdownFacts<'_>, offset: usize) -> bool {
         .lines
         .iter()
         .any(|line| line.in_fence && offset >= line.start && offset <= line.end)
-}
-
-fn is_inside_angle_autolink(source_text: &str, start: usize, end: usize) -> bool {
-    source_text[..start].ends_with('<') && source_text[end..].starts_with('>')
-}
-
-fn is_inside_markdown_destination(links: &[LinkFact], offset: usize) -> bool {
-    links
-        .iter()
-        .any(|link| offset >= link.url_span.start && offset <= link.url_span.end)
-}
-
-fn is_inside_html_tag(tags: &[HtmlTagFact], offset: usize) -> bool {
-    tags.iter()
-        .any(|tag| offset >= tag.span.start && offset <= tag.span.end)
 }
 
 fn github_slug(value: &str) -> CompactString {
