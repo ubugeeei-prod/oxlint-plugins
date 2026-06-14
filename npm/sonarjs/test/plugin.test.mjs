@@ -162,6 +162,7 @@ describe('sonarjs plugin shape', () => {
       'code-eval',
       'void-use',
       'prefer-promise-shorthand',
+      'pseudo-random',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -230,6 +231,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['too-many-break-or-continue-in-loop']).toBe('object');
     expect(typeof plugin.rules['code-eval']).toBe('object');
     expect(typeof plugin.rules['prefer-promise-shorthand']).toBe('object');
+    expect(typeof plugin.rules['pseudo-random']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -306,6 +308,7 @@ describe('sonarjs plugin shape', () => {
     );
     expect(plugin.configs.recommended.rules['sonarjs/code-eval']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-promise-shorthand']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/pseudo-random']).toBe('error');
   });
 });
 
@@ -1624,5 +1627,48 @@ describe('prefer-promise-shorthand rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(prefer-promise-shorthand)');
+  });
+});
+
+describe('pseudo-random rule', () => {
+  it('reports pseudo-random for Math.random() through the adapter', () => {
+    const source = 'const x = Math.random();';
+    const reports = runRule('pseudo-random', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('pseudoRandom');
+  });
+
+  it('reports pseudo-random for a bare Math.random() call through the adapter', () => {
+    const source = 'Math.random();';
+    const reports = runRule('pseudo-random', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('pseudoRandom');
+  });
+
+  it('does not report pseudo-random for Math.floor()', () => {
+    const source = 'Math.floor(1.5);';
+    const reports = runRule('pseudo-random', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report pseudo-random for foo.random()', () => {
+    const source = 'foo.random();';
+    const reports = runRule('pseudo-random', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report pseudo-random for a bare Math.random reference', () => {
+    const source = 'const f = Math.random;';
+    const reports = runRule('pseudo-random', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports pseudo-random through the CLI', () => {
+    const source = 'const x = Math.random();';
+    const result = runOxlint('pseudo-random', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(pseudo-random)');
   });
 });

@@ -71,6 +71,7 @@ const expectedRuleNames = [
   'code-eval',
   'void-use',
   'prefer-promise-shorthand',
+  'pseudo-random',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2149,6 +2150,28 @@ describe('sonarjs native API', () => {
 
   it('does not report void-use for typeof', () => {
     const diagnostics = scan('void-use', 'typeof x;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports pseudo-random for Math.random()', () => {
+    const diagnostics = scan('pseudo-random', 'const x = Math.random();');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('pseudo-random');
+    expect(diagnostics[0].messageId).toBe('pseudoRandom');
+  });
+
+  it('does not report pseudo-random for Math.floor()', () => {
+    const diagnostics = scan('pseudo-random', 'Math.floor(1.5);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report pseudo-random for foo.random()', () => {
+    const diagnostics = scan('pseudo-random', 'foo.random();');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report pseudo-random for a bare Math.random reference', () => {
+    const diagnostics = scan('pseudo-random', 'const f = Math.random;');
     expect(diagnostics).toHaveLength(0);
   });
 });

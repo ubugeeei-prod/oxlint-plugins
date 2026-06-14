@@ -65,6 +65,7 @@ mod prefer_immediate_return;
 mod prefer_promise_shorthand;
 mod prefer_single_boolean_return;
 mod prefer_while;
+mod pseudo_random;
 mod single_char_in_character_classes;
 mod todo_tag;
 mod too_many_break_or_continue_in_loop;
