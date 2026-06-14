@@ -139,6 +139,7 @@ describe('sonarjs plugin shape', () => {
       'no-function-declaration-in-block',
       'no-inconsistent-returns',
       'no-same-line-conditional',
+      'no-nested-assignment',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -185,6 +186,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-function-declaration-in-block']).toBe('object');
     expect(typeof plugin.rules['no-inconsistent-returns']).toBe('object');
     expect(typeof plugin.rules['no-same-line-conditional']).toBe('object');
+    expect(typeof plugin.rules['no-nested-assignment']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -233,6 +235,7 @@ describe('sonarjs plugin shape', () => {
     );
     expect(plugin.configs.recommended.rules['sonarjs/no-inconsistent-returns']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-same-line-conditional']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-nested-assignment']).toBe('error');
   });
 });
 
@@ -1003,5 +1006,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-same-line-conditional)');
+  });
+
+  it('reports no-nested-assignment through the adapter', () => {
+    const source = 'if (x = compute()) {\n  use(x);\n}';
+    const reports = runRule('no-nested-assignment', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('nestedAssignment');
+  });
+
+  it('reports no-nested-assignment through the CLI', () => {
+    const source = 'if (x = compute()) {\n  use(x);\n}';
+    const result = runOxlint('no-nested-assignment', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-nested-assignment)');
   });
 });

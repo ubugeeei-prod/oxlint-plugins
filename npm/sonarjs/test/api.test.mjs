@@ -48,6 +48,7 @@ const expectedRuleNames = [
   'no-function-declaration-in-block',
   'no-inconsistent-returns',
   'no-same-line-conditional',
+  'no-nested-assignment',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1699,6 +1700,44 @@ describe('sonarjs native API', () => {
   it('does not report no-same-line-conditional when the preceding statement is not an if', () => {
     const source = 'doA(); if (b) {\n  doB();\n}';
     const diagnostics = scan('no-same-line-conditional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-nested-assignment for an assignment in an if condition', () => {
+    const source = 'if (x = compute()) {\n  use(x);\n}';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-nested-assignment');
+    expect(diagnostics[0].messageId).toBe('nestedAssignment');
+  });
+
+  it('reports no-nested-assignment for an assignment in a while condition', () => {
+    const source = 'while (node = node.next) {\n  visit(node);\n}';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports no-nested-assignment for the inner part of a chained assignment', () => {
+    const source = 'a = b = c;';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-nested-assignment for a plain assignment statement', () => {
+    const source = 'x = compute();';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-nested-assignment for the init and update of a for loop', () => {
+    const source = 'for (i = 0; i < 10; i = i + 1) {\n  use(i);\n}';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-nested-assignment for an equality comparison in a condition', () => {
+    const source = 'if (x === compute()) {\n  use(x);\n}';
+    const diagnostics = scan('no-nested-assignment', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

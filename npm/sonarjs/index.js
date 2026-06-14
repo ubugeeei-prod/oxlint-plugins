@@ -175,6 +175,9 @@ const messages = Object.freeze({
     sameLineConditional:
       'Move this "if" to a new line or add the missing "else" to clarify the intent.',
   },
+  'no-nested-assignment': {
+    nestedAssignment: 'Extract this assignment out of the expression into its own statement.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -260,6 +263,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow mixing value returns and bare returns in the same function; return a value on all paths or none',
   'no-same-line-conditional':
     'Disallow an "if" statement placed on the same line as the closing brace of a preceding sibling "if"',
+  'no-nested-assignment':
+    'Disallow assignments inside sub-expressions such as loop and branch conditions or chained assignments',
 });
 
 const ruleTypes = Object.freeze({
@@ -308,6 +313,7 @@ const ruleTypes = Object.freeze({
   'no-function-declaration-in-block': 'suggestion',
   'no-inconsistent-returns': 'suggestion',
   'no-same-line-conditional': 'suggestion',
+  'no-nested-assignment': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -356,6 +362,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-function-declaration-in-block': 'error',
   'no-inconsistent-returns': 'error',
   'no-same-line-conditional': 'error',
+  'no-nested-assignment': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
