@@ -184,6 +184,17 @@ const ruleMeta = Object.freeze({
         '`LIKE`/`ILIKE` patterns that begin with `%` cannot use a B-tree index and force a sequential scan. If you need substring search, use a `pg_trgm` GIN index, full-text search, or rework the schema so the prefix is indexable.',
     },
   },
+  'no-natural-join': {
+    type: 'problem',
+    description: 'Disallow `NATURAL JOIN`',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noNaturalJoin:
+        'Avoid `NATURAL JOIN`. The join columns are implicit — any future column with a matching name on both sides silently changes the result. Use `JOIN ... USING (...)` or `JOIN ... ON ...` and name the columns.',
+    },
+  },
   'no-on-delete-cascade': {
     type: 'problem',
     description:
