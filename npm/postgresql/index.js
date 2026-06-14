@@ -902,6 +902,26 @@ const ruleMeta = Object.freeze({
         'Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.',
     },
   },
+  'plpgsql-keyword-case': {
+    type: 'layout',
+    description:
+      'Enforce a consistent case (upper or lower) for SQL and PL/pgSQL keywords inside PL/pgSQL function bodies',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          case: { enum: ['upper', 'lower'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      expectedUpper: "PL/pgSQL keyword '{{actual}}' should be uppercase: '{{expected}}'.",
+      expectedLower: "PL/pgSQL keyword '{{actual}}' should be lowercase: '{{expected}}'.",
+    },
+  },
   'prefer-add-constraint-not-valid': {
     type: 'suggestion',
     description:

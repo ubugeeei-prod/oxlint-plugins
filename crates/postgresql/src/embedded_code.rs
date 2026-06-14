@@ -23,7 +23,13 @@ pub fn attach_embedded_code(program: &mut Value, tokens: &[Token], source: &Sour
     let Some(body) = program.get_mut("body").and_then(Value::as_array_mut) else {
         return;
     };
-    for node in body.iter_mut() {
+    attach_embedded_code_to_stmts(body, tokens, source);
+}
+
+/// Attach `embeddedCode` to every `CreateFunctionStmt` in a statement slice.
+/// Used by `scan_postgresql` so rule-scanning also has access to PL/pgSQL bodies.
+pub fn attach_embedded_code_to_stmts(stmts: &mut [Value], tokens: &[Token], source: &Source) {
+    for node in stmts.iter_mut() {
         // Only CreateFunctionStmt carries a function body. `CREATE PROCEDURE`
         // surfaces under the same node in libpg_query (with `is_procedure: true`).
         if node.get("type").and_then(Value::as_str) != Some("CreateFunctionStmt") {
