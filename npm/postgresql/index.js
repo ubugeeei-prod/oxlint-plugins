@@ -137,6 +137,18 @@ const ruleMeta = Object.freeze({
         'Comma-separated tables in `FROM` are an implicit cross join. Use explicit `JOIN ... ON ...` so the join condition lives next to the join.',
     },
   },
+  'no-leading-wildcard-like': {
+    type: 'suggestion',
+    description:
+      'Disallow `LIKE`/`ILIKE` patterns that begin with `%` because they cannot use a B-tree index and force a full scan',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noLeadingWildcardLike:
+        '`LIKE`/`ILIKE` patterns that begin with `%` cannot use a B-tree index and force a sequential scan. If you need substring search, use a `pg_trgm` GIN index, full-text search, or rework the schema so the prefix is indexable.',
+    },
+  },
   'no-order-by-ordinal': {
     type: 'suggestion',
     description:
