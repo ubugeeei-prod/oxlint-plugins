@@ -34,6 +34,7 @@ mod no_implicit_join;
 mod no_leading_wildcard_like;
 mod no_natural_join;
 mod no_not_in_subquery;
+mod no_numeric_without_precision;
 mod no_on_delete_cascade;
 mod no_order_by_ordinal;
 mod no_rename_column;
@@ -196,6 +197,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-leading-wildcard-like",
     "no-natural-join",
     "no-not-in-subquery",
+    "no-numeric-without-precision",
     "no-on-delete-cascade",
     "no-order-by-ordinal",
     "no-rename-column",
@@ -387,6 +389,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-not-in-subquery",
         run: no_not_in_subquery::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-numeric-without-precision",
+        run: no_numeric_without_precision::run,
         uses_parse_error: false,
     },
     RuleDef {
