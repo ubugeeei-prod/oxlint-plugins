@@ -164,6 +164,28 @@ const ruleMeta = Object.freeze({
       unexpectedInnerJoin: 'Omit the redundant `INNER`; use bare `JOIN` for inner joins.',
     },
   },
+  'consistent-fk-not-valid': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `NOT VALID` for `ADD CONSTRAINT ... FOREIGN KEY` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferFkNotValid:
+        'Adding a foreign key without `NOT VALID` validates every existing row under an `ACCESS EXCLUSIVE` lock that blocks writers. Use `ADD CONSTRAINT ... FOREIGN KEY (...) REFERENCES ... NOT VALID`, then `ALTER TABLE ... VALIDATE CONSTRAINT` in a separate migration (`VALIDATE` only takes a `SHARE UPDATE EXCLUSIVE` lock).',
+      unexpectedFkNotValid:
+        "Avoid `NOT VALID` on foreign keys. The constraint is added in a non-validated state and won't reject existing violations until you remember to run `VALIDATE CONSTRAINT`; some projects prefer to fail loudly at constraint-add time instead.",
+    },
+  },
   'consistent-identity-over-serial': {
     type: 'suggestion',
     description:
