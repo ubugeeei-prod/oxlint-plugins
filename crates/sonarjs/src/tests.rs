@@ -1595,3 +1595,73 @@ fn does_not_report_no_primitive_wrappers_for_unknown_constructor() {
     let diagnostics = scan("no-primitive-wrappers", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_skipped_tests_for_describe_skip() {
+    let source = "describe.skip('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-skipped-tests");
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_skipped_tests_for_it_skip() {
+    let source = "it.skip('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+}
+
+#[test]
+fn reports_no_skipped_tests_for_test_skip() {
+    let source = "test.skip('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+}
+
+#[test]
+fn reports_no_skipped_tests_for_xit() {
+    let source = "xit('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+}
+
+#[test]
+fn reports_no_skipped_tests_for_xdescribe() {
+    let source = "xdescribe('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "skippedTest");
+}
+
+#[test]
+fn does_not_report_no_skipped_tests_for_it_without_skip() {
+    let source = "it('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_skipped_tests_for_describe_without_skip() {
+    let source = "describe('x', () => {});";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_skipped_tests_for_unknown_runner_with_skip() {
+    let source = "foo.skip();";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_skipped_tests_for_xfoo_not_in_x_set() {
+    let source = "xfoo();";
+    let diagnostics = scan("no-skipped-tests", source);
+    assert!(diagnostics.is_empty());
+}
