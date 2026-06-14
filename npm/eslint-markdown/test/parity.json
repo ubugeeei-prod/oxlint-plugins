@@ -5,10 +5,6 @@
       "level": "off",
       "note": "Diverges on headings inside HTML blocks / blockquotes and on TOML (+++) and JSON frontmatter title detection."
     },
-    "no-missing-link-fragments": {
-      "level": "off",
-      "note": "Broad divergence in heading-anchor slugging and fragment matching."
-    },
     "no-multiple-h1": {
       "level": "off",
       "note": "Frontmatter-title (YAML/TOML/JSON) interaction with the first H1 differs from upstream."
