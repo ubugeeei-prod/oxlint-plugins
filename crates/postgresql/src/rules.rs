@@ -32,6 +32,7 @@ mod no_set_search_path;
 mod no_temporary_table;
 mod no_truncate_cascade;
 mod no_unlogged_table;
+mod no_update_without_from_binding;
 mod no_vacuum_full;
 mod no_with_recursive_without_limit;
 mod prefer_exists_over_in_subquery;
@@ -164,6 +165,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-temporary-table",
     "no-truncate-cascade",
     "no-unlogged-table",
+    "no-update-without-from-binding",
     "no-vacuum-full",
     "no-with-recursive-without-limit",
     "prefer-exists-over-in-subquery",
@@ -317,6 +319,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-unlogged-table",
         run: no_unlogged_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-update-without-from-binding",
+        run: no_update_without_from_binding::run,
         uses_parse_error: false,
     },
     RuleDef {
