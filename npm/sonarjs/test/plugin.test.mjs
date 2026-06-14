@@ -147,6 +147,7 @@ describe('sonarjs plugin shape', () => {
       'nested-control-flow',
       'max-lines-per-function',
       'no-duplicate-string',
+      'no-empty-group',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -201,6 +202,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['nested-control-flow']).toBe('object');
     expect(typeof plugin.rules['max-lines-per-function']).toBe('object');
     expect(typeof plugin.rules['no-duplicate-string']).toBe('object');
+    expect(typeof plugin.rules['no-empty-group']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -257,6 +259,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/nested-control-flow']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/max-lines-per-function']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-duplicate-string']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-empty-group']).toBe('error');
   });
 });
 
@@ -1200,5 +1203,21 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-duplicate-string)');
+  });
+
+  it('reports no-empty-group for an empty non-capturing group through the adapter', () => {
+    const source = 'const r = /(?:)/;';
+    const reports = runRule('no-empty-group', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyGroup');
+  });
+
+  it('reports no-empty-group through the CLI', () => {
+    const result = runOxlint('no-empty-group', 'const r = /(?:)/;');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-group)');
   });
 });

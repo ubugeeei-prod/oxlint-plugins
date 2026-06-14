@@ -24,6 +24,7 @@ mod no_delete_var;
 mod no_duplicate_in_composite;
 mod no_duplicate_string;
 mod no_empty_character_class;
+mod no_empty_group;
 mod no_exclusive_tests;
 mod no_function_declaration_in_block;
 mod no_identical_conditions;

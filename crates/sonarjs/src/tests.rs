@@ -2478,3 +2478,50 @@ fn no_duplicate_string_respects_custom_threshold() {
     assert_eq!(diagnostics[0].rule_name, "no-duplicate-string");
     assert_eq!(diagnostics[0].message_id, "duplicateString");
 }
+
+#[test]
+fn reports_no_empty_group_for_empty_capturing_group() {
+    let source = "const r = /foo()bar/;";
+    let diagnostics = scan("no-empty-group", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-empty-group");
+    assert_eq!(diagnostics[0].message_id, "emptyGroup");
+}
+
+#[test]
+fn reports_no_empty_group_for_empty_non_capturing_group() {
+    let source = "const r = /(?:)/;";
+    let diagnostics = scan("no-empty-group", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyGroup");
+}
+
+#[test]
+fn reports_no_empty_group_for_second_group_only() {
+    let source = "const r = /(a)()/;";
+    let diagnostics = scan("no-empty-group", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyGroup");
+}
+
+#[test]
+fn does_not_report_no_empty_group_for_non_empty_group() {
+    let source = "const r = /foo(bar)/;";
+    let diagnostics = scan("no-empty-group", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_group_for_empty_alternative() {
+    // (a|) has two alternatives; the group itself is not empty
+    let source = "const r = /(a|)/;";
+    let diagnostics = scan("no-empty-group", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_group_for_quantified_non_empty_group() {
+    let source = "const r = /(a)?/;";
+    let diagnostics = scan("no-empty-group", source);
+    assert!(diagnostics.is_empty());
+}
