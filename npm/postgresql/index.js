@@ -567,6 +567,18 @@ const ruleMeta = Object.freeze({
         '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
     },
   },
+  'no-time-type': {
+    type: 'suggestion',
+    description:
+      'Disallow `TIME` / `TIME WITH TIME ZONE` columns; they rarely model a real-world value correctly',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noTimeType:
+        '`TIME` and `TIME WITH TIME ZONE` rarely model anything correctly: `time` has no date so cannot disambiguate around DST, and `timetz` stores an offset that is meaningless without a date. Use `timestamptz` for points in time, `interval` for durations, or store an opaque `text` if all you need is a display value.',
+    },
+  },
   'no-truncate-cascade': {
     type: 'problem',
     description:

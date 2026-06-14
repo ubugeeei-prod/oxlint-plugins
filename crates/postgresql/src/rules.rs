@@ -44,6 +44,7 @@ mod no_select_star;
 mod no_set_not_null;
 mod no_set_search_path;
 mod no_temporary_table;
+mod no_time_type;
 mod no_truncate_cascade;
 mod no_unlogged_table;
 mod no_update_primary_key;
@@ -205,6 +206,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-set-not-null",
     "no-set-search-path",
     "no-temporary-table",
+    "no-time-type",
     "no-truncate-cascade",
     "no-unlogged-table",
     "no-update-primary-key",
@@ -435,6 +437,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-temporary-table",
         run: no_temporary_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-time-type",
+        run: no_time_type::run,
         uses_parse_error: false,
     },
     RuleDef {
