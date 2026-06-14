@@ -156,3 +156,61 @@ fn enforce_class_compile_utf8_fix_offsets() {
         "enforce-class-compile fix must start at the byte after the opening quote"
     );
 }
+
+// ── full-code-review fixes ──────────────────────────────────────────────────
+
+/// The ordering heuristic must not treat ordinary English class names that
+/// merely start with `h`/`w`/an axis letter (`hello`, `world`, `my`, `prose`)
+/// as UnoCSS utilities, or `order` would reorder non-UnoCSS class names.
+#[test]
+fn plain_words_do_not_trigger_order() {
+    for source in [
+        r#"const node = <div className="world hello flex" />;"#,
+        r#"const node = <div className="my prose flex" />;"#,
+        r#"const node = <div className="play previous block" />;"#,
+    ] {
+        let diagnostics = scan_unocss(source, "fixture.tsx", &UnocssOptions::default());
+        assert!(
+            diagnostics.iter().all(|d| d.rule_name != "order"),
+            "unexpected 'order' diagnostic for {source:?}: {diagnostics:?}"
+        );
+    }
+}
+
+/// Genuine bare `h-`/`w-`/axis utilities are still recognized after tightening.
+#[test]
+fn genuine_utilities_still_ordered() {
+    let source = r#"const node = <div className="w-1 h-1 mx1" />;"#;
+    let diagnostics = scan_unocss(source, "fixture.tsx", &UnocssOptions::default());
+    assert!(
+        diagnostics.iter().any(|d| d.rule_name == "order"),
+        "expected 'order' for real utilities, got: {diagnostics:?}"
+    );
+}
+
+/// A `blocklist` diagnostic must point at the offending token, not the whole
+/// class string, so editors underline only the blocked utility.
+#[test]
+fn blocklist_span_covers_only_the_token() {
+    let mut blocklist = SmallVec::new();
+    blocklist.push(BlocklistEntry {
+        name: CompactString::from("border"),
+        reason: CompactString::new(""),
+    });
+    let options = UnocssOptions {
+        blocklist,
+        ..UnocssOptions::default()
+    };
+    // `border` sits at bytes 21..27 of the source: `<div className="flex border">`.
+    let source = r#"<div className="flex border"></div>"#;
+    let diagnostics = scan_unocss(source, "fixture.tsx", &options);
+    let columns = diagnostics
+        .iter()
+        .find(|d| d.rule_name == "blocklist")
+        .map(|d| (d.loc.start_column, d.loc.end_column));
+    assert_eq!(
+        columns,
+        Some((21, 27)),
+        "blocklist span should cover only `border`, not the whole class string"
+    );
+}

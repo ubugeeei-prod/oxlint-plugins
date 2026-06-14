@@ -42,6 +42,8 @@ const ruleTypes = {
 
 const implementedRuleNames = Object.freeze(implementedUnocssRuleNames());
 const recommendedRuleNames = Object.freeze(['order', 'order-attributify']);
+// `blocklist` only reports; it never emits a fix, so it is not `fixable`.
+const fixableRuleNames = Object.freeze(['order', 'order-attributify', 'enforce-class-compile']);
 
 const rules = Object.freeze(
   Object.fromEntries(
@@ -94,7 +96,7 @@ function createUnocssRule(ruleName) {
         recommended: recommendedRuleNames.includes(ruleName),
         url: `${DOCS_BASE}#rules`,
       },
-      fixable: 'code',
+      fixable: fixableRuleNames.includes(ruleName) ? 'code' : undefined,
       messages: messages[ruleName],
       schema: schemaForRule(ruleName),
     },
@@ -156,7 +158,7 @@ function schemaForRule(ruleName) {
             type: 'array',
           },
         },
-        additionalProperties: true,
+        additionalProperties: false,
       },
     ];
   }

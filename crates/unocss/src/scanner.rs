@@ -72,10 +72,12 @@ impl<'a> Scanner<'a> {
 
     fn check_blocklist(&mut self, literal: LiteralSpan<'_>) {
         for token in literal.content.split_whitespace() {
-            self.check_blocked_token(
-                token,
-                Span::new(literal.content_start as u32, literal.content_end as u32),
-            );
+            // `split_whitespace` yields subslices of `content`, so the token's
+            // byte offset within the literal is its pointer distance from the
+            // content start. Report the precise token span, not the whole string.
+            let offset = token.as_ptr() as usize - literal.content.as_ptr() as usize;
+            let start = literal.content_start + offset;
+            self.check_blocked_token(token, Span::new(start as u32, (start + token.len()) as u32));
         }
     }
 
@@ -181,10 +183,14 @@ impl<'a> Scanner<'a> {
             return;
         }
 
-        // Build a fix only when the attrs are contiguous in source.
+        // Build a fix only when the attrs are contiguous in source. `get`
+        // guards against any degenerate (reversed/out-of-range) span pair so a
+        // parser edge case can never panic at the NAPI boundary.
         let contiguous = uno_attrs.windows(2).all(|pair| {
-            let between = &self.source_text[pair[0].1.end as usize..pair[1].1.start as usize];
-            between.trim().is_empty()
+            let range = pair[0].1.end as usize..pair[1].1.start as usize;
+            self.source_text
+                .get(range)
+                .is_some_and(|between| between.trim().is_empty())
         });
         let fix = if contiguous {
             let start = uno_attrs[0].1.start;
