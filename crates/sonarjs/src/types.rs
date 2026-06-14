@@ -56,6 +56,9 @@ pub struct SonarjsOptions {
     pub nested_control_flow_threshold: u32,
     /// Threshold for `no-duplicate-string` (S1192); the SonarJS default is 3.
     pub no_duplicate_string_threshold: u32,
+    /// Maximum cyclomatic complexity per function for `cyclomatic-complexity` (S1541);
+    /// the SonarJS default is 10.
+    pub cyclomatic_complexity_threshold: u32,
 }
 
 impl Default for SonarjsOptions {
@@ -71,6 +74,7 @@ impl Default for SonarjsOptions {
             max_union_size_threshold: 3,
             nested_control_flow_threshold: 3,
             no_duplicate_string_threshold: 3,
+            cyclomatic_complexity_threshold: 10,
         }
     }
 }

@@ -6,23 +6,30 @@ use crate::RuleDef;
 mod no_alter_column_type;
 mod no_cluster;
 mod no_create_role;
+mod no_cross_join;
 mod no_distinct_on_without_order_by;
 mod no_drop_column;
 mod no_drop_database;
 mod no_drop_not_null;
+mod no_group_by_ordinal;
 mod no_implicit_join;
+mod no_leading_wildcard_like;
 mod no_on_delete_cascade;
 mod no_order_by_ordinal;
 mod no_rename_column;
+mod no_rename_table;
 mod no_rule;
+mod no_select_into;
 mod no_select_star;
 mod no_set_not_null;
 mod no_set_search_path;
 mod no_temporary_table;
+mod no_truncate_cascade;
 mod no_unlogged_table;
 mod no_vacuum_full;
 mod no_with_recursive_without_limit;
 mod require_limit;
+mod require_where_in_delete;
 mod require_where_in_update;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
@@ -124,23 +131,30 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-alter-column-type",
     "no-cluster",
     "no-create-role",
+    "no-cross-join",
     "no-distinct-on-without-order-by",
     "no-drop-column",
     "no-drop-database",
     "no-drop-not-null",
+    "no-group-by-ordinal",
     "no-implicit-join",
+    "no-leading-wildcard-like",
     "no-on-delete-cascade",
     "no-order-by-ordinal",
     "no-rename-column",
+    "no-rename-table",
     "no-rule",
+    "no-select-into",
     "no-select-star",
     "no-set-not-null",
     "no-set-search-path",
     "no-temporary-table",
+    "no-truncate-cascade",
     "no-unlogged-table",
     "no-vacuum-full",
     "no-with-recursive-without-limit",
     "require-limit",
+    "require-where-in-delete",
     "require-where-in-update",
 ];
 
@@ -159,6 +173,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-create-role",
         run: no_create_role::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-cross-join",
+        run: no_cross_join::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -182,8 +201,18 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-group-by-ordinal",
+        run: no_group_by_ordinal::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-implicit-join",
         run: no_implicit_join::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-leading-wildcard-like",
+        run: no_leading_wildcard_like::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -202,8 +231,18 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-rename-table",
+        run: no_rename_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-rule",
         run: no_rule::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-select-into",
+        run: no_select_into::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -227,6 +266,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-truncate-cascade",
+        run: no_truncate_cascade::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-unlogged-table",
         run: no_unlogged_table::run,
         uses_parse_error: false,
@@ -244,6 +288,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-limit",
         run: require_limit::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-where-in-delete",
+        run: require_where_in_delete::run,
         uses_parse_error: false,
     },
     RuleDef {

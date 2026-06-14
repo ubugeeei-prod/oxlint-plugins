@@ -65,6 +65,11 @@ pub(crate) struct Scanner<'a> {
     /// Span-start offsets of string literals in excluded positions (import/export
     /// sources, JSX attribute values) that `no-duplicate-string` must skip.
     pub(crate) excluded_string_starts: SmallVec<[u32; 16]>,
+    /// Per-function frame stack for `cyclomatic-complexity`. One frame per open
+    /// function/arrow scope: `(function_span, accumulated_complexity)`. Decision
+    /// points inside nested functions update only the innermost frame; top-level
+    /// decision points find an empty stack and are silently ignored.
+    pub(crate) cyclomatic_complexity_stack: SmallVec<[(Span, u32); 8]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -149,6 +154,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_switch_case(&mut self, it: &SwitchCase<'a>) {
         self.check_comma_or_logical_or_case(it);
         self.check_no_same_line_conditional(&it.consequent);
+        if it.test.is_some() {
+            self.add_cyclomatic_complexity();
+        }
         walk::walk_switch_case(self, it);
     }
 
@@ -160,6 +168,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_logical_expression(&mut self, it: &LogicalExpression<'a>) {
         self.check_no_identical_expressions_logical(it);
+        self.add_cyclomatic_complexity();
         walk::walk_logical_expression(self, it);
     }
 
@@ -173,6 +182,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_conditional_expression(&mut self, it: &ConditionalExpression<'a>) {
         self.check_no_nested_conditional(it);
         self.check_no_redundant_boolean_conditional(it);
+        self.add_cyclomatic_complexity();
         self.conditional_depth += 1;
         walk::walk_conditional_expression(self, it);
         self.conditional_depth -= 1;
@@ -185,6 +195,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_elseif_without_else(it);
         self.check_prefer_single_boolean_return(it);
         self.check_no_nested_assignment_condition(&it.test);
+        self.add_cyclomatic_complexity();
         let counted = self.enter_nested_control_flow_if(it);
         walk::walk_if_statement(self, it);
         self.leave_nested_control_flow(counted);
@@ -193,6 +204,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_for_in_statement(&mut self, it: &ForInStatement<'a>) {
         self.check_for_in(it);
         self.check_redundant_continue(&it.body);
+        self.add_cyclomatic_complexity();
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_for_in_statement(self, it);
         self.leave_nested_control_flow(counted);
@@ -204,6 +216,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         if let Some(test) = &it.test {
             self.check_no_nested_assignment_condition(test);
         }
+        self.add_cyclomatic_complexity();
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_for_statement(self, it);
         self.leave_nested_control_flow(counted);
@@ -212,6 +225,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_while_statement(&mut self, it: &WhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
         self.check_no_nested_assignment_condition(&it.test);
+        self.add_cyclomatic_complexity();
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_while_statement(self, it);
         self.leave_nested_control_flow(counted);
@@ -220,6 +234,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_do_while_statement(&mut self, it: &DoWhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
         self.check_no_nested_assignment_condition(&it.test);
+        self.add_cyclomatic_complexity();
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_do_while_statement(self, it);
         self.leave_nested_control_flow(counted);
@@ -227,6 +242,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_for_of_statement(&mut self, it: &ForOfStatement<'a>) {
         self.check_redundant_continue(&it.body);
+        self.add_cyclomatic_complexity();
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_for_of_statement(self, it);
         self.leave_nested_control_flow(counted);
@@ -320,7 +336,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         let track = self.enter_generator(it);
         self.enter_return_scope(it.span);
         self.jsx_function_stack.push(false);
+        self.enter_cyclomatic_scope(it.span);
         walk::walk_function(self, it, flags);
+        self.leave_cyclomatic_scope();
         self.leave_return_scope();
         self.leave_generator(it, track);
         self.check_max_lines_per_function(it.span);
@@ -329,7 +347,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_arrow_function_expression(&mut self, it: &ArrowFunctionExpression<'a>) {
         self.enter_return_scope(it.span);
         self.jsx_function_stack.push(false);
+        self.enter_cyclomatic_scope(it.span);
         walk::walk_arrow_function_expression(self, it);
+        self.leave_cyclomatic_scope();
         self.leave_return_scope();
         self.check_max_lines_per_function(it.span);
     }
@@ -385,6 +405,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_catch_clause(&mut self, it: &CatchClause<'a>) {
         self.check_no_useless_catch(it);
+        self.add_cyclomatic_complexity();
         walk::walk_catch_clause(self, it);
     }
 
