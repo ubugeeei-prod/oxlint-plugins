@@ -5575,19 +5575,19 @@
       },
       {
         "name": "no-security-definer-without-search-path",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-security-definer-without-search-path."
+        "notes": "Ported: detects SECURITY DEFINER functions that lack a SET search_path option. Reports the full CreateFunctionStmt span (stmt bounds override sets the loc to cover the entire statement)."
       },
       {
         "name": "no-select-into",
