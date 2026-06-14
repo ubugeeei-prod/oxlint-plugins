@@ -72,6 +72,7 @@ const expectedRuleNames = [
   'void-use',
   'prefer-promise-shorthand',
   'pseudo-random',
+  'no-hardcoded-ip',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2172,6 +2173,81 @@ describe('sonarjs native API', () => {
 
   it('does not report pseudo-random for a bare Math.random reference', () => {
     const diagnostics = scan('pseudo-random', 'const f = Math.random;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-hardcoded-ip for a plain IPv4 address string literal', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "192.168.1.1";');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-hardcoded-ip');
+    expect(diagnostics[0].messageId).toBe('hardcodedIp');
+  });
+
+  it('reports no-hardcoded-ip for a private IPv4 address', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "10.0.0.1";');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('hardcodedIp');
+  });
+
+  it('reports no-hardcoded-ip for an IPv4 address embedded in a URL string', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const url = "http://192.168.0.1/api";');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('hardcodedIp');
+  });
+
+  it('reports no-hardcoded-ip for a valid IPv6 address string', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "2001:db8:85a3::8a2e:370:7334";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-hardcoded-ip for a non-documentation IPv6 address', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "fe80::1";');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('hardcodedIp');
+  });
+
+  it('does not report no-hardcoded-ip for loopback 127.0.0.1', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "127.0.0.1";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for 127.x.x.x loopback range', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "127.1.2.3";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for broadcast 255.255.255.255', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "255.255.255.255";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for unspecified 0.0.0.0', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "0.0.0.0";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for IPv6 loopback ::1', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "::1";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for IPv6 documentation range 2001:db8::', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "2001:db8::1";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for IPv4-mapped loopback ::ffff:127.0.0.1', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const ip = "::ffff:127.0.0.1";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for a string without any IP address', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const s = "hello world";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for a three-octet partial address', () => {
+    const diagnostics = scan('no-hardcoded-ip', 'const s = "192.168.1";');
     expect(diagnostics).toHaveLength(0);
   });
 });

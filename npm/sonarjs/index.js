@@ -256,6 +256,9 @@ const messages = Object.freeze({
     pseudoRandom:
       'Use a cryptographically secure random number generator instead of Math.random().',
   },
+  'no-hardcoded-ip': {
+    hardcodedIp: 'Make this IP address configurable rather than hardcoding it in source code.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -389,6 +392,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow new Promise(executor) when the executor immediately calls resolve or reject with at most one argument; use Promise.resolve or Promise.reject instead',
   'pseudo-random':
     'Disallow Math.random() in security-sensitive contexts; use a cryptographically secure random number generator instead',
+  'no-hardcoded-ip':
+    'Disallow hardcoded IP addresses in string literals; make them configurable instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -461,6 +466,7 @@ const ruleTypes = Object.freeze({
   'void-use': 'suggestion',
   'prefer-promise-shorthand': 'suggestion',
   'pseudo-random': 'suggestion',
+  'no-hardcoded-ip': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -533,6 +539,7 @@ const recommendedRuleConfig = Object.freeze({
   'void-use': 'error',
   'prefer-promise-shorthand': 'error',
   'pseudo-random': 'error',
+  'no-hardcoded-ip': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
