@@ -65,21 +65,21 @@ fn scan_import_chunks_in(
             );
             chunk.clear();
             // Recurse into TSModuleDeclaration (declare module 'x' { ... })
-            if let Statement::TSModuleDeclaration(ts_mod) = statement {
-                if let Some(body) = &ts_mod.body {
-                    let inner_stmts = match body {
-                        TSModuleDeclarationBody::TSModuleBlock(block) => block.body.as_slice(),
-                        TSModuleDeclarationBody::TSModuleDeclaration(_) => &[],
-                    };
-                    scan_import_chunks_in(
-                        source_text,
-                        line_index,
-                        inner_stmts,
-                        all_comments,
-                        options,
-                        diagnostics,
-                    );
-                }
+            if let Statement::TSModuleDeclaration(ts_mod) = statement
+                && let Some(body) = &ts_mod.body
+            {
+                let inner_stmts = match body {
+                    TSModuleDeclarationBody::TSModuleBlock(block) => block.body.as_slice(),
+                    TSModuleDeclarationBody::TSModuleDeclaration(_) => &[],
+                };
+                scan_import_chunks_in(
+                    source_text,
+                    line_index,
+                    inner_stmts,
+                    all_comments,
+                    options,
+                    diagnostics,
+                );
             }
         }
     }
@@ -163,20 +163,20 @@ fn scan_export_chunks_in(
                 report_export_chunk(source_text, line_index, all_comments, &chunk, diagnostics);
                 chunk.clear();
                 // Recurse into TSModuleDeclaration (declare module 'x' { ... })
-                if let Statement::TSModuleDeclaration(ts_mod) = statement {
-                    if let Some(body) = &ts_mod.body {
-                        let inner_stmts = match body {
-                            TSModuleDeclarationBody::TSModuleBlock(block) => block.body.as_slice(),
-                            TSModuleDeclarationBody::TSModuleDeclaration(_) => &[],
-                        };
-                        scan_export_chunks_in(
-                            source_text,
-                            line_index,
-                            inner_stmts,
-                            all_comments,
-                            diagnostics,
-                        );
-                    }
+                if let Statement::TSModuleDeclaration(ts_mod) = statement
+                    && let Some(body) = &ts_mod.body
+                {
+                    let inner_stmts = match body {
+                        TSModuleDeclarationBody::TSModuleBlock(block) => block.body.as_slice(),
+                        TSModuleDeclarationBody::TSModuleDeclaration(_) => &[],
+                    };
+                    scan_export_chunks_in(
+                        source_text,
+                        line_index,
+                        inner_stmts,
+                        all_comments,
+                        diagnostics,
+                    );
                 }
             }
         }
