@@ -447,6 +447,17 @@ const ruleMeta = Object.freeze({
         '`NOT IN (subquery)` returns no rows if the subquery yields any NULL — almost certainly not what you want. Use `NOT EXISTS (SELECT 1 FROM ... WHERE ...)` instead; it handles NULL correctly.',
     },
   },
+  'no-numeric-without-precision': {
+    type: 'suggestion',
+    description: 'Require an explicit precision (and scale) on `NUMERIC` / `DECIMAL` columns',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noNumericWithoutPrecision:
+        "`NUMERIC` / `DECIMAL` without precision accepts unbounded magnitude and rejects nothing — it's a missed opportunity to encode the column's domain. Declare `NUMERIC(precision, scale)`.",
+    },
+  },
   'no-on-delete-cascade': {
     type: 'problem',
     description:
