@@ -31,6 +31,7 @@ const expectedRuleNames = [
   'prefer-while',
   'no-small-switch',
   'prefer-default-last',
+  'no-inverted-boolean-check',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1014,6 +1015,46 @@ describe('sonarjs native API', () => {
   it('does not report prefer-default-last when there is no default clause', () => {
     const source = 'switch (x) { case 1: break; case 2: break; }';
     const diagnostics = scan('prefer-default-last', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-inverted-boolean-check for !(a === b)', () => {
+    const source = 'const r = !(a === b);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-inverted-boolean-check');
+    expect(diagnostics[0].messageId).toBe('invertedBooleanCheck');
+  });
+
+  it('reports no-inverted-boolean-check for !(a < b)', () => {
+    const source = 'const r = !(a < b);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('invertedBooleanCheck');
+  });
+
+  it('reports no-inverted-boolean-check for !(x !== y)', () => {
+    const source = 'const r = !(x !== y);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('invertedBooleanCheck');
+  });
+
+  it('does not report no-inverted-boolean-check for !(a && b) (logical, not comparison)', () => {
+    const source = 'const r = !(a && b);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-inverted-boolean-check for !a (no comparison)', () => {
+    const source = 'const r = !a;';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-inverted-boolean-check for !(a + b) (arithmetic, not comparison)', () => {
+    const source = 'const r = !(a + b);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

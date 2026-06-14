@@ -1242,3 +1242,58 @@ fn does_not_report_prefer_default_last_when_there_is_no_default() {
     let diagnostics = scan("prefer-default-last", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_inverted_boolean_check_for_negated_strict_equality() {
+    let source = "const r = !(a === b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-inverted-boolean-check");
+    assert_eq!(diagnostics[0].message_id, "invertedBooleanCheck");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_inverted_boolean_check_for_negated_less_than() {
+    let source = "const r = !(a < b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "invertedBooleanCheck");
+}
+
+#[test]
+fn reports_inverted_boolean_check_for_negated_strict_inequality() {
+    let source = "const r = !(x !== y);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "invertedBooleanCheck");
+}
+
+#[test]
+fn reports_inverted_boolean_check_for_negated_greater_equal() {
+    let source = "const r = !(a >= b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "invertedBooleanCheck");
+}
+
+#[test]
+fn does_not_report_inverted_boolean_check_for_negated_logical_and() {
+    let source = "const r = !(a && b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inverted_boolean_check_for_plain_negation() {
+    let source = "const r = !a;";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inverted_boolean_check_for_negated_arithmetic() {
+    let source = "const r = !(a + b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert!(diagnostics.is_empty());
+}
