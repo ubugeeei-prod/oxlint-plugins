@@ -43,6 +43,12 @@ const expectedRuleNames = [
   'no-tab',
   'fixme-tag',
   'todo-tag',
+  'no-sonar-comments',
+  'array-constructor',
+  'no-function-declaration-in-block',
+  'no-inconsistent-returns',
+  'no-same-line-conditional',
+  'no-nested-assignment',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1537,6 +1543,201 @@ describe('sonarjs native API', () => {
   it('does not report todo-tag for source with no comments', () => {
     const source = 'const a = 1;';
     const diagnostics = scan('todo-tag', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-sonar-comments for a comment containing NOSONAR', () => {
+    const source = '// NOSONAR suppress this';
+    const diagnostics = scan('no-sonar-comments', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-sonar-comments');
+    expect(diagnostics[0].messageId).toBe('noSonarComments');
+  });
+
+  it('reports no-sonar-comments for a block comment containing NOSONAR', () => {
+    const source = '/* NOSONAR */';
+    const diagnostics = scan('no-sonar-comments', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-sonar-comments for a plain comment', () => {
+    const source = '// just a comment';
+    const diagnostics = scan('no-sonar-comments', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-sonar-comments for source with no comments', () => {
+    const source = 'const a = 1;';
+    const diagnostics = scan('no-sonar-comments', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports array-constructor for a call with multiple arguments', () => {
+    const source = 'const a = Array(1, 2, 3);';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('array-constructor');
+    expect(diagnostics[0].messageId).toBe('arrayConstructor');
+  });
+
+  it('reports array-constructor for a new expression with multiple arguments', () => {
+    const source = 'const a = new Array(1, 2, 3);';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports array-constructor for a call with no arguments', () => {
+    const source = 'const a = new Array();';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report array-constructor for a single-argument length form', () => {
+    const source = 'const a = new Array(500);';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report array-constructor when type arguments are present', () => {
+    const source = 'const a = Array<number>(1, 2, 3);';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report array-constructor for an array literal', () => {
+    const source = 'const a = [1, 2, 3];';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-function-declaration-in-block for a function declared in an if block', () => {
+    const source = 'if (cond) {\n  function f() {}\n}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-function-declaration-in-block');
+    expect(diagnostics[0].messageId).toBe('noFunctionDeclarationInBlock');
+  });
+
+  it('reports no-function-declaration-in-block for a function declared in a bare block', () => {
+    const source = '{\n  function f() {}\n}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-function-declaration-in-block for a top-level declaration', () => {
+    const source = 'function f() {}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-function-declaration-in-block for a nested function body declaration', () => {
+    const source = 'function outer() {\n  function inner() {}\n}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-function-declaration-in-block for a function expression in a block', () => {
+    const source = 'if (cond) {\n  const f = function () {};\n}';
+    const diagnostics = scan('no-function-declaration-in-block', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-inconsistent-returns for a function mixing value and bare returns', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  return x.value;\n}';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-inconsistent-returns');
+    expect(diagnostics[0].messageId).toBe('inconsistentReturns');
+  });
+
+  it('reports no-inconsistent-returns for an arrow mixing value and bare returns', () => {
+    const source = 'const f = (x) => {\n  if (!x) return;\n  return 1;\n};';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-inconsistent-returns when all returns yield a value', () => {
+    const source = 'function f(x) {\n  if (!x) return 0;\n  return x.value;\n}';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-inconsistent-returns when all returns are bare', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  doWork();\n  return;\n}';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-inconsistent-returns only for the inconsistent nested function', () => {
+    // outer returns only a value; inner mixes value and bare returns. Only inner
+    // is flagged, proving each scope tracks its own returns on a separate frame.
+    const source =
+      'function outer() {\n  return 1;\n  function inner() {\n    if (a) return;\n    return 2;\n  }\n}';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports no-same-line-conditional for an if on the closing brace line', () => {
+    const source = 'if (a) {\n  doA();\n} if (b) {\n  doB();\n}';
+    const diagnostics = scan('no-same-line-conditional', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-same-line-conditional');
+    expect(diagnostics[0].messageId).toBe('sameLineConditional');
+  });
+
+  it('does not report no-same-line-conditional for an if on a new line', () => {
+    const source = 'if (a) {\n  doA();\n}\nif (b) {\n  doB();\n}';
+    const diagnostics = scan('no-same-line-conditional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-same-line-conditional for an else-if chain', () => {
+    const source = 'if (a) {\n  doA();\n} else if (b) {\n  doB();\n}';
+    const diagnostics = scan('no-same-line-conditional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-same-line-conditional when the preceding statement is not an if', () => {
+    const source = 'doA(); if (b) {\n  doB();\n}';
+    const diagnostics = scan('no-same-line-conditional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-nested-assignment for an assignment in an if condition', () => {
+    const source = 'if (x = compute()) {\n  use(x);\n}';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-nested-assignment');
+    expect(diagnostics[0].messageId).toBe('nestedAssignment');
+  });
+
+  it('reports no-nested-assignment for an assignment in a while condition', () => {
+    const source = 'while (node = node.next) {\n  visit(node);\n}';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports no-nested-assignment for the inner part of a chained assignment', () => {
+    const source = 'a = b = c;';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-nested-assignment for a plain assignment statement', () => {
+    const source = 'x = compute();';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-nested-assignment for the init and update of a for loop', () => {
+    const source = 'for (i = 0; i < 10; i = i + 1) {\n  use(i);\n}';
+    const diagnostics = scan('no-nested-assignment', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-nested-assignment for an equality comparison in a condition', () => {
+    const source = 'if (x === compute()) {\n  use(x);\n}';
+    const diagnostics = scan('no-nested-assignment', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
