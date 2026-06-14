@@ -44,6 +44,7 @@ const expectedRuleNames = [
   'fixme-tag',
   'todo-tag',
   'no-sonar-comments',
+  'array-constructor',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1564,6 +1565,44 @@ describe('sonarjs native API', () => {
   it('does not report no-sonar-comments for source with no comments', () => {
     const source = 'const a = 1;';
     const diagnostics = scan('no-sonar-comments', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports array-constructor for a call with multiple arguments', () => {
+    const source = 'const a = Array(1, 2, 3);';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('array-constructor');
+    expect(diagnostics[0].messageId).toBe('arrayConstructor');
+  });
+
+  it('reports array-constructor for a new expression with multiple arguments', () => {
+    const source = 'const a = new Array(1, 2, 3);';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports array-constructor for a call with no arguments', () => {
+    const source = 'const a = new Array();';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report array-constructor for a single-argument length form', () => {
+    const source = 'const a = new Array(500);';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report array-constructor when type arguments are present', () => {
+    const source = 'const a = Array<number>(1, 2, 3);';
+    const diagnostics = scan('array-constructor', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report array-constructor for an array literal', () => {
+    const source = 'const a = [1, 2, 3];';
+    const diagnostics = scan('array-constructor', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

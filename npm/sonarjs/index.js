@@ -160,6 +160,9 @@ const messages = Object.freeze({
   'no-sonar-comments': {
     noSonarComments: 'Remove this NOSONAR comment and fix the underlying issue.',
   },
+  'array-constructor': {
+    arrayConstructor: 'Use an array literal instead of the Array constructor.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -237,6 +240,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow TODO-tagged comments; a TODO marks incomplete work that should be tracked and completed',
   'no-sonar-comments':
     'Disallow NOSONAR comments; they suppress analysis and can hide real issues that should be fixed',
+  'array-constructor':
+    'Disallow the Array constructor in favor of array literals, except for the single-argument length form',
 });
 
 const ruleTypes = Object.freeze({
@@ -281,6 +286,7 @@ const ruleTypes = Object.freeze({
   'fixme-tag': 'suggestion',
   'todo-tag': 'suggestion',
   'no-sonar-comments': 'suggestion',
+  'array-constructor': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -325,6 +331,7 @@ const recommendedRuleConfig = Object.freeze({
   'fixme-tag': 'error',
   'todo-tag': 'error',
   'no-sonar-comments': 'error',
+  'array-constructor': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -1927,3 +1927,54 @@ fn does_not_report_no_sonar_comments_for_source_with_no_comments() {
     let diagnostics = scan("no-sonar-comments", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_array_constructor_for_multi_argument_call() {
+    let source = "const a = Array(1, 2, 3);";
+    let diagnostics = scan("array-constructor", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "array-constructor");
+    assert_eq!(diagnostics[0].message_id, "arrayConstructor");
+}
+
+#[test]
+fn reports_array_constructor_for_multi_argument_new_expression() {
+    let source = "const a = new Array(1, 2, 3);";
+    let diagnostics = scan("array-constructor", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_array_constructor_for_zero_argument_new_expression() {
+    let source = "const a = new Array();";
+    let diagnostics = scan("array-constructor", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_array_constructor_for_single_argument_length_form() {
+    let source = "const a = new Array(500);";
+    let diagnostics = scan("array-constructor", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_constructor_when_type_arguments_present() {
+    let source = "const a = Array<number>(1, 2, 3);";
+    let diagnostics = scan("array-constructor", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_constructor_for_array_literal() {
+    let source = "const a = [1, 2, 3];";
+    let diagnostics = scan("array-constructor", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_array_constructor_for_unrelated_member_call() {
+    let source = "const a = foo.Array(1, 2, 3);";
+    let diagnostics = scan("array-constructor", source);
+    assert!(diagnostics.is_empty());
+}
