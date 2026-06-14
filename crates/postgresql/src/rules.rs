@@ -3,6 +3,7 @@
 
 use crate::RuleDef;
 
+mod no_alter_column_type;
 mod no_cluster;
 mod no_drop_database;
 mod no_select_star;
@@ -102,10 +103,20 @@ pub const RULE_NAMES: [&str; 89] = [
 ];
 
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
-pub const IMPLEMENTED_RULE_NAMES: &[&str] = &["no-cluster", "no-drop-database", "no-select-star"];
+pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
+    "no-alter-column-type",
+    "no-cluster",
+    "no-drop-database",
+    "no-select-star",
+];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
 pub(crate) const REGISTRY: &[RuleDef] = &[
+    RuleDef {
+        name: "no-alter-column-type",
+        run: no_alter_column_type::run,
+        uses_parse_error: false,
+    },
     RuleDef {
         name: "no-cluster",
         run: no_cluster::run,
