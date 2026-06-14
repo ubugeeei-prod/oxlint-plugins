@@ -146,12 +146,11 @@ function createPlaywrightRule(ruleName) {
       messages: {
         unexpected: 'Unexpected Playwright pattern.',
       },
-      schema: [
-        {
-          type: 'object',
-          additionalProperties: true,
-        },
-      ],
+      // The core does not honor upstream option values (it has no options
+      // struct). Declare no schema so configured options surface as an error
+      // rather than being silently dropped. The `no-restricted-*` rules need
+      // real options support to function; tracked for implementation.
+      schema: [],
     },
     createOnce(context) {
       return {

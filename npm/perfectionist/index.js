@@ -64,9 +64,13 @@ function createLegacyConfig(options) {
   };
 }
 
-function recommendedRules(options) {
+function recommendedRules() {
+  // The core sorts with fixed defaults and does not honor option values yet, so
+  // configs enable rules at `error` without an (ignored) options payload — which
+  // would also violate the now-empty per-rule schema. The `recommended-*`
+  // variants therefore behave identically until the sort engine lands.
   return Object.fromEntries(
-    recommendedRuleNames.map((ruleName) => [`${PLUGIN_NAME}/${ruleName}`, ['error', options]]),
+    recommendedRuleNames.map((ruleName) => [`${PLUGIN_NAME}/${ruleName}`, 'error']),
   );
 }
 
@@ -84,12 +88,10 @@ function createPerfectionistRule(ruleName) {
       messages: {
         unexpected: 'Expected sorted order.',
       },
-      schema: [
-        {
-          type: 'object',
-          additionalProperties: true,
-        },
-      ],
+      // The core sorts with fixed defaults and does not honor upstream options
+      // yet, so declare no schema rather than silently ignore configured
+      // options. Tracked for implementation of the configurable sort engine.
+      schema: [],
     },
     createOnce(context) {
       return {
