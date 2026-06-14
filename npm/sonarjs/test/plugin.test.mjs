@@ -133,6 +133,7 @@ describe('sonarjs plugin shape', () => {
       'no-unthrown-error',
       'no-tab',
       'fixme-tag',
+      'todo-tag',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -173,6 +174,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-unthrown-error']).toBe('object');
     expect(typeof plugin.rules['no-tab']).toBe('object');
     expect(typeof plugin.rules['fixme-tag']).toBe('object');
+    expect(typeof plugin.rules['todo-tag']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -213,6 +215,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-unthrown-error']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-tab']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/fixme-tag']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/todo-tag']).toBe('error');
   });
 });
 
@@ -881,5 +884,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(fixme-tag)');
+  });
+
+  it('reports todo-tag for a line comment containing TODO through the adapter', () => {
+    const source = '// TODO do x';
+    const reports = runRule('todo-tag', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('todoTag');
+  });
+
+  it('reports todo-tag through the CLI', () => {
+    const source = '// TODO do x';
+    const result = runOxlint('todo-tag', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(todo-tag)');
   });
 });

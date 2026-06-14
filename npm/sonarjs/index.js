@@ -154,6 +154,9 @@ const messages = Object.freeze({
   'fixme-tag': {
     fixmeTag: 'Address this FIXME-tagged comment.',
   },
+  'todo-tag': {
+    todoTag: 'Complete the task tracked by this TODO-tagged comment.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -227,6 +230,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow tab characters in source files; tabs render inconsistently across editors and tools, so spaces should be used instead',
   'fixme-tag':
     'Disallow FIXME-tagged comments; a FIXME marks code that is known-broken and must be addressed before shipping',
+  'todo-tag':
+    'Disallow TODO-tagged comments; a TODO marks incomplete work that should be tracked and completed',
 });
 
 const ruleTypes = Object.freeze({
@@ -269,6 +274,7 @@ const ruleTypes = Object.freeze({
   'no-unthrown-error': 'problem',
   'no-tab': 'suggestion',
   'fixme-tag': 'suggestion',
+  'todo-tag': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -311,6 +317,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-unthrown-error': 'error',
   'no-tab': 'error',
   'fixme-tag': 'error',
+  'todo-tag': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

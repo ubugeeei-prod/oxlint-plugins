@@ -1860,3 +1860,40 @@ fn does_not_report_fixme_tag_for_source_with_no_comments() {
     let diagnostics = scan("fixme-tag", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_todo_tag_for_line_comment_containing_todo() {
+    let source = "// TODO do x";
+    let diagnostics = scan("todo-tag", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "todo-tag");
+    assert_eq!(diagnostics[0].message_id, "todoTag");
+}
+
+#[test]
+fn reports_todo_tag_for_block_comment_containing_todo() {
+    let source = "/* TODO: later */";
+    let diagnostics = scan("todo-tag", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_todo_tag_for_fixme_comment() {
+    let source = "// FIXME do x";
+    let diagnostics = scan("todo-tag", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_todo_tag_for_lowercase_todo() {
+    let source = "// todo";
+    let diagnostics = scan("todo-tag", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_todo_tag_for_source_with_no_comments() {
+    let source = "const a = 1;";
+    let diagnostics = scan("todo-tag", source);
+    assert!(diagnostics.is_empty());
+}
