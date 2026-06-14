@@ -29,6 +29,18 @@ const ruleMeta = Object.freeze({
         '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
     },
   },
+  'no-distinct-on-without-order-by': {
+    type: 'problem',
+    description:
+      'Disallow `SELECT DISTINCT ON (...)` without an `ORDER BY`; the surviving row in each group is otherwise non-deterministic',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDistinctOnWithoutOrderBy:
+        '`DISTINCT ON (...)` keeps an arbitrary row from each group unless `ORDER BY` is specified. Add an `ORDER BY` whose leading columns match the `DISTINCT ON` expressions.',
+    },
+  },
   'no-drop-database': {
     type: 'problem',
     description:
