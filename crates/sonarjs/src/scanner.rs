@@ -110,6 +110,9 @@ pub(crate) struct Scanner<'a> {
     /// Span-start offsets of string literals in excluded positions (import/export
     /// sources, JSX attribute values) that `no-duplicate-string` must skip.
     pub(crate) excluded_string_starts: SmallVec<[u32; 16]>,
+    /// (source-text, span) of every union/intersection type seen, for
+    /// `use-type-alias`, which flags composite types repeated identically.
+    pub(crate) composite_types: SmallVec<[(&'a str, Span); 16]>,
     /// Per-function frame stack for `cyclomatic-complexity`. One frame per open
     /// function/arrow scope: `(function_span, accumulated_complexity)`. Decision
     /// points inside nested functions update only the innermost frame; top-level
@@ -224,6 +227,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_same_line_conditional(&it.body);
         walk::walk_program(self, it);
         self.finalize_no_duplicate_string();
+        self.finalize_use_type_alias();
     }
 
     fn visit_block_statement(&mut self, it: &BlockStatement<'a>) {
@@ -434,12 +438,14 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_ts_union_type(&mut self, it: &TSUnionType<'a>) {
         self.check_no_duplicate_in_composite(&it.types);
         self.check_max_union_size(it);
+        self.record_composite_type(it.span);
         walk::walk_ts_union_type(self, it);
     }
 
     fn visit_ts_intersection_type(&mut self, it: &TSIntersectionType<'a>) {
         self.check_no_duplicate_in_composite(&it.types);
         self.check_no_useless_intersection(it);
+        self.record_composite_type(it.span);
         walk::walk_ts_intersection_type(self, it);
     }
 
