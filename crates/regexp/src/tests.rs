@@ -108,9 +108,62 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-lazy",
             "no-misleading-unicode-character",
             "no-standalone-backslash",
+            "no-potentially-useless-backreference",
             "strict",
         ]
     );
+}
+
+mod no_potentially_useless_backreference {
+    use super::*;
+
+    #[test]
+    fn reports_backreference_to_optional_group() {
+        assert_eq!(
+            rule_ids_for(
+                "const a = /(a)?\\1/;",
+                "no-potentially-useless-backreference"
+            )
+            .as_slice(),
+            &["potentiallyUselessBackreference"]
+        );
+        assert_eq!(
+            rule_ids_for(
+                "const a = /(a)*\\1/;",
+                "no-potentially-useless-backreference"
+            )
+            .as_slice(),
+            &["potentiallyUselessBackreference"]
+        );
+    }
+
+    #[test]
+    fn ignores_valid_backreferences() {
+        assert!(
+            rule_ids_for("const a = /()\\1/;", "no-potentially-useless-backreference").is_empty()
+        );
+        assert!(
+            rule_ids_for(
+                "const a = /(a)+\\1/;",
+                "no-potentially-useless-backreference"
+            )
+            .is_empty()
+        );
+        assert!(
+            rule_ids_for(
+                "const a = /(a+)b|\\1/;",
+                "no-potentially-useless-backreference"
+            )
+            .is_empty()
+        );
+        assert!(
+            rule_ids_for(
+                "const a = /(?=(a))\\1/;",
+                "no-potentially-useless-backreference"
+            )
+            .is_empty()
+        );
+    }
 }
 
 mod strict {

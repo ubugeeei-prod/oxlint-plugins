@@ -770,6 +770,19 @@ impl<'a> Scanner<'a> {
             self.report("strict", message_id, span);
         }
 
+        // `no-potentially-useless-backreference` (narrow form): only flag the
+        // syntactically clear case where group N is directly followed by `?`
+        // or `*` (so the group may not have matched at the point of the
+        // backref). Alternative-branch cases require reachability analysis and
+        // are deferred.
+        if analysis.has_potentially_useless_backreference {
+            self.report(
+                "no-potentially-useless-backreference",
+                "potentiallyUselessBackreference",
+                span,
+            );
+        }
+
         // `no-useless-flag` (narrow form): the `s` flag only affects the
         // matching of `.`; the `m` flag only affects `^` and `$`. If neither
         // syntax appears in the pattern, the flag is provably inert. Other

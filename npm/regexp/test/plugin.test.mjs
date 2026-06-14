@@ -187,6 +187,9 @@ const validCases = [
     'v-mode valid control escapes',
     'const re = /[[\\cA-\\cZ]--\\cX]/v;\n',
   ],
+  // no-potentially-useless-backreference
+  ['no-potentially-useless-backreference', 'group without quantifier', 'const re = /()\\1/;\n'],
+  ['no-potentially-useless-backreference', 'group with plus quantifier', 'const re = /(a)+\\1/;\n'],
   // strict
   ['strict', 'u-flag bypasses strict check', 'const re = /\\p{L}/u;\n'],
   ['strict', 'v-flag bypasses strict check', 'const re = /[A--B]/v;\n'],
@@ -511,6 +514,19 @@ const invalidCases = [
   ['no-standalone-backslash', '\\c at end of pattern', 'const re = /\\c/;\n', ['unexpected']],
   ['no-standalone-backslash', '\\c followed by digit', 'const re = /\\c1/;\n', ['unexpected']],
   ['no-standalone-backslash', '\\c inside class', 'const re = /[\\c]/;\n', ['unexpected']],
+  // no-potentially-useless-backreference
+  [
+    'no-potentially-useless-backreference',
+    'group with ? quantifier',
+    'const re = /(a)?\\1/;\n',
+    ['potentiallyUselessBackreference'],
+  ],
+  [
+    'no-potentially-useless-backreference',
+    'group with * quantifier',
+    'const re = /(a)*\\1/;\n',
+    ['potentiallyUselessBackreference'],
+  ],
   // strict
   ['strict', 'unescaped ] outside class', 'const re = /]/;\n', ['unescapedSourceCharacter']],
   ['strict', 'incomplete \\c escape', 'const re = /\\c;/;\n', ['invalidControlEscape']],

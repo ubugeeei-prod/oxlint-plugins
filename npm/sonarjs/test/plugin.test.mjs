@@ -121,6 +121,7 @@ describe('sonarjs plugin shape', () => {
       'for-in',
       'prefer-while',
       'no-small-switch',
+      'prefer-default-last',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -149,6 +150,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['for-in']).toBe('object');
     expect(typeof plugin.rules['prefer-while']).toBe('object');
     expect(typeof plugin.rules['no-small-switch']).toBe('object');
+    expect(typeof plugin.rules['prefer-default-last']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -177,6 +179,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/for-in']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-while']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-small-switch']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/prefer-default-last']).toBe('error');
   });
 });
 
@@ -641,5 +644,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-small-switch)');
+  });
+
+  it('reports prefer-default-last when default is not the last clause through the adapter', () => {
+    const source = 'switch (x) { default: break; case 1: break; }';
+    const reports = runRule('prefer-default-last', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('defaultLast');
+  });
+
+  it('reports prefer-default-last through the CLI', () => {
+    const source = 'switch (x) { default: break; case 1: break; }';
+    const result = runOxlint('prefer-default-last', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(prefer-default-last)');
   });
 });
