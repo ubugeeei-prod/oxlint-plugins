@@ -1461,26 +1461,34 @@ fn scan_table_column_count(
 ) {
     for index in 1..facts.lines.len() {
         let sep = &facts.lines[index];
-        if sep.in_fence || !looks_like_table_separator(sep.text) {
+        if sep.in_fence || !sep.text.contains('|') || !looks_like_table_separator(sep.text) {
             continue;
         }
         let header = &facts.lines[index - 1];
+        if header.in_fence || header.text.trim().is_empty() {
+            continue;
+        }
         let expected = count_table_cells(header.text);
+        // GFM only forms a table when the delimiter row's column count matches
+        // the header row's.
+        if count_table_cells(sep.text) != expected {
+            continue;
+        }
         let mut row_index = index + 1;
-        while row_index < facts.lines.len() && facts.lines[row_index].text.contains('|') {
+        while row_index < facts.lines.len() {
             let row = &facts.lines[row_index];
-            if row.text.trim().is_empty() {
+            if row.in_fence || row.text.trim().is_empty() || !row.text.contains('|') {
                 break;
             }
-            let actual = count_table_cells(row.text);
-            if actual > expected || (options.check_missing_table_cells && actual < expected) {
+            let starts = table_cell_starts(row.text);
+            let actual = starts.len();
+            if actual > expected {
+                // extraCells: from the first cell beyond the header count to the
+                // end of the row (`firstExtraCell.start` .. `lastCell.end`).
+                let cell_start = row.start + starts[expected];
                 diagnostics.push(Diagnostic {
                     rule_name: "table-column-count",
-                    message_id: if actual > expected {
-                        "extraCells"
-                    } else {
-                        "missingCells"
-                    },
+                    message_id: "extraCells",
                     data: DiagnosticData {
                         expected_cells: Some(expected as u32),
                         actual_cells: Some(actual as u32),
@@ -1489,7 +1497,28 @@ fn scan_table_column_count(
                     loc: line_index.loc_for_span(
                         source_text,
                         ByteSpan {
-                            start: row.start,
+                            start: cell_start,
+                            end: row.end,
+                        },
+                    ),
+                    fix: None,
+                });
+            } else if options.check_missing_table_cells && actual < expected {
+                // missingCells: the last column of the row (`lastCell.end - 1` ..
+                // row end).
+                let start = row.end.saturating_sub(1).max(row.start);
+                diagnostics.push(Diagnostic {
+                    rule_name: "table-column-count",
+                    message_id: "missingCells",
+                    data: DiagnosticData {
+                        expected_cells: Some(expected as u32),
+                        actual_cells: Some(actual as u32),
+                        ..DiagnosticData::default()
+                    },
+                    loc: line_index.loc_for_span(
+                        source_text,
+                        ByteSpan {
+                            start,
                             end: row.end,
                         },
                     ),
@@ -1780,18 +1809,65 @@ fn is_github_line_ref(value: &str) -> bool {
     rest.chars().next().is_some_and(|ch| ch.is_ascii_digit())
 }
 
+// A GFM delimiter row: cells separated by `|` (outer pipes optional), each cell
+// matching `:?-+:?` (at least one dash, optional alignment colons).
 fn looks_like_table_separator(line: &str) -> bool {
     let trimmed = line.trim();
-    trimmed.contains('|')
-        && trimmed
-            .chars()
-            .all(|ch| matches!(ch, '|' | '-' | ':' | ' ' | '\t'))
-        && trimmed.contains("---")
+    if trimmed.is_empty() {
+        return false;
+    }
+    let core = trimmed.strip_prefix('|').unwrap_or(trimmed);
+    let core = core.strip_suffix('|').unwrap_or(core);
+    let mut saw_cell = false;
+    for cell in core.split('|') {
+        saw_cell = true;
+        let bytes = cell.trim().as_bytes();
+        let mut index = 0;
+        if bytes.first() == Some(&b':') {
+            index += 1;
+        }
+        let dash_start = index;
+        while bytes.get(index) == Some(&b'-') {
+            index += 1;
+        }
+        if index == dash_start {
+            return false; // no dash
+        }
+        if bytes.get(index) == Some(&b':') {
+            index += 1;
+        }
+        if index != bytes.len() {
+            return false;
+        }
+    }
+    saw_cell
+}
+
+// Byte offset (relative to the line) of each table cell's start, matching mdast's
+// `tableCell.position.start`: with a leading pipe each pipe begins a cell (the
+// trailing pipe excepted); without one, the first cell begins at the first
+// non-whitespace character. The count of cells is the returned length.
+fn table_cell_starts(line: &str) -> SmallVec<[usize; 8]> {
+    let pipes: SmallVec<[usize; 8]> = line
+        .bytes()
+        .enumerate()
+        .filter_map(|(index, byte)| (byte == b'|').then_some(index))
+        .collect();
+    let first_nonws = line.find(|ch: char| !ch.is_whitespace());
+    let last_nonws = line.rfind(|ch: char| !ch.is_whitespace());
+    let has_leading = first_nonws.is_some_and(|index| line.as_bytes()[index] == b'|');
+    let has_trailing = last_nonws.is_some_and(|index| line.as_bytes()[index] == b'|');
+    let kept = pipes.len() - usize::from(has_trailing);
+    let mut starts = SmallVec::new();
+    if !has_leading {
+        starts.push(first_nonws.unwrap_or(0));
+    }
+    starts.extend(pipes.into_iter().take(kept));
+    starts
 }
 
 fn count_table_cells(line: &str) -> usize {
-    let trimmed = line.trim().trim_matches('|');
-    trimmed.split('|').count()
+    table_cell_starts(line).len()
 }
 
 fn utf16_offset(source_text: &str, byte_offset: usize) -> u32 {
