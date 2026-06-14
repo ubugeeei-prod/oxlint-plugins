@@ -53,6 +53,18 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-set-not-null': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER COLUMN ... SET NOT NULL` because it scans the whole table under ACCESS EXCLUSIVE',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noSetNotNull:
+        '`SET NOT NULL` scans the whole table for nulls under an `ACCESS EXCLUSIVE` lock. The safe pattern in production is to add a `CHECK (col IS NOT NULL) NOT VALID` constraint, `VALIDATE CONSTRAINT` separately, then `SET NOT NULL` (PG ≥ 12 reuses the validated CHECK and skips the scan).',
+    },
+  },
 });
 
 const implementedRuleNames = Object.freeze(implementedPostgresqlRuleNames());
