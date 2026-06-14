@@ -4,6 +4,7 @@
 use crate::RuleDef;
 
 mod consistent_as_for_column_alias;
+mod consistent_as_for_table_alias;
 mod consistent_between_over_and;
 mod consistent_create_index_concurrently;
 mod consistent_create_or_replace;
@@ -172,6 +173,7 @@ pub const RULE_NAMES: [&str; 89] = [
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "consistent-as-for-column-alias",
+    "consistent-as-for-table-alias",
     "consistent-between-over-and",
     "consistent-create-index-concurrently",
     "consistent-create-or-replace",
@@ -249,6 +251,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "consistent-as-for-column-alias",
         run: consistent_as_for_column_alias::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-as-for-table-alias",
+        run: consistent_as_for_table_alias::run,
         uses_parse_error: false,
     },
     RuleDef {
