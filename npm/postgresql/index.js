@@ -313,6 +313,18 @@ const ruleMeta = Object.freeze({
         "Avoid `CREATE RULE`. PostgreSQL's rule system has surprising semantics around row counts, RETURNING, and updatable views; use a trigger or an updatable view instead.",
     },
   },
+  'no-security-definer-without-search-path': {
+    type: 'problem',
+    description:
+      'Require `SECURITY DEFINER` functions to also `SET search_path = ...` to prevent search-path injection attacks',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingSearchPath:
+        "`SECURITY DEFINER` function must `SET search_path = ...` (e.g. `pg_catalog, pg_temp`) so an attacker-controlled schema in the caller's `search_path` cannot shadow built-in objects called from inside the function body.",
+    },
+  },
   'no-select-into': {
     type: 'suggestion',
     description:

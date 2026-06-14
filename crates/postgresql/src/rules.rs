@@ -27,6 +27,7 @@ mod no_order_by_ordinal;
 mod no_rename_column;
 mod no_rename_table;
 mod no_rule;
+mod no_security_definer_without_search_path;
 mod no_select_into;
 mod no_select_star;
 mod no_set_not_null;
@@ -165,6 +166,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-rename-column",
     "no-rename-table",
     "no-rule",
+    "no-security-definer-without-search-path",
     "no-select-into",
     "no-select-star",
     "no-set-not-null",
@@ -304,6 +306,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-rule",
         run: no_rule::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-security-definer-without-search-path",
+        run: no_security_definer_without_search_path::run,
         uses_parse_error: false,
     },
     RuleDef {
