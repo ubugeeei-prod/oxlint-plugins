@@ -90,7 +90,9 @@ function applyFixes(code, descriptors) {
 
 // Run a rule over one case and return both the formatted reports and the raw
 // descriptors (the latter needed to apply fixes for `output` assertions).
-export function runRule(ruleName, testCase) {
+// `dialect` is the effective upstream `language` ('markdown/commonmark' or
+// 'markdown/gfm') for the case; it selects the parse dialect.
+export function runRule(ruleName, testCase, dialect = 'markdown/gfm') {
   const rule = plugin.rules[ruleName];
   if (!rule) {
     throw new Error(`Unknown rule: ${ruleName}`);
@@ -111,8 +113,12 @@ export function runRule(ruleName, testCase) {
     sourceCode,
     filename: testCase.filename ?? 'file.md',
     // Mirror the upstream RuleTester case's languageOptions (e.g. `{ math: true }`),
-    // which the adapter maps onto the scan options.
-    languageOptions: testCase.languageOptions,
+    // plus the dialect selector (`commonmark`), which the adapter maps onto the
+    // scan options.
+    languageOptions: {
+      ...testCase.languageOptions,
+      commonmark: dialect === 'markdown/commonmark',
+    },
     report(descriptor) {
       descriptors.push(descriptor);
     },
