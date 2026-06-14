@@ -1,0 +1,85 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/context-in-play-function.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export const SecondStory = {\n  play: async (context) => {\n    await FirstStory.play(context)\n  }\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const SecondStory = {\n  play: async ({ ...context }) => {\n    await FirstStory.play({ ...context })\n  }\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const SecondStory = {\n  play: async ({ canvasElement, ...context }) => {\n    await FirstStory.play({ canvasElement, ...context })\n  }\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const SecondStory = Template.bind({})\nSecondStory.play = async (ctx) => {\n  await FirstStory.play(ctx)\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const SecondStory = Template.bind({})\nSecondStory.play = async ({ canvasElement, ...ctx }) => {\n  await FirstStory.play({ canvasElement, ...ctx })\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const SecondStory = {\n  play: async (ctx) => {\n    await FirstStory.play(ctx)\n  }\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const SecondStory = {\n  play: async ({ ...ctx }) => {\n    await FirstStory.play({ ...ctx })\n  }\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const SecondStory = {\n  play: async ({ canvasElement, ...ctx }) => {\n    await FirstStory.play({ canvasElement, ...ctx })\n  }\n}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const SecondStory = {\n  play: async ({ context, canvasElement }) => {\n    await FirstStory.play(context)\n  }\n}",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "export const SecondStory = {\n  play: async ({ canvasElement }) => {\n    await FirstStory.play({ canvasElement })\n  }\n}",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "passContextToPlayFunction"
+        }
+      ]
+    },
+    {
+      "code": "export const SecondStory = {\n  play: async () => {\n    await FirstStory.play()\n  }\n}",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "passContextToPlayFunction"
+        }
+      ]
+    },
+    {
+      "code": "export const SecondStory = Template.bind({})\nSecondStory.play = async ({ canvasElement }) => {\n  await FirstStory.play({ canvasElement })\n}",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "passContextToPlayFunction"
+        }
+      ]
+    },
+    {
+      "code": "export const SecondStory = Template.bind({})\nSecondStory.play = async () => {\n  await FirstStory.play()\n}",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "passContextToPlayFunction"
+        }
+      ]
+    }
+  ]
+}
