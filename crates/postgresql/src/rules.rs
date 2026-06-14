@@ -4,6 +4,7 @@
 use crate::RuleDef;
 
 mod no_cluster;
+mod no_create_role;
 mod no_distinct_on_without_order_by;
 mod no_drop_column;
 mod no_drop_database;
@@ -115,6 +116,7 @@ pub const RULE_NAMES: [&str; 89] = [
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-cluster",
+    "no-create-role",
     "no-distinct-on-without-order-by",
     "no-drop-column",
     "no-drop-database",
@@ -135,6 +137,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-cluster",
         run: no_cluster::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-create-role",
+        run: no_create_role::run,
         uses_parse_error: false,
     },
     RuleDef {

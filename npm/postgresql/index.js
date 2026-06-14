@@ -29,6 +29,18 @@ const ruleMeta = Object.freeze({
         '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
     },
   },
+  'no-create-role': {
+    type: 'suggestion',
+    description:
+      'Disallow `CREATE ROLE` / `CREATE USER` in application migrations; manage roles in a separate operator workflow',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCreateRole:
+        '`CREATE ROLE` / `CREATE USER` belongs in an operator-managed bootstrap (Terraform, Pulumi, a runbook), not in application migrations. Migration files run with whichever role the deploy uses and are not the right place to manage permissions.',
+    },
+  },
   'no-distinct-on-without-order-by': {
     type: 'problem',
     description:
