@@ -9,10 +9,6 @@
       "level": "off",
       "note": "False positives on URLs inside link/definition labels, HTML attributes, and existing autolinks."
     },
-    "no-missing-atx-heading-space": {
-      "level": "off",
-      "note": "PANICS on non-ASCII input (char-boundary slice at lib.rs position_for_offset); span/column divergences."
-    },
     "no-missing-label-refs": {
       "level": "off",
       "note": "Broad divergence in shortcut/collapsed reference resolution."

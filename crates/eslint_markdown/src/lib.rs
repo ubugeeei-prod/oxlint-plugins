@@ -10,6 +10,7 @@ use regex::Regex;
 const MDAST_RULES: &[&str] = &[
     "no-duplicate-headings",
     "no-empty-definitions",
+    "no-missing-atx-heading-space",
     "no-unused-definitions",
     "require-alt-text",
 ];
@@ -299,8 +300,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("no-invalid-label-refs") {
         scan_invalid_label_refs(source_text, &line_index, &facts, &mut diagnostics);
     }
-    if options.is_enabled("no-missing-atx-heading-space") {
-        scan_missing_atx_heading_space(source_text, &line_index, &facts, options, &mut diagnostics);
+    if options.is_enabled("no-missing-atx-heading-space")
+        && let Some(tree) = &mdast
+    {
+        scan_missing_atx_heading_space(source_text, &line_index, tree, options, &mut diagnostics);
     }
     if options.is_enabled("no-missing-label-refs") {
         scan_missing_label_refs(source_text, &line_index, &facts, options, &mut diagnostics);
@@ -1237,22 +1240,64 @@ fn scan_invalid_label_refs(
 fn scan_missing_atx_heading_space(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     options: &ScanOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    for line in &facts.lines {
-        if line.in_fence {
-            continue;
+    visit_mdast(tree, &mut |node| match node {
+        // Heading-like text that is NOT a heading (no space after the hashes)
+        // lands in a paragraph; flag the missing space "after" the hashes.
+        mdast::Node::Paragraph(_) => {
+            if let Some(span) = node_span(node) {
+                scan_atx_missing_space_after(source_text, line_index, span, diagnostics);
+            }
         }
-        let (indent, trimmed) = split_indent(line.text);
-        if indent > 3 {
-            continue;
+        // For a real heading, optionally flag a closing `#` sequence with no
+        // space "before" it.
+        mdast::Node::Heading(_) if options.check_closed_headings => {
+            if let Some(span) = node_span(node) {
+                scan_atx_missing_space_before(source_text, line_index, span, diagnostics);
+            }
         }
-        let hashes = trimmed.bytes().take_while(|byte| *byte == b'#').count();
+        _ => {}
+    });
+}
+
+// Upstream `leadingAtxHeadingHashPattern`: at the start of any line in the
+// paragraph, `#{1,6}` immediately followed by a non-(`#`/space/tab) character.
+fn scan_atx_missing_space_after(
+    source_text: &str,
+    line_index: &LineIndex,
+    span: ByteSpan,
+    diagnostics: &mut SmallVec<[Diagnostic; 32]>,
+) {
+    let text = source_text.get(span.start..span.end).unwrap_or("");
+    let bytes = text.as_bytes();
+    let mut line_start = 0;
+    loop {
+        // markdown-rs keeps a paragraph's leading indentation in the node span,
+        // whereas micromark strips it; skip leading whitespace so the hashes are
+        // tested at the line's first non-space (matching upstream's `^#{1,6}`).
+        let indent = bytes[line_start..]
+            .iter()
+            .take_while(|byte| matches!(**byte, b' ' | b'\t'))
+            .count();
+        let content = line_start + indent;
+        let hashes = bytes[content..]
+            .iter()
+            .take_while(|byte| **byte == b'#')
+            .count();
         if (1..=6).contains(&hashes) {
-            let after = trimmed.as_bytes().get(hashes).copied();
-            if !matches!(after, Some(b' ' | b'\t' | b'#')) {
+            let after = bytes.get(content + hashes).copied();
+            if !matches!(after, Some(b'#' | b' ' | b'\t')) {
+                let hash_start = span.start + content;
+                let hash_end = hash_start + hashes;
+                // Upstream end is `endOffset + 1`: one unit (one whole character)
+                // past the hashes.
+                let end = source_text[hash_end..]
+                    .chars()
+                    .next()
+                    .map_or(hash_end, |ch| hash_end + ch.len_utf8());
                 diagnostics.push(Diagnostic {
                     rule_name: "no-missing-atx-heading-space",
                     message_id: "missingSpace",
@@ -1263,41 +1308,91 @@ fn scan_missing_atx_heading_space(
                     loc: line_index.loc_for_span(
                         source_text,
                         ByteSpan {
-                            start: line.start + indent,
-                            end: line.start + indent + hashes + usize::from(after.is_some()),
+                            start: hash_start,
+                            end,
                         },
                     ),
                     fix: Some(DiagnosticFix {
-                        start: utf16_offset(source_text, line.start + indent + hashes),
-                        end: utf16_offset(source_text, line.start + indent + hashes),
+                        start: utf16_offset(source_text, hash_end),
+                        end: utf16_offset(source_text, hash_end),
                         replacement: CompactString::from(" "),
                     }),
                 });
             }
         }
-        if options.check_closed_headings && trimmed.ends_with('#') {
-            let before_last = trimmed.trim_end_matches('#').chars().last();
-            if before_last.is_some_and(|ch| !ch.is_whitespace()) {
-                let end = line.end;
-                let start =
-                    end.saturating_sub(trimmed.chars().rev().take_while(|ch| *ch == '#').count());
-                diagnostics.push(Diagnostic {
-                    rule_name: "no-missing-atx-heading-space",
-                    message_id: "missingSpace",
-                    data: DiagnosticData {
-                        position: Some(CompactString::from("before")),
-                        ..DiagnosticData::default()
-                    },
-                    loc: line_index.loc_for_span(source_text, ByteSpan { start, end }),
-                    fix: Some(DiagnosticFix {
-                        start: utf16_offset(source_text, start),
-                        end: utf16_offset(source_text, start),
-                        replacement: CompactString::from(" "),
-                    }),
-                });
-            }
+        match text[line_start..].find(['\n', '\r']) {
+            Some(rel) => line_start += rel + 1,
+            None => break,
         }
     }
+}
+
+// Upstream `trailingAtxHeadingHashPattern`: a trailing `#+` (optionally followed
+// by spaces) that is not preceded by a space (so the closing sequence touches
+// the content) and is not backslash-escaped.
+fn scan_atx_missing_space_before(
+    source_text: &str,
+    line_index: &LineIndex,
+    span: ByteSpan,
+    diagnostics: &mut SmallVec<[Diagnostic; 32]>,
+) {
+    let text = source_text.get(span.start..span.end).unwrap_or("");
+    let bytes = text.as_bytes();
+    let mut end = bytes.len();
+    while end > 0 && matches!(bytes[end - 1], b' ' | b'\t') {
+        end -= 1;
+    }
+    let mut hash_start = end;
+    while hash_start > 0 && bytes[hash_start - 1] == b'#' {
+        hash_start -= 1;
+    }
+    let mut hashes = end - hash_start;
+    if hashes == 0 || hash_start == 0 {
+        return;
+    }
+    // If an odd number of backslashes immediately precedes the run, its first `#`
+    // is escaped (literal) and not part of the closing sequence — drop it.
+    let backslashes = bytes[..hash_start]
+        .iter()
+        .rev()
+        .take_while(|byte| **byte == b'\\')
+        .count();
+    if backslashes % 2 == 1 {
+        hash_start += 1;
+        hashes -= 1;
+        if hashes == 0 {
+            return;
+        }
+    }
+    // A space/tab before the hashes means the closing sequence is well-formed.
+    if matches!(bytes[hash_start - 1], b' ' | b'\t') {
+        return;
+    }
+    let hash_start_abs = span.start + hash_start;
+    let report_start = source_text[..hash_start_abs]
+        .chars()
+        .next_back()
+        .map_or(hash_start_abs, |ch| hash_start_abs - ch.len_utf8());
+    diagnostics.push(Diagnostic {
+        rule_name: "no-missing-atx-heading-space",
+        message_id: "missingSpace",
+        data: DiagnosticData {
+            position: Some(CompactString::from("before")),
+            ..DiagnosticData::default()
+        },
+        loc: line_index.loc_for_span(
+            source_text,
+            ByteSpan {
+                start: report_start,
+                end: hash_start_abs + hashes,
+            },
+        ),
+        fix: Some(DiagnosticFix {
+            start: utf16_offset(source_text, hash_start_abs),
+            end: utf16_offset(source_text, hash_start_abs),
+            replacement: CompactString::from(" "),
+        }),
+    });
 }
 
 fn scan_missing_label_refs(
@@ -2190,12 +2285,23 @@ struct LineIndex {
 
 impl LineIndex {
     fn new(source_text: &str) -> Self {
+        // A line break is `\r\n`, `\r`, or `\n` (ESLint / mdast line counting).
         let mut line_starts = SmallVec::new();
         line_starts.push(0);
-        for (index, ch) in source_text.char_indices() {
-            if ch == '\n' {
-                line_starts.push(index + 1);
+        let bytes = source_text.as_bytes();
+        let mut index = 0;
+        while index < bytes.len() {
+            match bytes[index] {
+                b'\n' => line_starts.push(index + 1),
+                b'\r' => {
+                    if bytes.get(index + 1) == Some(&b'\n') {
+                        index += 1;
+                    }
+                    line_starts.push(index + 1);
+                }
+                _ => {}
             }
+            index += 1;
         }
         Self { line_starts }
     }
