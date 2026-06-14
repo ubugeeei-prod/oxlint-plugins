@@ -6,9 +6,9 @@ use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, BindingIdentifier, CatchClause, ConditionalExpression,
     DoWhileStatement, ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function,
     FunctionBody, IdentifierReference, IfStatement, LabeledStatement, LogicalExpression,
-    RegExpLiteral, StaticMemberExpression, SwitchCase, SwitchStatement, TSIntersectionType,
-    TSPropertySignature, TSUnionType, TemplateLiteral, UnaryExpression, WhileStatement,
-    YieldExpression,
+    NewExpression, RegExpLiteral, StaticMemberExpression, SwitchCase, SwitchStatement,
+    TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, UnaryExpression,
+    WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -208,6 +208,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_expression_statement(&mut self, it: &ExpressionStatement<'a>) {
         self.check_constructor_for_side_effects(it);
         walk::walk_expression_statement(self, it);
+    }
+
+    fn visit_new_expression(&mut self, it: &NewExpression<'a>) {
+        self.check_no_primitive_wrappers(it);
+        walk::walk_new_expression(self, it);
     }
 
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {

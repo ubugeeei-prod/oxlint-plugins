@@ -134,6 +134,10 @@ const messages = Object.freeze({
   'no-redundant-jump': {
     redundantJump: 'Remove this redundant jump; it does not change the control flow.',
   },
+  'no-primitive-wrappers': {
+    primitiveWrapper:
+      "Use the primitive type instead of the 'new Number/String/Boolean' wrapper object.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -195,6 +199,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow declaring a local variable solely to immediately return or throw it; return or throw the initializer expression directly',
   'no-redundant-jump':
     'Disallow jump statements (continue without label, return without value) that do not change the control flow because execution would proceed the same way anyway',
+  'no-primitive-wrappers':
+    "Disallow using 'new' with the primitive wrapper constructors Number, String, or Boolean, which create wrapper objects instead of primitive values",
 });
 
 const ruleTypes = Object.freeze({
@@ -231,6 +237,7 @@ const ruleTypes = Object.freeze({
   'no-redundant-optional': 'suggestion',
   'prefer-immediate-return': 'suggestion',
   'no-redundant-jump': 'suggestion',
+  'no-primitive-wrappers': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -267,6 +274,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-redundant-optional': 'error',
   'prefer-immediate-return': 'error',
   'no-redundant-jump': 'error',
+  'no-primitive-wrappers': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

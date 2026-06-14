@@ -127,6 +127,7 @@ describe('sonarjs plugin shape', () => {
       'no-redundant-optional',
       'prefer-immediate-return',
       'no-redundant-jump',
+      'no-primitive-wrappers',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -161,6 +162,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-redundant-optional']).toBe('object');
     expect(typeof plugin.rules['prefer-immediate-return']).toBe('object');
     expect(typeof plugin.rules['no-redundant-jump']).toBe('object');
+    expect(typeof plugin.rules['no-primitive-wrappers']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -195,6 +197,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-redundant-optional']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-immediate-return']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-redundant-jump']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-primitive-wrappers']).toBe('error');
   });
 });
 
@@ -761,5 +764,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-redundant-jump)');
+  });
+
+  it('reports no-primitive-wrappers for new Number(1) through the adapter', () => {
+    const source = 'const n = new Number(1);';
+    const reports = runRule('no-primitive-wrappers', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('primitiveWrapper');
+  });
+
+  it('reports no-primitive-wrappers through the CLI', () => {
+    const source = 'const n = new Number(1);';
+    const result = runOxlint('no-primitive-wrappers', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-primitive-wrappers)');
   });
 });
