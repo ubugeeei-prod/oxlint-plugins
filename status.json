@@ -4855,19 +4855,19 @@
       },
       {
         "name": "consistent-as-for-table-alias",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule consistent-as-for-table-alias."
+        "notes": "Token-based rule visiting RangeVar AST nodes; uses node.range[1] to locate the alias token."
       },
       {
         "name": "consistent-between-over-and",

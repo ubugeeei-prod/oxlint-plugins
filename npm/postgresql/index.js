@@ -37,6 +37,26 @@ const ruleMeta = Object.freeze({
       unexpectedAs: 'Omit `AS` before the column alias `{{alias}}`.',
     },
   },
+  'consistent-as-for-table-alias': {
+    type: 'layout',
+    description:
+      'Enforce a consistent stance on the `AS` keyword before table aliases in `FROM` clauses (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferAs: 'Use `AS` before the table alias `{{alias}}`.',
+      unexpectedAs: 'Omit `AS` before the table alias `{{alias}}`.',
+    },
+  },
   'consistent-between-over-and': {
     type: 'suggestion',
     description:
