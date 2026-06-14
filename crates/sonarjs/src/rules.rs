@@ -31,4 +31,5 @@ mod no_small_switch;
 mod no_useless_catch;
 mod non_existent_operator;
 mod prefer_default_last;
+mod prefer_immediate_return;
 mod prefer_while;

@@ -4,10 +4,10 @@
 
 use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, BindingIdentifier, CatchClause, ConditionalExpression,
-    ExpressionStatement, ForInStatement, ForStatement, Function, IdentifierReference, IfStatement,
-    LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression, SwitchCase,
-    SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral,
-    UnaryExpression, YieldExpression,
+    ExpressionStatement, ForInStatement, ForStatement, Function, FunctionBody,
+    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral,
+    StaticMemberExpression, SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature,
+    TSUnionType, TemplateLiteral, UnaryExpression, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -206,5 +206,10 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_catch_clause(&mut self, it: &CatchClause<'a>) {
         self.check_no_useless_catch(it);
         walk::walk_catch_clause(self, it);
+    }
+
+    fn visit_function_body(&mut self, it: &FunctionBody<'a>) {
+        self.check_prefer_immediate_return(it);
+        walk::walk_function_body(self, it);
     }
 }

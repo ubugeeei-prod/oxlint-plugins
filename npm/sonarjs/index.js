@@ -127,6 +127,10 @@ const messages = Object.freeze({
     redundantOptional:
       "Remove this redundant 'undefined' type; the '?' optional marker already allows it.",
   },
+  'prefer-immediate-return': {
+    preferImmediateReturn:
+      'Return or throw this expression directly instead of assigning it to a temporary variable first.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -184,6 +188,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow 'catch' clauses that only rethrow the caught exception; remove them and let the error propagate naturally",
   'no-redundant-optional':
     "Disallow optional property signatures whose type annotation already includes 'undefined'; the '?' marker already permits undefined",
+  'prefer-immediate-return':
+    'Disallow declaring a local variable solely to immediately return or throw it; return or throw the initializer expression directly',
 });
 
 const ruleTypes = Object.freeze({
@@ -218,6 +224,7 @@ const ruleTypes = Object.freeze({
   'no-inverted-boolean-check': 'suggestion',
   'no-useless-catch': 'suggestion',
   'no-redundant-optional': 'suggestion',
+  'prefer-immediate-return': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -252,6 +259,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-inverted-boolean-check': 'error',
   'no-useless-catch': 'error',
   'no-redundant-optional': 'error',
+  'prefer-immediate-return': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

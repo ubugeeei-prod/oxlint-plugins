@@ -34,6 +34,7 @@ const expectedRuleNames = [
   'no-inverted-boolean-check',
   'no-useless-catch',
   'no-redundant-optional',
+  'prefer-immediate-return',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1136,6 +1137,58 @@ describe('sonarjs native API', () => {
   it('does not report no-redundant-optional for optional property with null but not undefined', () => {
     const source = 'interface I { c?: string | null; }';
     const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports prefer-immediate-return for const declared then immediately returned', () => {
+    const source = 'function f() { const x = compute(); return x; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('prefer-immediate-return');
+    expect(diagnostics[0].messageId).toBe('preferImmediateReturn');
+  });
+
+  it('reports prefer-immediate-return for const declared then immediately thrown', () => {
+    const source = 'function f() { const e = new Error(); throw e; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('preferImmediateReturn');
+  });
+
+  it('reports prefer-immediate-return for arrow function with block body', () => {
+    const source = 'const g = () => { const x = 1; return x; };';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('preferImmediateReturn');
+  });
+
+  it('does not report prefer-immediate-return for a direct return (only one statement)', () => {
+    const source = 'function f() { return compute(); }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-immediate-return when a statement appears between decl and return', () => {
+    const source = 'function f() { const x = 1; doStuff(); return x; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-immediate-return when return uses a different identifier', () => {
+    const source = 'function f() { const x = 1; return y; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-immediate-return when return is not the bare identifier', () => {
+    const source = 'function f() { const x = 1; return x + 1; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-immediate-return when the declaration has two declarators', () => {
+    const source = 'function f() { const x = 1, y = 2; return x; }';
+    const diagnostics = scan('prefer-immediate-return', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

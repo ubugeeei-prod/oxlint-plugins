@@ -125,6 +125,7 @@ describe('sonarjs plugin shape', () => {
       'no-inverted-boolean-check',
       'no-useless-catch',
       'no-redundant-optional',
+      'prefer-immediate-return',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -157,6 +158,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-inverted-boolean-check']).toBe('object');
     expect(typeof plugin.rules['no-useless-catch']).toBe('object');
     expect(typeof plugin.rules['no-redundant-optional']).toBe('object');
+    expect(typeof plugin.rules['prefer-immediate-return']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -189,6 +191,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-inverted-boolean-check']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-catch']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-redundant-optional']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/prefer-immediate-return']).toBe('error');
   });
 });
 
@@ -721,5 +724,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-redundant-optional)');
+  });
+
+  it('reports prefer-immediate-return through the adapter', () => {
+    const source = 'function f() { const x = compute(); return x; }';
+    const reports = runRule('prefer-immediate-return', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('preferImmediateReturn');
+  });
+
+  it('reports prefer-immediate-return through the CLI', () => {
+    const source = 'function f() { const x = compute(); return x; }';
+    const result = runOxlint('prefer-immediate-return', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(prefer-immediate-return)');
   });
 });
