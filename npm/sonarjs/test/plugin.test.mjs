@@ -126,6 +126,11 @@ describe('sonarjs plugin shape', () => {
       'no-useless-catch',
       'no-redundant-optional',
       'prefer-immediate-return',
+      'no-redundant-jump',
+      'no-primitive-wrappers',
+      'no-skipped-tests',
+      'prefer-single-boolean-return',
+      'no-unthrown-error',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -159,6 +164,11 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-useless-catch']).toBe('object');
     expect(typeof plugin.rules['no-redundant-optional']).toBe('object');
     expect(typeof plugin.rules['prefer-immediate-return']).toBe('object');
+    expect(typeof plugin.rules['no-redundant-jump']).toBe('object');
+    expect(typeof plugin.rules['no-primitive-wrappers']).toBe('object');
+    expect(typeof plugin.rules['no-skipped-tests']).toBe('object');
+    expect(typeof plugin.rules['prefer-single-boolean-return']).toBe('object');
+    expect(typeof plugin.rules['no-unthrown-error']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -192,6 +202,11 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-catch']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-redundant-optional']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-immediate-return']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-redundant-jump']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-primitive-wrappers']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-skipped-tests']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/prefer-single-boolean-return']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-unthrown-error']).toBe('error');
   });
 });
 
@@ -741,5 +756,90 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(prefer-immediate-return)');
+  });
+
+  it('reports no-redundant-jump for trailing continue through the adapter', () => {
+    const source = 'for (;;) { foo(); continue; }';
+    const reports = runRule('no-redundant-jump', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('redundantJump');
+  });
+
+  it('reports no-redundant-jump through the CLI', () => {
+    const source = 'function f() { foo(); return; }';
+    const result = runOxlint('no-redundant-jump', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-redundant-jump)');
+  });
+
+  it('reports no-primitive-wrappers for new Number(1) through the adapter', () => {
+    const source = 'const n = new Number(1);';
+    const reports = runRule('no-primitive-wrappers', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('primitiveWrapper');
+  });
+
+  it('reports no-primitive-wrappers through the CLI', () => {
+    const source = 'const n = new Number(1);';
+    const result = runOxlint('no-primitive-wrappers', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-primitive-wrappers)');
+  });
+
+  it('reports no-skipped-tests for describe.skip through the adapter', () => {
+    const source = "describe.skip('x', () => {});";
+    const reports = runRule('no-skipped-tests', source, { filename: 'sample.js' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('skippedTest');
+  });
+
+  it('reports no-skipped-tests through the CLI', () => {
+    const source = "xit('x', () => {});";
+    const result = runOxlint('no-skipped-tests', source, 'sample.js');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-skipped-tests)');
+  });
+
+  it('reports prefer-single-boolean-return through the adapter', () => {
+    const source = 'function f() { if (c) { return true; } else { return false; } }';
+    const reports = runRule('prefer-single-boolean-return', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('preferSingleBooleanReturn');
+  });
+
+  it('reports prefer-single-boolean-return through the CLI', () => {
+    const source = 'function f() { if (c) { return true; } else { return false; } }';
+    const result = runOxlint('prefer-single-boolean-return', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(prefer-single-boolean-return)');
+  });
+
+  it('reports no-unthrown-error for new Error as a bare statement through the adapter', () => {
+    const source = "new Error('boom');";
+    const reports = runRule('no-unthrown-error', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unthrownError');
+  });
+
+  it('reports no-unthrown-error through the CLI', () => {
+    const source = "new TypeError('x');";
+    const result = runOxlint('no-unthrown-error', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-unthrown-error)');
   });
 });

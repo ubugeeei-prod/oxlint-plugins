@@ -1,0 +1,95 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/prefer-pascal-case.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export const Primary = {}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const __namedExportsOrder = ['Secondary', 'Primary']",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const _primary = {}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export const Primary: Story = {}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      import { storiesOf } from '@storybook/react'\n      export const links = []\n      storiesOf('Component', module)\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      export default {\n        title: 'MyComponent',\n        component: MyComponent,\n        includeStories: ['SimpleStory', 'ComplexStory'],\n        excludeStories: /.*Data$/,\n      };\n\n      export const simpleData = { foo: 1, bar: 'baz' };\n      export const complexData = { foo: 1, foobar: { bar: 'baz', baz: someData } };\n\n      export const SimpleStory = () => <MyComponent data={simpleData} />;\n      export const ComplexStory = () => <MyComponent data={complexData} />;\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      export default {\n        title: 'MyComponent',\n        component: MyComponent,\n        includeStories: [MyComponent.name],\n      };\n\n      export const SimpleStory = () => <MyComponent />;\n    ",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "export const primary = {}\nprimary.foo = 'bar'",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "primary"
+          },
+          "suggestions": [
+            {
+              "messageId": "convertToPascalCase",
+              "output": "export const Primary = {}\nPrimary.foo = 'bar'"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "export const primary: Story = {}\nprimary.foo = 'bar'",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "primary"
+          },
+          "suggestions": [
+            {
+              "messageId": "convertToPascalCase",
+              "output": "export const Primary: Story = {}\nPrimary.foo = 'bar'"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "export default {\n  title: 'MyComponent',\n  component: MyComponent,\n  includeStories: /.*Story$/,\n  excludeStories: /.*Data$/,\n};\nexport const simpleData = { foo: 1, bar: 'baz' };\nexport const complexData = { foo: 1, foobar: { bar: 'baz', baz: someData } };\nexport const simpleStory = () => <MyComponent data={simpleData} />;\nsimpleStory.args = {};",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "simpleStory"
+          },
+          "suggestions": [
+            {
+              "messageId": "convertToPascalCase",
+              "output": "export default {\n  title: 'MyComponent',\n  component: MyComponent,\n  includeStories: /.*Story$/,\n  excludeStories: /.*Data$/,\n};\nexport const simpleData = { foo: 1, bar: 'baz' };\nexport const complexData = { foo: 1, foobar: { bar: 'baz', baz: someData } };\nexport const SimpleStory = () => <MyComponent data={simpleData} />;\nSimpleStory.args = {};"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
