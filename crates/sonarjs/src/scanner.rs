@@ -13,8 +13,8 @@ use oxc_ast::ast::{
     LabeledStatement, LogicalExpression, NewExpression, Program, PropertyDefinition, RegExpLiteral,
     ReturnStatement, SimpleAssignmentTarget, Statement, StaticBlock, StaticMemberExpression,
     StringLiteral, SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature,
-    TSUnionType, TemplateLiteral, ThisExpression, TryStatement, UnaryExpression, UpdateExpression,
-    VariableDeclarator, WhileStatement, YieldExpression,
+    TSUnionType, TaggedTemplateExpression, TemplateLiteral, ThisExpression, TryStatement,
+    UnaryExpression, UpdateExpression, VariableDeclarator, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_semantic::{AstNodes, Scoping, SymbolId};
@@ -471,8 +471,14 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_inverted_assertion_arguments(it);
         self.check_no_alphabetical_sort(it);
         self.check_reduce_initial_value(it);
+        self.check_no_literal_call(it);
         self.record_iife_callee(&it.callee);
         walk::walk_call_expression(self, it);
+    }
+
+    fn visit_tagged_template_expression(&mut self, it: &TaggedTemplateExpression<'a>) {
+        self.check_no_literal_tagged_template(it);
+        walk::walk_tagged_template_expression(self, it);
     }
 
     fn visit_labeled_statement(&mut self, it: &LabeledStatement<'a>) {

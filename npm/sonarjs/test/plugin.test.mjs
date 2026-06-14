@@ -183,6 +183,7 @@ describe('sonarjs plugin shape', () => {
       'updated-loop-counter',
       'misplaced-loop-counter',
       'no-array-delete',
+      'no-literal-call',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -272,6 +273,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['updated-loop-counter']).toBe('object');
     expect(typeof plugin.rules['misplaced-loop-counter']).toBe('object');
     expect(typeof plugin.rules['no-array-delete']).toBe('object');
+    expect(typeof plugin.rules['no-literal-call']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -369,6 +371,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/updated-loop-counter']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/misplaced-loop-counter']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-array-delete']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-literal-call']).toBe('error');
   });
 });
 
@@ -2713,5 +2716,48 @@ describe('no-array-delete rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-array-delete)');
+  });
+});
+
+describe('no-literal-call rule', () => {
+  it('reports a boolean literal called as a function', () => {
+    const source = 'true();';
+    const reports = runRule('no-literal-call', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noLiteralCall');
+  });
+
+  it('reports a number literal called as a function', () => {
+    const source = '(42)();';
+    const reports = runRule('no-literal-call', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('reports a literal used as a tagged-template tag', () => {
+    const source = 'true`text`;';
+    const reports = runRule('no-literal-call', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noLiteralCall');
+  });
+
+  it('does not report an ordinary function call', () => {
+    const source = 'foo();';
+    const reports = runRule('no-literal-call', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a callable tagged template', () => {
+    const source = 'foo`text`;';
+    const reports = runRule('no-literal-call', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-literal-call through the CLI', () => {
+    const source = 'true();';
+    const result = runOxlint('no-literal-call', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-literal-call)');
   });
 });
