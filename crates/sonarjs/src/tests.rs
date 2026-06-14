@@ -4411,3 +4411,80 @@ fn does_not_report_no_equals_in_for_termination_empty_header() {
     let diagnostics = scan("no-equals-in-for-termination", "for (;;) {}");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_parameter_reassignment_plain_assign() {
+    let source = "function f(p) { p = 1; }";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-parameter-reassignment");
+    assert_eq!(diagnostics[0].message_id, "noParameterReassignment");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_parameter_reassignment_increment() {
+    let source = "function f(p) { p++; }";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noParameterReassignment");
+}
+
+#[test]
+fn reports_no_parameter_reassignment_arrow_compound() {
+    let source = "const g = (a) => { a += 2; };";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noParameterReassignment");
+}
+
+#[test]
+fn reports_no_parameter_reassignment_catch_clause() {
+    let source = "try {} catch (e) { e = null; }";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noParameterReassignment");
+}
+
+#[test]
+fn reports_no_parameter_reassignment_for_of_variable() {
+    let source = "for (const x of xs) { x = 0; }";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noParameterReassignment");
+}
+
+#[test]
+fn does_not_report_no_parameter_reassignment_property_write() {
+    let source = "function f(p) { p.x = 1; }";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_parameter_reassignment_local_variable() {
+    let source = "function f(p) { let q = p; q = 2; }";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_parameter_reassignment_module_scope_var() {
+    let source = "let x = 1; x = 2;";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_parameter_reassignment_no_reassignment() {
+    let source = "function f(p) { return p; }";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_parameter_reassignment_classic_for_counter() {
+    let source = "function f() { for (let i = 0; i < 3; i++) { i = 2; } }";
+    let diagnostics = scan("no-parameter-reassignment", source);
+    assert!(diagnostics.is_empty());
+}
