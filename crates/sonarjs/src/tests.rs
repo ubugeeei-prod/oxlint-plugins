@@ -5265,3 +5265,54 @@ fn no_useless_intersection_does_not_report_union_with_any() {
     let diagnostics = scan("no-useless-intersection", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn use_type_alias_reports_repeated_union() {
+    // "string | number" appears 3× (default threshold) → one report on the first
+    let source = "let a: string | number;\nlet b: string | number;\nlet c: string | number;";
+    let diagnostics = scan("use-type-alias", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "use-type-alias");
+    assert_eq!(diagnostics[0].message_id, "useTypeAlias");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn use_type_alias_reports_repeated_intersection() {
+    let source = "let a: A & B;\nlet b: A & B;\nlet c: A & B;";
+    let diagnostics = scan("use-type-alias", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "useTypeAlias");
+}
+
+#[test]
+fn use_type_alias_does_not_report_below_threshold() {
+    // "string | number" appears only twice; default threshold 3 → no report
+    let source = "let a: string | number;\nlet b: string | number;";
+    let diagnostics = scan("use-type-alias", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn use_type_alias_does_not_report_distinct_unions() {
+    // Each distinct union appears once → no report
+    let source = "let a: string | number;\nlet b: boolean | null;\nlet c: number | boolean;";
+    let diagnostics = scan("use-type-alias", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn use_type_alias_is_order_sensitive() {
+    // "string | number" and "number | string" are distinct as written text
+    let source = "let a: string | number;\nlet b: number | string;\nlet c: string | number;";
+    let diagnostics = scan("use-type-alias", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn use_type_alias_reports_each_distinct_repeated_type() {
+    let source = "let a: string | number;\nlet b: string | number;\nlet c: string | number;\n\
+let d: A & B;\nlet e: A & B;\nlet f: A & B;";
+    let diagnostics = scan("use-type-alias", source);
+    assert_eq!(diagnostics.len(), 2);
+}

@@ -190,6 +190,7 @@ describe('sonarjs plugin shape', () => {
       'no-code-after-done',
       'function-inside-loop',
       'no-useless-intersection',
+      'use-type-alias',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -286,6 +287,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-code-after-done']).toBe('object');
     expect(typeof plugin.rules['function-inside-loop']).toBe('object');
     expect(typeof plugin.rules['no-useless-intersection']).toBe('object');
+    expect(typeof plugin.rules['use-type-alias']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -390,6 +392,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-code-after-done']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/function-inside-loop']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-intersection']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/use-type-alias']).toBe('error');
   });
 });
 
@@ -562,6 +565,43 @@ describe('no-useless-intersection rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-useless-intersection)');
+  });
+});
+
+describe('use-type-alias rule', () => {
+  it('reports a union type repeated three times', () => {
+    const src = 'let a: string | number;\nlet b: string | number;\nlet c: string | number;';
+    const reports = runRule('use-type-alias', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useTypeAlias');
+  });
+
+  it('reports an intersection type repeated three times', () => {
+    const src = 'let a: A & B;\nlet b: A & B;\nlet c: A & B;';
+    const reports = runRule('use-type-alias', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useTypeAlias');
+  });
+
+  it('does not report a union repeated only twice', () => {
+    const src = 'let a: string | number;\nlet b: string | number;';
+    const reports = runRule('use-type-alias', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report distinct unions each used once', () => {
+    const src = 'let a: string | number;\nlet b: boolean | null;\nlet c: number | boolean;';
+    const reports = runRule('use-type-alias', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports use-type-alias through the CLI', () => {
+    const src = 'let a: string | number;\nlet b: string | number;\nlet c: string | number;';
+    const result = runOxlint('use-type-alias', src, 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(use-type-alias)');
   });
 });
 

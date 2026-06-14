@@ -350,6 +350,9 @@ const messages = Object.freeze({
     uselessIntersection:
       'Remove this "any", "never", or "unknown" member; it makes the whole intersection type pointless.',
   },
+  'use-type-alias': {
+    useTypeAlias: 'Replace this repeated union/intersection type with a named type alias.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -540,6 +543,8 @@ const ruleDescriptions = Object.freeze({
     'Flag functions (declarations, expressions, or arrow functions) defined inside a loop, since such closures are error-prone and inefficient; immediately invoked function expressions are exempt',
   'no-useless-intersection':
     'Disallow a TypeScript intersection type that contains an "any", "never", or "unknown" keyword member, which collapses or is absorbed by the intersection and makes it pointless (syntactic keyword cases only; type-aware subtype/supertype redundancy is out of scope)',
+  'use-type-alias':
+    'Require extracting a union or intersection type into a named type alias when the same composite type (compared by exact source text, order-sensitive) appears at least 3 times in a file; the first occurrence of each repeated type is reported',
 });
 
 const ruleTypes = Object.freeze({
@@ -639,6 +644,7 @@ const ruleTypes = Object.freeze({
   'no-code-after-done': 'suggestion',
   'function-inside-loop': 'suggestion',
   'no-useless-intersection': 'suggestion',
+  'use-type-alias': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -738,6 +744,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-code-after-done': 'error',
   'function-inside-loop': 'error',
   'no-useless-intersection': 'error',
+  'use-type-alias': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

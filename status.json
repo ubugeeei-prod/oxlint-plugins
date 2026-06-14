@@ -14190,19 +14190,19 @@
       },
       {
         "name": "use-type-alias",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule use-type-alias (Sonar key S4323). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S4323. Flags a union or intersection type whose exact source text (order-sensitive) is repeated at least 3 times in a file; the first occurrence of each repeated composite type is reported, suggesting extraction into a named type alias. Composite types are collected during the AST walk in visit_ts_union_type/visit_ts_intersection_type and reported in finalize_use_type_alias after walk_program, mirroring no-duplicate-string (two-phase: count by linear SmallVec, then report). Threshold of 3 is a fixed default (not configurable). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "useless-string-operation",
