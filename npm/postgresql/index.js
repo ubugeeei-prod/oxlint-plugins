@@ -89,6 +89,17 @@ const ruleMeta = Object.freeze({
         '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
     },
   },
+  'require-limit': {
+    type: 'suggestion',
+    description: 'Require LIMIT clause in SELECT statements',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingLimit:
+        'SELECT statement should include a LIMIT clause to prevent excessive data retrieval',
+    },
+  },
 });
 
 const implementedRuleNames = Object.freeze(implementedPostgresqlRuleNames());
