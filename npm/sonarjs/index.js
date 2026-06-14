@@ -131,6 +131,9 @@ const messages = Object.freeze({
     preferImmediateReturn:
       'Return or throw this expression directly instead of assigning it to a temporary variable first.',
   },
+  'no-redundant-jump': {
+    redundantJump: 'Remove this redundant jump; it does not change the control flow.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -190,6 +193,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow optional property signatures whose type annotation already includes 'undefined'; the '?' marker already permits undefined",
   'prefer-immediate-return':
     'Disallow declaring a local variable solely to immediately return or throw it; return or throw the initializer expression directly',
+  'no-redundant-jump':
+    'Disallow jump statements (continue without label, return without value) that do not change the control flow because execution would proceed the same way anyway',
 });
 
 const ruleTypes = Object.freeze({
@@ -225,6 +230,7 @@ const ruleTypes = Object.freeze({
   'no-useless-catch': 'suggestion',
   'no-redundant-optional': 'suggestion',
   'prefer-immediate-return': 'suggestion',
+  'no-redundant-jump': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -260,6 +266,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-useless-catch': 'error',
   'no-redundant-optional': 'error',
   'prefer-immediate-return': 'error',
+  'no-redundant-jump': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -4,10 +4,11 @@
 
 use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, BindingIdentifier, CatchClause, ConditionalExpression,
-    ExpressionStatement, ForInStatement, ForStatement, Function, FunctionBody, IdentifierReference,
-    IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression,
-    SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType,
-    TemplateLiteral, UnaryExpression, YieldExpression,
+    DoWhileStatement, ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function,
+    FunctionBody, IdentifierReference, IfStatement, LabeledStatement, LogicalExpression,
+    RegExpLiteral, StaticMemberExpression, SwitchCase, SwitchStatement, TSIntersectionType,
+    TSPropertySignature, TSUnionType, TemplateLiteral, UnaryExpression, WhileStatement,
+    YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -131,12 +132,29 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_for_in_statement(&mut self, it: &ForInStatement<'a>) {
         self.check_for_in(it);
+        self.check_redundant_continue(&it.body);
         walk::walk_for_in_statement(self, it);
     }
 
     fn visit_for_statement(&mut self, it: &ForStatement<'a>) {
         self.check_prefer_while(it);
+        self.check_redundant_continue(&it.body);
         walk::walk_for_statement(self, it);
+    }
+
+    fn visit_while_statement(&mut self, it: &WhileStatement<'a>) {
+        self.check_redundant_continue(&it.body);
+        walk::walk_while_statement(self, it);
+    }
+
+    fn visit_do_while_statement(&mut self, it: &DoWhileStatement<'a>) {
+        self.check_redundant_continue(&it.body);
+        walk::walk_do_while_statement(self, it);
+    }
+
+    fn visit_for_of_statement(&mut self, it: &ForOfStatement<'a>) {
+        self.check_redundant_continue(&it.body);
+        walk::walk_for_of_statement(self, it);
     }
 
     fn visit_binding_identifier(&mut self, it: &BindingIdentifier<'a>) {
@@ -210,6 +228,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_function_body(&mut self, it: &FunctionBody<'a>) {
         self.check_prefer_immediate_return(it);
+        self.check_redundant_return(it);
         walk::walk_function_body(self, it);
     }
 }

@@ -1463,3 +1463,88 @@ fn does_not_report_prefer_immediate_return_when_declarator_has_no_init() {
     let diagnostics = scan("prefer-immediate-return", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_for_loop() {
+    let source = "for (;;) { foo(); continue; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-redundant-jump");
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_while_loop() {
+    let source = "while (x) { foo(); continue; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_do_while_loop() {
+    let source = "do { foo(); continue; } while (x);";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_for_of_loop() {
+    let source = "for (const a of b) { foo(); continue; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_continue_in_for_in_loop() {
+    let source = "for (k in o) { foo(); continue; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_return_in_function() {
+    let source = "function f() { foo(); return; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn reports_redundant_jump_for_trailing_return_in_arrow_function() {
+    let source = "const g = () => { foo(); return; };";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantJump");
+}
+
+#[test]
+fn does_not_report_redundant_jump_when_continue_is_not_last() {
+    let source = "for (;;) { if (x) continue; foo(); }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_redundant_jump_for_return_with_value() {
+    let source = "function f() { foo(); return x; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_redundant_jump_for_labeled_continue() {
+    let source = "outer: for (;;) { foo(); continue outer; }";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_redundant_jump_for_non_block_loop_body() {
+    let source = "while (x) foo();";
+    let diagnostics = scan("no-redundant-jump", source);
+    assert!(diagnostics.is_empty());
+}
