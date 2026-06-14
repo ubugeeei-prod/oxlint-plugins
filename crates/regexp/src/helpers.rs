@@ -2709,6 +2709,55 @@ pub(crate) fn has_unnecessary_general_category_key(pattern: &str) -> bool {
     false
 }
 
+/// Narrow-form support for `no-unused-capturing-group`.
+///
+/// Returns `true` when `pattern` contains at least one capturing group (named
+/// or anonymous) AND contains no in-pattern backreference (`\1`..`\9` or
+/// `\k<name>`). Such a pattern's capturing groups can only ever be observed
+/// through the match *result*; in a context that never reads the result (e.g.
+/// `RegExp#test`, which returns only a boolean) every capturing group is
+/// provably unused.
+///
+/// The backreference exclusion is required for soundness: a group referenced
+/// by a backref inside the same pattern is "used" even when the result is
+/// discarded.
+pub(crate) fn pattern_has_capturing_group_and_no_backreference(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    let mut has_capturing = false;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => {
+                // `\1`..`\9` numbered backreference.
+                if matches!(bytes.get(index + 1), Some(b'1'..=b'9')) {
+                    return false;
+                }
+                // `\k<name>` named backreference.
+                if bytes.get(index + 1) == Some(&b'k') && bytes.get(index + 2) == Some(&b'<') {
+                    return false;
+                }
+                index = skip_escape(bytes, index);
+            }
+            b'[' => {
+                if let Some(close) = find_class_end(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            b'(' => {
+                let prefix = group_prefix(bytes, index);
+                if prefix.capturing {
+                    has_capturing = true;
+                }
+                index = prefix.next;
+            }
+            _ => index += 1,
+        }
+    }
+    has_capturing
+}
+
 pub(crate) fn mention_char(ch: char) -> CompactString {
     let mut text = CompactString::new("U+");
     let code = ch as u32;

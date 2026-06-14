@@ -231,6 +231,12 @@ const validCases = [
   ['unicode-property', 'long keyless property', 'const re = /\\p{Letter}/u;\n'],
   ['unicode-property', 'script key', 'const re = /\\p{Script=Greek}/u;\n'],
   ['unicode-property', 'binary property', 'const re = /\\p{ASCII}/u;\n'],
+  // no-unused-capturing-group
+  ['no-unused-capturing-group', 'non-capturing in test', '/(?:\\d{4})/.test(foo);\n'],
+  ['no-unused-capturing-group', 'backreference uses group', '/(\\d)\\1/.test(foo);\n'],
+  ['no-unused-capturing-group', 'variable receiver', 'const re = /(\\d)/;\nre.test(foo);\n'],
+  ['no-unused-capturing-group', 'replace reads $1', "'a'.replace(/(\\d)/, '$1');\n"],
+  ['no-unused-capturing-group', 'match indexed', "const m = 'a'.match(/(\\d)/);\nm[1];\n"],
 ];
 
 const invalidCases = [
@@ -690,6 +696,19 @@ const invalidCases = [
     ['unnecessaryGc'],
   ],
   ['unicode-property', 'negated gc key', 'const re = /\\P{gc=L}/u;\n', ['unnecessaryGc']],
+  // no-unused-capturing-group
+  [
+    'no-unused-capturing-group',
+    'capturing group in test literal',
+    "/(\\d{4})-(\\d{2})-(\\d{2})/.test('2000-12-31');\n",
+    ['unusedCapturingGroup'],
+  ],
+  [
+    'no-unused-capturing-group',
+    'named capturing group in test literal',
+    '/(?<y>\\d{4})/.test(foo);\n',
+    ['unusedCapturingGroup'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

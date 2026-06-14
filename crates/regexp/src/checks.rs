@@ -19,8 +19,9 @@ use crate::helpers::{
     has_mergeable_quantifier_concatenation, has_preferable_set_operation,
     has_simplifiable_set_operation, has_standalone_backslash, has_unnecessary_general_category_key,
     has_useless_set_operand, has_useless_word_boundary, mention_char,
-    pattern_ends_with_lazy_quantifier, pattern_has_empty_string_literal,
-    pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags, string_literal_value_with_span,
+    pattern_ends_with_lazy_quantifier, pattern_has_capturing_group_and_no_backreference,
+    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags,
+    string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -266,6 +267,43 @@ impl<'a> Scanner<'a> {
         self.check_prefer_named_replacement(call);
         self.check_no_useless_dollar_replacements(call);
         self.check_prefer_escape_replacement_dollar_char(call);
+        self.check_no_unused_capturing_group(call);
+    }
+
+    /// `no-unused-capturing-group` (narrow form): a capturing group whose
+    /// capture is provably never read. The only fully-sound, literal-only case
+    /// handled here is a direct `RegExp#test` call on a regex literal:
+    /// `/(...)/.test(x)`. `RegExp.prototype.test` returns only a boolean, so
+    /// its capturing groups can never be observed.
+    ///
+    /// Soundness constraints:
+    /// * The receiver must be a *regex literal* (not a variable that might be
+    ///   reused elsewhere, e.g. in a `.replace` that reads `$1`).
+    /// * The method must be exactly `test`.
+    /// * The pattern must contain at least one capturing group and no in-pattern
+    ///   backreference (`\1`/`\k<name>`) — a backref counts as a use.
+    ///
+    /// Broader cases (`.search` argument, `.match` whose array is unindexed,
+    /// `.replace` with no `$N`, variable-held literals) require data-flow
+    /// analysis and are deferred to stay valid-sound against the upstream suite.
+    fn check_no_unused_capturing_group(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        if member.property.name != "test" {
+            return;
+        }
+        let Expression::RegExpLiteral(literal) = member.object.get_inner_expression() else {
+            return;
+        };
+        let pattern = literal.regex.pattern.text.as_str();
+        if pattern_has_capturing_group_and_no_backreference(pattern) {
+            self.report(
+                "no-unused-capturing-group",
+                "unusedCapturingGroup",
+                literal.span,
+            );
+        }
     }
 
     /// `prefer-escape-replacement-dollar-char`: in JS replacement strings a

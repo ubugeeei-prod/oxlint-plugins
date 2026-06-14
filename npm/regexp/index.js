@@ -304,6 +304,10 @@ const messages = Object.freeze({
     unnecessaryGc:
       'Unnecessary explicit General_Category key in a Unicode property escape; drop the redundant `gc=` / `General_Category=` prefix.',
   },
+  'no-unused-capturing-group': {
+    unusedCapturingGroup: 'Capturing group is defined but never used.',
+    makeNonCapturing: 'Making this a non-capturing group.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -424,6 +428,8 @@ const ruleDescriptions = Object.freeze({
     'simplify unnecessarily complex set operations (narrow: v-mode `&&` intersection with a negated nested-class operand)',
   'unicode-property':
     'enforce consistent naming of unicode properties (narrow: flag a redundant explicit `gc=` / `General_Category=` key)',
+  'no-unused-capturing-group':
+    'disallow unused capturing group (narrow: a capturing group in a regex literal used only as `/(...)/.test(x)`)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -502,6 +508,7 @@ const ruleTypes = Object.freeze({
   'prefer-set-operation': 'suggestion',
   'simplify-set-operations': 'suggestion',
   'unicode-property': 'suggestion',
+  'no-unused-capturing-group': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -528,6 +535,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-useless-set-operand': 'error',
   'prefer-set-operation': 'error',
   'simplify-set-operations': 'error',
+  'no-unused-capturing-group': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());
