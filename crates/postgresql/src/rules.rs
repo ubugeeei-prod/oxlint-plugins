@@ -4,6 +4,7 @@
 use crate::RuleDef;
 
 mod no_cluster;
+mod no_drop_database;
 mod no_select_star;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
@@ -101,13 +102,18 @@ pub const RULE_NAMES: [&str; 89] = [
 ];
 
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
-pub const IMPLEMENTED_RULE_NAMES: &[&str] = &["no-cluster", "no-select-star"];
+pub const IMPLEMENTED_RULE_NAMES: &[&str] = &["no-cluster", "no-drop-database", "no-select-star"];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
 pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-cluster",
         run: no_cluster::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-drop-database",
+        run: no_drop_database::run,
         uses_parse_error: false,
     },
     RuleDef {
