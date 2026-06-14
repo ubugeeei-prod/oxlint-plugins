@@ -106,13 +106,17 @@ describe('eslint-markdown upstream parity', () => {
     const ruleName = file.replace(/\.json$/, '');
     const fixture = JSON.parse(readFileSync(join(FIXTURES_DIR, file), 'utf8'));
     const quarantined = levelFor(ruleName) === 'off';
+    // The dialect for a case is its own `language` override, falling back to the
+    // suite-level language captured at sync time.
+    const suiteLanguage = fixture.__generated?.language ?? 'markdown/gfm';
+    const dialectOf = (testCase) => testCase.language ?? suiteLanguage;
 
     describe(ruleName, () => {
       describe('valid', () => {
         fixture.valid.forEach((testCase, index) => {
           const run = quarantined || !isReplayable(testCase) ? it.skip : it;
           run(label(testCase, index), () => {
-            expect(runRule(ruleName, testCase).reports).toEqual([]);
+            expect(runRule(ruleName, testCase, dialectOf(testCase)).reports).toEqual([]);
           });
         });
       });
@@ -124,7 +128,7 @@ describe('eslint-markdown upstream parity', () => {
             return;
           }
           it(label(testCase, index), () => {
-            const { reports, output } = runRule(ruleName, testCase);
+            const { reports, output } = runRule(ruleName, testCase, dialectOf(testCase));
             assertErrors(reports, testCase.errors);
             if ('output' in testCase) {
               const expectedOutput = testCase.output === null ? testCase.code : testCase.output;

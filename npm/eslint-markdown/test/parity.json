@@ -1,21 +1,4 @@
 {
   "_doc": "Per-rule upstream-parity enforcement level for the synced @eslint/markdown fixtures (see test/upstream.test.mjs). Levels: 'full' (the default for any rule not listed here) = exact parity is enforced for every valid and invalid case — each reported error's messageId, data, and 1-indexed location must match upstream, and cases declaring `output` must autofix to the same text. 'off' = quarantined; the Rust core still diverges from upstream for this rule, so its valid and invalid cases are registered as skipped (coverage stays visible) until the divergence is fixed and the rule is promoted to 'full'. The end state is zero 'off' entries. Each quarantined rule carries a `note` summarising the known divergence to guide the follow-up fix PR. Regenerate fixtures with `pnpm run port:tests:eslint-markdown`.",
-  "rules": {
-    "heading-increment": {
-      "level": "off",
-      "note": "Diverges on headings inside HTML blocks / blockquotes and on TOML (+++) and JSON frontmatter title detection."
-    },
-    "no-missing-link-fragments": {
-      "level": "off",
-      "note": "Broad divergence in heading-anchor slugging and fragment matching."
-    },
-    "no-multiple-h1": {
-      "level": "off",
-      "note": "Frontmatter-title (YAML/TOML/JSON) interaction with the first H1 differs from upstream."
-    },
-    "no-reference-like-urls": {
-      "level": "off",
-      "note": "Broad divergence detecting inline URLs that collide with definition identifiers."
-    }
-  }
+  "rules": {}
 }
