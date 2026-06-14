@@ -1088,6 +1088,46 @@ const ruleMeta = Object.freeze({
         '`CREATE TABLE` should specify a schema (e.g. `audit.events`). Without one, the target depends on `search_path` and may land in an unintended schema. The rule is off by default in `recommended` because many projects intentionally use the `public` schema.',
     },
   },
+  'require-table-columns': {
+    type: 'suggestion',
+    description:
+      'Require that every `CREATE TABLE` contains a configurable set of columns, with per-table-name pattern overrides and an optional exclusion pattern',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          columns: {
+            type: 'array',
+            items: { type: 'string' },
+          },
+          overrides: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                pattern: { type: 'string' },
+                columns: {
+                  type: 'array',
+                  items: { type: 'string' },
+                },
+              },
+              required: ['pattern', 'columns'],
+              additionalProperties: false,
+            },
+          },
+          exclude: { type: 'string' },
+        },
+        required: ['columns'],
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingColumn:
+        '`CREATE TABLE {{table}}` is missing required column `{{missing}}`. {{rationale}}',
+    },
+  },
   'require-trailing-semicolon': {
     type: 'layout',
     description: 'Require a trailing `;` at the end of the SQL file',
