@@ -375,26 +375,37 @@ function vitestStub(): string {
   ].join('\n');
 }
 
-// Reimplementation of `ts-dedent` (the submodule does not install it): concatenate
-// the tagged-template parts, then remove the minimum leading whitespace shared by
-// all non-empty lines and trim surrounding blank lines.
+// Faithful reimplementation of `ts-dedent` v2 (the submodule does not install it).
+// Mirrors the upstream algorithm EXACTLY — crucially it does NOT `.trim()`: it
+// strips only the trailing `\n<indent>` before the closing backtick and a single
+// leading `\n`, so a deliberate trailing blank line (e.g. a removal-fix `output`
+// that ends in a newline) is preserved. A full trim corrupts such expected outputs.
+// The storybook test files use `dedent` with no `${}` interpolations, but the
+// general (values) path is reproduced for fidelity. Uses the COOKED template
+// strings (`Array.from(templ)`), like ts-dedent.
 function dedentStub(): string {
   return [
-    'function dedent(strings, ...values) {',
-    '  const raw = typeof strings === "string" ? [strings] : (strings.raw || strings);',
-    '  let result = "";',
-    '  for (let i = 0; i < raw.length; i++) {',
-    '    result += raw[i];',
-    '    if (i < values.length) result += String(values[i]);',
+    'function dedent(templ, ...values) {',
+    '  let strings = Array.from(typeof templ === "string" ? [templ] : templ);',
+    '  // 1. Remove the trailing newline + indentation before the closing delimiter.',
+    '  strings[strings.length - 1] = strings[strings.length - 1].replace(/\\r?\\n([\\t ]*)$/, "");',
+    '  // 2. Collect indentation widths (a non-space char right after \\n counts as 0).',
+    '  const indentLengths = strings.reduce((arr, str) => {',
+    '    const matches = str.match(/\\n([\\t ]+|(?!\\s).)/g);',
+    '    if (matches) return arr.concat(matches.map((m) => { const x = m.match(/[\\t ]/g); return x ? x.length : 0; }));',
+    '    return arr;',
+    '  }, []);',
+    '  // 3. Strip the common (minimum) indentation from every line.',
+    '  if (indentLengths.length) {',
+    '    const pattern = new RegExp("\\\\n[\\\\t ]{" + Math.min(...indentLengths) + "}", "g");',
+    '    strings = strings.map((str) => str.replace(pattern, "\\n"));',
     '  }',
-    '  const lines = result.split("\\n");',
-    '  let mindent = null;',
-    '  for (const line of lines) {',
-    '    const m = line.match(/^(\\s+)\\S/);',
-    '    if (m) { const indent = m[1].length; mindent = mindent === null ? indent : Math.min(mindent, indent); }',
-    '  }',
-    '  const out = mindent === null || mindent === 0 ? lines : lines.map((l) => l.slice(mindent));',
-    '  return out.join("\\n").trim();',
+    '  // 4. Remove a single leading newline.',
+    '  strings[0] = strings[0].replace(/^\\r?\\n/, "");',
+    '  // 5. Interpolate values.',
+    '  let string = strings[0];',
+    '  for (let i = 0; i < values.length; i++) { string += String(values[i]) + strings[i + 1]; }',
+    '  return string;',
     '}',
     'export { dedent };',
     'export default dedent;',
