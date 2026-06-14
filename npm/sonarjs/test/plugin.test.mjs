@@ -131,6 +131,7 @@ describe('sonarjs plugin shape', () => {
       'no-skipped-tests',
       'prefer-single-boolean-return',
       'no-unthrown-error',
+      'no-tab',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -169,6 +170,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-skipped-tests']).toBe('object');
     expect(typeof plugin.rules['prefer-single-boolean-return']).toBe('object');
     expect(typeof plugin.rules['no-unthrown-error']).toBe('object');
+    expect(typeof plugin.rules['no-tab']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -207,6 +209,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-skipped-tests']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-single-boolean-return']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-unthrown-error']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-tab']).toBe('error');
   });
 });
 
@@ -374,6 +377,13 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('for-in', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('forIn');
+  });
+
+  it('reports no-tab for a line with a leading tab through the adapter', () => {
+    const source = '\tconst x = 1;';
+    const reports = runRule('no-tab', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noTab');
   });
 });
 
@@ -841,5 +851,15 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-unthrown-error)');
+  });
+
+  it('reports no-tab through the CLI', () => {
+    const source = '\tconst x = 1;';
+    const result = runOxlint('no-tab', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-tab)');
   });
 });

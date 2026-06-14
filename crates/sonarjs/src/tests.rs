@@ -1773,3 +1773,44 @@ fn does_not_report_no_unthrown_error_when_error_passed_as_argument() {
     let diagnostics = scan("no-unthrown-error", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_tab_for_leading_tab() {
+    let source = "\tconst x = 1;";
+    let diagnostics = scan("no-tab", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-tab");
+    assert_eq!(diagnostics[0].message_id, "noTab");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_tab_for_tab_in_middle_of_line() {
+    let source = "const x\t= 1;";
+    let diagnostics = scan("no-tab", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noTab");
+}
+
+#[test]
+fn reports_no_tab_once_when_only_second_line_has_tab() {
+    let source = "a();\n\tb();";
+    let diagnostics = scan("no-tab", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noTab");
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+}
+
+#[test]
+fn reports_no_tab_twice_when_both_lines_have_tabs() {
+    let source = "\ta();\n\tb();";
+    let diagnostics = scan("no-tab", source);
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
+fn does_not_report_no_tab_for_source_without_tabs() {
+    let source = "const x = 1;";
+    let diagnostics = scan("no-tab", source);
+    assert!(diagnostics.is_empty());
+}

@@ -148,6 +148,9 @@ const messages = Object.freeze({
   'no-unthrown-error': {
     unthrownError: 'Throw this error or remove this useless statement.',
   },
+  'no-tab': {
+    noTab: 'Replace this tab character with spaces.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -217,6 +220,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow if/else structures where both branches return a boolean literal; return the condition directly instead',
   'no-unthrown-error':
     "Disallow creating an Error (or Error subtype) with 'new' as a bare statement without throwing it; the value is discarded and this is almost always a bug",
+  'no-tab':
+    'Disallow tab characters in source files; tabs render inconsistently across editors and tools, so spaces should be used instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -257,6 +262,7 @@ const ruleTypes = Object.freeze({
   'no-skipped-tests': 'problem',
   'prefer-single-boolean-return': 'suggestion',
   'no-unthrown-error': 'problem',
+  'no-tab': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -297,6 +303,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-skipped-tests': 'error',
   'prefer-single-boolean-return': 'error',
   'no-unthrown-error': 'error',
+  'no-tab': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -40,6 +40,7 @@ const expectedRuleNames = [
   'no-skipped-tests',
   'prefer-single-boolean-return',
   'no-unthrown-error',
+  'no-tab',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1427,6 +1428,40 @@ describe('sonarjs native API', () => {
   it('does not report no-unthrown-error when the error is passed as a call argument', () => {
     const source = 'foo(new Error());';
     const diagnostics = scan('no-unthrown-error', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-tab for a line with a leading tab', () => {
+    const source = '\tconst x = 1;';
+    const diagnostics = scan('no-tab', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-tab');
+    expect(diagnostics[0].messageId).toBe('noTab');
+  });
+
+  it('reports no-tab for a line with a tab in the middle', () => {
+    const source = 'const x\t= 1;';
+    const diagnostics = scan('no-tab', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noTab');
+  });
+
+  it('reports no-tab once for two lines where only the second has a tab', () => {
+    const source = 'a();\n\tb();';
+    const diagnostics = scan('no-tab', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noTab');
+  });
+
+  it('reports no-tab twice when two lines each contain a tab', () => {
+    const source = '\ta();\n\tb();';
+    const diagnostics = scan('no-tab', source);
+    expect(diagnostics).toHaveLength(2);
+  });
+
+  it('does not report no-tab for source with no tab characters', () => {
+    const source = 'const x = 1;';
+    const diagnostics = scan('no-tab', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
