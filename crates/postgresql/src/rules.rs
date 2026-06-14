@@ -41,6 +41,7 @@ mod no_update_without_from_binding;
 mod no_vacuum_full;
 mod no_with_recursive_without_limit;
 mod prefer_exists_over_in_subquery;
+mod require_if_exists;
 mod require_limit;
 mod require_named_constraint;
 mod require_primary_key;
@@ -183,6 +184,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-vacuum-full",
     "no-with-recursive-without-limit",
     "prefer-exists-over-in-subquery",
+    "require-if-exists",
     "require-limit",
     "require-named-constraint",
     "require-primary-key",
@@ -382,6 +384,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "prefer-exists-over-in-subquery",
         run: prefer_exists_over_in_subquery::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-if-exists",
+        run: require_if_exists::run,
         uses_parse_error: false,
     },
     RuleDef {
