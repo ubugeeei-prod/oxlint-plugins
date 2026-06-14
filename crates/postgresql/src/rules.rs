@@ -45,6 +45,7 @@ mod no_update_without_from_binding;
 mod no_vacuum_full;
 mod no_volatile_default_on_add_column;
 mod no_with_recursive_without_limit;
+mod prefer_coalesce_over_case;
 mod prefer_current_timestamp_over_now;
 mod prefer_exists_over_in_subquery;
 mod prefer_explicit_null_ordering;
@@ -197,6 +198,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-vacuum-full",
     "no-volatile-default-on-add-column",
     "no-with-recursive-without-limit",
+    "prefer-coalesce-over-case",
     "prefer-current-timestamp-over-now",
     "prefer-exists-over-in-subquery",
     "prefer-explicit-null-ordering",
@@ -422,6 +424,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-with-recursive-without-limit",
         run: no_with_recursive_without_limit::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-coalesce-over-case",
+        run: prefer_coalesce_over_case::run,
         uses_parse_error: false,
     },
     RuleDef {
