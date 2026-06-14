@@ -197,6 +197,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_built_in_override_assignment(it);
         self.check_class_prototype(it);
         self.check_no_nested_assignment_chain(it);
+        self.check_no_useless_increment(it);
         walk::walk_assignment_expression(self, it);
     }
 
