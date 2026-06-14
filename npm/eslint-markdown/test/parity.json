@@ -13,10 +13,6 @@
       "level": "off",
       "note": "Heading-text normalisation differs (closed ATX trailing '#', collapsed inner spaces)."
     },
-    "no-empty-definitions": {
-      "level": "off",
-      "note": "Footnote multi-line content and escaped-caret labels classified differently from upstream."
-    },
     "no-missing-atx-heading-space": {
       "level": "off",
       "note": "PANICS on non-ASCII input (char-boundary slice at lib.rs position_for_offset); span/column divergences."
