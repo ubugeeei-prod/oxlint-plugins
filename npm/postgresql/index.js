@@ -65,6 +65,17 @@ const ruleMeta = Object.freeze({
         '`SET NOT NULL` scans the whole table for nulls under an `ACCESS EXCLUSIVE` lock. The safe pattern in production is to add a `CHECK (col IS NOT NULL) NOT VALID` constraint, `VALIDATE CONSTRAINT` separately, then `SET NOT NULL` (PG ≥ 12 reuses the validated CHECK and skips the scan).',
     },
   },
+  'require-where-in-update': {
+    type: 'problem',
+    description: 'Require a WHERE clause in UPDATE statements',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingWhere:
+        'UPDATE without WHERE rewrites every row in the table. Add a WHERE clause to scope the change.',
+    },
+  },
 });
 
 const implementedRuleNames = Object.freeze(implementedPostgresqlRuleNames());

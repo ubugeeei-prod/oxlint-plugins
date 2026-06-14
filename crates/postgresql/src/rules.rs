@@ -7,6 +7,7 @@ mod no_cluster;
 mod no_drop_database;
 mod no_select_star;
 mod no_set_not_null;
+mod require_where_in_update;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
 /// know the full surface even while only a subset is implemented.
@@ -108,6 +109,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-drop-database",
     "no-select-star",
     "no-set-not-null",
+    "require-where-in-update",
 ];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
@@ -130,6 +132,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-set-not-null",
         run: no_set_not_null::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-where-in-update",
+        run: require_where_in_update::run,
         uses_parse_error: false,
     },
 ];
