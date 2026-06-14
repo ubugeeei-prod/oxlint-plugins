@@ -160,6 +160,7 @@ describe('sonarjs plugin shape', () => {
       'no-nested-functions',
       'too-many-break-or-continue-in-loop',
       'code-eval',
+      'void-use',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -1533,5 +1534,35 @@ describe('code-eval rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(code-eval)');
+  });
+});
+
+describe('void-use rule', () => {
+  it('reports void-use for void applied to a function call through the adapter', () => {
+    const source = 'void foo();';
+    const reports = runRule('void-use', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('voidUse');
+  });
+
+  it('does not report void-use for void 0 through the adapter', () => {
+    const source = 'void 0;';
+    const reports = runRule('void-use', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report void-use for void (0) through the adapter', () => {
+    const source = 'void (0);';
+    const reports = runRule('void-use', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports void-use for void applied to a function call through the CLI', () => {
+    const source = 'void foo();';
+    const result = runOxlint('void-use', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(void-use)');
   });
 });

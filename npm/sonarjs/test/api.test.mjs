@@ -69,6 +69,7 @@ const expectedRuleNames = [
   'no-nested-functions',
   'too-many-break-or-continue-in-loop',
   'code-eval',
+  'void-use',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2108,6 +2109,45 @@ describe('sonarjs native API', () => {
       'index-of-compare-to-positive-number',
       'const b = a.indexOf(x) === -1;',
     );
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports void-use for void applied to a function call', () => {
+    const diagnostics = scan('void-use', 'void foo();');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('void-use');
+    expect(diagnostics[0].messageId).toBe('voidUse');
+  });
+
+  it('reports void-use for void applied to a variable', () => {
+    const diagnostics = scan('void-use', 'void x;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('voidUse');
+  });
+
+  it('reports void-use for void applied to a non-zero numeric literal', () => {
+    const diagnostics = scan('void-use', 'void 1;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('voidUse');
+  });
+
+  it('does not report void-use for void 0', () => {
+    const diagnostics = scan('void-use', 'void 0;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report void-use for void (0)', () => {
+    const diagnostics = scan('void-use', 'void (0);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report void-use for a logical-not unary expression', () => {
+    const diagnostics = scan('void-use', 'const b = !x;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report void-use for typeof', () => {
+    const diagnostics = scan('void-use', 'typeof x;');
     expect(diagnostics).toHaveLength(0);
   });
 });

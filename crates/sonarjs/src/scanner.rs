@@ -215,6 +215,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_redundant_boolean_unary(it);
         self.check_no_delete_var(it);
         self.check_no_inverted_boolean_check(it);
+        self.check_void_use(it);
         walk::walk_unary_expression(self, it);
     }
 

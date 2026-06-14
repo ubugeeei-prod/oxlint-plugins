@@ -3312,3 +3312,57 @@ fn reports_code_eval_for_eval_with_variable_argument() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "codeEval");
 }
+
+#[test]
+fn reports_void_use_for_function_call() {
+    let diagnostics = scan("void-use", "void foo();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "void-use");
+    assert_eq!(diagnostics[0].message_id, "voidUse");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_void_use_for_variable() {
+    let diagnostics = scan("void-use", "void x;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "void-use");
+    assert_eq!(diagnostics[0].message_id, "voidUse");
+}
+
+#[test]
+fn reports_void_use_for_nonzero_numeric_literal() {
+    let diagnostics = scan("void-use", "void 1;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "voidUse");
+}
+
+#[test]
+fn does_not_report_void_use_for_void_zero() {
+    let diagnostics = scan("void-use", "void 0;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_void_use_for_void_parenthesised_zero() {
+    let diagnostics = scan("void-use", "void (0);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_void_use_for_logical_not() {
+    let diagnostics = scan("void-use", "const b = !x;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_void_use_for_typeof() {
+    let diagnostics = scan("void-use", "typeof x;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_void_use_for_unary_minus() {
+    let diagnostics = scan("void-use", "const n = -x;");
+    assert!(diagnostics.is_empty());
+}
