@@ -57,6 +57,10 @@ impl Scanner<'_> {
             return;
         }
         let start = if_stmt.span.start;
-        self.report(RULE_NAME, "preferSingleBooleanReturn", Span::new(start, start + 2));
+        self.report(
+            RULE_NAME,
+            "preferSingleBooleanReturn",
+            Span::new(start, start + 2),
+        );
     }
 }

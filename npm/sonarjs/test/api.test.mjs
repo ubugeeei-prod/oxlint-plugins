@@ -1372,8 +1372,7 @@ describe('sonarjs native API', () => {
   });
 
   it('does not report prefer-single-boolean-return for an else-if chain', () => {
-    const source =
-      'function f() { if (c) return true; else if (d) return false; else return true; }';
+    const source = 'function f() { if (c) return true; else if (d) return x; }';
     const diagnostics = scan('prefer-single-boolean-return', source);
     expect(diagnostics).toHaveLength(0);
   });

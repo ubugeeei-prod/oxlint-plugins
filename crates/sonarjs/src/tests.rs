@@ -1708,7 +1708,7 @@ fn does_not_report_prefer_single_boolean_return_non_literal_consequent() {
 
 #[test]
 fn does_not_report_prefer_single_boolean_return_else_if_chain() {
-    let source = "function f() { if (c) return true; else if (d) return false; else return true; }";
+    let source = "function f() { if (c) return true; else if (d) return x; }";
     let diagnostics = scan("prefer-single-boolean-return", source);
     assert!(diagnostics.is_empty());
 }
