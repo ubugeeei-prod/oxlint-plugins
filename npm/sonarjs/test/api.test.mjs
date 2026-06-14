@@ -57,6 +57,7 @@ const expectedRuleNames = [
   'max-lines-per-function',
   'no-duplicate-string',
   'no-empty-group',
+  'no-empty-alternatives',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1959,6 +1960,18 @@ describe('sonarjs native API', () => {
 
   it('does not report no-empty-group for a non-empty group', () => {
     const diagnostics = scan('no-empty-group', 'const r = /(?:abc)/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-empty-alternatives for a trailing empty alternative', () => {
+    const diagnostics = scan('no-empty-alternatives', 'const r = /a|/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-empty-alternatives');
+    expect(diagnostics[0].messageId).toBe('emptyAlternative');
+  });
+
+  it('does not report no-empty-alternatives when all alternatives have content', () => {
+    const diagnostics = scan('no-empty-alternatives', 'const r = /a|b/;');
     expect(diagnostics).toHaveLength(0);
   });
 });

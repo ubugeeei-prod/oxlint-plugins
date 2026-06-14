@@ -270,6 +270,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_reg_exp_literal(&mut self, it: &RegExpLiteral<'a>) {
         self.check_no_empty_character_class(it);
         self.check_no_empty_group(it);
+        self.check_no_empty_alternatives(it);
         walk::walk_reg_exp_literal(self, it);
     }
 
