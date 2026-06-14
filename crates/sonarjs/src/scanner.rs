@@ -4,10 +4,10 @@
 
 use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, BindingIdentifier, CatchClause, ConditionalExpression,
-    ExpressionStatement, ForInStatement, ForStatement, Function, FunctionBody,
-    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral,
-    StaticMemberExpression, SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature,
-    TSUnionType, TemplateLiteral, UnaryExpression, YieldExpression,
+    ExpressionStatement, ForInStatement, ForStatement, Function, FunctionBody, IdentifierReference,
+    IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression,
+    SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType,
+    TemplateLiteral, UnaryExpression, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;

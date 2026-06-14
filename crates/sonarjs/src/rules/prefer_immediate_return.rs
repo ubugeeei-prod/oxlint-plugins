@@ -69,9 +69,7 @@ fn declared_single_name<'a>(stmt: &'a Statement) -> Option<&'a str> {
         return None;
     }
     let declarator = &decl.declarations[0];
-    if declarator.init.is_none() {
-        return None;
-    }
+    declarator.init.as_ref()?;
     let BindingPattern::BindingIdentifier(id) = &declarator.id else {
         return None;
     };
