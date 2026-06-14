@@ -1,0 +1,285 @@
+{
+  "__generated": {
+    "source": "@eslint/json",
+    "version": "2.0.0",
+    "sourceFile": "tests/rules/no-duplicate-keys.test.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-json-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "{\"foo\": 1, \"bar\": 2}",
+      "language": "json/json"
+    },
+    {
+      "code": "{\"foo\": 1, \"bar\": 2, \"baz\": 3}",
+      "language": "json/json"
+    },
+    {
+      "code": "[]",
+      "language": "json/json"
+    },
+    {
+      "code": "{}",
+      "language": "json/json"
+    },
+    {
+      "code": "{\"foo\": 1, \"bar\": {\"bar\": 2}}",
+      "language": "json/json"
+    },
+    {
+      "code": "{\"foo\": { \"bar\": 5 }, \"bar\": 6 }",
+      "language": "json/json"
+    },
+    {
+      "code": "{\"foo\": 1, \"bar\": {\"bar\": 2}}",
+      "language": "json/jsonc"
+    },
+    {
+      "code": "{foo: 1, bar: {bar: 2}}",
+      "language": "json/json5"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "{\"foo\": 1, \"foo\": 2}",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "foo"
+          },
+          "line": 1,
+          "column": 12,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\n    \"foo\": {\n        \"bar\": 5\n    },\n    \"foo\": 6\n}",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "foo"
+          },
+          "line": 5,
+          "column": 5,
+          "endLine": 5,
+          "endColumn": 10
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"foo\": 1, \"foo\": 2}",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "foo"
+          },
+          "line": 1,
+          "column": 12,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ]
+    },
+    {
+      "code": "{foo: 1, foo: 2}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "foo"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ]
+    },
+    {
+      "code": "{\n    foo: {\n        \"bar\": 5\n    },\n    foo: 6\n}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "foo"
+          },
+          "line": 5,
+          "column": 5,
+          "endLine": 5,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "{\"foo\": 1, foo: 2}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "foo"
+          },
+          "line": 1,
+          "column": 12,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ]
+    },
+    {
+      "code": "{\n    foo: {\n        \"bar\": 5\n    },\n    \"foo\": 6\n}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "foo"
+          },
+          "line": 5,
+          "column": 5,
+          "endLine": 5,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "{\"foot\": 1, \"fo\\u006ft\": 2}",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "fo\\u006ft"
+          },
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"foot\": 1, \"fo\\u006ft\": 2}",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "fo\\u006ft"
+          },
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "{\"foot\": 1, \"fo\\u006ft\": 2}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "fo\\u006ft"
+          },
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "{foot: 1, fo\\u006ft: 2}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "fo\\u006ft"
+          },
+          "line": 1,
+          "column": 11,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ]
+    },
+    {
+      "code": "{\"f\\u006fot\": 1, \"fo\\u006ft\": 2}",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "fo\\u006ft"
+          },
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"f\\u006fot\": 1, \"fo\\u006ft\": 2}",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "fo\\u006ft"
+          },
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ]
+    },
+    {
+      "code": "{\"f\\u006fot\": 1, \"fo\\u006ft\": 2}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "fo\\u006ft"
+          },
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ]
+    },
+    {
+      "code": "{f\\u006fot: 1, fo\\u006ft: 2}",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "duplicateKey",
+          "data": {
+            "key": "fo\\u006ft"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ]
+    }
+  ]
+}
