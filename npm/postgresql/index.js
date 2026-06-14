@@ -17,6 +17,18 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'no-alter-column-type': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... ALTER COLUMN ... TYPE ...` because it can rewrite the table under an ACCESS EXCLUSIVE lock',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noAlterColumnType:
+        '`ALTER COLUMN ... TYPE` can rewrite the entire table under an ACCESS EXCLUSIVE lock. For non-trivial tables, add a new column, dual-write, backfill, and swap — or use `USING` only for known-safe conversions in a separate migration.',
+    },
+  },
   'no-cluster': {
     type: 'problem',
     description:
