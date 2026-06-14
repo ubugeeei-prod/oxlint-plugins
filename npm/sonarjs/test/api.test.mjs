@@ -41,6 +41,7 @@ const expectedRuleNames = [
   'prefer-single-boolean-return',
   'no-unthrown-error',
   'no-tab',
+  'fixme-tag',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1462,6 +1463,46 @@ describe('sonarjs native API', () => {
   it('does not report no-tab for source with no tab characters', () => {
     const source = 'const x = 1;';
     const diagnostics = scan('no-tab', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports fixme-tag for a line comment containing FIXME', () => {
+    const source = '// FIXME do x';
+    const diagnostics = scan('fixme-tag', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('fixme-tag');
+    expect(diagnostics[0].messageId).toBe('fixmeTag');
+  });
+
+  it('reports fixme-tag for a block comment containing FIXME', () => {
+    const source = '/* FIXME: broken */';
+    const diagnostics = scan('fixme-tag', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('fixmeTag');
+  });
+
+  it('reports fixme-tag for a trailing line comment containing FIXME', () => {
+    const source = 'const a = 1; // FIXME later';
+    const diagnostics = scan('fixme-tag', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('fixmeTag');
+  });
+
+  it('does not report fixme-tag for a comment containing TODO but not FIXME', () => {
+    const source = '// TODO do x';
+    const diagnostics = scan('fixme-tag', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report fixme-tag for lowercase fixme (case-sensitive match only)', () => {
+    const source = '// fixme';
+    const diagnostics = scan('fixme-tag', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report fixme-tag for source with no comments', () => {
+    const source = 'const a = 1;';
+    const diagnostics = scan('fixme-tag', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

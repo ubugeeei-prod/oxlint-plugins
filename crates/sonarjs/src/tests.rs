@@ -1814,3 +1814,49 @@ fn does_not_report_no_tab_for_source_without_tabs() {
     let diagnostics = scan("no-tab", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_fixme_tag_for_line_comment_containing_fixme() {
+    let source = "// FIXME do x";
+    let diagnostics = scan("fixme-tag", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "fixme-tag");
+    assert_eq!(diagnostics[0].message_id, "fixmeTag");
+}
+
+#[test]
+fn reports_fixme_tag_for_block_comment_containing_fixme() {
+    let source = "/* FIXME: broken */";
+    let diagnostics = scan("fixme-tag", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "fixmeTag");
+}
+
+#[test]
+fn reports_fixme_tag_for_trailing_comment_containing_fixme() {
+    let source = "const a = 1; // FIXME later";
+    let diagnostics = scan("fixme-tag", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "fixmeTag");
+}
+
+#[test]
+fn does_not_report_fixme_tag_for_todo_comment() {
+    let source = "// TODO do x";
+    let diagnostics = scan("fixme-tag", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_fixme_tag_for_lowercase_fixme() {
+    let source = "// fixme";
+    let diagnostics = scan("fixme-tag", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_fixme_tag_for_source_with_no_comments() {
+    let source = "const a = 1;";
+    let diagnostics = scan("fixme-tag", source);
+    assert!(diagnostics.is_empty());
+}
