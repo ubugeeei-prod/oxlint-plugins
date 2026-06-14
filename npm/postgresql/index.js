@@ -195,6 +195,18 @@ const ruleMeta = Object.freeze({
         'Avoid `NATURAL JOIN`. The join columns are implicit — any future column with a matching name on both sides silently changes the result. Use `JOIN ... USING (...)` or `JOIN ... ON ...` and name the columns.',
     },
   },
+  'no-not-in-subquery': {
+    type: 'problem',
+    description:
+      'Disallow `NOT IN (subquery)` because it returns no rows when the subquery yields any NULL',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noNotInSubquery:
+        '`NOT IN (subquery)` returns no rows if the subquery yields any NULL — almost certainly not what you want. Use `NOT EXISTS (SELECT 1 FROM ... WHERE ...)` instead; it handles NULL correctly.',
+    },
+  },
   'no-on-delete-cascade': {
     type: 'problem',
     description:
