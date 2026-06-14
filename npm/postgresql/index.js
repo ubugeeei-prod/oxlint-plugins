@@ -478,6 +478,18 @@ const ruleMeta = Object.freeze({
         'Table `{{table}}` has no PRIMARY KEY. Tables without one cannot be replicated cleanly, cannot be sharded predictably, and break almost every ORM. Add one as either a column constraint or a table-level constraint.',
     },
   },
+  'require-schema-qualified-table': {
+    type: 'suggestion',
+    description:
+      'Require `CREATE TABLE` to specify an explicit schema to avoid `search_path` dependence',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      requireSchemaQualifiedTable:
+        '`CREATE TABLE` should specify a schema (e.g. `audit.events`). Without one, the target depends on `search_path` and may land in an unintended schema. The rule is off by default in `recommended` because many projects intentionally use the `public` schema.',
+    },
+  },
   'require-where-in-delete': {
     type: 'problem',
     description: 'Require a WHERE clause in DELETE statements',
