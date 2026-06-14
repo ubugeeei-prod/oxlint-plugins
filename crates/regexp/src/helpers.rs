@@ -1951,6 +1951,91 @@ pub(crate) fn first_strict_violation(pattern: &str) -> Option<&'static str> {
     None
 }
 
+/// Classifies a single literal pattern byte as a word character (`Some(true)`),
+/// a definitely-non-word character (`Some(false)`), or "unknown / unsafe to
+/// reason about" (`None`).
+///
+/// Word characters are the ASCII set matched by `\w`: `[A-Za-z0-9_]`.
+/// The non-word set is a deliberately small, unambiguous set of ASCII
+/// punctuation that can never be a word character in any flag mode
+/// (`,`, `:`, `;`, `-`, `/`, and the space character). Anything else returns
+/// `None` so the `\b`/`\B` useless-assertion check stays sound.
+fn word_class_of_literal_byte(byte: u8) -> Option<bool> {
+    if byte.is_ascii_alphanumeric() || byte == b'_' {
+        Some(true)
+    } else if matches!(byte, b',' | b':' | b';' | b'-' | b'/' | b' ') {
+        Some(false)
+    } else {
+        None
+    }
+}
+
+/// Narrow-form detector for `no-useless-assertions`.
+///
+/// Returns `true` when the pattern contains a `\b` or `\B` word-boundary
+/// assertion that is *provably* useless because the two characters on either
+/// side of it sit on the same side of the word/non-word divide:
+///
+/// * `\b` between two word chars (or two non-word chars) can never match — the
+///   boundary requires a word/non-word transition. e.g. `a\bb`, `,\b,`.
+/// * `\B` between two word chars (or two non-word chars) always matches — there
+///   is never a boundary there, so the negated assertion is vacuously true.
+///   e.g. `a\Bb`, `,\B,`.
+///
+/// To remain sound the check only fires when BOTH neighbours are *plain literal
+/// single-character atoms* whose word class is unambiguous
+/// (`word_class_of_literal_byte`), and only when the `\b`/`\B` is outside a
+/// character class. Adjacency to `.`, escapes, classes, groups, or quantifiers
+/// (e.g. the upstream-valid `\b.\b`, `\b(?:,|:)\b`) yields `None`/non-literal
+/// neighbours and is therefore never flagged.
+///
+/// The `m`, `s`, `i`, `u`, and `v` flags do not affect ASCII word-boundary
+/// semantics, so this check is flag-independent for the cases it covers.
+pub(crate) fn has_useless_word_boundary(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'[' => {
+                // Skip the whole character class; an inner `\b` is a backspace,
+                // not a word boundary.
+                if let Some(close) = find_class_end_nested(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            b'\\' => {
+                let next = bytes.get(index + 1).copied();
+                if matches!(next, Some(b'b') | Some(b'B')) {
+                    // Preceding literal: the byte directly before the `\`.
+                    // It must itself be a plain literal — i.e. NOT the second
+                    // byte of an escape (the byte two back is not a lone `\`).
+                    let prev_is_plain_literal =
+                        index >= 1 && !(index >= 2 && bytes[index - 2] == b'\\');
+                    // Following literal: the byte directly after `b`/`B`.
+                    // It must not start an escape, group, class, quantifier, or
+                    // alternation — only a bare literal byte qualifies.
+                    let after = bytes.get(index + 2).copied();
+
+                    if prev_is_plain_literal
+                        && let Some(prev) = bytes.get(index - 1).copied()
+                        && let Some(after_byte) = after
+                        && let Some(prev_class) = word_class_of_literal_byte(prev)
+                        && let Some(after_class) = word_class_of_literal_byte(after_byte)
+                        && prev_class == after_class
+                    {
+                        return true;
+                    }
+                }
+                index = skip_escape(bytes, index);
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
 pub(crate) fn mention_char(ch: char) -> CompactString {
     let mut text = CompactString::new("U+");
     let code = ch as u32;
