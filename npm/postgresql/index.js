@@ -53,6 +53,18 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-rename-column': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... RENAME COLUMN` — every deployed reader of the old name breaks at deploy time',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noRenameColumn:
+        '`RENAME COLUMN` breaks every running app that still selects/inserts by the old name. The safer pattern is to add a new column, dual-write, backfill, and drop the old one across separate deploys.',
+    },
+  },
   'no-set-not-null': {
     type: 'problem',
     description:

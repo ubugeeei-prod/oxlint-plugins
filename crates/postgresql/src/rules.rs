@@ -5,6 +5,7 @@ use crate::RuleDef;
 
 mod no_cluster;
 mod no_drop_database;
+mod no_rename_column;
 mod no_select_star;
 mod no_set_not_null;
 mod no_temporary_table;
@@ -107,6 +108,7 @@ pub const RULE_NAMES: [&str; 89] = [
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-cluster",
     "no-drop-database",
+    "no-rename-column",
     "no-select-star",
     "no-set-not-null",
     "no-temporary-table",
@@ -122,6 +124,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-drop-database",
         run: no_drop_database::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-rename-column",
+        run: no_rename_column::run,
         uses_parse_error: false,
     },
     RuleDef {
