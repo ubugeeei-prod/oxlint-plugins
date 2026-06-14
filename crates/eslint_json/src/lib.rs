@@ -1018,12 +1018,17 @@ impl<'a> Parser<'a> {
                 if ident.is_empty() {
                     return None;
                 }
+                // JSON5 identifier names may carry Unicode escapes (e.g.
+                // `foot`), which momoa decodes for the key's value while
+                // the raw key keeps the source text. Mirror that so duplicate
+                // and sort comparisons see the decoded name; when the decoded
+                // name differs from the source, the key has an escape and
+                // no-unnormalized-keys must not autofix it (upstream returns
+                // null when `key !== rawKey`).
+                let key = decode_identifier_escapes(ident);
+                let key_has_escape = key.as_str() != ident;
                 Some(MemberFact {
-                    // JSON5 identifier names may carry Unicode escapes (e.g.
-                    // `foot`), which momoa decodes for the key's value while
-                    // the raw key keeps the source text. Mirror that so duplicate
-                    // and sort comparisons see the decoded name.
-                    key: decode_identifier_escapes(ident),
+                    key,
                     raw_key: CompactString::from(ident),
                     name_span: ByteSpan {
                         start,
@@ -1034,7 +1039,7 @@ impl<'a> Parser<'a> {
                         end: self.pos,
                     },
                     member_span: ByteSpan { start, end: start },
-                    key_has_escape: false,
+                    key_has_escape,
                 })
             }
         }
@@ -1470,7 +1475,48 @@ impl LineIndex {
 
 #[cfg(test)]
 mod tests {
-    use super::{NormalizationForm, RULE_NAMES, ScanOptions, SortDirection, scan_eslint_json};
+    use super::{
+        NormalizationForm, RULE_NAMES, ScanOptions, SortDirection, natural_compare,
+        scan_eslint_json,
+    };
+    use core::cmp::Ordering;
+
+    // Locks in the `natural-compare` semantics, including digit runs that begin
+    // with `0` (which the package does NOT treat as a number, since its chunk
+    // trigger requires a unit > 66, i.e. `1`..`9`). Values verified against the
+    // upstream `natural-compare` v1.4.0 package.
+    #[test]
+    fn natural_compare_matches_upstream() {
+        assert_eq!(natural_compare("00", "9"), Ordering::Less);
+        assert_eq!(natural_compare("a0b", "a00b"), Ordering::Greater);
+        assert_eq!(natural_compare("0x", "00x"), Ordering::Greater);
+        assert_eq!(natural_compare("10", "9"), Ordering::Greater);
+        assert_eq!(natural_compare("1", "10"), Ordering::Less);
+        assert_eq!(natural_compare("11", "2"), Ordering::Greater);
+        // The remapping puts `_`/`$` before letters and keeps case order.
+        assert_eq!(natural_compare("_", "A"), Ordering::Less);
+        assert_eq!(natural_compare("$", "_"), Ordering::Less);
+        assert_eq!(natural_compare("A", "a"), Ordering::Less);
+        assert_eq!(natural_compare("abc", "abc"), Ordering::Equal);
+    }
+
+    // A JSON5 identifier key that is both escaped and unnormalized must be
+    // reported but NOT autofixed, mirroring upstream's `key !== rawKey` bail-out.
+    #[test]
+    fn unnormalized_escaped_identifier_key_has_no_fix() {
+        // A JSON5 identifier key written with Unicode escapes that decode
+        // to `e` + combining acute (the decomposed form, which NFC
+        // recomposes). Built from a backslash char so the escape token is
+        // not rewritten by tooling.
+        let source = "{\\u0065\\u0301: 1}";
+        let diagnostics = scan_eslint_json(source, &ScanOptions::default());
+        let unnormalized: oxlint_plugins_carton::SmallVec<[_; 4]> = diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.rule_name == "no-unnormalized-keys")
+            .collect();
+        assert_eq!(unnormalized.len(), 1);
+        assert!(unnormalized[0].fix.is_none());
+    }
 
     #[test]
     fn exposes_all_rule_names() {
