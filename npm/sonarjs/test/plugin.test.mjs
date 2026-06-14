@@ -188,6 +188,7 @@ describe('sonarjs plugin shape', () => {
       'process-argv',
       'standard-input',
       'no-code-after-done',
+      'function-inside-loop',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -282,6 +283,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['process-argv']).toBe('object');
     expect(typeof plugin.rules['standard-input']).toBe('object');
     expect(typeof plugin.rules['no-code-after-done']).toBe('object');
+    expect(typeof plugin.rules['function-inside-loop']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -384,6 +386,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/process-argv']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/standard-input']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-code-after-done']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/function-inside-loop']).toBe('error');
   });
 });
 
@@ -463,6 +466,61 @@ describe('no-code-after-done rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-code-after-done)');
+  });
+});
+
+describe('function-inside-loop rule', () => {
+  it('reports an arrow function defined inside a for loop', () => {
+    const src = 'for (let i = 0; i < 10; i++) { const f = () => i; }';
+    const reports = runRule('function-inside-loop', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noFunctionInLoop');
+  });
+
+  it('reports a function declaration inside a while loop', () => {
+    const src = 'while (x) { function g() {} }';
+    const reports = runRule('function-inside-loop', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noFunctionInLoop');
+  });
+
+  it('reports a function expression inside a for-of loop', () => {
+    const src = 'for (const x of xs) { const h = function () {}; }';
+    const reports = runRule('function-inside-loop', src);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report a function at top level', () => {
+    const src = 'function h() {}';
+    const reports = runRule('function-inside-loop', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a loop with no function inside', () => {
+    const src = 'for (const x of xs) { use(x); }';
+    const reports = runRule('function-inside-loop', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports only the outer function nested directly in the loop', () => {
+    const src = 'for (;;) { const a = () => { const b = () => {}; }; }';
+    const reports = runRule('function-inside-loop', src);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report an immediately invoked function expression', () => {
+    const src = 'for (let i = 0; i < 10; i++) { (() => use(i))(); }';
+    const reports = runRule('function-inside-loop', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports function-inside-loop through the CLI', () => {
+    const src = 'for (let i = 0; i < 10; i++) { const f = () => i; }';
+    const result = runOxlint('function-inside-loop', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(function-inside-loop)');
   });
 });
 

@@ -97,6 +97,7 @@ const expectedRuleNames = [
   'process-argv',
   'standard-input',
   'no-code-after-done',
+  'function-inside-loop',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
