@@ -580,6 +580,16 @@ const ruleMeta = Object.freeze({
         '`CREATE TABLE` should specify a schema (e.g. `audit.events`). Without one, the target depends on `search_path` and may land in an unintended schema. The rule is off by default in `recommended` because many projects intentionally use the `public` schema.',
     },
   },
+  'require-trailing-semicolon': {
+    type: 'layout',
+    description: 'Require a trailing `;` at the end of the SQL file',
+    recommended: false,
+    fixable: 'code',
+    schema: [],
+    messages: {
+      missingSemicolon: 'Missing trailing `;` at the end of the file.',
+    },
+  },
   'require-where-in-delete': {
     type: 'problem',
     description: 'Require a WHERE clause in DELETE statements',
