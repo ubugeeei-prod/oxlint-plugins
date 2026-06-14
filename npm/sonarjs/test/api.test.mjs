@@ -81,6 +81,7 @@ const expectedRuleNames = [
   'no-for-in-iterable',
   'no-associative-arrays',
   'bitwise-operators',
+  'no-same-argument-assert',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2341,6 +2342,34 @@ describe('sonarjs native API', () => {
 
   it('does not report single-character-alternation for /abc/ (no disjunction)', () => {
     const diagnostics = scan('single-character-alternation', 'const re = /abc/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-same-argument-assert for assert.equal(x, x)', () => {
+    const diagnostics = scan('no-same-argument-assert', 'assert.equal(x, x);');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-same-argument-assert');
+    expect(diagnostics[0].messageId).toBe('sameArgumentAssert');
+  });
+
+  it('reports no-same-argument-assert for assert.strictEqual(foo.bar, foo.bar)', () => {
+    const diagnostics = scan('no-same-argument-assert', 'assert.strictEqual(foo.bar, foo.bar);');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('sameArgumentAssert');
+  });
+
+  it('does not report no-same-argument-assert for assert.equal(x, y) (different args)', () => {
+    const diagnostics = scan('no-same-argument-assert', 'assert.equal(x, y);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-same-argument-assert for foo(x, x) (not an assertion call)', () => {
+    const diagnostics = scan('no-same-argument-assert', 'foo(x, x);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-same-argument-assert for assert.ok(x) (single argument)', () => {
+    const diagnostics = scan('no-same-argument-assert', 'assert.ok(x);');
     expect(diagnostics).toHaveLength(0);
   });
 });
