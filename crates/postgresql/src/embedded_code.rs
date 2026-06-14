@@ -144,10 +144,14 @@ fn find_body_token(tokens: &[Token], start_search_from: u32) -> Option<BodyToken
         let raw = token.value.as_str();
         if let Some(after_dollar) = raw.strip_prefix('$') {
             // Dollar-quote: $$...$$ or $tag$...$tag$. The opening tag is ASCII
-            // by grammar, so byte and UTF-16 offsets coincide over it. The
-            // closing `$` of the opening tag sits one past its index in the
-            // `$`-stripped remainder.
+            // by grammar (and bounded by PostgreSQL's 63-char identifier limit),
+            // so byte and UTF-16 offsets coincide over it and the length fits a
+            // u32. The closing `$` of the opening tag sits one past its index in
+            // the `$`-stripped remainder.
             let tag_length = (after_dollar.find('$')? + 2) as u32;
+            // The token always spans at least its opening tag, so subtracting
+            // the tag length from `token.end` never underflows.
+            debug_assert!(token.end >= token.start + tag_length);
             return Some(BodyTokenInfo {
                 inner_start: token.start + tag_length,
                 inner_end: token.end - tag_length,

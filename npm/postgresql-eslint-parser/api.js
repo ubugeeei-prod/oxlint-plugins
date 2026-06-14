@@ -15,6 +15,8 @@ function parseForESLint(code) {
   if (typeof code !== 'string') {
     throw new TypeError('code must be a string.');
   }
+  // `parseForEslintJson` is napi-rs's camelCase of the Rust `parse_for_eslint_json`
+  // (hence `Eslint`, not `ESLint`); it returns the result as a JSON string.
   return JSON.parse(native.parseForEslintJson(code));
 }
 

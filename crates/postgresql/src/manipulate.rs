@@ -66,8 +66,10 @@ pub fn add_types(node: &mut Value) {
             }
         }
         Value::Object(map) => {
-            let has_type = map.contains_key("type");
-            if !has_type {
+            // Upstream gates type detection on `node["type"] == null`, which is
+            // true when `type` is absent *or* explicitly null.
+            let needs_type = map.get("type").is_none_or(Value::is_null);
+            if needs_type {
                 if let Some(bare) = detect_bare_node_type(map) {
                     map.insert("type".to_string(), Value::String(bare.to_string()));
                 } else if let Some(type_key) = map

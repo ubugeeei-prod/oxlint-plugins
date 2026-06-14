@@ -43,6 +43,8 @@ pub fn parse_ast(source_text: &str) -> Value {
 /// `{ "ast": Program, "visitorKeys": { … }, "scopeManager": null }`.
 pub fn parse_for_eslint(source_text: &str) -> Value {
     let parsed = parse(source_text);
+    // UTF-16 code-unit length, mirroring JS `code.length` (the parser indexes in
+    // UTF-16 units throughout, like the upstream TypeScript parser).
     let len = parsed.source.len();
 
     let program_range = json!([0, len]);
@@ -254,7 +256,9 @@ fn array_index(key: &str) -> Option<u32> {
     if !key.bytes().all(|b| b.is_ascii_digit()) {
         return None;
     }
-    key.parse::<u32>().ok()
+    // V8 array indices run `0..=2^32-2`; the string `"4294967295"` (u32::MAX) is
+    // a named property, not an index, so exclude it.
+    key.parse::<u32>().ok().filter(|&index| index < u32::MAX)
 }
 
 fn add_visitor_key(visitor_keys: &mut Map<String, Value>, ty: &str, key: &str) {
