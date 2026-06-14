@@ -11806,19 +11806,19 @@
       },
       {
         "name": "no-collection-size-mischeck",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-collection-size-mischeck (Sonar key S3981). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S3981. Purely syntactic: flags BinaryExpression where one side is a StaticMemberExpression with property name 'length' or 'size' and the other side is numeric literal 0, and the operator is < (always false) or >= (always true), including mirrored forms 0 > x.length and 0 <= x.length. No type info required. Message and tests independently authored."
       },
       {
         "name": "no-commented-code",

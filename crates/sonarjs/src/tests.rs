@@ -2872,3 +2872,53 @@ fn cyclomatic_complexity_uses_default_threshold_when_unset() {
     let diagnostics = scan("cyclomatic-complexity", source);
     assert!(diagnostics.is_empty());
 }
+
+// no-collection-size-mischeck
+
+#[test]
+fn collection_size_mischeck_length_less_than_zero() {
+    let source = "const b = x.length < 0;";
+    let diagnostics = scan("no-collection-size-mischeck", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-collection-size-mischeck");
+    assert_eq!(diagnostics[0].message_id, "collectionSizeMischeck");
+}
+
+#[test]
+fn collection_size_mischeck_length_gte_zero() {
+    let source = "const b = x.length >= 0;";
+    let diagnostics = scan("no-collection-size-mischeck", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-collection-size-mischeck");
+    assert_eq!(diagnostics[0].message_id, "collectionSizeMischeck");
+}
+
+#[test]
+fn collection_size_mischeck_size_mirrored_gt() {
+    let source = "const b = 0 > arr.size;";
+    let diagnostics = scan("no-collection-size-mischeck", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-collection-size-mischeck");
+    assert_eq!(diagnostics[0].message_id, "collectionSizeMischeck");
+}
+
+#[test]
+fn collection_size_mischeck_no_report_gt_zero() {
+    let source = "const b = x.length > 0;";
+    let diagnostics = scan("no-collection-size-mischeck", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn collection_size_mischeck_no_report_strict_eq_zero() {
+    let source = "const b = x.length === 0;";
+    let diagnostics = scan("no-collection-size-mischeck", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn collection_size_mischeck_no_report_lte_zero() {
+    let source = "const b = x.length <= 0;";
+    let diagnostics = scan("no-collection-size-mischeck", source);
+    assert!(diagnostics.is_empty());
+}

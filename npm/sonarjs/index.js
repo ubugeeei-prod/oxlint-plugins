@@ -227,6 +227,10 @@ const messages = Object.freeze({
   'cyclomatic-complexity': {
     cyclomaticComplexity: 'Refactor this function to reduce its cyclomatic complexity.',
   },
+  'no-collection-size-mischeck': {
+    collectionSizeMischeck:
+      'This size/length comparison is always true or always false; fix the comparison.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -344,6 +348,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow string literals of 10+ characters containing a non-word character from appearing at least threshold (default 3) times in a file; import/export sources and JSX attribute values are excluded',
   'cyclomatic-complexity':
     'Disallow functions whose cyclomatic complexity exceeds the configured threshold (the "threshold" option; default 10); each if/for/while/do-while/case/catch/ternary/logical-operator adds +1',
+  'no-collection-size-mischeck':
+    'Disallow comparisons of collection .length or .size against 0 with < or >= that are always false or always true',
 });
 
 const ruleTypes = Object.freeze({
@@ -408,6 +414,7 @@ const ruleTypes = Object.freeze({
   'nested-control-flow': 'suggestion',
   'no-duplicate-string': 'suggestion',
   'cyclomatic-complexity': 'suggestion',
+  'no-collection-size-mischeck': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -472,6 +479,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-duplicate-string': 'error',
   'anchor-precedence': 'error',
   'cyclomatic-complexity': 'error',
+  'no-collection-size-mischeck': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

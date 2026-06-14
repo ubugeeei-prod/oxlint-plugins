@@ -163,6 +163,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_binary_expression(&mut self, it: &BinaryExpression<'a>) {
         self.check_no_redundant_boolean_binary(it);
         self.check_no_identical_expressions_binary(it);
+        self.check_no_collection_size_mischeck(it);
         walk::walk_binary_expression(self, it);
     }
 

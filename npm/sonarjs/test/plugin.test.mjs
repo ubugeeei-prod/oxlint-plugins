@@ -155,6 +155,7 @@ describe('sonarjs plugin shape', () => {
       'duplicates-in-character-class',
       'anchor-precedence',
       'cyclomatic-complexity',
+      'no-collection-size-mischeck',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -217,6 +218,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['duplicates-in-character-class']).toBe('object');
     expect(typeof plugin.rules['anchor-precedence']).toBe('object');
     expect(typeof plugin.rules['cyclomatic-complexity']).toBe('object');
+    expect(typeof plugin.rules['no-collection-size-mischeck']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -283,6 +285,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/duplicates-in-character-class']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/anchor-precedence']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/cyclomatic-complexity']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-collection-size-mischeck']).toBe('error');
   });
 });
 
@@ -1377,5 +1380,24 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
         additionalProperties: false,
       },
     ]);
+  });
+
+  it('reports no-collection-size-mischeck through the adapter', () => {
+    const reports = runRule('no-collection-size-mischeck', 'const b = x.length < 0;');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('collectionSizeMischeck');
+  });
+
+  it('does not report no-collection-size-mischeck for x.length > 0', () => {
+    const reports = runRule('no-collection-size-mischeck', 'const b = x.length > 0;');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-collection-size-mischeck through the CLI', () => {
+    const result = runOxlint('no-collection-size-mischeck', 'const b = x.length < 0;');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-collection-size-mischeck)');
   });
 });
