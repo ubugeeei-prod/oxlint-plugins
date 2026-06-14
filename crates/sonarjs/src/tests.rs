@@ -2525,3 +2525,42 @@ fn does_not_report_no_empty_group_for_quantified_non_empty_group() {
     let diagnostics = scan("no-empty-group", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_empty_alternatives_for_trailing_empty_alternative() {
+    let source = "const r = /a|/;";
+    let diagnostics = scan("no-empty-alternatives", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-empty-alternatives");
+    assert_eq!(diagnostics[0].message_id, "emptyAlternative");
+}
+
+#[test]
+fn reports_no_empty_alternatives_for_leading_empty_alternative() {
+    let source = "const r = /|a/;";
+    let diagnostics = scan("no-empty-alternatives", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_empty_alternatives_for_empty_alternative_in_group() {
+    let source = "const r = /(?:a|)/;";
+    let diagnostics = scan("no-empty-alternatives", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_empty_alternatives_when_all_have_content() {
+    let source = "const r = /a|b|c/;";
+    let diagnostics = scan("no-empty-alternatives", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_alternatives_for_empty_group() {
+    // An empty group has a single empty alternative (no `|`), which is the
+    // no-empty-group rule's concern, not an empty alternative.
+    let source = "const r = /(?:)/;";
+    let diagnostics = scan("no-empty-alternatives", source);
+    assert!(diagnostics.is_empty());
+}
