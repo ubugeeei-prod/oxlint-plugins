@@ -2036,6 +2036,95 @@ pub(crate) fn has_useless_word_boundary(pattern: &str) -> bool {
     false
 }
 
+/// Narrow-form detector for `no-contradiction-with-assertion`.
+///
+/// Returns `true` when a `\b` word-boundary assertion is immediately preceded
+/// by a literal character `P` and immediately followed by a quantified literal
+/// `Q<quant>` where:
+/// * `P` and `Q` are unambiguous single literal characters of the **same**
+///   word class (`word_class_of_literal_byte`), and
+/// * the quantifier on `Q` has minimum zero (`*`, `?`, or `{0..}`).
+///
+/// In that situation the quantifier can never be entered: `\b` after `P`
+/// forces the next consumed character to switch word class, but `Q` (same class
+/// as `P`) would not switch it. e.g. `/a\ba*-/` — the `a*` can only ever match
+/// the empty string. This is the upstream `cannotEnterQuantifier` case,
+/// restricted to the clearly-decidable literal/literal shape.
+///
+/// Soundness: only literal neighbours with a known word class are considered,
+/// and only min-zero quantifiers. Boundaries adjacent to groups, classes,
+/// escapes, or `.` (e.g. upstream-valid `/(^|[\s\S])\bfoo/`, `/(?:aa|a\b)-?a/`)
+/// never satisfy the literal/literal condition. Word-boundary semantics are
+/// ASCII-flag-independent.
+pub(crate) fn has_assertion_contradiction(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'[' => {
+                if let Some(close) = find_class_end_nested(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            b'\\' => {
+                if bytes.get(index + 1) == Some(&b'b') {
+                    // Preceding literal must be a plain literal (not the second
+                    // byte of an escape).
+                    let prev_is_plain_literal =
+                        index >= 1 && !(index >= 2 && bytes[index - 2] == b'\\');
+                    // Following element: `Q` then a min-zero quantifier.
+                    let q_pos = index + 2;
+                    let quant_pos = index + 3;
+                    if prev_is_plain_literal
+                        && let Some(prev) = bytes.get(index - 1).copied()
+                        && let Some(q) = bytes.get(q_pos).copied()
+                        && let Some(prev_class) = word_class_of_literal_byte(prev)
+                        && let Some(q_class) = word_class_of_literal_byte(q)
+                        && prev_class == q_class
+                        && quantifier_min_is_zero(bytes, quant_pos)
+                    {
+                        return true;
+                    }
+                }
+                index = skip_escape(bytes, index);
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Returns `true` when the bytes starting at `index` form a quantifier whose
+/// minimum repetition count is zero: `*`, `?`, or a brace quantifier `{0}`,
+/// `{0,}`, or `{0,m}` (the digit run before the first comma, or the whole body
+/// for `{0}`, is exactly `0`). `+` and `{n,...}` with `n >= 1` return `false`.
+fn quantifier_min_is_zero(bytes: &[u8], index: usize) -> bool {
+    match bytes.get(index).copied() {
+        Some(b'*') | Some(b'?') => true,
+        Some(b'{') => {
+            // Read the minimum digit run.
+            let mut cursor = index + 1;
+            let start = cursor;
+            while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+                cursor += 1;
+            }
+            // No digits → not a real quantifier.
+            if cursor == start {
+                return false;
+            }
+            // Must terminate with `,` or `}`.
+            if !matches!(bytes.get(cursor).copied(), Some(b',') | Some(b'}')) {
+                return false;
+            }
+            // Min is zero iff the digit run is all `0`.
+            bytes[start..cursor].iter().all(|&b| b == b'0')
+        }
+        _ => false,
+    }
+}
+
 /// A single quantifiable atom recognised by the narrow
 /// `optimal-quantifier-concatenation` detector: an unambiguous single element
 /// whose matched-character set is independent of position.

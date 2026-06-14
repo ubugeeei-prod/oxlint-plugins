@@ -112,8 +112,50 @@ fn exposes_initial_regexp_rule_names() {
             "strict",
             "no-useless-assertions",
             "optimal-quantifier-concatenation",
+            "no-contradiction-with-assertion",
         ]
     );
+}
+
+mod no_contradiction_with_assertion {
+    use super::*;
+
+    #[test]
+    fn reports_unenterable_quantifier_after_boundary() {
+        // `a\b` then `a*`: the `a*` can never be entered (word char right after
+        // a boundary that follows a word char).
+        assert_eq!(
+            rule_ids_for("const a = /a\\ba*-/u;", "no-contradiction-with-assertion").as_slice(),
+            &["unexpected"]
+        );
+        // Brace form `{0,3}` also has min zero.
+        assert_eq!(
+            rule_ids_for(
+                "const a = /a\\ba{0,3}-/u;",
+                "no-contradiction-with-assertion"
+            )
+            .as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_consistent_or_unsupported_shapes() {
+        // Plain `a` (min 1) after the boundary — not this rule's narrow case.
+        assert!(rule_ids_for("const a = /a\\ba/u;", "no-contradiction-with-assertion").is_empty());
+        // Quantifier on a different-class char is consistent with the boundary.
+        assert!(
+            rule_ids_for("const a = /a\\b-*a/u;", "no-contradiction-with-assertion").is_empty()
+        );
+        // Boundary preceded by a group close — not a literal neighbour.
+        assert!(
+            rule_ids_for(
+                "const a = /(?:x)\\ba*/u;",
+                "no-contradiction-with-assertion"
+            )
+            .is_empty()
+        );
+    }
 }
 
 mod optimal_quantifier_concatenation {
