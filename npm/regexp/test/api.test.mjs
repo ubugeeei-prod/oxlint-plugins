@@ -80,6 +80,7 @@ describe('regexp native API', () => {
       'no-useless-set-operand',
       'prefer-set-operation',
       'simplify-set-operations',
+      'unicode-property',
     ]);
   });
 

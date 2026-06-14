@@ -116,8 +116,45 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-set-operand",
             "prefer-set-operation",
             "simplify-set-operations",
+            "unicode-property",
         ]
     );
+}
+
+mod unicode_property {
+    use super::*;
+
+    #[test]
+    fn reports_unnecessary_general_category_key() {
+        for src in [
+            "const a = /\\p{gc=L}/u;",
+            "const a = /\\p{gc=Letter}/u;",
+            "const a = /\\p{General_Category=L}/u;",
+            "const a = /\\p{General_Category=Letter}/u;",
+            "const a = /\\P{gc=L}/u;",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "unicode-property").as_slice(),
+                &["unnecessaryGc"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_other_property_forms() {
+        // Keyless property — no `=`.
+        assert!(rule_ids_for("const a = /\\p{L}/u;", "unicode-property").is_empty());
+        assert!(rule_ids_for("const a = /\\p{Letter}/u;", "unicode-property").is_empty());
+        // Script key, not General_Category.
+        assert!(rule_ids_for("const a = /\\p{Script=Greek}/u;", "unicode-property").is_empty());
+        assert!(rule_ids_for("const a = /\\p{sc=Grek}/u;", "unicode-property").is_empty());
+        assert!(rule_ids_for("const a = /\\p{scx=Greek}/u;", "unicode-property").is_empty());
+        // Binary property.
+        assert!(rule_ids_for("const a = /\\p{ASCII}/u;", "unicode-property").is_empty());
+        // No property escape at all.
+        assert!(rule_ids_for("const a = /abc/u;", "unicode-property").is_empty());
+    }
 }
 
 mod simplify_set_operations {

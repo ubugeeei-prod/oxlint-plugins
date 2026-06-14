@@ -9707,19 +9707,19 @@
       },
       {
         "name": "unicode-property",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule unicode-property."
+        "notes": "Narrow form: under the upstream default config (generalCategory: 'never') an explicit General_Category key in a \\p{gc=...} / \\p{General_Category=...} property escape is redundant. has_unnecessary_general_category_key flags only that key-value form with an exact 'gc' or 'General_Category' key; keyless properties, Script keys, and binary properties are never flagged."
       },
       {
         "name": "use-ignore-case",
