@@ -13,6 +13,7 @@ const MDAST_RULES: &[&str] = &[
     "no-empty-definitions",
     "no-missing-atx-heading-space",
     "no-missing-label-refs",
+    "no-reversed-media-syntax",
     "no-space-in-emphasis",
     "no-unused-definitions",
     "require-alt-text",
@@ -329,8 +330,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("no-reference-like-urls") {
         scan_reference_like_urls(source_text, &line_index, &facts, &mut diagnostics);
     }
-    if options.is_enabled("no-reversed-media-syntax") {
-        scan_reversed_media(source_text, &line_index, &facts, &mut diagnostics);
+    if options.is_enabled("no-reversed-media-syntax")
+        && let Some(tree) = &mdast
+    {
+        scan_reversed_media(source_text, &line_index, tree, &mut diagnostics);
     }
     if options.is_enabled("no-space-in-emphasis")
         && let Some(tree) = &mdast
@@ -1729,24 +1732,72 @@ fn scan_reference_like_urls(
 fn scan_reversed_media(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let Ok(reversed_re) = Regex::new(r"\(([^()\n]+)\)\[([^\]\n]+)\]") else {
+    // `(label)[url]` (reversed link/image syntax), where the leading `(` is not
+    // backslash-escaped and the trailing `]` is not followed by `(`.
+    let Ok(reversed_re) =
+        Regex::new(r"\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\r\n])*)\]")
+    else {
         return;
     };
-    for line in &facts.lines {
-        if line.in_fence {
-            continue;
+    visit_mdast(tree, &mut |node| {
+        if !matches!(
+            node,
+            mdast::Node::Heading(_) | mdast::Node::Paragraph(_) | mdast::Node::TableCell(_)
+        ) {
+            return;
         }
-        for captures in reversed_re.captures_iter(line.text) {
-            let Some(mat) = captures.get(0) else {
+        let Some(span) = node_span(node) else {
+            return;
+        };
+        // Mask out inline constructs whose contents must not be matched.
+        let buffer = mask_container_nodes(source_text, span, node, |inner| {
+            matches!(
+                inner,
+                mdast::Node::Html(_)
+                    | mdast::Node::Image(_)
+                    | mdast::Node::ImageReference(_)
+                    | mdast::Node::InlineCode(_)
+                    | mdast::Node::LinkReference(_)
+                    | mdast::Node::InlineMath(_)
+            )
+        });
+        let Ok(text) = core::str::from_utf8(&buffer) else {
+            return;
+        };
+        for caps in reversed_re.captures_iter(text) {
+            let (Some(whole), Some(label), Some(url)) = (caps.get(0), caps.get(1), caps.get(2))
+            else {
                 continue;
             };
-            let label = captures.get(1).map(|value| value.as_str()).unwrap_or("");
-            let url = captures.get(2).map(|value| value.as_str()).unwrap_or("");
-            let start = line.start + mat.start();
-            let end = line.start + mat.end();
+            // The `(` must not be escaped (even number of preceding backslashes).
+            let backslashes = text[..whole.start()]
+                .bytes()
+                .rev()
+                .take_while(|byte| *byte == b'\\')
+                .count();
+            if backslashes % 2 == 1 {
+                continue;
+            }
+            // Upstream's `(?!\()`: a following `(` makes it a normal link.
+            if text.as_bytes().get(whole.end()) == Some(&b'(') {
+                continue;
+            }
+            let start = span.start + whole.start();
+            let end = span.start + whole.end();
+            let label_src = source_text
+                .get(span.start + label.start()..span.start + label.end())
+                .unwrap_or("");
+            let url_src = source_text
+                .get(span.start + url.start()..span.start + url.end())
+                .unwrap_or("");
+            let mut replacement = CompactString::from("[");
+            replacement.push_str(label_src);
+            replacement.push_str("](");
+            replacement.push_str(url_src);
+            replacement.push(')');
             diagnostics.push(Diagnostic {
                 rule_name: "no-reversed-media-syntax",
                 message_id: "reversedSyntax",
@@ -1755,18 +1806,37 @@ fn scan_reversed_media(
                 fix: Some(DiagnosticFix {
                     start: utf16_offset(source_text, start),
                     end: utf16_offset(source_text, end),
-                    replacement: {
-                        let mut out = CompactString::from("[");
-                        out.push_str(label);
-                        out.push_str("](");
-                        out.push_str(url);
-                        out.push(')');
-                        out
-                    },
+                    replacement,
                 }),
             });
         }
-    }
+    });
+}
+
+// Copy a container's source, blanking (with spaces) the spans of descendant
+// nodes matched by `should_mask`, so a regex over the result ignores their
+// contents. Length and char boundaries are preserved, keeping byte offsets valid.
+fn mask_container_nodes(
+    source_text: &str,
+    span: ByteSpan,
+    container: &mdast::Node,
+    should_mask: impl Fn(&mdast::Node) -> bool,
+) -> SmallVec<[u8; 256]> {
+    let mut buffer = SmallVec::<[u8; 256]>::from_slice(
+        source_text
+            .get(span.start..span.end)
+            .unwrap_or("")
+            .as_bytes(),
+    );
+    visit_mdast(container, &mut |node| {
+        if should_mask(node)
+            && let Some(inner) = node_span(node)
+            && let Some(slot) = buffer.get_mut(inner.start - span.start..inner.end - span.start)
+        {
+            slot.fill(b' ');
+        }
+    });
+    buffer
 }
 
 fn scan_space_in_emphasis(
