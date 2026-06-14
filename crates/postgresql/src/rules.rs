@@ -43,6 +43,7 @@ mod no_update_without_from_binding;
 mod no_vacuum_full;
 mod no_volatile_default_on_add_column;
 mod no_with_recursive_without_limit;
+mod prefer_current_timestamp_over_now;
 mod prefer_exists_over_in_subquery;
 mod require_if_exists;
 mod require_limit;
@@ -190,6 +191,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-vacuum-full",
     "no-volatile-default-on-add-column",
     "no-with-recursive-without-limit",
+    "prefer-current-timestamp-over-now",
     "prefer-exists-over-in-subquery",
     "require-if-exists",
     "require-limit",
@@ -403,6 +405,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "no-with-recursive-without-limit",
         run: no_with_recursive_without_limit::run,
         uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-current-timestamp-over-now",
+        run: prefer_current_timestamp_over_now::run,
+        uses_parse_error: true,
     },
     RuleDef {
         name: "prefer-exists-over-in-subquery",

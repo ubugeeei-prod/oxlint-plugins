@@ -511,6 +511,21 @@ const ruleMeta = Object.freeze({
         'Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.',
     },
   },
+  'prefer-current-timestamp-over-now': {
+    type: 'layout',
+    description:
+      "Prefer SQL-standard `CURRENT_TIMESTAMP` / `CURRENT_TIME` over PostgreSQL's `now()` and the timezone-naive `LOCALTIMESTAMP` / `LOCALTIME`",
+    recommended: false,
+    fixable: 'code',
+    schema: [],
+    messages: {
+      preferCurrentTimestamp: 'Use the SQL-standard `CURRENT_TIMESTAMP` instead of `now()`.',
+      preferCurrentTimestampOverLocal:
+        'Use `CURRENT_TIMESTAMP` instead of `LOCALTIMESTAMP`. `LOCALTIMESTAMP` returns a timezone-naive `timestamp`; `CURRENT_TIMESTAMP` returns `timestamptz`, which is what most apps actually want.',
+      preferCurrentTimeOverLocal:
+        'Use `CURRENT_TIME` instead of `LOCALTIME`. `LOCALTIME` returns a timezone-naive `time`; `CURRENT_TIME` returns `timetz`.',
+    },
+  },
   'prefer-exists-over-in-subquery': {
     type: 'suggestion',
     description: 'Prefer `EXISTS (...)` over `IN (subquery)` to avoid NULL-related surprises',
