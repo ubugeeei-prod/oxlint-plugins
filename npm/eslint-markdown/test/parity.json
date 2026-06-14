@@ -9,10 +9,6 @@
       "level": "off",
       "note": "False positives on URLs inside link/definition labels, HTML attributes, and existing autolinks."
     },
-    "no-duplicate-headings": {
-      "level": "off",
-      "note": "Heading-text normalisation differs (closed ATX trailing '#', collapsed inner spaces)."
-    },
     "no-missing-atx-heading-space": {
       "level": "off",
       "note": "PANICS on non-ASCII input (char-boundary slice at lib.rs position_for_offset); span/column divergences."
