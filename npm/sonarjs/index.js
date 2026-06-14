@@ -224,9 +224,9 @@ const ruleDescriptions = Object.freeze({
   'class-prototype':
     'Disallow assigning methods or properties to a constructor prototype; use class syntax instead',
   'max-switch-cases':
-    'Disallow switch statements with more than 30 case/default clauses (threshold fixed at default 30; configurability is a follow-up)',
+    'Disallow switch statements with more than the configured number of case/default clauses (the "maximum" option; default 30)',
   'max-union-size':
-    'Disallow union types with more than 3 members (threshold fixed at default 3; configurability is a follow-up; each TSUnionType node is counted per-node)',
+    'Disallow union types with more than the configured number of members (the "threshold" option; default 3; each TSUnionType node is counted per-node)',
   'elseif-without-else':
     "Require a final 'else' clause when an 'if … else if' chain is present, to explicitly handle the remaining case",
   'no-case-label-in-switch':
@@ -422,6 +422,41 @@ function configFromRuleConfig(name, ruleConfig) {
   };
 }
 
+function schemaForRule(ruleName) {
+  if (ruleName === 'max-switch-cases') {
+    return [
+      {
+        type: 'object',
+        properties: { maximum: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
+  if (ruleName === 'max-union-size') {
+    return [
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
+  return [];
+}
+
+function scanOptionsForRule(context, ruleName) {
+  const raw =
+    context.options?.[0] && typeof context.options[0] === 'object' ? context.options[0] : {};
+  const options = { ruleNames: [ruleName] };
+  if (ruleName === 'max-switch-cases' && Number.isInteger(raw.maximum)) {
+    options.maxSwitchCasesThreshold = raw.maximum;
+  }
+  if (ruleName === 'max-union-size' && Number.isInteger(raw.threshold)) {
+    options.maxUnionSizeThreshold = raw.threshold;
+  }
+  return options;
+}
+
 function createSonarjsRule(ruleName) {
   return {
     meta: {
@@ -432,7 +467,7 @@ function createSonarjsRule(ruleName) {
         url: `${DOCS_BASE}#${ruleName}`,
       },
       messages: messages[ruleName],
-      schema: [],
+      schema: schemaForRule(ruleName),
     },
     createOnce(context) {
       return {
@@ -447,7 +482,7 @@ function createSonarjsRule(ruleName) {
 }
 
 function diagnosticsForRule(context, ruleName) {
-  return diagnosticsForContext(context, { ruleNames: [ruleName] }).filter(
+  return diagnosticsForContext(context, scanOptionsForRule(context, ruleName)).filter(
     (diagnostic) => diagnostic.ruleName === ruleName,
   );
 }

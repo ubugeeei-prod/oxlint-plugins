@@ -1084,4 +1084,35 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(class-name)');
   });
+
+  it('honors the max-switch-cases "maximum" option', () => {
+    const source = 'switch (x) { case 1: break; case 2: break; case 3: break; }';
+    expect(runRule('max-switch-cases', source, { options: [{ maximum: 2 }] })).toHaveLength(1);
+    expect(runRule('max-switch-cases', source, { options: [{ maximum: 3 }] })).toHaveLength(0);
+  });
+
+  it('uses the default max-switch-cases threshold when no option is given', () => {
+    const source = 'switch (x) { case 1: break; case 2: break; case 3: break; }';
+    expect(runRule('max-switch-cases', source)).toHaveLength(0);
+  });
+
+  it('honors the max-union-size "threshold" option', () => {
+    const source = 'type T = A | B | C;';
+    expect(runRule('max-union-size', source, { options: [{ threshold: 2 }] })).toHaveLength(1);
+    expect(runRule('max-union-size', source, { options: [{ threshold: 3 }] })).toHaveLength(0);
+  });
+
+  it('exposes the configurable options in each rule schema', () => {
+    expect(plugin.rules['max-switch-cases'].meta.schema).toEqual([
+      { type: 'object', properties: { maximum: { type: 'integer' } }, additionalProperties: false },
+    ]);
+    expect(plugin.rules['max-union-size'].meta.schema).toEqual([
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ]);
+    expect(plugin.rules['no-collapsible-if'].meta.schema).toEqual([]);
+  });
 });

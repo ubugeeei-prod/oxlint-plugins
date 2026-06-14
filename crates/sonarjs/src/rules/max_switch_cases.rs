@@ -10,16 +10,15 @@
 //!
 //! ## Threshold
 //!
-//! The threshold is fixed at **30** (`MAX_CASES`). SonarJS exposes a
-//! configurable `maximum` option, but this port has no per-rule options
-//! infrastructure yet. Configurability is a follow-up task; for now the
-//! default of 30 is hardcoded.
+//! The threshold mirrors SonarJS's configurable `maximum` option
+//! (`self.options.max_switch_cases_threshold`); when no option is supplied the
+//! SonarJS default of **30** is used.
 //!
 //! ## Counting
 //!
 //! All entries in `SwitchStatement.cases` are counted, including both `case`
 //! clauses and the optional `default` clause. A diagnostic is emitted when the
-//! count is **strictly greater than** `MAX_CASES`.
+//! count is **strictly greater than** the threshold.
 
 use oxc_ast::ast::SwitchStatement;
 use oxc_span::Span;
@@ -28,13 +27,9 @@ use crate::scanner::Scanner;
 
 pub(crate) const RULE_NAME: &str = "max-switch-cases";
 
-/// Maximum number of `case`/`default` clauses allowed in a single `switch`.
-/// A switch with more than this many clauses is flagged.
-const MAX_CASES: usize = 30;
-
 impl Scanner<'_> {
     pub(crate) fn check_max_switch_cases(&mut self, switch: &SwitchStatement<'_>) {
-        if switch.cases.len() <= MAX_CASES {
+        if switch.cases.len() <= self.options.max_switch_cases_threshold as usize {
             return;
         }
         let start = switch.span.start;

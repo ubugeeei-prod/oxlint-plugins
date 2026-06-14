@@ -1839,4 +1839,27 @@ describe('sonarjs native API', () => {
     const diagnostics = scan('class-name', source);
     expect(diagnostics).toHaveLength(1);
   });
+
+  it('passes the max-switch-cases threshold through the native boundary', () => {
+    const source = 'switch (x) { case 1: break; case 2: break; case 3: break; }';
+    const flagged = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['max-switch-cases'],
+      maxSwitchCasesThreshold: 2,
+    });
+    expect(flagged).toHaveLength(1);
+    const allowed = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['max-switch-cases'],
+      maxSwitchCasesThreshold: 3,
+    });
+    expect(allowed).toHaveLength(0);
+  });
+
+  it('passes the max-union-size threshold through the native boundary', () => {
+    const source = 'type T = A | B | C;';
+    const flagged = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['max-union-size'],
+      maxUnionSizeThreshold: 2,
+    });
+    expect(flagged).toHaveLength(1);
+  });
 });
