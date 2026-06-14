@@ -10,6 +10,7 @@ mod consistent_create_index_concurrently;
 mod consistent_create_or_replace;
 mod consistent_drop_index_concurrently;
 mod consistent_explicit_inner_join;
+mod consistent_explicit_outer_join;
 mod consistent_fk_not_valid;
 mod consistent_identity_over_serial;
 mod consistent_jsonb_over_json;
@@ -186,6 +187,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "consistent-create-or-replace",
     "consistent-drop-index-concurrently",
     "consistent-explicit-inner-join",
+    "consistent-explicit-outer-join",
     "consistent-fk-not-valid",
     "consistent-identity-over-serial",
     "consistent-jsonb-over-json",
@@ -295,6 +297,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "consistent-explicit-inner-join",
         run: consistent_explicit_inner_join::run,
+        uses_parse_error: true,
+    },
+    RuleDef {
+        name: "consistent-explicit-outer-join",
+        run: consistent_explicit_outer_join::run,
         uses_parse_error: true,
     },
     RuleDef {
