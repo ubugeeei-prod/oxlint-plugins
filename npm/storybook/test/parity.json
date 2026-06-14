@@ -5,10 +5,6 @@
       "valid": [8],
       "reason": "Port false-positives on a locally shadowed `userEvent` (`const userEvent = { test: () => {} }; userEvent.test()`); needs scope awareness to skip the redefined binding."
     },
-    "no-redundant-story-name": {
-      "valid": [5],
-      "reason": "Port false-positives on `H1.storyName = 'H1'`: its story-name derivation does not split a letter→digit boundary the way upstream's lodash-style startCase does (`storyNameFromExport('H1') === 'H 1'`), so it wrongly treats the name as redundant."
-    },
     "prefer-pascal-case": {
       "fixOutput": [0, 1, 2],
       "reason": "The port's autofix renames the export declaration identifier but not its other references (`primary.foo` stays lowercase); upstream's suggestion renames every reference."

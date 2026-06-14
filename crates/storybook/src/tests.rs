@@ -94,6 +94,14 @@ fn scans_story_exports_and_story_names() {
 }
 
 #[test]
+fn no_redundant_story_name_splits_letter_digit_boundary() {
+    // Upstream `storyNameFromExport('H1') === 'H 1'`, so `H1.storyName = 'H1'` is
+    // NOT redundant. The port must split the letter→digit boundary the same way.
+    let source = "export function H1() {\n  return null;\n}\nH1.storyName = 'H1';";
+    assert_eq!(scan("no-redundant-story-name", source).len(), 0);
+}
+
+#[test]
 fn story_exports_ignores_unresolvable_filter() {
     // A non-string-literal `includeStories` element makes upstream `getDescriptor`
     // throw, discarding the filter; the file then has a valid story export.

@@ -420,6 +420,7 @@ pub(crate) fn story_name_from_export(name: &str) -> CompactString {
             if !out.ends_with(' ')
                 && ((prev.is_ascii_lowercase() && ch.is_ascii_uppercase())
                     || (prev.is_ascii_digit() && ch.is_ascii_alphabetic())
+                    || (prev.is_ascii_alphabetic() && ch.is_ascii_digit())
                     || (prev.is_ascii_uppercase() && ch.is_ascii_uppercase() && next_is_lower))
             {
                 out.push(' ');
