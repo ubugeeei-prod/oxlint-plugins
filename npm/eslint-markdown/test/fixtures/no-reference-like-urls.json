@@ -54,10 +54,12 @@
       "code": "![image](<uri>)\n\n[uri]: https://example.com/uri"
     },
     {
-      "code": "<http://foo>\n\n[http://foo]: hi"
+      "code": "<http://foo>\n\n[http://foo]: hi",
+      "language": "markdown/gfm"
     },
     {
-      "code": "http://foo\n\n[http://foo]: hi"
+      "code": "http://foo\n\n[http://foo]: hi",
+      "language": "markdown/gfm"
     },
     {
       "code": "# Heading with [Mercury](mercury)\n# Heading with ![Mercury](mercury)\n\n[venus]: https://example.com/venus/"
@@ -72,10 +74,12 @@
       "code": "Heading with [Mercury][mercury]\n===============================\nHeading with ![Mercury][mercury]\n================================\n\n[mercury]: https://example.com/mercury"
     },
     {
-      "code": "| Planet  | Link                |\n|---------|---------------------|\n| Mercury | [Mercury](mercury)  |\n| Mercury | ![Mercury](mercury) |\n\n[venus]: https://example.com/venus/"
+      "code": "| Planet  | Link                |\n|---------|---------------------|\n| Mercury | [Mercury](mercury)  |\n| Mercury | ![Mercury](mercury) |\n\n[venus]: https://example.com/venus/",
+      "language": "markdown/gfm"
     },
     {
-      "code": "| Planet  | Link                |\n|---------|---------------------|\n| Mercury | [Mercury][mercury]  |\n| Mercury | ![Mercury][mercury] |\n\n[mercury]: https://example.com/mercury"
+      "code": "| Planet  | Link                |\n|---------|---------------------|\n| Mercury | [Mercury][mercury]  |\n| Mercury | ![Mercury][mercury] |\n\n[mercury]: https://example.com/mercury",
+      "language": "markdown/gfm"
     },
     {
       "code": "\\[Mercury](mercury)\n\n[mercury]: https://example.com/mercury"
@@ -873,6 +877,7 @@
     },
     {
       "code": "| Planet  | Link                |\n|---------|---------------------|\n| Mercury | [Mercury](mercury)  |\n| Mercury | ![Mercury](mercury) |\n\n[mercury]: https://example.com/mercury",
+      "language": "markdown/gfm",
       "errors": [
         {
           "messageId": "referenceLikeUrl",

@@ -60,6 +60,7 @@ type RawCase =
       options?: unknown[];
       filename?: string;
       only?: boolean;
+      language?: string;
       languageOptions?: Record<string, unknown>;
       errors?: unknown;
     };
@@ -78,6 +79,7 @@ type NormCase = {
   code: string;
   options?: unknown[];
   filename?: string;
+  language?: string;
   languageOptions?: Record<string, unknown>;
   output?: string | null;
   errors?: NormError[] | number;
@@ -238,6 +240,10 @@ function normalizeCase(raw: RawCase, isInvalid: boolean): NormCase | null {
   }
   if (typeof value.filename === 'string') {
     out.filename = value.filename;
+  }
+  // A per-case `language` override (the suite-level language lives in __generated).
+  if (typeof value.language === 'string') {
+    out.language = value.language;
   }
   if (value.languageOptions && typeof value.languageOptions === 'object') {
     const languageOptions = safeClone(value.languageOptions);
