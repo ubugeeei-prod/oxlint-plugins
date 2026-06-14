@@ -12046,19 +12046,19 @@
       },
       {
         "name": "no-equals-in-for-termination",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-equals-in-for-termination (Sonar key S888). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S888). Reports an equality operator (==, !=, ===, !==) in a for-loop termination condition only when the counter operand is advanced by a recognised non-unit additive step (i += k / i -= k / i = i ± k with k != 1). Unit steps (++, --, ± 1) are exempt per the CERT MSC21 / S888 exception. Counters with no header update, an update on a different variable, or an opaque update are not flagged, favouring fewer false positives. No upstream source, fixtures, tests, or messages consulted or copied."
       },
       {
         "name": "no-exclusive-tests",

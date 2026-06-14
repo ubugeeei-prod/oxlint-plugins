@@ -84,6 +84,7 @@ const expectedRuleNames = [
   'no-same-argument-assert',
   'inverted-assertion-arguments',
   'for-loop-increment-sign',
+  'no-equals-in-for-termination',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2435,6 +2436,33 @@ describe('for-loop-increment-sign rule', () => {
 
   it('does not report when the update variable differs from the counter', () => {
     const diagnostics = scan('for-loop-increment-sign', 'for (let i = 0, j = 0; i < 10; j++) {}');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-equals-in-for-termination rule', () => {
+  it('reports an inequality condition with a non-unit compound step', () => {
+    const diagnostics = scan('no-equals-in-for-termination', 'for (let i = 0; i != 10; i += 2) {}');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-equals-in-for-termination');
+    expect(diagnostics[0].messageId).toBe('noEqualsInForTermination');
+  });
+
+  it('reports a strict-inequality condition with a non-unit plain assignment', () => {
+    const diagnostics = scan(
+      'no-equals-in-for-termination',
+      'for (let i = 0; i !== 10; i = i + 2) {}',
+    );
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report a unit increment', () => {
+    const diagnostics = scan('no-equals-in-for-termination', 'for (let i = 0; i != 10; i++) {}');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a relational condition', () => {
+    const diagnostics = scan('no-equals-in-for-termination', 'for (let i = 0; i < 10; i += 2) {}');
     expect(diagnostics).toHaveLength(0);
   });
 });
