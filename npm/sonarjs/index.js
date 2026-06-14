@@ -185,6 +185,9 @@ const messages = Object.freeze({
     uselessIncrement:
       'Remove this useless increment or decrement; the updated value is immediately discarded.',
   },
+  'class-name': {
+    className: 'Rename this class to start with an uppercase letter (PascalCase).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -276,6 +279,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow increment and decrement operators used as a function or constructor call argument',
   'no-useless-increment':
     'Disallow assigning a postfix increment or decrement of a variable back to that same variable',
+  'class-name':
+    'Require class names to start with an uppercase letter, following the PascalCase convention',
 });
 
 const ruleTypes = Object.freeze({
@@ -327,6 +332,7 @@ const ruleTypes = Object.freeze({
   'no-nested-assignment': 'suggestion',
   'no-nested-incdec': 'suggestion',
   'no-useless-increment': 'suggestion',
+  'class-name': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -378,6 +384,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-nested-assignment': 'error',
   'no-nested-incdec': 'error',
   'no-useless-increment': 'error',
+  'class-name': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

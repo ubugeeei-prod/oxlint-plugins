@@ -3,6 +3,7 @@
 
 mod arguments_usage;
 mod array_constructor;
+mod class_name;
 mod class_prototype;
 mod comma_or_logical_or_case;
 mod constructor_for_side_effects;

@@ -142,6 +142,7 @@ describe('sonarjs plugin shape', () => {
       'no-nested-assignment',
       'no-nested-incdec',
       'no-useless-increment',
+      'class-name',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -191,6 +192,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-nested-assignment']).toBe('object');
     expect(typeof plugin.rules['no-nested-incdec']).toBe('object');
     expect(typeof plugin.rules['no-useless-increment']).toBe('object');
+    expect(typeof plugin.rules['class-name']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -242,6 +244,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-assignment']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-incdec']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-increment']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/class-name']).toBe('error');
   });
 });
 
@@ -1063,5 +1066,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-useless-increment)');
+  });
+
+  it('reports class-name through the adapter', () => {
+    const source = 'class myClass {}';
+    const reports = runRule('class-name', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('className');
+  });
+
+  it('reports class-name through the CLI', () => {
+    const source = 'class myClass {}';
+    const result = runOxlint('class-name', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(class-name)');
   });
 });

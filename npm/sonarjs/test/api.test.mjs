@@ -51,6 +51,7 @@ const expectedRuleNames = [
   'no-nested-assignment',
   'no-nested-incdec',
   'no-useless-increment',
+  'class-name',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1805,5 +1806,37 @@ describe('sonarjs native API', () => {
     const source = 'i++;';
     const diagnostics = scan('no-useless-increment', source);
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports class-name for a class starting with a lowercase letter', () => {
+    const source = 'class myClass {}';
+    const diagnostics = scan('class-name', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('class-name');
+    expect(diagnostics[0].messageId).toBe('className');
+  });
+
+  it('reports class-name for a class starting with an underscore', () => {
+    const source = 'class _Helper {}';
+    const diagnostics = scan('class-name', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report class-name for a PascalCase class', () => {
+    const source = 'class MyClass {}';
+    const diagnostics = scan('class-name', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report class-name for an anonymous default-exported class', () => {
+    const source = 'export default class {}';
+    const diagnostics = scan('class-name', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports class-name for a lowercase named class expression', () => {
+    const source = 'const C = class widget {};';
+    const diagnostics = scan('class-name', source);
+    expect(diagnostics).toHaveLength(1);
   });
 });
