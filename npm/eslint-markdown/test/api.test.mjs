@@ -66,7 +66,7 @@ describe('@eslint/markdown native API', () => {
       '[broken](#missing)',
       '(label)[https://example.com]',
       'https://example.com',
-      '* spaced *',
+      'text * spaced * here',
       '[foo][ ]',
       '<div><img src="x"></div>',
       '',
