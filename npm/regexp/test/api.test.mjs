@@ -81,6 +81,7 @@ describe('regexp native API', () => {
       'prefer-set-operation',
       'simplify-set-operations',
       'unicode-property',
+      'no-unused-capturing-group',
     ]);
   });
 

@@ -9051,19 +9051,19 @@
       },
       {
         "name": "no-unused-capturing-group",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-unused-capturing-group."
+        "notes": "Narrow form: the only fully-sound literal-only case is a capturing group inside a regex literal used directly as `/(...)/.test(x)`. RegExp#test returns only a boolean, so its capturing groups are provably unused. pattern_has_capturing_group_and_no_backreference requires at least one capturing group and no in-pattern backreference (\\1 / \\k<name>). Variable-held literals, .search/.match/.replace data-flow cases are deferred to stay valid-sound."
       },
       {
         "name": "no-useless-assertions",

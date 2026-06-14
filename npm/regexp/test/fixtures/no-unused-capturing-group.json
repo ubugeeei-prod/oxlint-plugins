@@ -1,0 +1,429 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-unused-capturing-group.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-unused-capturing-group.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n        const computed = `---\\n${Object.keys(fileIntro)\n            .map((key) => `${key}: ${yamlValue(fileIntro[key])}`)\n            .join(\"\\n\")}\\n---\\n`\n\n        const fileIntroPattern = /^---\\n(.*\\n)+---\\n*/gu\n\n        if (fileIntroPattern.test(this.content)) {\n            this.content = this.content.replace(fileIntroPattern, computed)\n        } else {\n            this.content = `${computed}${this.content.trim()}\\n`\n        }\n        "
+    },
+    {
+      "code": "\n        var replaced = '2000-12-31'.replace(/(\\d{4})-(\\d{2})-(\\d{2})/, '$1/$2/$3') // \"2000/12/31\"\n        var replaced = '2000-12-31'.replace(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/u, '$<y>/$<m>/$<d>') // \"2000/12/31\"\n\n        var isDate = /(?:\\d{4})-(?:\\d{2})-(?:\\d{2})/.test('2000-12-31') // true\n\n        var matches = '2000-12-31 2001-01-01'.match(/(\\d{4})-(\\d{2})-(\\d{2})/)\n        var y = matches[1] // \"2000\"\n        var m = matches[2] // \"12\"\n        var d = matches[3] // \"31\"\n\n        var index = '2000-12-31'.search(/(?:\\d{4})-(?:\\d{2})-(?:\\d{2})/) // 0\n        "
+    },
+    {
+      "code": "var replaced = '2000-12-31'.replace(/(\\d{4})-(\\d{2})-(\\d{2})/, (_, y, m, d) => `${y}/${m}/${d}`)"
+    },
+    {
+      "code": "\n        // var replaced = '2000-12-31'.replace(/(\\d{4})-(\\d{2})-(\\d{2})/, '$1/$2')\n        var replaced = '2000-12-31'.replace(/\\d{4}-\\d{2}-\\d{2}/, '$1/$2')\n        var replaced = (20001231).replace(/(\\d{4})-(\\d{2})-(\\d{2})/, '$1/$2')\n        var replaced = '2000-12-31'.replace(unknown, '$1/$2')\n        var replaced = '2000-12-31'.repl(/(\\d{4})-(\\d{2})-(\\d{2})/, '$1/$2')\n\n        // var isDate = /(\\d{4})-(\\d{2})-(\\d{2})/.test('2000-12-31')\n\n        // var matches = '2000-12-31 2001-01-01'.match(/(\\d{4})-(\\d{2})-(\\d{2})/g)\n        var matches = '2000-12-31 2001-01-01'.match(/\\d{4}-\\d{2}-\\d{2}/g)\n        var matches = '2000-12-31 2001-01-01'.match(unknown)\n        var matches = (20001231).match(/(\\d{4})-(\\d{2})-(\\d{2})/g)\n\n        // var index = '2000-12-31'.search(/(\\d{4})-(\\d{2})-(\\d{2})/)\n        var index = '2000-12-31'.search(/\\d{4}-\\d{2}-\\d{2}/)\n        var index = '2000-12-31'.search(unknown)\n        var index = (20001231).search(/(\\d{4})-(\\d{2})-(\\d{2})/)\n        "
+    },
+    {
+      "code": "var replaced = '2000-12-31'.replace(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/, (_, y, m, ...d) => `${y}/${m}/${d}`)"
+    },
+    {
+      "code": "\n        const regexp = /(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/\n        let re\n        while(re = regexp.exec('2000-12-31 2001-01-01')) {\n            const y = re.groups.y // \"2000\"\n            const m = re.groups.m // \"12\"\n            const d = re.groups.d // \"31\"\n        }\n        "
+    },
+    {
+      "code": "\n        const { groups: {...ymd} } = '2000-12-31'.match(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/)\n        "
+    },
+    {
+      "code": "\n        for (const matches of '2000-12-31 2000-12-31'.matchAll(/(\\d{4})-(\\d{2})-(\\d{2})/g)) {\n            var y = matches[1] // \"2000\"\n            var m = matches[2] // \"12\"\n            var d = matches[3] // \"31\"\n        }\n        "
+    },
+    {
+      "code": "\n        const s = '2000-12-31 2000-12-31'\n        const reg = /(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/g;\n        if(reg.test(s)) {\n            s.replace(reg, '$<y>/$<m>/$<d>');\n        }\n        "
+    },
+    {
+      "code": "\n        const reg = /(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/g;\n        '2000-12-31 2000-12-31'.replace(reg, '$<y>/$<m>');\n        '2000-12-31 2000-12-31'.replace(reg, '$<m>/$<d>');\n        "
+    },
+    {
+      "code": "\n        const reg = /,/;\n        'a,b,c'.split(reg)\n        "
+    },
+    {
+      "code": "\n        const reg = /(,)/;\n        'a,b,c'.split(reg)\n        "
+    },
+    {
+      "code": "\n            /* exported regexp */\n            const regexp = /(\\d{4})-(\\d{2})-(\\d{2})/\n            const replaced = '2000-12-31'.replace(regexp, 'Date') // \"Date\"\n            "
+    },
+    {
+      "code": "var replaced = '2000-12-31'.replace(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/, (_, y, m, d) => `${y}/${m}/${d}`)"
+    },
+    {
+      "code": "var replaced = '2000-12-31'.replace(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/, function (_, y, m, d) {return `${y}/${m}/${d}`})"
+    },
+    {
+      "code": "var replaced = '2000-12-31'.replaceAll(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/g, (_, y, m, d) => `${y}/${m}/${d}`)"
+    },
+    {
+      "code": "var replaced = '2000-12-31'.replace(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/, (_, y, m, d, o, s, g) => `${g.y}/${g.m}/${g.d}`)"
+    },
+    {
+      "code": "'2000-12-31'.replace(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/u, '$1/$2/$3') // \"2000/12/31\""
+    },
+    {
+      "code": "const [,y,m,d] = '2000-12-31'.match(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/)"
+    },
+    {
+      "code": "const string = 'foo:abc,bar:def'.replace(/foo:(?<foo>\\w+),bar:(?<bar>\\w+)/, (...args) => {\n            const { foo, bar } = args.at(-1);\n            return `${ bar },${ foo }`;\n        });"
+    },
+    {
+      "code": "\n        const regexp = /(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/\n        let match\n        while(match = regexp.exec(foo)) {\n            const m = [...match]\n        }\n        "
+    },
+    {
+      "code": "\n        const matches = [...('2000-12-31 2000-12-31'.matchAll(/(\\d{4})-(\\d{2})-(\\d{2})/g))]\n        "
+    },
+    {
+      "code": "\n        const bs = [...'abc_abc'.matchAll(/a(b)/g)].map(m => m[1])\n        "
+    },
+    {
+      "code": "\n        ;[...'abc_abc'.matchAll(/a(b)(c)/g)].forEach(m => console.log(m[1], m[2]))\n        "
+    },
+    {
+      "code": "\n        const filtered = [...'abc_abc_abb_acc'.matchAll(/(?<a>.)(?<b>.)(?<c>.)/g)].filter(m => m.groups.b === m.groups.c);\n        console.log(filtered[0].groups.a);\n        "
+    },
+    {
+      "code": "\n        const element = [...'abc_abc_abb_acc'.matchAll(/(?<a>.)(?<b>.)(?<c>.)/g)].find(m => m.groups.b === m.groups.c);\n        console.log(element.groups.a);\n        "
+    },
+    {
+      "code": "\n        const text = 'Lorem ipsum dolor sit amet'\n        const replaced = text.replace(/([\\q{Lorem|ipsum}])/vg, '**$1**')\n        "
+    },
+    {
+      "code": "const re = /(foo)/d\n        console.log(re.exec('foo').indices[1])\n        "
+    },
+    {
+      "code": "const re = /(?<f>foo)/d\n        console.log(re.exec('foo').indices.groups.f)\n        "
+    },
+    {
+      "code": "const re = /(foo)/d\n        console.log(re.exec('foo').indices[unknown])\n        "
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(\\d{4})-(\\d{2})-(\\d{2})/.test('2000-12-31') // true",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 1 is defined but never used.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "'2000-12-31 2001-01-01'.match(/(\\d{4})-(\\d{2})-(\\d{2})/g) // [\"2000-12-31\", \"2001-01-01\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 1 is defined but never used.",
+          "line": 1,
+          "column": 32,
+          "endColumn": 39
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "'2000-12-31'.search(/(\\d{4})-(\\d{2})-(\\d{2})/) // 0",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 1 is defined but never used.",
+          "line": 1,
+          "column": 22,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "var replaced = '2000-12-31'.replace(/(\\d{4})-(\\d{2})-(\\d{2})/, (_, y, m) => `${y}/${m}`)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 3 is defined but never used.",
+          "line": 1,
+          "column": 54,
+          "endColumn": 61
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            var replaced = '2000-12-31'.replace(/(\\d{4})-(\\d{2})-(\\d{2})/, '$4/$5/$6')\n            var replaced = '2000-12-31'.replace(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/u, '$<yy>/$<mm>/$<dd>')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 1 is defined but never used.",
+          "line": 2,
+          "column": 50,
+          "endColumn": 57
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            var replaced = '2000-12-31'.replaceAll(/(\\d{4})-(\\d{2})-(\\d{2})/g, 'foo')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 1 is defined but never used.",
+          "line": 2,
+          "column": 53,
+          "endColumn": 60
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "var index = '2000-12-31 2000-12-31'.search(/(\\d{4})-(\\d{2})-(\\d{2}) \\1-\\2-\\2/)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 3 is defined but never used.",
+          "line": 1,
+          "column": 61,
+          "endColumn": 68
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "var index = '2000-12-31 2000-12-31'.search(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2}) \\k<y>-\\k<d>-\\k<d>/)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'm' is defined but never used.",
+          "line": 1,
+          "column": 57,
+          "endColumn": 68
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            var matches = '2000-12-31'.match(/(\\d{4})-(\\d{2})-(\\d{2})/)\n            var y = matches[1] // \"2000\"\n            var m = matches[2] // \"12\"\n            // var d = matches[3] // \"31\"\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 3 is defined but never used.",
+          "line": 2,
+          "column": 63,
+          "endColumn": 70
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const groups = '2000-12-31'.match(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/).groups\n            const y = groups.y // \"2000\"\n            const d = groups.d // \"31\"\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'm' is defined but never used.",
+          "line": 2,
+          "column": 60,
+          "endColumn": 71
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const { groups } = '2000-12-31'.match(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/)\n            const y = groups.y // \"2000\"\n            const d = groups.d // \"31\"\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'm' is defined but never used.",
+          "line": 2,
+          "column": 64,
+          "endColumn": 75
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const { groups: {y,d} } = '2000-12-31'.match(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'm' is defined but never used.",
+          "line": 2,
+          "column": 71,
+          "endColumn": 82
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const {y,m} = '2000-12-31'.match(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/)[\"groups\"]\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'd' is defined but never used.",
+          "line": 2,
+          "column": 71,
+          "endColumn": 82
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const { groups: {m, d} = {} } = '2000-12-31'.match(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'y' is defined but never used.",
+          "line": 2,
+          "column": 65,
+          "endColumn": 76
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const { [\"groups\"]: {m, d} = {} } = '2000-12-31'.match(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'y' is defined but never used.",
+          "line": 2,
+          "column": 69,
+          "endColumn": 80
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            for (const matches of '2000-12-31 2000-12-31'.matchAll(/(\\d{4})-(\\d{2})-(\\d{2})/g)) {\n                var y = matches[1] // \"2000\"\n                // var m = matches[2] // \"12\"\n                // var d = matches[3] // \"31\"\n            }\n\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 2 is defined but never used.",
+          "line": 2,
+          "column": 77,
+          "endColumn": 84
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const re = '2000-12-31 2000-12-31'.matchAll(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/g)\n            for (const matches of re) {\n                var y = matches[1] // \"2000\"\n                var m = matches.groups.m // \"12\"\n                // var d = matches[3] // \"31\"\n            }\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'd' is defined but never used.",
+          "line": 2,
+          "column": 82,
+          "endColumn": 93
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            let re\n            re = '2000-12-31 2000-12-31'.matchAll(/(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/g)\n            for (const matches of re) {\n                var y = matches[1] // \"2000\"\n                var m = matches.groups.m // \"12\"\n                // var d = matches[3] // \"31\"\n            }\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'd' is defined but never used.",
+          "line": 3,
+          "column": 76,
+          "endColumn": 87
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            let re\n            re = '2000-12-31 2000-12-31'.matchAll(/(?<y>\\d{4})-(?<m>\\d{2})-(\\d{2})/g)\n            for (const matches of re) {\n                var y = matches[1] // \"2000\"\n                const {...groups} = matches.groups\n                var m = groups.m // \"12\"\n                // var d = matches[3] // \"31\"\n            }\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 3 is defined but never used.",
+          "line": 3,
+          "column": 76,
+          "endColumn": 83
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const result = [...'2000-12-31 2000-12-31'.matchAll(/(?<y>\\d{4})-(?<m>\\d{2})-(\\d{2})/g)]\n            for (const matches of result) {\n                var y = matches[1] // \"2000\"\n                var m = matches.groups.m // \"12\"\n                // var d = matches[3] // \"31\"\n            }\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 3 is defined but never used.",
+          "line": 2,
+          "column": 90,
+          "endColumn": 97
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const result = [\n                { 1: 2000, groups: { m: 12 } },\n                ...'2000-12-31 2000-12-31'.matchAll(/(?<y>\\d{4})-(?<m>\\d{2})-(\\d{2})/g),\n                ...'2000/12/31 2000/12/31'.matchAll(/(?<y>\\d{4})\\/(?<m>\\d{2})\\/(?<d>\\d{2})/g),\n            ]\n            for (const matches of result) {\n                var y = matches[1]\n                var m = matches.groups.m\n                // var d = matches[3]\n            }\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 3 is defined but never used.",
+          "line": 4,
+          "column": 78,
+          "endColumn": 85
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "var isDate = /(\\d{4})-(\\d{2})-(\\d{2})/.test(foo)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 1 is defined but never used.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 22
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const regexp = /(?<y>\\d{4})-(?<m>\\d{2})-(?<d>\\d{2})/\n            let re\n            while(re = regexp.exec(foo)) {\n                const y = re.groups.y\n                // const m = re.groups.m\n                const d = re.groups.d\n            }\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'm' is defined but never used.",
+          "line": 2,
+          "column": 41,
+          "endColumn": 52
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const regexp = /(\\d{4})-(\\d{2})-(\\d{2})/\n            let re\n            while(re = regexp.exec(foo)) {\n                const [,y,m] = re\n            }\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group number 3 is defined but never used.",
+          "line": 2,
+          "column": 45,
+          "endColumn": 52
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "'str'.replace(/(?<foo>\\w+)/, () => {});",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Capturing group 'foo' is defined but never used.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    }
+  ]
+}

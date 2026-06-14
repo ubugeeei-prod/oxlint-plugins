@@ -24,7 +24,7 @@ use crate::usage::collect_whole_pattern_regex_spans;
 
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticLoc};
 
-pub const RULE_NAMES: [&str; 76] = [
+pub const RULE_NAMES: [&str; 77] = [
     "no-invalid-regexp",
     "no-empty-character-class",
     "no-empty-group",
@@ -101,6 +101,7 @@ pub const RULE_NAMES: [&str; 76] = [
     "prefer-set-operation",
     "simplify-set-operations",
     "unicode-property",
+    "no-unused-capturing-group",
 ];
 
 pub fn implemented_regexp_rule_names() -> &'static [&'static str] {

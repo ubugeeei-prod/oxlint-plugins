@@ -117,8 +117,52 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-set-operation",
             "simplify-set-operations",
             "unicode-property",
+            "no-unused-capturing-group",
         ]
     );
+}
+
+mod no_unused_capturing_group {
+    use super::*;
+
+    #[test]
+    fn reports_capturing_group_in_test_literal() {
+        for src in [
+            "/(\\d{4})-(\\d{2})-(\\d{2})/.test('2000-12-31');",
+            "var isDate = /(\\d{4})/.test(foo);",
+            "/(?<y>\\d{4})/.test(foo);",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "no-unused-capturing-group").as_slice(),
+                &["unusedCapturingGroup"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_safe_or_unsupported_shapes() {
+        // No capturing group.
+        assert!(rule_ids_for("/(?:\\d{4})/.test(foo);", "no-unused-capturing-group").is_empty());
+        // Backreference uses the group.
+        assert!(rule_ids_for("/(\\d)\\1/.test(foo);", "no-unused-capturing-group").is_empty());
+        // Named backreference uses the group.
+        assert!(
+            rule_ids_for("/(?<a>\\d)\\k<a>/.test(foo);", "no-unused-capturing-group").is_empty()
+        );
+        // Variable receiver (might be reused elsewhere) — not handled.
+        assert!(
+            rule_ids_for(
+                "const re = /(\\d)/; re.test(foo);",
+                "no-unused-capturing-group"
+            )
+            .is_empty()
+        );
+        // `.replace` reads the group via $1 — not a `.test` call.
+        assert!(
+            rule_ids_for("'a'.replace(/(\\d)/, '$1');", "no-unused-capturing-group").is_empty()
+        );
+    }
 }
 
 mod unicode_property {
