@@ -69,6 +69,7 @@ mod prefer_single_boolean_return;
 mod prefer_while;
 mod pseudo_random;
 mod single_char_in_character_classes;
+mod single_character_alternation;
 mod todo_tag;
 mod too_many_break_or_continue_in_loop;
 mod void_use;
