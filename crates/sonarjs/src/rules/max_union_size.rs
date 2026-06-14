@@ -10,10 +10,9 @@
 //!
 //! ## Threshold
 //!
-//! The threshold is fixed at **3** (`MAX_UNION_SIZE`). SonarJS exposes a
-//! configurable `threshold` option, but this port has no per-rule options
-//! infrastructure yet. Configurability is a follow-up task; for now the
-//! default of 3 is hardcoded.
+//! The threshold mirrors SonarJS's configurable `threshold` option
+//! (`self.options.max_union_size_threshold`); when no option is supplied the
+//! SonarJS default of **3** is used.
 //!
 //! ## Counting
 //!
@@ -28,13 +27,9 @@ use crate::scanner::Scanner;
 
 pub(crate) const RULE_NAME: &str = "max-union-size";
 
-/// Maximum number of members allowed in a single union type.
-/// A union with more than this many members is flagged.
-const MAX_UNION_SIZE: usize = 3;
-
 impl Scanner<'_> {
     pub(crate) fn check_max_union_size(&mut self, union: &TSUnionType<'_>) {
-        if union.types.len() <= MAX_UNION_SIZE {
+        if union.types.len() <= self.options.max_union_size_threshold as usize {
             return;
         }
         self.report(RULE_NAME, "maxUnionSize", union.span);

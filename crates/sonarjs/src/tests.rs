@@ -8,6 +8,7 @@ use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
 fn scan(rule_name: &str, source: &str) -> SmallVec<[Diagnostic; 32]> {
     let options = SonarjsOptions {
         rule_names: [CompactString::from(rule_name)].into_iter().collect(),
+        ..SonarjsOptions::default()
     };
     scan_sonarjs(source, "sample.ts", &options)
 }
@@ -115,6 +116,7 @@ fn reports_two_diagnostics_for_doubly_nested_conditional() {
 fn disabled_rule_reports_nothing() {
     let options = SonarjsOptions {
         rule_names: SmallVec::new(),
+        ..SonarjsOptions::default()
     };
     let diagnostics = scan_sonarjs("const x = `outer ${`inner`}`;", "sample.ts", &options);
     assert!(diagnostics.is_empty());
@@ -935,7 +937,7 @@ fn does_not_report_class_prototype_for_read_expression() {
 
 #[test]
 fn reports_max_switch_cases_for_switch_with_31_cases() {
-    // 31 case clauses (indices 0..=30) — strictly greater than MAX_CASES (30) → 1 diagnostic
+    // 31 case clauses (indices 0..=30) — strictly greater than the default threshold (30) → 1 diagnostic
     let source = "switch (x) {case 0: break;case 1: break;case 2: break;case 3: break;case 4: break;case 5: break;case 6: break;case 7: break;case 8: break;case 9: break;case 10: break;case 11: break;case 12: break;case 13: break;case 14: break;case 15: break;case 16: break;case 17: break;case 18: break;case 19: break;case 20: break;case 21: break;case 22: break;case 23: break;case 24: break;case 25: break;case 26: break;case 27: break;case 28: break;case 29: break;case 30: break;}";
     let diagnostics = scan("max-switch-cases", source);
     assert_eq!(diagnostics.len(), 1);
@@ -953,7 +955,7 @@ fn does_not_report_max_switch_cases_for_small_switch() {
 
 #[test]
 fn does_not_report_max_switch_cases_for_exactly_30_cases() {
-    // 30 cases (indices 0..=29) — equal to MAX_CASES, not strictly greater → 0 diagnostics
+    // 30 cases (indices 0..=29) — equal to the default threshold, not strictly greater → 0 diagnostics
     let source = "switch (x) {case 0: break;case 1: break;case 2: break;case 3: break;case 4: break;case 5: break;case 6: break;case 7: break;case 8: break;case 9: break;case 10: break;case 11: break;case 12: break;case 13: break;case 14: break;case 15: break;case 16: break;case 17: break;case 18: break;case 19: break;case 20: break;case 21: break;case 22: break;case 23: break;case 24: break;case 25: break;case 26: break;case 27: break;case 28: break;case 29: break;}";
     let diagnostics = scan("max-switch-cases", source);
     assert!(diagnostics.is_empty());
@@ -2242,4 +2244,39 @@ fn reports_class_name_for_lowercase_class_expression() {
     let source = "const C = class widget {};";
     let diagnostics = scan("class-name", source);
     assert_eq!(diagnostics.len(), 1);
+}
+
+fn options_for(rule_name: &str) -> SonarjsOptions {
+    SonarjsOptions {
+        rule_names: [CompactString::from(rule_name)].into_iter().collect(),
+        ..SonarjsOptions::default()
+    }
+}
+
+#[test]
+fn max_switch_cases_respects_custom_threshold() {
+    let mut options = options_for("max-switch-cases");
+    options.max_switch_cases_threshold = 2;
+    let three = "switch (x) { case 1: break; case 2: break; case 3: break; }";
+    assert_eq!(scan_sonarjs(three, "sample.ts", &options).len(), 1);
+    let two = "switch (x) { case 1: break; case 2: break; }";
+    assert!(scan_sonarjs(two, "sample.ts", &options).is_empty());
+}
+
+#[test]
+fn max_switch_cases_uses_default_threshold_when_unset() {
+    // The default threshold is 30, so a 3-case switch is not flagged by default.
+    let source = "switch (x) { case 1: break; case 2: break; case 3: break; }";
+    let diagnostics = scan("max-switch-cases", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn max_union_size_respects_custom_threshold() {
+    let mut options = options_for("max-union-size");
+    options.max_union_size_threshold = 2;
+    let three = "type T = A | B | C;";
+    assert_eq!(scan_sonarjs(three, "sample.ts", &options).len(), 1);
+    let two = "type T = A | B;";
+    assert!(scan_sonarjs(two, "sample.ts", &options).is_empty());
 }

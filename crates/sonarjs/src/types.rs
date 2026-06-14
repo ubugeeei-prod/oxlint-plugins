@@ -39,10 +39,15 @@ pub struct Diagnostic {
     pub fix: Option<DiagnosticFix>,
 }
 
-/// Per-scan options: the set of enabled rule names.
+/// Per-scan options: the set of enabled rule names plus per-rule thresholds
+/// that mirror the configurable options of the corresponding SonarJS rules.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SonarjsOptions {
     pub rule_names: SmallVec<[CompactString; 32]>,
+    /// Threshold for `max-switch-cases` (S1479); the SonarJS default is 30.
+    pub max_switch_cases_threshold: u32,
+    /// Threshold for `max-union-size` (S4622); the SonarJS default is 3.
+    pub max_union_size_threshold: u32,
 }
 
 impl Default for SonarjsOptions {
@@ -52,6 +57,8 @@ impl Default for SonarjsOptions {
                 .iter()
                 .map(|rule_name| CompactString::from(*rule_name))
                 .collect(),
+            max_switch_cases_threshold: 30,
+            max_union_size_threshold: 3,
         }
     }
 }
