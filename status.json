@@ -5015,19 +5015,19 @@
       },
       {
         "name": "consistent-reindex-concurrently",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule consistent-reindex-concurrently."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/consistent-reindex-concurrently; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "consistent-text-over-varchar",
