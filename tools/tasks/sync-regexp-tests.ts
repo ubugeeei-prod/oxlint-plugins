@@ -245,7 +245,24 @@ async function captureTests(
 ): Promise<CapturedTests> {
   // Copy into a temp dir so that bare specifiers (eslint-snapshot-rule-tester)
   // are resolved relative to the temp file and hit the hook chain on Node 24.
-  const tempFile = join(tempDir, `${rule}.ts`);
+  //
+  // The copy is nested three directory levels under `tempDir` and the submodule
+  // `tsconfig.json` is mirrored at `tempDir/tsconfig.json`. This makes the
+  // `require.resolve("../../../tsconfig.json")` that some test files evaluate at
+  // import time (e.g. the TypeScript-project cases in
+  // `prefer-result-array-groups`) resolve to the mirrored file instead of
+  // throwing. Those option/filename-bearing cases are dropped later, but the
+  // module body must still evaluate to capture the remaining cases.
+  const nestedDir = join(tempDir, 'd1', 'd2', 'd3');
+  mkdirSync(nestedDir, { recursive: true });
+  const submoduleTsconfig = join(SUBMODULE, 'tsconfig.json');
+  if (existsSync(submoduleTsconfig)) {
+    const mirror = join(tempDir, 'tsconfig.json');
+    if (!existsSync(mirror)) {
+      writeFileSync(mirror, readFileSync(submoduleTsconfig, 'utf8'));
+    }
+  }
+  const tempFile = join(nestedDir, `${rule}.ts`);
   writeFileSync(tempFile, readFileSync(testFile, 'utf8'));
 
   (globalThis as Record<string, unknown>)[CAPTURE_KEY] = null;

@@ -49,6 +49,7 @@ impl<'a> Scanner<'a> {
                 self.scan_expression(&member.object);
             }
             Expression::ComputedMemberExpression(member) => {
+                self.check_prefer_result_array_groups(member);
                 self.scan_expression(&member.object);
                 self.scan_expression(&member.expression);
             }
@@ -169,6 +170,7 @@ impl<'a> Scanner<'a> {
                     self.scan_expression(&member.object);
                 }
                 ChainElement::ComputedMemberExpression(member) => {
+                    self.check_prefer_result_array_groups(member);
                     self.scan_expression(&member.object);
                     self.scan_expression(&member.expression);
                 }

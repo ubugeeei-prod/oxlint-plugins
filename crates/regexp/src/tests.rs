@@ -118,8 +118,85 @@ fn exposes_initial_regexp_rule_names() {
             "simplify-set-operations",
             "unicode-property",
             "no-unused-capturing-group",
+            "prefer-result-array-groups",
         ]
     );
+}
+
+mod prefer_result_array_groups {
+    use super::*;
+
+    #[test]
+    fn reports_numeric_index_to_named_group() {
+        for src in [
+            // One variable hop via `.match`.
+            "const arr = 'str'.match(/a(?<foo>b)c/);\nconst p1 = arr[1];",
+            // Inline `.exec` indexing.
+            "/(?<foo>foo)/u.exec(str)[1];",
+            // Variable hop via `.exec`.
+            "const m = /(?<bar>bar)/u.exec(str);\nm[1];",
+            // Second group is the named one.
+            "const arr = 'str'.match(/(a)(?<foo>b)c/);\nconst p2 = arr[2];",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "prefer-result-array-groups").as_slice(),
+                &["unexpected"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_unnamed_or_unsupported_shapes() {
+        // Unnamed group — no named alternative.
+        assert!(
+            rule_ids_for(
+                "const arr = 'str'.match(/a(b)c/);\nconst p1 = arr[1];",
+                "prefer-result-array-groups"
+            )
+            .is_empty()
+        );
+        // Index 0 is the whole match.
+        assert!(
+            rule_ids_for(
+                "const arr = 'str'.match(/(?<foo>b)/);\nconst p0 = arr[0];",
+                "prefer-result-array-groups"
+            )
+            .is_empty()
+        );
+        // `.match` with `g` flag returns a flat string array.
+        assert!(
+            rule_ids_for(
+                "const arr = 'str'.match(/a(?<foo>b)c/g);\nconst p1 = arr[1];",
+                "prefer-result-array-groups"
+            )
+            .is_empty()
+        );
+        // Unknown (non-string) receiver for `.match`.
+        assert!(
+            rule_ids_for(
+                "const arr = unknown.match(/a(?<foo>b)c/);\nconst p1 = arr[1];",
+                "prefer-result-array-groups"
+            )
+            .is_empty()
+        );
+        // `.groups` access — already preferred.
+        assert!(
+            rule_ids_for(
+                "const arr = 'str'.match(/a(?<foo>b)c/);\nconst p1 = arr.groups.foo;",
+                "prefer-result-array-groups"
+            )
+            .is_empty()
+        );
+        // Index beyond the named group position.
+        assert!(
+            rule_ids_for(
+                "const arr = 'str'.match(/(?<foo>a)/);\nconst p2 = arr[2];",
+                "prefer-result-array-groups"
+            )
+            .is_empty()
+        );
+    }
 }
 
 mod no_unused_capturing_group {
