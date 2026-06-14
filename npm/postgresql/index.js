@@ -1006,9 +1006,9 @@ const ruleMeta = Object.freeze({
     },
   },
   'require-fk-include-columns': {
-    type: 'suggestion',
+    type: 'problem',
     description:
-      'Require that every foreign-key constraint includes a configurable set of columns (e.g. a tenant key) so that child rows cannot reference a parent in a different tenant',
+      'Require every foreign-key constraint to include a configured set of columns (e.g. `tenant_id` in a multi-tenant database)',
     recommended: false,
     fixable: undefined,
     schema: [
@@ -1018,6 +1018,8 @@ const ruleMeta = Object.freeze({
           columns: {
             type: 'array',
             items: { type: 'string' },
+            uniqueItems: true,
+            minItems: 1,
           },
           excludeTablePattern: { type: 'string' },
           excludeReferencedTablePattern: { type: 'string' },
