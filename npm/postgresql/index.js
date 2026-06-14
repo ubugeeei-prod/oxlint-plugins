@@ -112,6 +112,18 @@ const ruleMeta = Object.freeze({
         '`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table.',
     },
   },
+  'no-equality-with-null': {
+    type: 'problem',
+    description:
+      "Disallow `x = NULL` / `x <> NULL`; PostgreSQL's three-valued logic makes both expressions evaluate to NULL (i.e. neither true nor false), which silently filters away rows the author probably wanted",
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      useIsNull:
+        '`{{op}} NULL` always evaluates to NULL (treated as false). Use `IS NULL` / `IS NOT NULL` instead.',
+    },
+  },
   'no-group-by-ordinal': {
     type: 'suggestion',
     description:
