@@ -8987,19 +8987,19 @@
       },
       {
         "name": "no-super-linear-backtracking",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-super-linear-backtracking."
+        "notes": "Narrow form: the canonical nested-unbounded-quantifier shape `(<atom><unbounded>)<unbounded>` (e.g. `(?:a+)+`, `(a*)*`), where the group body is exactly one atom with an unbounded greedy quantifier and the group is itself unbounded-quantified. The inner quantifier can reach itself through the outer loop, causing exponential backtracking (self). Anchored bodies like `(a+b)+`, bounded quantifiers, and unquantified outers/inners are excluded to stay valid-sound."
       },
       {
         "name": "no-super-linear-move",

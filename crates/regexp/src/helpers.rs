@@ -2709,6 +2709,74 @@ pub(crate) fn has_unnecessary_general_category_key(pattern: &str) -> bool {
     false
 }
 
+/// Narrow-form detector for `no-super-linear-backtracking`.
+///
+/// Returns `true` for the canonical nested-unbounded-quantifier shape
+/// `(<atom><unbounded>)<unbounded>` — a group whose body is exactly a single
+/// atom followed by an unbounded greedy quantifier (`+`, `*`, or `{n,}`), and
+/// the group itself is immediately followed by another unbounded greedy
+/// quantifier. Examples: `(?:a+)+`, `(a*)*`, `(?:\w+){2,}`.
+///
+/// Such a shape lets the inner quantifier reach itself through the outer loop,
+/// producing (at least) exponential backtracking on a non-matching suffix.
+///
+/// Deliberately narrow: the group body must be *exactly* one quantified atom
+/// (so anchored shapes like `(a+b)+`, whose required `b` bounds the
+/// backtracking, are never flagged) and both quantifiers must be unbounded and
+/// greedy. Other super-linear shapes (`a+a+`, alternation loops) are deferred
+/// to keep the detector valid-sound.
+pub(crate) fn has_super_linear_backtracking(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'(' {
+            // Locate the body start (skip a non-capturing / named prefix).
+            let body_start = group_body_start_any(bytes, index);
+            // Body must be exactly `<atom><unbounded-quant>` then `)`.
+            if let Some((_, atom_end)) = misleading_atom_at(bytes, body_start)
+                && let Some(after_inner) = greedy_quantifier_end(bytes, atom_end)
+                && bytes.get(after_inner) == Some(&b')')
+                // …and the group is itself followed by an unbounded greedy quant.
+                && greedy_quantifier_end(bytes, after_inner + 1).is_some()
+            {
+                return true;
+            }
+            index += 1;
+            continue;
+        }
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                index = find_class_end(bytes, index).map_or(index + 1, |close| close + 1);
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Returns the index of the first body byte of the group whose `(` is at
+/// `open`, skipping a `(?:` / `(?=` / `(?!` / `(?<=` / `(?<!` / `(?<name>`
+/// prefix. For a bare `(` it returns `open + 1`.
+fn group_body_start_any(bytes: &[u8], open: usize) -> usize {
+    if bytes.get(open + 1) == Some(&b'?') {
+        match bytes.get(open + 2) {
+            Some(b':') | Some(b'=') | Some(b'!') => return open + 3,
+            Some(b'<') => {
+                // `(?<=` / `(?<!` (lookbehind) or `(?<name>` (named capture).
+                if matches!(bytes.get(open + 3), Some(b'=') | Some(b'!')) {
+                    return open + 4;
+                }
+                if let Some(rel) = bytes[open + 3..].iter().position(|&b| b == b'>') {
+                    return open + 3 + rel + 1;
+                }
+            }
+            _ => {}
+        }
+    }
+    open + 1
+}
+
 /// Narrow-form detector for `no-misleading-capturing-group`.
 ///
 /// Returns `true` when the pattern contains the canonical "already included"

@@ -121,8 +121,49 @@ fn exposes_initial_regexp_rule_names() {
             "prefer-result-array-groups",
             "prefer-lookaround",
             "no-misleading-capturing-group",
+            "no-super-linear-backtracking",
         ]
     );
+}
+
+mod no_super_linear_backtracking {
+    use super::*;
+
+    #[test]
+    fn reports_nested_unbounded_quantifiers() {
+        for src in [
+            // Non-capturing nested: `(?:a+)+`.
+            "const re = /b(?:a+)+b/;",
+            // Capturing nested: `(a*)*`.
+            "const re = /(a*)*/;",
+            // Mixed: `(?:a+)*`.
+            "const re = /(?:a+)*/;",
+            // Brace outer: `(?:\\w+){2,}`.
+            "const re = /(?:\\w+){2,}/;",
+            // Class atom: `([ab]+)+`.
+            "const re = /([ab]+)+/;",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "no-super-linear-backtracking").as_slice(),
+                &["self"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_safe_or_unsupported_shapes() {
+        // No nesting — top-level quantifiers only.
+        assert!(rule_ids_for("const re = /a+b+a+b+/;", "no-super-linear-backtracking").is_empty());
+        // Group body has an anchoring tail (`a+b`), so backtracking is bounded.
+        assert!(rule_ids_for("const re = /(?:a+b)+/;", "no-super-linear-backtracking").is_empty());
+        // Outer group not quantified.
+        assert!(rule_ids_for("const re = /(?:a+)b/;", "no-super-linear-backtracking").is_empty());
+        // Inner atom not quantified (`(?:a)+` is linear).
+        assert!(rule_ids_for("const re = /(?:a)+/;", "no-super-linear-backtracking").is_empty());
+        // Bounded inner quantifier `(?:a{2})+` — not unbounded.
+        assert!(rule_ids_for("const re = /(?:a{2})+/;", "no-super-linear-backtracking").is_empty());
+    }
 }
 
 mod no_misleading_capturing_group {

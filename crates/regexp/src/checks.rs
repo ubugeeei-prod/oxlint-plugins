@@ -19,11 +19,11 @@ use crate::helpers::{
     first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, group_prefix,
     has_assertion_contradiction, has_mergeable_quantifier_concatenation,
     has_misleading_capturing_group, has_preferable_set_operation, has_simplifiable_set_operation,
-    has_standalone_backslash, has_unnecessary_general_category_key, has_useless_set_operand,
-    has_useless_word_boundary, mention_char, pattern_ends_with_lazy_quantifier,
-    pattern_has_capturing_group_and_no_backreference, pattern_has_empty_string_literal,
-    pattern_is_safe_to_add_i_flag, prefer_lookaround_groups, skip_escape, sorted_flags,
-    string_literal_value_with_span,
+    has_standalone_backslash, has_super_linear_backtracking, has_unnecessary_general_category_key,
+    has_useless_set_operand, has_useless_word_boundary, mention_char,
+    pattern_ends_with_lazy_quantifier, pattern_has_capturing_group_and_no_backreference,
+    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, prefer_lookaround_groups,
+    skip_escape, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -1125,6 +1125,14 @@ impl<'a> Scanner<'a> {
         // consumes every `A` so the group's `*` always captures empty.
         if has_misleading_capturing_group(pattern) {
             self.report("no-misleading-capturing-group", "removeQuant", span);
+        }
+
+        // `no-super-linear-backtracking` (narrow form): the nested
+        // unbounded-quantifier shape `(<atom><unbounded>)<unbounded>` (e.g.
+        // `(?:a+)+`), where the inner quantifier can reach itself through the
+        // outer loop and cause exponential backtracking.
+        if has_super_linear_backtracking(pattern) {
+            self.report("no-super-linear-backtracking", "self", span);
         }
 
         // `no-potentially-useless-backreference` (narrow form): only flag the
