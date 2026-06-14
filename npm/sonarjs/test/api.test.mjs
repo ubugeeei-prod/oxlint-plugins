@@ -46,6 +46,7 @@ const expectedRuleNames = [
   'no-sonar-comments',
   'array-constructor',
   'no-function-declaration-in-block',
+  'no-inconsistent-returns',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1637,5 +1638,40 @@ describe('sonarjs native API', () => {
     const source = 'if (cond) {\n  const f = function () {};\n}';
     const diagnostics = scan('no-function-declaration-in-block', source);
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-inconsistent-returns for a function mixing value and bare returns', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  return x.value;\n}';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-inconsistent-returns');
+    expect(diagnostics[0].messageId).toBe('inconsistentReturns');
+  });
+
+  it('reports no-inconsistent-returns for an arrow mixing value and bare returns', () => {
+    const source = 'const f = (x) => {\n  if (!x) return;\n  return 1;\n};';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-inconsistent-returns when all returns yield a value', () => {
+    const source = 'function f(x) {\n  if (!x) return 0;\n  return x.value;\n}';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-inconsistent-returns when all returns are bare', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  doWork();\n  return;\n}';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-inconsistent-returns only for the inconsistent nested function', () => {
+    // outer returns only a value; inner mixes value and bare returns. Only inner
+    // is flagged, proving each scope tracks its own returns on a separate frame.
+    const source =
+      'function outer() {\n  return 1;\n  function inner() {\n    if (a) return;\n    return 2;\n  }\n}';
+    const diagnostics = scan('no-inconsistent-returns', source);
+    expect(diagnostics).toHaveLength(1);
   });
 });

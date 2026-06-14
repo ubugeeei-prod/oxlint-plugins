@@ -3,12 +3,13 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, BindingIdentifier, BlockStatement, CallExpression,
-    CatchClause, ConditionalExpression, DoWhileStatement, ExpressionStatement, ForInStatement,
-    ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
-    LabeledStatement, LogicalExpression, NewExpression, Program, RegExpLiteral,
-    StaticMemberExpression, SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature,
-    TSUnionType, TemplateLiteral, UnaryExpression, WhileStatement, YieldExpression,
+    ArrowFunctionExpression, AssignmentExpression, BinaryExpression, BindingIdentifier,
+    BlockStatement, CallExpression, CatchClause, ConditionalExpression, DoWhileStatement,
+    ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function, FunctionBody,
+    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, NewExpression, Program,
+    RegExpLiteral, ReturnStatement, StaticMemberExpression, SwitchCase, SwitchStatement,
+    TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, UnaryExpression,
+    WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -37,6 +38,12 @@ pub(crate) struct Scanner<'a> {
     /// entry to a generator with a body and popped on exit; `generator-without-yield`
     /// reports generators whose frame is still `false` when popped.
     pub(crate) generator_yield_stack: SmallVec<[bool; 8]>,
+    /// Stack of frames, one per currently-open function or arrow scope, tracking
+    /// whether that scope has seen an explicit value `return x;` and an explicit
+    /// bare `return;`. Each tuple is `(span, has_value_return, has_bare_return)`.
+    /// Pushed on entry to a function/arrow and popped on exit;
+    /// `no-inconsistent-returns` reports a scope whose frame has both kinds set.
+    pub(crate) return_kind_stack: SmallVec<[(Span, bool, bool); 8]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -240,8 +247,21 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
         let track = self.enter_generator(it);
+        self.enter_return_scope(it.span);
         walk::walk_function(self, it, flags);
+        self.leave_return_scope();
         self.leave_generator(it, track);
+    }
+
+    fn visit_arrow_function_expression(&mut self, it: &ArrowFunctionExpression<'a>) {
+        self.enter_return_scope(it.span);
+        walk::walk_arrow_function_expression(self, it);
+        self.leave_return_scope();
+    }
+
+    fn visit_return_statement(&mut self, it: &ReturnStatement<'a>) {
+        self.record_return(it.argument.is_some());
+        walk::walk_return_statement(self, it);
     }
 
     fn visit_yield_expression(&mut self, it: &YieldExpression<'a>) {
