@@ -2257,7 +2257,7 @@
           "lsp": true,
           "oxlintIntegration": false
         },
-        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-duplicate-keys; duplicate string and JSON5-style keys are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-duplicate-keys; duplicate string and JSON5-style keys are covered by the upstream @eslint/json RuleTester suite, replayed at exact parity (messageId, data, location, and autofix output) via synced fixtures (test/upstream.test.mjs), plus native API tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
       },
       {
         "name": "no-empty-keys",
@@ -2273,7 +2273,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-empty-keys; empty quoted keys are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-empty-keys; empty quoted keys are covered by the upstream @eslint/json RuleTester suite, replayed at exact parity (messageId, data, location, and autofix output) via synced fixtures (test/upstream.test.mjs), plus native API tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
       },
       {
         "name": "no-unnormalized-keys",
@@ -2289,7 +2289,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-unnormalized-keys; NFC/NFKD options and safe key fixes are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-unnormalized-keys; NFC/NFKD options and safe key fixes are covered by the upstream @eslint/json RuleTester suite, replayed at exact parity (messageId, data, location, and autofix output) via synced fixtures (test/upstream.test.mjs), plus native API tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
       },
       {
         "name": "no-unsafe-values",
@@ -2305,7 +2305,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-unsafe-values; unsafe integers, infinity, underflow-to-zero, subnormal numbers, and lone surrogates are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/no-unsafe-values; unsafe integers, infinity, underflow-to-zero, subnormal numbers, and lone surrogates are covered by the upstream @eslint/json RuleTester suite, replayed at exact parity (messageId, data, location, and autofix output) via synced fixtures (test/upstream.test.mjs), plus native API tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
       },
       {
         "name": "sort-keys",
@@ -2321,7 +2321,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/sort-keys; direction, case sensitivity, natural ordering, minKeys, and blank-line grouping are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/sort-keys; direction, case sensitivity, natural ordering, minKeys, and blank-line grouping are covered by the upstream @eslint/json RuleTester suite, replayed at exact parity (messageId, data, location, and autofix output) via synced fixtures (test/upstream.test.mjs), plus native API tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
       },
       {
         "name": "top-level-interop",
@@ -2337,7 +2337,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/top-level-interop; scalar top-level values are covered through native API and direct adapter Vitest tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
+        "notes": "Rust JSON/JSONC/JSON5 parser port of @eslint/json/top-level-interop; scalar top-level values are covered by the upstream @eslint/json RuleTester suite, replayed at exact parity (messageId, data, location, and autofix output) via synced fixtures (test/upstream.test.mjs), plus native API tests. Oxlint 1.68 does not select .json files for jsPlugins, so CLI integration is not available yet."
       }
     ]
   },
