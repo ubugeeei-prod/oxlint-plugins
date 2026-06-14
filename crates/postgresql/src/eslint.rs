@@ -187,17 +187,25 @@ fn traverse_visitor_keys(node: &Value, visitor_keys: &mut Map<String, Value>) {
         visitor_keys.insert(ty.clone(), Value::Array(Vec::new()));
     }
 
-    for (key, value) in object {
+    // Upstream's `buildVisitorKeys` walks JS objects, whose key iteration order
+    // puts integer-index keys first (ascending), then the remaining keys in
+    // insertion order. Array-valued wrappers spread into `"0"`, `"1"`, … keys
+    // (see `manipulate::add_types`) rely on that ordering, so reproduce it here
+    // rather than using serde_json's raw insertion order.
+    for key in js_key_order(object) {
         if SKIP_KEYS.contains(&key.as_str()) {
             continue;
         }
+        let Some(value) = object.get(&key) else {
+            continue;
+        };
         match value {
             Value::Array(items) => {
                 let contains_object = items.iter().any(Value::is_object);
                 // Upstream adds the key when the array holds an object *or* is
                 // simply non-empty (so non-empty primitive arrays count too).
                 if contains_object || !items.is_empty() {
-                    add_visitor_key(visitor_keys, &ty, key);
+                    add_visitor_key(visitor_keys, &ty, &key);
                 }
                 if contains_object {
                     for item in items {
@@ -206,12 +214,47 @@ fn traverse_visitor_keys(node: &Value, visitor_keys: &mut Map<String, Value>) {
                 }
             }
             Value::Object(_) => {
-                add_visitor_key(visitor_keys, &ty, key);
+                add_visitor_key(visitor_keys, &ty, &key);
                 traverse_visitor_keys(value, visitor_keys);
             }
             _ => {}
         }
     }
+}
+
+/// Return `object`'s keys in JavaScript property-iteration order: canonical
+/// array-index keys (`"0"`, `"1"`, …) first in ascending numeric order, then the
+/// remaining keys in insertion order. Mirrors the order upstream's JS
+/// `Object.entries`/`Object.keys` yields.
+fn js_key_order(object: &Map<String, Value>) -> Vec<String> {
+    let mut index_keys: Vec<u32> = Vec::new();
+    let mut other_keys: Vec<String> = Vec::new();
+    for key in object.keys() {
+        match array_index(key) {
+            Some(index) => index_keys.push(index),
+            None => other_keys.push(key.clone()),
+        }
+    }
+    index_keys.sort_unstable();
+    let mut ordered: Vec<String> = index_keys.into_iter().map(|i| i.to_string()).collect();
+    ordered.extend(other_keys);
+    ordered
+}
+
+/// Parse `key` as a canonical JS array index (`"0"` or a non-zero-leading run of
+/// digits within `u32`), matching V8's integer-key fast path. Returns `None` for
+/// non-index keys (e.g. `"typmod"`, or `"01"`).
+fn array_index(key: &str) -> Option<u32> {
+    if key == "0" {
+        return Some(0);
+    }
+    if key.starts_with('0') || key.is_empty() {
+        return None;
+    }
+    if !key.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    key.parse::<u32>().ok()
 }
 
 fn add_visitor_key(visitor_keys: &mut Map<String, Value>, ty: &str, key: &str) {
