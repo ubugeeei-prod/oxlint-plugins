@@ -4902,3 +4902,76 @@ fn does_not_report_no_literal_call_for_plain_template_literal() {
     let diagnostics = scan("no-literal-call", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_shorthand_property_grouping_split_by_regular_property() {
+    let source = "const o = { a, x: 1, b };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "shorthand-property-grouping");
+    assert_eq!(diagnostics[0].message_id, "groupShorthand");
+}
+
+#[test]
+fn reports_shorthand_property_grouping_lone_middle_shorthand() {
+    let source = "const o = { x: 1, a, y: 2 };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "groupShorthand");
+}
+
+#[test]
+fn reports_shorthand_property_grouping_split_by_spread() {
+    let source = "const o = { a, ...rest, b };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_shorthand_property_grouping_two_blocks() {
+    let source = "const o = { a, x: 1, y: 2, b };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_shorthand_property_grouping_grouped_at_start() {
+    let source = "const o = { a, b, x: 1 };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_shorthand_property_grouping_grouped_at_end() {
+    let source = "const o = { x: 1, a, b };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_shorthand_property_grouping_all_shorthand() {
+    let source = "const o = { a, b, c };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_shorthand_property_grouping_no_shorthand() {
+    let source = "const o = { x: 1, y: 2 };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_shorthand_property_grouping_single_shorthand() {
+    let source = "const o = { a };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_shorthand_property_grouping_spread_then_shorthand() {
+    let source = "const o = { ...rest, a, b };";
+    let diagnostics = scan("shorthand-property-grouping", source);
+    assert!(diagnostics.is_empty());
+}

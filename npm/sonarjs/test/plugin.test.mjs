@@ -184,6 +184,7 @@ describe('sonarjs plugin shape', () => {
       'misplaced-loop-counter',
       'no-array-delete',
       'no-literal-call',
+      'shorthand-property-grouping',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -274,6 +275,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['misplaced-loop-counter']).toBe('object');
     expect(typeof plugin.rules['no-array-delete']).toBe('object');
     expect(typeof plugin.rules['no-literal-call']).toBe('object');
+    expect(typeof plugin.rules['shorthand-property-grouping']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -372,6 +374,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/misplaced-loop-counter']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-array-delete']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-literal-call']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/shorthand-property-grouping']).toBe('error');
   });
 });
 
@@ -2759,5 +2762,42 @@ describe('no-literal-call rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-literal-call)');
+  });
+});
+
+describe('shorthand-property-grouping rule', () => {
+  it('reports shorthand properties split by a regular property', () => {
+    const source = 'const o = { a, x: 1, b };';
+    const reports = runRule('shorthand-property-grouping', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('groupShorthand');
+  });
+
+  it('reports a lone shorthand property in the middle', () => {
+    const source = 'const o = { x: 1, a, y: 2 };';
+    const reports = runRule('shorthand-property-grouping', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('groupShorthand');
+  });
+
+  it('does not report shorthand grouped at the beginning', () => {
+    const source = 'const o = { a, b, x: 1 };';
+    const reports = runRule('shorthand-property-grouping', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an all-shorthand object', () => {
+    const source = 'const o = { a, b };';
+    const reports = runRule('shorthand-property-grouping', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports shorthand-property-grouping through the CLI', () => {
+    const source = 'const o = { a, x: 1, b };';
+    const result = runOxlint('shorthand-property-grouping', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(shorthand-property-grouping)');
   });
 });
