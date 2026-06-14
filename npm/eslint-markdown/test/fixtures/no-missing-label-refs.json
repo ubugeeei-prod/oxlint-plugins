@@ -273,7 +273,8 @@
         {
           "allowLabels": ["-"]
         }
-      ]
+      ],
+      "language": "markdown/gfm"
     },
     {
       "code": "$(A \\\\cdot x)[i] = \\\\sum_{j=1}^{n} A[i][j] , x[j]$",
