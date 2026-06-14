@@ -100,6 +100,27 @@ const ruleMeta = Object.freeze({
       unexpectedInnerJoin: 'Omit the redundant `INNER`; use bare `JOIN` for inner joins.',
     },
   },
+  'consistent-explicit-outer-join': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on the explicit `OUTER` keyword in outer joins (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferOuterJoin: 'Write `{{side}} OUTER JOIN` explicitly instead of `{{side}} JOIN`.',
+      unexpectedOuterJoin:
+        'Omit the redundant `OUTER`; use `{{side}} JOIN` instead of `{{side}} OUTER JOIN`.',
+    },
+  },
   'consistent-identity-over-serial': {
     type: 'suggestion',
     description:
