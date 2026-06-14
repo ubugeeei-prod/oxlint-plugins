@@ -17,6 +17,28 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'consistent-create-or-replace': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `CREATE OR REPLACE` for `FUNCTION` / `PROCEDURE` / `VIEW` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferOrReplace:
+        'Use `CREATE OR REPLACE {{kind}}` so re-running this migration does not abort with `relation already exists`.',
+      unexpectedOrReplace:
+        'Avoid `CREATE OR REPLACE {{kind}}`; drop and re-create the object explicitly so unintended overwrites are surfaced.',
+    },
+  },
   'consistent-identity-over-serial': {
     type: 'suggestion',
     description:
