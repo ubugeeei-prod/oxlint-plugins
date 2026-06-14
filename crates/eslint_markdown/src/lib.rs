@@ -8,6 +8,7 @@ use regex::Regex;
 // mdast-based rules) rather than the regex `MarkdownFacts`. The tree is parsed
 // once per scan only when one of these rules is active.
 const MDAST_RULES: &[&str] = &[
+    "no-duplicate-headings",
     "no-empty-definitions",
     "no-unused-definitions",
     "require-alt-text",
@@ -276,8 +277,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("no-duplicate-definitions") {
         scan_duplicate_definitions(source_text, &line_index, &facts, options, &mut diagnostics);
     }
-    if options.is_enabled("no-duplicate-headings") {
-        scan_duplicate_headings(source_text, &line_index, &facts, options, &mut diagnostics);
+    if options.is_enabled("no-duplicate-headings")
+        && let Some(tree) = &mdast
+    {
+        scan_duplicate_headings(source_text, &line_index, tree, options, &mut diagnostics);
     }
     if options.is_enabled("no-empty-definitions")
         && let Some(tree) = &mdast
@@ -884,44 +887,136 @@ fn scan_duplicate_definitions(
 fn scan_duplicate_headings(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     options: &ScanOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let mut all_seen = FastHashSet::<CompactString>::default();
-    let mut seen_by_parent = FastHashSet::<(usize, u8, CompactString)>::default();
-    let mut parent_stack = [0usize; 6];
-    let mut headings = facts.headings.iter().collect::<SmallVec<[_; 16]>>();
-    headings.sort_by_key(|heading| heading.span.start);
-    for (index, heading) in headings.into_iter().enumerate() {
-        let key = normalize_heading_text(heading.text.as_str());
-        let duplicate = if options.check_duplicate_headings_siblings_only {
-            let depth_index = usize::from(heading.depth.saturating_sub(1));
-            for value in parent_stack.iter_mut().skip(depth_index) {
-                *value = 0;
+    // (depth, structural-sequence key, display text, span), in document order.
+    let mut headings: SmallVec<[(u8, CompactString, CompactString, ByteSpan); 16]> =
+        SmallVec::new();
+    visit_mdast(tree, &mut |node| {
+        if let mdast::Node::Heading(heading) = node
+            && let Some(span) = node_span(node)
+        {
+            let (sequence, text) = heading_sequence_and_text(node);
+            headings.push((heading.depth, sequence, text, span));
+        }
+    });
+
+    if options.check_duplicate_headings_siblings_only {
+        // Per-level sets: descending to a shallower level clears the deeper ones,
+        // so only true siblings collide.
+        let mut by_level: [FastHashSet<CompactString>; 7] =
+            core::array::from_fn(|_| FastHashSet::default());
+        let mut last_level = 1u8;
+        for (depth, sequence, text, span) in &headings {
+            let level = (*depth).clamp(1, 6);
+            if level < last_level {
+                for set in by_level
+                    .iter_mut()
+                    .take(usize::from(last_level) + 1)
+                    .skip(usize::from(level) + 1)
+                {
+                    set.clear();
+                }
             }
-            let parent_id = if depth_index == 0 {
-                0
-            } else {
-                parent_stack[depth_index - 1]
-            };
-            parent_stack[depth_index] = index + 1;
-            !seen_by_parent.insert((parent_id, heading.depth, key))
-        } else {
-            !all_seen.insert(key.clone())
-        };
-        if duplicate {
-            diagnostics.push(Diagnostic {
-                rule_name: "no-duplicate-headings",
-                message_id: "duplicateHeading",
-                data: DiagnosticData {
-                    text: Some(heading.text.clone()),
-                    ..DiagnosticData::default()
-                },
-                loc: line_index.loc_for_span(source_text, heading.span),
-                fix: None,
+            last_level = level;
+            if !by_level[usize::from(level)].insert(sequence.clone()) {
+                push_duplicate_heading(source_text, line_index, text, *span, diagnostics);
+            }
+        }
+    } else {
+        let mut seen = FastHashSet::<CompactString>::default();
+        for (_, sequence, text, span) in &headings {
+            if !seen.insert(sequence.clone()) {
+                push_duplicate_heading(source_text, line_index, text, *span, diagnostics);
+            }
+        }
+    }
+}
+
+fn push_duplicate_heading(
+    source_text: &str,
+    line_index: &LineIndex,
+    text: &CompactString,
+    span: ByteSpan,
+    diagnostics: &mut SmallVec<[Diagnostic; 32]>,
+) {
+    diagnostics.push(Diagnostic {
+        rule_name: "no-duplicate-headings",
+        message_id: "duplicateHeading",
+        data: DiagnosticData {
+            text: Some(text.clone()),
+            ..DiagnosticData::default()
+        },
+        loc: line_index.loc_for_span(source_text, span),
+        fix: None,
+    });
+}
+
+// Build upstream's `headingChildrenSequence` (a structural key of the heading's
+// phrasing children) and `headingText` (the concatenated values, excluding HTML
+// node values), walking the heading's descendants in document order.
+fn heading_sequence_and_text(heading: &mdast::Node) -> (CompactString, CompactString) {
+    let mut sequence = CompactString::new("");
+    let mut text = CompactString::new("");
+    if let Some(children) = heading.children() {
+        for child in children {
+            visit_mdast(child, &mut |node| {
+                let type_name = phrasing_type_name(node);
+                match phrasing_value(node) {
+                    Some(value) => {
+                        sequence.push('[');
+                        sequence.push_str(type_name);
+                        sequence.push(',');
+                        sequence.push_str(value);
+                        sequence.push(']');
+                        if type_name != "html" {
+                            text.push_str(value);
+                        }
+                    }
+                    None => {
+                        sequence.push('[');
+                        sequence.push_str(type_name);
+                        sequence.push(']');
+                    }
+                }
             });
         }
+    }
+    (sequence, text)
+}
+
+// The mdast type name of a phrasing node, used only as a stable token in the
+// structural sequence key (each variant maps to a distinct string).
+fn phrasing_type_name(node: &mdast::Node) -> &'static str {
+    match node {
+        mdast::Node::Text(_) => "text",
+        mdast::Node::Emphasis(_) => "emphasis",
+        mdast::Node::Strong(_) => "strong",
+        mdast::Node::Delete(_) => "delete",
+        mdast::Node::InlineCode(_) => "inlineCode",
+        mdast::Node::InlineMath(_) => "inlineMath",
+        mdast::Node::Break(_) => "break",
+        mdast::Node::Link(_) => "link",
+        mdast::Node::Image(_) => "image",
+        mdast::Node::LinkReference(_) => "linkReference",
+        mdast::Node::ImageReference(_) => "imageReference",
+        mdast::Node::FootnoteReference(_) => "footnoteReference",
+        mdast::Node::Html(_) => "html",
+        _ => "other",
+    }
+}
+
+// The `value` of a value-bearing phrasing node (text / inline code / inline math
+// / raw HTML), if any.
+fn phrasing_value(node: &mdast::Node) -> Option<&str> {
+    match node {
+        mdast::Node::Text(text) => Some(&text.value),
+        mdast::Node::InlineCode(code) => Some(&code.value),
+        mdast::Node::InlineMath(math) => Some(&math.value),
+        mdast::Node::Html(html) => Some(&html.value),
+        _ => None,
     }
 }
 
@@ -1916,10 +2011,6 @@ fn normalize_identifier(value: &str) -> CompactString {
         }
     }
     out
-}
-
-fn normalize_heading_text(value: &str) -> CompactString {
-    CompactString::from(value.trim())
 }
 
 fn lower(value: &str) -> CompactString {
