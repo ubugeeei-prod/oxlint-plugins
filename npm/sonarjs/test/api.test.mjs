@@ -56,6 +56,7 @@ const expectedRuleNames = [
   'nested-control-flow',
   'max-lines-per-function',
   'no-duplicate-string',
+  'no-empty-group',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1947,5 +1948,17 @@ describe('sonarjs native API', () => {
       noDuplicateStringThreshold: 3,
     });
     expect(allowed).toHaveLength(0);
+  });
+
+  it('reports no-empty-group for an empty non-capturing group', () => {
+    const diagnostics = scan('no-empty-group', 'const r = /(?:)/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-empty-group');
+    expect(diagnostics[0].messageId).toBe('emptyGroup');
+  });
+
+  it('does not report no-empty-group for a non-empty group', () => {
+    const diagnostics = scan('no-empty-group', 'const r = /(?:abc)/;');
+    expect(diagnostics).toHaveLength(0);
   });
 });

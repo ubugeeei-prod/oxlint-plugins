@@ -73,6 +73,9 @@ const messages = Object.freeze({
     emptyCharacterClass:
       'This empty character class [] can never match, so this regular expression will never match anything.',
   },
+  'no-empty-group': {
+    emptyGroup: 'Remove this empty group or add content to it.',
+  },
   'generator-without-yield': {
     generatorWithoutYield:
       "This generator contains no 'yield'; either add a 'yield' or convert it to a regular function.",
@@ -228,6 +231,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow using new solely for side effects without capturing or using the constructed object',
   'no-empty-character-class':
     'Disallow empty character classes in regular expression literals, which can never match',
+  'no-empty-group':
+    'Disallow empty capturing or non-capturing groups in regular expression literals',
   'generator-without-yield':
     "Disallow generator functions that contain no 'yield' expression and therefore behave like plain functions",
   'no-exclusive-tests':
@@ -321,6 +326,7 @@ const ruleTypes = Object.freeze({
   'no-delete-var': 'problem',
   'constructor-for-side-effects': 'problem',
   'no-empty-character-class': 'problem',
+  'no-empty-group': 'suggestion',
   'generator-without-yield': 'problem',
   'no-exclusive-tests': 'problem',
   'no-built-in-override': 'problem',
@@ -377,6 +383,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-delete-var': 'error',
   'constructor-for-side-effects': 'error',
   'no-empty-character-class': 'error',
+  'no-empty-group': 'error',
   'generator-without-yield': 'error',
   'no-exclusive-tests': 'error',
   'no-built-in-override': 'error',
