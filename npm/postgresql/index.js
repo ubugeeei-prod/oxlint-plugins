@@ -136,6 +136,17 @@ const ruleMeta = Object.freeze({
         '`GRANT ALL` (or `GRANT ALL PRIVILEGES`) is opaque — list the privileges you actually need (e.g. `SELECT, INSERT, UPDATE`) so the grant is auditable and adding a new PostgreSQL privilege in a future release does not silently extend it.',
     },
   },
+  'no-grant-to-public': {
+    type: 'problem',
+    description: 'Disallow GRANT statements that target the `PUBLIC` pseudo-role',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noPublic:
+        'Avoid `GRANT ... TO PUBLIC`. The PUBLIC role covers every current and future role in the database, including ones added later for unrelated services. Name the role(s) you actually want to grant to.',
+    },
+  },
   'no-group-by-ordinal': {
     type: 'suggestion',
     description:
@@ -194,6 +205,17 @@ const ruleMeta = Object.freeze({
     messages: {
       noLeadingWildcardLike:
         '`LIKE`/`ILIKE` patterns that begin with `%` cannot use a B-tree index and force a sequential scan. If you need substring search, use a `pg_trgm` GIN index, full-text search, or rework the schema so the prefix is indexable.',
+    },
+  },
+  'no-natural-join': {
+    type: 'problem',
+    description: 'Disallow `NATURAL JOIN`',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noNaturalJoin:
+        'Avoid `NATURAL JOIN`. The join columns are implicit — any future column with a matching name on both sides silently changes the result. Use `JOIN ... USING (...)` or `JOIN ... ON ...` and name the columns.',
     },
   },
   'no-on-delete-cascade': {

@@ -13,10 +13,12 @@ mod no_drop_database;
 mod no_drop_not_null;
 mod no_equality_with_null;
 mod no_grant_all;
+mod no_grant_to_public;
 mod no_group_by_ordinal;
 mod no_having_without_group_by;
 mod no_implicit_join;
 mod no_leading_wildcard_like;
+mod no_natural_join;
 mod no_on_delete_cascade;
 mod no_order_by_ordinal;
 mod no_rename_column;
@@ -141,10 +143,12 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-drop-not-null",
     "no-equality-with-null",
     "no-grant-all",
+    "no-grant-to-public",
     "no-group-by-ordinal",
     "no-having-without-group-by",
     "no-implicit-join",
     "no-leading-wildcard-like",
+    "no-natural-join",
     "no-on-delete-cascade",
     "no-order-by-ordinal",
     "no-rename-column",
@@ -217,6 +221,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-grant-to-public",
+        run: no_grant_to_public::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-group-by-ordinal",
         run: no_group_by_ordinal::run,
         uses_parse_error: false,
@@ -234,6 +243,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-leading-wildcard-like",
         run: no_leading_wildcard_like::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-natural-join",
+        run: no_natural_join::run,
         uses_parse_error: false,
     },
     RuleDef {

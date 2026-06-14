@@ -5335,19 +5335,19 @@
       },
       {
         "name": "no-grant-to-public",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-grant-to-public."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-grant-to-public; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-group-by-ordinal",
@@ -5447,19 +5447,19 @@
       },
       {
         "name": "no-natural-join",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-natural-join."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-natural-join; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-not-in-subquery",
