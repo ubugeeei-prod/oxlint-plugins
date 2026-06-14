@@ -159,6 +159,7 @@ describe('sonarjs plugin shape', () => {
       'index-of-compare-to-positive-number',
       'no-nested-functions',
       'too-many-break-or-continue-in-loop',
+      'code-eval',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -225,6 +226,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['index-of-compare-to-positive-number']).toBe('object');
     expect(typeof plugin.rules['no-nested-functions']).toBe('object');
     expect(typeof plugin.rules['too-many-break-or-continue-in-loop']).toBe('object');
+    expect(typeof plugin.rules['code-eval']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -299,6 +301,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/too-many-break-or-continue-in-loop']).toBe(
       'error',
     );
+    expect(plugin.configs.recommended.rules['sonarjs/code-eval']).toBe('error');
   });
 });
 
@@ -1499,5 +1502,36 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
         additionalProperties: false,
       },
     ]);
+  });
+});
+
+describe('code-eval rule', () => {
+  it('reports code-eval for a bare eval call through the adapter', () => {
+    const source = 'eval("x + 1");';
+    const reports = runRule('code-eval', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('codeEval');
+  });
+
+  it('reports code-eval for new Function(...) through the adapter', () => {
+    const source = 'const f = new Function("a", "return a");';
+    const reports = runRule('code-eval', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('codeEval');
+  });
+
+  it('does not report code-eval for member-access eval call', () => {
+    const source = 'window.eval("x");';
+    const reports = runRule('code-eval', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports code-eval for bare eval call through the CLI', () => {
+    const source = 'eval("x + 1");';
+    const result = runOxlint('code-eval', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(code-eval)');
   });
 });

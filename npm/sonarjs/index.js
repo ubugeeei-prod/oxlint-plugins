@@ -242,6 +242,10 @@ const messages = Object.freeze({
     tooManyBreakContinue:
       'Reduce the total number of break and continue statements in this loop to at most one.',
   },
+  'code-eval': {
+    codeEval:
+      'Review this use of dynamic code execution; it can introduce security vulnerabilities.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -367,6 +371,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow functions nested more deeply than the configured threshold (the "threshold" option; default 4); applies to function declarations, function expressions, and arrow functions',
   'too-many-break-or-continue-in-loop':
     'Disallow more than one break or continue statement targeting the same loop; having two or more jumps makes control flow hard to follow',
+  'code-eval':
+    'Disallow dynamic code execution via eval() or the Function constructor, which can introduce security vulnerabilities',
 });
 
 const ruleTypes = Object.freeze({
@@ -435,6 +441,7 @@ const ruleTypes = Object.freeze({
   'index-of-compare-to-positive-number': 'suggestion',
   'no-nested-functions': 'suggestion',
   'too-many-break-or-continue-in-loop': 'suggestion',
+  'code-eval': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -503,6 +510,7 @@ const recommendedRuleConfig = Object.freeze({
   'index-of-compare-to-positive-number': 'error',
   'no-nested-functions': 'error',
   'too-many-break-or-continue-in-loop': 'error',
+  'code-eval': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
