@@ -58,6 +58,28 @@ const ruleMeta = Object.freeze({
         'Use `{{lhs}} >= {{lower}} AND {{lhs}} <= {{upper}}` instead of `BETWEEN`. Some teams prefer explicit comparisons so the inclusive bounds are obvious to readers.',
     },
   },
+  'consistent-create-index-concurrently': {
+    type: 'suggestion',
+    description:
+      'Enforce a consistent stance on `CONCURRENTLY` for `CREATE INDEX` (either always require it, or always forbid it)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          style: { enum: ['always', 'never'] },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      preferConcurrently:
+        'Use `CREATE INDEX CONCURRENTLY`. A plain `CREATE INDEX` takes a `SHARE` lock on the target table for the duration of the build — readers are unaffected, but every writer is blocked. Concurrent index builds cannot run inside a transaction, so a migration tool that wraps each step in BEGIN/COMMIT needs an explicit opt-out here.',
+      unexpectedConcurrently:
+        'Avoid `CREATE INDEX CONCURRENTLY`. Concurrent index builds cannot run inside a transaction, so they conflict with migration tools that wrap each step in BEGIN/COMMIT; drop the keyword and use a plain `CREATE INDEX`.',
+    },
+  },
   'consistent-create-or-replace': {
     type: 'suggestion',
     description:
