@@ -41,6 +41,17 @@ const ruleMeta = Object.freeze({
         '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
     },
   },
+  'no-composite-primary-key': {
+    type: 'problem',
+    description: 'Disallow composite PRIMARY KEY constraints (more than one column)',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCompositePk:
+        'Composite PRIMARY KEY is not allowed. Use a single-column surrogate key (e.g. `id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY`) and enforce the natural key with a `UNIQUE` constraint. Composite primary keys complicate joins, ORM mapping, and foreign-key references.',
+    },
+  },
   'no-create-role': {
     type: 'suggestion',
     description:
