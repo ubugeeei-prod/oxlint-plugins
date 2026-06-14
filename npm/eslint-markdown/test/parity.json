@@ -5,10 +5,6 @@
       "level": "off",
       "note": "Diverges on headings inside HTML blocks / blockquotes and on TOML (+++) and JSON frontmatter title detection."
     },
-    "no-bare-urls": {
-      "level": "off",
-      "note": "False positives on URLs inside link/definition labels, HTML attributes, and existing autolinks."
-    },
     "no-missing-link-fragments": {
       "level": "off",
       "note": "Broad divergence in heading-anchor slugging and fragment matching."
