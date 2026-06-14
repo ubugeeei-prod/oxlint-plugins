@@ -262,6 +262,9 @@ const messages = Object.freeze({
   'no-global-this': {
     noGlobalThis: 'Remove this use of the global "this" object.',
   },
+  'single-character-alternation': {
+    singleCharAlternation: 'Replace this alternation of single characters with a character class.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -400,6 +403,9 @@ const ruleDescriptions = Object.freeze({
   'no-global-this':
     'Disallow references to the global "this" object outside of any function or class scope ' +
     'that rebinds "this"; prefer accessing global properties directly',
+  'single-character-alternation':
+    'Disallow regex alternations where every alternative is a single character; ' +
+    'use a character class instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -474,6 +480,7 @@ const ruleTypes = Object.freeze({
   'pseudo-random': 'suggestion',
   'no-hardcoded-ip': 'suggestion',
   'no-global-this': 'suggestion',
+  'single-character-alternation': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -548,6 +555,7 @@ const recommendedRuleConfig = Object.freeze({
   'pseudo-random': 'error',
   'no-hardcoded-ip': 'error',
   'no-global-this': 'error',
+  'single-character-alternation': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

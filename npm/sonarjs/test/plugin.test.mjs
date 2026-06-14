@@ -165,6 +165,7 @@ describe('sonarjs plugin shape', () => {
       'pseudo-random',
       'no-hardcoded-ip',
       'no-global-this',
+      'single-character-alternation',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -236,6 +237,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['pseudo-random']).toBe('object');
     expect(typeof plugin.rules['no-hardcoded-ip']).toBe('object');
     expect(typeof plugin.rules['no-global-this']).toBe('object');
+    expect(typeof plugin.rules['single-character-alternation']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -315,6 +317,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/pseudo-random']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-ip']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-global-this']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/single-character-alternation']).toBe('error');
   });
 });
 
@@ -1762,5 +1765,42 @@ describe('no-global-this rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-global-this)');
+  });
+});
+
+describe('single-character-alternation rule', () => {
+  it('reports a top-level single-character alternation /a|b|c/', () => {
+    const source = 'const re = /a|b|c/;';
+    const reports = runRule('single-character-alternation', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('singleCharAlternation');
+  });
+
+  it('reports a single-character alternation inside a group /(a|b|c)/', () => {
+    const source = 'const re = /(a|b|c)/;';
+    const reports = runRule('single-character-alternation', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('singleCharAlternation');
+  });
+
+  it('does not report when an alternative is multi-char /ab|c/', () => {
+    const source = 'const re = /ab|c/;';
+    const reports = runRule('single-character-alternation', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when an alternative is a class escape /\\d|x/', () => {
+    const source = 'const re = /\\d|x/;';
+    const reports = runRule('single-character-alternation', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports single-character-alternation through the CLI', () => {
+    const source = 'const re = /a|b|c/;';
+    const result = runOxlint('single-character-alternation', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(single-character-alternation)');
   });
 });

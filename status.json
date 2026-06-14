@@ -13854,19 +13854,19 @@
       },
       {
         "name": "single-character-alternation",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule single-character-alternation (Sonar key S6035). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6035). Flags a regex Disjunction with >=2 alternatives where every alternative is exactly one literal Character term (escaped chars like \\. count; CharacterClassEscape like \\d does not). Recurses into groups, quantifiers, and lookarounds via the shared regex_ast helper. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "slow-regex",

@@ -74,6 +74,7 @@ const expectedRuleNames = [
   'pseudo-random',
   'no-hardcoded-ip',
   'no-global-this',
+  'single-character-alternation',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2300,6 +2301,40 @@ describe('sonarjs native API', () => {
 
   it('does not report no-global-this for this inside an arrow inside a regular function', () => {
     const diagnostics = scan('no-global-this', 'function f() { const g = () => this.x; }');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports single-character-alternation for /a|b|c/', () => {
+    const diagnostics = scan('single-character-alternation', 'const re = /a|b|c/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('single-character-alternation');
+    expect(diagnostics[0].messageId).toBe('singleCharAlternation');
+  });
+
+  it('reports single-character-alternation for a disjunction inside a group /(a|b|c)/', () => {
+    const diagnostics = scan('single-character-alternation', 'const re = /(a|b|c)/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('singleCharAlternation');
+  });
+
+  it('reports single-character-alternation for escaped chars /\\.|,/', () => {
+    const diagnostics = scan('single-character-alternation', 'const re = /\\.|,/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('singleCharAlternation');
+  });
+
+  it('does not report single-character-alternation for /ab|c/ (multi-char alt)', () => {
+    const diagnostics = scan('single-character-alternation', 'const re = /ab|c/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report single-character-alternation for /\\d|x/ (class escape)', () => {
+    const diagnostics = scan('single-character-alternation', 'const re = /\\d|x/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report single-character-alternation for /abc/ (no disjunction)', () => {
+    const diagnostics = scan('single-character-alternation', 'const re = /abc/;');
     expect(diagnostics).toHaveLength(0);
   });
 });

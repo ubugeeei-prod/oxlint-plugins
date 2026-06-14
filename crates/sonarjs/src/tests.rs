@@ -3655,3 +3655,75 @@ fn does_not_report_no_global_this_for_arrow_inside_function() {
     let diagnostics = scan("no-global-this", "function f() { const g = () => this.x; }");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_single_character_alternation_simple() {
+    let diagnostics = scan("single-character-alternation", "const re = /a|b|c/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "single-character-alternation");
+    assert_eq!(diagnostics[0].message_id, "singleCharAlternation");
+}
+
+#[test]
+fn reports_single_character_alternation_two_alternatives() {
+    let diagnostics = scan("single-character-alternation", "const re = /x|y/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "singleCharAlternation");
+}
+
+#[test]
+fn reports_single_character_alternation_inside_capturing_group() {
+    let diagnostics = scan("single-character-alternation", "const re = /(a|b|c)/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "singleCharAlternation");
+}
+
+#[test]
+fn reports_single_character_alternation_nested_group() {
+    let diagnostics = scan("single-character-alternation", "const re = /x(1|2|3)y/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "singleCharAlternation");
+}
+
+#[test]
+fn reports_single_character_alternation_escaped_chars() {
+    let diagnostics = scan("single-character-alternation", "const re = /\\.|,/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "singleCharAlternation");
+}
+
+#[test]
+fn does_not_report_single_character_alternation_multi_char_alt() {
+    let diagnostics = scan("single-character-alternation", "const re = /ab|c/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_character_alternation_multi_char_alt2() {
+    let diagnostics = scan("single-character-alternation", "const re = /a|bc/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_character_alternation_class_escape() {
+    let diagnostics = scan("single-character-alternation", "const re = /\\d|x/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_character_alternation_no_disjunction() {
+    let diagnostics = scan("single-character-alternation", "const re = /abc/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_character_alternation_empty_alt() {
+    let diagnostics = scan("single-character-alternation", "const re = /a|/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_character_alternation_quantified_term() {
+    let diagnostics = scan("single-character-alternation", "const re = /a+|b/;");
+    assert!(diagnostics.is_empty());
+}
