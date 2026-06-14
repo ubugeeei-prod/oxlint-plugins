@@ -94,6 +94,7 @@ const expectedRuleNames = [
   'no-array-delete',
   'no-literal-call',
   'shorthand-property-grouping',
+  'process-argv',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2194,6 +2195,29 @@ describe('sonarjs native API', () => {
 
   it('does not report pseudo-random for a bare Math.random reference', () => {
     const diagnostics = scan('pseudo-random', 'const f = Math.random;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports process-argv for a direct process.argv access', () => {
+    const diagnostics = scan('process-argv', 'const a = process.argv;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('process-argv');
+    expect(diagnostics[0].messageId).toBe('processArgv');
+  });
+
+  it('reports process-argv once for process.argv[2]', () => {
+    const diagnostics = scan('process-argv', 'process.argv[2];');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('processArgv');
+  });
+
+  it('does not report process-argv for process.env', () => {
+    const diagnostics = scan('process-argv', 'process.env.PATH;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report process-argv for foo.argv', () => {
+    const diagnostics = scan('process-argv', 'foo.argv;');
     expect(diagnostics).toHaveLength(0);
   });
 

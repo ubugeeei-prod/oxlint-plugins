@@ -13646,19 +13646,19 @@
       },
       {
         "name": "process-argv",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule process-argv (Sonar key S4823). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port from RSPEC S4823. Security hotspot: flags reads of the bare process.argv member access (process.argv, process.argv[2], process.argv.slice(2)) once each. Indirect forms (require('process').argv, destructured argv) are out of scope. No options."
       },
       {
         "name": "production-debug",
