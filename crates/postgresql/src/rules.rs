@@ -12,6 +12,7 @@ mod no_select_star;
 mod no_set_not_null;
 mod no_set_search_path;
 mod no_temporary_table;
+mod no_vacuum_full;
 mod require_limit;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
@@ -119,6 +120,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-set-not-null",
     "no-set-search-path",
     "no-temporary-table",
+    "no-vacuum-full",
     "require-limit",
 ];
 
@@ -167,6 +169,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-temporary-table",
         run: no_temporary_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-vacuum-full",
+        run: no_vacuum_full::run,
         uses_parse_error: false,
     },
     RuleDef {

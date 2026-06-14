@@ -125,6 +125,18 @@ const ruleMeta = Object.freeze({
         '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
     },
   },
+  'no-vacuum-full': {
+    type: 'problem',
+    description:
+      'Disallow `VACUUM FULL` because it takes ACCESS EXCLUSIVE and rewrites the entire table',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noVacuumFull:
+        '`VACUUM FULL` takes `ACCESS EXCLUSIVE` and rewrites the whole table; the table is unavailable for the duration. For shrinking a bloated table on a live database, use `pg_repack` or `pg_squeeze`. A plain `VACUUM` (no `FULL`) is fine.',
+    },
+  },
   'require-limit': {
     type: 'suggestion',
     description: 'Require LIMIT clause in SELECT statements',
