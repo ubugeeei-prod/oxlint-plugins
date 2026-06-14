@@ -3247,3 +3247,68 @@ fn too_many_break_sibling_loops_each_with_one_break_not_flagged() {
     let diagnostics = scan("too-many-break-or-continue-in-loop", source);
     assert!(diagnostics.is_empty());
 }
+
+// code-eval tests
+
+#[test]
+fn reports_code_eval_for_bare_eval_call() {
+    let source = r#"eval("x + 1");"#;
+    let diagnostics = scan("code-eval", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "code-eval");
+    assert_eq!(diagnostics[0].message_id, "codeEval");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_code_eval_for_new_function_constructor() {
+    let source = r#"const f = new Function("a", "return a");"#;
+    let diagnostics = scan("code-eval", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "code-eval");
+    assert_eq!(diagnostics[0].message_id, "codeEval");
+}
+
+#[test]
+fn reports_code_eval_for_function_call_without_new() {
+    let source = r#"const f = Function("return 42");"#;
+    let diagnostics = scan("code-eval", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "codeEval");
+}
+
+#[test]
+fn does_not_report_code_eval_for_member_access_eval() {
+    let source = r#"window.eval("x");"#;
+    let diagnostics = scan("code-eval", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_code_eval_for_member_access_eval_foo() {
+    let source = r#"foo.eval(x);"#;
+    let diagnostics = scan("code-eval", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_code_eval_for_unrelated_call() {
+    let source = r#"foo("x");"#;
+    let diagnostics = scan("code-eval", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_code_eval_for_function_declaration() {
+    let source = "function eval() {}";
+    let diagnostics = scan("code-eval", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_code_eval_for_eval_with_variable_argument() {
+    let source = "eval(userInput);";
+    let diagnostics = scan("code-eval", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "codeEval");
+}
