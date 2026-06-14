@@ -79,6 +79,7 @@ export type ScanEslintMarkdownOptions = {
   checkMissingTableCells?: boolean;
   math?: boolean;
   frontmatter?: boolean;
+  commonmark?: boolean;
 };
 
 export function implementedEslintMarkdownRuleNames(): EslintMarkdownRuleName[];

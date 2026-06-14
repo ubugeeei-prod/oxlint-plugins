@@ -2564,3 +2564,216 @@ fn does_not_report_no_empty_alternatives_for_empty_group() {
     let diagnostics = scan("no-empty-alternatives", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_regex_spaces_for_two_consecutive_spaces() {
+    let source = "const r = /a  b/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-regex-spaces");
+    assert_eq!(diagnostics[0].message_id, "multipleSpaces");
+}
+
+#[test]
+fn reports_no_regex_spaces_for_three_consecutive_spaces() {
+    let source = "const r = /foo   bar/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-regex-spaces");
+    assert_eq!(diagnostics[0].message_id, "multipleSpaces");
+}
+
+#[test]
+fn does_not_report_no_regex_spaces_for_single_space() {
+    let source = "const r = /a b/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_regex_spaces_for_space_with_quantifier() {
+    let source = "const r = /a {2}b/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_regex_spaces_for_spaces_inside_character_class() {
+    let source = "const r = /[  ]{2}/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_no_control_regex_for_hex_escape() {
+    let source = "const r = /\\x1f/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-control-regex");
+    assert_eq!(diagnostics[0].message_id, "controlCharacter");
+}
+
+#[test]
+fn reports_no_control_regex_for_unicode_escape() {
+    let source = "const r = /\\u001f/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-control-regex");
+    assert_eq!(diagnostics[0].message_id, "controlCharacter");
+}
+
+#[test]
+fn reports_no_control_regex_for_control_letter_escape() {
+    let source = "const r = /\\cA/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-control-regex");
+    assert_eq!(diagnostics[0].message_id, "controlCharacter");
+}
+
+#[test]
+fn reports_no_control_regex_for_range_in_character_class() {
+    let source = "const r = /[\\x00-\\x1f]/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
+fn does_not_report_no_control_regex_for_named_escape_tab() {
+    let source = "const r = /\\t/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_control_regex_for_hex_above_control_range() {
+    let source = "const r = /\\x20/;";
+    let diagnostics = scan("no-control-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_single_char_in_character_classes_for_one_char_class() {
+    let source = "const r = /[a]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "singleCharInCharacterClass");
+}
+
+#[test]
+fn reports_single_char_in_character_classes_for_dot_in_class() {
+    let source = "const r = /[.]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_single_char_in_character_classes_for_two_chars() {
+    let source = "const r = /[ab]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_char_in_character_classes_for_range() {
+    let source = "const r = /[a-z]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_char_in_character_classes_for_negated_class() {
+    let source = "const r = /[^a]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_duplicates_in_character_class_for_repeated_char() {
+    let source = "const r = /[aa]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "duplicates-in-character-class");
+    assert_eq!(diagnostics[0].message_id, "duplicateCharacter");
+}
+
+#[test]
+fn reports_duplicates_in_character_class_for_non_adjacent_repeat() {
+    let source = "const r = /[abca]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_duplicates_in_character_class_for_distinct_chars() {
+    let source = "const r = /[abc]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_duplicates_in_character_class_for_range() {
+    let source = "const r = /[a-z]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_anchor_precedence_for_caret_on_first_of_three_alts() {
+    let source = "const r = /^a|b|c$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "anchor-precedence");
+    assert_eq!(diagnostics[0].message_id, "anchorPrecedence");
+}
+
+#[test]
+fn reports_anchor_precedence_for_caret_only_on_first_of_two_alts() {
+    let source = "const r = /^a|b/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "anchorPrecedence");
+}
+
+#[test]
+fn reports_anchor_precedence_for_dollar_only_on_last_of_two_alts() {
+    let source = "const r = /a|b$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "anchorPrecedence");
+}
+
+#[test]
+fn does_not_report_anchor_precedence_for_grouped_alts() {
+    let source = "const r = /^(a|b|c)$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_for_no_anchors() {
+    let source = "const r = /a|b|c/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_for_trim_idiom() {
+    let source = "const r = /^\\s+|\\s+$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_when_all_branches_fully_anchored() {
+    let source = "const r = /^a$|^b$|^c$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_when_middle_alt_is_anchored() {
+    let source = "const r = /^a|^b|c$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
