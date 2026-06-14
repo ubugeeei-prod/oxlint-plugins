@@ -1,10 +1,6 @@
 {
   "_doc": "Per-rule upstream-parity enforcement level for the synced @eslint/json fixtures (see test/upstream.test.mjs). Levels: 'full' (the default for any rule not listed here) = exact parity is enforced for every valid and invalid case — each reported error's messageId, data, and 1-indexed location must match upstream, and cases declaring `output` must autofix to the same text. 'off' = quarantined; the Rust core still diverges from upstream for this rule, so its valid and invalid cases are registered as skipped (coverage stays visible) until the divergence is fixed and the rule is promoted to 'full'. The end state is zero 'off' entries. Regenerate fixtures with `pnpm run port:tests:eslint-json`.",
   "rules": {
-    "no-unsafe-values": {
-      "level": "off",
-      "reason": "Two divergences: (1) zero literals written with a fraction/exponent (`0.00000`, `0e0000000`, `.0`, `0.`) are misclassified as subnormal; (2) literal lone surrogate code units in string values are not detected. Fixed in the no-unsafe-values parity PR."
-    },
     "sort-keys": {
       "level": "off",
       "reason": "Autofix (key reordering with surrounding comments/whitespace preserved) is not implemented, and the natural-sort comparator orders some punctuation/case boundaries differently from upstream. Fixed in the sort-keys parity PR."

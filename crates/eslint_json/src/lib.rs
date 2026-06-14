@@ -466,7 +466,7 @@ fn scan_number(
             line_index,
             number.span,
         ));
-    } else if !is_decimal_integer(raw) && value.abs() < f64::MIN_POSITIVE {
+    } else if !is_decimal_integer(raw) && value != 0.0 && value.abs() < f64::MIN_POSITIVE {
         diagnostics.push(number_diagnostic(
             "subnormal",
             raw,
