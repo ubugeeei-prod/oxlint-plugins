@@ -17,6 +17,18 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'no-cluster': {
+    type: 'problem',
+    description:
+      'Disallow the `CLUSTER` statement: it takes ACCESS EXCLUSIVE, rewrites the table, and is not maintained afterwards',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCluster:
+        '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
