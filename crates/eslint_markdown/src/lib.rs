@@ -73,8 +73,20 @@ const MDAST_RULES: &[&str] = &[
 
 // Parse the source into an mdast tree with the same constructs upstream enables
 // for `markdown/gfm` (GFM tables, autolink literals, footnotes, strikethrough).
-fn parse_mdast(source_text: &str, math: bool, frontmatter: bool) -> Option<mdast::Node> {
-    let mut options = markdown::ParseOptions::gfm();
+fn parse_mdast(
+    source_text: &str,
+    math: bool,
+    frontmatter: bool,
+    commonmark: bool,
+) -> Option<mdast::Node> {
+    // The dialect mirrors the upstream RuleTester `language`: `markdown/gfm`
+    // (default for Oxlint) adds tables, autolink literals, strikethrough and
+    // footnotes; `markdown/commonmark` enables none of those.
+    let mut options = if commonmark {
+        markdown::ParseOptions::default()
+    } else {
+        markdown::ParseOptions::gfm()
+    };
     if math {
         options.constructs.math_flow = true;
         options.constructs.math_text = true;
@@ -151,6 +163,8 @@ pub struct ScanOptions {
     pub math: bool,
     /// Whether `---`/`+++` frontmatter is parsed (upstream `languageOptions.frontmatter`).
     pub frontmatter: bool,
+    /// Parse as CommonMark instead of GFM (upstream `language: "markdown/commonmark"`).
+    pub commonmark: bool,
 }
 
 impl Default for ScanOptions {
@@ -178,6 +192,7 @@ impl Default for ScanOptions {
             check_missing_table_cells: false,
             math: false,
             frontmatter: false,
+            commonmark: false,
         }
     }
 }
@@ -318,7 +333,12 @@ pub fn scan_eslint_markdown(
         MarkdownFacts::default()
     };
     let mdast = if MDAST_RULES.iter().any(|rule| options.is_enabled(rule)) {
-        parse_mdast(source_text, options.math, options.frontmatter)
+        parse_mdast(
+            source_text,
+            options.math,
+            options.frontmatter,
+            options.commonmark,
+        )
     } else {
         None
     };
