@@ -277,6 +277,10 @@ const messages = Object.freeze({
   'no-alphabetical-sort': {
     provideCompareFunction: 'Provide a compare function to avoid sorting elements alphabetically.',
   },
+  'no-for-in-iterable': {
+    noForInIterable:
+      'Use a "for...of" loop instead of a "for...in" loop to iterate over this array.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -425,6 +429,8 @@ const ruleDescriptions = Object.freeze({
     '"reverse" and "sort" as if they returned a new array',
   'no-alphabetical-sort':
     'Require a compare function when calling "sort" or "toSorted" on an array',
+  'no-for-in-iterable':
+    'Disallow "for...in" loops over arrays; use a "for...of" loop to iterate values instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -503,6 +509,7 @@ const ruleTypes = Object.freeze({
   'empty-string-repetition': 'suggestion',
   'no-misleading-array-reverse': 'suggestion',
   'no-alphabetical-sort': 'suggestion',
+  'no-for-in-iterable': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -581,6 +588,7 @@ const recommendedRuleConfig = Object.freeze({
   'empty-string-repetition': 'error',
   'no-misleading-array-reverse': 'error',
   'no-alphabetical-sort': 'error',
+  'no-for-in-iterable': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

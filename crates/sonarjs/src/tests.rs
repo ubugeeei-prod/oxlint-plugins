@@ -3948,3 +3948,47 @@ fn reports_alphabetical_sort_on_mixed_string_and_number_array() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "provideCompareFunction");
 }
+
+#[test]
+fn reports_for_in_iterable_on_array_literal() {
+    let diagnostics = scan("no-for-in-iterable", "for (const i in [1, 2, 3]) {}");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-for-in-iterable");
+    assert_eq!(diagnostics[0].message_id, "noForInIterable");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_for_in_iterable_on_resolved_array_variable() {
+    let diagnostics = scan(
+        "no-for-in-iterable",
+        "const a = [1, 2, 3];\nfor (const i in a) {}",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noForInIterable");
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+}
+
+#[test]
+fn does_not_report_for_in_iterable_on_object_literal() {
+    let diagnostics = scan(
+        "no-for-in-iterable",
+        "const obj = { a: 1 };\nfor (const k in obj) {}",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_for_in_iterable_on_unresolvable_parameter() {
+    let diagnostics = scan(
+        "no-for-in-iterable",
+        "function f(p) {\n  for (const k in p) {}\n}",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_for_in_iterable_on_for_of_loop() {
+    let diagnostics = scan("no-for-in-iterable", "for (const x of [1, 2, 3]) {}");
+    assert!(diagnostics.is_empty());
+}

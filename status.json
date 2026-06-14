@@ -12110,19 +12110,19 @@
       },
       {
         "name": "no-for-in-iterable",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-for-in-iterable (Sonar key S4139). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S4139). Flags a for...in loop whose iterated value is provably an array: a direct array literal (for (i in [1,2,3])) or an identifier resolving via semantic analysis to a never-reassigned array-literal binding (const a=[1,2,3]; for (i in a)). Reported at the ForInStatement span. The upstream rule is type-aware and also flags strings, typed arrays, and other iterables; without TS type information this port conservatively flags arrays only and under-reports rather than risk false positives (known parity risk). Uses oxc_semantic (built only when this rule, no-misleading-array-reverse, or no-alphabetical-sort is active). No upstream source, fixtures, tests, or messages were consulted."
       },
       {
         "name": "no-function-declaration-in-block",
