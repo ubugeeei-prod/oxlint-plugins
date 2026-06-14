@@ -66,6 +66,7 @@ const expectedRuleNames = [
   'cyclomatic-complexity',
   'no-collection-size-mischeck',
   'index-of-compare-to-positive-number',
+  'no-nested-functions',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

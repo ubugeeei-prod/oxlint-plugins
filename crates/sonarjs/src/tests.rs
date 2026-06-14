@@ -3005,3 +3005,94 @@ fn index_of_compare_gt_neg_one_no_report() {
     let diagnostics = scan("index-of-compare-to-positive-number", source);
     assert!(diagnostics.is_empty());
 }
+
+// --- no-nested-functions (S2004) ---
+
+#[test]
+fn no_nested_functions_reports_depth_five_with_default_threshold() {
+    // Default threshold is 4; depth 5 is the first flagged level.
+    let source = concat!(
+        "function a() {",
+        "function b() {",
+        "function c() {",
+        "function d() {",
+        "function e() {}",
+        "}}}}",
+    );
+    let diagnostics = scan("no-nested-functions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-nested-functions");
+    assert_eq!(diagnostics[0].message_id, "noNestedFunctions");
+}
+
+#[test]
+fn no_nested_functions_does_not_report_at_exactly_threshold_depth() {
+    // Exactly 4 levels deep — at threshold, not exceeding it.
+    let source = concat!(
+        "function a() {",
+        "function b() {",
+        "function c() {",
+        "function d() {}",
+        "}}}",
+    );
+    let diagnostics = scan("no-nested-functions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_nested_functions_arrow_functions_count_toward_depth() {
+    // Arrow functions count the same as regular functions.
+    let source = concat!(
+        "const a = () => {",
+        "const b = () => {",
+        "const c = () => {",
+        "const d = () => {",
+        "const e = () => {};",
+        "}}}};",
+    );
+    let diagnostics = scan("no-nested-functions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-nested-functions");
+    assert_eq!(diagnostics[0].message_id, "noNestedFunctions");
+}
+
+#[test]
+fn no_nested_functions_mixed_kinds_count_toward_depth() {
+    // Mixing function declarations and arrow functions still tracks depth correctly.
+    let source = concat!(
+        "function a() {",
+        "const b = () => {",
+        "function c() {",
+        "const d = () => {",
+        "function e() {}",
+        "}}}};",
+    );
+    let diagnostics = scan("no-nested-functions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-nested-functions");
+}
+
+#[test]
+fn no_nested_functions_respects_custom_threshold() {
+    // With threshold 2, a function at depth 3 is the first flagged.
+    let mut options = options_for("no-nested-functions");
+    options.no_nested_functions_threshold = 2;
+    let source = concat!("function a() {", "function b() {", "function c() {}", "}}",);
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-nested-functions");
+    assert_eq!(diagnostics[0].message_id, "noNestedFunctions");
+}
+
+#[test]
+fn no_nested_functions_sibling_functions_do_not_accumulate() {
+    // Two sibling functions at depth 2 must each be at depth 2, not accumulate.
+    let source = concat!(
+        "function outer() {",
+        "function sibling_a() {}",
+        "function sibling_b() {}",
+        "}",
+    );
+    let diagnostics = scan("no-nested-functions", source);
+    assert!(diagnostics.is_empty());
+}

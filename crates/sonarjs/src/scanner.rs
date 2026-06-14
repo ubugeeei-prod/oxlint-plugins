@@ -70,6 +70,10 @@ pub(crate) struct Scanner<'a> {
     /// points inside nested functions update only the innermost frame; top-level
     /// decision points find an empty stack and are silently ignored.
     pub(crate) cyclomatic_complexity_stack: SmallVec<[(Span, u32); 8]>,
+    /// Current nesting depth of function/arrow definitions, used by
+    /// `no-nested-functions`. Incremented on entry to any function-like node and
+    /// decremented on exit. Depth 1 = outermost function in the file.
+    pub(crate) function_nesting_depth: u32,
 }
 
 impl<'a> Scanner<'a> {
@@ -339,7 +343,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_return_scope(it.span);
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);
+        self.enter_nested_function(it.span);
         walk::walk_function(self, it, flags);
+        self.leave_nested_function();
         self.leave_cyclomatic_scope();
         self.leave_return_scope();
         self.leave_generator(it, track);
@@ -350,7 +356,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_return_scope(it.span);
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);
+        self.enter_nested_function(it.span);
         walk::walk_arrow_function_expression(self, it);
+        self.leave_nested_function();
         self.leave_cyclomatic_scope();
         self.leave_return_scope();
         self.check_max_lines_per_function(it.span);

@@ -157,6 +157,7 @@ describe('sonarjs plugin shape', () => {
       'cyclomatic-complexity',
       'no-collection-size-mischeck',
       'index-of-compare-to-positive-number',
+      'no-nested-functions',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -221,6 +222,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['cyclomatic-complexity']).toBe('object');
     expect(typeof plugin.rules['no-collection-size-mischeck']).toBe('object');
     expect(typeof plugin.rules['index-of-compare-to-positive-number']).toBe('object');
+    expect(typeof plugin.rules['no-nested-functions']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -291,6 +293,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/index-of-compare-to-positive-number']).toBe(
       'error',
     );
+    expect(plugin.configs.recommended.rules['sonarjs/no-nested-functions']).toBe('error');
   });
 });
 
@@ -1423,5 +1426,43 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(index-of-compare-to-positive-number)');
+  });
+
+  it('reports no-nested-functions when depth 5 exceeds default threshold of 4', () => {
+    const src = 'function a(){function b(){function c(){function d(){function e(){}}}}}';
+    const reports = runRule('no-nested-functions', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noNestedFunctions');
+  });
+
+  it('does not report no-nested-functions when depth is exactly 4 (at threshold)', () => {
+    const src = 'function a(){function b(){function c(){function d(){}}}}';
+    const reports = runRule('no-nested-functions', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('honors the no-nested-functions "threshold" option through the adapter', () => {
+    const src = 'function a(){function b(){function c(){}}}';
+    expect(runRule('no-nested-functions', src, { options: [{ threshold: 2 }] })).toHaveLength(1);
+    expect(runRule('no-nested-functions', src, { options: [{ threshold: 3 }] })).toHaveLength(0);
+  });
+
+  it('reports no-nested-functions through the CLI', () => {
+    const src = 'function a(){function b(){function c(){function d(){function e(){}}}}}';
+    const result = runOxlint('no-nested-functions', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-nested-functions)');
+  });
+
+  it('exposes the no-nested-functions threshold option in the rule schema', () => {
+    expect(plugin.rules['no-nested-functions'].meta.schema).toEqual([
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ]);
   });
 });
