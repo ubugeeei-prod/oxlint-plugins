@@ -13,6 +13,7 @@ const MDAST_RULES: &[&str] = &[
     "no-empty-definitions",
     "no-missing-atx-heading-space",
     "no-missing-label-refs",
+    "no-missing-link-fragments",
     "no-reference-like-urls",
     "no-reversed-media-syntax",
     "no-space-in-emphasis",
@@ -322,8 +323,10 @@ pub fn scan_eslint_markdown(
     {
         scan_missing_label_refs(source_text, &line_index, tree, options, &mut diagnostics);
     }
-    if options.is_enabled("no-missing-link-fragments") {
-        scan_missing_link_fragments(source_text, &line_index, &facts, options, &mut diagnostics);
+    if options.is_enabled("no-missing-link-fragments")
+        && let Some(tree) = &mdast
+    {
+        scan_missing_link_fragments(source_text, &line_index, tree, options, &mut diagnostics);
     }
     if options.is_enabled("no-multiple-h1") {
         scan_multiple_h1(source_text, &line_index, &facts, &mut diagnostics);
@@ -1593,50 +1596,82 @@ fn find_missing_references(
 fn scan_missing_link_fragments(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     options: &ScanOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let mut ids = FastHashSet::<CompactString>::default();
-    let allow_fragment_pattern = options
+    let allow_pattern = options
         .allow_fragment_pattern
         .as_ref()
         .filter(|pattern| !pattern.is_empty())
         .and_then(|pattern| Regex::new(pattern.as_str()).ok());
-    ids.insert(CompactString::from("top"));
-    for heading in &facts.headings {
-        ids.insert(github_slug(heading.text.as_str()));
-    }
-    for tag in &facts.html_tags {
-        if let Some(id) =
-            html_attr(tag.raw.as_str(), "id").or_else(|| html_attr(tag.raw.as_str(), "name"))
-        {
-            ids.insert(if options.ignore_fragment_case {
-                lower(id)
-            } else {
-                CompactString::from(id)
-            });
+    let line_ref = Regex::new(r"^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$").ok();
+    let custom_id = Regex::new(r"\{#([^}\s]+)\}\s*$").ok();
+    let html_id = Regex::new(r#"(?i)<[^>]+\s(?:id|name)\s*=\s*["']?([^"'\s>]+)["']?"#).ok();
+
+    // Heading anchors, HTML id/name anchors and HTML `<hN>` headings, slugged
+    // (with GitHub-style de-duplication) in document order, plus the implicit
+    // `top` fragment.
+    let mut fragment_ids = FastHashSet::<CompactString>::default();
+    fragment_ids.insert(CompactString::from("top"));
+    let mut slugger = GithubSlugger::default();
+    let mut media: SmallVec<[&mdast::Node; 16]> = SmallVec::new();
+
+    visit_mdast(tree, &mut |node| match node {
+        mdast::Node::Heading(_) => {
+            let (_, text) = heading_sequence_and_text(node);
+            let id = custom_id
+                .as_ref()
+                .and_then(|re| re.captures(&text))
+                .and_then(|caps| caps.get(1))
+                .map_or(text.clone(), |group| CompactString::from(group.as_str()));
+            fragment_ids.insert(slugger.slug(&id));
         }
-    }
-    for link in &facts.links {
-        let Some(fragment) = link.url.strip_prefix('#') else {
+        mdast::Node::Html(html) => {
+            let stripped = strip_html_comments(&html.value);
+            if let Some(re) = &html_id {
+                for caps in re.captures_iter(&stripped) {
+                    if let Some(id) = caps.get(1) {
+                        fragment_ids.insert(slugger.slug(id.as_str()));
+                    }
+                }
+            }
+            for id in html_heading_texts(&stripped) {
+                fragment_ids.insert(slugger.slug(&id));
+            }
+        }
+        mdast::Node::Definition(_) | mdast::Node::Link(_) => media.push(node),
+        _ => {}
+    });
+
+    for node in &media {
+        let url = match node {
+            mdast::Node::Definition(definition) => definition.url.as_str(),
+            mdast::Node::Link(link) => link.url.as_str(),
+            _ => continue,
+        };
+        let Some(fragment) = url.strip_prefix('#') else {
             continue;
         };
-        if fragment.is_empty() || is_github_line_ref(fragment) {
+        if fragment.is_empty() {
             continue;
         }
-        if allow_fragment_pattern
+        let decoded = percent_decode(fragment);
+        if allow_pattern
             .as_ref()
-            .is_some_and(|pattern| pattern.is_match(fragment))
+            .is_some_and(|re| re.is_match(&decoded))
+            || line_ref.as_ref().is_some_and(|re| re.is_match(&decoded))
         {
             continue;
         }
         let normalized = if options.ignore_fragment_case {
-            lower(fragment)
+            lower(&decoded)
         } else {
-            CompactString::from(fragment)
+            decoded
         };
-        if !ids.contains(&normalized) {
+        if let Some(span) = node_span(node)
+            && !fragment_ids.contains(&normalized)
+        {
             diagnostics.push(Diagnostic {
                 rule_name: "no-missing-link-fragments",
                 message_id: "invalidFragment",
@@ -1644,10 +1679,136 @@ fn scan_missing_link_fragments(
                     fragment: Some(CompactString::from(fragment)),
                     ..DiagnosticData::default()
                 },
-                loc: line_index.loc_for_span(source_text, link.span),
+                loc: line_index.loc_for_span(source_text, span),
                 fix: None,
             });
         }
+    }
+}
+
+// A faithful port of `github-slugger`: lowercases, drops the package's special
+// punctuation set, turns spaces into hyphens, and de-duplicates by appending
+// `-N` for repeats.
+#[derive(Default)]
+struct GithubSlugger {
+    occurrences: FastHashMap<CompactString, u32>,
+}
+
+impl GithubSlugger {
+    fn slug(&mut self, value: &str) -> CompactString {
+        let base = github_base_slug(value);
+        let mut result = base.clone();
+        while self.occurrences.contains_key(&result) {
+            let count = self.occurrences.get(&base).copied().unwrap_or(0) + 1;
+            self.occurrences.insert(base.clone(), count);
+            result = CompactString::from("");
+            result.push_str(&base);
+            result.push('-');
+            push_u32(&mut result, count);
+        }
+        self.occurrences.insert(result.clone(), 0);
+        result
+    }
+}
+
+fn push_u32(out: &mut CompactString, mut value: u32) {
+    if value == 0 {
+        out.push('0');
+        return;
+    }
+    let mut digits: SmallVec<[u8; 10]> = SmallVec::new();
+    while value > 0 {
+        digits.push(b'0' + (value % 10) as u8);
+        value /= 10;
+    }
+    for digit in digits.iter().rev() {
+        out.push(*digit as char);
+    }
+}
+
+// github-slugger lowercases, turns spaces into hyphens, and strips everything
+// that is not a letter, digit, `_` or `-` (its generated regex removes all
+// punctuation, symbols and emoji while keeping Unicode letters such as accents).
+fn github_base_slug(value: &str) -> CompactString {
+    let mut out = CompactString::new("");
+    for ch in value.chars() {
+        if ch == ' ' {
+            out.push('-');
+        } else if ch == '_' || ch == '-' || ch.is_alphanumeric() {
+            for lower in ch.to_lowercase() {
+                out.push(lower);
+            }
+        }
+    }
+    out
+}
+
+// Extract the plain text of each `<hN>...</hN>` HTML heading (inner tags removed),
+// matching upstream's `htmlHeadingPattern` (Rust regex lacks the backreference, so
+// the closing tag is matched explicitly).
+fn html_heading_texts(html: &str) -> SmallVec<[CompactString; 4]> {
+    let mut out = SmallVec::new();
+    let Ok(open_re) = Regex::new(r"(?is)<h([1-6])[^>]*>") else {
+        return out;
+    };
+    let Ok(tag_re) = Regex::new(
+        r#"(?is)</?[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?(?:/\s*)?>"#,
+    ) else {
+        return out;
+    };
+    for caps in open_re.captures_iter(html) {
+        let (Some(whole), Some(depth)) = (caps.get(0), caps.get(1)) else {
+            continue;
+        };
+        // The closing tag is matched case-insensitively (e.g. `</H3>`).
+        let Ok(close_re) = Regex::new(&{
+            let mut pattern = CompactString::from(r"(?i)</h");
+            pattern.push_str(depth.as_str());
+            pattern.push_str(r"\s*>");
+            pattern
+        }) else {
+            continue;
+        };
+        let rest = &html[whole.end()..];
+        if let Some(close_at) = close_re.find(rest) {
+            let children = &rest[..close_at.start()];
+            out.push(CompactString::from(
+                tag_re.replace_all(children, "").as_ref(),
+            ));
+        }
+    }
+    out
+}
+
+// Decode `%XX` escapes as UTF-8 (like `decodeURIComponent`); on any malformed
+// sequence, return the input unchanged.
+fn percent_decode(value: &str) -> CompactString {
+    if !value.contains('%') {
+        return CompactString::from(value);
+    }
+    let bytes = value.as_bytes();
+    let mut out: SmallVec<[u8; 64]> = SmallVec::new();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'%' {
+            let hex = value
+                .get(index + 1..index + 3)
+                .and_then(|pair| u8::from_str_radix(pair, 16).ok());
+            match hex {
+                Some(byte) => {
+                    out.push(byte);
+                    index += 3;
+                }
+                None => return CompactString::from(value),
+            }
+        } else {
+            out.push(bytes[index]);
+            index += 1;
+        }
+    }
+    match core::str::from_utf8(&out) {
+        Ok(decoded) => CompactString::from(decoded),
+        Err(_) => CompactString::from(value),
     }
 }
 
@@ -2498,68 +2659,11 @@ fn html_tag_name(raw: &str) -> CompactString {
     CompactString::from(&rest[..end])
 }
 
-fn html_attr<'a>(raw: &'a str, attr: &str) -> Option<&'a str> {
-    let mut search = raw;
-    while let Some(index) = find_ignore_ascii_case(search, attr) {
-        let after = &search[index + attr.len()..];
-        let trimmed = after.trim_start();
-        if !trimmed.starts_with('=') {
-            search = trimmed;
-            continue;
-        }
-        let value = trimmed[1..].trim_start();
-        if let Some(rest) = value.strip_prefix('"') {
-            return rest.split('"').next();
-        }
-        if let Some(rest) = value.strip_prefix('\'') {
-            return rest.split('\'').next();
-        }
-        return value
-            .split(|ch: char| ch.is_whitespace() || ch == '>')
-            .next();
-    }
-    None
-}
-
-fn find_ignore_ascii_case(haystack: &str, needle: &str) -> Option<usize> {
-    haystack
-        .as_bytes()
-        .windows(needle.len())
-        .position(|window| window.eq_ignore_ascii_case(needle.as_bytes()))
-}
-
 fn in_fenced_range(facts: &MarkdownFacts<'_>, offset: usize) -> bool {
     facts
         .lines
         .iter()
         .any(|line| line.in_fence && offset >= line.start && offset <= line.end)
-}
-
-fn github_slug(value: &str) -> CompactString {
-    let mut out = CompactString::new("");
-    let mut previous_dash = false;
-    for ch in value.trim().chars() {
-        if ch.is_alphanumeric() {
-            for lower in ch.to_lowercase() {
-                out.push(lower);
-            }
-            previous_dash = false;
-        } else if (ch.is_whitespace() || ch == '-') && !previous_dash && !out.is_empty() {
-            out.push('-');
-            previous_dash = true;
-        }
-    }
-    while out.ends_with('-') {
-        out.pop();
-    }
-    out
-}
-
-fn is_github_line_ref(value: &str) -> bool {
-    let Some(rest) = value.strip_prefix('L') else {
-        return false;
-    };
-    rest.chars().next().is_some_and(|ch| ch.is_ascii_digit())
 }
 
 // A GFM delimiter row: cells separated by `|` (outer pipes optional), each cell
