@@ -17,10 +17,6 @@
       "level": "off",
       "note": "Footnote multi-line content and escaped-caret labels classified differently from upstream."
     },
-    "no-invalid-label-refs": {
-      "level": "off",
-      "note": "False positives on collapsed `[foo][]` / `![foo][]` references with a matching definition."
-    },
     "no-missing-atx-heading-space": {
       "level": "off",
       "note": "PANICS on non-ASCII input (char-boundary slice at lib.rs position_for_offset); span/column divergences."
