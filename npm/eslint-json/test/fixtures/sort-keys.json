@@ -1,0 +1,3401 @@
+{
+  "__generated": {
+    "source": "@eslint/json",
+    "version": "2.0.0",
+    "sourceFile": "tests/rules/sort-keys.test.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-json-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "{\"\":1, \"a\":2}",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"_\":2, \"a\":1, \"b\":3}",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"b\":3, \"c\":2}",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":2, \"b\":3, \"b_\":1}",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"C\":3, \"b_\":1, \"c\":2}",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"A\":3, \"_\":2, \"a\":4}",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "{$:1, 'A':3, \"_\":2, a:4}",
+      "language": "json/json5",
+      "options": []
+    },
+    {
+      "code": "{\"1\":1, \"11\":2, \"2\":4, \"A\":3}",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, Z:2, À:3, è:4}",
+      "language": "json/json5",
+      "options": []
+    },
+    {
+      "code": "{\"a\":1, \"b\":{\"x\":1, \"y\":1}, \"c\":1}",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"a\":1,\n\t\t\t\t\t\t\t\"b\": {\n\t\t\t\t\t\t\t\t\"x\":1,\n\t\t\t\t\t\t\t\t\"y\":1\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\"c\":1\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t[\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"a\":1,\n\t\t\t\t\t\t\t\t\"b\": {\n\t\t\t\t\t\t\t\t\t\"x\":1,\n\t\t\t\t\t\t\t\t\t\"y\":1\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"c\":1,\n\t\t\t\t\t\t\t\t\"d\":1\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t]\n\t\t\t\t",
+      "options": [],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t[\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"a\":1,\n\t\t\t\t\t\t\t\tb: {\n\t\t\t\t\t\t\t\t\t\"x\":1,\n\t\t\t\t\t\t\t\t\ty:1\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"c\":1,\n\t\t\t\t\t\t\t\td:1\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t]\n\t\t\t\t",
+      "language": "json/json5",
+      "options": []
+    },
+    {
+      "code": "{\"_\":2, \"a\":1, \"b\":3} // asc\"",
+      "language": "json/jsonc",
+      "options": [
+        "asc"
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"b\":3, \"c\":2}",
+      "options": [
+        "asc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":2, \"b\":3, \"b_\":1}",
+      "options": [
+        "asc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"C\":3, \"b_\":1, \"c\":2}",
+      "options": [
+        "asc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"A\":3, \"_\":2, \"a\":4}",
+      "options": [
+        "asc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"11\":2, \"2\":4, \"A\":3}",
+      "options": [
+        "asc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "options": [
+        "asc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "minKeys": 4
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"_\":2, \"a\":1, \"b\":3} // asc, insensitive",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"b\":3, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":2, \"b\":3, \"b_\":1}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"C\":3, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"c\":3, \"C\":2}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"11\":2, \"2\":4, \"A\":3}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"A\":3, \"_\":2, \"a\":4}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false,
+          "minKeys": 5
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"_\":2, \"a\":1, \"b\":3} // asc, natural",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"b\":3, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":2, \"b\":3, \"b_\":1}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"C\":3, \"b_\":1, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"11\":2, \"A\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "minKeys": 4
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"_\":2, \"a\":1, \"b\":3} // asc, natural, insensitive",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"b\":3, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":2, \"b\":3, \"b_\":1}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"C\":3, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"c\":3, \"C\":2}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"11\":2, \"A\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false,
+          "minKeys": 4
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b\":3, \"a\":1, \"_\":2} // desc",
+      "language": "json/jsonc",
+      "options": [
+        "desc"
+      ]
+    },
+    {
+      "code": "{b:3, \"a\":1, '_':2} // desc",
+      "language": "json/json5",
+      "options": [
+        "desc"
+      ]
+    },
+    {
+      "code": "{\"c\":2, \"b\":3, \"a\":1}",
+      "options": [
+        "desc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"b\":3, \"a\":2}",
+      "options": [
+        "desc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"c\":2, \"b_\":1, \"C\":3}",
+      "options": [
+        "desc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":4, \"_\":2, \"A\":3, \"$\":1}",
+      "options": [
+        "desc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"A\":3, \"2\":4, \"11\":2, \"1\":1}",
+      "options": [
+        "desc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"è\":4, \"À\":3, \"Z\":2, \"#\":1}",
+      "options": [
+        "desc"
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "options": [
+        "desc",
+        {
+          "minKeys": 4
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b\":3, \"a\":1, \"_\":2} // desc, insensitive",
+      "language": "json/jsonc",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ]
+    },
+    {
+      "code": "{\"c\":2, \"b\":3, \"a\":1}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"b\":3, \"a\":2}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"c\":2, \"C\":3, \"b_\":1}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"C\":2, \"c\":3, \"b_\":1}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":4, \"A\":3, \"_\":2, \"$\":1}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"A\":3, \"2\":4, \"11\":2, \"1\":1}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"è\":4, \"À\":3, \"Z\":2, \"#\":1}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false,
+          "minKeys": 5
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b\":3, \"a\":1, \"_\":2} // desc, natural",
+      "language": "json/jsonc",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ]
+    },
+    {
+      "code": "{\"c\":2, \"b\":3, \"a\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"b\":3, \"a\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"c\":2, \"b_\":1, \"C\":3}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":4, \"A\":3, \"_\":2, \"$\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"A\":3, \"11\":2, \"2\":4, \"1\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"è\":4, \"À\":3, \"Z\":2, \"#\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "minKeys": 4
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b\":3, \"a\":1, \"_\":2} // desc, natural, insensitive",
+      "language": "json/jsonc",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ]
+    },
+    {
+      "code": "{\"c\":2, \"b\":3, \"a\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"b\":3, \"a\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"c\":2, \"C\":3, \"b_\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"C\":2, \"c\":3, \"b_\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":4, \"A\":3, \"_\":2, \"$\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"A\":3, \"11\":2, \"2\":4, \"1\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"è\":4, \"À\":3, \"Z\":2, \"#\":1}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false,
+          "minKeys": 4
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"a\": 1,\n\t\t\t\t\t\t\t\t\"b\": 2,\n\t\t\t\t\t\t\t\t\"c\": 3,\n\t\t\t\t\t\t\t\t\"e\": 4,\n\t\t\t\t\t\t\t\t\"f\": 5,\n\t\t\t\t\t\t\t\t\"g\": 6\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"e\": 1,\n\t\t\t\t\t\t\t\t\"f\": 2,\n\t\t\t\t\t\t\t\t\"g\": 3,\n\n\t\t\t\t\t\t\t\t\"a\": 4,\n\t\t\t\t\t\t\t\t\"b\": 5,\n\t\t\t\t\t\t\t\t\"c\": 6\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": 1,\n\n\t\t\t\t\t\t\t\t// comment\n\t\t\t\t\t\t\t\t\"a\": 2,\n\t\t\t\t\t\t\t\t\"c\": 3\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": 1\n\n\t\t\t\t\t\t\t\t,\n\n\t\t\t\t\t\t\t\t// comment\n\t\t\t\t\t\t\t\t\"a\": 2,\n\t\t\t\t\t\t\t\t\"c\": 3\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": \"/*\",\n\n\t\t\t\t\t\t\t\t\"a\": \"*/\"\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"b\":1,\n\t\t\t\t\t\t\t\"c\": {\n\t\t\t\t\t\t\t\t\"y\":1,\n\t\t\t\t\t\t\t\t\"z\":1,\n\n\t\t\t\t\t\t\t\t\"x\":1\n\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\"a\":1\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"b\":1,\n\t\t\t\t\t\t\ta: {\n\t\t\t\t\t\t\t\t\"y\":1,\n\t\t\t\t\t\t\t\tx:1,\n\n\t\t\t\t\t\t\t\t\"z\":1\n\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\tc:1\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "language": "json/json5",
+      "options": [
+        "desc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t\"b\": 1\n\n\t\t\t\t,\n\n\t\t\t\t\"a\": 2\n\t\t\t}\n\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t\"a\": 1\n\n\n\t\t\t\t,\n\t\t\t\t\"b\": 2\n\t\t\t}\n\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": false
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": 1\n\t\t\t\t\t\t// comment before comma\n\n\t\t\t\t\t\t,\n\t\t\t\t\t\t\"a\": 2\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "{\"a\":1, \"\":2} // default",
+      "output": "{\"\":2, \"a\":1} // default",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "/* leading comment */ {\"b\":1,\"a\":2}",
+      "output": "/* leading comment */ {\"a\":2,\"b\":1}",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3} // default",
+      "output": "{\"_\":2, \"a\":1, \"b\":3} // default",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "output": "{\"a\":1, \"b\":3, \"c\":2}",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "b",
+            "prevName": "c"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "output": "{\"a\":2, \"b_\":1, \"b\":3}",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b_"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"c\":2, \"C\":3}",
+      "output": "{\"b_\":1, \"C\":3, \"c\":2}",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "C",
+            "prevName": "c"
+          },
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "output": "{\"$\":1, \"A\":3, \"_\":2, \"a\":4}",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "A",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"A\":3, \"11\":2}",
+      "output": "{\"1\":1, \"2\":4, \"11\":2, \"A\":3}",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "11",
+            "prevName": "A"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"À\":3, \"Z\":2, \"è\":4}",
+      "output": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "Z",
+            "prevName": "À"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3} // asc",
+      "output": "{\"_\":2, \"a\":1, \"b\":3} // asc",
+      "language": "json/jsonc",
+      "options": [
+        "asc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "output": "{\"a\":1, \"b\":3, \"c\":2}",
+      "options": [
+        "asc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "b",
+            "prevName": "c"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "output": "{\"a\":2, \"b_\":1, \"b\":3}",
+      "options": [
+        "asc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b_"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"c\":2, \"C\":3}",
+      "output": "{\"b_\":1, \"C\":3, \"c\":2}",
+      "options": [
+        "asc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "C",
+            "prevName": "c"
+          },
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "output": "{\"$\":1, \"A\":3, \"_\":2, \"a\":4}",
+      "options": [
+        "asc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "A",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"A\":3, \"11\":2}",
+      "output": "{\"1\":1, \"2\":4, \"11\":2, \"A\":3}",
+      "options": [
+        "asc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "11",
+            "prevName": "A"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"À\":3, \"Z\":2, \"è\":4}",
+      "output": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "options": [
+        "asc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "Z",
+            "prevName": "À"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "output": "{\"_\":2, \"a\":1, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "minKeys": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3} // asc, insensitive",
+      "output": "{\"_\":2, \"a\":1, \"b\":3} // asc, insensitive",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "output": "{\"a\":1, \"b\":3, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "b",
+            "prevName": "c"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "output": "{\"a\":2, \"b_\":1, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b_"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"A\":3, \"_\":2, \"a\":4}",
+      "output": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "A"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"A\":3, \"11\":2}",
+      "output": "{\"1\":1, \"2\":4, \"11\":2, \"A\":3}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "11",
+            "prevName": "A"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"À\":3, \"Z\":2, \"è\":4}",
+      "output": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "Z",
+            "prevName": "À"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "output": "{\"_\":2, \"a\":1, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "caseSensitive": false,
+          "minKeys": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3} // asc, natural",
+      "output": "{\"_\":2, \"a\":1, \"b\":3} // asc, natural",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "output": "{\"a\":1, \"b\":3, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "b",
+            "prevName": "c"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "output": "{\"a\":2, \"b_\":1, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b_"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"c\":2, \"C\":3}",
+      "output": "{\"b_\":1, \"C\":3, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "C",
+            "prevName": "c"
+          },
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"A\":3, \"_\":2, \"a\":4}",
+      "output": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "A"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"A\":3, \"11\":2}",
+      "output": "{\"1\":1, \"2\":4, \"11\":2, \"A\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "11",
+            "prevName": "A"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"À\":3, \"Z\":2, \"è\":4}",
+      "output": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "options": [
+        "asc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "Z",
+            "prevName": "À"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "output": "{\"_\":2, \"a\":1, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "minKeys": 2
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3} // asc, natural, insensitive",
+      "output": "{\"_\":2, \"a\":1, \"b\":3} // asc, natural, insensitive",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "output": "{\"a\":1, \"b\":3, \"c\":2}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "b",
+            "prevName": "c"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "output": "{\"a\":2, \"b_\":1, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b_"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"A\":3, \"_\":2, \"a\":4}",
+      "output": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "A"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"11\":2, \"2\":4, \"A\":3}",
+      "output": "{\"1\":1, \"2\":4, \"11\":2, \"A\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "2",
+            "prevName": "11"
+          },
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"À\":3, \"Z\":2, \"è\":4}",
+      "output": "{\"#\":1, \"Z\":2, \"À\":3, \"è\":4}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "Z",
+            "prevName": "À"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "output": "{\"_\":2, \"a\":1, \"b\":3}",
+      "options": [
+        "asc",
+        {
+          "natural": true,
+          "caseSensitive": false,
+          "minKeys": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "ascending",
+            "thisName": "_",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\":1, \"a\":2} // desc",
+      "output": "{\"a\":2, \"\":1} // desc",
+      "language": "json/jsonc",
+      "options": [
+        "desc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "a",
+            "prevName": ""
+          },
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3} // desc",
+      "output": "{\"a\":1, \"b\":3, \"_\":2} // desc",
+      "language": "json/jsonc",
+      "options": [
+        "desc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "output": "{\"c\":2, \"a\":1, \"b\":3}",
+      "options": [
+        "desc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "c",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "output": "{\"b_\":1, \"b\":3, \"a\":2}",
+      "options": [
+        "desc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"c\":2, \"C\":3}",
+      "output": "{\"c\":2, \"b_\":1, \"C\":3}",
+      "options": [
+        "desc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "c",
+            "prevName": "b_"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "output": "{\"_\":2, \"$\":1, \"a\":4, \"A\":3}",
+      "options": [
+        "desc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "_",
+            "prevName": "$"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "a",
+            "prevName": "A"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"A\":3, \"11\":2}",
+      "output": "{\"2\":4, \"1\":1, \"A\":3, \"11\":2}",
+      "options": [
+        "desc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "2",
+            "prevName": "1"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "A",
+            "prevName": "2"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"À\":3, \"Z\":2, \"è\":4}",
+      "output": "{\"À\":3, \"#\":1, \"è\":4, \"Z\":2}",
+      "options": [
+        "desc"
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "À",
+            "prevName": "#"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "è",
+            "prevName": "Z"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "output": "{\"a\":1, \"b\":3, \"_\":2}",
+      "options": [
+        "desc",
+        {
+          "minKeys": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3} // desc, insensitive",
+      "output": "{\"a\":1, \"b\":3, \"_\":2} // desc, insensitive",
+      "language": "json/jsonc",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "output": "{\"c\":2, \"a\":1, \"b\":3}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "c",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "output": "{\"b_\":1, \"b\":3, \"a\":2}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"c\":2, \"C\":3}",
+      "output": "{\"c\":2, \"b_\":1, \"C\":3}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "c",
+            "prevName": "b_"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "output": "{\"_\":2, \"$\":1, \"A\":3, \"a\":4}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "_",
+            "prevName": "$"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "A",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"A\":3, \"11\":2}",
+      "output": "{\"2\":4, \"1\":1, \"A\":3, \"11\":2}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "2",
+            "prevName": "1"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "A",
+            "prevName": "2"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"À\":3, \"Z\":2, \"è\":4}",
+      "output": "{\"À\":3, \"#\":1, \"è\":4, \"Z\":2}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "À",
+            "prevName": "#"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "è",
+            "prevName": "Z"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "output": "{\"a\":1, \"b\":3, \"_\":2}",
+      "options": [
+        "desc",
+        {
+          "caseSensitive": false,
+          "minKeys": 2
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3} // desc, natural",
+      "output": "{\"a\":1, \"b\":3, \"_\":2} // desc, natural",
+      "language": "json/jsonc",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "output": "{\"c\":2, \"a\":1, \"b\":3}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "c",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "output": "{\"b_\":1, \"b\":3, \"a\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"c\":2, \"C\":3}",
+      "output": "{\"c\":2, \"b_\":1, \"C\":3}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "c",
+            "prevName": "b_"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "output": "{\"_\":2, \"$\":1, \"a\":4, \"A\":3}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "_",
+            "prevName": "$"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "A",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "a",
+            "prevName": "A"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"A\":3, \"11\":2}",
+      "output": "{\"2\":4, \"1\":1, \"A\":3, \"11\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "2",
+            "prevName": "1"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "A",
+            "prevName": "2"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"À\":3, \"Z\":2, \"è\":4}",
+      "output": "{\"À\":3, \"#\":1, \"è\":4, \"Z\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "À",
+            "prevName": "#"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "è",
+            "prevName": "Z"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "output": "{\"a\":1, \"b\":3, \"_\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "minKeys": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3} // desc, natural, insensitive",
+      "output": "{\"a\":1, \"b\":3, \"_\":2} // desc, natural, insensitive",
+      "language": "json/jsonc",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ]
+    },
+    {
+      "code": "{\"a\":1, \"c\":2, \"b\":3}",
+      "output": "{\"c\":2, \"a\":1, \"b\":3}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "c",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"a\":2, \"b\":3}",
+      "output": "{\"b_\":1, \"b\":3, \"a\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "a"
+          },
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"b_\":1, \"c\":2, \"C\":3}",
+      "output": "{\"c\":2, \"b_\":1, \"C\":3}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "c",
+            "prevName": "b_"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"$\":1, \"_\":2, \"A\":3, \"a\":4}",
+      "output": "{\"_\":2, \"$\":1, \"A\":3, \"a\":4}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "_",
+            "prevName": "$"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "A",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"1\":1, \"2\":4, \"11\":2, \"A\":3}",
+      "output": "{\"2\":4, \"1\":1, \"A\":3, \"11\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "2",
+            "prevName": "1"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "11",
+            "prevName": "2"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 20
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "A",
+            "prevName": "11"
+          },
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"#\":1, \"À\":3, \"Z\":2, \"è\":4}",
+      "output": "{\"À\":3, \"#\":1, \"è\":4, \"Z\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "À",
+            "prevName": "#"
+          },
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 12
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "è",
+            "prevName": "Z"
+          },
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"a\":1, \"_\":2, \"b\":3}",
+      "output": "{\"a\":1, \"b\":3, \"_\":2}",
+      "options": [
+        "desc",
+        {
+          "natural": true,
+          "caseSensitive": false,
+          "minKeys": 2
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "natural",
+            "sensitivity": "insensitive",
+            "direction": "descending",
+            "thisName": "b",
+            "prevName": "_"
+          },
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": 1,\n\t\t\t\t\t\t\t\t\"c\": 2,\n\t\t\t\t\t\t\t\t\"a\": 3\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "output": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": 1,\n\t\t\t\t\t\t\t\t\"a\": 3,\n\t\t\t\t\t\t\t\t\"c\": 2\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "c"
+          },
+          "line": 5,
+          "column": 9,
+          "endLine": 5,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": 1,\n\n\t\t\t\t\t\t\t\t\"c\": 2,\n\n\t\t\t\t\t\t\t\t\"a\": 3\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "output": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": 1,\n\n\t\t\t\t\t\t\t\t\"a\": 3,\n\n\t\t\t\t\t\t\t\t\"c\": 2\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "c"
+          },
+          "line": 7,
+          "column": 9,
+          "endLine": 7,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": \"/*\",\n\t\t\t\t\t\t\t\t\"a\": \"*/\"\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "output": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"a\": \"*/\",\n\t\t\t\t\t\t\t\t\"b\": \"/*\"\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 4,
+          "column": 9,
+          "endLine": 4,
+          "endColumn": 12
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\": 1\n\t\t\t\t\t\t\t\t// comment before comma\n\t\t\t\t\t\t\t\t, \"a\": 2\n\t\t\t\t\t\t}\n\t\t\t\t",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 5,
+          "column": 11,
+          "endLine": 5,
+          "endColumn": 14
+        }
+      ]
+    },
+    {
+      "code": "{\"b\":1,\"a\":{\"y\":1,/*comment*/\"x\":1}}",
+      "output": "{\"a\":{\"y\":1,/*comment*/\"x\":1},\"b\":1}",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "x",
+            "prevName": "y"
+          },
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ]
+    },
+    {
+      "code": "{\"b\":{\"y\":1,\"x\":1},/*comment*/\"a\":2}",
+      "output": "{\"b\":{\"x\":1,\"y\":1},/*comment*/\"a\":2}",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "x",
+            "prevName": "y"
+          },
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 16
+        },
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 1,
+          "column": 31,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t\t\t[\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\":1,\n\t\t\t\t\t\t\t\t\"a\": {\n\t\t\t\t\t\t\t\t\t\"x\":1,\n\t\t\t\t\t\t\t\t\t\"y\":1\n\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\"d\":1,\n\t\t\t\t\t\t\t\t\"c\":1\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t]\n\t\t\t\t",
+      "output": "\n\t\t\t\t\t\t[\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\"b\":1,\n\t\t\t\t\t\t\t\t\"a\": {\n\t\t\t\t\t\t\t\t\t\"y\":1,\n\t\t\t\t\t\t\t\t\t\"x\":1\n\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\"d\":1,\n\t\t\t\t\t\t\t\t\"c\":1\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t]\n\t\t\t\t",
+      "options": [
+        "desc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "descending",
+            "thisName": "y",
+            "prevName": "x"
+          },
+          "line": 7,
+          "column": 10,
+          "endLine": 7,
+          "endColumn": 13
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t\t{\n\t\t\t\t\t\"b\": /*foo */ 1,\n\t\t\t\t\t// some multiline comment\n\t\t\t\t\t// using line comment style\n\t\t\t\t\t\"a\": 2 // \"a\" and \"b\" are not line separated\n\t\t\t\t}\n\t\t\t",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 6,
+          "column": 6,
+          "endLine": 6,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t{\n\t\t\t\t\t\"b\": 1,\n\t\t\t\t\t/* some multiline comment\n\t\t\t\t\tusing block comment style */\n\t\t\t\t\t/* the empty line...\n\n\t\t\t\t\t...in this one doesn't count */\n\t\t\t\t\t\"a\": 2 // \"a\" and \"b\" are not line separated\n\t\t\t\t}\n\t\t\t",
+      "language": "json/jsonc",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 9,
+          "column": 6,
+          "endLine": 9,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t\"b\": 1\n\t\t\t\t,\n\t\t\t\t\"a\": 2\n\t\t\t}\n\t\t\t",
+      "output": "\n\t\t\t{\n\t\t\t\t\"a\": 2\n\t\t\t\t,\n\t\t\t\t\"b\": 1\n\t\t\t}\n\t\t\t",
+      "options": [
+        "asc",
+        {
+          "allowLineSeparatedGroups": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 5,
+          "column": 5,
+          "endLine": 5,
+          "endColumn": 8
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t// comment\n\t\t\t\t\"a\": 1,\n\t\t\t\t\"c\": 3,\n\t\t\t\t\"b\": 2\n\t\t\t}\n\t\t\t",
+      "output": "\n\t\t\t{\n\t\t\t\t// comment\n\t\t\t\t\"a\": 1,\n\t\t\t\t\"b\": 2,\n\t\t\t\t\"c\": 3\n\t\t\t}\n\t\t\t",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "b",
+            "prevName": "c"
+          },
+          "line": 6,
+          "column": 5,
+          "endLine": 6,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t/* comment */\n\t\t\t\t\"a\": 1,\n\t\t\t\t\"c\": 3,\n\t\t\t\t\"b\": 2\n\t\t\t}\n\t\t\t",
+      "output": "\n\t\t\t{\n\t\t\t\t/* comment */\n\t\t\t\t\"a\": 1,\n\t\t\t\t\"b\": 2,\n\t\t\t\t\"c\": 3\n\t\t\t}\n\t\t\t",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "b",
+            "prevName": "c"
+          },
+          "line": 6,
+          "column": 5,
+          "endLine": 6,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t// comment\n\t\t\t\t\"b\": 1,\n\t\t\t\t\"a\": 2\n\t\t\t}\n\t\t\t",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 5,
+          "column": 5,
+          "endLine": 5,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t/* comment */\n\t\t\t\t\"b\": 1,\n\t\t\t\t\"a\": 2\n\t\t\t}\n\t\t\t",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 5,
+          "column": 5,
+          "endLine": 5,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t\"b\": 1,\n\t\t\t\t// comment\n\t\t\t\t\"a\": 2\n\t\t\t}\n\t\t\t",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 5,
+          "column": 5,
+          "endLine": 5,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t\"b\": 1,\n\t\t\t\t/* comment */\n\t\t\t\t\"a\": 2\n\t\t\t}\n\t\t\t",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 5,
+          "column": 5,
+          "endLine": 5,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t\"b\": 1,\n\t\t\t\t\"a\": 2, // comment\n\t\t\t}\n\t\t\t",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 4,
+          "column": 5,
+          "endLine": 4,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t{\n\t\t\t\t\"b\": 1,\n\t\t\t\t\"a\": 2, /* comment\n\t\t\t\tmultiline */\n\t\t\t\t\"c\": 3\n\t\t\t}\n\t\t\t",
+      "language": "json/jsonc",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "a",
+            "prevName": "b"
+          },
+          "line": 4,
+          "column": 5,
+          "endLine": 4,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "{\"\\u0061\":1, \"\\u0063\":2, \"\\u0062\":3}",
+      "output": "{\"\\u0061\":1, \"\\u0062\":3, \"\\u0063\":2}",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "\\u0062",
+            "prevName": "\\u0063"
+          },
+          "line": 1,
+          "column": 26,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "{\"\\u0061\\n\":1, \"\\u0063\\n\":2, \"\\u0062\\n\":3}",
+      "output": "{\"\\u0061\\n\":1, \"\\u0062\\n\":3, \"\\u0063\\n\":2}",
+      "errors": [
+        {
+          "messageId": "sortKeys",
+          "data": {
+            "sortName": "alphanumeric",
+            "sensitivity": "sensitive",
+            "direction": "ascending",
+            "thisName": "\\u0062\\n",
+            "prevName": "\\u0063\\n"
+          },
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 40
+        }
+      ],
+      "language": "json/json"
+    }
+  ]
+}
