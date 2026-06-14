@@ -112,6 +112,18 @@ const ruleMeta = Object.freeze({
         '`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table.',
     },
   },
+  'no-equality-with-null': {
+    type: 'problem',
+    description:
+      "Disallow `x = NULL` / `x <> NULL`; PostgreSQL's three-valued logic makes both expressions evaluate to NULL (i.e. neither true nor false), which silently filters away rows the author probably wanted",
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      useIsNull:
+        '`{{op}} NULL` always evaluates to NULL (treated as false). Use `IS NULL` / `IS NOT NULL` instead.',
+    },
+  },
   'no-grant-to-public': {
     type: 'problem',
     description: 'Disallow GRANT statements that target the `PUBLIC` pseudo-role',
@@ -133,6 +145,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noGroupByOrdinal:
         '`GROUP BY <position>` silently breaks when the SELECT list changes. Use the column name or the expression itself.',
+    },
+  },
+  'no-having-without-group-by': {
+    type: 'problem',
+    description:
+      'Disallow `HAVING` without `GROUP BY` — the query aggregates the entire result set, which is almost never the intended shape',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noHavingWithoutGroupBy:
+        '`HAVING` without `GROUP BY` collapses the query to one aggregate row over the whole table. If that is intended, put the predicate in `WHERE`. Otherwise, add a `GROUP BY`.',
     },
   },
   'no-select-star': {
@@ -169,6 +193,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noLeadingWildcardLike:
         '`LIKE`/`ILIKE` patterns that begin with `%` cannot use a B-tree index and force a sequential scan. If you need substring search, use a `pg_trgm` GIN index, full-text search, or rework the schema so the prefix is indexable.',
+    },
+  },
+  'no-on-delete-cascade': {
+    type: 'problem',
+    description:
+      'Disallow `ON DELETE CASCADE` on foreign keys; cascading deletes are easy to write but can wipe out far more rows than the author intended',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCascade:
+        'Avoid `ON DELETE CASCADE`. The deletion will silently propagate through every dependent row; prefer an explicit `RESTRICT` or `SET NULL` action and handle the cleanup in application code.',
     },
   },
   'no-order-by-ordinal': {
