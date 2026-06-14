@@ -217,6 +217,10 @@ const validCases = [
   ['no-useless-set-operand', 'meaningful subset removal', 'const re = /[\\w--\\d]/v;\n'],
   ['no-useless-set-operand', 'not v-mode', 'const re = /[\\w&&\\d]/u;\n'],
   ['no-useless-set-operand', 'nested-class operand', 'const re = /[\\w&&[\\d\\s]]/v;\n'],
+  // prefer-set-operation
+  ['prefer-set-operation', 'not v-mode lookahead', 'const re = /(?!a)\\w/u;\n'],
+  ['prefer-set-operation', 'word boundary not lookaround', 'const re = /a\\b/v;\n'],
+  ['prefer-set-operation', 'multi-element lookaround body', 'const re = /(?!ab)c/v;\n'],
 ];
 
 const invalidCases = [
@@ -627,6 +631,25 @@ const invalidCases = [
     'no-useless-set-operand',
     'subtraction left subset of right',
     'const re = /[\\d--\\w]/v;\n',
+    ['unexpected'],
+  ],
+  // prefer-set-operation
+  [
+    'prefer-set-operation',
+    'negative lookahead then shorthand',
+    'const re = /(?!a)\\w/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'prefer-set-operation',
+    'shorthand then positive lookbehind',
+    'const re = /\\w(?<=\\d)/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'prefer-set-operation',
+    'negative lookahead then literal',
+    'const re = /(?!-)&/v;\n',
     ['unexpected'],
   ],
 ];

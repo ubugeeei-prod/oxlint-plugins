@@ -2271,6 +2271,123 @@ pub(crate) fn has_useless_set_operand(pattern: &str) -> bool {
     false
 }
 
+/// Recognises a single "char element" — one character-class-representable atom
+/// — starting at `index`, returning its byte length. Accepts a single plain
+/// ASCII literal byte (excluding regex metacharacters and quantifiers) or a
+/// predefined shorthand escape `\d \w \s \D \W \S`. Returns `None` for groups,
+/// nested classes, anchors, strings, multi-char escapes, and anything else.
+fn single_char_element_len(bytes: &[u8], index: usize) -> Option<usize> {
+    match bytes.get(index).copied()? {
+        b'\\' => match bytes.get(index + 1).copied()? {
+            b'd' | b'w' | b's' | b'D' | b'W' | b'S' => Some(2),
+            _ => None,
+        },
+        // Regex syntax characters are not plain char elements.
+        b'(' | b')' | b'[' | b']' | b'{' | b'}' | b'|' | b'*' | b'+' | b'?' | b'.' | b'^'
+        | b'$' => None,
+        // A plain ASCII literal byte.
+        byte if byte.is_ascii() => Some(1),
+        _ => None,
+    }
+}
+
+/// Recognises a *char lookaround* — a lookahead/lookbehind whose entire body is
+/// a single char element — starting at `index`. Returns
+/// `(kind, body_len_consumed_including_parens)` on success.
+///
+/// `kind` discriminates `(?=)` / `(?!)` / `(?<=)` / `(?<!)`. The body element
+/// must be a single char element AND immediately followed by the closing `)`,
+/// so quantified bodies, alternations, strings, and multi-element bodies are
+/// rejected (keeping the rewrite to a set operation sound).
+fn single_char_lookaround(bytes: &[u8], index: usize) -> Option<(CharLookaroundKind, usize)> {
+    if bytes.get(index) != Some(&b'(') || bytes.get(index + 1) != Some(&b'?') {
+        return None;
+    }
+    // Determine the prefix and where the body starts. The narrow detector only
+    // needs to distinguish lookahead vs lookbehind (both negated and positive
+    // forms map to a set operation), so the `=`/`!` polarity is not tracked.
+    let (kind, body_start) = match bytes.get(index + 2).copied()? {
+        b'=' | b'!' => (CharLookaroundKind::Lookahead, index + 3),
+        b'<' => match bytes.get(index + 3).copied()? {
+            b'=' | b'!' => (CharLookaroundKind::Lookbehind, index + 4),
+            _ => return None,
+        },
+        _ => return None,
+    };
+    let elem_len = single_char_element_len(bytes, body_start)?;
+    // The element must be immediately followed by the closing `)`.
+    if bytes.get(body_start + elem_len) != Some(&b')') {
+        return None;
+    }
+    Some((kind, body_start + elem_len + 1 - index))
+}
+
+/// Discriminates lookahead vs lookbehind char lookarounds (polarity is not
+/// tracked because the narrow detector treats both `(?=)`/`(?!)` and
+/// `(?<=)`/`(?<!)` as rewritable to a set operation).
+#[derive(Clone, Copy)]
+enum CharLookaroundKind {
+    Lookahead,
+    Lookbehind,
+}
+
+/// Narrow-form detector for `prefer-set-operation`.
+///
+/// In a **v-mode** pattern, returns `true` when a char element and an adjacent
+/// single-char lookaround can be rewritten as a v-mode set operation:
+///
+/// * `(?=X) Y` / `(?!X) Y` — a char lookahead immediately followed by a char
+///   element. Rewritable as `[Y && X]` (positive) or `[Y -- X]` (negative).
+/// * `Y (?<=X)` / `Y (?<!X)` — a char element immediately followed by a char
+///   lookbehind. Same rewrite.
+///
+/// Both `X` and `Y` must be single char elements (a plain ASCII literal or a
+/// `\d \w \s \D \W \S` shorthand). Bodies containing strings, alternations,
+/// quantifiers, groups, or multiple elements are rejected. Because the rule is
+/// gated on the `v` flag, the upstream non-v valid cases (`/(?!a)\w/`,
+/// `/(?!a)\w/u`) never fire, and `\b`-style assertions are not char lookarounds.
+///
+/// `caller` must only invoke this for patterns carrying the `v` flag.
+pub(crate) fn has_preferable_set_operation(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        // Case: a char element `Y` immediately followed by a char lookbehind.
+        // Handles both literal and `\X`-shorthand `Y` uniformly.
+        if let Some(elem_len) = single_char_element_len(bytes, index)
+            && let Some((CharLookaroundKind::Lookbehind, _)) =
+                single_char_lookaround(bytes, index + elem_len)
+        {
+            return true;
+        }
+
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                // Skip character classes entirely; their interior is not an
+                // alternative-level adjacency we rewrite.
+                index = find_class_end_nested(bytes, index).map_or(index + 1, |c| c + 1);
+            }
+            b'(' => {
+                if let Some((kind, consumed)) = single_char_lookaround(bytes, index) {
+                    // Case: a char lookahead immediately followed by a char
+                    // element `Y`.
+                    if matches!(kind, CharLookaroundKind::Lookahead)
+                        && single_char_element_len(bytes, index + consumed).is_some()
+                    {
+                        return true;
+                    }
+                    index += consumed;
+                } else {
+                    index += 1;
+                }
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
 /// A single quantifiable atom recognised by the narrow
 /// `optimal-quantifier-concatenation` detector: an unambiguous single element
 /// whose matched-character set is independent of position.

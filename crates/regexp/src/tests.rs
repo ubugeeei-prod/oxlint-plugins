@@ -114,8 +114,42 @@ fn exposes_initial_regexp_rule_names() {
             "optimal-quantifier-concatenation",
             "no-contradiction-with-assertion",
             "no-useless-set-operand",
+            "prefer-set-operation",
         ]
     );
+}
+
+mod prefer_set_operation {
+    use super::*;
+
+    #[test]
+    fn reports_v_mode_char_lookaround_adjacent_to_char() {
+        for src in [
+            // Negative lookahead then shorthand.
+            "const a = /(?!a)\\w/v;",
+            // Char then positive lookbehind shorthand.
+            "const a = /\\w(?<=\\d)/v;",
+            // Negative lookahead literal then literal.
+            "const a = /(?!-)&/v;",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "prefer-set-operation").as_slice(),
+                &["unexpected"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_non_v_or_unsupported_shapes() {
+        // Same shape but not v-mode → set operations unavailable.
+        assert!(rule_ids_for("const a = /(?!a)\\w/u;", "prefer-set-operation").is_empty());
+        assert!(rule_ids_for("const a = /(?!a)\\w/;", "prefer-set-operation").is_empty());
+        // `\b` is not a char lookaround.
+        assert!(rule_ids_for("const a = /a\\b/v;", "prefer-set-operation").is_empty());
+        // Lookaround body with two elements is out of scope.
+        assert!(rule_ids_for("const a = /(?!ab)c/v;", "prefer-set-operation").is_empty());
+    }
 }
 
 mod no_useless_set_operand {
