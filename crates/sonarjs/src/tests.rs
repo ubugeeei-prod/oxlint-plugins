@@ -4061,3 +4061,66 @@ fn does_not_report_associative_array_on_unresolvable_parameter() {
     let diagnostics = scan("no-associative-arrays", "function f(p) {\n  p.foo = 1;\n}");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_bitwise_and_with_comparison_operands() {
+    let diagnostics = scan("bitwise-operators", "if (a < 1 & b > 2) {\n}");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "bitwise-operators");
+    assert_eq!(diagnostics[0].message_id, "bitwiseOperator");
+}
+
+#[test]
+fn reports_bitwise_or_with_one_equality_operand() {
+    let diagnostics = scan("bitwise-operators", "const x = (a === b) | c;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "bitwiseOperator");
+}
+
+#[test]
+fn reports_bitwise_and_with_logical_not_operand() {
+    let diagnostics = scan("bitwise-operators", "const x = !a & b;");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_bitwise_or_with_logical_operand() {
+    let diagnostics = scan("bitwise-operators", "const x = (a && b) | c;");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_bitwise_and_with_boolean_literal_operand() {
+    let diagnostics = scan("bitwise-operators", "const x = a & true;");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_bitwise_and_on_numeric_operands() {
+    let diagnostics = scan("bitwise-operators", "const y = flags & MASK;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_bitwise_or_on_identifiers() {
+    let diagnostics = scan("bitwise-operators", "const y = a | b;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_logical_and() {
+    let diagnostics = scan("bitwise-operators", "if (a < 1 && b > 2) {\n}");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_bitwise_xor_with_comparison_operand() {
+    let diagnostics = scan("bitwise-operators", "const z = (a === b) ^ c;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_compound_bitwise_assignment() {
+    let diagnostics = scan("bitwise-operators", "let a = 0;\na &= b;");
+    assert!(diagnostics.is_empty());
+}

@@ -249,6 +249,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_identical_expressions_binary(it);
         self.check_no_collection_size_mischeck(it);
         self.check_index_of_compare_to_positive_number(it);
+        self.check_bitwise_operators(it);
         walk::walk_binary_expression(self, it);
     }
 

@@ -171,6 +171,7 @@ describe('sonarjs plugin shape', () => {
       'no-alphabetical-sort',
       'no-for-in-iterable',
       'no-associative-arrays',
+      'bitwise-operators',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -248,6 +249,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-alphabetical-sort']).toBe('object');
     expect(typeof plugin.rules['no-for-in-iterable']).toBe('object');
     expect(typeof plugin.rules['no-associative-arrays']).toBe('object');
+    expect(typeof plugin.rules['bitwise-operators']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -333,6 +335,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-alphabetical-sort']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-for-in-iterable']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-associative-arrays']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/bitwise-operators']).toBe('error');
   });
 });
 
@@ -2060,5 +2063,48 @@ describe('no-associative-arrays rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-associative-arrays)');
+  });
+});
+
+describe('bitwise-operators rule', () => {
+  it('reports a bitwise & when an operand is a comparison', () => {
+    const source = 'if (a < 1 & b > 2) {\n}';
+    const reports = runRule('bitwise-operators', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('bitwiseOperator');
+  });
+
+  it('reports a bitwise | when an operand is an equality check', () => {
+    const source = 'const x = (a === b) | c;';
+    const reports = runRule('bitwise-operators', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('bitwiseOperator');
+  });
+
+  it('does not report a bitwise & on numeric/identifier operands', () => {
+    const source = 'const y = flags & MASK;';
+    const reports = runRule('bitwise-operators', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a logical && expression', () => {
+    const source = 'if (a < 1 && b > 2) {\n}';
+    const reports = runRule('bitwise-operators', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a bitwise ^ even with a comparison operand', () => {
+    const source = 'const z = (a === b) ^ c;';
+    const reports = runRule('bitwise-operators', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports bitwise-operators through the CLI', () => {
+    const source = 'if (a < 1 & b > 2) {\n}';
+    const result = runOxlint('bitwise-operators', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(bitwise-operators)');
   });
 });
