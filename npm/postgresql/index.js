@@ -197,6 +197,18 @@ const ruleMeta = Object.freeze({
         '`VACUUM FULL` takes `ACCESS EXCLUSIVE` and rewrites the whole table; the table is unavailable for the duration. For shrinking a bloated table on a live database, use `pg_repack` or `pg_squeeze`. A plain `VACUUM` (no `FULL`) is fine.',
     },
   },
+  'no-with-recursive-without-limit': {
+    type: 'problem',
+    description:
+      "Disallow `WITH RECURSIVE` queries that have no `LIMIT` on the outer SELECT, which can run unboundedly if the recursion's termination condition is wrong",
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noLimit:
+        'Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.',
+    },
+  },
   'require-limit': {
     type: 'suggestion',
     description: 'Require LIMIT clause in SELECT statements',
