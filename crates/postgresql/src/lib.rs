@@ -93,6 +93,7 @@ pub fn scan_postgresql(source_text: &str, options: &ScanOptions) -> SmallVec<[Di
         source: &parsed.source,
         options: &options.options,
         error: parsed.error.as_ref(),
+        statements: &parsed.statements,
         diagnostics: SmallVec::new(),
         rule_name: "",
     };
@@ -128,6 +129,10 @@ pub struct RuleContext<'a> {
     pub source: &'a Source,
     pub options: &'a Value,
     pub error: Option<&'a ParseError>,
+    /// All top-level statement nodes for the parsed SQL file.  Rules that need
+    /// program-exit behaviour (e.g. `require-index-on-fk-column`) walk this
+    /// slice directly instead of relying on the visitor dispatch.
+    pub statements: &'a [Value],
     diagnostics: SmallVec<[Diagnostic; 8]>,
     rule_name: &'static str,
 }
@@ -224,7 +229,7 @@ fn is_recursible(key: &str, value: &Value) -> bool {
     !matches!(key, "parent" | "type" | "range" | "loc") && (value.is_object() || value.is_array())
 }
 
-fn loc_of(node: &Value) -> Option<DiagnosticLoc> {
+pub(crate) fn loc_of(node: &Value) -> Option<DiagnosticLoc> {
     let loc = node.get("loc")?;
     let start = loc.get("start")?;
     let end = loc.get("end")?;
