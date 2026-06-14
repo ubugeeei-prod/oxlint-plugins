@@ -337,6 +337,9 @@ const messages = Object.freeze({
   'process-argv': {
     processArgv: 'Make sure that reading command-line arguments is safe here.',
   },
+  'standard-input': {
+    standardInput: 'Make sure that reading from the standard input is safe here.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -519,6 +522,8 @@ const ruleDescriptions = Object.freeze({
     'Require shorthand object properties to be grouped as one contiguous block at the beginning or end of the object literal, rather than interleaved with regular "key: value" properties',
   'process-argv':
     'Flag reads of process.argv, since using command-line arguments is security-sensitive and should be reviewed',
+  'standard-input':
+    'Flag reads of process.stdin, since reading from the standard input is security-sensitive and should be reviewed',
 });
 
 const ruleTypes = Object.freeze({
@@ -614,6 +619,7 @@ const ruleTypes = Object.freeze({
   'no-literal-call': 'problem',
   'shorthand-property-grouping': 'suggestion',
   'process-argv': 'suggestion',
+  'standard-input': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -709,6 +715,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-literal-call': 'error',
   'shorthand-property-grouping': 'error',
   'process-argv': 'error',
+  'standard-input': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

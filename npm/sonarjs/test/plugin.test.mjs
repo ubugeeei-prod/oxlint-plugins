@@ -186,6 +186,7 @@ describe('sonarjs plugin shape', () => {
       'no-literal-call',
       'shorthand-property-grouping',
       'process-argv',
+      'standard-input',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -278,6 +279,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-literal-call']).toBe('object');
     expect(typeof plugin.rules['shorthand-property-grouping']).toBe('object');
     expect(typeof plugin.rules['process-argv']).toBe('object');
+    expect(typeof plugin.rules['standard-input']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -378,6 +380,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-literal-call']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/shorthand-property-grouping']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/process-argv']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/standard-input']).toBe('error');
   });
 });
 
@@ -2846,5 +2849,49 @@ describe('process-argv rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(process-argv)');
+  });
+});
+
+describe('standard-input rule', () => {
+  it('reports standard-input for a direct process.stdin access through the adapter', () => {
+    const source = 'const x = process.stdin;';
+    const reports = runRule('standard-input', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('standardInput');
+  });
+
+  it('reports standard-input once for process.stdin.on through the adapter', () => {
+    const source = "process.stdin.on('data', cb);";
+    const reports = runRule('standard-input', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('standardInput');
+  });
+
+  it('reports standard-input once for process.stdin.read() through the adapter', () => {
+    const source = 'process.stdin.read();';
+    const reports = runRule('standard-input', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('standardInput');
+  });
+
+  it('does not report standard-input for process.stdout', () => {
+    const source = 'process.stdout;';
+    const reports = runRule('standard-input', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report standard-input for foo.stdin', () => {
+    const source = 'foo.stdin;';
+    const reports = runRule('standard-input', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports standard-input through the CLI', () => {
+    const source = 'const x = process.stdin;';
+    const result = runOxlint('standard-input', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(standard-input)');
   });
 });

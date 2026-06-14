@@ -95,6 +95,7 @@ const expectedRuleNames = [
   'no-literal-call',
   'shorthand-property-grouping',
   'process-argv',
+  'standard-input',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2218,6 +2219,29 @@ describe('sonarjs native API', () => {
 
   it('does not report process-argv for foo.argv', () => {
     const diagnostics = scan('process-argv', 'foo.argv;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports standard-input for a direct process.stdin access', () => {
+    const diagnostics = scan('standard-input', 'const x = process.stdin;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('standard-input');
+    expect(diagnostics[0].messageId).toBe('standardInput');
+  });
+
+  it('reports standard-input once for process.stdin.on', () => {
+    const diagnostics = scan('standard-input', "process.stdin.on('data', cb);");
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('standardInput');
+  });
+
+  it('does not report standard-input for process.stdout', () => {
+    const diagnostics = scan('standard-input', 'process.stdout;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report standard-input for foo.stdin', () => {
+    const diagnostics = scan('standard-input', 'foo.stdin;');
     expect(diagnostics).toHaveLength(0);
   });
 
