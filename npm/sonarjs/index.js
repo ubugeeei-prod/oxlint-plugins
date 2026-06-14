@@ -116,6 +116,21 @@ const messages = Object.freeze({
   'prefer-default-last': {
     defaultLast: "Move this 'default' clause to the end of the switch statement.",
   },
+  'no-inverted-boolean-check': {
+    invertedBooleanCheck:
+      'Use the opposite comparison operator instead of negating this comparison.',
+  },
+  'no-useless-catch': {
+    uselessCatch: "Remove this useless 'catch' clause; it only rethrows the caught exception.",
+  },
+  'no-redundant-optional': {
+    redundantOptional:
+      "Remove this redundant 'undefined' type; the '?' optional marker already allows it.",
+  },
+  'prefer-immediate-return': {
+    preferImmediateReturn:
+      'Return or throw this expression directly instead of assigning it to a temporary variable first.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -167,6 +182,14 @@ const ruleDescriptions = Object.freeze({
     "Disallow switch statements with fewer than two real 'case' clauses; use an 'if' statement instead (default clause not counted)",
   'prefer-default-last':
     "Require the 'default' clause of a switch statement to appear as the last clause for readability",
+  'no-inverted-boolean-check':
+    'Disallow negating a comparison expression; use the opposite comparison operator instead',
+  'no-useless-catch':
+    "Disallow 'catch' clauses that only rethrow the caught exception; remove them and let the error propagate naturally",
+  'no-redundant-optional':
+    "Disallow optional property signatures whose type annotation already includes 'undefined'; the '?' marker already permits undefined",
+  'prefer-immediate-return':
+    'Disallow declaring a local variable solely to immediately return or throw it; return or throw the initializer expression directly',
 });
 
 const ruleTypes = Object.freeze({
@@ -198,6 +221,10 @@ const ruleTypes = Object.freeze({
   'prefer-while': 'suggestion',
   'no-small-switch': 'suggestion',
   'prefer-default-last': 'suggestion',
+  'no-inverted-boolean-check': 'suggestion',
+  'no-useless-catch': 'suggestion',
+  'no-redundant-optional': 'suggestion',
+  'prefer-immediate-return': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -229,6 +256,10 @@ const recommendedRuleConfig = Object.freeze({
   'prefer-while': 'error',
   'no-small-switch': 'error',
   'prefer-default-last': 'error',
+  'no-inverted-boolean-check': 'error',
+  'no-useless-catch': 'error',
+  'no-redundant-optional': 'error',
+  'prefer-immediate-return': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

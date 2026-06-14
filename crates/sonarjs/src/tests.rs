@@ -1242,3 +1242,224 @@ fn does_not_report_prefer_default_last_when_there_is_no_default() {
     let diagnostics = scan("prefer-default-last", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_inverted_boolean_check_for_negated_strict_equality() {
+    let source = "const r = !(a === b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-inverted-boolean-check");
+    assert_eq!(diagnostics[0].message_id, "invertedBooleanCheck");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_inverted_boolean_check_for_negated_less_than() {
+    let source = "const r = !(a < b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "invertedBooleanCheck");
+}
+
+#[test]
+fn reports_inverted_boolean_check_for_negated_strict_inequality() {
+    let source = "const r = !(x !== y);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "invertedBooleanCheck");
+}
+
+#[test]
+fn reports_inverted_boolean_check_for_negated_greater_equal() {
+    let source = "const r = !(a >= b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "invertedBooleanCheck");
+}
+
+#[test]
+fn does_not_report_inverted_boolean_check_for_negated_logical_and() {
+    let source = "const r = !(a && b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inverted_boolean_check_for_plain_negation() {
+    let source = "const r = !a;";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inverted_boolean_check_for_negated_arithmetic() {
+    let source = "const r = !(a + b);";
+    let diagnostics = scan("no-inverted-boolean-check", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_no_useless_catch_for_catch_that_only_rethrows() {
+    let source = "try { f(); } catch (e) { throw e; }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-useless-catch");
+    assert_eq!(diagnostics[0].message_id, "uselessCatch");
+}
+
+#[test]
+fn reports_no_useless_catch_when_finally_is_present() {
+    let source = "try { f(); } catch (err) { throw err; } finally { g(); }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "uselessCatch");
+}
+
+#[test]
+fn does_not_report_no_useless_catch_when_body_has_two_statements() {
+    let source = "try { f(); } catch (e) { log(e); throw e; }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_catch_when_throw_is_new_expression() {
+    let source = "try { f(); } catch (e) { throw new Error(); }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_catch_when_throw_is_member_expression() {
+    let source = "try { f(); } catch (e) { throw e.cause; }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_catch_when_no_throw_in_body() {
+    let source = "try { f(); } catch (e) { handle(e); }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_catch_for_destructured_param() {
+    let source = "try { f(); } catch ({ message }) { throw message; }";
+    let diagnostics = scan("no-useless-catch", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_no_redundant_optional_for_union_with_undefined() {
+    let source = "interface I { a?: string | undefined; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-redundant-optional");
+    assert_eq!(diagnostics[0].message_id, "redundantOptional");
+}
+
+#[test]
+fn reports_no_redundant_optional_for_undefined_type_directly() {
+    let source = "interface I { b?: undefined; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantOptional");
+}
+
+#[test]
+fn reports_no_redundant_optional_for_multi_member_union_with_undefined() {
+    let source = "interface I { c?: number | string | undefined; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantOptional");
+}
+
+#[test]
+fn does_not_report_no_redundant_optional_when_no_undefined_in_type() {
+    let source = "interface I { a?: string; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_redundant_optional_for_non_optional_property_with_undefined() {
+    let source = "interface I { b: string | undefined; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_redundant_optional_for_optional_property_with_null_not_undefined() {
+    let source = "interface I { c?: string | null; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_prefer_immediate_return_for_const_declared_then_returned() {
+    let source = "function f() { const x = compute(); return x; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "prefer-immediate-return");
+    assert_eq!(diagnostics[0].message_id, "preferImmediateReturn");
+}
+
+#[test]
+fn reports_prefer_immediate_return_for_const_declared_then_thrown() {
+    let source = "function f() { const e = new Error(); throw e; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferImmediateReturn");
+}
+
+#[test]
+fn reports_prefer_immediate_return_for_arrow_function_block_body() {
+    let source = "const g = () => { const x = 1; return x; };";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferImmediateReturn");
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_for_direct_return() {
+    let source = "function f() { return compute(); }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_statement_between_decl_and_return() {
+    let source = "function f() { const x = 1; doStuff(); return x; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_return_uses_different_identifier() {
+    let source = "function f() { const x = 1; return y; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_return_is_not_bare_identifier() {
+    let source = "function f() { const x = 1; return x + 1; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_declaration_has_two_declarators() {
+    let source = "function f() { const x = 1, y = 2; return x; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_immediate_return_when_declarator_has_no_init() {
+    // `let x;` has no initializer — there is nothing to inline
+    let source = "function f() { let x; return x; }";
+    let diagnostics = scan("prefer-immediate-return", source);
+    assert!(diagnostics.is_empty());
+}

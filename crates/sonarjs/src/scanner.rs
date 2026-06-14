@@ -3,11 +3,11 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, BindingIdentifier, ConditionalExpression,
-    ExpressionStatement, ForInStatement, ForStatement, Function, IdentifierReference, IfStatement,
-    LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression, SwitchCase,
-    SwitchStatement, TSIntersectionType, TSUnionType, TemplateLiteral, UnaryExpression,
-    YieldExpression,
+    AssignmentExpression, BinaryExpression, BindingIdentifier, CatchClause, ConditionalExpression,
+    ExpressionStatement, ForInStatement, ForStatement, Function, FunctionBody, IdentifierReference,
+    IfStatement, LabeledStatement, LogicalExpression, RegExpLiteral, StaticMemberExpression,
+    SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType,
+    TemplateLiteral, UnaryExpression, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -109,6 +109,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_unary_expression(&mut self, it: &UnaryExpression<'a>) {
         self.check_no_redundant_boolean_unary(it);
         self.check_no_delete_var(it);
+        self.check_no_inverted_boolean_check(it);
         walk::walk_unary_expression(self, it);
     }
 
@@ -161,6 +162,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         walk::walk_ts_intersection_type(self, it);
     }
 
+    fn visit_ts_property_signature(&mut self, it: &TSPropertySignature<'a>) {
+        self.check_no_redundant_optional(it);
+        walk::walk_ts_property_signature(self, it);
+    }
+
     fn visit_identifier_reference(&mut self, it: &IdentifierReference<'a>) {
         self.check_arguments_usage(it);
         walk::walk_identifier_reference(self, it);
@@ -195,5 +201,15 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_yield_expression(&mut self, it: &YieldExpression<'a>) {
         self.mark_generator_yield();
         walk::walk_yield_expression(self, it);
+    }
+
+    fn visit_catch_clause(&mut self, it: &CatchClause<'a>) {
+        self.check_no_useless_catch(it);
+        walk::walk_catch_clause(self, it);
+    }
+
+    fn visit_function_body(&mut self, it: &FunctionBody<'a>) {
+        self.check_prefer_immediate_return(it);
+        walk::walk_function_body(self, it);
     }
 }

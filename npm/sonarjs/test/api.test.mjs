@@ -31,6 +31,10 @@ const expectedRuleNames = [
   'prefer-while',
   'no-small-switch',
   'prefer-default-last',
+  'no-inverted-boolean-check',
+  'no-useless-catch',
+  'no-redundant-optional',
+  'prefer-immediate-return',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1014,6 +1018,177 @@ describe('sonarjs native API', () => {
   it('does not report prefer-default-last when there is no default clause', () => {
     const source = 'switch (x) { case 1: break; case 2: break; }';
     const diagnostics = scan('prefer-default-last', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-inverted-boolean-check for !(a === b)', () => {
+    const source = 'const r = !(a === b);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-inverted-boolean-check');
+    expect(diagnostics[0].messageId).toBe('invertedBooleanCheck');
+  });
+
+  it('reports no-inverted-boolean-check for !(a < b)', () => {
+    const source = 'const r = !(a < b);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('invertedBooleanCheck');
+  });
+
+  it('reports no-inverted-boolean-check for !(x !== y)', () => {
+    const source = 'const r = !(x !== y);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('invertedBooleanCheck');
+  });
+
+  it('does not report no-inverted-boolean-check for !(a && b) (logical, not comparison)', () => {
+    const source = 'const r = !(a && b);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-inverted-boolean-check for !a (no comparison)', () => {
+    const source = 'const r = !a;';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-inverted-boolean-check for !(a + b) (arithmetic, not comparison)', () => {
+    const source = 'const r = !(a + b);';
+    const diagnostics = scan('no-inverted-boolean-check', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-useless-catch for catch that only rethrows', () => {
+    const source = 'try { f(); } catch (e) { throw e; }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-useless-catch');
+    expect(diagnostics[0].messageId).toBe('uselessCatch');
+  });
+
+  it('reports no-useless-catch for catch that only rethrows when finally is present', () => {
+    const source = 'try { f(); } catch (err) { throw err; } finally { g(); }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('uselessCatch');
+  });
+
+  it('does not report no-useless-catch when catch body has two statements', () => {
+    const source = 'try { f(); } catch (e) { log(e); throw e; }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-useless-catch when throw argument is a new expression', () => {
+    const source = 'try { f(); } catch (e) { throw new Error(); }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-useless-catch when throw argument is a member expression', () => {
+    const source = 'try { f(); } catch (e) { throw e.cause; }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-useless-catch when catch body has no throw', () => {
+    const source = 'try { f(); } catch (e) { handle(e); }';
+    const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-redundant-optional for optional property with union including undefined', () => {
+    const source = 'interface I { a?: string | undefined; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-redundant-optional');
+    expect(diagnostics[0].messageId).toBe('redundantOptional');
+  });
+
+  it('reports no-redundant-optional for optional property typed as undefined directly', () => {
+    const source = 'interface I { b?: undefined; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantOptional');
+  });
+
+  it('reports no-redundant-optional for optional property with multi-member union including undefined', () => {
+    const source = 'interface I { c?: number | string | undefined; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantOptional');
+  });
+
+  it('does not report no-redundant-optional for optional property without undefined in type', () => {
+    const source = 'interface I { a?: string; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-redundant-optional for non-optional property with undefined in type', () => {
+    const source = 'interface I { b: string | undefined; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-redundant-optional for optional property with null but not undefined', () => {
+    const source = 'interface I { c?: string | null; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports prefer-immediate-return for const declared then immediately returned', () => {
+    const source = 'function f() { const x = compute(); return x; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('prefer-immediate-return');
+    expect(diagnostics[0].messageId).toBe('preferImmediateReturn');
+  });
+
+  it('reports prefer-immediate-return for const declared then immediately thrown', () => {
+    const source = 'function f() { const e = new Error(); throw e; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('preferImmediateReturn');
+  });
+
+  it('reports prefer-immediate-return for arrow function with block body', () => {
+    const source = 'const g = () => { const x = 1; return x; };';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('preferImmediateReturn');
+  });
+
+  it('does not report prefer-immediate-return for a direct return (only one statement)', () => {
+    const source = 'function f() { return compute(); }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-immediate-return when a statement appears between decl and return', () => {
+    const source = 'function f() { const x = 1; doStuff(); return x; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-immediate-return when return uses a different identifier', () => {
+    const source = 'function f() { const x = 1; return y; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-immediate-return when return is not the bare identifier', () => {
+    const source = 'function f() { const x = 1; return x + 1; }';
+    const diagnostics = scan('prefer-immediate-return', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-immediate-return when the declaration has two declarators', () => {
+    const source = 'function f() { const x = 1, y = 2; return x; }';
+    const diagnostics = scan('prefer-immediate-return', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
