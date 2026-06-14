@@ -13838,19 +13838,19 @@
       },
       {
         "name": "single-char-in-character-classes",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule single-char-in-character-classes (Sonar key S6397). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6397). Uses the shared regex_ast helper to walk a regex literal; flags a non-negated CharacterClass whose body is exactly one CharacterClassContents::Character (a single literal character), at any nesting depth. Negated classes, ranges, multi-element classes, and single class-escape elements (e.g. [\\d]) are not flagged; the class-escape and nested-class cases are documented follow-ups. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "single-character-alternation",

@@ -60,6 +60,7 @@ const expectedRuleNames = [
   'no-empty-alternatives',
   'no-regex-spaces',
   'no-control-regex',
+  'single-char-in-character-classes',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1994,5 +1995,17 @@ describe('sonarjs native API', () => {
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0].ruleName).toBe('no-control-regex');
     expect(diagnostics[0].messageId).toBe('controlCharacter');
+  });
+
+  it('reports single-char-in-character-classes for a one-character class', () => {
+    const diagnostics = scan('single-char-in-character-classes', 'const r = /[a]/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('single-char-in-character-classes');
+    expect(diagnostics[0].messageId).toBe('singleCharInCharacterClass');
+  });
+
+  it('does not report single-char-in-character-classes for a multi-character class', () => {
+    const diagnostics = scan('single-char-in-character-classes', 'const r = /[ab]/;');
+    expect(diagnostics).toHaveLength(0);
   });
 });

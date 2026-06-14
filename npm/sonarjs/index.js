@@ -86,6 +86,9 @@ const messages = Object.freeze({
     controlCharacter:
       'Remove this control character from the regular expression or write it as a conventional escape.',
   },
+  'single-char-in-character-classes': {
+    singleCharInCharacterClass: 'Replace this single-character class with the character itself.',
+  },
   'generator-without-yield': {
     generatorWithoutYield:
       "This generator contains no 'yield'; either add a 'yield' or convert it to a regular function.",
@@ -249,6 +252,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow multiple consecutive spaces in a regular expression; use an explicit quantifier instead',
   'no-control-regex':
     'Disallow control characters written as \\x, \\u, or \\c escapes in regular expressions',
+  'single-char-in-character-classes':
+    'Disallow a regular-expression character class that contains only a single literal character',
   'generator-without-yield':
     "Disallow generator functions that contain no 'yield' expression and therefore behave like plain functions",
   'no-exclusive-tests':
@@ -346,6 +351,7 @@ const ruleTypes = Object.freeze({
   'no-empty-alternatives': 'suggestion',
   'no-regex-spaces': 'suggestion',
   'no-control-regex': 'suggestion',
+  'single-char-in-character-classes': 'suggestion',
   'generator-without-yield': 'problem',
   'no-exclusive-tests': 'problem',
   'no-built-in-override': 'problem',
@@ -406,6 +412,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-empty-alternatives': 'error',
   'no-regex-spaces': 'error',
   'no-control-regex': 'error',
+  'single-char-in-character-classes': 'error',
   'generator-without-yield': 'error',
   'no-exclusive-tests': 'error',
   'no-built-in-override': 'error',
