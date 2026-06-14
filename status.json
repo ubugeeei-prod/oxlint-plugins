@@ -5031,19 +5031,19 @@
       },
       {
         "name": "consistent-text-over-varchar",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule consistent-text-over-varchar."
+        "notes": "Rust port validated against upstream test fixtures."
       },
       {
         "name": "consistent-timestamptz",
