@@ -29,6 +29,18 @@ const ruleMeta = Object.freeze({
         'Add this CHECK constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not block writers under `ACCESS EXCLUSIVE`.',
     },
   },
+  'no-add-column-not-null-without-default': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ADD COLUMN ... NOT NULL` without a `DEFAULT` because the migration fails outright on any non-empty table',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noAddColumnNotNullWithoutDefault:
+        '`ADD COLUMN ... NOT NULL` without a `DEFAULT` aborts the migration on any table that already has rows. Either supply a `DEFAULT`, or add the column nullable first, backfill, and then `ALTER COLUMN ... SET NOT NULL` in a follow-up.',
+    },
+  },
   'no-add-unique-constraint-directly': {
     type: 'problem',
     description:
