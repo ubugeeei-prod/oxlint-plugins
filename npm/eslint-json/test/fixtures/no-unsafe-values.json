@@ -1,0 +1,446 @@
+{
+  "__generated": {
+    "source": "@eslint/json",
+    "version": "2.0.0",
+    "sourceFile": "tests/rules/no-unsafe-values.test.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-json-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "123",
+      "language": "json/json"
+    },
+    {
+      "code": "1234",
+      "language": "json/json5"
+    },
+    {
+      "code": "12345",
+      "language": "json/json5"
+    },
+    {
+      "code": "\"🔥\"",
+      "language": "json/json"
+    },
+    {
+      "code": "\"\\ud83d\\udd25\"",
+      "language": "json/json"
+    },
+    {
+      "code": "0.00000",
+      "language": "json/json"
+    },
+    {
+      "code": "0e0000000",
+      "language": "json/json"
+    },
+    {
+      "code": "0.00000e0000",
+      "language": "json/json"
+    },
+    {
+      "code": "0x0",
+      "language": "json/json5"
+    },
+    {
+      "code": "0X0",
+      "language": "json/json5"
+    },
+    {
+      "code": "+0x0",
+      "language": "json/json5"
+    },
+    {
+      "code": "+0X0",
+      "language": "json/json5"
+    },
+    {
+      "code": "-0x0",
+      "language": "json/json5"
+    },
+    {
+      "code": "-0X0",
+      "language": "json/json5"
+    },
+    {
+      "code": ".0",
+      "language": "json/json5"
+    },
+    {
+      "code": "0.",
+      "language": "json/json5"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "2e308",
+      "errors": [
+        {
+          "messageId": "unsafeNumber",
+          "data": {
+            "value": "2e308"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "-2e308",
+      "errors": [
+        {
+          "messageId": "unsafeNumber",
+          "data": {
+            "value": "-2e308"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\"\ud83d\"",
+      "errors": [
+        {
+          "messageId": "loneSurrogate",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\"\\ud83d\"",
+      "errors": [
+        {
+          "messageId": "loneSurrogate",
+          "data": {
+            "surrogate": "\\ud83d"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\"\udd25\"",
+      "errors": [
+        {
+          "messageId": "loneSurrogate",
+          "data": {
+            "surrogate": "\\udd25"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\"\\udd25\"",
+      "errors": [
+        {
+          "messageId": "loneSurrogate",
+          "data": {
+            "surrogate": "\\udd25"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "\"\ud83d\ud83d\"",
+      "errors": [
+        {
+          "message": "Lone surrogate '\\ud83d' found.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 5
+        },
+        {
+          "message": "Lone surrogate '\\ud83d' found.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "1e-400",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "1e-400"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "1E-400",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "1E-400"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "+1e-400",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "+1e-400"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "-1e-400",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "-1e-400"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 8
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "0.01e-400",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "0.01e-400"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "+0.01e-400",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "+0.01e-400"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "-0.01e-400",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "-0.01e-400"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": ".01e-400",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": ".01e-400"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "-10.2e-402",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "-10.2e-402"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "+10.e-402",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "+10.e-402"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "-10.e-402",
+      "language": "json/json5",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "-10.e-402"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "errors": [
+        {
+          "messageId": "unsafeZero",
+          "data": {
+            "value": "0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 404
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "9007199254740992",
+      "errors": [
+        {
+          "messageId": "unsafeInteger",
+          "data": {
+            "value": "9007199254740992"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "-9007199254740992",
+      "errors": [
+        {
+          "messageId": "unsafeInteger",
+          "data": {
+            "value": "-9007199254740992"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "2.2250738585072009e-308",
+      "errors": [
+        {
+          "messageId": "subnormal",
+          "data": {
+            "value": "2.2250738585072009e-308"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "language": "json/json"
+    },
+    {
+      "code": "-2.2250738585072009e-308",
+      "errors": [
+        {
+          "messageId": "subnormal",
+          "data": {
+            "value": "-2.2250738585072009e-308"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "language": "json/json"
+    }
+  ]
+}

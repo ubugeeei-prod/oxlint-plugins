@@ -10126,19 +10126,19 @@
       },
       {
         "name": "array-constructor",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule array-constructor (Sonar key S1528). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S1528). Flags CallExpression/NewExpression whose callee is the bare `Array` identifier when the argument count is not exactly one and no TypeScript type arguments are present; the single-argument length form and explicitly typed constructions are allowed. Implemented via check_array_constructor_call/check_array_constructor_new from visit_call_expression/visit_new_expression. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "arrow-function-convention",
@@ -12126,19 +12126,19 @@
       },
       {
         "name": "no-function-declaration-in-block",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-function-declaration-in-block (Sonar key S1530). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S1530). Flags a FunctionDeclaration that is a direct statement child of a BlockStatement (if/loop/try bodies, bare blocks); reported via check_no_function_declaration_in_block from visit_block_statement. Function bodies are FunctionBody nodes (not BlockStatement) so top-of-function declarations are not flagged; ambient `declare function` is skipped. Narrow form: function declarations directly in a switch-case body are a documented follow-up. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-global-this",
@@ -12398,19 +12398,19 @@
       },
       {
         "name": "no-inconsistent-returns",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-inconsistent-returns (Sonar key S3801). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S3801). A per-function/arrow frame stack (return_kind_stack) pushed in visit_function/visit_arrow_function_expression records, per scope, whether an explicit value `return x;` and an explicit bare `return;` were seen (visit_return_statement); on leave the scope is reported when both are present. Returns bind to the nearest scope frame so nested functions are isolated. Narrow form: an explicit value return mixed with an implicit fall-through (no trailing return) is a documented follow-up. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-incorrect-string-concat",
@@ -12622,19 +12622,19 @@
       },
       {
         "name": "no-nested-assignment",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-nested-assignment (Sonar key S1121). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room narrow port (Sonar key S1121). Flags an `=` assignment used as an if/while/do-while/for condition (check_no_nested_assignment_condition on the relevant `test`) and the right-hand side of a chained `=` assignment (check_no_nested_assignment_chain from visit_assignment_expression). Restricted to the AssignmentOperator::Assign operator for a zero-false-positive subset; other sub-expression positions (call args, declarator init, literals) and compound operators are a documented follow-up. for-loop init/update are intentionally not flagged. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-nested-conditional",
@@ -12942,19 +12942,19 @@
       },
       {
         "name": "no-same-line-conditional",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-same-line-conditional (Sonar key S3972). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S3972). Scans each statement list (program, block, function body, switch case) for an IfStatement whose start line equals the end line of the immediately preceding sibling IfStatement, via check_no_same_line_conditional using LineIndex::loc_for_span. `else if` is part of a single IfStatement (not a sibling) so it is not flagged. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-selector-parameter",
@@ -13022,19 +13022,19 @@
       },
       {
         "name": "no-sonar-comments",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-sonar-comments (Sonar key S1291). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S1291). Scans Program.comments for the case-sensitive substring \"NOSONAR\" and reports one diagnostic per matching comment span. Implemented via check_no_sonar_comments called from visit_program before the AST walk. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-tab",

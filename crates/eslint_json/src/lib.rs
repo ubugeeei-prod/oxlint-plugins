@@ -181,6 +181,7 @@ struct ParsedFacts {
     objects: SmallVec<[ObjectFact; 8]>,
     numbers: SmallVec<[NumberFact; 16]>,
     strings: SmallVec<[StringFact; 16]>,
+    comments: SmallVec<[ByteSpan; 8]>,
 }
 
 pub fn implemented_eslint_json_rule_names() -> &'static [&'static str] {
@@ -226,6 +227,13 @@ pub fn scan_eslint_json(source_text: &str, options: &ScanOptions) -> SmallVec<[D
     if options.is_enabled("top-level-interop") {
         scan_top_level_interop(source_text, &line_index, &facts, &mut diagnostics);
     }
+
+    // ESLint sorts reported problems by location before returning them; objects
+    // are discovered in post-order (innermost first), so a stable positional
+    // sort restores document order for nested objects.
+    diagnostics.sort_by(|a, b| {
+        (a.loc.start_line, a.loc.start_column).cmp(&(b.loc.start_line, b.loc.start_column))
+    });
 
     diagnostics
 }
@@ -331,6 +339,7 @@ fn scan_sort_keys(
     options: &SortOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 16]>,
 ) {
+    let comment_lines = comment_line_ranges(source_text, line_index, &facts.comments);
     for object in &facts.objects {
         if object.members.len() < options.min_keys {
             continue;
@@ -347,6 +356,7 @@ fn scan_sort_keys(
                 && is_line_separated(
                     source_text,
                     line_index,
+                    &comment_lines,
                     prev.member_span,
                     member.member_span,
                 )
@@ -379,12 +389,93 @@ fn scan_sort_keys(
                         ..DiagnosticData::default()
                     },
                     loc: line_index.loc_for_span(source_text, member.name_span),
-                    fix: None,
+                    fix: sort_keys_fix(source_text, &facts.comments, prev, member),
                 });
             }
             previous = Some(member);
         }
     }
+}
+
+// Build the autofix that swaps the two out-of-order members, mirroring
+// upstream's `[replaceText(member, prevText), replaceText(prevMember, memberText)]`
+// (which ESLint merges into one range edit). Returns None when either member has
+// an adjacent comment, exactly as upstream's fixer bails out.
+fn sort_keys_fix(
+    source_text: &str,
+    comments: &[ByteSpan],
+    prev: &MemberFact,
+    member: &MemberFact,
+) -> Option<DiagnosticFix> {
+    if has_adjacent_comment(source_text, comments, prev.member_span)
+        || has_adjacent_comment(source_text, comments, member.member_span)
+    {
+        return None;
+    }
+
+    let prev_text = &source_text[prev.member_span.start..prev.member_span.end];
+    let between = &source_text[prev.member_span.end..member.member_span.start];
+    let member_text = &source_text[member.member_span.start..member.member_span.end];
+
+    let mut replacement = CompactString::from(member_text);
+    replacement.push_str(between);
+    replacement.push_str(prev_text);
+
+    Some(DiagnosticFix {
+        start: utf16_offset(source_text, prev.member_span.start),
+        end: utf16_offset(source_text, member.member_span.end),
+        replacement,
+    })
+}
+
+// Whether a comment sits immediately before or after a member's span (skipping a
+// single trailing comma after it), matching upstream's `hasAdjacentComment`
+// which uses `getTokenBefore`/`getTokenAfter` with `includeComments`.
+fn has_adjacent_comment(source_text: &str, comments: &[ByteSpan], span: ByteSpan) -> bool {
+    let before = comments.iter().any(|comment| {
+        comment.end <= span.start
+            && source_text
+                .get(comment.end..span.start)
+                .is_some_and(|gap| gap.chars().all(char::is_whitespace))
+    });
+    if before {
+        return true;
+    }
+    comments.iter().any(|comment| {
+        comment.start >= span.end
+            && source_text
+                .get(span.end..comment.start)
+                .is_some_and(is_whitespace_with_optional_comma)
+    })
+}
+
+fn is_whitespace_with_optional_comma(gap: &str) -> bool {
+    let mut comma_seen = false;
+    for ch in gap.chars() {
+        if ch == ',' && !comma_seen {
+            comma_seen = true;
+        } else if !ch.is_whitespace() {
+            return false;
+        }
+    }
+    true
+}
+
+// Inclusive (start_line, end_line) ranges of every comment, used to ignore blank
+// lines that fall inside a comment when computing line-separated groups.
+fn comment_line_ranges(
+    source_text: &str,
+    line_index: &LineIndex,
+    comments: &[ByteSpan],
+) -> SmallVec<[(u32, u32); 8]> {
+    comments
+        .iter()
+        .map(|comment| {
+            let (start_line, _) = line_index.position_for_offset(source_text, comment.start);
+            let (end_line, _) = line_index.position_for_offset(source_text, comment.end);
+            (start_line, end_line)
+        })
+        .collect()
 }
 
 fn scan_top_level_interop(
@@ -466,7 +557,7 @@ fn scan_number(
             line_index,
             number.span,
         ));
-    } else if !is_decimal_integer(raw) && value.abs() < f64::MIN_POSITIVE {
+    } else if !is_decimal_integer(raw) && value != 0.0 && value.abs() < f64::MIN_POSITIVE {
         diagnostics.push(number_diagnostic(
             "subnormal",
             raw,
@@ -649,7 +740,7 @@ fn is_valid_sort_order(previous: &str, current: &str, options: &SortOptions) -> 
     };
 
     let order = if options.natural {
-        natural_cmp(left, right)
+        natural_compare(left, right)
     } else {
         left.cmp(right)
     };
@@ -670,79 +761,98 @@ fn lower(value: &str) -> CompactString {
     out
 }
 
-fn natural_cmp(left: &str, right: &str) -> core::cmp::Ordering {
-    let mut left_iter = left.char_indices().peekable();
-    let mut right_iter = right.char_indices().peekable();
+// Faithful port of the `natural-compare` npm package (v1.4.0, MIT, by Lauri
+// Rooden) that upstream's sort-keys rule uses. It remaps each UTF-16 code unit
+// through `nc_single` (so e.g. `_` sorts before letters) and compares runs of
+// digits numerically. Operating on UTF-16 code units mirrors `String.charCodeAt`;
+// digit runs are compared by (length, then lexicographically) — exact for any
+// length and free of the float arithmetic the original uses.
+fn natural_compare(left: &str, right: &str) -> core::cmp::Ordering {
+    let a: SmallVec<[u16; 16]> = left.encode_utf16().collect();
+    let b: SmallVec<[u16; 16]> = right.encode_utf16().collect();
+    if a == b {
+        return core::cmp::Ordering::Equal;
+    }
 
+    let mut pos_a = 0usize;
+    let mut pos_b = 0usize;
     loop {
-        match (left_iter.peek().copied(), right_iter.peek().copied()) {
-            (None, None) => return core::cmp::Ordering::Equal,
-            (None, Some(_)) => return core::cmp::Ordering::Less,
-            (Some(_), None) => return core::cmp::Ordering::Greater,
-            (Some((_, left_ch)), Some((_, right_ch)))
-                if left_ch.is_ascii_digit() && right_ch.is_ascii_digit() =>
-            {
-                let left_number = consume_digit_run(left, &mut left_iter);
-                let right_number = consume_digit_run(right, &mut right_iter);
-                let ordering = compare_digit_runs(left_number, right_number);
-                if !ordering.is_eq() {
-                    return ordering;
+        let code_a = nc_single(&a, pos_a);
+        let code_b = nc_single(&b, pos_b);
+
+        // Both code units are digits `1`..`9` (mapped to 67..=75): compare the
+        // whole numeric runs instead of code-unit by code-unit.
+        if (67..76).contains(&code_a) && (67..76).contains(&code_b) {
+            let end_a = nc_digit_run_end(&a, pos_a);
+            let end_b = nc_digit_run_end(&b, pos_b);
+            match compare_digit_runs(&a[pos_a..end_a], &b[pos_b..end_b]) {
+                core::cmp::Ordering::Equal => {
+                    pos_a = end_a;
+                    pos_b = end_b;
+                    continue;
                 }
-            }
-            (Some((_, left_ch)), Some((_, right_ch))) => {
-                let _ = left_iter.next();
-                let _ = right_iter.next();
-                let ordering = left_ch.cmp(&right_ch);
-                if !ordering.is_eq() {
-                    return ordering;
-                }
+                ordering => return ordering,
             }
         }
+
+        if code_a != code_b {
+            return code_a.cmp(&code_b);
+        }
+        if code_a == 0 {
+            // Both strings are exhausted at the same point.
+            return core::cmp::Ordering::Equal;
+        }
+        pos_a += 1;
+        pos_b += 1;
     }
 }
 
-fn consume_digit_run<'a>(
-    source: &'a str,
-    iter: &mut core::iter::Peekable<core::str::CharIndices<'a>>,
-) -> &'a str {
-    let Some((start, _)) = iter.peek().copied() else {
-        return "";
-    };
-    let mut end = start;
-    while let Some((index, ch)) = iter.peek().copied() {
-        if !ch.is_ascii_digit() {
-            break;
-        }
-        end = index + ch.len_utf8();
-        let _ = iter.next();
+// `getCode` for a single UTF-16 code unit: out-of-range yields 0, and printable
+// ASCII is remapped so punctuation/digits/letters interleave the way
+// natural-compare expects.
+fn nc_single(units: &[u16], pos: usize) -> i32 {
+    let code = i32::from(units.get(pos).copied().unwrap_or(0));
+    if !(45..=127).contains(&code) {
+        code
+    } else if code < 46 {
+        65
+    } else if code < 48 {
+        code - 1
+    } else if code < 58 {
+        code + 18
+    } else if code < 65 {
+        code - 11
+    } else if code < 91 {
+        code + 11
+    } else if code < 97 {
+        code - 37
+    } else if code < 123 {
+        code + 5
+    } else {
+        code - 63
     }
-    &source[start..end]
 }
 
-fn compare_digit_runs(left: &str, right: &str) -> core::cmp::Ordering {
-    let left_trimmed = left.trim_start_matches('0');
-    let right_trimmed = right.trim_start_matches('0');
-    let left_cmp = if left_trimmed.is_empty() {
-        "0"
-    } else {
-        left_trimmed
-    };
-    let right_cmp = if right_trimmed.is_empty() {
-        "0"
-    } else {
-        right_trimmed
-    };
+// Index just past the run of digit code units starting at `pos`.
+fn nc_digit_run_end(units: &[u16], pos: usize) -> usize {
+    let mut end = pos;
+    while end < units.len() && (66..76).contains(&nc_single(units, end)) {
+        end += 1;
+    }
+    end
+}
 
-    left_cmp
-        .len()
-        .cmp(&right_cmp.len())
-        .then_with(|| left_cmp.cmp(right_cmp))
-        .then_with(|| left.len().cmp(&right.len()))
+// Compare two digit runs (each starting with `1`..`9`, so no leading zeros) by
+// magnitude: the longer run is larger, ties broken lexicographically (which for
+// ASCII digits equals numeric order).
+fn compare_digit_runs(left: &[u16], right: &[u16]) -> core::cmp::Ordering {
+    left.len().cmp(&right.len()).then_with(|| left.cmp(right))
 }
 
 fn is_line_separated(
     source_text: &str,
     line_index: &LineIndex,
+    comment_lines: &[(u32, u32)],
     prev_span: ByteSpan,
     current_span: ByteSpan,
 ) -> bool {
@@ -753,6 +863,14 @@ fn is_line_separated(
     }
 
     for line in (prev_end_line + 1)..current_start_line {
+        // A blank line that falls inside a comment does not start a new group
+        // (upstream excludes `commentLineNums`).
+        if comment_lines
+            .iter()
+            .any(|(start, end)| (*start..=*end).contains(&line))
+        {
+            continue;
+        }
         if let Some(text) = line_index.line_text(source_text, line)
             && text.trim().is_empty()
         {
@@ -901,7 +1019,11 @@ impl<'a> Parser<'a> {
                     return None;
                 }
                 Some(MemberFact {
-                    key: CompactString::from(ident),
+                    // JSON5 identifier names may carry Unicode escapes (e.g.
+                    // `foot`), which momoa decodes for the key's value while
+                    // the raw key keeps the source text. Mirror that so duplicate
+                    // and sort comparisons see the decoded name.
+                    key: decode_identifier_escapes(ident),
                     raw_key: CompactString::from(ident),
                     name_span: ByteSpan {
                         start,
@@ -1150,13 +1272,19 @@ impl<'a> Parser<'a> {
                 self.advance_char();
             }
             if self.source[self.pos..].starts_with("//") {
+                let comment_start = self.pos;
                 while let Some(ch) = self.current_char() {
-                    self.advance_char();
                     if matches!(ch, '\n' | '\r') {
                         break;
                     }
+                    self.advance_char();
                 }
+                self.facts.comments.push(ByteSpan {
+                    start: comment_start,
+                    end: self.pos,
+                });
             } else if self.source[self.pos..].starts_with("/*") {
+                let comment_start = self.pos;
                 self.pos += 2;
                 while self.pos < self.source.len() && !self.source[self.pos..].starts_with("*/") {
                     self.advance_char();
@@ -1164,6 +1292,10 @@ impl<'a> Parser<'a> {
                 if self.source[self.pos..].starts_with("*/") {
                     self.pos += 2;
                 }
+                self.facts.comments.push(ByteSpan {
+                    start: comment_start,
+                    end: self.pos,
+                });
             }
             if self.pos == before {
                 break;
@@ -1221,6 +1353,61 @@ fn push_utf16_units(ch: char, units: &mut SmallVec<[u16; 16]>) {
 
 fn is_identifier_continue(ch: char) -> bool {
     ch.is_alphanumeric() || matches!(ch, '_' | '$')
+}
+
+// Decode the Unicode escapes (`\uXXXX` or `\u{...}`) that a JSON5 identifier
+// name may contain, returning the identifier's value. Non-escaped identifiers
+// pass through unchanged so the common case allocates the raw text verbatim.
+fn decode_identifier_escapes(ident: &str) -> CompactString {
+    if !ident.contains('\\') {
+        return CompactString::from(ident);
+    }
+
+    let mut out = CompactString::new("");
+    let mut chars = ident.chars().peekable();
+    while let Some(ch) = chars.next() {
+        if ch != '\\' || chars.peek() != Some(&'u') {
+            out.push(ch);
+            continue;
+        }
+        chars.next();
+
+        let code = if chars.peek() == Some(&'{') {
+            chars.next();
+            let mut value = 0u32;
+            let mut any = false;
+            while let Some(&candidate) = chars.peek() {
+                if candidate == '}' {
+                    chars.next();
+                    break;
+                }
+                let Some(digit) = candidate.to_digit(16) else {
+                    break;
+                };
+                value = value.saturating_mul(16).saturating_add(digit);
+                any = true;
+                chars.next();
+            }
+            any.then_some(value)
+        } else {
+            let mut value = 0u32;
+            let mut count = 0;
+            while count < 4 {
+                let Some(digit) = chars.peek().and_then(|candidate| candidate.to_digit(16)) else {
+                    break;
+                };
+                value = value * 16 + digit;
+                count += 1;
+                chars.next();
+            }
+            (count == 4).then_some(value)
+        };
+
+        if let Some(ch) = code.and_then(char::from_u32) {
+            out.push(ch);
+        }
+    }
+    out
 }
 
 fn utf16_offset(source_text: &str, byte_offset: usize) -> u32 {

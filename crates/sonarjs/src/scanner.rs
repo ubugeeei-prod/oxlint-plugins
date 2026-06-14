@@ -3,12 +3,13 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, BindingIdentifier, CallExpression, CatchClause,
-    ConditionalExpression, DoWhileStatement, ExpressionStatement, ForInStatement, ForOfStatement,
-    ForStatement, Function, FunctionBody, IdentifierReference, IfStatement, LabeledStatement,
-    LogicalExpression, NewExpression, Program, RegExpLiteral, StaticMemberExpression, SwitchCase,
-    SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral,
-    UnaryExpression, WhileStatement, YieldExpression,
+    ArrowFunctionExpression, AssignmentExpression, BinaryExpression, BindingIdentifier,
+    BlockStatement, CallExpression, CatchClause, ConditionalExpression, DoWhileStatement,
+    ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function, FunctionBody,
+    IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, NewExpression, Program,
+    RegExpLiteral, ReturnStatement, StaticMemberExpression, SwitchCase, SwitchStatement,
+    TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral, UnaryExpression,
+    WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -37,6 +38,12 @@ pub(crate) struct Scanner<'a> {
     /// entry to a generator with a body and popped on exit; `generator-without-yield`
     /// reports generators whose frame is still `false` when popped.
     pub(crate) generator_yield_stack: SmallVec<[bool; 8]>,
+    /// Stack of frames, one per currently-open function or arrow scope, tracking
+    /// whether that scope has seen an explicit value `return x;` and an explicit
+    /// bare `return;`. Each tuple is `(span, has_value_return, has_bare_return)`.
+    /// Pushed on entry to a function/arrow and popped on exit;
+    /// `no-inconsistent-returns` reports a scope whose frame has both kinds set.
+    pub(crate) return_kind_stack: SmallVec<[(Span, bool, bool); 8]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -76,7 +83,15 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_tab();
         self.check_fixme_tag(&it.comments);
         self.check_todo_tag(&it.comments);
+        self.check_no_sonar_comments(&it.comments);
+        self.check_no_same_line_conditional(&it.body);
         walk::walk_program(self, it);
+    }
+
+    fn visit_block_statement(&mut self, it: &BlockStatement<'a>) {
+        self.check_no_function_declaration_in_block(it);
+        self.check_no_same_line_conditional(&it.body);
+        walk::walk_block_statement(self, it);
     }
 
     fn visit_template_literal(&mut self, it: &TemplateLiteral<'a>) {
@@ -100,6 +115,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_switch_case(&mut self, it: &SwitchCase<'a>) {
         self.check_comma_or_logical_or_case(it);
+        self.check_no_same_line_conditional(&it.consequent);
         walk::walk_switch_case(self, it);
     }
 
@@ -135,6 +151,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_all_duplicated_branches_if(it);
         self.check_elseif_without_else(it);
         self.check_prefer_single_boolean_return(it);
+        self.check_no_nested_assignment_condition(&it.test);
         walk::walk_if_statement(self, it);
     }
 
@@ -147,16 +164,21 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_for_statement(&mut self, it: &ForStatement<'a>) {
         self.check_prefer_while(it);
         self.check_redundant_continue(&it.body);
+        if let Some(test) = &it.test {
+            self.check_no_nested_assignment_condition(test);
+        }
         walk::walk_for_statement(self, it);
     }
 
     fn visit_while_statement(&mut self, it: &WhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
+        self.check_no_nested_assignment_condition(&it.test);
         walk::walk_while_statement(self, it);
     }
 
     fn visit_do_while_statement(&mut self, it: &DoWhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
+        self.check_no_nested_assignment_condition(&it.test);
         walk::walk_do_while_statement(self, it);
     }
 
@@ -174,6 +196,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_non_existent_operator(it);
         self.check_no_built_in_override_assignment(it);
         self.check_class_prototype(it);
+        self.check_no_nested_assignment_chain(it);
         walk::walk_assignment_expression(self, it);
     }
 
@@ -211,6 +234,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_call_expression(&mut self, it: &CallExpression<'a>) {
         self.check_no_skipped_tests_call(it);
+        self.check_array_constructor_call(it);
         walk::walk_call_expression(self, it);
     }
 
@@ -227,13 +251,27 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_new_expression(&mut self, it: &NewExpression<'a>) {
         self.check_no_primitive_wrappers(it);
+        self.check_array_constructor_new(it);
         walk::walk_new_expression(self, it);
     }
 
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
         let track = self.enter_generator(it);
+        self.enter_return_scope(it.span);
         walk::walk_function(self, it, flags);
+        self.leave_return_scope();
         self.leave_generator(it, track);
+    }
+
+    fn visit_arrow_function_expression(&mut self, it: &ArrowFunctionExpression<'a>) {
+        self.enter_return_scope(it.span);
+        walk::walk_arrow_function_expression(self, it);
+        self.leave_return_scope();
+    }
+
+    fn visit_return_statement(&mut self, it: &ReturnStatement<'a>) {
+        self.record_return(it.argument.is_some());
+        walk::walk_return_statement(self, it);
     }
 
     fn visit_yield_expression(&mut self, it: &YieldExpression<'a>) {
@@ -249,6 +287,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_function_body(&mut self, it: &FunctionBody<'a>) {
         self.check_prefer_immediate_return(it);
         self.check_redundant_return(it);
+        self.check_no_same_line_conditional(&it.statements);
         walk::walk_function_body(self, it);
     }
 }

@@ -59,6 +59,12 @@ for (const file of fixtureFiles) {
 
   describe(rule, () => {
     describe('valid', () => {
+      // Some rules (e.g. fully option-driven ones) have all their upstream
+      // valid cases dropped during sync, leaving none to replay. Register a
+      // placeholder so the suite is not empty (vitest errors on empty suites).
+      if (fixture.valid.length === 0) {
+        it.skip('no replayable valid cases', () => {});
+      }
       fixture.valid.forEach((testCase, index) => {
         const label = `#${index} ${JSON.stringify(testCase.code)}`;
         // 'off' rules are quarantined; show the gap as a skip rather than hide it.
@@ -70,6 +76,9 @@ for (const file of fixtureFiles) {
     });
 
     describe('invalid', () => {
+      if (fixture.invalid.length === 0) {
+        it.skip('no replayable invalid cases', () => {});
+      }
       fixture.invalid.forEach((testCase, index) => {
         const label = `#${index} ${JSON.stringify(testCase.code)}`;
         // Invalid cases are only enforced (count parity) at level 'full'.
