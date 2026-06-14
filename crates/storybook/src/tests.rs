@@ -94,6 +94,16 @@ fn scans_story_exports_and_story_names() {
 }
 
 #[test]
+fn prefer_pascal_case_renames_references() {
+    // The autofix must rename the declaration AND every reference to the export.
+    let source = "export const primary = {};\nprimary.foo = 'bar';";
+    let diagnostics = scan("prefer-pascal-case", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "usePascalCase");
+    assert_eq!(diagnostics[0].fixes.len(), 2);
+}
+
+#[test]
 fn await_interactions_skips_locally_shadowed_user_event() {
     // A locally declared `userEvent` shadows the storybook import, so upstream does
     // not require its calls to be awaited.

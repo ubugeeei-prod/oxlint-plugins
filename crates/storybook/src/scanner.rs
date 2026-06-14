@@ -6,6 +6,7 @@
     reason = "The scanner uses a wide cross-section of AST node types; not every method touches every type."
 )]
 
+use oxc_ast::AstKind;
 use oxc_ast::ast::{
     Argument, ArrayExpression, ArrayExpressionElement, AssignmentTarget, BindingPattern,
     CallExpression, ChainElement, Class, ClassElement, Declaration, ExportDefaultDeclarationKind,
@@ -14,6 +15,7 @@ use oxc_ast::ast::{
     ObjectProperty, ObjectPropertyKind, PropertyKey, Statement, StaticMemberExpression,
     VariableDeclaration, VariableDeclarator,
 };
+use oxc_semantic::{AstNodes, Scoping, SymbolId};
 use oxc_span::{GetSpan, Span};
 use oxlint_plugins_carton::{CompactString, FastHashMap, SmallVec};
 
@@ -29,6 +31,11 @@ pub(crate) struct Scanner<'a> {
     pub(crate) options: &'a StorybookOptions,
     pub(crate) line_index: LineIndex,
     pub(crate) diagnostics: SmallVec<[Diagnostic; 16]>,
+    /// Scoping from semantic analysis; resolves an export's references for
+    /// `prefer-pascal-case` renaming.
+    pub(crate) scoping: &'a Scoping,
+    /// AST nodes from semantic analysis; maps a reference back to its identifier.
+    pub(crate) nodes: &'a AstNodes<'a>,
     pub(crate) variables: FastHashMap<CompactString, VariableInfo<'a>>,
     pub(crate) function_stack: SmallVec<[FunctionFrame; 8]>,
     pub(crate) first_non_import_span: Option<Span>,
@@ -213,6 +220,7 @@ impl<'a> Scanner<'a> {
                     self.named_exports.push(NamedExport {
                         name: CompactString::from(name),
                         span: specifier.exported.span(),
+                        symbol_id: None,
                     });
                 }
             }
@@ -226,6 +234,7 @@ impl<'a> Scanner<'a> {
                         self.named_exports.push(NamedExport {
                             name: CompactString::from(name),
                             span: declarator.id.span(),
+                            symbol_id: binding_symbol_id(&declarator.id),
                         });
                     }
                 }
@@ -235,6 +244,7 @@ impl<'a> Scanner<'a> {
                     self.named_exports.push(NamedExport {
                         name: CompactString::from(id.name.as_str()),
                         span: id.span,
+                        symbol_id: id.symbol_id.get(),
                     });
                 }
             }
@@ -637,16 +647,32 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn check_prefer_pascal_case(&mut self, name: &str, span: Span) {
+    fn check_prefer_pascal_case(&mut self, name: &str, span: Span, symbol_id: Option<SymbolId>) {
         if name.starts_with('_') || is_pascal_case(name) {
             return;
         }
+        let pascal = to_pascal_case(name);
         let mut fixes = SmallVec::new();
         fixes.push(DiagnosticFix {
             start: span.start,
             end: span.end,
-            replacement: to_pascal_case(name),
+            replacement: pascal.clone(),
         });
+        // Upstream renames every (non-declaration) reference to the export too, so the
+        // autofix never leaves a dangling lowercase use such as `primary.foo`.
+        if let Some(symbol_id) = symbol_id {
+            for reference in self.scoping.get_resolved_references(symbol_id) {
+                if let AstKind::IdentifierReference(identifier) =
+                    self.nodes.get_node(reference.node_id()).kind()
+                {
+                    fixes.push(DiagnosticFix {
+                        start: identifier.span.start,
+                        end: identifier.span.end,
+                        replacement: pascal.clone(),
+                    });
+                }
+            }
+        }
         self.report_with_fixes(
             "prefer-pascal-case",
             "usePascalCase",
@@ -1144,14 +1170,14 @@ impl<'a> Scanner<'a> {
         }
 
         if !self.has_stories_of_import {
-            let pending: SmallVec<[(CompactString, Span); 8]> = self
+            let pending: SmallVec<[(CompactString, Span, Option<SymbolId>); 8]> = self
                 .named_exports
                 .iter()
-                .map(|export| (export.name.clone(), export.span))
+                .map(|export| (export.name.clone(), export.span, export.symbol_id))
                 .collect();
-            for (name, span) in pending {
+            for (name, span, symbol_id) in pending {
                 if is_story_export(name.as_str(), &self.story_filters) {
-                    self.check_prefer_pascal_case(name.as_str(), span);
+                    self.check_prefer_pascal_case(name.as_str(), span, symbol_id);
                 }
             }
         }
