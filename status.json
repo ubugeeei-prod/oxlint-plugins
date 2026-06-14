@@ -5831,19 +5831,19 @@
       },
       {
         "name": "plpgsql-keyword-case",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule plpgsql-keyword-case."
+        "notes": "Ported. Visits EmbeddedCode nodes for plpgsql language; each mismatched keyword gets its own DiagnosticFix."
       },
       {
         "name": "prefer-add-constraint-not-valid",

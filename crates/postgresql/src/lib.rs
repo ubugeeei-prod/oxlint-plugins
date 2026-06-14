@@ -22,6 +22,7 @@ mod tokenize;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 use serde_json::Value;
 
+use crate::embedded_code::attach_embedded_code_to_stmts;
 use crate::parse::{ParseError, parse};
 use crate::text::Source;
 
@@ -88,7 +89,11 @@ pub fn implemented_postgresql_rule_names() -> &'static [&'static str] {
 
 /// Lint `source_text` (raw SQL) with the rules enabled in `options`.
 pub fn scan_postgresql(source_text: &str, options: &ScanOptions) -> SmallVec<[Diagnostic; 8]> {
-    let parsed = parse(source_text);
+    let mut parsed = parse(source_text);
+    // Attach EmbeddedCode nodes to CreateFunctionStmt so that rules like
+    // `plpgsql-keyword-case` can visit them, mirroring the attachment that
+    // `parse_for_eslint` performs for the ESLint adapter.
+    attach_embedded_code_to_stmts(&mut parsed.statements, &parsed.tokens, &parsed.source);
     let mut ctx = RuleContext {
         source: &parsed.source,
         options: &options.options,
