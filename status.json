@@ -9355,19 +9355,19 @@
       },
       {
         "name": "prefer-lookaround",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-lookaround."
+        "notes": "Narrow form (both-ends case only): `.replace`/`.replaceAll` of a non-g regex literal `(B1)MID(B2)` whose string replacement starts with the group-1 ref and ends with the group-2 ref (each used exactly once). prefer_lookaround_groups requires plain fixed-length group bodies, a non-empty plain middle, exactly two groups, and differing boundary bytes so the lookaround conversion `(?<=B1)MID(?=B2)` is provably safe. The g flag, adjacent/empty middles, overlapping boundaries, quantifier/alternation bodies, reused refs, and dynamic replacements are all excluded to stay valid-sound against the overlap-heavy upstream valid suite."
       },
       {
         "name": "prefer-named-backreference",

@@ -12,16 +12,17 @@ use oxc_span::Span;
 use oxlint_plugins_carton::CompactString;
 
 use crate::helpers::{
-    duplicate_flag, find_class_end, first_control_character, first_fixed_unicode_escape,
-    first_invisible_character, first_literal_control_character, first_non_standard_flag,
-    first_numbered_backreference_with_named_group, first_octal_escape, first_strict_violation,
-    first_surrogate_pair_escape, first_unicode_escape_as_hex, first_uppercase_hex_escape,
-    first_useless_escape, first_useless_one_quantifier, group_prefix, has_assertion_contradiction,
-    has_mergeable_quantifier_concatenation, has_preferable_set_operation,
-    has_simplifiable_set_operation, has_standalone_backslash, has_unnecessary_general_category_key,
-    has_useless_set_operand, has_useless_word_boundary, mention_char,
-    pattern_ends_with_lazy_quantifier, pattern_has_capturing_group_and_no_backreference,
-    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags,
+    GroupReplacementRef, duplicate_flag, find_class_end, first_control_character,
+    first_fixed_unicode_escape, first_invisible_character, first_literal_control_character,
+    first_non_standard_flag, first_numbered_backreference_with_named_group, first_octal_escape,
+    first_strict_violation, first_surrogate_pair_escape, first_unicode_escape_as_hex,
+    first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, group_prefix,
+    has_assertion_contradiction, has_mergeable_quantifier_concatenation,
+    has_preferable_set_operation, has_simplifiable_set_operation, has_standalone_backslash,
+    has_unnecessary_general_category_key, has_useless_set_operand, has_useless_word_boundary,
+    mention_char, pattern_ends_with_lazy_quantifier,
+    pattern_has_capturing_group_and_no_backreference, pattern_has_empty_string_literal,
+    pattern_is_safe_to_add_i_flag, prefer_lookaround_groups, skip_escape, sorted_flags,
     string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
@@ -55,6 +56,85 @@ fn replacement_has_lone_dollar(replacement: &str) -> bool {
         return true;
     }
     false
+}
+
+/// Builds the literal replacement token for a group reference: `$N` for a
+/// numbered group or `$<name>` for a named one.
+fn group_ref_token(reference: &GroupReplacementRef) -> CompactString {
+    match reference {
+        GroupReplacementRef::Numbered(n) => {
+            let mut token = CompactString::new("$");
+            // Single-digit groups only ever reach here (`prefer_lookaround_groups`
+            // yields groups 1 and 2), but format defensively.
+            let mut buf = [0u8; 10];
+            let mut cursor = buf.len();
+            let mut value = *n;
+            if value == 0 {
+                cursor -= 1;
+                buf[cursor] = b'0';
+            } else {
+                while value > 0 {
+                    cursor -= 1;
+                    buf[cursor] = b'0' + (value % 10) as u8;
+                    value /= 10;
+                }
+            }
+            if let Ok(text) = std::str::from_utf8(&buf[cursor..]) {
+                token.push_str(text);
+            }
+            token
+        }
+        GroupReplacementRef::Named(name) => {
+            let mut token = CompactString::new("$<");
+            token.push_str(name.as_str());
+            token.push('>');
+            token
+        }
+    }
+}
+
+/// Counts non-overlapping occurrences of `needle` in `haystack`. `needle` is
+/// always non-empty here.
+fn count_occurrences(haystack: &str, needle: &str) -> usize {
+    if needle.is_empty() {
+        return 0;
+    }
+    let mut count = 0;
+    let mut rest = haystack;
+    while let Some(pos) = rest.find(needle) {
+        count += 1;
+        rest = &rest[pos + needle.len()..];
+    }
+    count
+}
+
+/// Returns `true` when `replacement` begins with the group-1 reference token,
+/// ends with the group-2 reference token, references group 1 exactly once and
+/// group 2 exactly once, and the two tokens do not overlap. This is the
+/// `prefer-lookaround` both-ends signature: each captured group is re-emitted
+/// at the same extreme position it occupied in the pattern, so the capture is
+/// pure assertion.
+fn replacement_uses_refs_at_extremes(
+    replacement: &str,
+    ref1: &GroupReplacementRef,
+    ref2: &GroupReplacementRef,
+) -> bool {
+    let token1 = group_ref_token(ref1);
+    let token2 = group_ref_token(ref2);
+    // Each reference must appear exactly once.
+    if count_occurrences(replacement, token1.as_str()) != 1
+        || count_occurrences(replacement, token2.as_str()) != 1
+    {
+        return false;
+    }
+    if !replacement.starts_with(token1.as_str()) || !replacement.ends_with(token2.as_str()) {
+        return false;
+    }
+    // The two tokens must not overlap (e.g. a short replacement where start and
+    // end coincide). Require the start token to end at or before the start of
+    // the end token.
+    let end_token_start = replacement.len().saturating_sub(token2.len());
+    token1.len() <= end_token_start
 }
 
 /// Count the number of capturing groups in a regex pattern string.
@@ -269,6 +349,64 @@ impl<'a> Scanner<'a> {
         self.check_no_useless_dollar_replacements(call);
         self.check_prefer_escape_replacement_dollar_char(call);
         self.check_no_unused_capturing_group(call);
+        self.check_prefer_lookaround(call);
+    }
+
+    /// `prefer-lookaround` (narrow form, both-ends case): a `.replace` /
+    /// `.replaceAll` whose regex is `(B1)MID(B2)` and whose replacement just
+    /// re-emits `$1` at the very start and `$2` at the very end can use
+    /// lookaround assertions instead: `(?<=B1)MID(?=B2)`.
+    ///
+    /// This handles only the provably-safe structural shape recognised by
+    /// [`prefer_lookaround_groups`] (plain fixed-length group bodies, non-empty
+    /// plain middle, differing boundary bytes, exactly two groups, no `g`
+    /// flag). The replacement must:
+    /// * be a string literal,
+    /// * begin with the reference to group 1 (`$1` or `$<name1>`),
+    /// * end with the reference to group 2 (`$2` or `$<name2>`),
+    /// * reference group 1 exactly once and group 2 exactly once.
+    ///
+    /// Any deviation (other `$N`, reuse, extra groups, `g` flag, dynamic
+    /// replacement) is left alone to stay valid-sound against the upstream
+    /// suite, whose valid cases hinge on overlapping-match safety that this
+    /// narrow shape sidesteps.
+    fn check_prefer_lookaround(&mut self, call: &'a CallExpression<'a>) {
+        let Expression::StaticMemberExpression(member) = &call.callee else {
+            return;
+        };
+        let method = member.property.name.as_str();
+        if method != "replace" && method != "replaceAll" {
+            return;
+        }
+        let Some(arg0) = call.arguments.first().and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::RegExpLiteral(literal) = arg0.get_inner_expression() else {
+            return;
+        };
+        let flags = literal
+            .raw
+            .as_ref()
+            .and_then(|raw| raw.as_str().rsplit_once('/').map(|(_, flags)| flags))
+            .unwrap_or("");
+        // The `g` flag enables overlapping global matches whose safety the
+        // narrow structural shape cannot guarantee; skip it.
+        if flags.contains('g') {
+            return;
+        }
+        let Some(arg1) = call.arguments.get(1).and_then(Argument::as_expression) else {
+            return;
+        };
+        let Expression::StringLiteral(replacement) = arg1.get_inner_expression() else {
+            return;
+        };
+        let pattern = literal.regex.pattern.text.as_str();
+        let Some((ref1, ref2)) = prefer_lookaround_groups(pattern) else {
+            return;
+        };
+        if replacement_uses_refs_at_extremes(replacement.value.as_str(), &ref1, &ref2) {
+            self.report("prefer-lookaround", "preferLookarounds", call.span);
+        }
     }
 
     /// `prefer-result-array-groups` (narrow form): when a match-array result

@@ -83,6 +83,7 @@ describe('regexp native API', () => {
       'unicode-property',
       'no-unused-capturing-group',
       'prefer-result-array-groups',
+      'prefer-lookaround',
     ]);
   });
 

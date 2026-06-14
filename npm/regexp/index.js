@@ -312,6 +312,11 @@ const messages = Object.freeze({
     unexpected:
       'Unexpected indexed access for a named capturing group from a regexp result array; use the `groups` property instead.',
   },
+  'prefer-lookaround': {
+    preferLookarounds:
+      'These capturing groups only assert at the edges and can be replaced with lookaround assertions (`(?<=...)` and `(?=...)`).',
+    prefer: 'This capturing group can be replaced with a lookaround assertion.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -436,6 +441,8 @@ const ruleDescriptions = Object.freeze({
     'disallow unused capturing group (narrow: a capturing group in a regex literal used only as `/(...)/.test(x)`)',
   'prefer-result-array-groups':
     'enforce using result array `groups` (narrow: numeric index of a match/exec result mapping to a named group)',
+  'prefer-lookaround':
+    'prefer lookarounds over capturing groups (narrow: both-ends `(B1)MID(B2)` replace whose replacement re-emits `$1` and `$2` at the edges)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -516,6 +523,7 @@ const ruleTypes = Object.freeze({
   'unicode-property': 'suggestion',
   'no-unused-capturing-group': 'suggestion',
   'prefer-result-array-groups': 'suggestion',
+  'prefer-lookaround': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -691,7 +699,8 @@ function ruleCategory(ruleName) {
     ruleName === 'negation' ||
     ruleName === 'no-useless-lazy' ||
     ruleName === 'unicode-property' ||
-    ruleName === 'prefer-result-array-groups'
+    ruleName === 'prefer-result-array-groups' ||
+    ruleName === 'prefer-lookaround'
   ) {
     return 'Stylistic Issues';
   }

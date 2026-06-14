@@ -1,0 +1,798 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-lookaround.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-lookaround.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "const str = 'I love unicorn! I hate unicorn?'.replace(/(?<=love )unicorn(?=!)/, '🦄');"
+    },
+    {
+      "code": "const str = 'A JavaScript linter written in JavaScript.'.replaceAll(/Java(?=Script)/g, 'Type');"
+    },
+    {
+      "code": "const str = 'A JavaScript formatter written in JavaScript.'.replace(/(?<=Java)Script/g, '');"
+    },
+    {
+      "code": "'JavaScript.'.replace(/(Java)(Script)/, '$1, $1$2, and Type$2')"
+    },
+    {
+      "code": "'JavaScript.'.replace(/Java(Script)/, 'Java$1 and Type$1')"
+    },
+    {
+      "code": "'JavaScript.'.replace(/Java(?<script>Script)/, 'Java$<script> and Type$1')"
+    },
+    {
+      "code": "'JavaScript.'.replace(/(JavaScript)/, '$1')"
+    },
+    {
+      "code": "'JavaScript.'.replace(/Java(Script)/, '$1$1')"
+    },
+    {
+      "code": "'JavaScript.'.replace(/Java(Script)/, '$1foo$1')"
+    },
+    {
+      "code": "\n        \"aa-a\".replace(/a(\\b|$)/g, 'b$1')\n        \"aaa\".replace(/(^)a/, '$1b')\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(a)a(a)/g, \"$1b$2\")\n        // 'abaaba'\n        \"aaaaaa\".replace(/(?<=a)a(?=a)/g, \"b\")\n        // 'abbbba'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(^a+)a(?=a)/, \"$1b\")\n        // 'aaaaba'\n        \"aaaaaa\".replace(/(?<=^a+)a(?=a)/, \"b\")\n        // 'abaaaa'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(a)a/g, \"$1b\")\n        // 'ababab'\n        \"aaaaaa\".replace(/(?<=a)a/g, \"b\")\n        // 'abbbbb'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(a)\\w/g, \"$1b\")\n        // 'ababab'\n        \"aaaaaa\".replace(/(?<=a)\\w/g, \"b\")\n        // 'abbbbb'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(\\w)a/g, \"$1b\")\n        // 'ababab'\n        \"aaaaaa\".replace(/(?<=\\w)a/g, \"b\")\n        // 'abbbbb'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(aa)a/g, \"$1b\")\n        // 'aabaab'\n        \"aaaaaa\".replace(/(?<=aa)a/g, \"b\")\n        // 'aabbbb'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(a)aa/g, \"$1bb\")\n        // 'abbabb'\n        \"aaaaaa\".replace(/(?<=a)aa/g, \"bb\")\n        // 'abbbba'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(a)a*/g, \"$1b\")\n        // 'ab'\n        \"aaaaaa\".replace(/(?<=a)a*/g, \"b\")\n        // 'abb'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(a*)a/g, \"$1b\")\n        // 'aaaaab'\n        \"aaaaaa\".replace(/(?<=a*)a/g, \"b\")\n        // 'bbbbbb'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(^a+)a/, \"$1b\")\n        // 'aaaaab'\n        \"aaaaaa\".replace(/(?<=^a+)a/, \"b\")\n        // 'abaaaa'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/a(a+)/g, \"b$1\")\n        // 'baaaaa'\n        \"aaaaaa\".replace(/a(?=a+)/g, \"b\")\n        // 'bbbbba'\n        "
+    },
+    {
+      "code": "\n        \"ababababa\".replace(/(a)b(a)/g, \"$1c$2\")\n        // 'acabacaba'\n        \"ababababa\".replace(/(?<=a)b(?=a)/g, \"c\")\n        // 'acacacaca'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaaaaa\".replace(/(a{0,3})a/g, \"$1b\")\n        // 'aaabaaabb'\n        \"aaaaaaaaa\".replace(/(?<=a{0,3})a/g, \"b\")\n        // 'bbbbbbbbb'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaaaaa\".replace(/(a{0,3})aaaaa/g, \"$1b\")\n        // 'aaaba'\n        \"aaaaaaaaa\".replace(/(?<=a{0,3})aaaaa/g, \"b\")\n        // 'baaaa'\n        "
+    },
+    {
+      "code": "\n        \"aaaab\".replace(/(a+)a+b/, \"$1c\")\n        // 'aaac'\n        \"aaaab\".replace(/(?<=a+)a+b/, \"c\")\n        // 'ac'\n        "
+    },
+    {
+      "code": "\n        \"abaaaba\".replace(/ab(a+)/g, \"c$1\")\n        // 'caaaba'\n        \"abaaaba\".replace(/ab(?=a+)/g, \"c\")\n        // 'caaca'\n        "
+    },
+    {
+      "code": "\n        \"ababababa\".replace(/(a)ba/g, \"$1c\")\n        // 'acbacba'\n        \"ababababa\".replace(/(?<=a)ba/g, \"c\")\n        // 'acccc'\n        "
+    },
+    {
+      "code": "\n        \"aJavaJava\".replace(/(a)Java/g, '$1foo')\n        // 'afooJava'\n        \"aJavaJava\".replace(/(?<=a)Java/g, 'foo')\n        // 'afoofoo'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(a)a(?:)a/g, \"$1bb\")\n        // 'abbabb'\n        \"aaaaaa\".replace(/(?<=a)a(?:)a/g, \"bb\")\n        // 'abbbba'\n        "
+    },
+    {
+      "code": "\n        \"aaaaaa\".replace(/(a)aa(?:)/g, \"$1bb\")\n        // 'abbabb'\n        \"aaaaaa\".replace(/(?<=a)aa(?:)/g, \"bb\")\n        // 'abbbba'\n        "
+    },
+    {
+      "code": "var str = 'JavaScriptCode'.replace(/Java(Script)(?:Code)/g, 'Type$1')"
+    },
+    {
+      "code": "var str = 'JavaScriptCode'.replace(/(?:Java)(Script)Code/g, '$1Element')"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n            const str = 'I love unicorn! I hate unicorn?'.replace(/(?<before>love )unicorn(?<after>!)/, '$<before>🦄$<after>');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=love )' and '(?=!)').",
+          "line": 2,
+          "column": 68,
+          "endColumn": 84
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=love )' and '(?=!)').",
+          "line": 2,
+          "column": 91,
+          "endColumn": 102
+        }
+      ],
+      "output": "\n            const str = 'I love unicorn! I hate unicorn?'.replace(/(?<=love )unicorn(?=!)/, '🦄');\n            "
+    },
+    {
+      "code": "\n            const str = 'I love unicorn! I hate unicorn?'.replace(/(love )unicorn(!)/, '$1🦄$2');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=love )' and '(?=!)').",
+          "line": 2,
+          "column": 68,
+          "endColumn": 75
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=love )' and '(?=!)').",
+          "line": 2,
+          "column": 82,
+          "endColumn": 85
+        }
+      ],
+      "output": "\n            const str = 'I love unicorn! I hate unicorn?'.replace(/(?<=love )unicorn(?=!)/, '🦄');\n            "
+    },
+    {
+      "code": "\n            const str = 'A JavaScript linter written in JavaScript.'.replaceAll(/Java(Script)/g, 'Type$1');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=Script)').",
+          "line": 2,
+          "column": 86,
+          "endColumn": 94
+        }
+      ],
+      "output": "\n            const str = 'A JavaScript linter written in JavaScript.'.replaceAll(/Java(?=Script)/g, 'Type');\n            "
+    },
+    {
+      "code": "\n            const str = 'A JavaScript formatter written in JavaScript.'.replace(/(Java)Script/g, '$1');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=Java)').",
+          "line": 2,
+          "column": 82,
+          "endColumn": 88
+        }
+      ],
+      "output": "\n            const str = 'A JavaScript formatter written in JavaScript.'.replace(/(?<=Java)Script/g, '');\n            "
+    },
+    {
+      "code": "\n            const str = 'JavaScript'.replace(/Java(Script)/g, '$1');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=Script)').",
+          "line": 2,
+          "column": 51,
+          "endColumn": 59
+        }
+      ],
+      "output": "\n            const str = 'JavaScript'.replace(/Java(?=Script)/g, '');\n            "
+    },
+    {
+      "code": "\n            const str = 'JavaScript.'.replace(/(Java)(Script)/, '$1 and Type$2');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=Java)' and '(?=Script)').",
+          "line": 2,
+          "column": 48,
+          "endColumn": 54
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=Java)' and '(?=Script)').",
+          "line": 2,
+          "column": 54,
+          "endColumn": 62
+        }
+      ],
+      "output": "\n            const str = 'JavaScript.'.replace(/(?<=Java)(?=Script)/, ' and Type');\n            "
+    },
+    {
+      "code": "\n            const replacement = '$<before>🦄$<after>'\n            const str = 'I love unicorn! I hate unicorn?'.replace(/(?<before>love )unicorn(?<after>!)/, replacement);\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=love )' and '(?=!)').",
+          "line": 3,
+          "column": 68,
+          "endColumn": 84
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=love )' and '(?=!)').",
+          "line": 3,
+          "column": 91,
+          "endColumn": 102
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const replacement = '$1🦄$2'\n            const str = 'I love unicorn! I hate unicorn?'.replace(/(love )unicorn(!)/, replacement);\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=love )' and '(?=!)').",
+          "line": 3,
+          "column": 68,
+          "endColumn": 75
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=love )' and '(?=!)').",
+          "line": 3,
+          "column": 82,
+          "endColumn": 85
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const str = 'JavaScript.'.replace(/(J)(ava)(Script)/, '$1Query, and Java$3');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=J)' and '(?=Script)').",
+          "line": 2,
+          "column": 48,
+          "endColumn": 51
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=J)' and '(?=Script)').",
+          "line": 2,
+          "column": 56,
+          "endColumn": 64
+        }
+      ],
+      "output": "\n            const str = 'JavaScript.'.replace(/(?<=J)(ava)(?=Script)/, 'Query, and Java');\n            "
+    },
+    {
+      "code": "\n            const str = 'JavaScript.'.replace(/(J)(ava)(Script)/, '$1Query, $2, and Java$3');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=J)' and '(?=Script)').",
+          "line": 2,
+          "column": 48,
+          "endColumn": 51
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=J)' and '(?=Script)').",
+          "line": 2,
+          "column": 56,
+          "endColumn": 64
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const regex = /(a)b(c)/\n            \"abc\".replace(regex, '$1ccount');\n            \"abc\".replace(regex, '$1$2$2ount');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=a)').",
+          "line": 2,
+          "column": 28,
+          "endColumn": 31
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const regex = /(a)b(c)/\n            \"abc\".replace(regex, 'dynami$2');\n            \"abc\".replace(regex, 'dyn$1mi$2');\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=c)').",
+          "line": 2,
+          "column": 32,
+          "endColumn": 35
+        }
+      ],
+      "output": "\n            const regex = /(a)b(?=c)/\n            \"abc\".replace(regex, 'dynami');\n            \"abc\".replace(regex, 'dyn$1mi');\n            "
+    },
+    {
+      "code": "\n            \"aabcaabbcc\".replace(/(a+)b+c/g, \"$1_\")\n            // 'aa_aa_c'\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=a+)').",
+          "line": 2,
+          "column": 35,
+          "endColumn": 39
+        }
+      ],
+      "output": "\n            \"aabcaabbcc\".replace(/(?<=a+)b+c/g, \"_\")\n            // 'aa_aa_c'\n            "
+    },
+    {
+      "code": "\"aaaaaa\".replace(/(^a+)a(a)/, \"$1b$2\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=a)').",
+          "line": 1,
+          "column": 25,
+          "endColumn": 28
+        }
+      ],
+      "output": "\"aaaaaa\".replace(/(^a+)a(?=a)/, \"$1b\")"
+    },
+    {
+      "code": "\"aaaaaa\".replace(/(^a+)a((a))/, \"$1b$3$2\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=(a))').",
+          "line": 1,
+          "column": 25,
+          "endColumn": 30
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/Java(Script)$/g, 'Type$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=Script$)').",
+          "line": 1,
+          "column": 37,
+          "endColumn": 46
+        }
+      ],
+      "output": "var str = 'JavaScript'.replace(/Java(?=Script$)/g, 'Type')"
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/Java(Script)\\b/g, 'Type$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=Script\\b)').",
+          "line": 1,
+          "column": 37,
+          "endColumn": 47
+        }
+      ],
+      "output": "var str = 'JavaScript'.replace(/Java(?=Script\\b)/g, 'Type')"
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/Java(Script)(?:\\b|$)/g, 'Type$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=Script(?:\\b|$))').",
+          "line": 1,
+          "column": 37,
+          "endColumn": 53
+        }
+      ],
+      "output": "var str = 'JavaScript'.replace(/Java(?=Script(?:\\b|$))/g, 'Type')"
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/Java(Scrip)(?=t)/g, 'Type$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=Script)').",
+          "line": 1,
+          "column": 37,
+          "endColumn": 49
+        }
+      ],
+      "output": "var str = 'JavaScript'.replace(/Java(?=Script)/g, 'Type')"
+    },
+    {
+      "code": "var str = 'JavaScriptLinter'.replace(/Java(Script)(?=Linter|Checker)/g, 'Type$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=Script(?=Linter|Checker))').",
+          "line": 1,
+          "column": 43,
+          "endColumn": 69
+        }
+      ],
+      "output": "var str = 'JavaScriptLinter'.replace(/Java(?=Script(?=Linter|Checker))/g, 'Type')"
+    },
+    {
+      "code": "var str = 'Java'.replace(/^(J)ava/g, '$1Query')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=^J)').",
+          "line": 1,
+          "column": 27,
+          "endColumn": 31
+        }
+      ],
+      "output": "var str = 'Java'.replace(/(?<=^J)ava/g, 'Query')"
+    },
+    {
+      "code": "var str = 'Java'.replace(/\\b(J)ava/g, '$1Query')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=\\bJ)').",
+          "line": 1,
+          "column": 27,
+          "endColumn": 32
+        }
+      ],
+      "output": "var str = 'Java'.replace(/(?<=\\bJ)ava/g, 'Query')"
+    },
+    {
+      "code": "var str = 'Java'.replace(/(?:^|\\b)(J)ava/g, '$1Query')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=(?:^|\\b)J)').",
+          "line": 1,
+          "column": 27,
+          "endColumn": 38
+        }
+      ],
+      "output": "var str = 'Java'.replace(/(?<=(?:^|\\b)J)ava/g, 'Query')"
+    },
+    {
+      "code": "var str = 'Java'.replace(/(?:^|\\b|[\\q{}])(J)ava/gv, '$1Query')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=(?:^|\\b|[\\q{}])J)').",
+          "line": 1,
+          "column": 27,
+          "endColumn": 45
+        }
+      ],
+      "output": "var str = 'Java'.replace(/(?<=(?:^|\\b|[\\q{}])J)ava/gv, 'Query')"
+    },
+    {
+      "code": "var str = 'JavaScriptCode'.replace(/(?<=Java)(Script)Code/g, '$1Linter')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=JavaScript)').",
+          "line": 1,
+          "column": 37,
+          "endColumn": 54
+        }
+      ],
+      "output": "var str = 'JavaScriptCode'.replace(/(?<=JavaScript)Code/g, 'Linter')"
+    },
+    {
+      "code": "var str = 'JavaScriptCode'.replace(/(?<=Java|Type)(Script)Code/g, '$1Linter')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=(?<=Java|Type)Script)').",
+          "line": 1,
+          "column": 37,
+          "endColumn": 59
+        }
+      ],
+      "output": "var str = 'JavaScriptCode'.replace(/(?<=(?<=Java|Type)Script)Code/g, 'Linter')"
+    },
+    {
+      "code": "\n            const str = 'JavaScript'.replace(/^(Java)(Script)$/, '$1 and Type$2');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=^Java)' and '(?=Script$)').",
+          "line": 2,
+          "column": 47,
+          "endColumn": 54
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=^Java)' and '(?=Script$)').",
+          "line": 2,
+          "column": 54,
+          "endColumn": 63
+        }
+      ],
+      "output": "\n            const str = 'JavaScript'.replace(/(?<=^Java)(?=Script$)/, ' and Type');\n            "
+    },
+    {
+      "code": "\n            const str = 'JavaScript'.replace(/\\b(Java)(Script)\\b/, '$1 and Type$2');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=\\bJava)' and '(?=Script\\b)').",
+          "line": 2,
+          "column": 47,
+          "endColumn": 55
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=\\bJava)' and '(?=Script\\b)').",
+          "line": 2,
+          "column": 55,
+          "endColumn": 65
+        }
+      ],
+      "output": "\n            const str = 'JavaScript'.replace(/(?<=\\bJava)(?=Script\\b)/, ' and Type');\n            "
+    },
+    {
+      "code": "\n            const str = 'JavaScript'.replace(/(?:^|\\b)(Java)(Script)(?:\\b|$)/, '$1 and Type$2');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=(?:^|\\b)Java)' and '(?=Script(?:\\b|$))').",
+          "line": 2,
+          "column": 47,
+          "endColumn": 61
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=(?:^|\\b)Java)' and '(?=Script(?:\\b|$))').",
+          "line": 2,
+          "column": 61,
+          "endColumn": 77
+        }
+      ],
+      "output": "\n            const str = 'JavaScript'.replace(/(?<=(?:^|\\b)Java)(?=Script(?:\\b|$))/, ' and Type');\n            "
+    },
+    {
+      "code": "\n            const str = 'JavaScript'.replace(/^(J)(ava)(Script)$/, '$1Query, and Java$3');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=^J)' and '(?=Script$)').",
+          "line": 2,
+          "column": 47,
+          "endColumn": 51
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=^J)' and '(?=Script$)').",
+          "line": 2,
+          "column": 56,
+          "endColumn": 65
+        }
+      ],
+      "output": "\n            const str = 'JavaScript'.replace(/(?<=^J)(ava)(?=Script$)/, 'Query, and Java');\n            "
+    },
+    {
+      "code": "\n            const str = 'JavaScript'.replace(/\\b(J)(ava)(Script)\\b/, '$1Query, and Java$3');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=\\bJ)' and '(?=Script\\b)').",
+          "line": 2,
+          "column": 47,
+          "endColumn": 52
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=\\bJ)' and '(?=Script\\b)').",
+          "line": 2,
+          "column": 57,
+          "endColumn": 67
+        }
+      ],
+      "output": "\n            const str = 'JavaScript'.replace(/(?<=\\bJ)(ava)(?=Script\\b)/, 'Query, and Java');\n            "
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/Java(S)(c)(r)(i)(p)(t)/g, 'Type$1$2$3$4$5$6')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=t)').",
+          "line": 1,
+          "column": 52,
+          "endColumn": 55
+        }
+      ],
+      "output": "var str = 'JavaScript'.replace(/Java(?=Script)/g, 'Type')"
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/Java(S)(c)(r)(i)(p)(?=t)/g, 'Type$1$2$3$4$5')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=pt)').",
+          "line": 1,
+          "column": 49,
+          "endColumn": 57
+        }
+      ],
+      "output": "var str = 'JavaScript'.replace(/Java(?=Script)/g, 'Type')"
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/Java(S)(c)(r)(i)(?=pt)/g, 'Type$1$2$3$4')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=ipt)').",
+          "line": 1,
+          "column": 46,
+          "endColumn": 55
+        }
+      ],
+      "output": "var str = 'JavaScript'.replace(/Java(?=Script)/g, 'Type')"
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/(?<=J)(a)(v)(a)Script/g, '$1$2$3Runtime')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=Ja)').",
+          "line": 1,
+          "column": 33,
+          "endColumn": 42
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            var str1 = 'ESLint ESLint'.replace(/ES(Lint|Tree)$/g, 'TypeScriptES$1');\n            var str2 = 'ESTree ESTree'.replace(/ES(Lint|Tree)$/g, 'TypeScriptES$1');\n            console.log(str1, str2)\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=(?:Lint|Tree)$)').",
+          "line": 2,
+          "column": 51,
+          "endColumn": 63
+        },
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=(?:Lint|Tree)$)').",
+          "line": 3,
+          "column": 51,
+          "endColumn": 63
+        }
+      ],
+      "output": "\n            var str1 = 'ESLint ESLint'.replace(/ES(?=(?:Lint|Tree)$)/g, 'TypeScriptES');\n            var str2 = 'ESTree ESTree'.replace(/ES(?=(?:Lint|Tree)$)/g, 'TypeScriptES');\n            console.log(str1, str2)\n            "
+    },
+    {
+      "code": "\n            var str1 = 'ESLint ESLint'.replace(/^(E|J)S/g, '$1Script');\n            var str2 = 'JSLint JSLint'.replace(/^(E|J)S/g, '$1Script');\n            console.log(str1, str2)\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=^(?:E|J))').",
+          "line": 2,
+          "column": 49,
+          "endColumn": 55
+        },
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=^(?:E|J))').",
+          "line": 3,
+          "column": 49,
+          "endColumn": 55
+        }
+      ],
+      "output": "\n            var str1 = 'ESLint ESLint'.replace(/(?<=^(?:E|J))S/g, 'Script');\n            var str2 = 'JSLint JSLint'.replace(/(?<=^(?:E|J))S/g, 'Script');\n            console.log(str1, str2)\n            "
+    },
+    {
+      "code": "var str = 'foobarbaz'.replace(/foo(bar)(?:^|$|a{0}\\b|(?=x)|(?<=y))/, 'test$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=bar(?:^|$|a{0}\\b|(?=x)|(?<=y)))').",
+          "line": 1,
+          "column": 35,
+          "endColumn": 67
+        }
+      ],
+      "output": "var str = 'foobarbaz'.replace(/foo(?=bar(?:^|$|a{0}\\b|(?=x)|(?<=y)))/, 'test')"
+    },
+    {
+      "code": "var str = 'foobarbaz'.replace(/foo(bar)(?<=z\\w+)/, 'test$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=bar(?<=z\\w+))').",
+          "line": 1,
+          "column": 35,
+          "endColumn": 49
+        }
+      ],
+      "output": "var str = 'foobarbaz'.replace(/foo(?=bar(?<=z\\w+))/, 'test')"
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/Java(Script)^/g, 'Type$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=Script^)').",
+          "line": 1,
+          "column": 37,
+          "endColumn": 46
+        }
+      ],
+      "output": "var str = 'JavaScript'.replace(/Java(?=Script^)/g, 'Type')"
+    },
+    {
+      "code": "var str = 'Java'.replace(/$(J)ava/g, '$1Query')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=$J)').",
+          "line": 1,
+          "column": 27,
+          "endColumn": 31
+        }
+      ],
+      "output": "var str = 'Java'.replace(/(?<=$J)ava/g, 'Query')"
+    },
+    {
+      "code": "\n            const str = 'JavaScript'.replace(/^\\b(J)(ava)(Script)\\b$/, '$1Query, and Java$3');\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=^\\bJ)' and '(?=Script\\b$)').",
+          "line": 2,
+          "column": 47,
+          "endColumn": 53
+        },
+        {
+          "message": "These capturing groups can be replaced with lookaround assertions ('(?<=^\\bJ)' and '(?=Script\\b$)').",
+          "line": 2,
+          "column": 58,
+          "endColumn": 69
+        }
+      ],
+      "output": "\n            const str = 'JavaScript'.replace(/(?<=^\\bJ)(ava)(?=Script\\b$)/, 'Query, and Java');\n            "
+    },
+    {
+      "code": "var str = 'foobar'.replace(/foo(bar)(\\b|$)/, 'bar$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=bar(\\b|$))').",
+          "line": 1,
+          "column": 32,
+          "endColumn": 43
+        }
+      ],
+      "output": "var str = 'foobar'.replace(/foo(?=bar(\\b|$))/, 'bar')"
+    },
+    {
+      "code": "var str = 'foobar'.replace(/foo(bar)(\\b|$)/, '$2$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=bar(\\b|$))').",
+          "line": 1,
+          "column": 32,
+          "endColumn": 43
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "var str = 'JavaScript'.replace(/Java(Scrip)((?=t))/g, 'Type$1')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookahead assertion ('(?=Scrip((?=t)))').",
+          "line": 1,
+          "column": 37,
+          "endColumn": 51
+        }
+      ],
+      "output": "var str = 'JavaScript'.replace(/Java(?=Scrip((?=t)))/g, 'Type')"
+    },
+    {
+      "code": "var str = 'JavaScriptCode'.replace(/((?<=Java))(Script)Code/g, '$2Linter')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This capturing group can be replaced with a lookbehind assertion ('(?<=((?<=Java))Script)').",
+          "line": 1,
+          "column": 37,
+          "endColumn": 56
+        }
+      ],
+      "output": "var str = 'JavaScriptCode'.replace(/(?<=((?<=Java))Script)Code/g, 'Linter')"
+    }
+  ]
+}
