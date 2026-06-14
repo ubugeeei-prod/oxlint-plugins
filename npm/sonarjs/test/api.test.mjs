@@ -73,6 +73,7 @@ const expectedRuleNames = [
   'prefer-promise-shorthand',
   'pseudo-random',
   'no-hardcoded-ip',
+  'no-global-this',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2248,6 +2249,57 @@ describe('sonarjs native API', () => {
 
   it('does not report no-hardcoded-ip for a three-octet partial address', () => {
     const diagnostics = scan('no-hardcoded-ip', 'const s = "192.168.1";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-global-this for a top-level this expression', () => {
+    const diagnostics = scan('no-global-this', 'this.foo = 1;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-global-this');
+    expect(diagnostics[0].messageId).toBe('noGlobalThis');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+  });
+
+  it('reports no-global-this for this inside a top-level arrow function', () => {
+    const diagnostics = scan('no-global-this', 'const f = () => this.x;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-global-this');
+    expect(diagnostics[0].messageId).toBe('noGlobalThis');
+  });
+
+  it('reports no-global-this for this inside nested top-level arrows', () => {
+    const diagnostics = scan('no-global-this', 'const f = () => () => this;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noGlobalThis');
+  });
+
+  it('does not report no-global-this for this inside a regular function', () => {
+    const diagnostics = scan('no-global-this', 'function f() { return this.x; }');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-global-this for this inside an object method shorthand', () => {
+    const diagnostics = scan('no-global-this', 'const o = { m() { return this.x; } };');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-global-this for this inside a class method', () => {
+    const diagnostics = scan('no-global-this', 'class C { m() { return this.x; } }');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-global-this for this inside a class field initializer', () => {
+    const diagnostics = scan('no-global-this', 'class C { x = this.y; }');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-global-this for this inside a class static block', () => {
+    const diagnostics = scan('no-global-this', 'class C { static { this.z(); } }');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-global-this for this inside an arrow inside a regular function', () => {
+    const diagnostics = scan('no-global-this', 'function f() { const g = () => this.x; }');
     expect(diagnostics).toHaveLength(0);
   });
 });

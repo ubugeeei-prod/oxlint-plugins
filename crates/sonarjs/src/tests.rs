@@ -3595,3 +3595,63 @@ fn does_not_report_no_hardcoded_ip_when_rule_not_enabled() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_global_this_at_top_level() {
+    let diagnostics = scan("no-global-this", "this.foo = 1;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-global-this");
+    assert_eq!(diagnostics[0].message_id, "noGlobalThis");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_global_this_inside_top_level_arrow() {
+    let diagnostics = scan("no-global-this", "const f = () => this.x;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-global-this");
+    assert_eq!(diagnostics[0].message_id, "noGlobalThis");
+}
+
+#[test]
+fn reports_no_global_this_inside_nested_top_level_arrows() {
+    let diagnostics = scan("no-global-this", "const f = () => () => this;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noGlobalThis");
+}
+
+#[test]
+fn does_not_report_no_global_this_inside_regular_function() {
+    let diagnostics = scan("no-global-this", "function f() { return this.x; }");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_global_this_inside_object_method() {
+    let diagnostics = scan("no-global-this", "const o = { m() { return this.x; } };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_global_this_inside_class_method() {
+    let diagnostics = scan("no-global-this", "class C { m() { return this.x; } }");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_global_this_inside_class_field_initializer() {
+    let diagnostics = scan("no-global-this", "class C { x = this.y; }");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_global_this_inside_static_block() {
+    let diagnostics = scan("no-global-this", "class C { static { this.z(); } }");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_global_this_for_arrow_inside_function() {
+    let diagnostics = scan("no-global-this", "function f() { const g = () => this.x; }");
+    assert!(diagnostics.is_empty());
+}
