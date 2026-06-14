@@ -97,30 +97,36 @@ fn class_rank(token: &str, index: usize) -> (u16, u16, usize) {
     if base.starts_with("bg-") {
         return (90, 0, index);
     }
-    if base.starts_with("h-") || base.starts_with("h") {
+    if base.starts_with("h-") {
         return (100, 0, index);
     }
-    if base.starts_with("w-") || base.starts_with("w") {
+    if base.starts_with("w-") {
         return (101, 0, index);
     }
     (10_000, 0, index)
 }
 
+/// Rank a margin (`family = 'm'`) or padding (`family = 'p'`) utility by axis.
+///
+/// Only matches genuine utilities (`m`, `m-1`, `p4`, `mx1`, `ml-2`); a bare word
+/// that merely starts with an axis letter (`my`, `prose`, `play`, `previous`) is
+/// rejected so the heuristic does not flag ordinary class names as orderable.
 fn spacing_axis_rank(base: &str, family: char) -> Option<u16> {
-    let mut chars = base.chars();
-    if chars.next()? != family {
-        return None;
-    }
-    let next = chars.next();
-    match next {
-        None => Some(0),
-        Some('-' | '0'..='9') => Some(0),
-        Some('x') => Some(1),
-        Some('y') => Some(2),
-        Some('l') => Some(3),
-        Some('r') => Some(4),
-        Some('b') => Some(5),
-        Some('t') => Some(6),
+    let mut chars = base.strip_prefix(family)?.chars();
+    let rank = match chars.next() {
+        // `m`/`p` alone, or directly followed by a value (`m-1`, `p4`).
+        None | Some('-' | '0'..='9') => return Some(0),
+        Some('x') => 1,
+        Some('y') => 2,
+        Some('l') => 3,
+        Some('r') => 4,
+        Some('b') => 5,
+        Some('t') => 6,
+        _ => return None,
+    };
+    // A real axis utility continues with a value (`mx1`, `ml-2`); reject `my`/`pr`.
+    match chars.next() {
+        Some('-' | '0'..='9') => Some(rank),
         _ => None,
     }
 }
@@ -159,7 +165,5 @@ pub(crate) fn is_unocss_token(token: &str) -> bool {
         || base.starts_with("border")
         || base.starts_with("bg-")
         || base.starts_with("h-")
-        || base.starts_with('h')
         || base.starts_with("w-")
-        || base.starts_with('w')
 }
