@@ -76,6 +76,26 @@ const messages = Object.freeze({
   'no-empty-group': {
     emptyGroup: 'Remove this empty group or add content to it.',
   },
+  'no-empty-alternatives': {
+    emptyAlternative: 'Remove this empty alternative or replace the alternation with an optional.',
+  },
+  'no-regex-spaces': {
+    multipleSpaces: 'Use a quantifier (e.g. " {3}") instead of multiple consecutive spaces.',
+  },
+  'no-control-regex': {
+    controlCharacter:
+      'Remove this control character from the regular expression or write it as a conventional escape.',
+  },
+  'single-char-in-character-classes': {
+    singleCharInCharacterClass: 'Replace this single-character class with the character itself.',
+  },
+  'duplicates-in-character-class': {
+    duplicateCharacter: 'Remove this duplicated character from the character class.',
+  },
+  'anchor-precedence': {
+    anchorPrecedence:
+      'Group the alternatives or add anchors to each branch to make operator precedence explicit.',
+  },
   'generator-without-yield': {
     generatorWithoutYield:
       "This generator contains no 'yield'; either add a 'yield' or convert it to a regular function.",
@@ -233,6 +253,18 @@ const ruleDescriptions = Object.freeze({
     'Disallow empty character classes in regular expression literals, which can never match',
   'no-empty-group':
     'Disallow empty capturing or non-capturing groups in regular expression literals',
+  'no-empty-alternatives':
+    'Disallow empty alternatives in a regular expression alternation (a stray, leading, or trailing "|")',
+  'no-regex-spaces':
+    'Disallow multiple consecutive spaces in a regular expression; use an explicit quantifier instead',
+  'no-control-regex':
+    'Disallow control characters written as \\x, \\u, or \\c escapes in regular expressions',
+  'single-char-in-character-classes':
+    'Disallow a regular-expression character class that contains only a single literal character',
+  'duplicates-in-character-class':
+    'Disallow the same literal character appearing more than once in a regular-expression character class',
+  'anchor-precedence':
+    'Disallow regex alternations where ^ or $ anchors only one branch due to operator precedence',
   'generator-without-yield':
     "Disallow generator functions that contain no 'yield' expression and therefore behave like plain functions",
   'no-exclusive-tests':
@@ -327,6 +359,12 @@ const ruleTypes = Object.freeze({
   'constructor-for-side-effects': 'problem',
   'no-empty-character-class': 'problem',
   'no-empty-group': 'suggestion',
+  'no-empty-alternatives': 'suggestion',
+  'no-regex-spaces': 'suggestion',
+  'no-control-regex': 'suggestion',
+  'single-char-in-character-classes': 'suggestion',
+  'duplicates-in-character-class': 'suggestion',
+  'anchor-precedence': 'suggestion',
   'generator-without-yield': 'problem',
   'no-exclusive-tests': 'problem',
   'no-built-in-override': 'problem',
@@ -384,6 +422,11 @@ const recommendedRuleConfig = Object.freeze({
   'constructor-for-side-effects': 'error',
   'no-empty-character-class': 'error',
   'no-empty-group': 'error',
+  'no-empty-alternatives': 'error',
+  'no-regex-spaces': 'error',
+  'no-control-regex': 'error',
+  'single-char-in-character-classes': 'error',
+  'duplicates-in-character-class': 'error',
   'generator-without-yield': 'error',
   'no-exclusive-tests': 'error',
   'no-built-in-override': 'error',
@@ -421,6 +464,7 @@ const recommendedRuleConfig = Object.freeze({
   'max-lines-per-function': 'error',
   'nested-control-flow': 'error',
   'no-duplicate-string': 'error',
+  'anchor-precedence': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
