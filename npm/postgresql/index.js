@@ -17,6 +17,26 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'align-values': {
+    type: 'layout',
+    description:
+      'Align column values vertically inside multi-row `INSERT ... VALUES (...)` so that each tuple position shares a consistent width across rows',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          gap: { type: 'integer', minimum: 1 },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      misaligned:
+        'VALUES rows are not vertically aligned: column widths can shrink to fit the current rows.',
+    },
+  },
   'consistent-as-for-column-alias': {
     type: 'layout',
     description:

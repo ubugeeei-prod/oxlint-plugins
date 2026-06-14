@@ -3,6 +3,7 @@
 
 use crate::RuleDef;
 
+mod align_values;
 mod consistent_as_for_column_alias;
 mod consistent_as_for_table_alias;
 mod consistent_between_over_and;
@@ -185,6 +186,7 @@ pub const RULE_NAMES: [&str; 89] = [
 
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
+    "align-values",
     "consistent-as-for-column-alias",
     "consistent-as-for-table-alias",
     "consistent-between-over-and",
@@ -274,6 +276,11 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
 pub(crate) const REGISTRY: &[RuleDef] = &[
+    RuleDef {
+        name: "align-values",
+        run: align_values::run,
+        uses_parse_error: false,
+    },
     RuleDef {
         name: "consistent-as-for-column-alias",
         run: consistent_as_for_column_alias::run,
