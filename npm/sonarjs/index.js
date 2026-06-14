@@ -291,6 +291,10 @@ const messages = Object.freeze({
     sameArgumentAssert:
       'Replace this assertion; the actual and expected arguments are the same expression.',
   },
+  'inverted-assertion-arguments': {
+    invertedArguments:
+      'Swap these assertion arguments so the actual value comes first and the expected value second.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -447,6 +451,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow a bitwise "&" or "|" whose operand is a boolean-valued expression (comparison, logical, "!", or boolean literal), which is likely a typo for "&&" or "||"',
   'no-same-argument-assert':
     'Disallow a Chai "assert.<method>(...)" call whose first two arguments are the same source expression, since it compares a value to itself and is trivially true',
+  'inverted-assertion-arguments':
+    'Disallow a Chai "assert.<method>(...)" call whose first argument is a literal constant and second is not, since the actual/expected arguments were likely inverted',
 });
 
 const ruleTypes = Object.freeze({
@@ -529,6 +535,7 @@ const ruleTypes = Object.freeze({
   'no-associative-arrays': 'suggestion',
   'bitwise-operators': 'suggestion',
   'no-same-argument-assert': 'suggestion',
+  'inverted-assertion-arguments': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -611,6 +618,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-associative-arrays': 'error',
   'bitwise-operators': 'error',
   'no-same-argument-assert': 'error',
+  'inverted-assertion-arguments': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

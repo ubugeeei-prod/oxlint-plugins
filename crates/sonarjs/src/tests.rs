@@ -4157,3 +4157,62 @@ fn does_not_report_same_argument_assert_with_single_argument() {
     let diagnostics = scan("no-same-argument-assert", "assert.ok(x);");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_inverted_assertion_arguments_numeric_first() {
+    let diagnostics = scan("inverted-assertion-arguments", "assert.equal(42, x);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "inverted-assertion-arguments");
+    assert_eq!(diagnostics[0].message_id, "invertedArguments");
+}
+
+#[test]
+fn reports_inverted_assertion_arguments_string_first() {
+    let diagnostics = scan(
+        "inverted-assertion-arguments",
+        "assert.strictEqual('foo', bar);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "invertedArguments");
+}
+
+#[test]
+fn does_not_report_inverted_assertion_arguments_in_correct_order() {
+    let diagnostics = scan("inverted-assertion-arguments", "assert.equal(x, 42);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inverted_assertion_arguments_both_literals() {
+    let diagnostics = scan("inverted-assertion-arguments", "assert.equal(1, 2);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inverted_assertion_arguments_neither_literal() {
+    let diagnostics = scan("inverted-assertion-arguments", "assert.equal(x, y);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inverted_assertion_arguments_for_non_assert_call() {
+    let diagnostics = scan("inverted-assertion-arguments", "foo(42, x);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inverted_assertion_arguments_single_argument() {
+    let diagnostics = scan("inverted-assertion-arguments", "assert.ok(x);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inverted_assertion_arguments_for_non_equality_method() {
+    // `include` is not an equality method: a literal first argument (the
+    // haystack) is legitimate, so it must not be flagged.
+    let diagnostics = scan(
+        "inverted-assertion-arguments",
+        "assert.include('foobar', x);",
+    );
+    assert!(diagnostics.is_empty());
+}
