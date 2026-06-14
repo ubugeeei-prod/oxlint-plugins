@@ -4216,3 +4216,70 @@ fn does_not_report_inverted_assertion_arguments_for_non_equality_method() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_for_loop_increment_sign_increasing_cond_decrements() {
+    let source = "for (let i = 0; i < 10; i--) {}";
+    let diagnostics = scan("for-loop-increment-sign", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "for-loop-increment-sign");
+    assert_eq!(diagnostics[0].message_id, "wrongDirection");
+}
+
+#[test]
+fn reports_for_loop_increment_sign_decreasing_cond_increments() {
+    let source = "for (let i = 10; i > 0; i++) {}";
+    let diagnostics = scan("for-loop-increment-sign", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "wrongDirection");
+}
+
+#[test]
+fn reports_for_loop_increment_sign_compound_minus_assign() {
+    let source = "for (let i = 0; i <= 10; i -= 1) {}";
+    let diagnostics = scan("for-loop-increment-sign", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "wrongDirection");
+}
+
+#[test]
+fn reports_for_loop_increment_sign_counter_on_right() {
+    let source = "for (let i = 0; 10 > i; i--) {}";
+    let diagnostics = scan("for-loop-increment-sign", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "wrongDirection");
+}
+
+#[test]
+fn does_not_report_for_loop_increment_sign_correct_increasing() {
+    let source = "for (let i = 0; i < 10; i++) {}";
+    let diagnostics = scan("for-loop-increment-sign", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_for_loop_increment_sign_correct_decreasing() {
+    let source = "for (let i = 10; i > 0; i--) {}";
+    let diagnostics = scan("for-loop-increment-sign", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_for_loop_increment_sign_equality_condition() {
+    let source = "for (let i = 0; i != 10; i++) {}";
+    let diagnostics = scan("for-loop-increment-sign", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_for_loop_increment_sign_update_var_differs() {
+    let source = "for (let i = 0, j = 0; i < 10; j++) {}";
+    let diagnostics = scan("for-loop-increment-sign", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_for_loop_increment_sign_no_test_or_update() {
+    let diagnostics = scan("for-loop-increment-sign", "for (;;) {}");
+    assert!(diagnostics.is_empty());
+}

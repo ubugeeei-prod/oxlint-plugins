@@ -174,6 +174,7 @@ describe('sonarjs plugin shape', () => {
       'bitwise-operators',
       'no-same-argument-assert',
       'inverted-assertion-arguments',
+      'for-loop-increment-sign',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -254,6 +255,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['bitwise-operators']).toBe('object');
     expect(typeof plugin.rules['no-same-argument-assert']).toBe('object');
     expect(typeof plugin.rules['inverted-assertion-arguments']).toBe('object');
+    expect(typeof plugin.rules['for-loop-increment-sign']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -342,6 +344,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/bitwise-operators']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-same-argument-assert']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/inverted-assertion-arguments']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/for-loop-increment-sign']).toBe('error');
   });
 });
 
@@ -2210,5 +2213,60 @@ describe('inverted-assertion-arguments rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(inverted-assertion-arguments)');
+  });
+});
+
+describe('for-loop-increment-sign rule', () => {
+  it('reports an increasing condition with a decrementing update', () => {
+    const source = 'for (let i = 0; i < 10; i--) {}';
+    const reports = runRule('for-loop-increment-sign', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('wrongDirection');
+  });
+
+  it('reports a decreasing condition with an incrementing update', () => {
+    const source = 'for (let i = 10; i > 0; i++) {}';
+    const reports = runRule('for-loop-increment-sign', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('wrongDirection');
+  });
+
+  it('reports a compound subtract-assign against an increasing condition', () => {
+    const source = 'for (let i = 0; i <= 10; i -= 1) {}';
+    const reports = runRule('for-loop-increment-sign', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report a correctly increasing loop', () => {
+    const source = 'for (let i = 0; i < 10; i++) {}';
+    const reports = runRule('for-loop-increment-sign', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a correctly decreasing loop', () => {
+    const source = 'for (let i = 10; i > 0; i--) {}';
+    const reports = runRule('for-loop-increment-sign', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an equality condition with no direction', () => {
+    const source = 'for (let i = 0; i != 10; i++) {}';
+    const reports = runRule('for-loop-increment-sign', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the update variable differs from the counter', () => {
+    const source = 'for (let i = 0, j = 0; i < 10; j++) {}';
+    const reports = runRule('for-loop-increment-sign', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports for-loop-increment-sign through the CLI', () => {
+    const source = 'for (let i = 0; i < 10; i--) {}';
+    const result = runOxlint('for-loop-increment-sign', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(for-loop-increment-sign)');
   });
 });
