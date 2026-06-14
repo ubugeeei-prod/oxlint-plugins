@@ -15,6 +15,7 @@ mod consistent_identity_over_serial;
 mod consistent_jsonb_over_json;
 mod consistent_reindex_concurrently;
 mod consistent_text_over_varchar;
+mod consistent_timestamptz;
 mod no_add_check_constraint_without_not_valid;
 mod no_add_column_not_null_without_default;
 mod no_add_unique_constraint_directly;
@@ -190,6 +191,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "consistent-jsonb-over-json",
     "consistent-reindex-concurrently",
     "consistent-text-over-varchar",
+    "consistent-timestamptz",
     "no-add-check-constraint-without-not-valid",
     "no-add-column-not-null-without-default",
     "no-add-unique-constraint-directly",
@@ -318,6 +320,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "consistent-text-over-varchar",
         run: consistent_text_over_varchar::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "consistent-timestamptz",
+        run: consistent_timestamptz::run,
         uses_parse_error: false,
     },
     RuleDef {
