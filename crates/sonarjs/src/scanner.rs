@@ -352,6 +352,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_string_literal(&mut self, it: &StringLiteral<'a>) {
         self.record_string_literal(it);
+        self.check_no_hardcoded_ip(it);
         walk::walk_string_literal(self, it);
     }
 

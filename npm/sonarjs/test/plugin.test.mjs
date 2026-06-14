@@ -163,6 +163,7 @@ describe('sonarjs plugin shape', () => {
       'void-use',
       'prefer-promise-shorthand',
       'pseudo-random',
+      'no-hardcoded-ip',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -232,6 +233,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['code-eval']).toBe('object');
     expect(typeof plugin.rules['prefer-promise-shorthand']).toBe('object');
     expect(typeof plugin.rules['pseudo-random']).toBe('object');
+    expect(typeof plugin.rules['no-hardcoded-ip']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -309,6 +311,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/code-eval']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-promise-shorthand']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/pseudo-random']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-ip']).toBe('error');
   });
 });
 
@@ -1670,5 +1673,48 @@ describe('pseudo-random rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(pseudo-random)');
+  });
+});
+
+describe('no-hardcoded-ip rule', () => {
+  it('reports no-hardcoded-ip for a private IPv4 address through the adapter', () => {
+    const source = 'const ip = "192.168.1.1";';
+    const reports = runRule('no-hardcoded-ip', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hardcodedIp');
+  });
+
+  it('reports no-hardcoded-ip for an IPv4 address in a URL string', () => {
+    const source = 'const url = "http://10.0.0.1/api";';
+    const reports = runRule('no-hardcoded-ip', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hardcodedIp');
+  });
+
+  it('does not report no-hardcoded-ip for the loopback address 127.0.0.1', () => {
+    const source = 'const ip = "127.0.0.1";';
+    const reports = runRule('no-hardcoded-ip', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for broadcast 255.255.255.255', () => {
+    const source = 'const ip = "255.255.255.255";';
+    const reports = runRule('no-hardcoded-ip', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report no-hardcoded-ip for unspecified 0.0.0.0', () => {
+    const source = 'const ip = "0.0.0.0";';
+    const reports = runRule('no-hardcoded-ip', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-hardcoded-ip through the CLI', () => {
+    const source = 'const ip = "192.168.1.1";';
+    const result = runOxlint('no-hardcoded-ip', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-hardcoded-ip)');
   });
 });

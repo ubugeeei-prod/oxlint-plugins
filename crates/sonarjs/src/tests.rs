@@ -3489,3 +3489,109 @@ fn does_not_report_pseudo_random_for_bare_reference() {
     let diagnostics = scan("pseudo-random", "const f = Math.random;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_hardcoded_ip_for_private_ipv4() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "192.168.1.1";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-hardcoded-ip");
+    assert_eq!(diagnostics[0].message_id, "hardcodedIp");
+}
+
+#[test]
+fn reports_no_hardcoded_ip_for_class_a_private_ipv4() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "10.0.0.1";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "hardcodedIp");
+}
+
+#[test]
+fn reports_no_hardcoded_ip_for_ipv4_in_url_string() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const u = "http://10.20.30.40/api";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "hardcodedIp");
+}
+
+#[test]
+fn reports_no_hardcoded_ip_for_non_documentation_ipv6() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "fe80::1";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "hardcodedIp");
+}
+
+#[test]
+fn reports_no_hardcoded_ip_for_full_ipv6_address() {
+    let source = r#"const ip = "2001:0001:85a3::8a2e:370:7334";"#;
+    let diagnostics = scan("no-hardcoded-ip", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "hardcodedIp");
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_loopback_127_0_0_1() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "127.0.0.1";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_loopback_127_x_x_x_range() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "127.1.2.3";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_broadcast() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "255.255.255.255";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_unspecified_0_0_0_0() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "0.0.0.0";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_ipv6_loopback() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "::1";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_ipv6_documentation_range() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "2001:db8::1";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_ipv4_mapped_loopback() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const ip = "::ffff:127.0.0.1";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_plain_string() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const s = "hello world";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_partial_ipv4() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const s = "192.168.1";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_for_version_string_with_invalid_octet() {
+    let diagnostics = scan("no-hardcoded-ip", r#"const v = "256.0.0.1";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_hardcoded_ip_when_rule_not_enabled() {
+    let diagnostics = scan(
+        "no-nested-template-literals",
+        r#"const ip = "192.168.1.1";"#,
+    );
+    assert!(diagnostics.is_empty());
+}
