@@ -6,6 +6,7 @@ mod scanner;
 use oxc_allocator::Allocator;
 use oxc_ast::ast::{Expression, ObjectExpression};
 use oxc_parser::Parser;
+use oxc_semantic::{SemanticBuilder, SymbolId};
 use oxc_span::{SourceType, Span};
 use oxlint_plugins_carton::{CompactString, FastHashMap, SmallVec};
 
@@ -133,6 +134,9 @@ pub(crate) struct MetaResolution<'a> {
 pub(crate) struct NamedExport {
     pub(crate) name: CompactString,
     pub(crate) span: Span,
+    /// Symbol of the exported binding, when resolvable. Used by `prefer-pascal-case`
+    /// to rename every reference to the export (not just its declaration).
+    pub(crate) symbol_id: Option<SymbolId>,
 }
 
 #[derive(Default)]
@@ -203,11 +207,22 @@ pub fn scan_storybook(
         return SmallVec::new();
     }
 
+    // Semantic analysis resolves identifier references, which `prefer-pascal-case`
+    // uses to rename every use of a renamed story export. The other rules do not
+    // read it. Benign semantic errors (e.g. redeclarations) do not block scanning.
+    let semantic = SemanticBuilder::new()
+        .build(&parser_return.program)
+        .semantic;
+    let scoping = semantic.scoping();
+    let nodes = semantic.nodes();
+
     let mut scanner = Scanner {
         source_text,
         options,
         line_index: LineIndex::new(source_text),
         diagnostics: SmallVec::new(),
+        scoping,
+        nodes,
         variables: FastHashMap::default(),
         function_stack: SmallVec::new(),
         first_non_import_span: None,

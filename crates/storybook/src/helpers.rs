@@ -12,6 +12,7 @@ use oxc_ast::ast::{
     Expression, FormalParameters, ImportDeclaration, ImportDeclarationSpecifier, ModuleExportName,
     ObjectExpression, ObjectProperty, ObjectPropertyKind, PropertyKey, StaticMemberExpression,
 };
+use oxc_semantic::SymbolId;
 use oxc_span::{GetSpan, Span};
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
@@ -50,6 +51,13 @@ pub(crate) fn property_key_name<'a>(key: &'a PropertyKey<'a>) -> Option<&'a str>
         PropertyKey::StaticIdentifier(identifier) => Some(identifier.name.as_str()),
         PropertyKey::StringLiteral(literal) => Some(literal.value.as_str()),
         PropertyKey::Identifier(identifier) => Some(identifier.name.as_str()),
+        _ => None,
+    }
+}
+
+pub(crate) fn binding_symbol_id(pattern: &BindingPattern<'_>) -> Option<SymbolId> {
+    match pattern {
+        BindingPattern::BindingIdentifier(identifier) => identifier.symbol_id.get(),
         _ => None,
     }
 }
