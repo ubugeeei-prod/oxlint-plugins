@@ -2564,3 +2564,42 @@ fn does_not_report_no_empty_alternatives_for_empty_group() {
     let diagnostics = scan("no-empty-alternatives", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_regex_spaces_for_two_consecutive_spaces() {
+    let source = "const r = /a  b/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-regex-spaces");
+    assert_eq!(diagnostics[0].message_id, "multipleSpaces");
+}
+
+#[test]
+fn reports_no_regex_spaces_for_three_consecutive_spaces() {
+    let source = "const r = /foo   bar/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-regex-spaces");
+    assert_eq!(diagnostics[0].message_id, "multipleSpaces");
+}
+
+#[test]
+fn does_not_report_no_regex_spaces_for_single_space() {
+    let source = "const r = /a b/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_regex_spaces_for_space_with_quantifier() {
+    let source = "const r = /a {2}b/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_regex_spaces_for_spaces_inside_character_class() {
+    let source = "const r = /[  ]{2}/;";
+    let diagnostics = scan("no-regex-spaces", source);
+    assert!(diagnostics.is_empty());
+}
