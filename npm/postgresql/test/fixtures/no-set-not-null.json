@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "add-check-not-valid",
-      "code": "ALTER TABLE users ADD CONSTRAINT users_email_not_null CHECK (email IS NOT NULL) NOT VALID;\n"
+      "code": "ALTER TABLE users ADD CONSTRAINT users_email_not_null CHECK (email IS NOT NULL) NOT VALID;"
     },
     {
       "name": "create-with-not-null",
-      "code": "CREATE TABLE users (id int PRIMARY KEY, email text NOT NULL);\n"
+      "code": "CREATE TABLE users (id int PRIMARY KEY, email text NOT NULL);"
     }
   ],
   "invalid": [
     {
       "name": "set-not-null",
-      "code": "ALTER TABLE users ALTER COLUMN email SET NOT NULL;\n",
+      "code": "ALTER TABLE users ALTER COLUMN email SET NOT NULL;",
       "errors": [
         {
           "messageId": "noSetNotNull",

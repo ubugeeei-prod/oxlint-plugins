@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "already-in",
-      "code": "SELECT * FROM t WHERE x IN (1, 2, 3);\n-- Mixed lhs: cannot collapse.\nSELECT * FROM t WHERE x = 1 OR y = 2;\n-- Single equality: nothing to combine.\nSELECT * FROM t WHERE x = 1;\n-- AND chain: not in scope.\nSELECT * FROM t WHERE x = 1 AND y = 2;\n"
+      "code": "SELECT * FROM t WHERE x IN (1, 2, 3);\n-- Mixed lhs: cannot collapse.\nSELECT * FROM t WHERE x = 1 OR y = 2;\n-- Single equality: nothing to combine.\nSELECT * FROM t WHERE x = 1;\n-- AND chain: not in scope.\nSELECT * FROM t WHERE x = 1 AND y = 2;"
     }
   ],
   "invalid": [
     {
       "name": "or-chain",
-      "code": "SELECT * FROM t WHERE x = 1 OR x = 2 OR x = 3;\n",
+      "code": "SELECT * FROM t WHERE x = 1 OR x = 2 OR x = 3;",
       "errors": [
         {
           "messageId": "preferIn",

@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "truncate-restrict",
-      "code": "TRUNCATE users RESTRICT;\n"
+      "code": "TRUNCATE users RESTRICT;"
     },
     {
       "name": "truncate",
-      "code": "TRUNCATE users;\n"
+      "code": "TRUNCATE users;"
     }
   ],
   "invalid": [
     {
       "name": "truncate-cascade",
-      "code": "TRUNCATE users CASCADE;\n",
+      "code": "TRUNCATE users CASCADE;",
       "errors": [
         {
           "messageId": "noCascade",

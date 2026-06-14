@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "add-column",
-      "code": "ALTER TABLE users ADD COLUMN status text;\n"
+      "code": "ALTER TABLE users ADD COLUMN status text;"
     }
   ],
   "invalid": [
     {
       "name": "drop-column",
-      "code": "ALTER TABLE users DROP COLUMN legacy_flag;\n",
+      "code": "ALTER TABLE users DROP COLUMN legacy_flag;",
       "errors": [
         {
           "messageId": "noDropColumn",

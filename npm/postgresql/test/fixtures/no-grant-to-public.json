@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "grant-to-role",
-      "code": "GRANT SELECT ON users TO reporting;\n"
+      "code": "GRANT SELECT ON users TO reporting;"
     },
     {
       "name": "revoke-from-public",
-      "code": "REVOKE ALL ON users FROM PUBLIC;\n"
+      "code": "REVOKE ALL ON users FROM PUBLIC;"
     }
   ],
   "invalid": [
     {
       "name": "grant-to-public",
-      "code": "GRANT SELECT ON users TO PUBLIC;\n",
+      "code": "GRANT SELECT ON users TO PUBLIC;",
       "errors": [
         {
           "messageId": "noPublic",

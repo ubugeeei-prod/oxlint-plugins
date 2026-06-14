@@ -9,11 +9,11 @@
   "valid": [
     {
       "name": "identity-column",
-      "code": "CREATE TABLE t (id INT GENERATED ALWAYS AS IDENTITY);\n"
+      "code": "CREATE TABLE t (id INT GENERATED ALWAYS AS IDENTITY);"
     },
     {
       "name": "never-serial",
-      "code": "CREATE TABLE t (id bigserial PRIMARY KEY);\n",
+      "code": "CREATE TABLE t (id bigserial PRIMARY KEY);",
       "options": [
         {
           "style": "never"
@@ -22,13 +22,13 @@
     },
     {
       "name": "plain-int",
-      "code": "CREATE TABLE t (id INT);\n"
+      "code": "CREATE TABLE t (id INT);"
     }
   ],
   "invalid": [
     {
       "name": "bigserial",
-      "code": "CREATE TABLE t (id BIGSERIAL);\n",
+      "code": "CREATE TABLE t (id BIGSERIAL);",
       "errors": [
         {
           "messageId": "preferIdentity",
@@ -43,7 +43,7 @@
     },
     {
       "name": "never-identity",
-      "code": "CREATE TABLE t (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY);\n",
+      "code": "CREATE TABLE t (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY);",
       "options": [
         {
           "style": "never"
@@ -63,7 +63,7 @@
     },
     {
       "name": "serial",
-      "code": "CREATE TABLE t (id SERIAL);\n",
+      "code": "CREATE TABLE t (id SERIAL);",
       "errors": [
         {
           "messageId": "preferIdentity",
@@ -78,7 +78,7 @@
     },
     {
       "name": "smallserial",
-      "code": "CREATE TABLE t (id SMALLSERIAL);\n",
+      "code": "CREATE TABLE t (id SMALLSERIAL);",
       "errors": [
         {
           "messageId": "preferIdentity",

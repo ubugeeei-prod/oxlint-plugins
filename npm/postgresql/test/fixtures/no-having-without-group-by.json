@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "having-with-group",
-      "code": "SELECT category, count(*) FROM items GROUP BY category HAVING count(*) > 1;\n"
+      "code": "SELECT category, count(*) FROM items GROUP BY category HAVING count(*) > 1;"
     },
     {
       "name": "no-having",
-      "code": "SELECT count(*) FROM users;\n"
+      "code": "SELECT count(*) FROM users;"
     }
   ],
   "invalid": [
     {
       "name": "having-without-group",
-      "code": "SELECT count(*) FROM users HAVING count(*) > 1;\n",
+      "code": "SELECT count(*) FROM users HAVING count(*) > 1;",
       "errors": [
         {
           "messageId": "noHavingWithoutGroupBy",

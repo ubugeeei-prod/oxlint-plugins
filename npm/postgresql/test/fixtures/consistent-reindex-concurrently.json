@@ -9,7 +9,7 @@
   "valid": [
     {
       "name": "never-no-concurrently",
-      "code": "REINDEX TABLE users;\n",
+      "code": "REINDEX TABLE users;",
       "options": [
         {
           "style": "never"
@@ -18,13 +18,13 @@
     },
     {
       "name": "reindex-concurrently",
-      "code": "REINDEX TABLE CONCURRENTLY users;\n"
+      "code": "REINDEX TABLE CONCURRENTLY users;"
     }
   ],
   "invalid": [
     {
       "name": "never-concurrently",
-      "code": "REINDEX TABLE CONCURRENTLY users;\n",
+      "code": "REINDEX TABLE CONCURRENTLY users;",
       "options": [
         {
           "style": "never"
@@ -44,7 +44,7 @@
     },
     {
       "name": "reindex-table",
-      "code": "REINDEX TABLE users;\n",
+      "code": "REINDEX TABLE users;",
       "errors": [
         {
           "messageId": "preferReindexConcurrently",

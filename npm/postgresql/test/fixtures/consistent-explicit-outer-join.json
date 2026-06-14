@@ -9,11 +9,11 @@
   "valid": [
     {
       "name": "explicit-outer",
-      "code": "SELECT u.id FROM users u LEFT OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u RIGHT OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u FULL OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u INNER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u CROSS JOIN regions r;\n"
+      "code": "SELECT u.id FROM users u LEFT OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u RIGHT OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u FULL OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u INNER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u CROSS JOIN regions r;"
     },
     {
       "name": "never-bare-side-join",
-      "code": "SELECT a.id FROM a LEFT JOIN b ON a.id = b.id;\n",
+      "code": "SELECT a.id FROM a LEFT JOIN b ON a.id = b.id;",
       "options": [
         {
           "style": "never"
@@ -24,7 +24,7 @@
   "invalid": [
     {
       "name": "left-join",
-      "code": "SELECT u.id FROM users u LEFT JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u RIGHT JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u FULL JOIN orders o ON o.user_id = u.id;\n",
+      "code": "SELECT u.id FROM users u LEFT JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u RIGHT JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u FULL JOIN orders o ON o.user_id = u.id;",
       "errors": [
         {
           "messageId": "preferOuterJoin",
@@ -55,7 +55,7 @@
     },
     {
       "name": "never-side-outer-join",
-      "code": "SELECT a.id FROM a LEFT OUTER JOIN b ON a.id = b.id;\n",
+      "code": "SELECT a.id FROM a LEFT OUTER JOIN b ON a.id = b.id;",
       "options": [
         {
           "style": "never"

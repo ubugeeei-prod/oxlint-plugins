@@ -9,11 +9,11 @@
   "valid": [
     {
       "name": "explicit-as",
-      "code": "SELECT u.id FROM users AS u WHERE u.active = TRUE;\nSELECT u.id FROM public.users AS u JOIN orders AS o ON o.user_id = u.id;\nSELECT u.id FROM users WHERE active = TRUE;\n"
+      "code": "SELECT u.id FROM users AS u WHERE u.active = TRUE;\nSELECT u.id FROM public.users AS u JOIN orders AS o ON o.user_id = u.id;\nSELECT u.id FROM users WHERE active = TRUE;"
     },
     {
       "name": "never-no-as",
-      "code": "SELECT u.id FROM users u;\n",
+      "code": "SELECT u.id FROM users u;",
       "options": [
         {
           "style": "never"
@@ -24,7 +24,7 @@
   "invalid": [
     {
       "name": "bare-alias",
-      "code": "SELECT u.id FROM users u WHERE u.active = TRUE;\n",
+      "code": "SELECT u.id FROM users u WHERE u.active = TRUE;",
       "errors": [
         {
           "messageId": "preferAs",
@@ -39,7 +39,7 @@
     },
     {
       "name": "never-with-as",
-      "code": "SELECT u.id FROM users AS u;\n",
+      "code": "SELECT u.id FROM users AS u;",
       "options": [
         {
           "style": "never"

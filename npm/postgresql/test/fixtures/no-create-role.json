@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "grant",
-      "code": "GRANT SELECT ON users TO app_reader;\n"
+      "code": "GRANT SELECT ON users TO app_reader;"
     }
   ],
   "invalid": [
     {
       "name": "create-role",
-      "code": "CREATE ROLE app_writer LOGIN PASSWORD 'redacted';\n",
+      "code": "CREATE ROLE app_writer LOGIN PASSWORD 'redacted';",
       "errors": [
         {
           "messageId": "noCreateRole",

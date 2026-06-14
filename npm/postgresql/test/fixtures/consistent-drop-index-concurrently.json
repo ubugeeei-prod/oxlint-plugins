@@ -9,11 +9,11 @@
   "valid": [
     {
       "name": "concurrently",
-      "code": "DROP INDEX CONCURRENTLY idx_users;\nDROP INDEX CONCURRENTLY IF EXISTS idx_orders;\n-- Non-index DROPs are out of scope.\nDROP TABLE old_table;\n"
+      "code": "DROP INDEX CONCURRENTLY idx_users;\nDROP INDEX CONCURRENTLY IF EXISTS idx_orders;\n-- Non-index DROPs are out of scope.\nDROP TABLE old_table;"
     },
     {
       "name": "never-no-concurrently",
-      "code": "DROP INDEX idx_users;\n",
+      "code": "DROP INDEX idx_users;",
       "options": [
         {
           "style": "never"
@@ -24,7 +24,7 @@
   "invalid": [
     {
       "name": "never-concurrently",
-      "code": "DROP INDEX CONCURRENTLY idx_users;\n",
+      "code": "DROP INDEX CONCURRENTLY idx_users;",
       "options": [
         {
           "style": "never"
@@ -44,7 +44,7 @@
     },
     {
       "name": "no-concurrently",
-      "code": "DROP INDEX idx_users;\n",
+      "code": "DROP INDEX idx_users;",
       "errors": [
         {
           "messageId": "preferConcurrently",

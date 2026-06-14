@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "drop-default",
-      "code": "ALTER TABLE users ALTER COLUMN status DROP DEFAULT;\n"
+      "code": "ALTER TABLE users ALTER COLUMN status DROP DEFAULT;"
     }
   ],
   "invalid": [
     {
       "name": "drop-not-null",
-      "code": "ALTER TABLE users ALTER COLUMN email DROP NOT NULL;\n",
+      "code": "ALTER TABLE users ALTER COLUMN email DROP NOT NULL;",
       "errors": [
         {
           "messageId": "noDropNotNull",

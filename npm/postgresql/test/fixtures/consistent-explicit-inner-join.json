@@ -9,11 +9,11 @@
   "valid": [
     {
       "name": "explicit-inner",
-      "code": "SELECT u.id FROM users u INNER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u CROSS JOIN regions r;\nSELECT u.id FROM users u NATURAL JOIN profiles p;\nSELECT u.id FROM users u LEFT JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u LEFT OUTER JOIN orders o ON o.user_id = u.id;\n"
+      "code": "SELECT u.id FROM users u INNER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u CROSS JOIN regions r;\nSELECT u.id FROM users u NATURAL JOIN profiles p;\nSELECT u.id FROM users u LEFT JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u LEFT OUTER JOIN orders o ON o.user_id = u.id;"
     },
     {
       "name": "never-bare-join",
-      "code": "SELECT a.id FROM a JOIN b ON a.id = b.id;\n",
+      "code": "SELECT a.id FROM a JOIN b ON a.id = b.id;",
       "options": [
         {
           "style": "never"
@@ -24,7 +24,7 @@
   "invalid": [
     {
       "name": "bare-join",
-      "code": "SELECT u.id FROM users u JOIN orders o ON o.user_id = u.id;\n",
+      "code": "SELECT u.id FROM users u JOIN orders o ON o.user_id = u.id;",
       "errors": [
         {
           "messageId": "preferInnerJoin",
@@ -39,7 +39,7 @@
     },
     {
       "name": "never-inner-join",
-      "code": "SELECT a.id FROM a INNER JOIN b ON a.id = b.id;\n",
+      "code": "SELECT a.id FROM a INNER JOIN b ON a.id = b.id;",
       "options": [
         {
           "style": "never"

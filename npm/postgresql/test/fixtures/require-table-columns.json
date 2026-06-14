@@ -9,7 +9,7 @@
   "valid": [
     {
       "name": "excluded-table",
-      "code": "-- Matches `exclude` pattern (`^audit_`) — no check is performed.\nCREATE TABLE audit_events (\n  id   bigserial PRIMARY KEY,\n  data jsonb\n);\n",
+      "code": "-- Matches `exclude` pattern (`^audit_`) — no check is performed.\nCREATE TABLE audit_events (\n  id   bigserial PRIMARY KEY,\n  data jsonb\n);",
       "options": [
         {
           "columns": ["tenant_id", "created_at", "updated_at"],
@@ -19,7 +19,7 @@
     },
     {
       "name": "has-all-required",
-      "code": "-- All required columns are present.\nCREATE TABLE orders (\n  id         bigserial PRIMARY KEY,\n  tenant_id  bigint NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  created_by bigint NOT NULL,\n  updated_at timestamptz NOT NULL DEFAULT current_timestamp,\n  updated_by bigint NOT NULL\n);\n",
+      "code": "-- All required columns are present.\nCREATE TABLE orders (\n  id         bigserial PRIMARY KEY,\n  tenant_id  bigint NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  created_by bigint NOT NULL,\n  updated_at timestamptz NOT NULL DEFAULT current_timestamp,\n  updated_by bigint NOT NULL\n);",
       "options": [
         {
           "columns": ["tenant_id", "created_at", "created_by", "updated_at", "updated_by"]
@@ -28,7 +28,7 @@
     },
     {
       "name": "override-temporal",
-      "code": "-- `*_temporal` tables follow an override that only requires\n-- `tenant_id`, `created_at`, `created_by`, `updated_at` (no\n-- `updated_by`), because rows are append-only.\nCREATE TABLE orders_temporal (\n  id         bigserial PRIMARY KEY,\n  tenant_id  bigint NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  created_by bigint NOT NULL,\n  updated_at timestamptz NOT NULL DEFAULT current_timestamp\n);\n",
+      "code": "-- `*_temporal` tables follow an override that only requires\n-- `tenant_id`, `created_at`, `created_by`, `updated_at` (no\n-- `updated_by`), because rows are append-only.\nCREATE TABLE orders_temporal (\n  id         bigserial PRIMARY KEY,\n  tenant_id  bigint NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  created_by bigint NOT NULL,\n  updated_at timestamptz NOT NULL DEFAULT current_timestamp\n);",
       "options": [
         {
           "columns": ["tenant_id", "created_at", "created_by", "updated_at", "updated_by"],
@@ -45,7 +45,7 @@
   "invalid": [
     {
       "name": "missing-multiple-columns",
-      "code": "-- Missing `tenant_id`, `created_by`, and `updated_by`.\nCREATE TABLE orders (\n  id         bigserial PRIMARY KEY,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  updated_at timestamptz NOT NULL DEFAULT current_timestamp\n);\n",
+      "code": "-- Missing `tenant_id`, `created_by`, and `updated_by`.\nCREATE TABLE orders (\n  id         bigserial PRIMARY KEY,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  updated_at timestamptz NOT NULL DEFAULT current_timestamp\n);",
       "options": [
         {
           "columns": ["tenant_id", "created_at", "created_by", "updated_at", "updated_by"]
@@ -81,7 +81,7 @@
     },
     {
       "name": "override-temporal-missing-column",
-      "code": "-- `*_temporal` override requires `[tenant_id, created_at, created_by,\n-- updated_at]`. This table is missing `updated_at`.\nCREATE TABLE orders_temporal (\n  id         bigserial PRIMARY KEY,\n  tenant_id  bigint NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  created_by bigint NOT NULL\n);\n",
+      "code": "-- `*_temporal` override requires `[tenant_id, created_at, created_by,\n-- updated_at]`. This table is missing `updated_at`.\nCREATE TABLE orders_temporal (\n  id         bigserial PRIMARY KEY,\n  tenant_id  bigint NOT NULL,\n  created_at timestamptz NOT NULL DEFAULT current_timestamp,\n  created_by bigint NOT NULL\n);",
       "options": [
         {
           "columns": ["tenant_id", "created_at", "created_by", "updated_at", "updated_by"],

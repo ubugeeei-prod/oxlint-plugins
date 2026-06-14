@@ -9,25 +9,25 @@
   "valid": [
     {
       "name": "inline-pk",
-      "code": "CREATE TABLE t (id INT PRIMARY KEY, name TEXT);\n"
+      "code": "CREATE TABLE t (id INT PRIMARY KEY, name TEXT);"
     },
     {
       "name": "no-pk",
-      "code": "CREATE TABLE t (id INT, name TEXT, UNIQUE (id, name));\n"
+      "code": "CREATE TABLE t (id INT, name TEXT, UNIQUE (id, name));"
     },
     {
       "name": "single-col-alter-add-pk",
-      "code": "ALTER TABLE t ADD CONSTRAINT t_pkey PRIMARY KEY (id);\n"
+      "code": "ALTER TABLE t ADD CONSTRAINT t_pkey PRIMARY KEY (id);"
     },
     {
       "name": "single-col-table-level-pk",
-      "code": "CREATE TABLE t (id INT, name TEXT, PRIMARY KEY (id));\n"
+      "code": "CREATE TABLE t (id INT, name TEXT, PRIMARY KEY (id));"
     }
   ],
   "invalid": [
     {
       "name": "composite-pk-alter",
-      "code": "ALTER TABLE t ADD CONSTRAINT t_pkey PRIMARY KEY (a, b);\n",
+      "code": "ALTER TABLE t ADD CONSTRAINT t_pkey PRIMARY KEY (a, b);",
       "errors": [
         {
           "messageId": "noCompositePk",
@@ -42,7 +42,7 @@
     },
     {
       "name": "composite-pk-create",
-      "code": "CREATE TABLE t (a INT, b INT, name TEXT, PRIMARY KEY (a, b));\n",
+      "code": "CREATE TABLE t (a INT, b INT, name TEXT, PRIMARY KEY (a, b));",
       "errors": [
         {
           "messageId": "noCompositePk",

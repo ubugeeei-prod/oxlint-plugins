@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "explicit-join",
-      "code": "SELECT a.id FROM a JOIN b ON a.id = b.id;\n"
+      "code": "SELECT a.id FROM a JOIN b ON a.id = b.id;"
     },
     {
       "name": "single-table",
-      "code": "SELECT id FROM a;\n"
+      "code": "SELECT id FROM a;"
     }
   ],
   "invalid": [
     {
       "name": "comma-join",
-      "code": "SELECT a.id FROM a, b WHERE a.id = b.id;\n",
+      "code": "SELECT a.id FROM a, b WHERE a.id = b.id;",
       "errors": [
         {
           "messageId": "noImplicitJoin",

@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "with-where",
-      "code": "UPDATE t SET x = u.x FROM u WHERE t.id = u.t_id;\n-- No FROM → out of scope.\nUPDATE t SET x = 1;\nUPDATE t SET x = 1 WHERE id = 5;\n"
+      "code": "UPDATE t SET x = u.x FROM u WHERE t.id = u.t_id;\n-- No FROM → out of scope.\nUPDATE t SET x = 1;\nUPDATE t SET x = 1 WHERE id = 5;"
     }
   ],
   "invalid": [
     {
       "name": "cartesian",
-      "code": "UPDATE t SET x = u.x FROM u;\n",
+      "code": "UPDATE t SET x = u.x FROM u;",
       "errors": [
         {
           "messageId": "missingJoin",

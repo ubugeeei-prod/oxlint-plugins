@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "numeric",
-      "code": "CREATE TABLE t (price NUMERIC(10, 2));\n"
+      "code": "CREATE TABLE t (price NUMERIC(10, 2));"
     }
   ],
   "invalid": [
     {
       "name": "money",
-      "code": "CREATE TABLE t (price MONEY);\n",
+      "code": "CREATE TABLE t (price MONEY);",
       "errors": [
         {
           "messageId": "noMoney",
