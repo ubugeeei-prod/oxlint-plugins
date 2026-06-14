@@ -4,6 +4,7 @@
 use crate::RuleDef;
 
 mod no_cluster;
+mod no_cross_join;
 mod no_drop_database;
 mod no_select_star;
 mod no_set_not_null;
@@ -105,6 +106,7 @@ pub const RULE_NAMES: [&str; 89] = [
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-cluster",
+    "no-cross-join",
     "no-drop-database",
     "no-select-star",
     "no-set-not-null",
@@ -115,6 +117,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-cluster",
         run: no_cluster::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-cross-join",
+        run: no_cross_join::run,
         uses_parse_error: false,
     },
     RuleDef {

@@ -53,6 +53,17 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-cross-join': {
+    type: 'suggestion',
+    description: 'Disallow `CROSS JOIN` (unqualified cartesian product)',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCrossJoin:
+        'Avoid `CROSS JOIN`. Cartesian products are almost always a mistake; use an explicit `JOIN ... ON` with a join condition, or `JOIN ... ON true` if you really do want one.',
+    },
+  },
   'no-set-not-null': {
     type: 'problem',
     description:
