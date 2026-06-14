@@ -53,6 +53,18 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-truncate-cascade': {
+    type: 'problem',
+    description:
+      'Disallow `TRUNCATE ... CASCADE` because it transitively empties referencing tables',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCascade:
+        '`TRUNCATE ... CASCADE` also truncates every table that has a foreign key referencing this one. List the dependent tables explicitly so reviewers can see what gets emptied.',
+    },
+  },
 });
 
 const implementedRuleNames = Object.freeze(implementedPostgresqlRuleNames());
