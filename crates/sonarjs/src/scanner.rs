@@ -435,6 +435,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_same_argument_assert(it);
         self.check_inverted_assertion_arguments(it);
         self.check_no_alphabetical_sort(it);
+        self.check_reduce_initial_value(it);
         self.record_iife_callee(&it.callee);
         walk::walk_call_expression(self, it);
     }

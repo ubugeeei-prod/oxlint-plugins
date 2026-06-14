@@ -176,6 +176,7 @@ describe('sonarjs plugin shape', () => {
       'inverted-assertion-arguments',
       'for-loop-increment-sign',
       'no-equals-in-for-termination',
+      'reduce-initial-value',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -258,6 +259,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['inverted-assertion-arguments']).toBe('object');
     expect(typeof plugin.rules['for-loop-increment-sign']).toBe('object');
     expect(typeof plugin.rules['no-equals-in-for-termination']).toBe('object');
+    expect(typeof plugin.rules['reduce-initial-value']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -348,6 +350,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/inverted-assertion-arguments']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/for-loop-increment-sign']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-equals-in-for-termination']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/reduce-initial-value']).toBe('error');
   });
 });
 
@@ -2313,5 +2316,49 @@ describe('no-equals-in-for-termination rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-equals-in-for-termination)');
+  });
+});
+
+describe('reduce-initial-value rule', () => {
+  it('reports reduce() with no initial value on an array literal', () => {
+    const source = '[1, 2, 3].reduce((a, b) => a + b);';
+    const reports = runRule('reduce-initial-value', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('provideInitialValue');
+  });
+
+  it('reports reduce() with no initial value on a known array variable', () => {
+    const source = 'const a = [1, 2];\na.reduce((x, y) => x + y);';
+    const reports = runRule('reduce-initial-value', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('provideInitialValue');
+  });
+
+  it('reports reduceRight() with no initial value on an array literal', () => {
+    const source = '[1, 2, 3].reduceRight((a, b) => a + b);';
+    const reports = runRule('reduce-initial-value', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('provideInitialValue');
+  });
+
+  it('does not report reduce() with an initial value', () => {
+    const source = '[1, 2, 3].reduce((a, b) => a + b, 0);';
+    const reports = runRule('reduce-initial-value', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report reduce() on a non-array receiver', () => {
+    const source = 'const obj = { reduce() {} };\nobj.reduce(fn);';
+    const reports = runRule('reduce-initial-value', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports reduce-initial-value through the CLI', () => {
+    const source = '[1, 2, 3].reduce((a, b) => a + b);';
+    const result = runOxlint('reduce-initial-value', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(reduce-initial-value)');
   });
 });
