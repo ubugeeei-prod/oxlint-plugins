@@ -75,6 +75,7 @@ describe('regexp native API', () => {
       'no-potentially-useless-backreference',
       'strict',
       'no-useless-assertions',
+      'optimal-quantifier-concatenation',
     ]);
   });
 

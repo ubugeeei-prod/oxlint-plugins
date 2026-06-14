@@ -1,0 +1,615 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/optimal-quantifier-concatenation.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/optimal-quantifier-concatenation.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\w+\\d{4}/"
+    },
+    {
+      "code": "/\\w+a/"
+    },
+    {
+      "code": "/\\w{3,5}\\d{2,4}/"
+    },
+    {
+      "code": "/\\w{3,5}\\d*/"
+    },
+    {
+      "code": "/a+b+c+d+[abc]+/"
+    },
+    {
+      "code": "/(?:a|::)?\\w+/"
+    },
+    {
+      "code": "/\\d+(?:\\w+|-\\d+)/"
+    },
+    {
+      "code": "/aa?/"
+    },
+    {
+      "code": "/\\w?\\w/"
+    },
+    {
+      "code": "/^(?:\\[\\[\\[?.+?\\]?\\]\\]|<<.+?>>)$/"
+    },
+    {
+      "code": "/a\\s*?(?=\\r?\\n|\\r)/"
+    },
+    {
+      "code": "/(?:a|b)?c/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[a-fA-F][a-fA-F]?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'[a-fA-F]' and '[a-fA-F]?' can be combined into one quantifier '[a-fA-F]{1,2}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 19
+        }
+      ],
+      "output": "/[a-fA-F]{1,2}/"
+    },
+    {
+      "code": "/a\\d*\\d*a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d*' can be removed because it is already included by '\\d*'.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 9
+        }
+      ],
+      "output": "/a\\d*a/"
+    },
+    {
+      "code": "/\\w+\\d+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d+' can be replaced with '\\d' because of '\\w+'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\w+\\d/"
+    },
+    {
+      "code": "/\\w+\\d?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d?' can be removed because it is already included by '\\w+'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\w+/"
+    },
+    {
+      "code": "/a+\\w+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a+' and '\\w+' can be replaced with 'a\\w+'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a\\w+/"
+    },
+    {
+      "code": "/\\w+\\d*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d*' can be removed because it is already included by '\\w+'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\w+/"
+    },
+    {
+      "code": "/(\\d*\\w+)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d*' can be removed because it is already included by '\\w+'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/(\\w+)/"
+    },
+    {
+      "code": "/;+.*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "';+' and '.*' can be replaced with ';.*'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": "/;.*/"
+    },
+    {
+      "code": "/a+(?:a|bb)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a+' and '(?:a|bb)+' can be replaced with 'a(?:a|bb)+'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/a(?:a|bb)+/"
+    },
+    {
+      "code": "/\\w+(?:a|b)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'(?:a|b)+' can be replaced with '(?:a|b)' because of '\\w+'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 13
+        }
+      ],
+      "output": "/\\w+(?:a|b)/"
+    },
+    {
+      "code": "/\\d{3,5}\\w*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d{3,5}' and '\\w*' can be replaced with '\\d{3}\\w*'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/\\d{3}\\w*/"
+    },
+    {
+      "code": "/\\w\\w*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w' and '\\w*' can be combined into one quantifier '\\w+'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\w+/"
+    },
+    {
+      "code": "/\\w*\\w/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w*' and '\\w' can be combined into one quantifier '\\w+'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\w+/"
+    },
+    {
+      "code": "/\\w+\\w/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w+' and '\\w' can be combined into one quantifier '\\w{2,}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\w{2,}/"
+    },
+    {
+      "code": "/\\w+\\w{4}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w+' and '\\w{4}' can be combined into one quantifier '\\w{5,}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 10
+        }
+      ],
+      "output": "/\\w{5,}/"
+    },
+    {
+      "code": "/\\w+\\w{4}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w+' and '\\w{4}?' can be combined into one quantifier '\\w{5,}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "/\\w{5,}/"
+    },
+    {
+      "code": "/\\w{4}\\w{4}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w{4}' and '\\w{4}?' can be combined into one quantifier '\\w{8}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "/\\w{8}/"
+    },
+    {
+      "code": "/[ab]*(?:a|b)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'[ab]*' and '(?:a|b)' can be combined into one quantifier '[ab]+'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[ab]+/"
+    },
+    {
+      "code": "/aa*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a' and 'a*' can be combined into one quantifier 'a+'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/a+/"
+    },
+    {
+      "code": "/a*a*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a*' can be removed because it is already included by 'a*'.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": "/a*/"
+    },
+    {
+      "code": "/a?a?a?/",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "'a?' and 'a?' can be replaced with 'a{0,2}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        },
+        {
+          "message": "'a?' and 'a?' can be replaced with 'a{0,2}'.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 8
+        }
+      ],
+      "output": "/a{0,3}/"
+    },
+    {
+      "code": "/a.{1,3}?.{2,4}?c/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'.{1,3}?' and '.{2,4}?' can be replaced with '.{3,7}?'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 17
+        }
+      ],
+      "output": "/a.{3,7}?c/"
+    },
+    {
+      "code": "/a.{1,3}.{2,4}c/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'.{1,3}' and '.{2,4}' can be replaced with '.{3,7}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 15
+        }
+      ],
+      "output": "/a.{3,7}c/"
+    },
+    {
+      "code": "/\\w+(?:foo|bar)?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'(?:foo|bar)?' can be removed because it is already included by '\\w+'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 17
+        }
+      ],
+      "output": "/\\w+/"
+    },
+    {
+      "code": "/[ab]*(?:a|bb)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'(?:a|bb)+' can be replaced with '(?:a|bb)' because of '[ab]*'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 16
+        }
+      ],
+      "output": "/[ab]*(?:a|bb)/"
+    },
+    {
+      "code": "/(?:\\d+|abc)\\w+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d+' can be replaced with '\\d' because of '\\w+'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 8
+        }
+      ],
+      "output": "/(?:\\d|abc)\\w+/"
+    },
+    {
+      "code": "/(^[ \\t]*)[a-z\\d].+(?::{2,4}|;;)(?=\\s)/im",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "':{2,4}' can be replaced with ':{2}' because of '.+'.",
+          "line": 1,
+          "column": 23,
+          "endColumn": 29
+        }
+      ],
+      "output": "/(^[ \\t]*)[a-z\\d].+(?::{2}|;;)(?=\\s)/im"
+    },
+    {
+      "code": "/(^[\\t ]*)#(?:const|else(?:[\\t ]+if)?|end[\\t ]+if|error|if).*/im",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'(?:[\\t ]+if)?' can be removed because of '.*'.",
+          "line": 1,
+          "column": 25,
+          "endColumn": 38
+        }
+      ],
+      "output": "/(^[\\t ]*)#(?:const|else|end[\\t ]+if|error|if).*/im"
+    },
+    {
+      "code": "/(&(?:\\r\\n?|\\n)\\s*)!.*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\n?' can be removed because of '\\s*'.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 12
+        }
+      ],
+      "output": "/(&(?:\\r|\\n)\\s*)!.*/"
+    },
+    {
+      "code": "/a\\s*(?=\\r?\\n|\\r)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\r?' can be removed because it is already included by '\\s*'.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 12
+        }
+      ],
+      "output": "/a\\s*(?=\\n|\\r)/"
+    },
+    {
+      "code": "/(^|[^\\w.])[a-z][\\w.]*(?:Error|Exception):.*(?:(?:\\r\\n?|\\n)[ \\t]*(?:at[ \\t].+|\\.{3}.*|Caused by:.*))+(?:(?:\\r\\n?|\\n)[ \\t]*\\.\\.\\. .*)?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'(?:(?:\\r\\n?|\\n)[ \\t]*\\.\\.\\. .*)?' can be removed because it is already included by '(?:(?:\\r\\n?|\\n)[ \\t]*(?:at[ \\t].+|\\.{3}.*|Caused by:.*))+'.",
+          "line": 1,
+          "column": 102,
+          "endColumn": 134
+        }
+      ],
+      "output": "/(^|[^\\w.])[a-z][\\w.]*(?:Error|Exception):.*(?:(?:\\r\\n?|\\n)[ \\t]*(?:at[ \\t].+|\\.{3}.*|Caused by:.*))+/"
+    },
+    {
+      "code": "/&key\\s+\\S+(?:\\s+\\S+)*(?:\\s+&allow-other-keys)?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'(?:\\s+&allow-other-keys)?' can be removed because it is already included by '(?:\\s+\\S+)*'.",
+          "line": 1,
+          "column": 23,
+          "endColumn": 48
+        }
+      ],
+      "output": "/&key\\s+\\S+(?:\\s+\\S+)*/"
+    },
+    {
+      "code": "/(?:xa+|y[ab]*)a*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a*' can be removed because it is already included by 'a+' and '[ab]*'.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 18
+        }
+      ],
+      "output": "/(?:xa+|y[ab]*)/"
+    },
+    {
+      "code": "/(?:xa+|y[ab]*)(?:a*b)?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a*' can be removed because it is already included by 'a+' and '[ab]*'.",
+          "line": 1,
+          "column": 19,
+          "endColumn": 21
+        }
+      ],
+      "output": "/(?:xa+|y[ab]*)(?:b)?/"
+    },
+    {
+      "code": "/a+(?:a*z+[ay]*)*b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a*' can be removed because it is already included by 'a+' and '[ay]*'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 9
+        }
+      ],
+      "output": "/a+(?:z+[ay]*)*b/"
+    },
+    {
+      "code": "/(?:xa+|y[ab]*)(?:a*z[ac]*|xy[za]+)+b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'a*' can be removed because it is already included by 'a+', '[ab]*', '[ac]*', and '[za]+'.",
+          "line": 1,
+          "column": 19,
+          "endColumn": 21
+        }
+      ],
+      "output": "/(?:xa+|y[ab]*)(?:z[ac]*|xy[za]+)+b/"
+    },
+    {
+      "code": "/\\w+(?:(a)|b)*/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'(?:(a)|b)*' can be removed because it is already included by '\\w+'. This cannot be fixed automatically because it removes a capturing group.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(\\d)*\\w+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'(\\d)*' can be removed because it is already included by '\\w+'. This cannot be fixed automatically because it might change or remove a capturing group.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(\\d)\\d+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'(\\d)' and '\\d+' can be combined into one quantifier '\\d{2,}'. This cannot be fixed automatically because it might change or remove a capturing group.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\d+(\\d*)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d*' can be removed because it is already included by '\\d+'. This cannot be fixed automatically because it involves a capturing group.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\d+(\\d*)/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d*' can be removed because it is already included by '\\d+'. This cannot be fixed automatically because it involves a capturing group.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a+[a\\q{}]+/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'[a\\q{}]+' can be replaced with '[a\\q{}]' because of 'a+'.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 12
+        }
+      ],
+      "output": "/a+[a\\q{}]/v"
+    },
+    {
+      "code": "/[ab]*[\\q{a|bb}]+/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'[\\q{a|bb}]+' can be replaced with '[\\q{a|bb}]' because of '[ab]*'.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 18
+        }
+      ],
+      "output": "/[ab]*[\\q{a|bb}]/v"
+    }
+  ]
+}

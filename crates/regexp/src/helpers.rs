@@ -2036,6 +2036,193 @@ pub(crate) fn has_useless_word_boundary(pattern: &str) -> bool {
     false
 }
 
+/// A single quantifiable atom recognised by the narrow
+/// `optimal-quantifier-concatenation` detector: an unambiguous single element
+/// whose matched-character set is independent of position.
+///
+/// * `Literal(byte)` — a plain ASCII literal character.
+/// * `Shorthand(byte)` — a predefined shorthand escape `\w \W \d \D \s \S`,
+///   identified by its letter byte.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum QuantAtomElement {
+    Literal(u8),
+    Shorthand(u8),
+}
+
+/// The quantifier applied to an atom, reduced to the two facts the narrow
+/// concatenation check needs: whether the maximum is unbounded (`*`, `+`, or
+/// `{n,}`) and whether it is lazy (`?` suffix).
+#[derive(Clone, Copy)]
+struct QuantAtomQuantifier {
+    unbounded: bool,
+    lazy: bool,
+}
+
+/// Parse an optional greedy/lazy quantifier starting at `index` (the byte just
+/// after an element). Returns the quantifier description and the index just
+/// past it. When no quantifier is present, returns a `{1}`-equivalent
+/// (`unbounded = false`, `lazy = false`) and the unchanged index.
+fn parse_atom_quantifier(bytes: &[u8], index: usize) -> (QuantAtomQuantifier, usize) {
+    match bytes.get(index).copied() {
+        Some(b'*') | Some(b'+') => {
+            let lazy = bytes.get(index + 1) == Some(&b'?');
+            (
+                QuantAtomQuantifier {
+                    unbounded: true,
+                    lazy,
+                },
+                index + 1 + usize::from(lazy),
+            )
+        }
+        Some(b'?') => {
+            let lazy = bytes.get(index + 1) == Some(&b'?');
+            (
+                QuantAtomQuantifier {
+                    unbounded: false,
+                    lazy,
+                },
+                index + 1 + usize::from(lazy),
+            )
+        }
+        Some(b'{') => {
+            // Find the closing `}`; the body must be `n`, `n,`, or `n,m`.
+            let mut cursor = index + 1;
+            while cursor < bytes.len() && bytes[cursor] != b'}' {
+                cursor += 1;
+            }
+            if cursor >= bytes.len() {
+                // Not a real quantifier; treat `{` as a literal element start.
+                return (
+                    QuantAtomQuantifier {
+                        unbounded: false,
+                        lazy: false,
+                    },
+                    index,
+                );
+            }
+            let body = &bytes[index + 1..cursor];
+            // `{n,}` (a digit run, a comma, nothing after) is unbounded.
+            let unbounded = body.last() == Some(&b',');
+            let lazy = bytes.get(cursor + 1) == Some(&b'?');
+            (
+                QuantAtomQuantifier { unbounded, lazy },
+                cursor + 1 + usize::from(lazy),
+            )
+        }
+        _ => (
+            QuantAtomQuantifier {
+                unbounded: false,
+                lazy: false,
+            },
+            index,
+        ),
+    }
+}
+
+/// Narrow-form detector for `optimal-quantifier-concatenation`.
+///
+/// Returns `true` when two *adjacent* quantified atoms target the **same**
+/// single element (same literal byte or same shorthand escape) and **at least
+/// one** of the two quantifiers is greedily unbounded (`*`, `+`, or `{n,}`).
+/// In that situation the two quantifiers can always be merged into one
+/// (e.g. `aa*` → `a+`, `\w*\w` → `\w+`, `a+a+` → `a{2,}`, `a*a*` → `a*`), so
+/// the concatenation is non-optimal.
+///
+/// Soundness boundaries:
+/// * Only fires when both atoms are unambiguous single elements; groups,
+///   character classes, ranges, backreferences, anchors, and `.` reset the
+///   adjacency tracker so they are never treated as a mergeable pair.
+/// * Requires at least one unbounded quantifier, so the purely-bounded cases
+///   that upstream leaves alone (`/aa?/`, `/\w?\w/`) are never flagged.
+/// * Requires identical greediness on both atoms; a greedy/lazy mix is not
+///   merged here (kept conservative).
+pub(crate) fn has_mergeable_quantifier_concatenation(pattern: &str, v_mode: bool) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    // The previously seen atom, eligible to pair with the next one.
+    let mut prev: Option<(QuantAtomElement, QuantAtomQuantifier)> = None;
+
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => {
+                // Shorthand escape `\w \W \d \D \s \S` is a comparable element.
+                let next = bytes.get(index + 1).copied();
+                let element = match next {
+                    Some(b @ (b'w' | b'W' | b'd' | b'D' | b's' | b'S')) => {
+                        Some(QuantAtomElement::Shorthand(b))
+                    }
+                    _ => None,
+                };
+                // Advance past the whole escape, then read any quantifier.
+                let after_escape = skip_escape(bytes, index);
+                if let Some(element) = element {
+                    let (quant, after_quant) = parse_atom_quantifier(bytes, after_escape);
+                    if try_pair(&mut prev, element, quant) {
+                        return true;
+                    }
+                    index = after_quant;
+                } else {
+                    // Non-shorthand escape: not comparable; reset adjacency.
+                    prev = None;
+                    index = after_escape;
+                }
+            }
+            b'[' => {
+                // Character class: not a single comparable element.
+                prev = None;
+                let close = if v_mode {
+                    find_class_end_nested(bytes, index)
+                } else {
+                    find_class_end(bytes, index)
+                };
+                index = close.map_or(index + 1, |c| c + 1);
+            }
+            b'(' | b')' | b'|' | b'^' | b'$' | b'.' => {
+                // Group boundaries, alternation, anchors, and `.` are not
+                // mergeable single elements; reset adjacency across them.
+                prev = None;
+                index += 1;
+            }
+            b'*' | b'+' | b'?' | b'{' | b'}' => {
+                // A stray quantifier byte with no preceding tracked atom.
+                prev = None;
+                index += 1;
+            }
+            byte => {
+                let element = QuantAtomElement::Literal(byte);
+                let (quant, after_quant) = parse_atom_quantifier(bytes, index + 1);
+                if try_pair(&mut prev, element, quant) {
+                    return true;
+                }
+                index = after_quant;
+            }
+        }
+    }
+    false
+}
+
+/// Compare the incoming atom against `prev`. Returns `true` when they form a
+/// mergeable same-element pair (per the rule in
+/// `has_mergeable_quantifier_concatenation`). Always stores the incoming atom
+/// as the new `prev` for the next comparison.
+fn try_pair(
+    prev: &mut Option<(QuantAtomElement, QuantAtomQuantifier)>,
+    element: QuantAtomElement,
+    quant: QuantAtomQuantifier,
+) -> bool {
+    let mut mergeable = false;
+    if let Some((prev_element, prev_quant)) = *prev
+        && prev_element == element
+        && prev_quant.lazy == quant.lazy
+        && !prev_quant.lazy
+        && (prev_quant.unbounded || quant.unbounded)
+    {
+        mergeable = true;
+    }
+    *prev = Some((element, quant));
+    mergeable
+}
+
 pub(crate) fn mention_char(ch: char) -> CompactString {
     let mut text = CompactString::new("U+");
     let code = ch as u32;

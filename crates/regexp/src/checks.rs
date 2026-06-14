@@ -15,10 +15,10 @@ use crate::helpers::{
     first_invisible_character, first_literal_control_character, first_non_standard_flag,
     first_numbered_backreference_with_named_group, first_octal_escape, first_strict_violation,
     first_surrogate_pair_escape, first_unicode_escape_as_hex, first_uppercase_hex_escape,
-    first_useless_escape, first_useless_one_quantifier, group_prefix, has_standalone_backslash,
-    has_useless_word_boundary, mention_char, pattern_ends_with_lazy_quantifier,
-    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags,
-    string_literal_value_with_span,
+    first_useless_escape, first_useless_one_quantifier, group_prefix,
+    has_mergeable_quantifier_concatenation, has_standalone_backslash, has_useless_word_boundary,
+    mention_char, pattern_ends_with_lazy_quantifier, pattern_has_empty_string_literal,
+    pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -778,6 +778,15 @@ impl<'a> Scanner<'a> {
         // unambiguous literal neighbours (see `has_useless_word_boundary`).
         if has_useless_word_boundary(pattern) {
             self.report("no-useless-assertions", "unexpected", span);
+        }
+
+        // `optimal-quantifier-concatenation` (narrow form): two adjacent
+        // quantified atoms on the same single element where at least one
+        // quantifier is greedily unbounded can always be merged into a single
+        // quantifier (e.g. `aa*` → `a+`, `\w*\w` → `\w+`). See
+        // `has_mergeable_quantifier_concatenation` for soundness boundaries.
+        if has_mergeable_quantifier_concatenation(pattern, flags.contains('v')) {
+            self.report("optimal-quantifier-concatenation", "unexpected", span);
         }
 
         // `no-potentially-useless-backreference` (narrow form): only flag the
