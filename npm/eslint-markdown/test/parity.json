@@ -52,10 +52,6 @@
     "require-alt-text": {
       "level": "off",
       "note": "Divergence detecting images nested in HTML and reference-style images without alt text."
-    },
-    "table-column-count": {
-      "level": "off",
-      "note": "GFM table cell counting and diagnostic span diverge from upstream."
     }
   }
 }
