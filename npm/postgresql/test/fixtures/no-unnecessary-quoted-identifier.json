@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "keep-required-quotes",
-      "code": "-- Reserved keyword: must stay quoted.\nSELECT \"select\" FROM users;\n-- COL_NAME_KEYWORD (cannot be function/type name without quoting): kept conservatively.\nSELECT \"between\" FROM users;\n-- Mixed case would case-fold to a different identifier when unquoted.\nSELECT \"MyColumn\" FROM \"MyTable\";\n-- Embedded double quote — cannot be unquoted.\nSELECT \"weird\"\"name\" FROM users;\n-- String literals (single quotes) are not identifiers and must be left alone.\nSELECT 'select' FROM users;\n"
+      "code": "-- Reserved keyword: must stay quoted.\nSELECT \"select\" FROM users;\n-- COL_NAME_KEYWORD (cannot be function/type name without quoting): kept conservatively.\nSELECT \"between\" FROM users;\n-- Mixed case would case-fold to a different identifier when unquoted.\nSELECT \"MyColumn\" FROM \"MyTable\";\n-- Embedded double quote — cannot be unquoted.\nSELECT \"weird\"\"name\" FROM users;\n-- String literals (single quotes) are not identifiers and must be left alone.\nSELECT 'select' FROM users;"
     }
   ],
   "invalid": [
     {
       "name": "redundant-quotes",
-      "code": "SELECT \"id\", \"name\" FROM \"users\" WHERE \"active\" = TRUE;\n",
+      "code": "SELECT \"id\", \"name\" FROM \"users\" WHERE \"active\" = TRUE;",
       "errors": [
         {
           "messageId": "unnecessaryQuoting",

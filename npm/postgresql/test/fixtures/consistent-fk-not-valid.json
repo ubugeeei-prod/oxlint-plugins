@@ -9,15 +9,15 @@
   "valid": [
     {
       "name": "add-check-without-fk",
-      "code": "ALTER TABLE orders ADD CONSTRAINT positive_amount CHECK (amount > 0);\n"
+      "code": "ALTER TABLE orders ADD CONSTRAINT positive_amount CHECK (amount > 0);"
     },
     {
       "name": "add-fk-not-valid",
-      "code": "ALTER TABLE orders\n  ADD CONSTRAINT orders_customer_fk FOREIGN KEY (customer_id) REFERENCES customers (id) NOT VALID;\n"
+      "code": "ALTER TABLE orders\n  ADD CONSTRAINT orders_customer_fk FOREIGN KEY (customer_id) REFERENCES customers (id) NOT VALID;"
     },
     {
       "name": "never-validating",
-      "code": "ALTER TABLE child ADD CONSTRAINT fk FOREIGN KEY (parent_id) REFERENCES parent (id);\n",
+      "code": "ALTER TABLE child ADD CONSTRAINT fk FOREIGN KEY (parent_id) REFERENCES parent (id);",
       "options": [
         {
           "style": "never"
@@ -26,13 +26,13 @@
     },
     {
       "name": "validate",
-      "code": "ALTER TABLE orders VALIDATE CONSTRAINT orders_customer_fk;\n"
+      "code": "ALTER TABLE orders VALIDATE CONSTRAINT orders_customer_fk;"
     }
   ],
   "invalid": [
     {
       "name": "add-fk",
-      "code": "ALTER TABLE orders\n  ADD CONSTRAINT orders_customer_fk FOREIGN KEY (customer_id) REFERENCES customers (id);\n",
+      "code": "ALTER TABLE orders\n  ADD CONSTRAINT orders_customer_fk FOREIGN KEY (customer_id) REFERENCES customers (id);",
       "errors": [
         {
           "messageId": "preferFkNotValid",
@@ -47,7 +47,7 @@
     },
     {
       "name": "never-not-valid",
-      "code": "ALTER TABLE child ADD CONSTRAINT fk FOREIGN KEY (parent_id) REFERENCES parent (id) NOT VALID;\n",
+      "code": "ALTER TABLE child ADD CONSTRAINT fk FOREIGN KEY (parent_id) REFERENCES parent (id) NOT VALID;",
       "options": [
         {
           "style": "never"

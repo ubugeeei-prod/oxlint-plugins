@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "anchored-prefix",
-      "code": "SELECT id FROM users WHERE email LIKE 'admin@%';\n"
+      "code": "SELECT id FROM users WHERE email LIKE 'admin@%';"
     },
     {
       "name": "equals",
-      "code": "SELECT id FROM users WHERE email = 'admin@example.com';\n"
+      "code": "SELECT id FROM users WHERE email = 'admin@example.com';"
     }
   ],
   "invalid": [
     {
       "name": "leading-wildcard-ilike",
-      "code": "SELECT id FROM users WHERE name ILIKE '%smith%';\n",
+      "code": "SELECT id FROM users WHERE name ILIKE '%smith%';",
       "errors": [
         {
           "messageId": "noLeadingWildcardLike",
@@ -34,7 +34,7 @@
     },
     {
       "name": "leading-wildcard",
-      "code": "SELECT id FROM users WHERE email LIKE '%@example.com';\n",
+      "code": "SELECT id FROM users WHERE email LIKE '%@example.com';",
       "errors": [
         {
           "messageId": "noLeadingWildcardLike",

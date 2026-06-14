@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "create-table-as",
-      "code": "CREATE TABLE archived_users AS SELECT id, name FROM users WHERE inactive;\n"
+      "code": "CREATE TABLE archived_users AS SELECT id, name FROM users WHERE inactive;"
     },
     {
       "name": "plain-select",
-      "code": "SELECT id, name FROM users WHERE inactive;\n"
+      "code": "SELECT id, name FROM users WHERE inactive;"
     }
   ],
   "invalid": [
     {
       "name": "select-into",
-      "code": "SELECT id, name INTO archived_users FROM users WHERE inactive;\n",
+      "code": "SELECT id, name INTO archived_users FROM users WHERE inactive;",
       "errors": [
         {
           "messageId": "noSelectInto",

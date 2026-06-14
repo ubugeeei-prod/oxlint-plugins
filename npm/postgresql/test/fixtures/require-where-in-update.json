@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "update-with-where",
-      "code": "UPDATE users SET name = 'a' WHERE id = 1;\n"
+      "code": "UPDATE users SET name = 'a' WHERE id = 1;"
     }
   ],
   "invalid": [
     {
       "name": "update-without-where",
-      "code": "UPDATE users SET active = false;\n",
+      "code": "UPDATE users SET active = false;",
       "errors": [
         {
           "messageId": "missingWhere",

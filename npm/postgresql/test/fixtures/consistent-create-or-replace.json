@@ -9,7 +9,7 @@
   "valid": [
     {
       "name": "never-without-or-replace",
-      "code": "CREATE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE VIEW v AS SELECT 1;\n-- Other CREATE statements are out of scope.\nCREATE TABLE t (id integer);\nCREATE INDEX idx ON t (id);\n",
+      "code": "CREATE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE VIEW v AS SELECT 1;\n-- Other CREATE statements are out of scope.\nCREATE TABLE t (id integer);\nCREATE INDEX idx ON t (id);",
       "options": [
         {
           "style": "never"
@@ -18,13 +18,13 @@
     },
     {
       "name": "with-or-replace",
-      "code": "CREATE OR REPLACE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE OR REPLACE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE OR REPLACE VIEW v AS SELECT 1;\n-- Other CREATE statements are out of scope (TABLE doesn't support OR REPLACE).\nCREATE TABLE t (id integer);\nCREATE INDEX idx ON t (id);\n"
+      "code": "CREATE OR REPLACE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE OR REPLACE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE OR REPLACE VIEW v AS SELECT 1;\n-- Other CREATE statements are out of scope (TABLE doesn't support OR REPLACE).\nCREATE TABLE t (id integer);\nCREATE INDEX idx ON t (id);"
     }
   ],
   "invalid": [
     {
       "name": "missing-or-replace",
-      "code": "CREATE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE VIEW v AS SELECT 1;\n",
+      "code": "CREATE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE VIEW v AS SELECT 1;",
       "errors": [
         {
           "messageId": "preferOrReplace",
@@ -55,7 +55,7 @@
     },
     {
       "name": "never-with-or-replace",
-      "code": "CREATE OR REPLACE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE OR REPLACE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE OR REPLACE VIEW v AS SELECT 1;\n",
+      "code": "CREATE OR REPLACE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE OR REPLACE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE OR REPLACE VIEW v AS SELECT 1;",
       "options": [
         {
           "style": "never"

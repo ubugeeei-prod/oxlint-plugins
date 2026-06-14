@@ -9,21 +9,21 @@
   "valid": [
     {
       "name": "drop-schema-cascade",
-      "code": "DROP SCHEMA public CASCADE;\n"
+      "code": "DROP SCHEMA public CASCADE;"
     },
     {
       "name": "drop-table-restrict",
-      "code": "DROP TABLE users RESTRICT;\n"
+      "code": "DROP TABLE users RESTRICT;"
     },
     {
       "name": "drop-table",
-      "code": "DROP TABLE users;\n"
+      "code": "DROP TABLE users;"
     }
   ],
   "invalid": [
     {
       "name": "drop-table-cascade",
-      "code": "DROP TABLE users CASCADE;\n",
+      "code": "DROP TABLE users CASCADE;",
       "errors": [
         {
           "messageId": "noCascade",

@@ -6023,19 +6023,19 @@
       },
       {
         "name": "require-if-exists",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule require-if-exists."
+        "notes": ""
       },
       {
         "name": "require-index-on-fk-column",

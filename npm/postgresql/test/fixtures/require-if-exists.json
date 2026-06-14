@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "alter-table-drop-constraint-not-targeted",
-      "code": "-- `ALTER TABLE ... DROP CONSTRAINT` / `DROP COLUMN` are part of an\n-- `AlterTableStmt`, not a `DropStmt`. The rule must not match them.\n-- (Regression: previously the rule scanned all DROP keywords in the file\n-- and inserted `IF EXISTS` inside the ALTER TABLE statement, producing\n-- `DROP CONSTRAINT IF EXISTS IF EXISTS ...` syntax errors.)\nALTER TABLE users DROP CONSTRAINT chk_users_email;\nALTER TABLE users DROP COLUMN nickname;\n-- A subsequent DropStmt should still be flagged.\nDROP TABLE IF EXISTS old_users;\n"
+      "code": "-- `ALTER TABLE ... DROP CONSTRAINT` / `DROP COLUMN` are part of an\n-- `AlterTableStmt`, not a `DropStmt`. The rule must not match them.\n-- (Regression: previously the rule scanned all DROP keywords in the file\n-- and inserted `IF EXISTS` inside the ALTER TABLE statement, producing\n-- `DROP CONSTRAINT IF EXISTS IF EXISTS ...` syntax errors.)\nALTER TABLE users DROP CONSTRAINT chk_users_email;\nALTER TABLE users DROP COLUMN nickname;\n-- A subsequent DropStmt should still be flagged.\nDROP TABLE IF EXISTS old_users;"
     },
     {
       "name": "with-if-exists",
-      "code": "DROP TABLE IF EXISTS foo;\nDROP INDEX IF EXISTS idx_foo;\nDROP FUNCTION IF EXISTS fn();\nDROP TRIGGER IF EXISTS t ON foo;\nDROP DATABASE IF EXISTS bar;\nDROP SCHEMA IF EXISTS s;\nDROP ROLE IF EXISTS r;\n-- Other statements are not in scope.\nCREATE TABLE foo (id integer);\nSELECT * FROM users LIMIT 1;\n"
+      "code": "DROP TABLE IF EXISTS foo;\nDROP INDEX IF EXISTS idx_foo;\nDROP FUNCTION IF EXISTS fn();\nDROP TRIGGER IF EXISTS t ON foo;\nDROP DATABASE IF EXISTS bar;\nDROP SCHEMA IF EXISTS s;\nDROP ROLE IF EXISTS r;\n-- Other statements are not in scope.\nCREATE TABLE foo (id integer);\nSELECT * FROM users LIMIT 1;"
     }
   ],
   "invalid": [
     {
       "name": "drop-after-alter-table-drop-constraint",
-      "code": "-- The bare `DROP TABLE` below must be flagged, but the `DROP CONSTRAINT`\n-- / `DROP COLUMN` inside the `ALTER TABLE` statements above must be\n-- left untouched. (Regression: the previous token-cursor scan landed\n-- the `IF EXISTS` insertion on the first `DROP` keyword in the file,\n-- i.e. inside the ALTER TABLE, and ESLint's --fix loop ran the rule\n-- again, producing `DROP CONSTRAINT IF EXISTS IF EXISTS ...`.)\nALTER TABLE users DROP CONSTRAINT chk_users_email;\nALTER TABLE users DROP COLUMN nickname;\nDROP TABLE old_users;\n",
+      "code": "-- The bare `DROP TABLE` below must be flagged, but the `DROP CONSTRAINT`\n-- / `DROP COLUMN` inside the `ALTER TABLE` statements above must be\n-- left untouched. (Regression: the previous token-cursor scan landed\n-- the `IF EXISTS` insertion on the first `DROP` keyword in the file,\n-- i.e. inside the ALTER TABLE, and ESLint's --fix loop ran the rule\n-- again, producing `DROP CONSTRAINT IF EXISTS IF EXISTS ...`.)\nALTER TABLE users DROP CONSTRAINT chk_users_email;\nALTER TABLE users DROP COLUMN nickname;\nDROP TABLE old_users;",
       "errors": [
         {
           "messageId": "missingIfExists",
@@ -34,7 +34,7 @@
     },
     {
       "name": "missing-if-exists",
-      "code": "DROP TABLE foo;\nDROP INDEX idx_foo;\nDROP FUNCTION fn();\nDROP DATABASE bar;\n",
+      "code": "DROP TABLE foo;\nDROP INDEX idx_foo;\nDROP FUNCTION fn();\nDROP DATABASE bar;",
       "errors": [
         {
           "messageId": "missingIfExists",

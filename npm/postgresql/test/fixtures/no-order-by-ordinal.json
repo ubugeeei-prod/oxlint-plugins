@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "no-order-by",
-      "code": "SELECT id, name FROM users;\n"
+      "code": "SELECT id, name FROM users;"
     },
     {
       "name": "order-by-name",
-      "code": "SELECT id, name FROM users ORDER BY name;\n"
+      "code": "SELECT id, name FROM users ORDER BY name;"
     }
   ],
   "invalid": [
     {
       "name": "order-by-multiple-positions",
-      "code": "SELECT id, name, email FROM users ORDER BY 1, 2 DESC;\n",
+      "code": "SELECT id, name, email FROM users ORDER BY 1, 2 DESC;",
       "errors": [
         {
           "messageId": "noOrderByOrdinal",
@@ -42,7 +42,7 @@
     },
     {
       "name": "order-by-position",
-      "code": "SELECT id, name FROM users ORDER BY 1;\n",
+      "code": "SELECT id, name FROM users ORDER BY 1;",
       "errors": [
         {
           "messageId": "noOrderByOrdinal",

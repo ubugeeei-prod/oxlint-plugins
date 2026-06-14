@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "persistent",
-      "code": "CREATE TABLE session_cache (id text PRIMARY KEY);\n"
+      "code": "CREATE TABLE session_cache (id text PRIMARY KEY);"
     }
   ],
   "invalid": [
     {
       "name": "unlogged",
-      "code": "CREATE UNLOGGED TABLE session_cache (id text PRIMARY KEY);\n",
+      "code": "CREATE UNLOGGED TABLE session_cache (id text PRIMARY KEY);",
       "errors": [
         {
           "messageId": "noUnloggedTable",

@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "is-null",
-      "code": "SELECT * FROM t WHERE x IS NULL;\nSELECT * FROM t WHERE x IS NOT NULL;\nSELECT * FROM t WHERE x = 1;\n"
+      "code": "SELECT * FROM t WHERE x IS NULL;\nSELECT * FROM t WHERE x IS NOT NULL;\nSELECT * FROM t WHERE x = 1;"
     }
   ],
   "invalid": [
     {
       "name": "eq-null",
-      "code": "SELECT * FROM t WHERE x = NULL;\nSELECT * FROM t WHERE x <> NULL;\nSELECT * FROM t WHERE x != NULL;\nSELECT * FROM t WHERE NULL = x;\n",
+      "code": "SELECT * FROM t WHERE x = NULL;\nSELECT * FROM t WHERE x <> NULL;\nSELECT * FROM t WHERE x != NULL;\nSELECT * FROM t WHERE NULL = x;",
       "errors": [
         {
           "messageId": "useIsNull",

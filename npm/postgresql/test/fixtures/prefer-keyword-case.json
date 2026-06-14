@@ -9,33 +9,33 @@
   "valid": [
     {
       "name": "builtin-type-name-untouched",
-      "code": "-- Regression for #145: built-in type names in function signatures,\n-- column types, and casts must not be uppercased — uppercasing them\n-- mixes case with user-defined types like `ulid` that the rule cannot\n-- touch.\nCREATE FUNCTION fn(\n  ulid,\n  text,\n  int\n) RETURNS void LANGUAGE SQL AS '';\n\nCREATE TABLE t (\n  id    ulid,\n  name  text\n);\n\nSELECT x::text FROM t;\nSELECT CAST(x AS int) FROM t;\n"
+      "code": "-- Regression for #145: built-in type names in function signatures,\n-- column types, and casts must not be uppercased — uppercasing them\n-- mixes case with user-defined types like `ulid` that the rule cannot\n-- touch.\nCREATE FUNCTION fn(\n  ulid,\n  text,\n  int\n) RETURNS void LANGUAGE SQL AS '';\n\nCREATE TABLE t (\n  id    ulid,\n  name  text\n);\n\nSELECT x::text FROM t;\nSELECT CAST(x AS int) FROM t;"
     },
     {
       "name": "identifier-collides-with-keyword",
-      "code": "-- Regression for #144: column / table / constraint identifiers whose\n-- spelling collides with a SQL keyword (`trigger`, `user`, `order`,\n-- ...) must NOT be uppercased — they are identifiers in this position,\n-- not keywords.\nCREATE TABLE t (\n  id       BIGINT  NOT NULL,\n  trigger  TEXT    NOT NULL,\n  \"user\"   TEXT    NOT NULL\n);\n"
+      "code": "-- Regression for #144: column / table / constraint identifiers whose\n-- spelling collides with a SQL keyword (`trigger`, `user`, `order`,\n-- ...) must NOT be uppercased — they are identifiers in this position,\n-- not keywords.\nCREATE TABLE t (\n  id       BIGINT  NOT NULL,\n  trigger  TEXT    NOT NULL,\n  \"user\"   TEXT    NOT NULL\n);"
     },
     {
       "name": "identifier-positions-not-folded",
-      "code": "-- Regression: previously this rule walked every Keyword token and\n-- case-folded it, which uppercased identifiers like `date`, `role`,\n-- `value`, etc. wherever PostgreSQL's tokenizer happens to tag them as\n-- keywords — column references, dotted ColumnRef field names, INSERT\n-- column lists, IndexElem column references, Constraint key columns,\n-- and identifier String nodes (e.g. `LANGUAGE plpgsql`).\n--\n-- The fix collects AST node ranges and resolves scoped identifier names\n-- (IndexElem.name, Constraint.keys[*].sval) into concrete token\n-- positions, then exempts those tokens from case-folding.\nCREATE TABLE bar (\n  id   BIGSERIAL  PRIMARY KEY,\n  date date       NOT NULL,\n  role text       NOT NULL,\n  value text      NOT NULL\n);\n\nCREATE UNIQUE INDEX index_bar_date ON bar (date DESC, role);\n\nALTER TABLE bar ADD CONSTRAINT uq_bar_date UNIQUE (date);\n\nINSERT INTO bar (date, role, value) VALUES ('2025-01-01', 'admin', 'x');\nSELECT date, role, value FROM bar WHERE date > '2024-01-01';\nUPDATE bar SET role = 'y' WHERE date = '2024-01-01';\n\n-- Dotted field access: PostgreSQL's ColumnRef range only covers the\n-- first dotted segment, so the rule's range-contains check doesn't see\n-- the trailing field. The after-dot token guard catches it.\nSELECT kv.key, kv.value FROM jsonb_each('{}') AS kv;\nSELECT t.date, t.role, t.text FROM bar AS t WHERE t.date > '2024-01-01';\n"
+      "code": "-- Regression: previously this rule walked every Keyword token and\n-- case-folded it, which uppercased identifiers like `date`, `role`,\n-- `value`, etc. wherever PostgreSQL's tokenizer happens to tag them as\n-- keywords — column references, dotted ColumnRef field names, INSERT\n-- column lists, IndexElem column references, Constraint key columns,\n-- and identifier String nodes (e.g. `LANGUAGE plpgsql`).\n--\n-- The fix collects AST node ranges and resolves scoped identifier names\n-- (IndexElem.name, Constraint.keys[*].sval) into concrete token\n-- positions, then exempts those tokens from case-folding.\nCREATE TABLE bar (\n  id   BIGSERIAL  PRIMARY KEY,\n  date date       NOT NULL,\n  role text       NOT NULL,\n  value text      NOT NULL\n);\n\nCREATE UNIQUE INDEX index_bar_date ON bar (date DESC, role);\n\nALTER TABLE bar ADD CONSTRAINT uq_bar_date UNIQUE (date);\n\nINSERT INTO bar (date, role, value) VALUES ('2025-01-01', 'admin', 'x');\nSELECT date, role, value FROM bar WHERE date > '2024-01-01';\nUPDATE bar SET role = 'y' WHERE date = '2024-01-01';\n\n-- Dotted field access: PostgreSQL's ColumnRef range only covers the\n-- first dotted segment, so the rule's range-contains check doesn't see\n-- the trailing field. The after-dot token guard catches it.\nSELECT kv.key, kv.value FROM jsonb_each('{}') AS kv;\nSELECT t.date, t.role, t.text FROM bar AS t WHERE t.date > '2024-01-01';"
     },
     {
       "name": "upper-default",
-      "code": "SELECT id, name FROM users WHERE active = TRUE LIMIT 10;\n"
+      "code": "SELECT id, name FROM users WHERE active = TRUE LIMIT 10;"
     },
     {
       "name": "upper-string-literal",
-      "code": "SELECT 'select from where' AS phrase FROM users;\n"
+      "code": "SELECT 'select from where' AS phrase FROM users;"
     },
     {
       "name": "upper-with-comment",
-      "code": "-- the keyword 'select' inside a comment must not be touched\nSELECT id FROM users;\n"
+      "code": "-- the keyword 'select' inside a comment must not be touched\nSELECT id FROM users;"
     }
   ],
   "invalid": [
     {
       "name": "lowercase-keywords",
-      "code": "select id, name from users where active = true limit 10;\n",
+      "code": "select id, name from users where active = true limit 10;",
       "errors": [
         {
           "messageId": "expectedUpper",
@@ -82,7 +82,7 @@
     },
     {
       "name": "mixed-case",
-      "code": "Select id From users Where active = True;\n",
+      "code": "Select id From users Where active = True;",
       "errors": [
         {
           "messageId": "expectedUpper",
@@ -121,7 +121,7 @@
     },
     {
       "name": "types-upper",
-      "code": "CREATE TABLE t (\n  id    bigint  NOT NULL,\n  body  text    NOT NULL\n);\n\nCREATE FUNCTION fn(arr text[]) RETURNS BOOLEAN LANGUAGE SQL AS '';\nDROP FUNCTION IF EXISTS fn(text[]);\n",
+      "code": "CREATE TABLE t (\n  id    bigint  NOT NULL,\n  body  text    NOT NULL\n);\n\nCREATE FUNCTION fn(arr text[]) RETURNS BOOLEAN LANGUAGE SQL AS '';\nDROP FUNCTION IF EXISTS fn(text[]);",
       "options": [
         {
           "types": "upper"

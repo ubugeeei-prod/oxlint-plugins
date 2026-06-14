@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "with-index",
-      "code": "-- FK column has a covering CREATE INDEX in the same file.\nCREATE TABLE t (\n  id integer PRIMARY KEY,\n  fid integer REFERENCES other(id)\n);\nCREATE INDEX idx_t_fid ON t (fid);\n\n-- Inline FK on the PRIMARY KEY column needs no extra index.\nCREATE TABLE u (\n  id integer PRIMARY KEY REFERENCES other(id)\n);\n\n-- ALTER TABLE ADD FK + matching CREATE INDEX in same file.\nCREATE TABLE w (id integer);\nCREATE INDEX idx_w_id ON w (id);\nALTER TABLE w ADD CONSTRAINT fk FOREIGN KEY (id) REFERENCES other(id);\n"
+      "code": "-- FK column has a covering CREATE INDEX in the same file.\nCREATE TABLE t (\n  id integer PRIMARY KEY,\n  fid integer REFERENCES other(id)\n);\nCREATE INDEX idx_t_fid ON t (fid);\n\n-- Inline FK on the PRIMARY KEY column needs no extra index.\nCREATE TABLE u (\n  id integer PRIMARY KEY REFERENCES other(id)\n);\n\n-- ALTER TABLE ADD FK + matching CREATE INDEX in same file.\nCREATE TABLE w (id integer);\nCREATE INDEX idx_w_id ON w (id);\nALTER TABLE w ADD CONSTRAINT fk FOREIGN KEY (id) REFERENCES other(id);"
     }
   ],
   "invalid": [
     {
       "name": "missing-index",
-      "code": "CREATE TABLE t (\n  id integer PRIMARY KEY,\n  fid integer REFERENCES other(id)\n);\n-- No CREATE INDEX on t.fid in this file.\n",
+      "code": "CREATE TABLE t (\n  id integer PRIMARY KEY,\n  fid integer REFERENCES other(id)\n);\n-- No CREATE INDEX on t.fid in this file.",
       "errors": [
         {
           "messageId": "missingIndex",

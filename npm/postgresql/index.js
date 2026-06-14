@@ -456,6 +456,18 @@ const ruleMeta = Object.freeze({
         'Use `EXISTS (...)` instead of `IN (subquery)`. `IN` returns NULL when the subquery has any NULL row, which silently turns the row into a no-match; `EXISTS` is unambiguously boolean.',
     },
   },
+  'require-if-exists': {
+    type: 'suggestion',
+    description:
+      'Require `IF EXISTS` on every `DROP` statement so re-running a migration on a database that already lost the object does not error',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingIfExists:
+        'Add `IF EXISTS` to this `DROP` so re-running the migration on a database that already lost the object does not abort.',
+    },
+  },
   'require-limit': {
     type: 'suggestion',
     description: 'Require LIMIT clause in SELECT statements',

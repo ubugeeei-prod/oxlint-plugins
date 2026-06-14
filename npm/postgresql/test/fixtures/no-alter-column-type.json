@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "add-column",
-      "code": "ALTER TABLE users ADD COLUMN id_new bigint;\n"
+      "code": "ALTER TABLE users ADD COLUMN id_new bigint;"
     },
     {
       "name": "alter-default",
-      "code": "ALTER TABLE users ALTER COLUMN status SET DEFAULT 'active';\n"
+      "code": "ALTER TABLE users ALTER COLUMN status SET DEFAULT 'active';"
     }
   ],
   "invalid": [
     {
       "name": "alter-type",
-      "code": "ALTER TABLE users ALTER COLUMN id TYPE bigint;\n",
+      "code": "ALTER TABLE users ALTER COLUMN id TYPE bigint;",
       "errors": [
         {
           "messageId": "noAlterColumnType",
