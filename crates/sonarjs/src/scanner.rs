@@ -3,12 +3,12 @@
 //! `check_*` rule body lives under [`crate::rules`].
 
 use oxc_ast::ast::{
-    AssignmentExpression, BinaryExpression, BindingIdentifier, CallExpression, CatchClause,
-    ConditionalExpression, DoWhileStatement, ExpressionStatement, ForInStatement, ForOfStatement,
-    ForStatement, Function, FunctionBody, IdentifierReference, IfStatement, LabeledStatement,
-    LogicalExpression, NewExpression, Program, RegExpLiteral, StaticMemberExpression, SwitchCase,
-    SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral,
-    UnaryExpression, WhileStatement, YieldExpression,
+    AssignmentExpression, BinaryExpression, BindingIdentifier, BlockStatement, CallExpression,
+    CatchClause, ConditionalExpression, DoWhileStatement, ExpressionStatement, ForInStatement,
+    ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
+    LabeledStatement, LogicalExpression, NewExpression, Program, RegExpLiteral,
+    StaticMemberExpression, SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature,
+    TSUnionType, TemplateLiteral, UnaryExpression, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -78,6 +78,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_todo_tag(&it.comments);
         self.check_no_sonar_comments(&it.comments);
         walk::walk_program(self, it);
+    }
+
+    fn visit_block_statement(&mut self, it: &BlockStatement<'a>) {
+        self.check_no_function_declaration_in_block(it);
+        walk::walk_block_statement(self, it);
     }
 
     fn visit_template_literal(&mut self, it: &TemplateLiteral<'a>) {

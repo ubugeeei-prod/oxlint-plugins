@@ -163,6 +163,10 @@ const messages = Object.freeze({
   'array-constructor': {
     arrayConstructor: 'Use an array literal instead of the Array constructor.',
   },
+  'no-function-declaration-in-block': {
+    noFunctionDeclarationInBlock:
+      'Move this function declaration out of the block, or use a function expression instead.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -242,6 +246,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow NOSONAR comments; they suppress analysis and can hide real issues that should be fixed',
   'array-constructor':
     'Disallow the Array constructor in favor of array literals, except for the single-argument length form',
+  'no-function-declaration-in-block':
+    'Disallow function declarations nested directly inside a block; use a function expression or move it to the top level',
 });
 
 const ruleTypes = Object.freeze({
@@ -287,6 +293,7 @@ const ruleTypes = Object.freeze({
   'todo-tag': 'suggestion',
   'no-sonar-comments': 'suggestion',
   'array-constructor': 'suggestion',
+  'no-function-declaration-in-block': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -332,6 +339,7 @@ const recommendedRuleConfig = Object.freeze({
   'todo-tag': 'error',
   'no-sonar-comments': 'error',
   'array-constructor': 'error',
+  'no-function-declaration-in-block': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

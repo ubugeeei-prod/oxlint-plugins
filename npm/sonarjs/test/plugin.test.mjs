@@ -136,6 +136,7 @@ describe('sonarjs plugin shape', () => {
       'todo-tag',
       'no-sonar-comments',
       'array-constructor',
+      'no-function-declaration-in-block',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -179,6 +180,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['todo-tag']).toBe('object');
     expect(typeof plugin.rules['no-sonar-comments']).toBe('object');
     expect(typeof plugin.rules['array-constructor']).toBe('object');
+    expect(typeof plugin.rules['no-function-declaration-in-block']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -222,6 +224,9 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/todo-tag']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-sonar-comments']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/array-constructor']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-function-declaration-in-block']).toBe(
+      'error',
+    );
   });
 });
 
@@ -941,5 +946,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(array-constructor)');
+  });
+
+  it('reports no-function-declaration-in-block through the adapter', () => {
+    const source = 'if (cond) {\n  function f() {}\n}';
+    const reports = runRule('no-function-declaration-in-block', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noFunctionDeclarationInBlock');
+  });
+
+  it('reports no-function-declaration-in-block through the CLI', () => {
+    const source = 'if (cond) {\n  function f() {}\n}';
+    const result = runOxlint('no-function-declaration-in-block', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-function-declaration-in-block)');
   });
 });
