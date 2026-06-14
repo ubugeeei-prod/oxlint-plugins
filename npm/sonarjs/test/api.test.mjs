@@ -98,6 +98,7 @@ const expectedRuleNames = [
   'standard-input',
   'no-code-after-done',
   'function-inside-loop',
+  'no-useless-intersection',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

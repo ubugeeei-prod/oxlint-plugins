@@ -78,6 +78,7 @@ mod no_tab;
 mod no_unthrown_error;
 mod no_useless_catch;
 mod no_useless_increment;
+mod no_useless_intersection;
 mod no_wildcard_import;
 mod non_existent_operator;
 mod prefer_default_last;

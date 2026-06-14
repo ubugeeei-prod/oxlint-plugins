@@ -439,6 +439,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_ts_intersection_type(&mut self, it: &TSIntersectionType<'a>) {
         self.check_no_duplicate_in_composite(&it.types);
+        self.check_no_useless_intersection(it);
         walk::walk_ts_intersection_type(self, it);
     }
 
