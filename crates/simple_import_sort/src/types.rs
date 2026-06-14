@@ -78,4 +78,13 @@ impl LineIndex {
             .sum::<usize>();
         ((line_index + 1) as u32, column as u32)
     }
+
+    /// Return the 1-based line number for `offset`, using binary search on
+    /// `line_starts`. Mirrors `line_of(source_text, offset)` in shared.rs but
+    /// runs in O(log n) instead of O(source_len).
+    pub(crate) fn line_for_offset(&self, source_text: &str, offset: u32) -> u32 {
+        let offset = (offset as usize).min(source_text.len());
+        let line_index = self.line_starts.partition_point(|start| *start <= offset);
+        (line_index.saturating_sub(1) + 1) as u32
+    }
 }

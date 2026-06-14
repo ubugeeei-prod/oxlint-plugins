@@ -20,6 +20,14 @@ use crate::shared::{
 use crate::types::{Diagnostic, DiagnosticFix, LineIndex, RuleKind, SimpleImportSortOptions};
 
 // ---------------------------------------------------------------------------
+// Type aliases
+// ---------------------------------------------------------------------------
+
+/// Precompiled regex groups: `compiled_groups[outer][inner]` is `Some(Regex)` for
+/// patterns that compiled successfully, or `None` for those that failed.
+type CompiledGroups<'g> = &'g [SmallVec<[Option<regex::Regex>; 4]>];
+
+// ---------------------------------------------------------------------------
 // Public entry points
 // ---------------------------------------------------------------------------
 
@@ -29,6 +37,7 @@ pub(crate) fn scan_import_chunks(
     statements: &[Statement<'_>],
     all_comments: &[Comment],
     options: &SimpleImportSortOptions,
+    compiled_groups: Option<CompiledGroups<'_>>,
     diagnostics: &mut SmallVec<[Diagnostic; 8]>,
 ) {
     scan_import_chunks_in(
@@ -37,6 +46,7 @@ pub(crate) fn scan_import_chunks(
         statements,
         all_comments,
         options,
+        compiled_groups,
         diagnostics,
     );
 }
@@ -47,6 +57,7 @@ fn scan_import_chunks_in(
     statements: &[Statement<'_>],
     all_comments: &[Comment],
     options: &SimpleImportSortOptions,
+    compiled_groups: Option<CompiledGroups<'_>>,
     diagnostics: &mut SmallVec<[Diagnostic; 8]>,
 ) {
     // extractChunks: ImportDeclaration → PartOfChunk, else NotPartOfChunk
@@ -61,6 +72,7 @@ fn scan_import_chunks_in(
                 all_comments,
                 &chunk,
                 options,
+                compiled_groups,
                 diagnostics,
             );
             chunk.clear();
@@ -78,6 +90,7 @@ fn scan_import_chunks_in(
                     inner_stmts,
                     all_comments,
                     options,
+                    compiled_groups,
                     diagnostics,
                 );
             }
@@ -89,6 +102,7 @@ fn scan_import_chunks_in(
         all_comments,
         &chunk,
         options,
+        compiled_groups,
         diagnostics,
     );
 }
@@ -124,8 +138,13 @@ fn scan_export_chunks_in(
             Statement::ExportNamedDeclaration(decl) if is_export_from_named(decl) => {
                 // isPartOfChunk: check for grouping comment
                 let last_end = chunk.last().map(|n| n.span().end);
-                let part =
-                    export_is_part_of_chunk(source_text, all_comments, decl.span.start, last_end);
+                let part = export_is_part_of_chunk(
+                    source_text,
+                    line_index,
+                    all_comments,
+                    decl.span.start,
+                    last_end,
+                );
                 if part == ChunkPart::NewChunk {
                     report_export_chunk(source_text, line_index, all_comments, &chunk, diagnostics);
                     chunk.clear();
@@ -134,8 +153,13 @@ fn scan_export_chunks_in(
             }
             Statement::ExportAllDeclaration(decl) => {
                 let last_end = chunk.last().map(|n| n.span().end);
-                let part =
-                    export_is_part_of_chunk(source_text, all_comments, decl.span.start, last_end);
+                let part = export_is_part_of_chunk(
+                    source_text,
+                    line_index,
+                    all_comments,
+                    decl.span.start,
+                    last_end,
+                );
                 if part == ChunkPart::NewChunk {
                     report_export_chunk(source_text, line_index, all_comments, &chunk, diagnostics);
                     chunk.clear();
@@ -254,12 +278,13 @@ enum ChunkPart {
 /// Returns NewChunk if there's a "grouping comment" before this node.
 fn export_is_part_of_chunk(
     source_text: &str,
+    line_index: &LineIndex,
     all_comments: &[Comment],
     node_start: u32,
     last_node_end: Option<u32>,
 ) -> ChunkPart {
-    let node_start_line = shared::line_of(source_text, node_start);
-    let last_end_line = last_node_end.map(|e| shared::line_of(source_text, e));
+    let node_start_line = line_index.line_for_offset(source_text, node_start);
+    let last_end_line = last_node_end.map(|e| line_index.line_for_offset(source_text, e));
 
     for comment in all_comments {
         // Only consider comments that start before the node
@@ -269,8 +294,8 @@ fn export_is_part_of_chunk(
         // Mirrors upstream `isPartOfChunk` filter in exports.js:
         //   (lastNode == null || comment.loc.start.line > lastNode.loc.end.line)
         //   && comment.loc.end.line < node.loc.start.line
-        let c_start_line = shared::line_of(source_text, comment.span.start);
-        let c_end_line = shared::line_of(source_text, comment.span.end);
+        let c_start_line = line_index.line_for_offset(source_text, comment.span.start);
+        let c_end_line = line_index.line_for_offset(source_text, comment.span.end);
 
         let after_last = match last_end_line {
             None => true,
@@ -312,6 +337,7 @@ fn report_import_chunk(
     all_comments: &[Comment],
     chunk: &[&ImportDeclaration<'_>],
     options: &SimpleImportSortOptions,
+    compiled_groups: Option<CompiledGroups<'_>>,
     diagnostics: &mut SmallVec<[Diagnostic; 8]>,
 ) {
     if chunk.is_empty() {
@@ -322,21 +348,31 @@ fn report_import_chunk(
     // handleLastSemicolon
     let last_node_end = handle_last_semicolon(
         source_text,
+        line_index,
         chunk.last().expect("non-empty").span,
         all_comments,
     );
 
     let items = build_import_items(
         source_text,
+        line_index,
         all_comments,
         chunk,
         last_node_end,
         options,
+        compiled_groups,
         newline,
     );
 
     let sorted_items = make_sorted_import_items(&items, options);
-    let sorted = print_sorted_items(&sorted_items, &items, source_text, all_comments, newline);
+    let sorted = print_sorted_items(
+        &sorted_items,
+        &items,
+        source_text,
+        line_index,
+        all_comments,
+        newline,
+    );
 
     let start = items[0].start;
     let end = items[items.len() - 1].end;
@@ -351,12 +387,15 @@ fn report_import_chunk(
     );
 }
 
+#[allow(clippy::too_many_arguments)]
 fn build_import_items(
     source_text: &str,
+    line_index: &LineIndex,
     all_comments: &[Comment],
     chunk: &[&ImportDeclaration<'_>],
     last_node_end: u32,
     options: &SimpleImportSortOptions,
+    compiled_groups: Option<CompiledGroups<'_>>,
     newline: &str,
 ) -> SmallVec<[ImportExportItem; 16]> {
     let chunk_len = chunk.len();
@@ -372,16 +411,19 @@ fn build_import_items(
 
         // last_line for commentsBefore filter
         let last_line = if node_index == 0 {
-            shared::line_of(source_text, node_start).saturating_sub(1)
+            line_index
+                .line_for_offset(source_text, node_start)
+                .saturating_sub(1)
         } else {
-            shared::line_of(source_text, chunk[node_index - 1].span.end)
+            line_index.line_for_offset(source_text, chunk[node_index - 1].span.end)
         };
-        let node_start_line = shared::line_of(source_text, node_start);
-        let node_end_line = shared::line_of(source_text, node_end);
+        let node_start_line = line_index.line_for_offset(source_text, node_start);
+        let node_end_line = line_index.line_for_offset(source_text, node_end);
 
         let comments_before = shared::comments_before_node(
             all_comments,
             source_text,
+            line_index,
             node_start,
             node_start_line,
             last_line,
@@ -395,6 +437,7 @@ fn build_import_items(
         let comments_after = shared::comments_after_node(
             all_comments,
             source_text,
+            line_index,
             node_end,
             node_end_line,
             next_node_start,
@@ -443,7 +486,8 @@ fn build_import_items(
         let kind_str = import_kind_str(decl.import_kind);
         let orig = decl.source.value.as_str();
         let source = shared::get_source(orig, kind_str);
-        let (outer_group, inner_group) = import_group(style, decl.import_kind, orig, options);
+        let (outer_group, inner_group) =
+            import_group(style, decl.import_kind, orig, options, compiled_groups);
 
         let item = build_item(
             source_text,
@@ -483,10 +527,21 @@ fn report_export_chunk(
     }
     let newline = guess_newline(source_text);
 
-    let last_node_end =
-        handle_last_semicolon(source_text, chunk[chunk.len() - 1].span(), all_comments);
+    let last_node_end = handle_last_semicolon(
+        source_text,
+        line_index,
+        chunk[chunk.len() - 1].span(),
+        all_comments,
+    );
 
-    let items = build_export_items(source_text, all_comments, chunk, last_node_end, newline);
+    let items = build_export_items(
+        source_text,
+        line_index,
+        all_comments,
+        chunk,
+        last_node_end,
+        newline,
+    );
 
     // sortImportExportItems – single group for exports
     let sorted_refs = sort_import_export_items(items.iter().collect());
@@ -503,7 +558,14 @@ fn report_export_chunk(
         v
     };
 
-    let sorted = print_sorted_items(&outer, &items, source_text, all_comments, newline);
+    let sorted = print_sorted_items(
+        &outer,
+        &items,
+        source_text,
+        line_index,
+        all_comments,
+        newline,
+    );
 
     let start = items[0].start;
     let end = items[items.len() - 1].end;
@@ -520,6 +582,7 @@ fn report_export_chunk(
 
 fn build_export_items(
     source_text: &str,
+    line_index: &LineIndex,
     all_comments: &[Comment],
     chunk: &[ExportNode<'_>],
     last_node_end: u32,
@@ -537,16 +600,19 @@ fn build_export_items(
         };
 
         let last_line = if node_index == 0 {
-            shared::line_of(source_text, node_start).saturating_sub(1)
+            line_index
+                .line_for_offset(source_text, node_start)
+                .saturating_sub(1)
         } else {
-            shared::line_of(source_text, chunk[node_index - 1].span().end)
+            line_index.line_for_offset(source_text, chunk[node_index - 1].span().end)
         };
-        let node_start_line = shared::line_of(source_text, node_start);
-        let node_end_line = shared::line_of(source_text, node_end);
+        let node_start_line = line_index.line_for_offset(source_text, node_start);
+        let node_end_line = line_index.line_for_offset(source_text, node_end);
 
         let comments_before = shared::comments_before_node(
             all_comments,
             source_text,
+            line_index,
             node_start,
             node_start_line,
             last_line,
@@ -560,6 +626,7 @@ fn build_export_items(
         let comments_after = shared::comments_after_node(
             all_comments,
             source_text,
+            line_index,
             node_end,
             node_end_line,
             next_node_start,
@@ -818,7 +885,12 @@ fn find_first_token_start_after(
 /// If the last token of `node_span` is `;` and it's NOT on the same line as
 /// the next-to-last token, AND there's code after the `;`, adjust the node end
 /// to the next-to-last token's end (i.e. the end of the `from "..."` string).
-fn handle_last_semicolon(source_text: &str, node_span: Span, all_comments: &[Comment]) -> u32 {
+fn handle_last_semicolon(
+    source_text: &str,
+    line_index: &LineIndex,
+    node_span: Span,
+    all_comments: &[Comment],
+) -> u32 {
     let text = source_text
         .get(node_span.start as usize..node_span.end as usize)
         .unwrap_or("");
@@ -834,15 +906,15 @@ fn handle_last_semicolon(source_text: &str, node_span: Span, all_comments: &[Com
 
     let abs_last = node_span.start + last_byte_offset as u32;
     let last_char = source_text
-        .get(abs_last as usize - 1..abs_last as usize)
+        .get(abs_last.saturating_sub(1) as usize..abs_last as usize)
         .unwrap_or("");
 
     if last_char != ";" {
         return node_span.end;
     }
 
-    let semi_start = abs_last - 1; // ';' is 1 byte
-    let semi_line = shared::line_of(source_text, semi_start);
+    let semi_start = abs_last.saturating_sub(1); // ';' is 1 byte
+    let semi_line = line_index.line_for_offset(source_text, semi_start);
 
     // Find next-to-last token (the last NON-comment, non-whitespace byte before `;`).
     // We need to scan backwards, skipping both whitespace AND trailing comment spans.
@@ -884,7 +956,7 @@ fn handle_last_semicolon(source_text: &str, node_span: Span, all_comments: &[Com
         }
         cursor
     };
-    let ntl_line = shared::line_of(source_text, next_to_last_end.saturating_sub(1));
+    let ntl_line = line_index.line_for_offset(source_text, next_to_last_end.saturating_sub(1));
 
     if ntl_line == semi_line {
         // Same line → semicolon belongs to this node
@@ -931,11 +1003,12 @@ fn import_group(
     import_kind: ImportOrExportKind,
     original: &str,
     options: &SimpleImportSortOptions,
+    compiled_groups: Option<CompiledGroups<'_>>,
 ) -> (usize, usize) {
     let kind_rank_val = kind_rank(import_kind);
-    let custom_groups = match &options.import_groups {
+    match &options.import_groups {
         None => {
-            // Default 5 groups
+            // Default 5 groups — fast path, no regex involved
             if style == SIDE_EFFECT_STYLE {
                 return (0, 0);
             }
@@ -948,29 +1021,49 @@ fn import_group(
             if original.starts_with('.') {
                 return (4, 0);
             }
-            return (3, 0);
+            (3, 0)
         }
-        Some(g) => g,
-    };
-    // Custom groups (possibly empty → single rest group): find longest match
-    let match_source = import_match_source(style, kind_rank_val, original);
-    let mut best: Option<(usize, usize, usize)> = None;
-    for (outer_index, group) in custom_groups.iter().enumerate() {
-        for (inner_index, pattern) in group.iter().enumerate() {
-            let Ok(re) = regex::Regex::new(pattern.as_str()) else {
-                continue;
-            };
-            let Some(m) = re.find(match_source.as_str()) else {
-                continue;
-            };
-            let len = m.end() - m.start();
-            if best.is_none_or(|(_, _, bl)| len > bl) {
-                best = Some((outer_index, inner_index, len));
+        Some(raw_groups) => {
+            // Custom groups: find longest match using precompiled regexes when available.
+            let match_source = import_match_source(style, kind_rank_val, original);
+            let mut best: Option<(usize, usize, usize)> = None;
+
+            if let Some(cg) = compiled_groups {
+                // Use precompiled regexes (PERF-2 fast path)
+                for (outer_index, inner) in cg.iter().enumerate() {
+                    for (inner_index, maybe_re) in inner.iter().enumerate() {
+                        let Some(re) = maybe_re else { continue };
+                        let Some(m) = re.find(match_source.as_str()) else {
+                            continue;
+                        };
+                        let len = m.end() - m.start();
+                        if best.is_none_or(|(_, _, bl)| len > bl) {
+                            best = Some((outer_index, inner_index, len));
+                        }
+                    }
+                }
+            } else {
+                // Fallback: compile per-call (should not happen in normal flow)
+                for (outer_index, group) in raw_groups.iter().enumerate() {
+                    for (inner_index, pattern) in group.iter().enumerate() {
+                        let Ok(re) = regex::Regex::new(pattern.as_str()) else {
+                            continue;
+                        };
+                        let Some(m) = re.find(match_source.as_str()) else {
+                            continue;
+                        };
+                        let len = m.end() - m.start();
+                        if best.is_none_or(|(_, _, bl)| len > bl) {
+                            best = Some((outer_index, inner_index, len));
+                        }
+                    }
+                }
             }
+
+            best.map(|(o, i, _)| (o, i))
+                .unwrap_or((raw_groups.len(), 0))
         }
     }
-    best.map(|(o, i, _)| (o, i))
-        .unwrap_or((custom_groups.len(), 0))
 }
 
 fn import_match_source(style: u8, kind_rank: u8, original: &str) -> CompactString {
@@ -1113,6 +1206,7 @@ fn print_sorted_items<'a>(
     sorted_items: &OuterGroups<'a>,
     original_items: &[ImportExportItem],
     source_text: &str,
+    line_index: &LineIndex,
     all_comments: &[Comment],
     newline: &str,
 ) -> CompactString {
@@ -1162,14 +1256,15 @@ fn print_sorted_items<'a>(
         && last_sorted.needs_newline
     {
         let lo_end = last_original.node_end;
-        let lo_end_line = shared::line_of(source_text, lo_end);
+        let lo_end_line = line_index.line_for_offset(source_text, lo_end);
 
         // Find first token after lo that is NOT a line comment and NOT a
         // block comment ending on the same line as lo
-        let next = find_next_valid_token(source_text, all_comments, lo_end, lo_end_line);
+        let next =
+            find_next_valid_token(source_text, line_index, all_comments, lo_end, lo_end_line);
 
         if let Some(next_start) = next
-            && shared::line_of(source_text, next_start) == lo_end_line
+            && line_index.line_for_offset(source_text, next_start) == lo_end_line
         {
             result.push_str(newline);
         }
@@ -1185,6 +1280,7 @@ fn print_sorted_items<'a>(
 /// Mirrors `sourceCode.getTokenAfter(node, { includeComments: true, filter })`.
 fn find_next_valid_token(
     source_text: &str,
+    line_index: &LineIndex,
     all_comments: &[Comment],
     offset: u32,
     base_line: u32,
@@ -1200,7 +1296,7 @@ fn find_next_valid_token(
         match c.kind {
             CommentKind::Line => continue, // skip line comments
             CommentKind::SingleLineBlock | CommentKind::MultiLineBlock => {
-                let end_line = shared::line_of(source_text, c.span.end);
+                let end_line = line_index.line_for_offset(source_text, c.span.end);
                 if end_line == base_line {
                     continue;
                 } // block comment ending on same line → skip

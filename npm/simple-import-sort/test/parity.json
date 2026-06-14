@@ -9,7 +9,7 @@
         "invalid": [
           {
             "index": 70,
-            "reason": "exercises syntactically-invalid TypeScript (`import type Def, { Named }`, which TypeScript itself rejects); Oxc reports a parse error, so the port declines to autofix unparseable source rather than act on a partial AST"
+            "reason": "exercises syntactically-invalid TypeScript (`import type X, {} from \"…\"` / `import type X, {Y} from \"…\"`, which TypeScript itself rejects); Oxc reports a parse error, so the port declines to autofix unparseable source rather than act on a partial AST"
           }
         ]
       }

@@ -15,6 +15,10 @@ use oxlint_plugins_carton::SmallVec;
 
 use crate::types::LineIndex;
 
+/// Precompiled regex groups built once per `scan_simple_import_sort` call.
+/// `[outer][inner]` — `None` means the pattern failed to compile.
+type CompiledGroupsOwned = SmallVec<[SmallVec<[Option<regex::Regex>; 4]>; 8]>;
+
 pub use crate::types::{Diagnostic, DiagnosticFix, DiagnosticLoc, SimpleImportSortOptions};
 
 pub const RULE_NAMES: [&str; 2] = ["exports", "imports"];
@@ -48,12 +52,29 @@ pub fn scan_simple_import_sort(
     let line_index = LineIndex::new(source_text);
     let mut diagnostics = SmallVec::new();
 
+    // Precompile regex patterns for custom import groups once per scan.
+    // Each pattern that fails to compile is silently skipped (None), matching
+    // the per-call behaviour in import_group before this optimisation.
+    let compiled_groups: Option<CompiledGroupsOwned> =
+        options.import_groups.as_ref().map(|groups| {
+            groups
+                .iter()
+                .map(|inner| {
+                    inner
+                        .iter()
+                        .map(|pat| regex::Regex::new(pat.as_str()).ok())
+                        .collect()
+                })
+                .collect()
+        });
+
     scanner::scan_import_chunks(
         source_text,
         &line_index,
         &parser_return.program.body,
         &all_comments,
         options,
+        compiled_groups.as_deref(),
         &mut diagnostics,
     );
     scanner::scan_export_chunks(

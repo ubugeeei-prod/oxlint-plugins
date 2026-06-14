@@ -28,3 +28,9 @@ export function scanSimpleImportSort(
   filename?: string,
   options?: SimpleImportSortScanOptions,
 ): Diagnostic[];
+
+declare const _default: {
+  implementedSimpleImportSortRuleNames: typeof implementedSimpleImportSortRuleNames;
+  scanSimpleImportSort: typeof scanSimpleImportSort;
+};
+export default _default;
