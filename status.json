@@ -5495,19 +5495,19 @@
       },
       {
         "name": "no-on-delete-cascade",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-on-delete-cascade."
+        "notes": "Ported: Constraint node with contype CONSTR_FOREIGN and fk_del_action \"c\"."
       },
       {
         "name": "no-order-by-ordinal",

@@ -41,6 +41,18 @@ const ruleMeta = Object.freeze({
         '`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.',
     },
   },
+  'no-on-delete-cascade': {
+    type: 'problem',
+    description:
+      'Disallow `ON DELETE CASCADE` on foreign keys; cascading deletes are easy to write but can wipe out far more rows than the author intended',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCascade:
+        'Avoid `ON DELETE CASCADE`. The deletion will silently propagate through every dependent row; prefer an explicit `RESTRICT` or `SET NULL` action and handle the cleanup in application code.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
