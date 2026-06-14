@@ -805,6 +805,18 @@ const ruleMeta = Object.freeze({
         'Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.',
     },
   },
+  'prefer-bigint-id': {
+    type: 'suggestion',
+    description:
+      'Prefer `bigint` for primary-key `id` columns; `int` / `smallint` primary keys risk silent overflow on growing tables',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      preferBigintId:
+        'Primary-key `id` columns should be `bigint`. `int` overflows at 2.1 billion rows and the migration to widen it later requires a table rewrite under `ACCESS EXCLUSIVE`. Declare the column as `bigint GENERATED ALWAYS AS IDENTITY` from the start.',
+    },
+  },
   'prefer-coalesce-over-case': {
     type: 'suggestion',
     description:
