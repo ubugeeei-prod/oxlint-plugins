@@ -11,7 +11,7 @@
       "invalid": [
         {
           "index": 9,
-          "reason": "interpolated quasi mixes UnoCSS and non-UnoCSS tokens; the heuristic only sorts when every token is recognized, while the engine sorts the recognized subset in place."
+          "reason": "interpolated quasi mixes UnoCSS and non-UnoCSS tokens. Upstream `sortRules` emits unrecognized tokens first (in original order) then recognized tokens sorted by engine order; recognition is `uno.parseToken`. The heuristic's `is_unocss_token` is intentionally over-broad (e.g. `m-class` looks like a margin utility but `parseToken` rejects it), so it cannot safely reproduce unknowns-first without the engine and instead bails when any token is unrecognized. Engine-dependent."
         }
       ]
     },
@@ -19,7 +19,7 @@
       "invalid": [
         {
           "index": 2,
-          "reason": "interpolated quasi mixes UnoCSS and non-UnoCSS tokens; the heuristic only sorts when every token is recognized."
+          "reason": "interpolated quasi mixes UnoCSS and non-UnoCSS tokens; reproducing upstream `sortRules` (unrecognized tokens first, then recognized tokens by engine order) needs precise `uno.parseToken` recognition the heuristic lacks, so it bails when any token is unrecognized. Engine-dependent."
         }
       ]
     }
