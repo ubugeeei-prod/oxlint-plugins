@@ -161,6 +161,18 @@ const ruleMeta = Object.freeze({
         "Avoid `CREATE RULE`. PostgreSQL's rule system has surprising semantics around row counts, RETURNING, and updatable views; use a trigger or an updatable view instead.",
     },
   },
+  'no-select-into': {
+    type: 'suggestion',
+    description:
+      'Disallow `SELECT ... INTO target FROM ...` (creates a new table); use `CREATE TABLE AS SELECT ...` instead',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noSelectInto:
+        "`SELECT ... INTO target FROM ...` creates a new table whose semantics differ from a regular `SELECT` and conflict with PL/pgSQL's `SELECT INTO variable`. Use `CREATE TABLE target AS SELECT ...` so the intent is explicit.",
+    },
+  },
   'no-set-not-null': {
     type: 'problem',
     description:
