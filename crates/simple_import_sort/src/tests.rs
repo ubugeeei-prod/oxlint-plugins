@@ -131,3 +131,19 @@ fn collator_handles_accents() {
         "import a from 'ä';\n\nimport b from '.';"
     );
 }
+
+#[test]
+fn preserves_blank_lines_inside_block_comments() {
+    // Upstream treats a block comment as a single token, so a blank line *inside*
+    // it must survive even though blank lines between tokens are collapsed.
+    let source = "import b from \"b\"\nimport /* x\n\ny */ a from \"a\"";
+    let diagnostics =
+        scan_simple_import_sort(source, "fixture.js", &SimpleImportSortOptions::default());
+
+    assert_eq!(diagnostics.len(), 1);
+    let fix = diagnostics[0].fix.as_ref().expect("fix");
+    assert_eq!(
+        fix.replacement.as_str(),
+        "import /* x\n\ny */ a from \"a\"\nimport b from \"b\""
+    );
+}

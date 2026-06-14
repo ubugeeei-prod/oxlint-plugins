@@ -28,7 +28,10 @@ pub struct Diagnostic {
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct SimpleImportSortOptions {
-    pub import_groups: SmallVec<[SmallVec<[CompactString; 4]>; 8]>,
+    /// `None` means "use the 5 default groups".
+    /// `Some([])` means "explicit empty groups → single rest group, no blank-line separators".
+    /// `Some([...])` means custom groups.
+    pub import_groups: Option<SmallVec<[SmallVec<[CompactString; 4]>; 8]>>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

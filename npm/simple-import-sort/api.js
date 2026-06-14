@@ -18,10 +18,11 @@ function normalizeGroups(groups) {
   if (!Array.isArray(groups)) {
     return undefined;
   }
+  // Preserve an explicitly-empty array as [] so the native layer can distinguish
+  // "no groups option" (undefined) from "explicit empty groups" ([]).
   return groups
     .filter(Array.isArray)
-    .map((group) => group.filter((value) => typeof value === 'string' && value.length > 0))
-    .filter((group) => group.length > 0);
+    .map((group) => group.filter((value) => typeof value === 'string' && value.length > 0));
 }
 
 module.exports = {

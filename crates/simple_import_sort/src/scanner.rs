@@ -8,6 +8,7 @@
 use oxc_ast::ast::{
     Comment, CommentKind, ExportAllDeclaration, ExportNamedDeclaration, ImportDeclaration,
     ImportDeclarationSpecifier, ImportOrExportKind, ModuleExportName, Statement,
+    TSModuleDeclarationBody,
 };
 use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
@@ -30,6 +31,24 @@ pub(crate) fn scan_import_chunks(
     options: &SimpleImportSortOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 8]>,
 ) {
+    scan_import_chunks_in(
+        source_text,
+        line_index,
+        statements,
+        all_comments,
+        options,
+        diagnostics,
+    );
+}
+
+fn scan_import_chunks_in(
+    source_text: &str,
+    line_index: &LineIndex,
+    statements: &[Statement<'_>],
+    all_comments: &[Comment],
+    options: &SimpleImportSortOptions,
+    diagnostics: &mut SmallVec<[Diagnostic; 8]>,
+) {
     // extractChunks: ImportDeclaration → PartOfChunk, else NotPartOfChunk
     let mut chunk: SmallVec<[&ImportDeclaration<'_>; 16]> = SmallVec::new();
     for statement in statements {
@@ -45,6 +64,23 @@ pub(crate) fn scan_import_chunks(
                 diagnostics,
             );
             chunk.clear();
+            // Recurse into TSModuleDeclaration (declare module 'x' { ... })
+            if let Statement::TSModuleDeclaration(ts_mod) = statement {
+                if let Some(body) = &ts_mod.body {
+                    let inner_stmts = match body {
+                        TSModuleDeclarationBody::TSModuleBlock(block) => block.body.as_slice(),
+                        TSModuleDeclarationBody::TSModuleDeclaration(_) => &[],
+                    };
+                    scan_import_chunks_in(
+                        source_text,
+                        line_index,
+                        inner_stmts,
+                        all_comments,
+                        options,
+                        diagnostics,
+                    );
+                }
+            }
         }
     }
     report_import_chunk(
@@ -58,6 +94,22 @@ pub(crate) fn scan_import_chunks(
 }
 
 pub(crate) fn scan_export_chunks(
+    source_text: &str,
+    line_index: &LineIndex,
+    statements: &[Statement<'_>],
+    all_comments: &[Comment],
+    diagnostics: &mut SmallVec<[Diagnostic; 8]>,
+) {
+    scan_export_chunks_in(
+        source_text,
+        line_index,
+        statements,
+        all_comments,
+        diagnostics,
+    );
+}
+
+fn scan_export_chunks_in(
     source_text: &str,
     line_index: &LineIndex,
     statements: &[Statement<'_>],
@@ -110,6 +162,22 @@ pub(crate) fn scan_export_chunks(
             _ => {
                 report_export_chunk(source_text, line_index, all_comments, &chunk, diagnostics);
                 chunk.clear();
+                // Recurse into TSModuleDeclaration (declare module 'x' { ... })
+                if let Statement::TSModuleDeclaration(ts_mod) = statement {
+                    if let Some(body) = &ts_mod.body {
+                        let inner_stmts = match body {
+                            TSModuleDeclarationBody::TSModuleBlock(block) => block.body.as_slice(),
+                            TSModuleDeclarationBody::TSModuleDeclaration(_) => &[],
+                        };
+                        scan_export_chunks_in(
+                            source_text,
+                            line_index,
+                            inner_stmts,
+                            all_comments,
+                            diagnostics,
+                        );
+                    }
+                }
             }
         }
     }
@@ -319,8 +387,18 @@ fn build_import_items(
             last_line,
             node_index == 0,
         );
-        let comments_after =
-            shared::comments_after_node(all_comments, source_text, node_end, node_end_line);
+        let next_node_start = if node_index + 1 < chunk_len {
+            Some(chunk[node_index + 1].span.start)
+        } else {
+            None
+        };
+        let comments_after = shared::comments_after_node(
+            all_comments,
+            source_text,
+            node_end,
+            node_end_line,
+            next_node_start,
+        );
 
         // specifier spans and sort keys (only ImportSpecifier, not default/namespace)
         let spec_spans: SmallVec<[Span; 8]> = decl
@@ -474,8 +552,18 @@ fn build_export_items(
             last_line,
             node_index == 0,
         );
-        let comments_after =
-            shared::comments_after_node(all_comments, source_text, node_end, node_end_line);
+        let next_node_start = if node_index + 1 < chunk_len {
+            Some(chunk[node_index + 1].span().start)
+        } else {
+            None
+        };
+        let comments_after = shared::comments_after_node(
+            all_comments,
+            source_text,
+            node_end,
+            node_end_line,
+            next_node_start,
+        );
 
         let orig = node.source_str();
         let kind_str = import_kind_str(node.export_kind());
@@ -696,18 +784,28 @@ fn find_first_token_start_after(
     offset: u32,
 ) -> Option<u32> {
     // Find first comment at or after offset
-    for c in all_comments {
-        if c.span.start >= offset {
-            return Some(c.span.start);
+    let first_comment = all_comments
+        .iter()
+        .find(|c| c.span.start >= offset)
+        .map(|c| c.span.start);
+
+    // Find first non-whitespace at or after offset (may be real code or a comment)
+    let first_nonws = {
+        let after = source_text.get(offset as usize..)?;
+        if after.trim_matches(|c: char| c.is_whitespace()).is_empty() {
+            None
+        } else {
+            let skip = after.find(|c: char| !c.is_whitespace())?;
+            Some(offset + skip as u32)
         }
-    }
-    // Otherwise find first non-whitespace
-    let after = source_text.get(offset as usize..)?;
-    if after.trim_matches(|c: char| c.is_whitespace()).is_empty() {
-        None
-    } else {
-        let skip = after.find(|c: char| !c.is_whitespace())?;
-        Some(offset + skip as u32)
+    };
+
+    // Return the minimum of the two: if real code appears before the first comment,
+    // return the real code position (otherwise comments "swallow" the trailing text
+    // of adjacent items on the same line).
+    match (first_comment, first_nonws) {
+        (None, v) | (v, None) => v,
+        (Some(c), Some(nw)) => Some(c.min(nw)),
     }
 }
 
@@ -746,13 +844,45 @@ fn handle_last_semicolon(source_text: &str, node_span: Span, all_comments: &[Com
     let semi_start = abs_last - 1; // ';' is 1 byte
     let semi_line = shared::line_of(source_text, semi_start);
 
-    // Find next-to-last token (everything in node before the `;`)
+    // Find next-to-last token (the last NON-comment, non-whitespace byte before `;`).
+    // We need to scan backwards, skipping both whitespace AND trailing comment spans.
+    // This mirrors ESLint's `getLastTokens(node, { count: 2 })[0].range[1]` which
+    // returns the end of the last AST token (comments are not AST tokens in ESLint).
     let next_to_last_end = {
-        let before_semi = source_text
-            .get(node_span.start as usize..semi_start as usize)
-            .unwrap_or("");
-        let trimmed = before_semi.trim_end_matches(|c: char| c.is_whitespace());
-        node_span.start + trimmed.len() as u32
+        // Collect comments that end before semi_start (in reverse order)
+        let trailing_comments: SmallVec<[&Comment; 4]> = all_comments
+            .iter()
+            .filter(|c| c.span.start >= node_span.start && c.span.end <= semi_start)
+            .collect();
+
+        // Scan backwards from semi_start, skipping whitespace and then comments
+        let mut cursor = semi_start;
+        loop {
+            // Skip trailing whitespace
+            let before = source_text
+                .get(node_span.start as usize..cursor as usize)
+                .unwrap_or("");
+            let trimmed = before.trim_end_matches(|c: char| c.is_whitespace());
+            let ws_stripped = node_span.start + trimmed.len() as u32;
+            if ws_stripped == cursor {
+                break; // no whitespace to skip
+            }
+            cursor = ws_stripped;
+
+            // Check if cursor is right after a comment
+            let mut found_comment = false;
+            for c in trailing_comments.iter().rev() {
+                if c.span.end == cursor {
+                    cursor = c.span.start;
+                    found_comment = true;
+                    break;
+                }
+            }
+            if !found_comment {
+                break; // no comment at cursor, we're done
+            }
+        }
+        cursor
     };
     let ntl_line = shared::line_of(source_text, next_to_last_end.saturating_sub(1));
 
@@ -803,26 +933,29 @@ fn import_group(
     options: &SimpleImportSortOptions,
 ) -> (usize, usize) {
     let kind_rank_val = kind_rank(import_kind);
-    if options.import_groups.is_empty() {
-        // Default 5 groups
-        if style == SIDE_EFFECT_STYLE {
-            return (0, 0);
+    let custom_groups = match &options.import_groups {
+        None => {
+            // Default 5 groups
+            if style == SIDE_EFFECT_STYLE {
+                return (0, 0);
+            }
+            if original.starts_with("node:") {
+                return (1, 0);
+            }
+            if is_package_source(original) {
+                return (2, 0);
+            }
+            if original.starts_with('.') {
+                return (4, 0);
+            }
+            return (3, 0);
         }
-        if original.starts_with("node:") {
-            return (1, 0);
-        }
-        if is_package_source(original) {
-            return (2, 0);
-        }
-        if original.starts_with('.') {
-            return (4, 0);
-        }
-        return (3, 0);
-    }
-    // Custom groups: find longest match
+        Some(g) => g,
+    };
+    // Custom groups (possibly empty → single rest group): find longest match
     let match_source = import_match_source(style, kind_rank_val, original);
     let mut best: Option<(usize, usize, usize)> = None;
-    for (outer_index, group) in options.import_groups.iter().enumerate() {
+    for (outer_index, group) in custom_groups.iter().enumerate() {
         for (inner_index, pattern) in group.iter().enumerate() {
             let Ok(re) = regex::Regex::new(pattern.as_str()) else {
                 continue;
@@ -837,7 +970,7 @@ fn import_group(
         }
     }
     best.map(|(o, i, _)| (o, i))
-        .unwrap_or((options.import_groups.len(), 0))
+        .unwrap_or((custom_groups.len(), 0))
 }
 
 fn import_match_source(style: u8, kind_rank: u8, original: &str) -> CompactString {
@@ -878,19 +1011,14 @@ fn make_sorted_import_items<'a>(
     items: &'a [ImportExportItem],
     options: &SimpleImportSortOptions,
 ) -> OuterGroups<'a> {
-    let n_outer_groups = if options.import_groups.is_empty() {
-        5
-    } else {
-        options.import_groups.len()
+    let custom_groups = options.import_groups.as_ref();
+    let n_outer_groups = match custom_groups {
+        None => 5, // default groups
+        Some(g) => g.len(),
     };
-    let inner_counts: SmallVec<[usize; 8]> = if options.import_groups.is_empty() {
-        (0..n_outer_groups).map(|_| 1).collect()
-    } else {
-        options
-            .import_groups
-            .iter()
-            .map(|g| g.len().max(1))
-            .collect()
+    let inner_counts: SmallVec<[usize; 8]> = match custom_groups {
+        None => (0..n_outer_groups).map(|_| 1).collect(),
+        Some(g) => g.iter().map(|inner| inner.len().max(1)).collect(),
     };
 
     // Build bucket grid: [outer][inner] → vec of items
@@ -1053,31 +1181,58 @@ fn print_sorted_items<'a>(
 /// Find first token after `offset` that is:
 /// - not a line comment
 /// - not a block comment whose `.loc.end.line == base_line`
+///
+/// Mirrors `sourceCode.getTokenAfter(node, { includeComments: true, filter })`.
 fn find_next_valid_token(
     source_text: &str,
     all_comments: &[Comment],
     offset: u32,
     base_line: u32,
 ) -> Option<u32> {
-    for c in all_comments {
-        if c.span.start < offset {
-            continue;
-        }
+    // Collect comments at or after offset in order, so we can skip past them
+    // when searching for real (non-comment) code.
+    let relevant_comments: SmallVec<[&Comment; 4]> = all_comments
+        .iter()
+        .filter(|c| c.span.start >= offset)
+        .collect();
+
+    for c in &relevant_comments {
         match c.kind {
             CommentKind::Line => continue, // skip line comments
             CommentKind::SingleLineBlock | CommentKind::MultiLineBlock => {
                 let end_line = shared::line_of(source_text, c.span.end);
                 if end_line == base_line {
                     continue;
-                } // block comment on same line
+                } // block comment ending on same line → skip
             }
         }
         return Some(c.span.start);
     }
-    // Check for real (non-comment) code
-    let after = source_text.get(offset as usize..)?;
-    let skip = after.find(|c: char| !c.is_whitespace())?;
-    Some(offset + skip as u32)
+
+    // No valid comment found. Look for real (non-comment) non-whitespace code,
+    // but skip over comment spans so we don't mistake comment text for real code.
+    let mut cursor = offset;
+    for c in &relevant_comments {
+        // Scan the gap between cursor and the start of this comment
+        let gap = source_text
+            .get(cursor as usize..c.span.start as usize)
+            .unwrap_or("");
+        if gap
+            .chars()
+            .any(|ch| !ch.is_ascii_whitespace() && ch != '\r' && ch != '\n')
+        {
+            // Found real code in the gap before this comment
+            let skip = gap.find(|ch: char| !ch.is_whitespace()).unwrap_or(0);
+            return Some(cursor + skip as u32);
+        }
+        // Advance past this comment
+        cursor = c.span.end;
+    }
+
+    // Scan remaining text after all comments
+    let after = source_text.get(cursor as usize..)?;
+    let skip = after.find(|ch: char| !ch.is_whitespace())?;
+    Some(cursor + skip as u32)
 }
 
 // ---------------------------------------------------------------------------
