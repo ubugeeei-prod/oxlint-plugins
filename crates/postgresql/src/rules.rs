@@ -39,6 +39,7 @@ mod no_with_recursive_without_limit;
 mod prefer_exists_over_in_subquery;
 mod require_limit;
 mod require_named_constraint;
+mod require_primary_key;
 mod require_where_in_delete;
 mod require_where_in_update;
 mod snake_case_table_name;
@@ -175,6 +176,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "prefer-exists-over-in-subquery",
     "require-limit",
     "require-named-constraint",
+    "require-primary-key",
     "require-where-in-delete",
     "require-where-in-update",
     "snake-case-table-name",
@@ -360,6 +362,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-named-constraint",
         run: require_named_constraint::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-primary-key",
+        run: require_primary_key::run,
         uses_parse_error: false,
     },
     RuleDef {
