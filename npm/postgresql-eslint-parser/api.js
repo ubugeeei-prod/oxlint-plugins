@@ -29,4 +29,24 @@ function parse(code) {
   return parseForESLint(code).ast;
 }
 
-module.exports = { parse, parseForESLint };
+/**
+ * Collect every `EmbeddedCode` node in a parsed program, in source order.
+ * Mirrors upstream `extractEmbeddedCode`: the parser attaches an `embeddedCode`
+ * node to each top-level `CreateFunctionStmt` that carries a PL body, so this
+ * walks `program.body` and gathers them.
+ * @param {object} program the `Program` AST node from {@link parseForESLint}.
+ * @returns {object[]} the `EmbeddedCode` nodes (`{ type, language, source, quoteStyle, range, loc }`).
+ */
+function extractEmbeddedCode(program) {
+  const result = [];
+  const body = program && Array.isArray(program.body) ? program.body : [];
+  for (const node of body) {
+    const embedded = node && node.embeddedCode;
+    if (embedded && embedded.type === 'EmbeddedCode') {
+      result.push(embedded);
+    }
+  }
+  return result;
+}
+
+module.exports = { extractEmbeddedCode, parse, parseForESLint };

@@ -2651,3 +2651,129 @@ fn does_not_report_no_control_regex_for_hex_above_control_range() {
     let diagnostics = scan("no-control-regex", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_single_char_in_character_classes_for_one_char_class() {
+    let source = "const r = /[a]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "singleCharInCharacterClass");
+}
+
+#[test]
+fn reports_single_char_in_character_classes_for_dot_in_class() {
+    let source = "const r = /[.]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_single_char_in_character_classes_for_two_chars() {
+    let source = "const r = /[ab]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_char_in_character_classes_for_range() {
+    let source = "const r = /[a-z]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_char_in_character_classes_for_negated_class() {
+    let source = "const r = /[^a]/;";
+    let diagnostics = scan("single-char-in-character-classes", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_duplicates_in_character_class_for_repeated_char() {
+    let source = "const r = /[aa]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "duplicates-in-character-class");
+    assert_eq!(diagnostics[0].message_id, "duplicateCharacter");
+}
+
+#[test]
+fn reports_duplicates_in_character_class_for_non_adjacent_repeat() {
+    let source = "const r = /[abca]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_duplicates_in_character_class_for_distinct_chars() {
+    let source = "const r = /[abc]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_duplicates_in_character_class_for_range() {
+    let source = "const r = /[a-z]/;";
+    let diagnostics = scan("duplicates-in-character-class", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_anchor_precedence_for_caret_on_first_of_three_alts() {
+    let source = "const r = /^a|b|c$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "anchor-precedence");
+    assert_eq!(diagnostics[0].message_id, "anchorPrecedence");
+}
+
+#[test]
+fn reports_anchor_precedence_for_caret_only_on_first_of_two_alts() {
+    let source = "const r = /^a|b/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "anchorPrecedence");
+}
+
+#[test]
+fn reports_anchor_precedence_for_dollar_only_on_last_of_two_alts() {
+    let source = "const r = /a|b$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "anchorPrecedence");
+}
+
+#[test]
+fn does_not_report_anchor_precedence_for_grouped_alts() {
+    let source = "const r = /^(a|b|c)$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_for_no_anchors() {
+    let source = "const r = /a|b|c/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_for_trim_idiom() {
+    let source = "const r = /^\\s+|\\s+$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_when_all_branches_fully_anchored() {
+    let source = "const r = /^a$|^b$|^c$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_when_middle_alt_is_anchored() {
+    let source = "const r = /^a|^b|c$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}

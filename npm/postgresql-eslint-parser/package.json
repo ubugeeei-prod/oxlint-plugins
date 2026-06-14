@@ -40,6 +40,8 @@
     "index.js",
     "api.js",
     "api.d.ts",
+    "processor.js",
+    "processor.d.ts",
     "native.js",
     "native.d.ts",
     "*.node",
@@ -58,6 +60,11 @@
       "types": "./api.d.ts",
       "require": "./api.js",
       "default": "./api.js"
+    },
+    "./processor": {
+      "types": "./processor.d.ts",
+      "require": "./processor.js",
+      "default": "./processor.js"
     },
     "./native": {
       "types": "./native.d.ts",
