@@ -5,6 +5,7 @@ use crate::RuleDef;
 
 mod no_alter_column_type;
 mod no_cluster;
+mod no_composite_primary_key;
 mod no_create_role;
 mod no_cross_join;
 mod no_distinct_on_without_order_by;
@@ -135,6 +136,7 @@ pub const RULE_NAMES: [&str; 89] = [
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-alter-column-type",
     "no-cluster",
+    "no-composite-primary-key",
     "no-create-role",
     "no-cross-join",
     "no-distinct-on-without-order-by",
@@ -178,6 +180,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-cluster",
         run: no_cluster::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-composite-primary-key",
+        run: no_composite_primary_key::run,
         uses_parse_error: false,
     },
     RuleDef {
