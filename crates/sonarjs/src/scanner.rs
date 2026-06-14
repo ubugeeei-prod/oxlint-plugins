@@ -6,7 +6,7 @@ use oxc_ast::ast::{
     AssignmentExpression, BinaryExpression, BindingIdentifier, CallExpression, CatchClause,
     ConditionalExpression, DoWhileStatement, ExpressionStatement, ForInStatement, ForOfStatement,
     ForStatement, Function, FunctionBody, IdentifierReference, IfStatement, LabeledStatement,
-    LogicalExpression, NewExpression, RegExpLiteral, StaticMemberExpression, SwitchCase,
+    LogicalExpression, NewExpression, Program, RegExpLiteral, StaticMemberExpression, SwitchCase,
     SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral,
     UnaryExpression, WhileStatement, YieldExpression,
 };
@@ -72,6 +72,11 @@ impl Scanner<'_> {
 }
 
 impl<'a> Visit<'a> for Scanner<'a> {
+    fn visit_program(&mut self, it: &Program<'a>) {
+        self.check_no_tab();
+        walk::walk_program(self, it);
+    }
+
     fn visit_template_literal(&mut self, it: &TemplateLiteral<'a>) {
         self.check_no_nested_template_literals(it);
         self.template_literal_depth += 1;
