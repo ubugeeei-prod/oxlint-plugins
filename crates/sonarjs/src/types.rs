@@ -59,6 +59,9 @@ pub struct SonarjsOptions {
     /// Maximum cyclomatic complexity per function for `cyclomatic-complexity` (S1541);
     /// the SonarJS default is 10.
     pub cyclomatic_complexity_threshold: u32,
+    /// Maximum nesting depth of functions for `no-nested-functions` (S2004);
+    /// the SonarJS default is 4.
+    pub no_nested_functions_threshold: u32,
 }
 
 impl Default for SonarjsOptions {
@@ -75,6 +78,7 @@ impl Default for SonarjsOptions {
             nested_control_flow_threshold: 3,
             no_duplicate_string_threshold: 3,
             cyclomatic_complexity_threshold: 10,
+            no_nested_functions_threshold: 4,
         }
     }
 }

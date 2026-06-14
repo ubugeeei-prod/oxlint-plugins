@@ -235,6 +235,9 @@ const messages = Object.freeze({
     indexOfPositive:
       'This "indexOf" check ignores index 0; compare against -1 or use ">= 0" instead.',
   },
+  'no-nested-functions': {
+    noNestedFunctions: 'This function is nested too deeply. Refactor to reduce nesting depth.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -356,6 +359,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow comparisons of collection .length or .size against 0 with < or >= that are always false or always true',
   'index-of-compare-to-positive-number':
     'Disallow comparing the result of indexOf or lastIndexOf against a positive number, which silently excludes the element at index 0',
+  'no-nested-functions':
+    'Disallow functions nested more deeply than the configured threshold (the "threshold" option; default 4); applies to function declarations, function expressions, and arrow functions',
 });
 
 const ruleTypes = Object.freeze({
@@ -422,6 +427,7 @@ const ruleTypes = Object.freeze({
   'cyclomatic-complexity': 'suggestion',
   'no-collection-size-mischeck': 'suggestion',
   'index-of-compare-to-positive-number': 'suggestion',
+  'no-nested-functions': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -488,6 +494,7 @@ const recommendedRuleConfig = Object.freeze({
   'cyclomatic-complexity': 'error',
   'no-collection-size-mischeck': 'error',
   'index-of-compare-to-positive-number': 'error',
+  'no-nested-functions': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
@@ -589,6 +596,15 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'no-nested-functions') {
+    return [
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   return [];
 }
 
@@ -616,6 +632,9 @@ function scanOptionsForRule(context, ruleName) {
   }
   if (ruleName === 'cyclomatic-complexity' && Number.isInteger(raw.threshold)) {
     options.cyclomaticComplexityThreshold = raw.threshold;
+  }
+  if (ruleName === 'no-nested-functions' && Number.isInteger(raw.threshold)) {
+    options.noNestedFunctionsThreshold = raw.threshold;
   }
   return options;
 }

@@ -26,6 +26,7 @@ mod napi_abi {
         pub nested_control_flow_threshold: Option<u32>,
         pub no_duplicate_string_threshold: Option<u32>,
         pub cyclomatic_complexity_threshold: Option<u32>,
+        pub no_nested_functions_threshold: Option<u32>,
     }
 
     #[napi(object)]
@@ -100,6 +101,9 @@ mod napi_abi {
             cyclomatic_complexity_threshold: options
                 .cyclomatic_complexity_threshold
                 .unwrap_or(default_options.cyclomatic_complexity_threshold),
+            no_nested_functions_threshold: options
+                .no_nested_functions_threshold
+                .unwrap_or(default_options.no_nested_functions_threshold),
         };
 
         core::scan_sonarjs(&source_text, &filename, &core_options)
