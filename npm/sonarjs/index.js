@@ -198,6 +198,9 @@ const messages = Object.freeze({
   'nested-control-flow': {
     nestedControlFlow: 'Refactor this code to reduce the nesting of control flow statements.',
   },
+  'no-duplicate-string': {
+    duplicateString: 'Define this repeated string literal as a constant to avoid duplication.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -297,6 +300,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow functions with more code lines than the configured maximum (the "maximum" option; default 200); IIFEs and JSX-containing functions are excluded',
   'nested-control-flow':
     'Disallow control flow statements (if/for/for-in/for-of/while/do-while/switch/try) nested beyond the configured maximumNestingLevel (default 3); else-if chains do not add a level',
+  'no-duplicate-string':
+    'Disallow string literals of 10+ characters containing a non-word character from appearing at least threshold (default 3) times in a file; import/export sources and JSX attribute values are excluded',
 });
 
 const ruleTypes = Object.freeze({
@@ -352,6 +357,7 @@ const ruleTypes = Object.freeze({
   'max-lines': 'suggestion',
   'max-lines-per-function': 'suggestion',
   'nested-control-flow': 'suggestion',
+  'no-duplicate-string': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -407,6 +413,7 @@ const recommendedRuleConfig = Object.freeze({
   'max-lines': 'error',
   'max-lines-per-function': 'error',
   'nested-control-flow': 'error',
+  'no-duplicate-string': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
@@ -490,6 +497,15 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'no-duplicate-string') {
+    return [
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   return [];
 }
 
@@ -511,6 +527,9 @@ function scanOptionsForRule(context, ruleName) {
   }
   if (ruleName === 'nested-control-flow' && Number.isInteger(raw.maximumNestingLevel)) {
     options.nestedControlFlowThreshold = raw.maximumNestingLevel;
+  }
+  if (ruleName === 'no-duplicate-string' && Number.isInteger(raw.threshold)) {
+    options.noDuplicateStringThreshold = raw.threshold;
   }
   return options;
 }

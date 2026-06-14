@@ -55,6 +55,7 @@ const expectedRuleNames = [
   'max-lines',
   'nested-control-flow',
   'max-lines-per-function',
+  'no-duplicate-string',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1929,5 +1930,22 @@ describe('sonarjs native API', () => {
       maxLinesPerFunctionThreshold: 5,
     });
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('passes the no-duplicate-string threshold through the native boundary', () => {
+    // "hello wrld" = 10 chars, has a space → qualifies; appears twice
+    const source = 'const a = "hello wrld"; const b = "hello wrld";';
+    const flagged = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['no-duplicate-string'],
+      noDuplicateStringThreshold: 2,
+    });
+    expect(flagged).toHaveLength(1);
+    expect(flagged[0].ruleName).toBe('no-duplicate-string');
+    expect(flagged[0].messageId).toBe('duplicateString');
+    const allowed = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['no-duplicate-string'],
+      noDuplicateStringThreshold: 3,
+    });
+    expect(allowed).toHaveLength(0);
   });
 });

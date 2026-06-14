@@ -11902,19 +11902,19 @@
       },
       {
         "name": "no-duplicate-string",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-duplicate-string (Sonar key S1192). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S1192. Counts qualifying string literal values (>= 10 chars, containing a non-word char, not \"application/json\") across a file; reports the first occurrence of any value whose count >= threshold (default 3). Import/export sources and JSX attribute values are excluded. Configurable threshold option. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-duplicated-branches",

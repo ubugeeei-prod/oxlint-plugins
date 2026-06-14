@@ -2422,3 +2422,59 @@ fn does_not_report_max_lines_per_function_for_jsx_containing_arrow() {
     let diagnostics = scan_sonarjs(source, "sample.tsx", &options);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_duplicate_string_at_default_threshold() {
+    // "hello wrld" = 10 chars, has a space → qualifies; appears 3×; default threshold 3
+    let source = "const a = \"hello wrld\"; const b = \"hello wrld\"; const c = \"hello wrld\";";
+    let diagnostics = scan("no-duplicate-string", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-duplicate-string");
+    assert_eq!(diagnostics[0].message_id, "duplicateString");
+}
+
+#[test]
+fn does_not_report_no_duplicate_string_below_threshold() {
+    // "hello wrld" appears only twice; default threshold 3 → no report
+    let source = "const a = \"hello wrld\"; const b = \"hello wrld\";";
+    let diagnostics = scan("no-duplicate-string", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_duplicate_string_for_short_value() {
+    // "hi there" = 8 chars (< 10) → not counted; appears 3× but too short
+    let source = "const a = \"hi there\"; const b = \"hi there\"; const c = \"hi there\";";
+    let diagnostics = scan("no-duplicate-string", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_duplicate_string_for_all_word_chars() {
+    // "helloWorld1" = 11 chars but all word chars ([A-Za-z0-9_]) → not counted
+    let source = "const a = \"helloWorld1\"; const b = \"helloWorld1\"; const c = \"helloWorld1\";";
+    let diagnostics = scan("no-duplicate-string", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_duplicate_string_for_import_sources() {
+    // "some/module" = 11 chars, has '/' → would qualify if not excluded;
+    // appears 2× as import sources with custom threshold 2 → still 0
+    let mut options = options_for("no-duplicate-string");
+    options.no_duplicate_string_threshold = 2;
+    let source = "import a from \"some/module\";\nimport b from \"some/module\";";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_duplicate_string_respects_custom_threshold() {
+    let mut options = options_for("no-duplicate-string");
+    options.no_duplicate_string_threshold = 2;
+    let source = "const a = \"hello wrld\"; const b = \"hello wrld\";";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-duplicate-string");
+    assert_eq!(diagnostics[0].message_id, "duplicateString");
+}

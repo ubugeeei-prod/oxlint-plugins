@@ -24,6 +24,7 @@ mod napi_abi {
         pub max_switch_cases_threshold: Option<u32>,
         pub max_union_size_threshold: Option<u32>,
         pub nested_control_flow_threshold: Option<u32>,
+        pub no_duplicate_string_threshold: Option<u32>,
     }
 
     #[napi(object)]
@@ -92,6 +93,9 @@ mod napi_abi {
             nested_control_flow_threshold: options
                 .nested_control_flow_threshold
                 .unwrap_or(default_options.nested_control_flow_threshold),
+            no_duplicate_string_threshold: options
+                .no_duplicate_string_threshold
+                .unwrap_or(default_options.no_duplicate_string_threshold),
         };
 
         core::scan_sonarjs(&source_text, &filename, &core_options)
