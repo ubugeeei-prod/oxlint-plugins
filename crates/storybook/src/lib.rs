@@ -207,14 +207,21 @@ pub fn scan_storybook(
         return SmallVec::new();
     }
 
-    // Semantic analysis resolves identifier references, which `prefer-pascal-case`
-    // uses to rename every use of a renamed story export. The other rules do not
-    // read it. Benign semantic errors (e.g. redeclarations) do not block scanning.
-    let semantic = SemanticBuilder::new()
-        .build(&parser_return.program)
-        .semantic;
-    let scoping = semantic.scoping();
-    let nodes = semantic.nodes();
+    // Semantic analysis resolves identifier references, which only `prefer-pascal-case`
+    // uses (to rename every use of a renamed story export). Build it only when that
+    // rule is active so the other 15 rules don't pay for an extra AST walk. Benign
+    // semantic errors (e.g. redeclarations) do not block scanning.
+    let needs_semantic = options
+        .rule_names
+        .iter()
+        .any(|name| name == "prefer-pascal-case");
+    let semantic = needs_semantic.then(|| {
+        SemanticBuilder::new()
+            .build(&parser_return.program)
+            .semantic
+    });
+    let scoping = semantic.as_ref().map(|semantic| semantic.scoping());
+    let nodes = semantic.as_ref().map(|semantic| semantic.nodes());
 
     let mut scanner = Scanner {
         source_text,

@@ -94,6 +94,28 @@ fn scans_story_exports_and_story_names() {
 }
 
 #[test]
+fn story_name_from_export_matches_start_case() {
+    use crate::helpers::story_name_from_export;
+    for (input, expected) in [
+        ("PrimaryButton", "Primary Button"),
+        ("someName", "Some Name"),
+        ("camelCase", "Camel Case"),
+        ("snake_case", "Snake Case"),
+        ("kebab-case", "Kebab Case"),
+        ("foo.bar", "Foo Bar"),
+        ("H1", "H 1"),
+        ("someName1234", "Some Name 1234"),
+        ("__FOOBAR__", "FOOBAR"),
+    ] {
+        assert_eq!(
+            story_name_from_export(input).as_str(),
+            expected,
+            "input: {input}"
+        );
+    }
+}
+
+#[test]
 fn prefer_pascal_case_renames_references() {
     // The autofix must rename the declaration AND every reference to the export.
     let source = "export const primary = {};\nprimary.foo = 'bar';";

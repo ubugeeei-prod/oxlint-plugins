@@ -32,10 +32,11 @@ pub(crate) struct Scanner<'a> {
     pub(crate) line_index: LineIndex,
     pub(crate) diagnostics: SmallVec<[Diagnostic; 16]>,
     /// Scoping from semantic analysis; resolves an export's references for
-    /// `prefer-pascal-case` renaming.
-    pub(crate) scoping: &'a Scoping,
+    /// `prefer-pascal-case` renaming. `None` when that rule is not active.
+    pub(crate) scoping: Option<&'a Scoping>,
     /// AST nodes from semantic analysis; maps a reference back to its identifier.
-    pub(crate) nodes: &'a AstNodes<'a>,
+    /// `None` when `prefer-pascal-case` is not active.
+    pub(crate) nodes: Option<&'a AstNodes<'a>>,
     pub(crate) variables: FastHashMap<CompactString, VariableInfo<'a>>,
     pub(crate) function_stack: SmallVec<[FunctionFrame; 8]>,
     pub(crate) first_non_import_span: Option<Span>,
@@ -660,10 +661,12 @@ impl<'a> Scanner<'a> {
         });
         // Upstream renames every (non-declaration) reference to the export too, so the
         // autofix never leaves a dangling lowercase use such as `primary.foo`.
-        if let Some(symbol_id) = symbol_id {
-            for reference in self.scoping.get_resolved_references(symbol_id) {
+        if let Some(symbol_id) = symbol_id
+            && let (Some(scoping), Some(nodes)) = (self.scoping, self.nodes)
+        {
+            for reference in scoping.get_resolved_references(symbol_id) {
                 if let AstKind::IdentifierReference(identifier) =
-                    self.nodes.get_node(reference.node_id()).kind()
+                    nodes.get_node(reference.node_id()).kind()
                 {
                     fixes.push(DiagnosticFix {
                         start: identifier.span.start,
