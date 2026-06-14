@@ -119,8 +119,65 @@ fn exposes_initial_regexp_rule_names() {
             "unicode-property",
             "no-unused-capturing-group",
             "prefer-result-array-groups",
+            "prefer-lookaround",
         ]
     );
+}
+
+mod prefer_lookaround {
+    use super::*;
+
+    #[test]
+    fn reports_both_ends_capture_with_extreme_refs() {
+        for src in [
+            // Numbered both-ends.
+            "'I love unicorn!'.replace(/(love )unicorn(!)/, '$1u$2');",
+            // Named both-ends.
+            "'x'.replace(/(?<before>love )unicorn(?<after>!)/, '$<before>u$<after>');",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "prefer-lookaround").as_slice(),
+                &["preferLookarounds"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_unsafe_or_unsupported_shapes() {
+        // `g` flag enables overlapping matches — unsafe.
+        assert!(rule_ids_for("'x'.replace(/(a)b(a)/g, '$1c$2');", "prefer-lookaround").is_empty());
+        // Adjacent groups, empty middle.
+        assert!(
+            rule_ids_for(
+                "'x'.replace(/(Java)(Script)/, '$1$2');",
+                "prefer-lookaround"
+            )
+            .is_empty()
+        );
+        // Boundary bytes overlap (last of B1 == first of MID).
+        assert!(rule_ids_for("'x'.replace(/(a)a(b)/, '$1c$2');", "prefer-lookaround").is_empty());
+        // Replacement reuses a group reference.
+        assert!(
+            rule_ids_for(
+                "'x'.replace(/(love )unicorn(!)/, '$1$1u$2');",
+                "prefer-lookaround"
+            )
+            .is_empty()
+        );
+        // Single capturing group — not a both-ends shape.
+        assert!(rule_ids_for("'x'.replace(/(Java)Script/, '$1');", "prefer-lookaround").is_empty());
+        // Replacement does not start with $1.
+        assert!(
+            rule_ids_for(
+                "'x'.replace(/(love )unicorn(!)/, 'x$1u$2');",
+                "prefer-lookaround"
+            )
+            .is_empty()
+        );
+        // Quantifier in group body — not plain.
+        assert!(rule_ids_for("'x'.replace(/(a+)bc(d)/, '$1x$2');", "prefer-lookaround").is_empty());
+    }
 }
 
 mod prefer_result_array_groups {

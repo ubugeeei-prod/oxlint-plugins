@@ -258,6 +258,11 @@ const validCases = [
     'unknown receiver match',
     'const arr = unknown.match(/a(?<foo>b)c/);\nconst p1 = arr[1];\n',
   ],
+  // prefer-lookaround
+  ['prefer-lookaround', 'g flag overlapping', "'x'.replace(/(a)b(a)/g, '$1c$2');\n"],
+  ['prefer-lookaround', 'adjacent groups empty middle', "'x'.replace(/(Java)(Script)/, '$1$2');\n"],
+  ['prefer-lookaround', 'single group not both-ends', "'x'.replace(/(Java)Script/, '$1');\n"],
+  ['prefer-lookaround', 'quantifier body not plain', "'x'.replace(/(a+)bc(d)/, '$1x$2');\n"],
 ];
 
 const invalidCases = [
@@ -742,6 +747,19 @@ const invalidCases = [
     'inline exec numeric index to named group',
     '/(?<foo>foo)/u.exec(str)[1];\n',
     ['unexpected'],
+  ],
+  // prefer-lookaround
+  [
+    'prefer-lookaround',
+    'numbered both-ends capture',
+    "'I love unicorn!'.replace(/(love )unicorn(!)/, '$1u$2');\n",
+    ['preferLookarounds'],
+  ],
+  [
+    'prefer-lookaround',
+    'named both-ends capture',
+    "'x'.replace(/(?<before>love )unicorn(?<after>!)/, '$<before>u$<after>');\n",
+    ['preferLookarounds'],
   ],
 ];
 

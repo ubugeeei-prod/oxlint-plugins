@@ -2709,6 +2709,168 @@ pub(crate) fn has_unnecessary_general_category_key(pattern: &str) -> bool {
     false
 }
 
+/// Reference token that a capturing group expects in a replacement string:
+/// either a numbered backreference (`$N`) or a named one (`$<name>`).
+#[derive(Clone)]
+pub(crate) enum GroupReplacementRef {
+    Numbered(u32),
+    Named(CompactString),
+}
+
+/// Narrow-form structural parse for `prefer-lookaround` (both-ends case).
+///
+/// Recognises a pattern of the exact shape `(B1)MID(B2)` where:
+/// * `(B1)` is a leading capturing group (numbered or `(?<name>...)`),
+/// * `MID` is a non-empty run of "plain" literal bytes,
+/// * `(B2)` is a trailing capturing group (numbered or named),
+/// * there is nothing before `(B1)` and nothing after `(B2)`,
+/// * there are exactly two capturing groups total.
+///
+/// To keep the lookaround conversion provably safe (no overlapping-match
+/// hazards) every byte of `B1`, `MID`, and `B2` must be a *plain* literal —
+/// ASCII alphanumeric, space, or one of a small punctuation set — with no
+/// regex metacharacters, escapes, quantifiers, alternation, anchors,
+/// assertions, classes, or nested groups. In addition the boundary bytes must
+/// differ (`last(B1) != first(MID)` and `last(MID) != first(B2)`) so the
+/// captured text cannot overlap the consumed middle. Under these constraints
+/// `(B1)MID(B2)` with a replacement that re-emits `$1` at the start and `$2`
+/// at the end is equivalent to `(?<=B1)MID(?=B2)`.
+///
+/// Returns the expected replacement reference tokens for the two groups when
+/// the shape matches, else `None`.
+pub(crate) fn prefer_lookaround_groups(
+    pattern: &str,
+) -> Option<(GroupReplacementRef, GroupReplacementRef)> {
+    let bytes = pattern.as_bytes();
+    if bytes.first() != Some(&b'(') {
+        return None;
+    }
+    let mut number = 0u32;
+    // Parse the leading group.
+    let (ref1, after1) = parse_plain_capturing_group(bytes, 0, &mut number)?;
+    // Parse the middle plain run (non-empty), stopping at the next `(`.
+    let mid_start = after1;
+    let mut i = mid_start;
+    while i < bytes.len() && bytes[i] != b'(' {
+        if !is_plain_literal_byte(bytes[i]) {
+            return None;
+        }
+        i += 1;
+    }
+    let mid_end = i;
+    if mid_end == mid_start || mid_end >= bytes.len() {
+        // Empty middle, or no trailing group.
+        return None;
+    }
+    // Parse the trailing group.
+    let (ref2, after2) = parse_plain_capturing_group(bytes, mid_end, &mut number)?;
+    // Nothing may follow the trailing group, and there must be exactly two groups.
+    if after2 != bytes.len() || number != 2 {
+        return None;
+    }
+    // Boundary bytes must differ to rule out overlap.
+    let b1_last = bytes[after1 - 2]; // byte before the closing `)` of group 1
+    let mid_first = bytes[mid_start];
+    let mid_last = bytes[mid_end - 1];
+    let b2_first = bytes[mid_end + group_open_prefix_len(bytes, mid_end)];
+    if b1_last == mid_first || mid_last == b2_first {
+        return None;
+    }
+    Some((ref1, ref2))
+}
+
+/// Length of the opening prefix of a capturing group at `open` (the `(`):
+/// `1` for an anonymous `(`, or `1 + len("?<name>")` for a named group.
+fn group_open_prefix_len(bytes: &[u8], open: usize) -> usize {
+    if bytes.get(open + 1) == Some(&b'?') && bytes.get(open + 2) == Some(&b'<') {
+        // `(?<name>` — find the `>`.
+        if let Some(rel) = bytes[open + 3..].iter().position(|&b| b == b'>') {
+            return 3 + rel + 1;
+        }
+    }
+    1
+}
+
+/// Parses a *plain* capturing group beginning at `open` (which must be `(`).
+/// Increments `*number`. Returns the expected replacement reference and the
+/// index just past the closing `)`, or `None` when the group is not a plain
+/// capturing group (e.g. non-capturing, lookaround, or a body containing any
+/// non-plain byte).
+fn parse_plain_capturing_group(
+    bytes: &[u8],
+    open: usize,
+    number: &mut u32,
+) -> Option<(GroupReplacementRef, usize)> {
+    if bytes.get(open) != Some(&b'(') {
+        return None;
+    }
+    // Reject non-capturing / lookaround / lookbehind prefixes.
+    if bytes.get(open + 1) == Some(&b'?') {
+        // Only `(?<name>` (named capture) is allowed; `(?:`, `(?=`, `(?!`,
+        // `(?<=`, `(?<!` are not capturing in the way we need.
+        if bytes.get(open + 2) != Some(&b'<') {
+            return None;
+        }
+        // `(?<=` / `(?<!` are lookbehind, not capture.
+        if matches!(bytes.get(open + 3), Some(b'=') | Some(b'!')) {
+            return None;
+        }
+    }
+    let prefix = group_open_prefix_len(bytes, open);
+    let name = if prefix > 1 {
+        // Extract the name between `(?<` and `>`.
+        let name_bytes = &bytes[open + 3..open + prefix - 1];
+        Some(CompactString::from(std::str::from_utf8(name_bytes).ok()?))
+    } else {
+        None
+    };
+    let body_start = open + prefix;
+    // Body must be a non-empty run of plain literal bytes terminated by `)`.
+    let mut i = body_start;
+    while i < bytes.len() && bytes[i] != b')' {
+        if !is_plain_literal_byte(bytes[i]) {
+            return None;
+        }
+        i += 1;
+    }
+    if i >= bytes.len() || i == body_start {
+        return None;
+    }
+    *number += 1;
+    let reference = match name {
+        Some(n) => GroupReplacementRef::Named(n),
+        None => GroupReplacementRef::Numbered(*number),
+    };
+    Some((reference, i + 1))
+}
+
+/// A "plain" literal byte that carries no regex special meaning: ASCII
+/// alphanumeric, space, or a member of a small safe punctuation set. Notably
+/// excludes every regex metacharacter (`. * + ? ( ) [ ] { } | ^ $ \`) so a run
+/// of these bytes matches itself verbatim with fixed length.
+fn is_plain_literal_byte(byte: u8) -> bool {
+    byte.is_ascii_alphanumeric()
+        || matches!(
+            byte,
+            b' ' | b'!'
+                | b'@'
+                | b'#'
+                | b'%'
+                | b'&'
+                | b'~'
+                | b'`'
+                | b'\''
+                | b'"'
+                | b':'
+                | b';'
+                | b','
+                | b'/'
+                | b'_'
+                | b'-'
+                | b'='
+        )
+}
+
 /// Narrow-form support for `no-unused-capturing-group`.
 ///
 /// Returns `true` when `pattern` contains at least one capturing group (named
