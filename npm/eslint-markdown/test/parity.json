@@ -16,10 +16,6 @@
     "no-reference-like-urls": {
       "level": "off",
       "note": "Broad divergence detecting inline URLs that collide with definition identifiers."
-    },
-    "no-reversed-media-syntax": {
-      "level": "off",
-      "note": "Broad divergence detecting reversed `(text)[url]` link/image syntax."
     }
   }
 }
