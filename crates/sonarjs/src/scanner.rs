@@ -290,6 +290,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_for_in_statement(&mut self, it: &ForInStatement<'a>) {
         self.check_for_in(it);
+        self.check_no_for_in_iterable(it);
         self.check_redundant_continue(&it.body);
         self.add_cyclomatic_complexity();
         let label = self.pending_loop_label.take();

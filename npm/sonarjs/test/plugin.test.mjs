@@ -169,6 +169,7 @@ describe('sonarjs plugin shape', () => {
       'empty-string-repetition',
       'no-misleading-array-reverse',
       'no-alphabetical-sort',
+      'no-for-in-iterable',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -244,6 +245,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['empty-string-repetition']).toBe('object');
     expect(typeof plugin.rules['no-misleading-array-reverse']).toBe('object');
     expect(typeof plugin.rules['no-alphabetical-sort']).toBe('object');
+    expect(typeof plugin.rules['no-for-in-iterable']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -327,6 +329,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/empty-string-repetition']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-misleading-array-reverse']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-alphabetical-sort']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-for-in-iterable']).toBe('error');
   });
 });
 
@@ -1974,5 +1977,42 @@ describe('no-alphabetical-sort rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-alphabetical-sort)');
+  });
+});
+
+describe('no-for-in-iterable rule', () => {
+  it('reports a for...in loop over an array literal', () => {
+    const source = 'for (const i in [1, 2, 3]) {\n}';
+    const reports = runRule('no-for-in-iterable', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noForInIterable');
+  });
+
+  it('reports a for...in loop over a known array variable', () => {
+    const source = 'const a = [1, 2, 3];\nfor (const i in a) {\n}';
+    const reports = runRule('no-for-in-iterable', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noForInIterable');
+  });
+
+  it('does not report a for...in loop over an object literal', () => {
+    const source = 'const obj = { a: 1 };\nfor (const k in obj) {\n}';
+    const reports = runRule('no-for-in-iterable', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a for...of loop over an array literal', () => {
+    const source = 'for (const x of [1, 2, 3]) {\n}';
+    const reports = runRule('no-for-in-iterable', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-for-in-iterable through the CLI', () => {
+    const source = 'for (const i in [1, 2, 3]) {\n}';
+    const result = runOxlint('no-for-in-iterable', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-for-in-iterable)');
   });
 });
