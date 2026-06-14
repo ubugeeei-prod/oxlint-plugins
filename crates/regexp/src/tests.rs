@@ -3791,30 +3791,91 @@ mod no_misleading_unicode_character {
     use super::*;
 
     #[test]
-    fn reports_classes_containing_zwj() {
-        // ZWJ-joined family emoji inside a character class. The U+200D bytes
-        // `0xE2 0x80 0x8D` appear inside the class body, so the engine
-        // matches the ZWJ as a separate atom and the grapheme cluster cannot
-        // be matched as a unit.
+    fn reports_multi_code_point_class_elements() {
+        // ZWJ-joined family emoji placed literally in a class: the class
+        // matches each code point separately, so the grapheme cannot be
+        // matched as a unit ("Multi").
         assert_eq!(
             rule_ids_for("const a = /[👨‍👩‍👦]/u;", "no-misleading-unicode-character").as_slice(),
             &["unexpected"]
         );
-        // Bare ZWJ in a class is also misleading.
+        // Combining sequence `❇` + U+FE0F variation selector — two code points.
         assert_eq!(
-            rule_ids_for("const a = /[‍]/u;", "no-misleading-unicode-character").as_slice(),
+            rule_ids_for("const a = /[❇️]/;", "no-misleading-unicode-character").as_slice(),
+            &["unexpected"]
+        );
+        // Astral char as a surrogate pair in a class without the `u` flag
+        // ("Surrogate").
+        assert_eq!(
+            rule_ids_for("const a = /[👍]foo/;", "no-misleading-unicode-character").as_slice(),
             &["unexpected"]
         );
     }
 
     #[test]
-    fn ignores_classes_without_zwj_bytes() {
+    fn reports_multi_code_point_quantifier_target() {
+        // Quantifier on a surrogate pair in non-`u` mode: the `+` applies only
+        // to the trailing surrogate.
+        assert_eq!(
+            rule_ids_for("const a = /👍+/;", "no-misleading-unicode-character").as_slice(),
+            &["unexpected"]
+        );
+    }
+
+    #[test]
+    fn ignores_single_code_point_elements() {
         // ASCII-only class.
         assert!(rule_ids_for("const a = /[abc]/u;", "no-misleading-unicode-character").is_empty());
-        // Single-codepoint emoji without ZWJ.
+        // Single-code-point astral emoji under the `u` flag.
         assert!(rule_ids_for("const a = /[😀]/u;", "no-misleading-unicode-character").is_empty());
-        // ZWJ outside any class — not flagged by the narrow port.
+        assert!(rule_ids_for("const a = /[👍]/u;", "no-misleading-unicode-character").is_empty());
+        // Lone ZWJ in a class is a single code point — valid.
+        assert!(rule_ids_for("const a = /[‍]/u;", "no-misleading-unicode-character").is_empty());
+        assert!(rule_ids_for("const a = /[‍]/;", "no-misleading-unicode-character").is_empty());
+        // Lone combining mark / variation selector — single code point.
+        assert!(rule_ids_for("const a = /[́]/;", "no-misleading-unicode-character").is_empty());
+        assert!(rule_ids_for("const a = /[️]/;", "no-misleading-unicode-character").is_empty());
+        // Escaped surrogate pair: the raw class text is ASCII, never a
+        // multi-code-point grapheme — valid even without the `u` flag.
+        assert!(
+            rule_ids_for(
+                "const a = /[\\uD83D\\uDC4D]/;",
+                "no-misleading-unicode-character"
+            )
+            .is_empty()
+        );
+        // Astral quantifier target under the `u` flag — single code point.
+        assert!(rule_ids_for("const a = /👍+/u;", "no-misleading-unicode-character").is_empty());
+        // ZWJ outside any class/quantifier — not flagged.
         assert!(rule_ids_for("const a = /a‍b/u;", "no-misleading-unicode-character").is_empty());
+        // Escaped surrogate pair with the `u` flag — single code point.
+        assert!(
+            rule_ids_for(
+                "const a = /[\\uD83D\\uDC4D]/u;",
+                "no-misleading-unicode-character"
+            )
+            .is_empty()
+        );
+        // v-mode: astral char (1 code point), `\q{}` string disjunction, and
+        // nested classes are all ignored / single-code-point.
+        assert!(rule_ids_for("const a = /[👍]/v;", "no-misleading-unicode-character").is_empty());
+        assert!(
+            rule_ids_for("const a = /[\\q{👶🏻}]/v;", "no-misleading-unicode-character").is_empty()
+        );
+        assert!(
+            rule_ids_for(
+                "const a = /[🇯\\q{abc}🇵]/v;",
+                "no-misleading-unicode-character"
+            )
+            .is_empty()
+        );
+        assert!(
+            rule_ids_for(
+                "const a = /[🇯[A--B]🇵]/v;",
+                "no-misleading-unicode-character"
+            )
+            .is_empty()
+        );
     }
 }
 

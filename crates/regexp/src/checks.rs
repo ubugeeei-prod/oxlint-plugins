@@ -18,13 +18,13 @@ use crate::helpers::{
     first_strict_violation, first_surrogate_pair_escape, first_unicode_escape_as_hex,
     first_uppercase_hex_escape, first_useless_escape, first_useless_one_quantifier, group_prefix,
     has_assertion_contradiction, has_mergeable_quantifier_concatenation,
-    has_misleading_capturing_group, has_preferable_set_operation, has_simplifiable_set_operation,
-    has_standalone_backslash, has_super_linear_backtracking, has_super_linear_move,
-    has_unnecessary_general_category_key, has_useless_set_operand, has_useless_word_boundary,
-    mention_char, pattern_ends_with_lazy_quantifier,
-    pattern_has_capturing_group_and_no_backreference, pattern_has_empty_string_literal,
-    pattern_is_safe_to_add_i_flag, prefer_lookaround_groups, skip_escape, sorted_flags,
-    string_literal_value_with_span,
+    has_misleading_capturing_group, has_misleading_quantifier_unicode,
+    has_preferable_set_operation, has_simplifiable_set_operation, has_standalone_backslash,
+    has_super_linear_backtracking, has_super_linear_move, has_unnecessary_general_category_key,
+    has_useless_set_operand, has_useless_word_boundary, mention_char,
+    pattern_ends_with_lazy_quantifier, pattern_has_capturing_group_and_no_backreference,
+    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, prefer_lookaround_groups,
+    skip_escape, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -1053,7 +1053,11 @@ impl<'a> Scanner<'a> {
         used_as_whole: bool,
     ) {
         let mut analysis = PatternAnalysis::new();
-        analysis.scan(pattern, flags.contains('v'));
+        analysis.scan(
+            pattern,
+            flags.contains('v'),
+            flags.contains('u') || flags.contains('v'),
+        );
 
         // `strict` (narrow form): only fire on non-`u`/non-`v` patterns.
         // The `u`/`v` flags turn on strict parsing automatically, so those
@@ -1269,7 +1273,12 @@ impl<'a> Scanner<'a> {
         if analysis.has_useless_lazy {
             self.report("no-useless-lazy", "unexpected", span);
         }
-        if analysis.has_misleading_unicode_character {
+        if analysis.has_misleading_unicode_character
+            || has_misleading_quantifier_unicode(
+                pattern,
+                flags.contains('u') || flags.contains('v'),
+            )
+        {
             self.report("no-misleading-unicode-character", "unexpected", span);
         }
 

@@ -8887,7 +8887,7 @@
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Narrow byte-walker port that flags a character class whose body contains a raw-UTF-8 Zero Width Joiner (U+200D, bytes `0xE2 0x80 0x8D`). A ZWJ inside a class is always misleading: the engine matches it as a separate atom, so a grapheme like `\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc66` (man + ZWJ + woman + ZWJ + boy) cannot be matched as a single unit. Equivalent `\\u200D`, `\\u{200D}`, regional-indicator flag pairs, and other multi-codepoint grapheme shapes are intentionally deferred."
+        "notes": "Byte-walker port that flags a character-class element or quantifier target only when the engine matches it as MULTIPLE code points: a multi-code-point grapheme placed literally in a class or after a quantifier (combining/variation-selector/ZWJ/regional-indicator/skin-tone sequence, upstream 'Multi'), or a single astral character seen as a surrogate pair in non-`u`/`v` mode (upstream 'Surrogate'). A single code point \u2014 a lone ZWJ (U+200D), combining mark, variation selector, lone surrogate, or an astral char under the `u`/`v` flag \u2014 never flags, matching upstream's per-grapheme `getProblem`. Only literal code points are inspected; escapes (`\\uXXXX`, `\\u{...}`), v-mode `\\q{...}` string disjunctions, and nested classes are skipped because their raw source is ASCII. Grapheme clustering is approximated with the joiner/modifier ranges that turn several code points into one user-perceived character; when uncertain a code point is its own grapheme, which can only narrow detection."
       },
       {
         "name": "no-missing-g-flag",

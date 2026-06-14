@@ -168,6 +168,9 @@ const validCases = [
   ['no-misleading-unicode-character', 'ascii class', 'const re = /[abc]/u;\n'],
   ['no-misleading-unicode-character', 'bmp emoji single', 'const re = /[😀]/u;\n'],
   ['no-misleading-unicode-character', 'zwj outside class', 'const re = /a‍b/u;\n'],
+  ['no-misleading-unicode-character', 'lone zwj in class', 'const re = /[‍]/u;\n'],
+  ['no-misleading-unicode-character', 'single astral in u class', 'const re = /[👍]/u;\n'],
+  ['no-misleading-unicode-character', 'quantifier on astral in u', 'const re = /👍+/u;\n'],
   // prefer-unicode-codepoint-escapes
   [
     'prefer-unicode-codepoint-escapes',
@@ -592,7 +595,18 @@ const invalidCases = [
     'const re = /[👨‍👩‍👦]/u;\n',
     ['unexpected'],
   ],
-  ['no-misleading-unicode-character', 'bare zwj in class', 'const re = /[‍]/u;\n', ['unexpected']],
+  [
+    'no-misleading-unicode-character',
+    'astral as surrogate pair in non-u class',
+    'const re = /[👍]foo/;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-misleading-unicode-character',
+    'quantifier on surrogate pair in non-u',
+    'const re = /👍+/;\n',
+    ['unexpected'],
+  ],
   // no-standalone-backslash
   ['no-standalone-backslash', '\\c at end of pattern', 'const re = /\\c/;\n', ['unexpected']],
   ['no-standalone-backslash', '\\c followed by digit', 'const re = /\\c1/;\n', ['unexpected']],
