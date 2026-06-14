@@ -113,6 +113,18 @@ const ruleMeta = Object.freeze({
         'Comma-separated tables in `FROM` are an implicit cross join. Use explicit `JOIN ... ON ...` so the join condition lives next to the join.',
     },
   },
+  'no-order-by-ordinal': {
+    type: 'suggestion',
+    description:
+      'Disallow `ORDER BY <position>` (positional/ordinal references); use the column name or alias instead',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noOrderByOrdinal:
+        '`ORDER BY <position>` silently breaks when the SELECT list changes. Use the column name or alias instead.',
+    },
+  },
   'no-rename-column': {
     type: 'problem',
     description:
