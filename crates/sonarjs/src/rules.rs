@@ -12,6 +12,7 @@ mod constructor_for_side_effects;
 mod cyclomatic_complexity;
 mod duplicates_in_character_class;
 mod elseif_without_else;
+mod empty_string_repetition;
 mod fixme_tag;
 mod for_in;
 mod generator_without_yield;

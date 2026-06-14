@@ -3727,3 +3727,84 @@ fn does_not_report_single_character_alternation_quantified_term() {
     let diagnostics = scan("single-character-alternation", "const re = /a+|b/;");
     assert!(diagnostics.is_empty());
 }
+
+// empty-string-repetition tests
+
+#[test]
+fn reports_empty_string_repetition_star_on_star_group() {
+    let diagnostics = scan("empty-string-repetition", "const re = /(a*)*/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "empty-string-repetition");
+    assert_eq!(diagnostics[0].message_id, "emptyStringRepetition");
+}
+
+#[test]
+fn reports_empty_string_repetition_plus_on_optional_group() {
+    let diagnostics = scan("empty-string-repetition", "const re = /(a?)+/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyStringRepetition");
+}
+
+#[test]
+fn reports_empty_string_repetition_star_on_empty_ignore_group() {
+    let diagnostics = scan("empty-string-repetition", "const re = /(?:)*/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyStringRepetition");
+}
+
+#[test]
+fn reports_empty_string_repetition_plus_on_empty_capturing_group() {
+    let diagnostics = scan("empty-string-repetition", "const re = /()+/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyStringRepetition");
+}
+
+#[test]
+fn reports_empty_string_repetition_star_on_disjunction_with_empty_alt() {
+    let diagnostics = scan("empty-string-repetition", "const re = /(?:|a)*/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyStringRepetition");
+}
+
+#[test]
+fn reports_empty_string_repetition_plus_on_group_with_star() {
+    let diagnostics = scan("empty-string-repetition", "const re = /(a*)+/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyStringRepetition");
+}
+
+#[test]
+fn does_not_report_empty_string_repetition_star_on_literal() {
+    let diagnostics = scan("empty-string-repetition", "const re = /a*/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_empty_string_repetition_star_on_nonempty_group() {
+    let diagnostics = scan("empty-string-repetition", "const re = /(a+)*/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_empty_string_repetition_optional_on_literal() {
+    let diagnostics = scan("empty-string-repetition", "const re = /a?/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_empty_string_repetition_optional_on_empty_group() {
+    let diagnostics = scan("empty-string-repetition", "const re = /(?:)?/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_empty_string_repetition_plus_on_multichar_group() {
+    let diagnostics = scan("empty-string-repetition", "const re = /(abc)+/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_empty_string_repetition_plus_on_char_class() {
+    let diagnostics = scan("empty-string-repetition", "const re = /[a-z]+/;");
+    assert!(diagnostics.is_empty());
+}
