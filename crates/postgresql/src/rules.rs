@@ -31,6 +31,7 @@ mod no_having_without_group_by;
 mod no_identifier_too_long;
 mod no_implicit_join;
 mod no_leading_wildcard_like;
+mod no_money_type;
 mod no_natural_join;
 mod no_not_in_subquery;
 mod no_on_delete_cascade;
@@ -192,6 +193,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-identifier-too-long",
     "no-implicit-join",
     "no-leading-wildcard-like",
+    "no-money-type",
     "no-natural-join",
     "no-not-in-subquery",
     "no-on-delete-cascade",
@@ -370,6 +372,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-leading-wildcard-like",
         run: no_leading_wildcard_like::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-money-type",
+        run: no_money_type::run,
         uses_parse_error: false,
     },
     RuleDef {

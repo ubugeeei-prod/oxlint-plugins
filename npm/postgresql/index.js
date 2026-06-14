@@ -424,6 +424,17 @@ const ruleMeta = Object.freeze({
         '`LIKE`/`ILIKE` patterns that begin with `%` cannot use a B-tree index and force a sequential scan. If you need substring search, use a `pg_trgm` GIN index, full-text search, or rework the schema so the prefix is indexable.',
     },
   },
+  'no-money-type': {
+    type: 'problem',
+    description: 'Disallow the `money` column type',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noMoney:
+        'Avoid `money`. Its output format and precision depend on `lc_monetary`, so the same row looks different on different servers and round-trips badly. Store amounts as `numeric` and keep the currency in a separate column.',
+    },
+  },
   'no-natural-join': {
     type: 'problem',
     description: 'Disallow `NATURAL JOIN`',
