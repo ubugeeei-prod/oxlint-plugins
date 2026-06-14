@@ -4,8 +4,8 @@ use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{
     BraceQuantifierShape, class_bracket_changes_meaning, class_contains_backspace_escape,
-    class_contains_zwj, class_first_collapsible_run, class_first_duplicate_literal,
-    class_first_obscure_range, class_has_case_pair, class_has_unsorted_literal_elements,
+    class_first_collapsible_run, class_first_duplicate_literal, class_first_obscure_range,
+    class_has_case_pair, class_has_misleading_unicode, class_has_unsorted_literal_elements,
     class_has_useless_range, class_has_useless_string_literal, class_is_digit_range,
     class_is_useless_single_literal, class_is_word_char_set, class_matches_anything,
     class_negated_shorthand_letter, find_class_end, find_class_end_nested,
@@ -233,9 +233,14 @@ pub(crate) struct PatternAnalysis {
     /// modifier. The lazy modifier is a no-op because the engine always
     /// matches exactly `n` repetitions. `no-useless-lazy`.
     pub(crate) has_useless_lazy: bool,
-    /// Character class body contains a ZWJ (U+200D) in raw UTF-8, which
-    /// breaks the grapheme semantics of any ZWJ-joined sequence it might
-    /// have been intended to match. `no-misleading-unicode-character`.
+    /// A character class or quantifier element is a single *unit* that the
+    /// regex engine actually matches as MULTIPLE Unicode code points — either
+    /// a multi-code-point grapheme (combining / ZWJ / regional-indicator
+    /// sequence) placed literally in a class, or an astral character that is
+    /// seen as a surrogate pair (two UTF-16 code units) in non-`u`/`v` mode.
+    /// A class/quantifier element consisting of a *single* code point (a lone
+    /// ZWJ, combining mark, variation selector, or an astral char under the
+    /// `u`/`v` flag) is NOT flagged. `no-misleading-unicode-character`.
     pub(crate) has_misleading_unicode_character: bool,
     /// Bitmask of capturing-group indices (1-based, bits 1..=31) whose closing
     /// `)` is immediately followed by `?` or `*` — meaning the group's capture
@@ -260,7 +265,12 @@ impl PatternAnalysis {
     /// v-mode allows nested `[...]` classes (set-operation operands); in
     /// non-v mode every unescaped `[` inside a class is a literal character
     /// and must not be treated as opening a nested class.
-    pub(crate) fn scan(&mut self, pattern: &str, v_mode: bool) {
+    ///
+    /// `unicode_mode` must be `true` when the regex carries either the `u` or
+    /// `v` flag. Under those flags an astral character is a single code point,
+    /// so it is no longer "misleading"; without them the same astral character
+    /// is matched as a surrogate pair (two UTF-16 code units).
+    pub(crate) fn scan(&mut self, pattern: &str, v_mode: bool, unicode_mode: bool) {
         let bytes = pattern.as_bytes();
         let mut groups = SmallVec::<[GroupState; 8]>::new();
         groups.push(GroupState::top_level());
@@ -372,7 +382,7 @@ impl PatternAnalysis {
                             self.has_negation_shorthand = true;
                         }
                         if !self.has_misleading_unicode_character
-                            && class_contains_zwj(bytes, index)
+                            && class_has_misleading_unicode(bytes, index, v_mode, unicode_mode)
                         {
                             self.has_misleading_unicode_character = true;
                         }

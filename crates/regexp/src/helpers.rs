@@ -1745,22 +1745,257 @@ pub(crate) fn class_negated_shorthand_letter(bytes: &[u8], open: usize) -> Optio
     }
 }
 
-/// Returns `true` when the character class at `open` contains a Zero
-/// Width Joiner (U+200D) in its raw UTF-8 form (bytes `0xE2 0x80 0x8D`).
+/// A combining mark or other code point that, in `Intl.Segmenter` terms,
+/// attaches to a preceding base code point to form one grapheme cluster
+/// instead of starting a new one. We approximate the (large) Unicode grapheme
+/// algorithm with the cases that matter for `no-misleading-unicode-character`:
+/// the joiners and modifiers that turn several code points into a single
+/// user-perceived character (combining marks, variation selectors, ZWJ, and
+/// emoji modifiers). This is intentionally conservative — when in doubt a code
+/// point is treated as its own grapheme, which can only *narrow* detection and
+/// therefore never produces a false positive.
+fn is_grapheme_extend(ch: char) -> bool {
+    matches!(ch as u32,
+        // Combining Diacritical Marks and related combining blocks.
+        0x0300..=0x036F   // Combining Diacritical Marks
+        | 0x0483..=0x0489 // Cyrillic combining
+        | 0x0591..=0x05BD | 0x05BF | 0x05C1 | 0x05C2 | 0x05C4 | 0x05C5 | 0x05C7 // Hebrew
+        | 0x0610..=0x061A | 0x064B..=0x065F | 0x0670 // Arabic combining
+        | 0x06D6..=0x06DC | 0x06DF..=0x06E4 | 0x06E7 | 0x06E8 | 0x06EA..=0x06ED
+        | 0x1AB0..=0x1AFF // Combining Diacritical Marks Extended
+        | 0x1DC0..=0x1DFF // Combining Diacritical Marks Supplement
+        | 0x20D0..=0x20FF // Combining Diacritical Marks for Symbols
+        | 0xFE00..=0xFE0F // Variation Selectors
+        | 0xFE20..=0xFE2F // Combining Half Marks
+        | 0x200D          // Zero Width Joiner
+        | 0xE0100..=0xE01EF // Variation Selectors Supplement
+        | 0x1F3FB..=0x1F3FF // Emoji modifiers (skin-tone)
+    )
+}
+
+/// Returns `true` for the regional-indicator symbols (U+1F1E6..=U+1F1FF) that
+/// combine in pairs to form flag emoji such as 🇯🇵.
+fn is_regional_indicator(ch: char) -> bool {
+    matches!(ch as u32, 0x1F1E6..=0x1F1FF)
+}
+
+/// Returns `true` when the character class at `open` contains an element that
+/// the regex engine actually matches as MULTIPLE code points — i.e. a genuine
+/// "misleading" character. This mirrors the upstream
+/// `no-misleading-unicode-character` rule, which flags a class element only
+/// when it is a multi-code-point grapheme (a combining / ZWJ / regional
+/// sequence, "Multi") or, in non-`u`/`v` mode, a single astral character that
+/// is seen as a surrogate pair ("Surrogate").
 ///
-/// A ZWJ inside a character class is always misleading: the class matches the
-/// ZWJ as a separate atom, so a grapheme such as a ZWJ-joined family emoji
-/// (man, ZWJ, woman, ZWJ, boy) cannot be matched as a single unit. The narrow
-/// form of `no-misleading-unicode-character` flags this raw-UTF-8 case; the
-/// equivalent `\\u200D`, `\\u{200D}`, or v-mode `\\q{}` forms are
-/// intentionally deferred because they need additional escape decoding.
-pub(crate) fn class_contains_zwj(bytes: &[u8], open: usize) -> bool {
+/// A class element consisting of a SINGLE code point — a lone ZWJ (U+200D),
+/// combining mark, variation selector, lone surrogate (only expressible via an
+/// escape, which we skip), or an astral character under the `u`/`v` flag — is
+/// never flagged.
+///
+/// Only LITERAL code points in the class body are considered. Escape sequences
+/// (`\uXXXX`, `\u{...}`, `\xHH`, etc.), v-mode string disjunctions (`\q{...}`),
+/// and nested classes (`[...]`/`[a--b]`) are skipped: their raw source text is
+/// ASCII and never forms a multi-code-point grapheme, exactly as upstream's
+/// segmentation of the raw class text behaves.
+pub(crate) fn class_has_misleading_unicode(
+    bytes: &[u8],
+    open: usize,
+    v_mode: bool,
+    unicode_mode: bool,
+) -> bool {
     debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
-    let Some(end) = find_class_end(bytes, open) else {
+    let end = if v_mode {
+        find_class_end_nested(bytes, open)
+    } else {
+        find_class_end(bytes, open)
+    };
+    let Some(end) = end else {
         return false;
     };
-    let body = &bytes[open + 1..end];
-    body.windows(3).any(|w| w == [0xE2, 0x80, 0x8D])
+
+    // Body bytes, skipping a leading `^` for a negated class.
+    let mut index = open + 1;
+    if bytes.get(index).copied() == Some(b'^') {
+        index += 1;
+    }
+
+    // We walk the body grouping consecutive literal code points into grapheme
+    // clusters. The cluster is flushed (and inspected) whenever a non-literal
+    // boundary is hit (escape, nested class, end of body) or a new base code
+    // point begins. A cluster is a "problem" when it spans >= 2 code points
+    // (a multi-code-point grapheme, "Multi") or is a single astral code point
+    // in non-`u`/`v` mode (matched as a surrogate pair, "Surrogate").
+    let mut cluster_code_points: u32 = 0;
+    let mut cluster_base_astral = false;
+    let mut prev_char: Option<char> = None;
+
+    let cluster_is_problem = |code_points: u32, base_astral: bool| -> bool {
+        code_points >= 2 || (code_points == 1 && base_astral && !unicode_mode)
+    };
+
+    while index < end {
+        let byte = bytes[index];
+        if byte == b'\\' || (v_mode && byte == b'[') {
+            // Escape sequence (ASCII in the raw) or a nested-class operand
+            // (ignored upstream): both end the current cluster.
+            if cluster_is_problem(cluster_code_points, cluster_base_astral) {
+                return true;
+            }
+            cluster_code_points = 0;
+            cluster_base_astral = false;
+            prev_char = None;
+            if byte == b'\\' {
+                index = skip_escape(bytes, index);
+            } else {
+                match find_class_end_nested(bytes, index) {
+                    Some(inner_end) => index = inner_end + 1,
+                    None => index += 1,
+                }
+            }
+            continue;
+        }
+
+        // Decode one literal code point from the UTF-8 body.
+        let Some(ch) = std::str::from_utf8(&bytes[index..end])
+            .ok()
+            .and_then(|s| s.chars().next())
+        else {
+            // Invalid UTF-8 (should not happen for valid source); bail.
+            return false;
+        };
+
+        let extends = cluster_code_points > 0
+            && (is_grapheme_extend(ch)
+                || (is_regional_indicator(ch)
+                    && cluster_code_points == 1
+                    && prev_char.is_some_and(is_regional_indicator)));
+
+        if extends {
+            cluster_code_points += 1;
+        } else {
+            // A new base code point: flush the previous cluster, start a new
+            // one.
+            if cluster_is_problem(cluster_code_points, cluster_base_astral) {
+                return true;
+            }
+            cluster_code_points = 1;
+            cluster_base_astral = (ch as u32) > 0xFFFF;
+        }
+
+        prev_char = Some(ch);
+        index += ch.len_utf8();
+    }
+
+    cluster_is_problem(cluster_code_points, cluster_base_astral)
+}
+
+/// Returns `true` when the pattern applies a quantifier (`*`, `+`, `?`, or a
+/// `{...}` brace) to the trailing code point of a multi-code-point grapheme,
+/// so the quantifier silently repeats only the last code point instead of the
+/// whole user-perceived character. This is the quantifier arm of
+/// `no-misleading-unicode-character` (upstream `quantifierMulti` /
+/// `quantifierSurrogate`).
+///
+/// The grapheme immediately to the left of the quantifier is flagged when it
+/// spans >= 2 literal code points ("Multi"), or is a single astral code point
+/// in non-`u`/`v` mode ("Surrogate"). A quantifier on a single non-astral code
+/// point — or on any astral code point under the `u`/`v` flag — is fine. Only
+/// LITERAL code points are considered; a quantifier directly after an escape
+/// (e.g. `\u{1F44D}+`) is never misleading because the escaped atom is the
+/// whole code point.
+pub(crate) fn has_misleading_quantifier_unicode(pattern: &str, unicode_mode: bool) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => match find_class_end(bytes, index) {
+                Some(end) => index = end + 1,
+                None => index += 1,
+            },
+            b'*' | b'+' | b'?' | b'{' => {
+                // A quantifier byte. (For `{` we conservatively treat it as a
+                // quantifier; a literal `{` only triggers a false *positive*
+                // when preceded by a multi-code-point grapheme, which is
+                // extremely unlikely and still describes a misleading intent.)
+                if quantifier_target_is_misleading(bytes, index, unicode_mode) {
+                    return true;
+                }
+                index += 1;
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Given the byte index of a quantifier, returns `true` when the immediately
+/// preceding atom is the trailing code point of a multi-code-point grapheme
+/// (or, in non-`u`/`v` mode, a single astral code point). Walks backward over
+/// the run of literal code points ending just before the quantifier and
+/// inspects the last grapheme cluster of that run.
+fn quantifier_target_is_misleading(bytes: &[u8], quant: usize, unicode_mode: bool) -> bool {
+    if quant == 0 {
+        return false;
+    }
+    // The atom the quantifier applies to ends at `quant`. We walk the prefix
+    // text right-to-left, one code point at a time.
+    let Ok(prefix_str) = std::str::from_utf8(&bytes[..quant]) else {
+        return false;
+    };
+
+    // The last char before the quantifier is the quantifier's target atom.
+    let Some(last_char) = prefix_str.chars().next_back() else {
+        return false;
+    };
+    // If the target atom is the close of a group/class, the quantifier applies
+    // to the whole group/class, not a single code point — never misleading.
+    if matches!(last_char, ')' | ']') {
+        return false;
+    }
+
+    // Walk backward from the target atom, accumulating the grapheme cluster it
+    // belongs to: the target code point plus any preceding base + combining /
+    // ZWJ / regional members. Clustering stops at the first char that does not
+    // extend the cluster. We also count the contiguous backslash run that
+    // begins immediately left of the cluster: an odd run escapes the leftmost
+    // (base) code point, meaning the quantifier's atom is an escape sequence
+    // and is therefore never misleading.
+    let mut cluster_code_points: u32 = 1;
+    let mut base_char = last_char;
+    let mut chars_left = prefix_str[..prefix_str.len() - last_char.len_utf8()].chars();
+
+    while let Some(ch) = chars_left.next_back() {
+        // `ch` (to the left) joins the cluster when the code point to its right
+        // is a grapheme-extend, or when both are regional indicators.
+        let right_extends = is_grapheme_extend(base_char)
+            || (is_regional_indicator(base_char) && is_regional_indicator(ch));
+        let is_boundary = matches!(
+            ch,
+            '(' | ')' | '[' | ']' | '|' | '*' | '+' | '?' | '{' | '}' | '\\'
+        ) || !right_extends;
+        if is_boundary {
+            // Cluster boundary. If `ch` is a backslash, count its run to learn
+            // whether the base code point is escaped (odd run => escape => the
+            // quantifier atom is an escape sequence, never misleading).
+            if ch == '\\' {
+                let mut backslashes = 1u32;
+                while chars_left.next_back() == Some('\\') {
+                    backslashes += 1;
+                }
+                if backslashes % 2 == 1 {
+                    return false;
+                }
+            }
+            break;
+        }
+        cluster_code_points += 1;
+        base_char = ch;
+    }
+
+    cluster_code_points >= 2
+        || (cluster_code_points == 1 && (base_char as u32) > 0xFFFF && !unicode_mode)
 }
 
 /// Returns `true` when the pattern contains a standalone backslash — a `\c`
