@@ -5,11 +5,13 @@
 use oxc_ast::ast::{
     ArrowFunctionExpression, AssignmentExpression, BinaryExpression, BindingIdentifier,
     BlockStatement, CallExpression, CatchClause, Class, ConditionalExpression, DoWhileStatement,
-    ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function, FunctionBody,
-    IdentifierReference, IfStatement, JSXElement, JSXFragment, LabeledStatement, LogicalExpression,
-    NewExpression, Program, RegExpLiteral, ReturnStatement, StaticMemberExpression, SwitchCase,
-    SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType, TemplateLiteral,
-    TryStatement, UnaryExpression, WhileStatement, YieldExpression,
+    ExportAllDeclaration, ExportNamedDeclaration, ExpressionStatement, ForInStatement,
+    ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
+    ImportDeclaration, ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment,
+    LabeledStatement, LogicalExpression, NewExpression, Program, RegExpLiteral, ReturnStatement,
+    StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement, TSIntersectionType,
+    TSPropertySignature, TSUnionType, TemplateLiteral, TryStatement, UnaryExpression,
+    WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -58,6 +60,11 @@ pub(crate) struct Scanner<'a> {
     /// Span-start offsets of functions/arrows that are IIFEs (callee of a call);
     /// `max-lines-per-function` never reports these.
     pub(crate) iife_function_starts: SmallVec<[u32; 8]>,
+    /// (value, span) of every string literal seen, for `no-duplicate-string`.
+    pub(crate) string_literals: SmallVec<[(&'a str, Span); 32]>,
+    /// Span-start offsets of string literals in excluded positions (import/export
+    /// sources, JSX attribute values) that `no-duplicate-string` must skip.
+    pub(crate) excluded_string_starts: SmallVec<[u32; 16]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -104,6 +111,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_sonar_comments(&it.comments);
         self.check_no_same_line_conditional(&it.body);
         walk::walk_program(self, it);
+        self.finalize_no_duplicate_string();
     }
 
     fn visit_block_statement(&mut self, it: &BlockStatement<'a>) {
@@ -264,6 +272,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         walk::walk_reg_exp_literal(self, it);
     }
 
+    fn visit_string_literal(&mut self, it: &StringLiteral<'a>) {
+        self.record_string_literal(it);
+        walk::walk_string_literal(self, it);
+    }
+
     fn visit_static_member_expression(&mut self, it: &StaticMemberExpression<'a>) {
         self.check_no_exclusive_tests(it);
         self.check_no_skipped_tests_member(it);
@@ -332,6 +345,35 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_jsx_fragment(&mut self, it: &JSXFragment<'a>) {
         self.mark_jsx();
         walk::walk_jsx_fragment(self, it);
+    }
+
+    fn visit_jsx_attribute(&mut self, it: &JSXAttribute<'a>) {
+        if let Some(JSXAttributeValue::StringLiteral(lit)) = &it.value {
+            self.exclude_string(lit);
+        }
+        walk::walk_jsx_attribute(self, it);
+    }
+
+    fn visit_import_declaration(&mut self, it: &ImportDeclaration<'a>) {
+        self.exclude_string(&it.source);
+        walk::walk_import_declaration(self, it);
+    }
+
+    fn visit_export_named_declaration(&mut self, it: &ExportNamedDeclaration<'a>) {
+        if let Some(source) = &it.source {
+            self.exclude_string(source);
+        }
+        walk::walk_export_named_declaration(self, it);
+    }
+
+    fn visit_export_all_declaration(&mut self, it: &ExportAllDeclaration<'a>) {
+        self.exclude_string(&it.source);
+        walk::walk_export_all_declaration(self, it);
+    }
+
+    fn visit_import_expression(&mut self, it: &ImportExpression<'a>) {
+        self.exclude_string_expression(&it.source);
+        walk::walk_import_expression(self, it);
     }
 
     fn visit_catch_clause(&mut self, it: &CatchClause<'a>) {

@@ -146,6 +146,7 @@ describe('sonarjs plugin shape', () => {
       'max-lines',
       'nested-control-flow',
       'max-lines-per-function',
+      'no-duplicate-string',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -199,6 +200,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['max-lines']).toBe('object');
     expect(typeof plugin.rules['nested-control-flow']).toBe('object');
     expect(typeof plugin.rules['max-lines-per-function']).toBe('object');
+    expect(typeof plugin.rules['no-duplicate-string']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -254,6 +256,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/max-lines']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/nested-control-flow']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/max-lines-per-function']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-duplicate-string']).toBe('error');
   });
 });
 
@@ -428,6 +431,14 @@ describe('sonarjs rules through direct adapter harness', () => {
     const reports = runRule('no-tab', source);
     expect(reports).toHaveLength(1);
     expect(reports[0].messageId).toBe('noTab');
+  });
+
+  it('reports no-duplicate-string through the adapter with custom threshold', () => {
+    // "hello wrld" = 10 chars, has a space → qualifies; appears twice; threshold 2
+    const source = 'const a = "hello wrld"; const b = "hello wrld";';
+    const reports = runRule('no-duplicate-string', source, { options: [{ threshold: 2 }] });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('duplicateString');
   });
 });
 
@@ -1178,5 +1189,16 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     const source = 'function f() { return 1; }';
     const { diagnostics } = runOxlint('max-lines-per-function', source);
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-duplicate-string through the CLI', () => {
+    // "hello wrld" = 10 chars, has a space → qualifies; appears 3× (default threshold 3)
+    const src = 'const a = "hello wrld"; const b = "hello wrld"; const c = "hello wrld";';
+    const result = runOxlint('no-duplicate-string', src);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-duplicate-string)');
   });
 });
