@@ -11,14 +11,20 @@ const MDAST_RULES: &[&str] = &[
     "no-duplicate-headings",
     "no-empty-definitions",
     "no-missing-atx-heading-space",
+    "no-missing-label-refs",
     "no-unused-definitions",
     "require-alt-text",
 ];
 
 // Parse the source into an mdast tree with the same constructs upstream enables
 // for `markdown/gfm` (GFM tables, autolink literals, footnotes, strikethrough).
-fn parse_mdast(source_text: &str) -> Option<mdast::Node> {
-    markdown::to_mdast(source_text, &markdown::ParseOptions::gfm()).ok()
+fn parse_mdast(source_text: &str, math: bool) -> Option<mdast::Node> {
+    let mut options = markdown::ParseOptions::gfm();
+    if math {
+        options.constructs.math_flow = true;
+        options.constructs.math_text = true;
+    }
+    markdown::to_mdast(source_text, &options).ok()
 }
 
 // Depth-first visit of every node in the tree.
@@ -86,6 +92,8 @@ pub struct ScanOptions {
     pub ignore_fragment_case: bool,
     pub allow_fragment_pattern: Option<CompactString>,
     pub check_missing_table_cells: bool,
+    /// Whether `$...$` / `$$...$$` math is parsed (upstream `languageOptions.math`).
+    pub math: bool,
 }
 
 impl Default for ScanOptions {
@@ -111,6 +119,7 @@ impl Default for ScanOptions {
             ignore_fragment_case: true,
             allow_fragment_pattern: None,
             check_missing_table_cells: false,
+            math: false,
         }
     }
 }
@@ -257,7 +266,7 @@ pub fn scan_eslint_markdown(
     let line_index = LineIndex::new(source_text);
     let facts = collect_facts(source_text, options);
     let mdast = if MDAST_RULES.iter().any(|rule| options.is_enabled(rule)) {
-        parse_mdast(source_text)
+        parse_mdast(source_text, options.math)
     } else {
         None
     };
@@ -305,8 +314,10 @@ pub fn scan_eslint_markdown(
     {
         scan_missing_atx_heading_space(source_text, &line_index, tree, options, &mut diagnostics);
     }
-    if options.is_enabled("no-missing-label-refs") {
-        scan_missing_label_refs(source_text, &line_index, &facts, options, &mut diagnostics);
+    if options.is_enabled("no-missing-label-refs")
+        && let Some(tree) = &mdast
+    {
+        scan_missing_label_refs(source_text, &line_index, tree, options, &mut diagnostics);
     }
     if options.is_enabled("no-missing-link-fragments") {
         scan_missing_link_fragments(source_text, &line_index, &facts, options, &mut diagnostics);
@@ -1398,30 +1409,103 @@ fn scan_atx_missing_space_before(
 fn scan_missing_label_refs(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     options: &ScanOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let definitions = definition_ids(facts, false);
-    for label_ref in &facts.label_refs {
-        if label_ref.is_footnote || label_ref.label.trim().is_empty() {
-            continue;
+    // (trimmed label, label-group span). Collected from text nodes; later filtered
+    // by allowLabels (raw match) and by any definition whose identifier equals the
+    // label (upstream removes references that turn out to have a definition).
+    let mut missing: SmallVec<[(CompactString, ByteSpan); 16]> = SmallVec::new();
+    let mut definitions = FastHashSet::<CompactString>::default();
+    visit_mdast(tree, &mut |node| match node {
+        mdast::Node::Definition(definition) => {
+            definitions.insert(normalize_identifier(
+                definition.label.as_deref().unwrap_or(""),
+            ));
         }
-        let normalized = normalize_identifier(label_ref.label.as_str());
-        if definitions.contains(&normalized) || is_allowed(&options.allow_labels, &label_ref.label)
-        {
+        mdast::Node::Text(_) => {
+            if let Some(span) = node_span(node) {
+                find_missing_references(source_text, span, &mut missing);
+            }
+        }
+        _ => {}
+    });
+
+    for (label, span) in &missing {
+        if definitions.contains(label) || options.allow_labels.iter().any(|allow| allow == label) {
             continue;
         }
         diagnostics.push(Diagnostic {
             rule_name: "no-missing-label-refs",
             message_id: "notFound",
             data: DiagnosticData {
-                label: Some(label_ref.label.clone()),
+                label: Some(label.clone()),
                 ..DiagnosticData::default()
             },
-            loc: line_index.loc_for_span(source_text, label_ref.span),
+            loc: line_index.loc_for_span(source_text, *span),
             fix: None,
         });
+    }
+}
+
+// Upstream `findMissingReferences`: scan a text node for `[left]` / `[left][right]`
+// shorthand reference syntax, reporting the effective label (right when present
+// and non-empty, else left) at the label group's span.
+fn find_missing_references(
+    source_text: &str,
+    span: ByteSpan,
+    missing: &mut SmallVec<[(CompactString, ByteSpan); 16]>,
+) {
+    // markdown-rs drops the first `\` of a leading escaped backslash from the text
+    // node span; extend back over any backslashes so the escape count before a `[`
+    // matches the real source (micromark keeps them in the node text).
+    let mut start = span.start;
+    while start > 0 && source_text.as_bytes()[start - 1] == b'\\' {
+        start -= 1;
+    }
+    let node_text = source_text.get(start..span.end).unwrap_or("");
+    let Ok(label_re) = Regex::new(r"\[((?:\\.|[^\[\]\\])*)\](?:\[((?:\\.|[^\]\\])*)\])?") else {
+        return;
+    };
+    // `illegalShorthandTailPattern`: `][<whitespace>]` — handled by
+    // no-invalid-label-refs, so skip it here.
+    let illegal = Regex::new(r"\]\[\s+\]$").ok();
+    for caps in label_re.captures_iter(node_text) {
+        let Some(whole) = caps.get(0) else {
+            continue;
+        };
+        // The opening `[` is escaped when preceded by an odd run of backslashes.
+        let backslashes = node_text[..whole.start()]
+            .bytes()
+            .rev()
+            .take_while(|byte| *byte == b'\\')
+            .count();
+        if backslashes % 2 == 1 {
+            continue;
+        }
+        if illegal
+            .as_ref()
+            .is_some_and(|re| re.is_match(whole.as_str()))
+        {
+            continue;
+        }
+        let left = caps.get(1);
+        let right = caps.get(2).filter(|group| !group.as_str().is_empty());
+        let left_empty = left.is_none_or(|group| group.as_str().is_empty());
+        if left_empty && right.is_none() {
+            continue;
+        }
+        let Some(group) = right.or(left) else {
+            continue;
+        };
+        missing.push((
+            CompactString::from(group.as_str().trim()),
+            ByteSpan {
+                start: start + group.start(),
+                end: start + group.end(),
+            },
+        ));
     }
 }
 

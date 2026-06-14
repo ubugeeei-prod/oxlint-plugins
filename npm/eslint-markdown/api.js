@@ -39,6 +39,7 @@ function normalizeOptions(options) {
     allowFragmentPattern:
       typeof options.allowFragmentPattern === 'string' ? options.allowFragmentPattern : undefined,
     checkMissingTableCells: normalizeBoolean(options.checkMissingTableCells),
+    math: normalizeBoolean(options.math),
   };
 }
 
