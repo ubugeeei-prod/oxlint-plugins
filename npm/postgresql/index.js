@@ -1005,6 +1005,34 @@ const ruleMeta = Object.freeze({
       preferBang: 'Use `!=` instead of `<>`.',
     },
   },
+  'require-fk-include-columns': {
+    type: 'problem',
+    description:
+      'Require every foreign-key constraint to include a configured set of columns (e.g. `tenant_id` in a multi-tenant database)',
+    recommended: false,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          columns: {
+            type: 'array',
+            items: { type: 'string' },
+            uniqueItems: true,
+            minItems: 1,
+          },
+          excludeTablePattern: { type: 'string' },
+          excludeReferencedTablePattern: { type: 'string' },
+        },
+        required: ['columns'],
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      missingFkColumn:
+        'Foreign-key constraint on `{{table}}` references `{{refTable}}` but does not include `{{missing}}`. In a multi-tenant database every FK should carry the tenant key so a child row cannot point at a parent in a different tenant.',
+    },
+  },
   'require-if-exists': {
     type: 'suggestion',
     description:

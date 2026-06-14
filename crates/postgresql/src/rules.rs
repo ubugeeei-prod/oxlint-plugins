@@ -73,6 +73,7 @@ mod prefer_exists_over_in_subquery;
 mod prefer_explicit_null_ordering;
 mod prefer_in_list_over_or;
 mod prefer_not_equals_operator;
+mod require_fk_include_columns;
 mod require_if_exists;
 mod require_index_on_fk_column;
 mod require_limit;
@@ -253,6 +254,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "prefer-explicit-null-ordering",
     "prefer-in-list-over-or",
     "prefer-not-equals-operator",
+    "require-fk-include-columns",
     "require-if-exists",
     "require-index-on-fk-column",
     "require-limit",
@@ -619,6 +621,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "prefer-not-equals-operator",
         run: prefer_not_equals_operator::run,
         uses_parse_error: true,
+    },
+    RuleDef {
+        name: "require-fk-include-columns",
+        run: require_fk_include_columns::run,
+        uses_parse_error: false,
     },
     RuleDef {
         name: "require-if-exists",
