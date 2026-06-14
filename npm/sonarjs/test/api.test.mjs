@@ -63,6 +63,7 @@ const expectedRuleNames = [
   'single-char-in-character-classes',
   'duplicates-in-character-class',
   'anchor-precedence',
+  'cyclomatic-complexity',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2048,6 +2049,28 @@ describe('sonarjs native API', () => {
 
   it('does not report anchor-precedence when every branch is fully anchored', () => {
     const diagnostics = scan('anchor-precedence', 'const r = /^a$|^b$|^c$/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports cyclomatic-complexity when a function exceeds the threshold', () => {
+    // base 1 + 4 ifs = 5, custom threshold 3: 5 > 3 → 1 diagnostic
+    const source = 'function f(a,b,c,d){if(a){}if(b){}if(c){}if(d){}}';
+    const diagnostics = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['cyclomatic-complexity'],
+      cyclomaticComplexityThreshold: 3,
+    });
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('cyclomatic-complexity');
+    expect(diagnostics[0].messageId).toBe('cyclomaticComplexity');
+  });
+
+  it('does not report cyclomatic-complexity when a function is within the threshold', () => {
+    // base 1 + 3 ifs = 4, threshold 4: 4 is not > 4 → 0 diagnostics
+    const source = 'function f(a,b,c){if(a){}if(b){}if(c){}}';
+    const diagnostics = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['cyclomatic-complexity'],
+      cyclomaticComplexityThreshold: 4,
+    });
     expect(diagnostics).toHaveLength(0);
   });
 });
