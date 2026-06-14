@@ -33,6 +33,10 @@ pub fn scan_simple_import_sort(
         .unwrap_or_else(|_| SourceType::mjs())
         .with_module(true);
     let parser_return = Parser::new(&allocator, source_text, source_type).parse();
+    // Do not autofix source that does not parse: a partial AST can have unreliable
+    // spans, and running an autofix over broken code risks corrupting it. (Oxc is
+    // stricter than upstream's TypeScript parser on a few syntactically-invalid
+    // constructs, e.g. `import type Def, { Named }`, which upstream tolerates.)
     if !parser_return.errors.is_empty() {
         return SmallVec::new();
     }
