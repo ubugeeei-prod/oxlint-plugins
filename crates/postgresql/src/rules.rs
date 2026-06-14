@@ -36,6 +36,7 @@ mod no_with_recursive_without_limit;
 mod require_limit;
 mod require_where_in_delete;
 mod require_where_in_update;
+mod snake_case_table_name;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
 /// know the full surface even while only a subset is implemented.
@@ -166,6 +167,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "require-limit",
     "require-where-in-delete",
     "require-where-in-update",
+    "snake-case-table-name",
 ];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
@@ -333,6 +335,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "require-where-in-update",
         run: require_where_in_update::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "snake-case-table-name",
+        run: snake_case_table_name::run,
         uses_parse_error: false,
     },
 ];
