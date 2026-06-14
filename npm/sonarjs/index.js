@@ -188,6 +188,9 @@ const messages = Object.freeze({
   'class-name': {
     className: 'Rename this class to start with an uppercase letter (PascalCase).',
   },
+  'max-lines': {
+    maxLines: 'This file has more lines than the maximum allowed; split it into smaller files.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -281,6 +284,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow assigning a postfix increment or decrement of a variable back to that same variable',
   'class-name':
     'Require class names to start with an uppercase letter, following the PascalCase convention',
+  'max-lines':
+    'Disallow files with more code lines than the configured maximum (the "maximum" option; default 1000); blank lines and comment-only lines are not counted',
 });
 
 const ruleTypes = Object.freeze({
@@ -333,6 +338,7 @@ const ruleTypes = Object.freeze({
   'no-nested-incdec': 'suggestion',
   'no-useless-increment': 'suggestion',
   'class-name': 'suggestion',
+  'max-lines': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -385,6 +391,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-nested-incdec': 'error',
   'no-useless-increment': 'error',
   'class-name': 'error',
+  'max-lines': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
@@ -441,6 +448,15 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'max-lines') {
+    return [
+      {
+        type: 'object',
+        properties: { maximum: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   return [];
 }
 
@@ -453,6 +469,9 @@ function scanOptionsForRule(context, ruleName) {
   }
   if (ruleName === 'max-union-size' && Number.isInteger(raw.threshold)) {
     options.maxUnionSizeThreshold = raw.threshold;
+  }
+  if (ruleName === 'max-lines' && Number.isInteger(raw.maximum)) {
+    options.maxLinesThreshold = raw.maximum;
   }
   return options;
 }

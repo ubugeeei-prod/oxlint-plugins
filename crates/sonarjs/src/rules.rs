@@ -11,6 +11,7 @@ mod elseif_without_else;
 mod fixme_tag;
 mod for_in;
 mod generator_without_yield;
+mod max_lines;
 mod max_switch_cases;
 mod max_union_size;
 mod no_all_duplicated_branches;

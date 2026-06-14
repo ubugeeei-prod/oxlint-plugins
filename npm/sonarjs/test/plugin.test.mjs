@@ -143,6 +143,7 @@ describe('sonarjs plugin shape', () => {
       'no-nested-incdec',
       'no-useless-increment',
       'class-name',
+      'max-lines',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -193,6 +194,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-nested-incdec']).toBe('object');
     expect(typeof plugin.rules['no-useless-increment']).toBe('object');
     expect(typeof plugin.rules['class-name']).toBe('object');
+    expect(typeof plugin.rules['max-lines']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -245,6 +247,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-incdec']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-increment']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/class-name']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/max-lines']).toBe('error');
   });
 });
 
@@ -1114,5 +1117,19 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
       },
     ]);
     expect(plugin.rules['no-collapsible-if'].meta.schema).toEqual([]);
+  });
+
+  it('honors the max-lines "maximum" option through the adapter', () => {
+    const source = 'const a = 1;\nconst b = 2;\nconst c = 3;';
+    expect(runRule('max-lines', source, { options: [{ maximum: 2 }] })).toHaveLength(1);
+    expect(runRule('max-lines', source, { options: [{ maximum: 3 }] })).toHaveLength(0);
+  });
+
+  it('reports max-lines through the CLI', () => {
+    const source = 'const a = 1;\nconst b = 2;\nconst c = 3;';
+    const result = runOxlint('max-lines', source);
+    // default threshold is 1000; three code lines must NOT be flagged
+    expect(result.status).toBe(0);
+    expect(result.diagnostics).toHaveLength(0);
   });
 });
