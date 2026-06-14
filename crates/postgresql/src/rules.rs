@@ -4,6 +4,7 @@
 use crate::RuleDef;
 
 mod no_add_check_constraint_without_not_valid;
+mod no_add_column_not_null_without_default;
 mod no_add_unique_constraint_directly;
 mod no_alter_column_type;
 mod no_cluster;
@@ -154,6 +155,7 @@ pub const RULE_NAMES: [&str; 89] = [
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-add-check-constraint-without-not-valid",
+    "no-add-column-not-null-without-default",
     "no-add-unique-constraint-directly",
     "no-alter-column-type",
     "no-cluster",
@@ -213,6 +215,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-add-check-constraint-without-not-valid",
         run: no_add_check_constraint_without_not_valid::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-add-column-not-null-without-default",
+        run: no_add_column_not_null_without_default::run,
         uses_parse_error: false,
     },
     RuleDef {
