@@ -1,0 +1,957 @@
+{
+  "__generated": {
+    "source": "postgresql-eslint-parser",
+    "ref": "postgresql-eslint-parser@0.5.4",
+    "sourceDir": "upstream/postgresql-eslint-parser/tests/fixtures",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-parser-tests.ts"
+  },
+  "input": "SELECT id FROM users;\nINSERT INTO events (kind) VALUES ('login');\nUPDATE users SET active = FALSE WHERE id = 1;\n",
+  "ast": {
+    "type": "Program",
+    "range": [
+      0,
+      112
+    ],
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 4,
+        "column": 0
+      }
+    },
+    "body": [
+      {
+        "type": "SelectStmt",
+        "targetList": [
+          {
+            "type": "ResTarget",
+            "val": {
+              "type": "ColumnRef",
+              "fields": [
+                {
+                  "type": "String",
+                  "sval": "id",
+                  "range": [
+                    7,
+                    9
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 1,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 9
+                    }
+                  }
+                }
+              ],
+              "range": [
+                7,
+                9
+              ],
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 7
+                },
+                "end": {
+                  "line": 1,
+                  "column": 9
+                }
+              }
+            },
+            "range": [
+              7,
+              9
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 7
+              },
+              "end": {
+                "line": 1,
+                "column": 9
+              }
+            }
+          }
+        ],
+        "fromClause": [
+          {
+            "type": "RangeVar",
+            "relname": "users",
+            "inh": true,
+            "relpersistence": "p",
+            "range": [
+              15,
+              20
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 15
+              },
+              "end": {
+                "line": 1,
+                "column": 20
+              }
+            }
+          }
+        ],
+        "limitOption": "LIMIT_OPTION_DEFAULT",
+        "op": "SETOP_NONE",
+        "range": [
+          0,
+          20
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "InsertStmt",
+        "relation": {
+          "relname": "events",
+          "inh": true,
+          "relpersistence": "p",
+          "range": [
+            34,
+            40
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 12
+            },
+            "end": {
+              "line": 2,
+              "column": 18
+            }
+          }
+        },
+        "cols": [
+          {
+            "type": "ResTarget",
+            "name": "kind",
+            "range": [
+              42,
+              46
+            ],
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 20
+              },
+              "end": {
+                "line": 2,
+                "column": 24
+              }
+            }
+          }
+        ],
+        "selectStmt": {
+          "type": "SelectStmt",
+          "valuesLists": [
+            {
+              "type": "List",
+              "items": [
+                {
+                  "type": "A_Const",
+                  "sval": {
+                    "sval": "login"
+                  },
+                  "range": [
+                    56,
+                    63
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 34
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 41
+                    }
+                  }
+                }
+              ],
+              "range": [
+                56,
+                63
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 34
+                },
+                "end": {
+                  "line": 2,
+                  "column": 41
+                }
+              }
+            }
+          ],
+          "limitOption": "LIMIT_OPTION_DEFAULT",
+          "op": "SETOP_NONE",
+          "range": [
+            56,
+            63
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 34
+            },
+            "end": {
+              "line": 2,
+              "column": 41
+            }
+          }
+        },
+        "override": "OVERRIDING_NOT_SET",
+        "range": [
+          21,
+          64
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 21
+          },
+          "end": {
+            "line": 2,
+            "column": 42
+          }
+        }
+      },
+      {
+        "type": "UpdateStmt",
+        "relation": {
+          "relname": "users",
+          "inh": true,
+          "relpersistence": "p",
+          "range": [
+            73,
+            78
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 7
+            },
+            "end": {
+              "line": 3,
+              "column": 12
+            }
+          }
+        },
+        "targetList": [
+          {
+            "type": "ResTarget",
+            "name": "active",
+            "val": {
+              "type": "A_Const",
+              "boolval": {},
+              "range": [
+                92,
+                97
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 26
+                },
+                "end": {
+                  "line": 3,
+                  "column": 31
+                }
+              }
+            },
+            "range": [
+              83,
+              89
+            ],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 17
+              },
+              "end": {
+                "line": 3,
+                "column": 23
+              }
+            }
+          }
+        ],
+        "whereClause": {
+          "type": "A_Expr",
+          "kind": "AEXPR_OP",
+          "name": [
+            {
+              "type": "String",
+              "sval": "=",
+              "range": [
+                107,
+                108
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 41
+                },
+                "end": {
+                  "line": 3,
+                  "column": 42
+                }
+              }
+            }
+          ],
+          "lexpr": {
+            "type": "ColumnRef",
+            "fields": [
+              {
+                "type": "String",
+                "sval": "id",
+                "range": [
+                  104,
+                  106
+                ],
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 38
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 40
+                  }
+                }
+              }
+            ],
+            "range": [
+              104,
+              106
+            ],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 38
+              },
+              "end": {
+                "line": 3,
+                "column": 40
+              }
+            }
+          },
+          "rexpr": {
+            "type": "A_Const",
+            "ival": {
+              "ival": 1
+            },
+            "range": [
+              109,
+              110
+            ],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 43
+              },
+              "end": {
+                "line": 3,
+                "column": 44
+              }
+            }
+          },
+          "range": [
+            107,
+            108
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 41
+            },
+            "end": {
+              "line": 3,
+              "column": 42
+            }
+          }
+        },
+        "range": [
+          65,
+          110
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 43
+          },
+          "end": {
+            "line": 3,
+            "column": 44
+          }
+        }
+      }
+    ],
+    "tokens": [
+      {
+        "type": "Keyword",
+        "value": "SELECT",
+        "range": [
+          0,
+          6
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "id",
+        "range": [
+          7,
+          9
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 7
+          },
+          "end": {
+            "line": 1,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FROM",
+        "range": [
+          10,
+          14
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 10
+          },
+          "end": {
+            "line": 1,
+            "column": 14
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "users",
+        "range": [
+          15,
+          20
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 15
+          },
+          "end": {
+            "line": 1,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          20,
+          21
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 20
+          },
+          "end": {
+            "line": 1,
+            "column": 21
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "INSERT",
+        "range": [
+          22,
+          28
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "INTO",
+        "range": [
+          29,
+          33
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 7
+          },
+          "end": {
+            "line": 2,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "events",
+        "range": [
+          34,
+          40
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 12
+          },
+          "end": {
+            "line": 2,
+            "column": 18
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          41,
+          42
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 19
+          },
+          "end": {
+            "line": 2,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "kind",
+        "range": [
+          42,
+          46
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 20
+          },
+          "end": {
+            "line": 2,
+            "column": 24
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          46,
+          47
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 24
+          },
+          "end": {
+            "line": 2,
+            "column": 25
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "VALUES",
+        "range": [
+          48,
+          54
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 26
+          },
+          "end": {
+            "line": 2,
+            "column": 32
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          55,
+          56
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 33
+          },
+          "end": {
+            "line": 2,
+            "column": 34
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "'login'",
+        "range": [
+          56,
+          63
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 34
+          },
+          "end": {
+            "line": 2,
+            "column": 41
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          63,
+          64
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 41
+          },
+          "end": {
+            "line": 2,
+            "column": 42
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          64,
+          65
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 42
+          },
+          "end": {
+            "line": 2,
+            "column": 43
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "UPDATE",
+        "range": [
+          66,
+          72
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 0
+          },
+          "end": {
+            "line": 3,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "users",
+        "range": [
+          73,
+          78
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 7
+          },
+          "end": {
+            "line": 3,
+            "column": 12
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "SET",
+        "range": [
+          79,
+          82
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 13
+          },
+          "end": {
+            "line": 3,
+            "column": 16
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "active",
+        "range": [
+          83,
+          89
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 17
+          },
+          "end": {
+            "line": 3,
+            "column": 23
+          }
+        }
+      },
+      {
+        "type": "Operator",
+        "value": "=",
+        "range": [
+          90,
+          91
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 24
+          },
+          "end": {
+            "line": 3,
+            "column": 25
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FALSE",
+        "range": [
+          92,
+          97
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 26
+          },
+          "end": {
+            "line": 3,
+            "column": 31
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "WHERE",
+        "range": [
+          98,
+          103
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 32
+          },
+          "end": {
+            "line": 3,
+            "column": 37
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "id",
+        "range": [
+          104,
+          106
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 38
+          },
+          "end": {
+            "line": 3,
+            "column": 40
+          }
+        }
+      },
+      {
+        "type": "Operator",
+        "value": "=",
+        "range": [
+          107,
+          108
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 41
+          },
+          "end": {
+            "line": 3,
+            "column": 42
+          }
+        }
+      },
+      {
+        "type": "Numeric",
+        "value": "1",
+        "range": [
+          109,
+          110
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 43
+          },
+          "end": {
+            "line": 3,
+            "column": 44
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          110,
+          111
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 44
+          },
+          "end": {
+            "line": 3,
+            "column": 45
+          }
+        }
+      }
+    ],
+    "comments": []
+  },
+  "visitorKeys": {
+    "Program": [
+      "body",
+      "tokens",
+      "comments"
+    ],
+    "SelectStmt": [
+      "targetList",
+      "fromClause",
+      "valuesLists"
+    ],
+    "ResTarget": [
+      "val"
+    ],
+    "ColumnRef": [
+      "fields"
+    ],
+    "String": [],
+    "RangeVar": [],
+    "InsertStmt": [
+      "relation",
+      "cols",
+      "selectStmt"
+    ],
+    "Unknown": [],
+    "List": [
+      "items"
+    ],
+    "A_Const": [
+      "sval",
+      "boolval",
+      "ival"
+    ],
+    "UpdateStmt": [
+      "relation",
+      "targetList",
+      "whereClause"
+    ],
+    "A_Expr": [
+      "name",
+      "lexpr",
+      "rexpr"
+    ],
+    "Keyword": [],
+    "Identifier": [],
+    "Punctuator": [],
+    "Operator": [],
+    "Numeric": [],
+    "SQLStatement": [
+      "statement"
+    ],
+    "SQLParseError": [],
+    "SQLProcedure": [],
+    "EmbeddedCode": []
+  },
+  "scopeManager": null
+}

@@ -10,6 +10,8 @@
 use pg_query as _;
 
 mod ast;
+mod embedded_code;
+mod eslint;
 mod ffi;
 mod manipulate;
 mod parse;
@@ -22,6 +24,25 @@ use serde_json::Value;
 
 use crate::parse::{ParseError, parse};
 use crate::text::Source;
+
+/// Parse `source_text` into the upstream `parseForESLint` result
+/// (`{ ast, visitorKeys, scopeManager }`), exposed to the parser npm package.
+pub use crate::eslint::parse_for_eslint;
+
+/// Parse `source_text` and return the `parseForESLint` result serialized as a
+/// JSON string. The NAPI boundary of `npm/postgresql-eslint-parser` hands this
+/// to JavaScript, which `JSON.parse`s it back into the object an ESLint custom
+/// parser must return.
+pub fn parse_for_eslint_json(source_text: &str) -> String {
+    parse_for_eslint(source_text).to_string()
+}
+
+/// Parse `source_text` and return only the `ast` half of the result, mirroring
+/// upstream's `parse(code)` convenience export.
+pub fn parse_ast(source_text: &str) -> Value {
+    let mut result = parse_for_eslint(source_text);
+    result.get_mut("ast").map(Value::take).unwrap_or(Value::Null)
+}
 
 /// Every upstream rule name, in the order listed in the port inventory.
 pub use crate::rules::RULE_NAMES;

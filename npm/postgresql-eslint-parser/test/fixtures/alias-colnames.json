@@ -1,0 +1,1896 @@
+{
+  "__generated": {
+    "source": "postgresql-eslint-parser",
+    "ref": "postgresql-eslint-parser@0.5.4",
+    "sourceDir": "upstream/postgresql-eslint-parser/tests/fixtures",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-parser-tests.ts"
+  },
+  "input": "SELECT * FROM tbl AS t(col1, col2);\nSELECT * FROM tbl t(col1);\nSELECT * FROM generate_series(1, 10) WITH ORDINALITY AS r(range, r_idx);\nSELECT * FROM (SELECT 1, 2) AS sub(col1, col2);\n",
+  "ast": {
+    "type": "Program",
+    "range": [
+      0,
+      184
+    ],
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 5,
+        "column": 0
+      }
+    },
+    "body": [
+      {
+        "type": "SelectStmt",
+        "targetList": [
+          {
+            "type": "ResTarget",
+            "val": {
+              "type": "ColumnRef",
+              "fields": [
+                {
+                  "type": "A_Star",
+                  "range": [
+                    7,
+                    8
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 1,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 8
+                    }
+                  }
+                }
+              ],
+              "range": [
+                7,
+                8
+              ],
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 7
+                },
+                "end": {
+                  "line": 1,
+                  "column": 8
+                }
+              }
+            },
+            "range": [
+              7,
+              8
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 7
+              },
+              "end": {
+                "line": 1,
+                "column": 8
+              }
+            }
+          }
+        ],
+        "fromClause": [
+          {
+            "type": "RangeVar",
+            "relname": "tbl",
+            "inh": true,
+            "relpersistence": "p",
+            "alias": {
+              "aliasname": "t",
+              "colnames": [
+                {
+                  "type": "String",
+                  "sval": "col1",
+                  "range": [
+                    23,
+                    27
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 1,
+                      "column": 23
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 27
+                    }
+                  }
+                },
+                {
+                  "type": "String",
+                  "sval": "col2",
+                  "range": [
+                    29,
+                    33
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 1,
+                      "column": 29
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 33
+                    }
+                  }
+                }
+              ],
+              "type": "Alias",
+              "range": [
+                21,
+                34
+              ],
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 21
+                },
+                "end": {
+                  "line": 1,
+                  "column": 34
+                }
+              }
+            },
+            "range": [
+              14,
+              17
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 14
+              },
+              "end": {
+                "line": 1,
+                "column": 17
+              }
+            }
+          }
+        ],
+        "limitOption": "LIMIT_OPTION_DEFAULT",
+        "op": "SETOP_NONE",
+        "range": [
+          0,
+          34
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 34
+          }
+        }
+      },
+      {
+        "type": "SelectStmt",
+        "targetList": [
+          {
+            "type": "ResTarget",
+            "val": {
+              "type": "ColumnRef",
+              "fields": [
+                {
+                  "type": "A_Star",
+                  "range": [
+                    43,
+                    44
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 8
+                    }
+                  }
+                }
+              ],
+              "range": [
+                43,
+                44
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 7
+                },
+                "end": {
+                  "line": 2,
+                  "column": 8
+                }
+              }
+            },
+            "range": [
+              43,
+              44
+            ],
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 7
+              },
+              "end": {
+                "line": 2,
+                "column": 8
+              }
+            }
+          }
+        ],
+        "fromClause": [
+          {
+            "type": "RangeVar",
+            "relname": "tbl",
+            "inh": true,
+            "relpersistence": "p",
+            "alias": {
+              "aliasname": "t",
+              "colnames": [
+                {
+                  "type": "String",
+                  "sval": "col1",
+                  "range": [
+                    56,
+                    60
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 20
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 24
+                    }
+                  }
+                }
+              ],
+              "type": "Alias",
+              "range": [
+                54,
+                61
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 18
+                },
+                "end": {
+                  "line": 2,
+                  "column": 25
+                }
+              }
+            },
+            "range": [
+              50,
+              53
+            ],
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 14
+              },
+              "end": {
+                "line": 2,
+                "column": 17
+              }
+            }
+          }
+        ],
+        "limitOption": "LIMIT_OPTION_DEFAULT",
+        "op": "SETOP_NONE",
+        "range": [
+          35,
+          61
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 35
+          },
+          "end": {
+            "line": 2,
+            "column": 25
+          }
+        }
+      },
+      {
+        "type": "SelectStmt",
+        "targetList": [
+          {
+            "type": "ResTarget",
+            "val": {
+              "type": "ColumnRef",
+              "fields": [
+                {
+                  "type": "A_Star",
+                  "range": [
+                    70,
+                    71
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 8
+                    }
+                  }
+                }
+              ],
+              "range": [
+                70,
+                71
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 7
+                },
+                "end": {
+                  "line": 3,
+                  "column": 8
+                }
+              }
+            },
+            "range": [
+              70,
+              71
+            ],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 7
+              },
+              "end": {
+                "line": 3,
+                "column": 8
+              }
+            }
+          }
+        ],
+        "fromClause": [
+          {
+            "type": "RangeFunction",
+            "ordinality": true,
+            "functions": [
+              {
+                "type": "List",
+                "items": [
+                  {
+                    "type": "FuncCall",
+                    "funcname": [
+                      {
+                        "type": "String",
+                        "sval": "generate_series",
+                        "range": [
+                          77,
+                          92
+                        ],
+                        "loc": {
+                          "start": {
+                            "line": 3,
+                            "column": 14
+                          },
+                          "end": {
+                            "line": 3,
+                            "column": 29
+                          }
+                        }
+                      }
+                    ],
+                    "args": [
+                      {
+                        "type": "A_Const",
+                        "ival": {
+                          "ival": 1
+                        },
+                        "range": [
+                          93,
+                          94
+                        ],
+                        "loc": {
+                          "start": {
+                            "line": 3,
+                            "column": 30
+                          },
+                          "end": {
+                            "line": 3,
+                            "column": 31
+                          }
+                        }
+                      },
+                      {
+                        "type": "A_Const",
+                        "ival": {
+                          "ival": 10
+                        },
+                        "range": [
+                          96,
+                          98
+                        ],
+                        "loc": {
+                          "start": {
+                            "line": 3,
+                            "column": 33
+                          },
+                          "end": {
+                            "line": 3,
+                            "column": 35
+                          }
+                        }
+                      }
+                    ],
+                    "funcformat": "COERCE_EXPLICIT_CALL",
+                    "range": [
+                      77,
+                      92
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 3,
+                        "column": 14
+                      },
+                      "end": {
+                        "line": 3,
+                        "column": 29
+                      }
+                    }
+                  },
+                  {}
+                ],
+                "range": [
+                  77,
+                  98
+                ],
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 14
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 35
+                  }
+                }
+              }
+            ],
+            "alias": {
+              "aliasname": "r",
+              "colnames": [
+                {
+                  "type": "String",
+                  "sval": "range",
+                  "range": [
+                    121,
+                    126
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 58
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 63
+                    }
+                  }
+                },
+                {
+                  "type": "String",
+                  "sval": "r_idx",
+                  "range": [
+                    128,
+                    133
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 65
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 70
+                    }
+                  }
+                }
+              ],
+              "type": "Alias",
+              "range": [
+                119,
+                134
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 56
+                },
+                "end": {
+                  "line": 3,
+                  "column": 71
+                }
+              }
+            },
+            "range": [
+              77,
+              98
+            ],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 14
+              },
+              "end": {
+                "line": 3,
+                "column": 35
+              }
+            }
+          }
+        ],
+        "limitOption": "LIMIT_OPTION_DEFAULT",
+        "op": "SETOP_NONE",
+        "range": [
+          62,
+          134
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 26
+          },
+          "end": {
+            "line": 3,
+            "column": 71
+          }
+        }
+      },
+      {
+        "type": "SelectStmt",
+        "targetList": [
+          {
+            "type": "ResTarget",
+            "val": {
+              "type": "ColumnRef",
+              "fields": [
+                {
+                  "type": "A_Star",
+                  "range": [
+                    143,
+                    144
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 4,
+                      "column": 8
+                    }
+                  }
+                }
+              ],
+              "range": [
+                143,
+                144
+              ],
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 7
+                },
+                "end": {
+                  "line": 4,
+                  "column": 8
+                }
+              }
+            },
+            "range": [
+              143,
+              144
+            ],
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 7
+              },
+              "end": {
+                "line": 4,
+                "column": 8
+              }
+            }
+          }
+        ],
+        "fromClause": [
+          {
+            "type": "RangeSubselect",
+            "subquery": {
+              "type": "SelectStmt",
+              "targetList": [
+                {
+                  "type": "ResTarget",
+                  "val": {
+                    "type": "A_Const",
+                    "ival": {
+                      "ival": 1
+                    },
+                    "range": [
+                      158,
+                      159
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 4,
+                        "column": 22
+                      },
+                      "end": {
+                        "line": 4,
+                        "column": 23
+                      }
+                    }
+                  },
+                  "range": [
+                    158,
+                    159
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 22
+                    },
+                    "end": {
+                      "line": 4,
+                      "column": 23
+                    }
+                  }
+                },
+                {
+                  "type": "ResTarget",
+                  "val": {
+                    "type": "A_Const",
+                    "ival": {
+                      "ival": 2
+                    },
+                    "range": [
+                      161,
+                      162
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 4,
+                        "column": 25
+                      },
+                      "end": {
+                        "line": 4,
+                        "column": 26
+                      }
+                    }
+                  },
+                  "range": [
+                    161,
+                    162
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 25
+                    },
+                    "end": {
+                      "line": 4,
+                      "column": 26
+                    }
+                  }
+                }
+              ],
+              "limitOption": "LIMIT_OPTION_DEFAULT",
+              "op": "SETOP_NONE",
+              "range": [
+                158,
+                162
+              ],
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 22
+                },
+                "end": {
+                  "line": 4,
+                  "column": 26
+                }
+              }
+            },
+            "alias": {
+              "aliasname": "sub",
+              "colnames": [
+                {
+                  "type": "String",
+                  "sval": "col1",
+                  "range": [
+                    171,
+                    175
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 35
+                    },
+                    "end": {
+                      "line": 4,
+                      "column": 39
+                    }
+                  }
+                },
+                {
+                  "type": "String",
+                  "sval": "col2",
+                  "range": [
+                    177,
+                    181
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 41
+                    },
+                    "end": {
+                      "line": 4,
+                      "column": 45
+                    }
+                  }
+                }
+              ],
+              "type": "Alias",
+              "range": [
+                167,
+                182
+              ],
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 31
+                },
+                "end": {
+                  "line": 4,
+                  "column": 46
+                }
+              }
+            },
+            "range": [
+              158,
+              162
+            ],
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 22
+              },
+              "end": {
+                "line": 4,
+                "column": 26
+              }
+            }
+          }
+        ],
+        "limitOption": "LIMIT_OPTION_DEFAULT",
+        "op": "SETOP_NONE",
+        "range": [
+          135,
+          182
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 72
+          },
+          "end": {
+            "line": 4,
+            "column": 46
+          }
+        }
+      }
+    ],
+    "tokens": [
+      {
+        "type": "Keyword",
+        "value": "SELECT",
+        "range": [
+          0,
+          6
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Operator",
+        "value": "*",
+        "range": [
+          7,
+          8
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 7
+          },
+          "end": {
+            "line": 1,
+            "column": 8
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FROM",
+        "range": [
+          9,
+          13
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 9
+          },
+          "end": {
+            "line": 1,
+            "column": 13
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "tbl",
+        "range": [
+          14,
+          17
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 14
+          },
+          "end": {
+            "line": 1,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [
+          18,
+          20
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 18
+          },
+          "end": {
+            "line": 1,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "t",
+        "range": [
+          21,
+          22
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 21
+          },
+          "end": {
+            "line": 1,
+            "column": 22
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          22,
+          23
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 22
+          },
+          "end": {
+            "line": 1,
+            "column": 23
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "col1",
+        "range": [
+          23,
+          27
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 23
+          },
+          "end": {
+            "line": 1,
+            "column": 27
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ",",
+        "range": [
+          27,
+          28
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 27
+          },
+          "end": {
+            "line": 1,
+            "column": 28
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "col2",
+        "range": [
+          29,
+          33
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 29
+          },
+          "end": {
+            "line": 1,
+            "column": 33
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          33,
+          34
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 33
+          },
+          "end": {
+            "line": 1,
+            "column": 34
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          34,
+          35
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 34
+          },
+          "end": {
+            "line": 1,
+            "column": 35
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "SELECT",
+        "range": [
+          36,
+          42
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Operator",
+        "value": "*",
+        "range": [
+          43,
+          44
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 7
+          },
+          "end": {
+            "line": 2,
+            "column": 8
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FROM",
+        "range": [
+          45,
+          49
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 9
+          },
+          "end": {
+            "line": 2,
+            "column": 13
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "tbl",
+        "range": [
+          50,
+          53
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 14
+          },
+          "end": {
+            "line": 2,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "t",
+        "range": [
+          54,
+          55
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 18
+          },
+          "end": {
+            "line": 2,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          55,
+          56
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 19
+          },
+          "end": {
+            "line": 2,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "col1",
+        "range": [
+          56,
+          60
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 20
+          },
+          "end": {
+            "line": 2,
+            "column": 24
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          60,
+          61
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 24
+          },
+          "end": {
+            "line": 2,
+            "column": 25
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          61,
+          62
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 25
+          },
+          "end": {
+            "line": 2,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "SELECT",
+        "range": [
+          63,
+          69
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 0
+          },
+          "end": {
+            "line": 3,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Operator",
+        "value": "*",
+        "range": [
+          70,
+          71
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 7
+          },
+          "end": {
+            "line": 3,
+            "column": 8
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FROM",
+        "range": [
+          72,
+          76
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 9
+          },
+          "end": {
+            "line": 3,
+            "column": 13
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "generate_series",
+        "range": [
+          77,
+          92
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 14
+          },
+          "end": {
+            "line": 3,
+            "column": 29
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          92,
+          93
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 29
+          },
+          "end": {
+            "line": 3,
+            "column": 30
+          }
+        }
+      },
+      {
+        "type": "Numeric",
+        "value": "1",
+        "range": [
+          93,
+          94
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 30
+          },
+          "end": {
+            "line": 3,
+            "column": 31
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ",",
+        "range": [
+          94,
+          95
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 31
+          },
+          "end": {
+            "line": 3,
+            "column": 32
+          }
+        }
+      },
+      {
+        "type": "Numeric",
+        "value": "10",
+        "range": [
+          96,
+          98
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 33
+          },
+          "end": {
+            "line": 3,
+            "column": 35
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          98,
+          99
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 35
+          },
+          "end": {
+            "line": 3,
+            "column": 36
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "WITH",
+        "range": [
+          100,
+          104
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 37
+          },
+          "end": {
+            "line": 3,
+            "column": 41
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "ORDINALITY",
+        "range": [
+          105,
+          115
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 42
+          },
+          "end": {
+            "line": 3,
+            "column": 52
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [
+          116,
+          118
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 53
+          },
+          "end": {
+            "line": 3,
+            "column": 55
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "r",
+        "range": [
+          119,
+          120
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 56
+          },
+          "end": {
+            "line": 3,
+            "column": 57
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          120,
+          121
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 57
+          },
+          "end": {
+            "line": 3,
+            "column": 58
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "range",
+        "range": [
+          121,
+          126
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 58
+          },
+          "end": {
+            "line": 3,
+            "column": 63
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ",",
+        "range": [
+          126,
+          127
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 63
+          },
+          "end": {
+            "line": 3,
+            "column": 64
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "r_idx",
+        "range": [
+          128,
+          133
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 65
+          },
+          "end": {
+            "line": 3,
+            "column": 70
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          133,
+          134
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 70
+          },
+          "end": {
+            "line": 3,
+            "column": 71
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          134,
+          135
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 71
+          },
+          "end": {
+            "line": 3,
+            "column": 72
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "SELECT",
+        "range": [
+          136,
+          142
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 0
+          },
+          "end": {
+            "line": 4,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Operator",
+        "value": "*",
+        "range": [
+          143,
+          144
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 7
+          },
+          "end": {
+            "line": 4,
+            "column": 8
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FROM",
+        "range": [
+          145,
+          149
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 9
+          },
+          "end": {
+            "line": 4,
+            "column": 13
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          150,
+          151
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 14
+          },
+          "end": {
+            "line": 4,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "SELECT",
+        "range": [
+          151,
+          157
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 15
+          },
+          "end": {
+            "line": 4,
+            "column": 21
+          }
+        }
+      },
+      {
+        "type": "Numeric",
+        "value": "1",
+        "range": [
+          158,
+          159
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 22
+          },
+          "end": {
+            "line": 4,
+            "column": 23
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ",",
+        "range": [
+          159,
+          160
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 23
+          },
+          "end": {
+            "line": 4,
+            "column": 24
+          }
+        }
+      },
+      {
+        "type": "Numeric",
+        "value": "2",
+        "range": [
+          161,
+          162
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 25
+          },
+          "end": {
+            "line": 4,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          162,
+          163
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 26
+          },
+          "end": {
+            "line": 4,
+            "column": 27
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [
+          164,
+          166
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 28
+          },
+          "end": {
+            "line": 4,
+            "column": 30
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "sub",
+        "range": [
+          167,
+          170
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 31
+          },
+          "end": {
+            "line": 4,
+            "column": 34
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          170,
+          171
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 34
+          },
+          "end": {
+            "line": 4,
+            "column": 35
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "col1",
+        "range": [
+          171,
+          175
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 35
+          },
+          "end": {
+            "line": 4,
+            "column": 39
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ",",
+        "range": [
+          175,
+          176
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 39
+          },
+          "end": {
+            "line": 4,
+            "column": 40
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "col2",
+        "range": [
+          177,
+          181
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 41
+          },
+          "end": {
+            "line": 4,
+            "column": 45
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          181,
+          182
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 45
+          },
+          "end": {
+            "line": 4,
+            "column": 46
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          182,
+          183
+        ],
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 46
+          },
+          "end": {
+            "line": 4,
+            "column": 47
+          }
+        }
+      }
+    ],
+    "comments": []
+  },
+  "visitorKeys": {
+    "Program": [
+      "body",
+      "tokens",
+      "comments"
+    ],
+    "SelectStmt": [
+      "targetList",
+      "fromClause"
+    ],
+    "ResTarget": [
+      "val"
+    ],
+    "ColumnRef": [
+      "fields"
+    ],
+    "A_Star": [],
+    "RangeVar": [
+      "alias"
+    ],
+    "Alias": [
+      "colnames"
+    ],
+    "String": [],
+    "RangeFunction": [
+      "functions",
+      "alias"
+    ],
+    "List": [
+      "items"
+    ],
+    "FuncCall": [
+      "funcname",
+      "args"
+    ],
+    "A_Const": [
+      "ival"
+    ],
+    "Unknown": [],
+    "RangeSubselect": [
+      "subquery",
+      "alias"
+    ],
+    "Keyword": [],
+    "Operator": [],
+    "Identifier": [],
+    "Punctuator": [],
+    "Numeric": [],
+    "SQLStatement": [
+      "statement"
+    ],
+    "SQLParseError": [],
+    "SQLProcedure": [],
+    "EmbeddedCode": []
+  },
+  "scopeManager": null
+}

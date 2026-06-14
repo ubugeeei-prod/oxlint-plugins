@@ -1,0 +1,873 @@
+{
+  "__generated": {
+    "source": "postgresql-eslint-parser",
+    "ref": "postgresql-eslint-parser@0.5.4",
+    "sourceDir": "upstream/postgresql-eslint-parser/tests/fixtures",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-parser-tests.ts"
+  },
+  "input": "CREATE FUNCTION anon_body() RETURNS void AS $$\nBEGIN\n  SELECT 1;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE FUNCTION tagged_body() RETURNS void AS $func$\nBEGIN\n  SELECT 'hello $$ world';\nEND;\n$func$ LANGUAGE plpgsql;\n",
+  "ast": {
+    "type": "Program",
+    "range": [
+      0,
+      208
+    ],
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 12,
+        "column": 0
+      }
+    },
+    "body": [
+      {
+        "type": "CreateFunctionStmt",
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "anon_body",
+            "range": [
+              0,
+              89
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 0
+              },
+              "end": {
+                "line": 5,
+                "column": 19
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "0": {
+            "type": "String",
+            "sval": "void",
+            "range": [
+              36,
+              40
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 36
+              },
+              "end": {
+                "line": 1,
+                "column": 40
+              }
+            }
+          },
+          "typemod": -1,
+          "type": "names",
+          "range": [
+            36,
+            40
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 36
+            },
+            "end": {
+              "line": 1,
+              "column": 40
+            }
+          }
+        },
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nBEGIN\n  SELECT 1;\nEND;\n",
+                  "range": [
+                    41,
+                    43
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 1,
+                      "column": 41
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 43
+                    }
+                  }
+                }
+              ],
+              "range": [
+                41,
+                43
+              ],
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 41
+                },
+                "end": {
+                  "line": 1,
+                  "column": 43
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              41,
+              43
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 41
+              },
+              "end": {
+                "line": 1,
+                "column": 43
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [
+                73,
+                81
+              ],
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 3
+                },
+                "end": {
+                  "line": 5,
+                  "column": 11
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              73,
+              81
+            ],
+            "loc": {
+              "start": {
+                "line": 5,
+                "column": 3
+              },
+              "end": {
+                "line": 5,
+                "column": 11
+              }
+            }
+          }
+        ],
+        "range": [
+          0,
+          89
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 5,
+            "column": 19
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nBEGIN\n  SELECT 1;\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [
+            46,
+            70
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 46
+            },
+            "end": {
+              "line": 5,
+              "column": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "CreateFunctionStmt",
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "tagged_body",
+            "range": [
+              90,
+              206
+            ],
+            "loc": {
+              "start": {
+                "line": 5,
+                "column": 20
+              },
+              "end": {
+                "line": 11,
+                "column": 23
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "0": {
+            "type": "String",
+            "sval": "void",
+            "range": [
+              130,
+              134
+            ],
+            "loc": {
+              "start": {
+                "line": 7,
+                "column": 38
+              },
+              "end": {
+                "line": 7,
+                "column": 42
+              }
+            }
+          },
+          "typemod": -1,
+          "type": "names",
+          "range": [
+            130,
+            134
+          ],
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 38
+            },
+            "end": {
+              "line": 7,
+              "column": 42
+            }
+          }
+        },
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nBEGIN\n  SELECT 'hello $$ world';\nEND;\n",
+                  "range": [
+                    135,
+                    137
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 7,
+                      "column": 43
+                    },
+                    "end": {
+                      "line": 7,
+                      "column": 45
+                    }
+                  }
+                }
+              ],
+              "range": [
+                135,
+                137
+              ],
+              "loc": {
+                "start": {
+                  "line": 7,
+                  "column": 43
+                },
+                "end": {
+                  "line": 7,
+                  "column": 45
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              135,
+              137
+            ],
+            "loc": {
+              "start": {
+                "line": 7,
+                "column": 43
+              },
+              "end": {
+                "line": 7,
+                "column": 45
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [
+                190,
+                198
+              ],
+              "loc": {
+                "start": {
+                  "line": 11,
+                  "column": 7
+                },
+                "end": {
+                  "line": 11,
+                  "column": 15
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              190,
+              198
+            ],
+            "loc": {
+              "start": {
+                "line": 11,
+                "column": 7
+              },
+              "end": {
+                "line": 11,
+                "column": 15
+              }
+            }
+          }
+        ],
+        "range": [
+          90,
+          206
+        ],
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 20
+          },
+          "end": {
+            "line": 11,
+            "column": 23
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nBEGIN\n  SELECT 'hello $$ world';\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [
+            144,
+            183
+          ],
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 52
+            },
+            "end": {
+              "line": 11,
+              "column": 0
+            }
+          }
+        }
+      }
+    ],
+    "tokens": [
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [
+          0,
+          6
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [
+          7,
+          15
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 7
+          },
+          "end": {
+            "line": 1,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "anon_body",
+        "range": [
+          16,
+          25
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 16
+          },
+          "end": {
+            "line": 1,
+            "column": 25
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          25,
+          26
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 25
+          },
+          "end": {
+            "line": 1,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          26,
+          27
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 26
+          },
+          "end": {
+            "line": 1,
+            "column": 27
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "RETURNS",
+        "range": [
+          28,
+          35
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 28
+          },
+          "end": {
+            "line": 1,
+            "column": 35
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "void",
+        "range": [
+          36,
+          40
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 36
+          },
+          "end": {
+            "line": 1,
+            "column": 40
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [
+          41,
+          43
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 41
+          },
+          "end": {
+            "line": 1,
+            "column": 43
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$$\nBEGIN\n  SELECT 1;\nEND;\n$$",
+        "range": [
+          44,
+          72
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 44
+          },
+          "end": {
+            "line": 5,
+            "column": 2
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [
+          73,
+          81
+        ],
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 3
+          },
+          "end": {
+            "line": 5,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [
+          82,
+          89
+        ],
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 12
+          },
+          "end": {
+            "line": 5,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          89,
+          90
+        ],
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 19
+          },
+          "end": {
+            "line": 5,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [
+          92,
+          98
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 0
+          },
+          "end": {
+            "line": 7,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [
+          99,
+          107
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 7
+          },
+          "end": {
+            "line": 7,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "tagged_body",
+        "range": [
+          108,
+          119
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 16
+          },
+          "end": {
+            "line": 7,
+            "column": 27
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          119,
+          120
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 27
+          },
+          "end": {
+            "line": 7,
+            "column": 28
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          120,
+          121
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 28
+          },
+          "end": {
+            "line": 7,
+            "column": 29
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "RETURNS",
+        "range": [
+          122,
+          129
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 30
+          },
+          "end": {
+            "line": 7,
+            "column": 37
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "void",
+        "range": [
+          130,
+          134
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 38
+          },
+          "end": {
+            "line": 7,
+            "column": 42
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [
+          135,
+          137
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 43
+          },
+          "end": {
+            "line": 7,
+            "column": 45
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$func$\nBEGIN\n  SELECT 'hello $$ world';\nEND;\n$func$",
+        "range": [
+          138,
+          189
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 46
+          },
+          "end": {
+            "line": 11,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [
+          190,
+          198
+        ],
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 7
+          },
+          "end": {
+            "line": 11,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [
+          199,
+          206
+        ],
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 16
+          },
+          "end": {
+            "line": 11,
+            "column": 23
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          206,
+          207
+        ],
+        "loc": {
+          "start": {
+            "line": 11,
+            "column": 23
+          },
+          "end": {
+            "line": 11,
+            "column": 24
+          }
+        }
+      }
+    ],
+    "comments": []
+  },
+  "visitorKeys": {
+    "Program": [
+      "body",
+      "tokens",
+      "comments"
+    ],
+    "CreateFunctionStmt": [
+      "funcname",
+      "returnType",
+      "options",
+      "embeddedCode"
+    ],
+    "String": [],
+    "names": [
+      "0"
+    ],
+    "DefElem": [
+      "arg"
+    ],
+    "List": [
+      "items"
+    ],
+    "EmbeddedCode": [],
+    "Keyword": [],
+    "Identifier": [],
+    "Punctuator": [],
+    "SQLStatement": [
+      "statement"
+    ],
+    "SQLParseError": [],
+    "SQLProcedure": []
+  },
+  "scopeManager": null
+}

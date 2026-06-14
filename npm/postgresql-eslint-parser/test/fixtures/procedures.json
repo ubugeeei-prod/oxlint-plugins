@@ -1,0 +1,2900 @@
+{
+  "__generated": {
+    "source": "postgresql-eslint-parser",
+    "ref": "postgresql-eslint-parser@0.5.4",
+    "sourceDir": "upstream/postgresql-eslint-parser/tests/fixtures",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-parser-tests.ts"
+  },
+  "input": "-- Stored procedures and functions test\nCREATE OR REPLACE FUNCTION get_user_count(status_filter VARCHAR DEFAULT NULL)\nRETURNS INTEGER AS $$\nDECLARE\n    user_count INTEGER;\nBEGIN\n    IF status_filter IS NULL THEN\n        SELECT COUNT(*) INTO user_count FROM users;\n    ELSE\n        SELECT COUNT(*) INTO user_count FROM users WHERE status = status_filter;\n    END IF;\n    \n    RETURN user_count;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE OR REPLACE PROCEDURE update_user_status(\n    user_id INTEGER,\n    new_status VARCHAR\n)\nLANGUAGE plpgsql AS $$\nBEGIN\n    UPDATE users \n    SET status = new_status, \n        updated_at = CURRENT_TIMESTAMP \n    WHERE id = user_id;\n    \n    IF NOT FOUND THEN\n        RAISE EXCEPTION 'User with id % not found', user_id;\n    END IF;\n    \n    COMMIT;\nEND;\n$$;\n\n-- Recursive function\nCREATE OR REPLACE FUNCTION factorial(n INTEGER)\nRETURNS INTEGER AS $$\nBEGIN\n    IF n <= 1 THEN\n        RETURN 1;\n    ELSE\n        RETURN n * factorial(n - 1);\n    END IF;\nEND;\n$$ LANGUAGE plpgsql;\n\n-- Function with multiple return types\nCREATE OR REPLACE FUNCTION get_user_info(user_id INTEGER)\nRETURNS TABLE(name VARCHAR, email VARCHAR, status VARCHAR) AS $$\nBEGIN\n    RETURN QUERY\n    SELECT u.full_name, u.email, u.status\n    FROM users u\n    WHERE u.id = user_id;\nEND;\n$$ LANGUAGE plpgsql; ",
+  "ast": {
+    "type": "Program",
+    "range": [
+      0,
+      1299
+    ],
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 57,
+        "column": 21
+      }
+    },
+    "body": [
+      {
+        "type": "CreateFunctionStmt",
+        "replace": true,
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "get_user_count",
+            "range": [
+              0,
+              418
+            ],
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 0
+              },
+              "end": {
+                "line": 15,
+                "column": 19
+              }
+            }
+          }
+        ],
+        "parameters": [
+          {
+            "type": "FunctionParameter",
+            "name": "status_filter",
+            "argType": {
+              "0": {
+                "type": "String",
+                "sval": "pg_catalog",
+                "range": [
+                  96,
+                  103
+                ],
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 56
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 63
+                  }
+                }
+              },
+              "1": {
+                "type": "String",
+                "sval": "varchar",
+                "range": [
+                  96,
+                  103
+                ],
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 56
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 63
+                  }
+                }
+              },
+              "typemod": -1,
+              "type": "names",
+              "range": [
+                96,
+                103
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 56
+                },
+                "end": {
+                  "line": 2,
+                  "column": 63
+                }
+              }
+            },
+            "mode": "FUNC_PARAM_DEFAULT",
+            "defexpr": {
+              "type": "A_Const",
+              "isnull": true,
+              "range": [
+                112,
+                116
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 72
+                },
+                "end": {
+                  "line": 2,
+                  "column": 76
+                }
+              }
+            },
+            "range": [
+              96,
+              116
+            ],
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 56
+              },
+              "end": {
+                "line": 2,
+                "column": 76
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "0": {
+            "type": "String",
+            "sval": "pg_catalog",
+            "range": [
+              126,
+              133
+            ],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 8
+              },
+              "end": {
+                "line": 3,
+                "column": 15
+              }
+            }
+          },
+          "1": {
+            "type": "String",
+            "sval": "int4",
+            "range": [
+              126,
+              133
+            ],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 8
+              },
+              "end": {
+                "line": 3,
+                "column": 15
+              }
+            }
+          },
+          "typemod": -1,
+          "type": "names",
+          "range": [
+            126,
+            133
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 8
+            },
+            "end": {
+              "line": 3,
+              "column": 15
+            }
+          }
+        },
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nDECLARE\n    user_count INTEGER;\nBEGIN\n    IF status_filter IS NULL THEN\n        SELECT COUNT(*) INTO user_count FROM users;\n    ELSE\n        SELECT COUNT(*) INTO user_count FROM users WHERE status = status_filter;\n    END IF;\n    \n    RETURN user_count;\nEND;\n",
+                  "range": [
+                    134,
+                    136
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 16
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 18
+                    }
+                  }
+                }
+              ],
+              "range": [
+                134,
+                136
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 16
+                },
+                "end": {
+                  "line": 3,
+                  "column": 18
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              134,
+              136
+            ],
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 16
+              },
+              "end": {
+                "line": 3,
+                "column": 18
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [
+                402,
+                410
+              ],
+              "loc": {
+                "start": {
+                  "line": 15,
+                  "column": 3
+                },
+                "end": {
+                  "line": 15,
+                  "column": 11
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              402,
+              410
+            ],
+            "loc": {
+              "start": {
+                "line": 15,
+                "column": 3
+              },
+              "end": {
+                "line": 15,
+                "column": 11
+              }
+            }
+          }
+        ],
+        "range": [
+          0,
+          418
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 15,
+            "column": 19
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nDECLARE\n    user_count INTEGER;\nBEGIN\n    IF status_filter IS NULL THEN\n        SELECT COUNT(*) INTO user_count FROM users;\n    ELSE\n        SELECT COUNT(*) INTO user_count FROM users WHERE status = status_filter;\n    END IF;\n    \n    RETURN user_count;\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [
+            139,
+            399
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 21
+            },
+            "end": {
+              "line": 15,
+              "column": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "CreateFunctionStmt",
+        "is_procedure": true,
+        "replace": true,
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "update_user_status",
+            "range": [
+              419,
+              780
+            ],
+            "loc": {
+              "start": {
+                "line": 15,
+                "column": 20
+              },
+              "end": {
+                "line": 34,
+                "column": 2
+              }
+            }
+          }
+        ],
+        "parameters": [
+          {
+            "type": "FunctionParameter",
+            "name": "user_id",
+            "argType": {
+              "0": {
+                "type": "String",
+                "sval": "pg_catalog",
+                "range": [
+                  481,
+                  488
+                ],
+                "loc": {
+                  "start": {
+                    "line": 18,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 18,
+                    "column": 19
+                  }
+                }
+              },
+              "1": {
+                "type": "String",
+                "sval": "int4",
+                "range": [
+                  481,
+                  488
+                ],
+                "loc": {
+                  "start": {
+                    "line": 18,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 18,
+                    "column": 19
+                  }
+                }
+              },
+              "typemod": -1,
+              "type": "names",
+              "range": [
+                481,
+                488
+              ],
+              "loc": {
+                "start": {
+                  "line": 18,
+                  "column": 12
+                },
+                "end": {
+                  "line": 18,
+                  "column": 19
+                }
+              }
+            },
+            "mode": "FUNC_PARAM_DEFAULT",
+            "range": [
+              481,
+              488
+            ],
+            "loc": {
+              "start": {
+                "line": 18,
+                "column": 12
+              },
+              "end": {
+                "line": 18,
+                "column": 19
+              }
+            }
+          },
+          {
+            "type": "FunctionParameter",
+            "name": "new_status",
+            "argType": {
+              "0": {
+                "type": "String",
+                "sval": "pg_catalog",
+                "range": [
+                  505,
+                  512
+                ],
+                "loc": {
+                  "start": {
+                    "line": 19,
+                    "column": 15
+                  },
+                  "end": {
+                    "line": 19,
+                    "column": 22
+                  }
+                }
+              },
+              "1": {
+                "type": "String",
+                "sval": "varchar",
+                "range": [
+                  505,
+                  512
+                ],
+                "loc": {
+                  "start": {
+                    "line": 19,
+                    "column": 15
+                  },
+                  "end": {
+                    "line": 19,
+                    "column": 22
+                  }
+                }
+              },
+              "typemod": -1,
+              "type": "names",
+              "range": [
+                505,
+                512
+              ],
+              "loc": {
+                "start": {
+                  "line": 19,
+                  "column": 15
+                },
+                "end": {
+                  "line": 19,
+                  "column": 22
+                }
+              }
+            },
+            "mode": "FUNC_PARAM_DEFAULT",
+            "range": [
+              505,
+              512
+            ],
+            "loc": {
+              "start": {
+                "line": 19,
+                "column": 15
+              },
+              "end": {
+                "line": 19,
+                "column": 22
+              }
+            }
+          }
+        ],
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [
+                515,
+                523
+              ],
+              "loc": {
+                "start": {
+                  "line": 21,
+                  "column": 0
+                },
+                "end": {
+                  "line": 21,
+                  "column": 8
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              515,
+              523
+            ],
+            "loc": {
+              "start": {
+                "line": 21,
+                "column": 0
+              },
+              "end": {
+                "line": 21,
+                "column": 8
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nBEGIN\n    UPDATE users \n    SET status = new_status, \n        updated_at = CURRENT_TIMESTAMP \n    WHERE id = user_id;\n    \n    IF NOT FOUND THEN\n        RAISE EXCEPTION 'User with id % not found', user_id;\n    END IF;\n    \n    COMMIT;\nEND;\n",
+                  "range": [
+                    532,
+                    534
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 21,
+                      "column": 17
+                    },
+                    "end": {
+                      "line": 21,
+                      "column": 19
+                    }
+                  }
+                }
+              ],
+              "range": [
+                532,
+                534
+              ],
+              "loc": {
+                "start": {
+                  "line": 21,
+                  "column": 17
+                },
+                "end": {
+                  "line": 21,
+                  "column": 19
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              532,
+              534
+            ],
+            "loc": {
+              "start": {
+                "line": 21,
+                "column": 17
+              },
+              "end": {
+                "line": 21,
+                "column": 19
+              }
+            }
+          }
+        ],
+        "range": [
+          419,
+          780
+        ],
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 20
+          },
+          "end": {
+            "line": 34,
+            "column": 2
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nBEGIN\n    UPDATE users \n    SET status = new_status, \n        updated_at = CURRENT_TIMESTAMP \n    WHERE id = user_id;\n    \n    IF NOT FOUND THEN\n        RAISE EXCEPTION 'User with id % not found', user_id;\n    END IF;\n    \n    COMMIT;\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [
+            537,
+            778
+          ],
+          "loc": {
+            "start": {
+              "line": 21,
+              "column": 22
+            },
+            "end": {
+              "line": 34,
+              "column": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "CreateFunctionStmt",
+        "replace": true,
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "factorial",
+            "range": [
+              781,
+              1000
+            ],
+            "loc": {
+              "start": {
+                "line": 34,
+                "column": 3
+              },
+              "end": {
+                "line": 46,
+                "column": 19
+              }
+            }
+          }
+        ],
+        "parameters": [
+          {
+            "type": "FunctionParameter",
+            "name": "n",
+            "argType": {
+              "0": {
+                "type": "String",
+                "sval": "pg_catalog",
+                "range": [
+                  844,
+                  851
+                ],
+                "loc": {
+                  "start": {
+                    "line": 37,
+                    "column": 39
+                  },
+                  "end": {
+                    "line": 37,
+                    "column": 46
+                  }
+                }
+              },
+              "1": {
+                "type": "String",
+                "sval": "int4",
+                "range": [
+                  844,
+                  851
+                ],
+                "loc": {
+                  "start": {
+                    "line": 37,
+                    "column": 39
+                  },
+                  "end": {
+                    "line": 37,
+                    "column": 46
+                  }
+                }
+              },
+              "typemod": -1,
+              "type": "names",
+              "range": [
+                844,
+                851
+              ],
+              "loc": {
+                "start": {
+                  "line": 37,
+                  "column": 39
+                },
+                "end": {
+                  "line": 37,
+                  "column": 46
+                }
+              }
+            },
+            "mode": "FUNC_PARAM_DEFAULT",
+            "range": [
+              844,
+              851
+            ],
+            "loc": {
+              "start": {
+                "line": 37,
+                "column": 39
+              },
+              "end": {
+                "line": 37,
+                "column": 46
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "0": {
+            "type": "String",
+            "sval": "pg_catalog",
+            "range": [
+              861,
+              868
+            ],
+            "loc": {
+              "start": {
+                "line": 38,
+                "column": 8
+              },
+              "end": {
+                "line": 38,
+                "column": 15
+              }
+            }
+          },
+          "1": {
+            "type": "String",
+            "sval": "int4",
+            "range": [
+              861,
+              868
+            ],
+            "loc": {
+              "start": {
+                "line": 38,
+                "column": 8
+              },
+              "end": {
+                "line": 38,
+                "column": 15
+              }
+            }
+          },
+          "typemod": -1,
+          "type": "names",
+          "range": [
+            861,
+            868
+          ],
+          "loc": {
+            "start": {
+              "line": 38,
+              "column": 8
+            },
+            "end": {
+              "line": 38,
+              "column": 15
+            }
+          }
+        },
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nBEGIN\n    IF n <= 1 THEN\n        RETURN 1;\n    ELSE\n        RETURN n * factorial(n - 1);\n    END IF;\nEND;\n",
+                  "range": [
+                    869,
+                    871
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 38,
+                      "column": 16
+                    },
+                    "end": {
+                      "line": 38,
+                      "column": 18
+                    }
+                  }
+                }
+              ],
+              "range": [
+                869,
+                871
+              ],
+              "loc": {
+                "start": {
+                  "line": 38,
+                  "column": 16
+                },
+                "end": {
+                  "line": 38,
+                  "column": 18
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              869,
+              871
+            ],
+            "loc": {
+              "start": {
+                "line": 38,
+                "column": 16
+              },
+              "end": {
+                "line": 38,
+                "column": 18
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [
+                984,
+                992
+              ],
+              "loc": {
+                "start": {
+                  "line": 46,
+                  "column": 3
+                },
+                "end": {
+                  "line": 46,
+                  "column": 11
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              984,
+              992
+            ],
+            "loc": {
+              "start": {
+                "line": 46,
+                "column": 3
+              },
+              "end": {
+                "line": 46,
+                "column": 11
+              }
+            }
+          }
+        ],
+        "range": [
+          781,
+          1000
+        ],
+        "loc": {
+          "start": {
+            "line": 34,
+            "column": 3
+          },
+          "end": {
+            "line": 46,
+            "column": 19
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nBEGIN\n    IF n <= 1 THEN\n        RETURN 1;\n    ELSE\n        RETURN n * factorial(n - 1);\n    END IF;\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [
+            874,
+            981
+          ],
+          "loc": {
+            "start": {
+              "line": 38,
+              "column": 21
+            },
+            "end": {
+              "line": 46,
+              "column": 0
+            }
+          }
+        }
+      },
+      {
+        "type": "CreateFunctionStmt",
+        "replace": true,
+        "funcname": [
+          {
+            "type": "String",
+            "sval": "get_user_info",
+            "range": [
+              1001,
+              1297
+            ],
+            "loc": {
+              "start": {
+                "line": 46,
+                "column": 20
+              },
+              "end": {
+                "line": 57,
+                "column": 19
+              }
+            }
+          }
+        ],
+        "parameters": [
+          {
+            "type": "FunctionParameter",
+            "name": "user_id",
+            "argType": {
+              "0": {
+                "type": "String",
+                "sval": "pg_catalog",
+                "range": [
+                  1091,
+                  1098
+                ],
+                "loc": {
+                  "start": {
+                    "line": 49,
+                    "column": 49
+                  },
+                  "end": {
+                    "line": 49,
+                    "column": 56
+                  }
+                }
+              },
+              "1": {
+                "type": "String",
+                "sval": "int4",
+                "range": [
+                  1091,
+                  1098
+                ],
+                "loc": {
+                  "start": {
+                    "line": 49,
+                    "column": 49
+                  },
+                  "end": {
+                    "line": 49,
+                    "column": 56
+                  }
+                }
+              },
+              "typemod": -1,
+              "type": "names",
+              "range": [
+                1091,
+                1098
+              ],
+              "loc": {
+                "start": {
+                  "line": 49,
+                  "column": 49
+                },
+                "end": {
+                  "line": 49,
+                  "column": 56
+                }
+              }
+            },
+            "mode": "FUNC_PARAM_DEFAULT",
+            "range": [
+              1091,
+              1098
+            ],
+            "loc": {
+              "start": {
+                "line": 49,
+                "column": 49
+              },
+              "end": {
+                "line": 49,
+                "column": 56
+              }
+            }
+          },
+          {
+            "type": "FunctionParameter",
+            "name": "name",
+            "argType": {
+              "0": {
+                "type": "String",
+                "sval": "pg_catalog",
+                "range": [
+                  1119,
+                  1126
+                ],
+                "loc": {
+                  "start": {
+                    "line": 50,
+                    "column": 19
+                  },
+                  "end": {
+                    "line": 50,
+                    "column": 26
+                  }
+                }
+              },
+              "1": {
+                "type": "String",
+                "sval": "varchar",
+                "range": [
+                  1119,
+                  1126
+                ],
+                "loc": {
+                  "start": {
+                    "line": 50,
+                    "column": 19
+                  },
+                  "end": {
+                    "line": 50,
+                    "column": 26
+                  }
+                }
+              },
+              "typemod": -1,
+              "type": "names",
+              "range": [
+                1119,
+                1126
+              ],
+              "loc": {
+                "start": {
+                  "line": 50,
+                  "column": 19
+                },
+                "end": {
+                  "line": 50,
+                  "column": 26
+                }
+              }
+            },
+            "mode": "FUNC_PARAM_TABLE",
+            "range": [
+              1119,
+              1126
+            ],
+            "loc": {
+              "start": {
+                "line": 50,
+                "column": 19
+              },
+              "end": {
+                "line": 50,
+                "column": 26
+              }
+            }
+          },
+          {
+            "type": "FunctionParameter",
+            "name": "email",
+            "argType": {
+              "0": {
+                "type": "String",
+                "sval": "pg_catalog",
+                "range": [
+                  1134,
+                  1141
+                ],
+                "loc": {
+                  "start": {
+                    "line": 50,
+                    "column": 34
+                  },
+                  "end": {
+                    "line": 50,
+                    "column": 41
+                  }
+                }
+              },
+              "1": {
+                "type": "String",
+                "sval": "varchar",
+                "range": [
+                  1134,
+                  1141
+                ],
+                "loc": {
+                  "start": {
+                    "line": 50,
+                    "column": 34
+                  },
+                  "end": {
+                    "line": 50,
+                    "column": 41
+                  }
+                }
+              },
+              "typemod": -1,
+              "type": "names",
+              "range": [
+                1134,
+                1141
+              ],
+              "loc": {
+                "start": {
+                  "line": 50,
+                  "column": 34
+                },
+                "end": {
+                  "line": 50,
+                  "column": 41
+                }
+              }
+            },
+            "mode": "FUNC_PARAM_TABLE",
+            "range": [
+              1134,
+              1141
+            ],
+            "loc": {
+              "start": {
+                "line": 50,
+                "column": 34
+              },
+              "end": {
+                "line": 50,
+                "column": 41
+              }
+            }
+          },
+          {
+            "type": "FunctionParameter",
+            "name": "status",
+            "argType": {
+              "0": {
+                "type": "String",
+                "sval": "pg_catalog",
+                "range": [
+                  1150,
+                  1157
+                ],
+                "loc": {
+                  "start": {
+                    "line": 50,
+                    "column": 50
+                  },
+                  "end": {
+                    "line": 50,
+                    "column": 57
+                  }
+                }
+              },
+              "1": {
+                "type": "String",
+                "sval": "varchar",
+                "range": [
+                  1150,
+                  1157
+                ],
+                "loc": {
+                  "start": {
+                    "line": 50,
+                    "column": 50
+                  },
+                  "end": {
+                    "line": 50,
+                    "column": 57
+                  }
+                }
+              },
+              "typemod": -1,
+              "type": "names",
+              "range": [
+                1150,
+                1157
+              ],
+              "loc": {
+                "start": {
+                  "line": 50,
+                  "column": 50
+                },
+                "end": {
+                  "line": 50,
+                  "column": 57
+                }
+              }
+            },
+            "mode": "FUNC_PARAM_TABLE",
+            "range": [
+              1150,
+              1157
+            ],
+            "loc": {
+              "start": {
+                "line": 50,
+                "column": 50
+              },
+              "end": {
+                "line": 50,
+                "column": 57
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "0": {
+            "type": "String",
+            "sval": "pg_catalog",
+            "range": [
+              1108,
+              1113
+            ],
+            "loc": {
+              "start": {
+                "line": 50,
+                "column": 8
+              },
+              "end": {
+                "line": 50,
+                "column": 13
+              }
+            }
+          },
+          "1": {
+            "type": "String",
+            "sval": "record",
+            "range": [
+              1108,
+              1113
+            ],
+            "loc": {
+              "start": {
+                "line": 50,
+                "column": 8
+              },
+              "end": {
+                "line": 50,
+                "column": 13
+              }
+            }
+          },
+          "setof": true,
+          "typemod": -1,
+          "type": "names",
+          "range": [
+            1108,
+            1113
+          ],
+          "loc": {
+            "start": {
+              "line": 50,
+              "column": 8
+            },
+            "end": {
+              "line": 50,
+              "column": 13
+            }
+          }
+        },
+        "options": [
+          {
+            "type": "DefElem",
+            "defname": "as",
+            "arg": {
+              "type": "List",
+              "items": [
+                {
+                  "type": "String",
+                  "sval": "\nBEGIN\n    RETURN QUERY\n    SELECT u.full_name, u.email, u.status\n    FROM users u\n    WHERE u.id = user_id;\nEND;\n",
+                  "range": [
+                    1159,
+                    1161
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 50,
+                      "column": 59
+                    },
+                    "end": {
+                      "line": 50,
+                      "column": 61
+                    }
+                  }
+                }
+              ],
+              "range": [
+                1159,
+                1161
+              ],
+              "loc": {
+                "start": {
+                  "line": 50,
+                  "column": 59
+                },
+                "end": {
+                  "line": 50,
+                  "column": 61
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              1159,
+              1161
+            ],
+            "loc": {
+              "start": {
+                "line": 50,
+                "column": 59
+              },
+              "end": {
+                "line": 50,
+                "column": 61
+              }
+            }
+          },
+          {
+            "type": "DefElem",
+            "defname": "language",
+            "arg": {
+              "type": "String",
+              "sval": "plpgsql",
+              "range": [
+                1281,
+                1289
+              ],
+              "loc": {
+                "start": {
+                  "line": 57,
+                  "column": 3
+                },
+                "end": {
+                  "line": 57,
+                  "column": 11
+                }
+              }
+            },
+            "defaction": "DEFELEM_UNSPEC",
+            "range": [
+              1281,
+              1289
+            ],
+            "loc": {
+              "start": {
+                "line": 57,
+                "column": 3
+              },
+              "end": {
+                "line": 57,
+                "column": 11
+              }
+            }
+          }
+        ],
+        "range": [
+          1001,
+          1297
+        ],
+        "loc": {
+          "start": {
+            "line": 46,
+            "column": 20
+          },
+          "end": {
+            "line": 57,
+            "column": 19
+          }
+        },
+        "embeddedCode": {
+          "type": "EmbeddedCode",
+          "language": "plpgsql",
+          "source": "\nBEGIN\n    RETURN QUERY\n    SELECT u.full_name, u.email, u.status\n    FROM users u\n    WHERE u.id = user_id;\nEND;\n",
+          "quoteStyle": "dollar",
+          "range": [
+            1164,
+            1278
+          ],
+          "loc": {
+            "start": {
+              "line": 50,
+              "column": 64
+            },
+            "end": {
+              "line": 57,
+              "column": 0
+            }
+          }
+        }
+      }
+    ],
+    "tokens": [
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [
+          40,
+          46
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [
+          47,
+          49
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 7
+          },
+          "end": {
+            "line": 2,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "REPLACE",
+        "range": [
+          50,
+          57
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 10
+          },
+          "end": {
+            "line": 2,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [
+          58,
+          66
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 18
+          },
+          "end": {
+            "line": 2,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "get_user_count",
+        "range": [
+          67,
+          81
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 27
+          },
+          "end": {
+            "line": 2,
+            "column": 41
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          81,
+          82
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 41
+          },
+          "end": {
+            "line": 2,
+            "column": 42
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "status_filter",
+        "range": [
+          82,
+          95
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 42
+          },
+          "end": {
+            "line": 2,
+            "column": 55
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "VARCHAR",
+        "range": [
+          96,
+          103
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 56
+          },
+          "end": {
+            "line": 2,
+            "column": 63
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "DEFAULT",
+        "range": [
+          104,
+          111
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 64
+          },
+          "end": {
+            "line": 2,
+            "column": 71
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "NULL",
+        "range": [
+          112,
+          116
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 72
+          },
+          "end": {
+            "line": 2,
+            "column": 76
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          116,
+          117
+        ],
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 76
+          },
+          "end": {
+            "line": 2,
+            "column": 77
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "RETURNS",
+        "range": [
+          118,
+          125
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 0
+          },
+          "end": {
+            "line": 3,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "INTEGER",
+        "range": [
+          126,
+          133
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 8
+          },
+          "end": {
+            "line": 3,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [
+          134,
+          136
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 16
+          },
+          "end": {
+            "line": 3,
+            "column": 18
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$$\nDECLARE\n    user_count INTEGER;\nBEGIN\n    IF status_filter IS NULL THEN\n        SELECT COUNT(*) INTO user_count FROM users;\n    ELSE\n        SELECT COUNT(*) INTO user_count FROM users WHERE status = status_filter;\n    END IF;\n    \n    RETURN user_count;\nEND;\n$$",
+        "range": [
+          137,
+          401
+        ],
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 19
+          },
+          "end": {
+            "line": 15,
+            "column": 2
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [
+          402,
+          410
+        ],
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 3
+          },
+          "end": {
+            "line": 15,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [
+          411,
+          418
+        ],
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 12
+          },
+          "end": {
+            "line": 15,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          418,
+          419
+        ],
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 19
+          },
+          "end": {
+            "line": 15,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [
+          421,
+          427
+        ],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 0
+          },
+          "end": {
+            "line": 17,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [
+          428,
+          430
+        ],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 7
+          },
+          "end": {
+            "line": 17,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "REPLACE",
+        "range": [
+          431,
+          438
+        ],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 10
+          },
+          "end": {
+            "line": 17,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "PROCEDURE",
+        "range": [
+          439,
+          448
+        ],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 18
+          },
+          "end": {
+            "line": 17,
+            "column": 27
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "update_user_status",
+        "range": [
+          449,
+          467
+        ],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 28
+          },
+          "end": {
+            "line": 17,
+            "column": 46
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          467,
+          468
+        ],
+        "loc": {
+          "start": {
+            "line": 17,
+            "column": 46
+          },
+          "end": {
+            "line": 17,
+            "column": 47
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "user_id",
+        "range": [
+          473,
+          480
+        ],
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 4
+          },
+          "end": {
+            "line": 18,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "INTEGER",
+        "range": [
+          481,
+          488
+        ],
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 12
+          },
+          "end": {
+            "line": 18,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ",",
+        "range": [
+          488,
+          489
+        ],
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 19
+          },
+          "end": {
+            "line": 18,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "new_status",
+        "range": [
+          494,
+          504
+        ],
+        "loc": {
+          "start": {
+            "line": 19,
+            "column": 4
+          },
+          "end": {
+            "line": 19,
+            "column": 14
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "VARCHAR",
+        "range": [
+          505,
+          512
+        ],
+        "loc": {
+          "start": {
+            "line": 19,
+            "column": 15
+          },
+          "end": {
+            "line": 19,
+            "column": 22
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          513,
+          514
+        ],
+        "loc": {
+          "start": {
+            "line": 20,
+            "column": 0
+          },
+          "end": {
+            "line": 20,
+            "column": 1
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [
+          515,
+          523
+        ],
+        "loc": {
+          "start": {
+            "line": 21,
+            "column": 0
+          },
+          "end": {
+            "line": 21,
+            "column": 8
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [
+          524,
+          531
+        ],
+        "loc": {
+          "start": {
+            "line": 21,
+            "column": 9
+          },
+          "end": {
+            "line": 21,
+            "column": 16
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [
+          532,
+          534
+        ],
+        "loc": {
+          "start": {
+            "line": 21,
+            "column": 17
+          },
+          "end": {
+            "line": 21,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$$\nBEGIN\n    UPDATE users \n    SET status = new_status, \n        updated_at = CURRENT_TIMESTAMP \n    WHERE id = user_id;\n    \n    IF NOT FOUND THEN\n        RAISE EXCEPTION 'User with id % not found', user_id;\n    END IF;\n    \n    COMMIT;\nEND;\n$$",
+        "range": [
+          535,
+          780
+        ],
+        "loc": {
+          "start": {
+            "line": 21,
+            "column": 20
+          },
+          "end": {
+            "line": 34,
+            "column": 2
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          780,
+          781
+        ],
+        "loc": {
+          "start": {
+            "line": 34,
+            "column": 2
+          },
+          "end": {
+            "line": 34,
+            "column": 3
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [
+          805,
+          811
+        ],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 0
+          },
+          "end": {
+            "line": 37,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [
+          812,
+          814
+        ],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 7
+          },
+          "end": {
+            "line": 37,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "REPLACE",
+        "range": [
+          815,
+          822
+        ],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 10
+          },
+          "end": {
+            "line": 37,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [
+          823,
+          831
+        ],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 18
+          },
+          "end": {
+            "line": 37,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "factorial",
+        "range": [
+          832,
+          841
+        ],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 27
+          },
+          "end": {
+            "line": 37,
+            "column": 36
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          841,
+          842
+        ],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 36
+          },
+          "end": {
+            "line": 37,
+            "column": 37
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "n",
+        "range": [
+          842,
+          843
+        ],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 37
+          },
+          "end": {
+            "line": 37,
+            "column": 38
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "INTEGER",
+        "range": [
+          844,
+          851
+        ],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 39
+          },
+          "end": {
+            "line": 37,
+            "column": 46
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          851,
+          852
+        ],
+        "loc": {
+          "start": {
+            "line": 37,
+            "column": 46
+          },
+          "end": {
+            "line": 37,
+            "column": 47
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "RETURNS",
+        "range": [
+          853,
+          860
+        ],
+        "loc": {
+          "start": {
+            "line": 38,
+            "column": 0
+          },
+          "end": {
+            "line": 38,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "INTEGER",
+        "range": [
+          861,
+          868
+        ],
+        "loc": {
+          "start": {
+            "line": 38,
+            "column": 8
+          },
+          "end": {
+            "line": 38,
+            "column": 15
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [
+          869,
+          871
+        ],
+        "loc": {
+          "start": {
+            "line": 38,
+            "column": 16
+          },
+          "end": {
+            "line": 38,
+            "column": 18
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$$\nBEGIN\n    IF n <= 1 THEN\n        RETURN 1;\n    ELSE\n        RETURN n * factorial(n - 1);\n    END IF;\nEND;\n$$",
+        "range": [
+          872,
+          983
+        ],
+        "loc": {
+          "start": {
+            "line": 38,
+            "column": 19
+          },
+          "end": {
+            "line": 46,
+            "column": 2
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [
+          984,
+          992
+        ],
+        "loc": {
+          "start": {
+            "line": 46,
+            "column": 3
+          },
+          "end": {
+            "line": 46,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [
+          993,
+          1000
+        ],
+        "loc": {
+          "start": {
+            "line": 46,
+            "column": 12
+          },
+          "end": {
+            "line": 46,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          1000,
+          1001
+        ],
+        "loc": {
+          "start": {
+            "line": 46,
+            "column": 19
+          },
+          "end": {
+            "line": 46,
+            "column": 20
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "CREATE",
+        "range": [
+          1042,
+          1048
+        ],
+        "loc": {
+          "start": {
+            "line": 49,
+            "column": 0
+          },
+          "end": {
+            "line": 49,
+            "column": 6
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "OR",
+        "range": [
+          1049,
+          1051
+        ],
+        "loc": {
+          "start": {
+            "line": 49,
+            "column": 7
+          },
+          "end": {
+            "line": 49,
+            "column": 9
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "REPLACE",
+        "range": [
+          1052,
+          1059
+        ],
+        "loc": {
+          "start": {
+            "line": 49,
+            "column": 10
+          },
+          "end": {
+            "line": 49,
+            "column": 17
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "FUNCTION",
+        "range": [
+          1060,
+          1068
+        ],
+        "loc": {
+          "start": {
+            "line": 49,
+            "column": 18
+          },
+          "end": {
+            "line": 49,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "get_user_info",
+        "range": [
+          1069,
+          1082
+        ],
+        "loc": {
+          "start": {
+            "line": 49,
+            "column": 27
+          },
+          "end": {
+            "line": 49,
+            "column": 40
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          1082,
+          1083
+        ],
+        "loc": {
+          "start": {
+            "line": 49,
+            "column": 40
+          },
+          "end": {
+            "line": 49,
+            "column": 41
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "user_id",
+        "range": [
+          1083,
+          1090
+        ],
+        "loc": {
+          "start": {
+            "line": 49,
+            "column": 41
+          },
+          "end": {
+            "line": 49,
+            "column": 48
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "INTEGER",
+        "range": [
+          1091,
+          1098
+        ],
+        "loc": {
+          "start": {
+            "line": 49,
+            "column": 49
+          },
+          "end": {
+            "line": 49,
+            "column": 56
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          1098,
+          1099
+        ],
+        "loc": {
+          "start": {
+            "line": 49,
+            "column": 56
+          },
+          "end": {
+            "line": 49,
+            "column": 57
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "RETURNS",
+        "range": [
+          1100,
+          1107
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 0
+          },
+          "end": {
+            "line": 50,
+            "column": 7
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "TABLE",
+        "range": [
+          1108,
+          1113
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 8
+          },
+          "end": {
+            "line": 50,
+            "column": 13
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": "(",
+        "range": [
+          1113,
+          1114
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 13
+          },
+          "end": {
+            "line": 50,
+            "column": 14
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "name",
+        "range": [
+          1114,
+          1118
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 14
+          },
+          "end": {
+            "line": 50,
+            "column": 18
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "VARCHAR",
+        "range": [
+          1119,
+          1126
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 19
+          },
+          "end": {
+            "line": 50,
+            "column": 26
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ",",
+        "range": [
+          1126,
+          1127
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 26
+          },
+          "end": {
+            "line": 50,
+            "column": 27
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "email",
+        "range": [
+          1128,
+          1133
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 28
+          },
+          "end": {
+            "line": 50,
+            "column": 33
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "VARCHAR",
+        "range": [
+          1134,
+          1141
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 34
+          },
+          "end": {
+            "line": 50,
+            "column": 41
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ",",
+        "range": [
+          1141,
+          1142
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 41
+          },
+          "end": {
+            "line": 50,
+            "column": 42
+          }
+        }
+      },
+      {
+        "type": "Identifier",
+        "value": "status",
+        "range": [
+          1143,
+          1149
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 43
+          },
+          "end": {
+            "line": 50,
+            "column": 49
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "VARCHAR",
+        "range": [
+          1150,
+          1157
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 50
+          },
+          "end": {
+            "line": 50,
+            "column": 57
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ")",
+        "range": [
+          1157,
+          1158
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 57
+          },
+          "end": {
+            "line": 50,
+            "column": 58
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "AS",
+        "range": [
+          1159,
+          1161
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 59
+          },
+          "end": {
+            "line": 50,
+            "column": 61
+          }
+        }
+      },
+      {
+        "type": "String",
+        "value": "$$\nBEGIN\n    RETURN QUERY\n    SELECT u.full_name, u.email, u.status\n    FROM users u\n    WHERE u.id = user_id;\nEND;\n$$",
+        "range": [
+          1162,
+          1280
+        ],
+        "loc": {
+          "start": {
+            "line": 50,
+            "column": 62
+          },
+          "end": {
+            "line": 57,
+            "column": 2
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "LANGUAGE",
+        "range": [
+          1281,
+          1289
+        ],
+        "loc": {
+          "start": {
+            "line": 57,
+            "column": 3
+          },
+          "end": {
+            "line": 57,
+            "column": 11
+          }
+        }
+      },
+      {
+        "type": "Keyword",
+        "value": "plpgsql",
+        "range": [
+          1290,
+          1297
+        ],
+        "loc": {
+          "start": {
+            "line": 57,
+            "column": 12
+          },
+          "end": {
+            "line": 57,
+            "column": 19
+          }
+        }
+      },
+      {
+        "type": "Punctuator",
+        "value": ";",
+        "range": [
+          1297,
+          1298
+        ],
+        "loc": {
+          "start": {
+            "line": 57,
+            "column": 19
+          },
+          "end": {
+            "line": 57,
+            "column": 20
+          }
+        }
+      }
+    ],
+    "comments": [
+      {
+        "type": "Line",
+        "value": " Stored procedures and functions test",
+        "range": [
+          0,
+          39
+        ],
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 39
+          }
+        }
+      },
+      {
+        "type": "Line",
+        "value": " Recursive function",
+        "range": [
+          783,
+          804
+        ],
+        "loc": {
+          "start": {
+            "line": 36,
+            "column": 0
+          },
+          "end": {
+            "line": 36,
+            "column": 21
+          }
+        }
+      },
+      {
+        "type": "Line",
+        "value": " Function with multiple return types",
+        "range": [
+          1003,
+          1041
+        ],
+        "loc": {
+          "start": {
+            "line": 48,
+            "column": 0
+          },
+          "end": {
+            "line": 48,
+            "column": 38
+          }
+        }
+      }
+    ]
+  },
+  "visitorKeys": {
+    "Program": [
+      "body",
+      "tokens",
+      "comments"
+    ],
+    "CreateFunctionStmt": [
+      "funcname",
+      "parameters",
+      "returnType",
+      "options",
+      "embeddedCode"
+    ],
+    "String": [],
+    "FunctionParameter": [
+      "argType",
+      "defexpr"
+    ],
+    "names": [
+      "0",
+      "1"
+    ],
+    "A_Const": [],
+    "DefElem": [
+      "arg"
+    ],
+    "List": [
+      "items"
+    ],
+    "EmbeddedCode": [],
+    "Keyword": [],
+    "Identifier": [],
+    "Punctuator": [],
+    "Line": [],
+    "SQLStatement": [
+      "statement"
+    ],
+    "SQLParseError": [],
+    "SQLProcedure": []
+  },
+  "scopeManager": null
+}

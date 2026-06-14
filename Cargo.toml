@@ -35,6 +35,7 @@ members = [
   "npm/perfectionist",
   "npm/playwright",
   "npm/postgresql",
+  "npm/postgresql-eslint-parser",
   "npm/react-hooks",
   "npm/react-refresh",
   "npm/regexp",
