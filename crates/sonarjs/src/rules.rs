@@ -39,6 +39,7 @@ mod no_duplicate_string;
 mod no_empty_alternatives;
 mod no_empty_character_class;
 mod no_empty_group;
+mod no_equals_in_for_termination;
 mod no_exclusive_tests;
 mod no_for_in_iterable;
 mod no_function_declaration_in_block;

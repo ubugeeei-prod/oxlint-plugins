@@ -4283,3 +4283,76 @@ fn does_not_report_for_loop_increment_sign_no_test_or_update() {
     let diagnostics = scan("for-loop-increment-sign", "for (;;) {}");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_equals_in_for_termination_non_unit_compound_add() {
+    let source = "for (let i = 0; i != 10; i += 2) {}";
+    let diagnostics = scan("no-equals-in-for-termination", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-equals-in-for-termination");
+    assert_eq!(diagnostics[0].message_id, "noEqualsInForTermination");
+}
+
+#[test]
+fn reports_no_equals_in_for_termination_non_unit_compound_subtract() {
+    let source = "for (let i = 10; i !== 0; i -= 3) {}";
+    let diagnostics = scan("no-equals-in-for-termination", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noEqualsInForTermination");
+}
+
+#[test]
+fn reports_no_equals_in_for_termination_non_unit_plain_assign() {
+    let source = "for (let i = 0; i !== 10; i = i + 2) {}";
+    let diagnostics = scan("no-equals-in-for-termination", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noEqualsInForTermination");
+}
+
+#[test]
+fn reports_no_equals_in_for_termination_counter_on_right() {
+    let source = "for (let i = 0; 10 != i; i += 2) {}";
+    let diagnostics = scan("no-equals-in-for-termination", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_equals_in_for_termination_unit_increment() {
+    let source = "for (let i = 0; i != 10; i++) {}";
+    let diagnostics = scan("no-equals-in-for-termination", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_equals_in_for_termination_unit_compound_add() {
+    let source = "for (let i = 0; i !== 10; i += 1) {}";
+    let diagnostics = scan("no-equals-in-for-termination", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_equals_in_for_termination_relational_condition() {
+    let source = "for (let i = 0; i < 10; i += 2) {}";
+    let diagnostics = scan("no-equals-in-for-termination", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_equals_in_for_termination_update_var_differs() {
+    let source = "for (let i = 0, j = 0; i != 10; j += 2) {}";
+    let diagnostics = scan("no-equals-in-for-termination", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_equals_in_for_termination_no_update() {
+    let source = "for (let i = 0; i != 10; ) {}";
+    let diagnostics = scan("no-equals-in-for-termination", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_equals_in_for_termination_empty_header() {
+    let diagnostics = scan("no-equals-in-for-termination", "for (;;) {}");
+    assert!(diagnostics.is_empty());
+}

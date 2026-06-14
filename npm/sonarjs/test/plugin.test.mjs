@@ -175,6 +175,7 @@ describe('sonarjs plugin shape', () => {
       'no-same-argument-assert',
       'inverted-assertion-arguments',
       'for-loop-increment-sign',
+      'no-equals-in-for-termination',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -256,6 +257,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-same-argument-assert']).toBe('object');
     expect(typeof plugin.rules['inverted-assertion-arguments']).toBe('object');
     expect(typeof plugin.rules['for-loop-increment-sign']).toBe('object');
+    expect(typeof plugin.rules['no-equals-in-for-termination']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -345,6 +347,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-same-argument-assert']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/inverted-assertion-arguments']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/for-loop-increment-sign']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-equals-in-for-termination']).toBe('error');
   });
 });
 
@@ -2268,5 +2271,47 @@ describe('for-loop-increment-sign rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(for-loop-increment-sign)');
+  });
+});
+
+describe('no-equals-in-for-termination rule', () => {
+  it('reports an inequality condition with a non-unit compound step', () => {
+    const source = 'for (let i = 0; i != 10; i += 2) {}';
+    const reports = runRule('no-equals-in-for-termination', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noEqualsInForTermination');
+  });
+
+  it('reports a strict-inequality condition with a non-unit plain assignment', () => {
+    const source = 'for (let i = 0; i !== 10; i = i + 2) {}';
+    const reports = runRule('no-equals-in-for-termination', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report a unit increment', () => {
+    const source = 'for (let i = 0; i != 10; i++) {}';
+    const reports = runRule('no-equals-in-for-termination', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a relational condition', () => {
+    const source = 'for (let i = 0; i < 10; i += 2) {}';
+    const reports = runRule('no-equals-in-for-termination', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the update variable differs from the counter', () => {
+    const source = 'for (let i = 0, j = 0; i != 10; j += 2) {}';
+    const reports = runRule('no-equals-in-for-termination', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-equals-in-for-termination through the CLI', () => {
+    const source = 'for (let i = 0; i != 10; i += 2) {}';
+    const result = runOxlint('no-equals-in-for-termination', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-equals-in-for-termination)');
   });
 });

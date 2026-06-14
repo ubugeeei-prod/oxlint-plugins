@@ -299,6 +299,10 @@ const messages = Object.freeze({
     wrongDirection:
       'This loop update moves the counter away from the termination condition, so the loop may not stop as intended.',
   },
+  'no-equals-in-for-termination': {
+    noEqualsInForTermination:
+      'Replace this equality operator in the loop termination condition with a relational operator.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -459,6 +463,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow a Chai "assert.<method>(...)" call whose first argument is a literal constant and second is not, since the actual/expected arguments were likely inverted',
   'for-loop-increment-sign':
     'Disallow a "for" loop whose update clause moves the counter away from the relational termination condition (e.g. "i < n" with "i--"), which can prevent the loop from terminating',
+  'no-equals-in-for-termination':
+    'Disallow an equality operator ("==", "!=", "===", "!==") in a "for" loop termination condition when the counter is advanced by a non-unit step (e.g. "i != 10" with "i += 2"), which can skip the bound and loop forever',
 });
 
 const ruleTypes = Object.freeze({
@@ -543,6 +549,7 @@ const ruleTypes = Object.freeze({
   'no-same-argument-assert': 'suggestion',
   'inverted-assertion-arguments': 'suggestion',
   'for-loop-increment-sign': 'suggestion',
+  'no-equals-in-for-termination': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -627,6 +634,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-same-argument-assert': 'error',
   'inverted-assertion-arguments': 'error',
   'for-loop-increment-sign': 'error',
+  'no-equals-in-for-termination': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
