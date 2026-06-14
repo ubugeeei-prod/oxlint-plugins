@@ -2777,3 +2777,98 @@ fn does_not_report_anchor_precedence_when_middle_alt_is_anchored() {
     let diagnostics = scan("anchor-precedence", source);
     assert!(diagnostics.is_empty());
 }
+
+// --- cyclomatic-complexity (S1541) ---
+
+#[test]
+fn cyclomatic_complexity_exceeds_threshold_reports() {
+    // base 1 + 4 if statements = 5, threshold 3: 5 > 3 → 1 diagnostic
+    let mut options = options_for("cyclomatic-complexity");
+    options.cyclomatic_complexity_threshold = 3;
+    let source = "function f(a,b,c,d){if(a){}if(b){}if(c){}if(d){}}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "cyclomatic-complexity");
+    assert_eq!(diagnostics[0].message_id, "cyclomaticComplexity");
+}
+
+#[test]
+fn cyclomatic_complexity_at_threshold_no_report() {
+    // base 1 + 3 ifs = 4, threshold 4: 4 is NOT > 4 → 0 diagnostics
+    let mut options = options_for("cyclomatic-complexity");
+    options.cyclomatic_complexity_threshold = 4;
+    let source = "function f(a,b,c){if(a){}if(b){}if(c){}}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cyclomatic_complexity_logical_operators_count() {
+    // "a&&b&&c" → 2 LogicalExpression nodes; base 1 + 2 = 3 > threshold 2 → 1 diagnostic
+    let mut options = options_for("cyclomatic-complexity");
+    options.cyclomatic_complexity_threshold = 2;
+    let source = "function f(a,b,c){return a&&b&&c;}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "cyclomatic-complexity");
+}
+
+#[test]
+fn cyclomatic_complexity_default_case_not_counted() {
+    // switch with only a default clause: base 1 + 0 case clauses = 1, threshold 1: not > 1 → 0
+    let mut options = options_for("cyclomatic-complexity");
+    options.cyclomatic_complexity_threshold = 1;
+    let source = "function f(x){switch(x){default:break;}}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cyclomatic_complexity_toplevel_decision_points_not_counted() {
+    // ifs at top level (no enclosing function) → no frame → complexity never reported
+    let mut options = options_for("cyclomatic-complexity");
+    options.cyclomatic_complexity_threshold = 1;
+    let source = "if(a){}if(b){}if(c){}if(d){}if(e){}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cyclomatic_complexity_case_clause_counts() {
+    // switch with 2 case clauses + 1 default; base 1 + 2 cases = 3 > threshold 2 → 1 diagnostic
+    let mut options = options_for("cyclomatic-complexity");
+    options.cyclomatic_complexity_threshold = 2;
+    let source = "function f(x){switch(x){case 1:break;case 2:break;default:break;}}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn cyclomatic_complexity_catch_clause_counts() {
+    // base 1 + 1 catch = 2 > threshold 1 → 1 diagnostic
+    let mut options = options_for("cyclomatic-complexity");
+    options.cyclomatic_complexity_threshold = 1;
+    let source = "function f(){try{}catch(e){}}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn cyclomatic_complexity_nested_functions_independent() {
+    // outer: base 1 (no decision points in outer body itself) → not reported at threshold 1
+    // inner: base 1 + 2 ifs = 3 > threshold 1 → inner reported; outer not reported
+    let mut options = options_for("cyclomatic-complexity");
+    options.cyclomatic_complexity_threshold = 1;
+    let source = "function outer(){function inner(a,b){if(a){}if(b){}}}";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "cyclomaticComplexity");
+}
+
+#[test]
+fn cyclomatic_complexity_uses_default_threshold_when_unset() {
+    // default threshold is 10; a function with base 1 + 5 ifs = 6 must not be flagged
+    let source = "function f(a,b,c,d,e){if(a){}if(b){}if(c){}if(d){}if(e){}}";
+    let diagnostics = scan("cyclomatic-complexity", source);
+    assert!(diagnostics.is_empty());
+}

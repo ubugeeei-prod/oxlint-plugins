@@ -5191,19 +5191,19 @@
       },
       {
         "name": "no-cross-join",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-cross-join."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-cross-join; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-distinct-on-without-order-by",
@@ -5351,19 +5351,19 @@
       },
       {
         "name": "no-group-by-ordinal",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-group-by-ordinal."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-group-by-ordinal; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-having-without-group-by",
@@ -5415,19 +5415,19 @@
       },
       {
         "name": "no-leading-wildcard-like",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-leading-wildcard-like."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-leading-wildcard-like; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-money-type",
@@ -5543,19 +5543,19 @@
       },
       {
         "name": "no-rename-table",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-rename-table."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-rename-table; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-rule",
@@ -5591,19 +5591,19 @@
       },
       {
         "name": "no-select-into",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-select-into."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-select-into; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-select-star",
@@ -5703,19 +5703,19 @@
       },
       {
         "name": "no-truncate-cascade",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-truncate-cascade."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/no-truncate-cascade; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "no-unlogged-table",
@@ -6167,19 +6167,19 @@
       },
       {
         "name": "require-where-in-delete",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule require-where-in-delete."
+        "notes": "Rust libpg_query (PostgreSQL 17) port of eslint-plugin-postgresql/require-where-in-delete; covered by native API and upstream-fixture parity Vitest tests. Oxlint does not route .sql files to jsPlugins."
       },
       {
         "name": "require-where-in-update",
@@ -10830,19 +10830,19 @@
       },
       {
         "name": "cyclomatic-complexity",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule cyclomatic-complexity (Sonar key S1541). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S1541 (per-function McCabe cyclomatic complexity). Base complexity 1 per function; +1 for each if (including else-if), for, for-in, for-of, while, do-while, case clause (not default), catch, ternary (?:), and logical expression (&&/||/??). Top-level decision points outside any function are ignored. Configurable threshold option (default 10). SonarJS upstream is LGPL-3.0; implemented from public RSPEC only."
       },
       {
         "name": "declarations-in-global-scope",
