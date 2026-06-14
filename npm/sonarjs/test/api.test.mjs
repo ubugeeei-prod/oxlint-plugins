@@ -61,6 +61,7 @@ const expectedRuleNames = [
   'no-regex-spaces',
   'no-control-regex',
   'single-char-in-character-classes',
+  'duplicates-in-character-class',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2006,6 +2007,18 @@ describe('sonarjs native API', () => {
 
   it('does not report single-char-in-character-classes for a multi-character class', () => {
     const diagnostics = scan('single-char-in-character-classes', 'const r = /[ab]/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports duplicates-in-character-class for a repeated character', () => {
+    const diagnostics = scan('duplicates-in-character-class', 'const r = /[aa]/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('duplicates-in-character-class');
+    expect(diagnostics[0].messageId).toBe('duplicateCharacter');
+  });
+
+  it('does not report duplicates-in-character-class for distinct characters', () => {
+    const diagnostics = scan('duplicates-in-character-class', 'const r = /[abc]/;');
     expect(diagnostics).toHaveLength(0);
   });
 });
