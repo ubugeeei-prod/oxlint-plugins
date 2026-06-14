@@ -53,6 +53,18 @@ const ruleMeta = Object.freeze({
         'Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does.',
     },
   },
+  'no-having-without-group-by': {
+    type: 'problem',
+    description:
+      'Disallow `HAVING` without `GROUP BY` — the query aggregates the entire result set, which is almost never the intended shape',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noHavingWithoutGroupBy:
+        '`HAVING` without `GROUP BY` collapses the query to one aggregate row over the whole table. If that is intended, put the predicate in `WHERE`. Otherwise, add a `GROUP BY`.',
+    },
+  },
   'no-set-not-null': {
     type: 'problem',
     description:
