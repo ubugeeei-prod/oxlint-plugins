@@ -4,6 +4,7 @@
 //! clean-room from the public RSPEC documentation and observed behaviour only;
 //! no upstream source, tests, fixtures, helper code, or messages are copied.
 
+mod regex_ast;
 mod rules;
 mod scanner;
 mod types;
@@ -22,7 +23,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 53] = [
+pub const RULE_NAMES: [&str; 60] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -76,6 +77,13 @@ pub const RULE_NAMES: [&str; 53] = [
     "nested-control-flow",
     "max-lines-per-function",
     "no-duplicate-string",
+    "no-empty-group",
+    "no-empty-alternatives",
+    "no-regex-spaces",
+    "no-control-regex",
+    "single-char-in-character-classes",
+    "duplicates-in-character-class",
+    "anchor-precedence",
 ];
 
 /// Returns the implemented rule names as a static slice.
