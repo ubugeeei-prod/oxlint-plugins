@@ -8,6 +8,7 @@ mod no_drop_database;
 mod no_rename_column;
 mod no_select_star;
 mod no_set_not_null;
+mod no_set_search_path;
 mod no_temporary_table;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
@@ -111,6 +112,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-rename-column",
     "no-select-star",
     "no-set-not-null",
+    "no-set-search-path",
     "no-temporary-table",
 ];
 
@@ -139,6 +141,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-set-not-null",
         run: no_set_not_null::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-set-search-path",
+        run: no_set_search_path::run,
         uses_parse_error: false,
     },
     RuleDef {

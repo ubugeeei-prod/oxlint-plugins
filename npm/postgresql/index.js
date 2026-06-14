@@ -77,6 +77,18 @@ const ruleMeta = Object.freeze({
         '`SET NOT NULL` scans the whole table for nulls under an `ACCESS EXCLUSIVE` lock. The safe pattern in production is to add a `CHECK (col IS NOT NULL) NOT VALID` constraint, `VALIDATE CONSTRAINT` separately, then `SET NOT NULL` (PG ≥ 12 reuses the validated CHECK and skips the scan).',
     },
   },
+  'no-set-search-path': {
+    type: 'suggestion',
+    description:
+      'Disallow `SET search_path = ...` in versioned SQL; qualify identifiers with their schema instead',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noSetSearchPath:
+        '`SET search_path` makes name resolution depend on session state and is a known foot-gun for security-definer functions and CREATE statements. Qualify identifiers with their schema (`audit.events`, `public.users`) instead.',
+    },
+  },
   'no-temporary-table': {
     type: 'suggestion',
     description:
