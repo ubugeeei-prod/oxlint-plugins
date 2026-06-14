@@ -41,6 +41,18 @@ const ruleMeta = Object.freeze({
         '`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.',
     },
   },
+  'no-grant-all': {
+    type: 'problem',
+    description:
+      'Disallow `GRANT ALL` / `GRANT ALL PRIVILEGES`; enumerate the privileges actually needed so the grant is auditable and a future PG release adding a new privilege does not silently extend it',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noGrantAll:
+        '`GRANT ALL` (or `GRANT ALL PRIVILEGES`) is opaque — list the privileges you actually need (e.g. `SELECT, INSERT, UPDATE`) so the grant is auditable and adding a new PostgreSQL privilege in a future release does not silently extend it.',
+    },
+  },
   'no-select-star': {
     type: 'suggestion',
     description:
