@@ -16,9 +16,10 @@ use crate::helpers::{
     first_numbered_backreference_with_named_group, first_octal_escape, first_strict_violation,
     first_surrogate_pair_escape, first_unicode_escape_as_hex, first_uppercase_hex_escape,
     first_useless_escape, first_useless_one_quantifier, group_prefix, has_assertion_contradiction,
-    has_mergeable_quantifier_concatenation, has_standalone_backslash, has_useless_word_boundary,
-    mention_char, pattern_ends_with_lazy_quantifier, pattern_has_empty_string_literal,
-    pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags, string_literal_value_with_span,
+    has_mergeable_quantifier_concatenation, has_standalone_backslash, has_useless_set_operand,
+    has_useless_word_boundary, mention_char, pattern_ends_with_lazy_quantifier,
+    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags,
+    string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -795,6 +796,14 @@ impl<'a> Scanner<'a> {
         // `has_assertion_contradiction` for soundness boundaries.
         if has_assertion_contradiction(pattern) {
             self.report("no-contradiction-with-assertion", "unexpected", span);
+        }
+
+        // `no-useless-set-operand` (narrow form): a v-mode set operation
+        // `[A&&B]` / `[A--B]` whose two shorthand operands make one operand
+        // redundant (disjoint or subset). Only meaningful in v-mode. See
+        // `has_useless_set_operand` for soundness boundaries.
+        if flags.contains('v') && has_useless_set_operand(pattern) {
+            self.report("no-useless-set-operand", "unexpected", span);
         }
 
         // `no-potentially-useless-backreference` (narrow form): only flag the

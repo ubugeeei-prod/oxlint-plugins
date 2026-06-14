@@ -113,8 +113,45 @@ fn exposes_initial_regexp_rule_names() {
             "no-useless-assertions",
             "optimal-quantifier-concatenation",
             "no-contradiction-with-assertion",
+            "no-useless-set-operand",
         ]
     );
+}
+
+mod no_useless_set_operand {
+    use super::*;
+
+    #[test]
+    fn reports_redundant_shorthand_operands() {
+        for src in [
+            // Intersection with a subset operand → superset is useless.
+            "const a = /[\\w&&\\d]/v;",
+            // Intersection of disjoint sets → empty.
+            "const a = /[\\w&&\\s]/v;",
+            // Negated class still has redundant operands.
+            "const a = /[^\\w&&\\s]/v;",
+            // Subtraction of a disjoint set → removes nothing.
+            "const a = /[\\w--\\s]/v;",
+            // Subtraction where left ⊆ right → empty.
+            "const a = /[\\d--\\w]/v;",
+        ] {
+            assert_eq!(
+                rule_ids_for(src, "no-useless-set-operand").as_slice(),
+                &["unexpected"],
+                "expected report for {src}"
+            );
+        }
+    }
+
+    #[test]
+    fn ignores_meaningful_or_unsupported_shapes() {
+        // The one upstream-valid shorthand case: removing a proper subset.
+        assert!(rule_ids_for("const a = /[\\w--\\d]/v;", "no-useless-set-operand").is_empty());
+        // Not v-mode → set operations are not in effect (and `&&` is literal).
+        assert!(rule_ids_for("const a = /[\\w&&\\d]/u;", "no-useless-set-operand").is_empty());
+        // Nested-class operand is out of scope.
+        assert!(rule_ids_for("const a = /[\\w&&[\\d\\s]]/v;", "no-useless-set-operand").is_empty());
+    }
 }
 
 mod no_contradiction_with_assertion {
