@@ -11038,19 +11038,19 @@
       },
       {
         "name": "empty-string-repetition",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule empty-string-repetition (Sonar key S5842). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S5842). Flags repetition quantifiers (* + {n,} {n,m} with m\u22652) whose body can match the empty string. matches_empty predicate covers Quantifier/Group/Disjunction/zero-width/backref nodes. No upstream source, tests, or messages were consulted."
       },
       {
         "name": "encryption",

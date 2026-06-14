@@ -265,6 +265,10 @@ const messages = Object.freeze({
   'single-character-alternation': {
     singleCharAlternation: 'Replace this alternation of single characters with a character class.',
   },
+  'empty-string-repetition': {
+    emptyStringRepetition:
+      'Rework this part of the regex to not repeat an expression that can match the empty string.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -406,6 +410,8 @@ const ruleDescriptions = Object.freeze({
   'single-character-alternation':
     'Disallow regex alternations where every alternative is a single character; ' +
     'use a character class instead',
+  'empty-string-repetition':
+    'Disallow repetition quantifiers applied to a sub-pattern that can match the empty string',
 });
 
 const ruleTypes = Object.freeze({
@@ -481,6 +487,7 @@ const ruleTypes = Object.freeze({
   'no-hardcoded-ip': 'suggestion',
   'no-global-this': 'suggestion',
   'single-character-alternation': 'suggestion',
+  'empty-string-repetition': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -556,6 +563,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-hardcoded-ip': 'error',
   'no-global-this': 'error',
   'single-character-alternation': 'error',
+  'empty-string-repetition': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

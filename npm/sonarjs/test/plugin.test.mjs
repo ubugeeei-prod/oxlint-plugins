@@ -166,6 +166,7 @@ describe('sonarjs plugin shape', () => {
       'no-hardcoded-ip',
       'no-global-this',
       'single-character-alternation',
+      'empty-string-repetition',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -238,6 +239,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-hardcoded-ip']).toBe('object');
     expect(typeof plugin.rules['no-global-this']).toBe('object');
     expect(typeof plugin.rules['single-character-alternation']).toBe('object');
+    expect(typeof plugin.rules['empty-string-repetition']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -318,6 +320,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-ip']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-global-this']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/single-character-alternation']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/empty-string-repetition']).toBe('error');
   });
 });
 
@@ -1802,5 +1805,81 @@ describe('single-character-alternation rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(single-character-alternation)');
+  });
+});
+
+describe('empty-string-repetition rule', () => {
+  it('reports * applied to a group containing a* (body matches empty)', () => {
+    const source = 'const re = /(a*)*/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyStringRepetition');
+  });
+
+  it('reports + applied to a group containing a? (body matches empty)', () => {
+    const source = 'const re = /(a?)+/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyStringRepetition');
+  });
+
+  it('reports * applied to an empty non-capturing group', () => {
+    const source = 'const re = /(?:)*/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyStringRepetition');
+  });
+
+  it('reports + applied to an empty capturing group', () => {
+    const source = 'const re = /()+/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyStringRepetition');
+  });
+
+  it('reports * applied to a disjunction with an empty alternative', () => {
+    const source = 'const re = /(?:|a)*/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyStringRepetition');
+  });
+
+  it('does not report * when body is a literal character /a*/', () => {
+    const source = 'const re = /a*/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report * when inner group body cannot match empty /(a+)*/', () => {
+    const source = 'const re = /(a+)*/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report for /(?:)?/ — ? quantifier is not a repetition even on empty body', () => {
+    const source = 'const re = /(?:)?/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report for /a?/ — ? quantifier is not a repetition', () => {
+    const source = 'const re = /a?/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report for /(abc)+/ — body always consumes characters', () => {
+    const source = 'const re = /(abc)+/;';
+    const reports = runRule('empty-string-repetition', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports empty-string-repetition through the CLI', () => {
+    const source = 'const re = /(a?)*/;';
+    const result = runOxlint('empty-string-repetition', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(empty-string-repetition)');
   });
 });
