@@ -12942,19 +12942,19 @@
       },
       {
         "name": "no-same-line-conditional",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-same-line-conditional (Sonar key S3972). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S3972). Scans each statement list (program, block, function body, switch case) for an IfStatement whose start line equals the end line of the immediately preceding sibling IfStatement, via check_no_same_line_conditional using LineIndex::loc_for_span. `else if` is part of a single IfStatement (not a sibling) so it is not flagged. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-selector-parameter",
