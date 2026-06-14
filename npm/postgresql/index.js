@@ -454,6 +454,29 @@ const ruleMeta = Object.freeze({
         'UPDATE without WHERE rewrites every row in the table. Add a WHERE clause to scope the change.',
     },
   },
+  'snake-case-table-name': {
+    type: 'suggestion',
+    description: 'Require table names to be snake_case',
+    recommended: true,
+    fixable: undefined,
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allow: {
+            type: 'array',
+            items: { type: 'string' },
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      notSnakeCase:
+        'Table name `{{name}}` is not snake_case. PostgreSQL folds unquoted identifiers to lower case but preserves the case of quoted identifiers; mixing the two leads to `relation "BadName" does not exist` errors that are confusing to debug.',
+    },
+  },
 });
 
 const implementedRuleNames = Object.freeze(implementedPostgresqlRuleNames());
