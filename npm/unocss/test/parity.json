@@ -10,26 +10,6 @@
       ],
       "invalid": [
         {
-          "index": 1,
-          "reason": "object-property key class string (`{ 'top-1 bottom-1': test }`) — upstream sorts object keys; the port collects property values only."
-        },
-        {
-          "index": 2,
-          "reason": "computed object key (`{ [`top-1 bottom-1`]: test }`) — not collected by the port."
-        },
-        {
-          "index": 3,
-          "reason": "computed `String.raw` object key — not collected by the port."
-        },
-        {
-          "index": 4,
-          "reason": "object-property key class string — not collected by the port."
-        },
-        {
-          "index": 8,
-          "reason": "computed object key with interpolation — not collected by the port."
-        },
-        {
           "index": 9,
           "reason": "interpolated quasi mixes UnoCSS and non-UnoCSS tokens; the heuristic only sorts when every token is recognized, while the engine sorts the recognized subset in place."
         }

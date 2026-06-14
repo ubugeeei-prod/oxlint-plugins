@@ -214,3 +214,31 @@ fn blocklist_span_covers_only_the_token() {
         "blocklist span should cover only `border`, not the whole class string"
     );
 }
+
+/// A UnoCSS-function object argument has its property KEYS checked for order
+/// (upstream `handleObjectExpression`), e.g. `clsx({ 'mr-1 ml-1': cond })`.
+#[test]
+fn object_key_in_uno_call_is_order_checked() {
+    let source = r#"clsx({ "mr-1 ml-1": cond });"#;
+    let diagnostics = scan_unocss(source, "fixture.tsx", &UnocssOptions::default());
+    let order = diagnostics
+        .iter()
+        .filter(|d| d.rule_name == "order")
+        .count();
+    assert_eq!(
+        order, 1,
+        "expected the object key to be order-checked: {diagnostics:?}"
+    );
+}
+
+/// A UnoCSS-VARIABLE initialiser object does NOT have its keys checked — upstream
+/// only collects object keys in the call path, not the variable path.
+#[test]
+fn object_key_in_uno_variable_is_not_checked() {
+    let source = r#"const clsButton = { "mr-1 ml-1": cond };"#;
+    let diagnostics = scan_unocss(source, "fixture.tsx", &UnocssOptions::default());
+    assert!(
+        diagnostics.iter().all(|d| d.rule_name != "order"),
+        "variable-init object keys must not be order-checked: {diagnostics:?}"
+    );
+}
