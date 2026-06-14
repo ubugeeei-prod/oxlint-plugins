@@ -2280,3 +2280,44 @@ fn max_union_size_respects_custom_threshold() {
     let two = "type T = A | B;";
     assert!(scan_sonarjs(two, "sample.ts", &options).is_empty());
 }
+
+#[test]
+fn max_lines_reports_when_code_lines_exceed_threshold() {
+    let mut options = options_for("max-lines");
+    options.max_lines_threshold = 2;
+    let source = "const a = 1;\nconst b = 2;\nconst c = 3;";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "max-lines");
+    assert_eq!(diagnostics[0].message_id, "maxLines");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+    assert_eq!(diagnostics[0].loc.start_column, 0);
+}
+
+#[test]
+fn max_lines_does_not_report_when_code_lines_equal_threshold() {
+    let mut options = options_for("max-lines");
+    options.max_lines_threshold = 3;
+    let source = "const a = 1;\nconst b = 2;\nconst c = 3;";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn max_lines_excludes_blank_and_comment_only_lines() {
+    // 2 code lines + 1 blank line + 1 comment-only line = 2 code lines total;
+    // with a threshold of 2, no diagnostic should be emitted.
+    let mut options = options_for("max-lines");
+    options.max_lines_threshold = 2;
+    let source = "const a = 1;\n\n// only a comment\nconst b = 2;";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn max_lines_uses_default_threshold_when_unset() {
+    // Default threshold is 1000; a small file must not be flagged.
+    let source = "const x = 1;\nconst y = 2;";
+    let diagnostics = scan("max-lines", source);
+    assert!(diagnostics.is_empty());
+}

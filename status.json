@@ -11518,19 +11518,19 @@
       },
       {
         "name": "max-lines",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule max-lines (Sonar key S104). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S104. Counts physical lines that contain at least one non-whitespace character outside a comment span. Blank lines and lines whose every non-whitespace character is inside a // or /* */ comment are excluded. A single diagnostic is emitted at the start of the file (Span 0,0) when the code-line count strictly exceeds the configurable maximum (default 1000)."
       },
       {
         "name": "max-lines-per-function",

@@ -19,6 +19,7 @@ mod napi_abi {
     #[derive(Clone, Debug, Default)]
     pub struct SonarjsScanOptions {
         pub rule_names: Option<Vec<String>>,
+        pub max_lines_threshold: Option<u32>,
         pub max_switch_cases_threshold: Option<u32>,
         pub max_union_size_threshold: Option<u32>,
     }
@@ -74,6 +75,9 @@ mod napi_abi {
         let default_options = core::SonarjsOptions::default();
         let core_options = core::SonarjsOptions {
             rule_names: compact_rule_names(options.rule_names),
+            max_lines_threshold: options
+                .max_lines_threshold
+                .unwrap_or(default_options.max_lines_threshold),
             max_switch_cases_threshold: options
                 .max_switch_cases_threshold
                 .unwrap_or(default_options.max_switch_cases_threshold),

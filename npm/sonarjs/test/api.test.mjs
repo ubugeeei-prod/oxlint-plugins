@@ -52,6 +52,7 @@ const expectedRuleNames = [
   'no-nested-incdec',
   'no-useless-increment',
   'class-name',
+  'max-lines',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1861,5 +1862,37 @@ describe('sonarjs native API', () => {
       maxUnionSizeThreshold: 2,
     });
     expect(flagged).toHaveLength(1);
+  });
+
+  it('reports max-lines when code lines exceed the threshold', () => {
+    const source = 'const a = 1;\nconst b = 2;\nconst c = 3;';
+    const diagnostics = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['max-lines'],
+      maxLinesThreshold: 2,
+    });
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('max-lines');
+    expect(diagnostics[0].messageId).toBe('maxLines');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+    expect(diagnostics[0].loc.startColumn).toBe(0);
+  });
+
+  it('does not report max-lines when code lines equal the threshold', () => {
+    const source = 'const a = 1;\nconst b = 2;\nconst c = 3;';
+    const diagnostics = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['max-lines'],
+      maxLinesThreshold: 3,
+    });
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not count blank or comment-only lines toward the max-lines total', () => {
+    // 2 code lines + blank line + comment-only line = still only 2 code lines
+    const source = 'const a = 1;\n\n// only a comment\nconst b = 2;';
+    const diagnostics = scanSonarjs(source, 'sample.ts', {
+      ruleNames: ['max-lines'],
+      maxLinesThreshold: 2,
+    });
+    expect(diagnostics).toHaveLength(0);
   });
 });
