@@ -65,9 +65,15 @@ pub fn parse_to_json(sql: &str) -> Result<String, String> {
                     .into_owned())
             }
         } else {
-            let message = CStr::from_ptr((*result.error).message)
-                .to_string_lossy()
-                .into_owned();
+            // `error` is non-null here, but its `message` field is itself a
+            // `*mut c_char` the C ABI allows to be null (e.g. on an allocation
+            // failure inside libpg_query); guard the deref rather than trust it.
+            let message_ptr = (*result.error).message;
+            let message = if message_ptr.is_null() {
+                "libpg_query reported an error with no message".to_string()
+            } else {
+                CStr::from_ptr(message_ptr).to_string_lossy().into_owned()
+            };
             Err(message)
         };
 
