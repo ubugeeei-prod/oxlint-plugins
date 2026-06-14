@@ -1761,7 +1761,12 @@ fn count_table_cells(line: &str) -> usize {
 }
 
 fn utf16_offset(source_text: &str, byte_offset: usize) -> u32 {
-    source_text[..byte_offset.min(source_text.len())]
+    let mut byte_offset = byte_offset.min(source_text.len());
+    // Defensive: floor to a char boundary so slicing never panics on non-ASCII.
+    while byte_offset > 0 && !source_text.is_char_boundary(byte_offset) {
+        byte_offset -= 1;
+    }
+    source_text[..byte_offset]
         .chars()
         .map(char::len_utf16)
         .sum::<usize>() as u32
@@ -1795,7 +1800,13 @@ impl LineIndex {
     }
 
     fn position_for_offset(&self, source_text: &str, offset: usize) -> (u32, u32) {
-        let offset = offset.min(source_text.len());
+        let mut offset = offset.min(source_text.len());
+        // Defensive: a rule may hand us a byte offset that lands inside a
+        // multibyte char on non-ASCII input; floor it to the nearest char
+        // boundary so the slice below never panics.
+        while offset > 0 && !source_text.is_char_boundary(offset) {
+            offset -= 1;
+        }
         let line_index = self.line_starts.partition_point(|start| *start <= offset);
         let line_index = line_index.saturating_sub(1);
         let line_start = self.line_starts[line_index];
