@@ -11,6 +11,7 @@ mod no_rename_column;
 mod no_select_star;
 mod no_set_not_null;
 mod no_temporary_table;
+mod require_limit;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
 /// know the full surface even while only a subset is implemented.
@@ -116,6 +117,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-select-star",
     "no-set-not-null",
     "no-temporary-table",
+    "require-limit",
 ];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
@@ -158,6 +160,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-temporary-table",
         run: no_temporary_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-limit",
+        run: require_limit::run,
         uses_parse_error: false,
     },
 ];
