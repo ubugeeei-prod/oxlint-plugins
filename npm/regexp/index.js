@@ -300,6 +300,10 @@ const messages = Object.freeze({
     unexpected:
       'This set operation can be simplified (an intersection with a negated class is a subtraction, or De Morgan applies).',
   },
+  'unicode-property': {
+    unnecessaryGc:
+      'Unnecessary explicit General_Category key in a Unicode property escape; drop the redundant `gc=` / `General_Category=` prefix.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -418,6 +422,8 @@ const ruleDescriptions = Object.freeze({
     'prefer character class set operations instead of lookarounds (narrow: v-mode char lookaround adjacent to a char element)',
   'simplify-set-operations':
     'simplify unnecessarily complex set operations (narrow: v-mode `&&` intersection with a negated nested-class operand)',
+  'unicode-property':
+    'enforce consistent naming of unicode properties (narrow: flag a redundant explicit `gc=` / `General_Category=` key)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -495,6 +501,7 @@ const ruleTypes = Object.freeze({
   'no-useless-set-operand': 'suggestion',
   'prefer-set-operation': 'suggestion',
   'simplify-set-operations': 'suggestion',
+  'unicode-property': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -667,7 +674,8 @@ function ruleCategory(ruleName) {
     ruleName === 'sort-alternatives' ||
     ruleName === 'prefer-predefined-assertion' ||
     ruleName === 'negation' ||
-    ruleName === 'no-useless-lazy'
+    ruleName === 'no-useless-lazy' ||
+    ruleName === 'unicode-property'
   ) {
     return 'Stylistic Issues';
   }

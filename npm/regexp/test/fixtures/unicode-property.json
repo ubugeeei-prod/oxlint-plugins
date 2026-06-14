@@ -1,0 +1,68 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/unicode-property.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/unicode-property.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [],
+  "invalid": [
+    {
+      "code": "/\\P{ASCII}/u;\n/\\P{Hex_Digit}/u;\n/\\P{Hex}/u;\n\n/\\p{L}/u;\n/\\p{Letter}/u;\n/\\p{gc=L}/u;\n/\\p{gc=Letter}/u;\n/\\p{General_Category=L}/u;\n/\\p{General_Category=Letter}/u;\n\n/\\p{sc=Grek}/u;\n/\\p{sc=Greek}/u;\n/\\p{Script=Grek}/u;\n/\\p{Script=Greek}/u;\n\n/\\p{scx=Grek}/u;\n/\\p{scx=Greek}/u;\n/\\p{Script_Extensions=Grek}/u;\n/\\p{Script_Extensions=Greek}/u;\n\n// Binary Properties\n// https://github.com/tc39/ecma262/issues/3286\n// /\\p{White_Space} \\p{space} \\p{WSpace}/u;\n\n// General_Category\n/\\p{Control} \\p{Cc} \\p{cntrl}/u;\n/\\p{Mark} \\p{M} \\p{Combining_Mark}/u;\n/\\p{Decimal_Number} \\p{Nd} \\p{digit}/u;\n/\\p{Punctuation} \\p{P} \\p{punct}/u;",
+      "errorCount": 8,
+      "errors": [
+        {
+          "message": "Unnecessary 'gc=' in Unicode property.",
+          "line": 7,
+          "column": 5,
+          "endColumn": 7
+        },
+        {
+          "message": "Unnecessary 'gc=' in Unicode property.",
+          "line": 8,
+          "column": 5,
+          "endColumn": 7
+        },
+        {
+          "message": "Unnecessary 'General_Category=' in Unicode property.",
+          "line": 9,
+          "column": 5,
+          "endColumn": 21
+        },
+        {
+          "message": "Unnecessary 'General_Category=' in Unicode property.",
+          "line": 9,
+          "column": 5,
+          "endColumn": 21
+        },
+        {
+          "message": "Excepted long Script property. Use 'Greek' instead.",
+          "line": 9,
+          "column": 8,
+          "endColumn": 12
+        },
+        {
+          "message": "Excepted long Script property. Use 'Greek' instead.",
+          "line": 9,
+          "column": 12,
+          "endColumn": 16
+        },
+        {
+          "message": "Excepted long Script property. Use 'Greek' instead.",
+          "line": 9,
+          "column": 9,
+          "endColumn": 13
+        },
+        {
+          "message": "Excepted long Script property. Use 'Greek' instead.",
+          "line": 9,
+          "column": 23,
+          "endColumn": 27
+        }
+      ],
+      "output": "/\\P{ASCII}/u;\n/\\P{Hex_Digit}/u;\n/\\P{Hex}/u;\n\n/\\p{L}/u;\n/\\p{Letter}/u;\n/\\p{L}/u;\n/\\p{Letter}/u;\n/\\p{L}/u;"
+    }
+  ]
+}

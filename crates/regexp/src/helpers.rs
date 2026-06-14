@@ -2661,6 +2661,54 @@ fn try_pair(
     mergeable
 }
 
+/// Narrow-form detector for `unicode-property`.
+///
+/// Returns `true` when the pattern contains a Unicode-property escape
+/// `\p{key=value}` / `\P{key=value}` whose `key` is the General_Category key
+/// written explicitly (`gc` or `General_Category`). Under the upstream default
+/// configuration (`generalCategory: "never"`) such an explicit GC key is
+/// redundant — `\p{gc=L}` is equivalent to `\p{L}` — and upstream reports it
+/// with the `unnecessaryGc` message.
+///
+/// Soundness: only the key-value form (`\p{key=value}`) with an exact `gc` or
+/// `General_Category` key is flagged. The keyless form `\p{L}` (no `=`),
+/// `\p{Script=...}`, `\p{scx=...}`, binary properties, and any other key are
+/// never flagged, so every non-option upstream valid shape stays clean. The
+/// key comparison is exact (case-sensitive), matching the canonical aliases
+/// the upstream alias map recognises for the General_Category key.
+pub(crate) fn has_unnecessary_general_category_key(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'\\' {
+            // `\p{...}` / `\P{...}` property escape (works the same inside or
+            // outside a character class, so no special class handling needed).
+            if matches!(bytes.get(index + 1), Some(b'p') | Some(b'P'))
+                && bytes.get(index + 2) == Some(&b'{')
+            {
+                let body_start = index + 3;
+                if let Some(rel_close) = bytes[body_start..].iter().position(|&b| b == b'}') {
+                    let body = &bytes[body_start..body_start + rel_close];
+                    if let Some(eq) = body.iter().position(|&b| b == b'=') {
+                        let key = &body[..eq];
+                        if key == b"gc" || key == b"General_Category" {
+                            return true;
+                        }
+                    }
+                    index = body_start + rel_close + 1;
+                    continue;
+                }
+                index += 3;
+                continue;
+            }
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        index += 1;
+    }
+    false
+}
+
 pub(crate) fn mention_char(ch: char) -> CompactString {
     let mut text = CompactString::new("U+");
     let code = ch as u32;

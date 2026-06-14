@@ -226,6 +226,11 @@ const validCases = [
   ['simplify-set-operations', 'non-negated nested operand', 'const re = /[a&&b&&[c]]/v;\n'],
   ['simplify-set-operations', 'subtraction not intersection', 'const re = /[a--b--[c]]/v;\n'],
   ['simplify-set-operations', 'not v-mode', 'const re = /[a&&[^b]]/u;\n'],
+  // unicode-property
+  ['unicode-property', 'keyless property', 'const re = /\\p{L}/u;\n'],
+  ['unicode-property', 'long keyless property', 'const re = /\\p{Letter}/u;\n'],
+  ['unicode-property', 'script key', 'const re = /\\p{Script=Greek}/u;\n'],
+  ['unicode-property', 'binary property', 'const re = /\\p{ASCII}/u;\n'],
 ];
 
 const invalidCases = [
@@ -676,6 +681,15 @@ const invalidCases = [
     'const re = /[[^a]&&[^b]]/v;\n',
     ['unexpected'],
   ],
+  // unicode-property
+  ['unicode-property', 'gc short key', 'const re = /\\p{gc=L}/u;\n', ['unnecessaryGc']],
+  [
+    'unicode-property',
+    'General_Category long key',
+    'const re = /\\p{General_Category=Letter}/u;\n',
+    ['unnecessaryGc'],
+  ],
+  ['unicode-property', 'negated gc key', 'const re = /\\P{gc=L}/u;\n', ['unnecessaryGc']],
 ];
 
 function runRule(ruleName, sourceText, filename = 'fixture.js') {

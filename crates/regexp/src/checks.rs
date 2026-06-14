@@ -17,10 +17,10 @@ use crate::helpers::{
     first_surrogate_pair_escape, first_unicode_escape_as_hex, first_uppercase_hex_escape,
     first_useless_escape, first_useless_one_quantifier, group_prefix, has_assertion_contradiction,
     has_mergeable_quantifier_concatenation, has_preferable_set_operation,
-    has_simplifiable_set_operation, has_standalone_backslash, has_useless_set_operand,
-    has_useless_word_boundary, mention_char, pattern_ends_with_lazy_quantifier,
-    pattern_has_empty_string_literal, pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags,
-    string_literal_value_with_span,
+    has_simplifiable_set_operation, has_standalone_backslash, has_unnecessary_general_category_key,
+    has_useless_set_operand, has_useless_word_boundary, mention_char,
+    pattern_ends_with_lazy_quantifier, pattern_has_empty_string_literal,
+    pattern_is_safe_to_add_i_flag, skip_escape, sorted_flags, string_literal_value_with_span,
 };
 use crate::pattern::PatternAnalysis;
 use crate::scanner::Scanner;
@@ -819,6 +819,14 @@ impl<'a> Scanner<'a> {
         // De Morgan). See `has_simplifiable_set_operation` for boundaries.
         if flags.contains('v') && has_simplifiable_set_operation(pattern) {
             self.report("simplify-set-operations", "unexpected", span);
+        }
+
+        // `unicode-property` (narrow form): under the upstream default config
+        // (`generalCategory: "never"`) an explicit General_Category key in a
+        // `\p{gc=...}` / `\p{General_Category=...}` property escape is redundant
+        // and can be dropped. Only this clearly-redundant key form is flagged.
+        if has_unnecessary_general_category_key(pattern) {
+            self.report("unicode-property", "unnecessaryGc", span);
         }
 
         // `no-potentially-useless-backreference` (narrow form): only flag the
