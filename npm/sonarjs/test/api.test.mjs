@@ -62,6 +62,7 @@ const expectedRuleNames = [
   'no-control-regex',
   'single-char-in-character-classes',
   'duplicates-in-character-class',
+  'anchor-precedence',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2019,6 +2020,34 @@ describe('sonarjs native API', () => {
 
   it('does not report duplicates-in-character-class for distinct characters', () => {
     const diagnostics = scan('duplicates-in-character-class', 'const r = /[abc]/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports anchor-precedence when ^ anchors only the first of three alternatives', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^a|b|c$/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('anchor-precedence');
+    expect(diagnostics[0].messageId).toBe('anchorPrecedence');
+  });
+
+  it('reports anchor-precedence when ^ anchors only the first of two alternatives', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^a|b/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('anchorPrecedence');
+  });
+
+  it('does not report anchor-precedence for a grouped alternation', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^(a|b|c)$/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report anchor-precedence for the two-branch trim idiom', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^\\s+|\\s+$/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report anchor-precedence when every branch is fully anchored', () => {
+    const diagnostics = scan('anchor-precedence', 'const r = /^a$|^b$|^c$/;');
     expect(diagnostics).toHaveLength(0);
   });
 });

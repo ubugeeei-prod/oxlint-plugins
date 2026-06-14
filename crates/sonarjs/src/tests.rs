@@ -2717,3 +2717,63 @@ fn does_not_report_duplicates_in_character_class_for_range() {
     let diagnostics = scan("duplicates-in-character-class", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_anchor_precedence_for_caret_on_first_of_three_alts() {
+    let source = "const r = /^a|b|c$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "anchor-precedence");
+    assert_eq!(diagnostics[0].message_id, "anchorPrecedence");
+}
+
+#[test]
+fn reports_anchor_precedence_for_caret_only_on_first_of_two_alts() {
+    let source = "const r = /^a|b/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "anchorPrecedence");
+}
+
+#[test]
+fn reports_anchor_precedence_for_dollar_only_on_last_of_two_alts() {
+    let source = "const r = /a|b$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "anchorPrecedence");
+}
+
+#[test]
+fn does_not_report_anchor_precedence_for_grouped_alts() {
+    let source = "const r = /^(a|b|c)$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_for_no_anchors() {
+    let source = "const r = /a|b|c/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_for_trim_idiom() {
+    let source = "const r = /^\\s+|\\s+$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_when_all_branches_fully_anchored() {
+    let source = "const r = /^a$|^b$|^c$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_anchor_precedence_when_middle_alt_is_anchored() {
+    let source = "const r = /^a|^b|c$/;";
+    let diagnostics = scan("anchor-precedence", source);
+    assert!(diagnostics.is_empty());
+}

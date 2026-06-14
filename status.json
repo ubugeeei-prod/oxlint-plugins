@@ -10046,19 +10046,19 @@
     "rules": [
       {
         "name": "anchor-precedence",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule anchor-precedence (Sonar key S5850). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S5850 (anchor-precedence). Flags top-level alternations where ^ anchors only the first branch or $ only the last, due to operator precedence. Excludes: single-alternative patterns (grouped), patterns where every branch is fully anchored, and the two-branch complementary trim idiom (^...|...$). Never recurses into groups. SonarJS upstream is LGPL-3.0; implemented from public RSPEC description only."
       },
       {
         "name": "argument-type",

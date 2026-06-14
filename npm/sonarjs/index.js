@@ -92,6 +92,10 @@ const messages = Object.freeze({
   'duplicates-in-character-class': {
     duplicateCharacter: 'Remove this duplicated character from the character class.',
   },
+  'anchor-precedence': {
+    anchorPrecedence:
+      'Group the alternatives or add anchors to each branch to make operator precedence explicit.',
+  },
   'generator-without-yield': {
     generatorWithoutYield:
       "This generator contains no 'yield'; either add a 'yield' or convert it to a regular function.",
@@ -259,6 +263,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow a regular-expression character class that contains only a single literal character',
   'duplicates-in-character-class':
     'Disallow the same literal character appearing more than once in a regular-expression character class',
+  'anchor-precedence':
+    'Disallow regex alternations where ^ or $ anchors only one branch due to operator precedence',
   'generator-without-yield':
     "Disallow generator functions that contain no 'yield' expression and therefore behave like plain functions",
   'no-exclusive-tests':
@@ -358,6 +364,7 @@ const ruleTypes = Object.freeze({
   'no-control-regex': 'suggestion',
   'single-char-in-character-classes': 'suggestion',
   'duplicates-in-character-class': 'suggestion',
+  'anchor-precedence': 'suggestion',
   'generator-without-yield': 'problem',
   'no-exclusive-tests': 'problem',
   'no-built-in-override': 'problem',
@@ -457,6 +464,7 @@ const recommendedRuleConfig = Object.freeze({
   'max-lines-per-function': 'error',
   'nested-control-flow': 'error',
   'no-duplicate-string': 'error',
+  'anchor-precedence': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

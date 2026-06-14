@@ -153,6 +153,7 @@ describe('sonarjs plugin shape', () => {
       'no-control-regex',
       'single-char-in-character-classes',
       'duplicates-in-character-class',
+      'anchor-precedence',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -213,6 +214,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-control-regex']).toBe('object');
     expect(typeof plugin.rules['single-char-in-character-classes']).toBe('object');
     expect(typeof plugin.rules['duplicates-in-character-class']).toBe('object');
+    expect(typeof plugin.rules['anchor-precedence']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -277,6 +279,7 @@ describe('sonarjs plugin shape', () => {
       'error',
     );
     expect(plugin.configs.recommended.rules['sonarjs/duplicates-in-character-class']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/anchor-precedence']).toBe('error');
   });
 });
 
@@ -1316,5 +1319,21 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(duplicates-in-character-class)');
+  });
+
+  it('reports anchor-precedence through the adapter', () => {
+    const source = 'const r = /^a|b|c$/;';
+    const reports = runRule('anchor-precedence', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('anchorPrecedence');
+  });
+
+  it('reports anchor-precedence through the CLI', () => {
+    const result = runOxlint('anchor-precedence', 'const r = /^a|b|c$/;');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(anchor-precedence)');
   });
 });
