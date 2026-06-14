@@ -160,4 +160,75 @@ mod tests {
         assert_eq!(s.byte_to_unit(1), Some(1));
         assert_eq!(s.byte_to_unit(3), Some(2)); // closing quote at unit 2
     }
+
+    // The following mirror upstream `src/utils.test.ts` (`createLineMap` /
+    // `createByteToCharOffset`) so position resolution and byte↔unit conversion
+    // track upstream exactly. ESLint columns are UTF-16 code units; upstream's
+    // negative-offset JS edge case is not representable in this `u32` API and is
+    // intentionally omitted (offsets are never negative in practice).
+    fn pos(code: &str, offset: u32) -> (u32, u32) {
+        let p = Source::new(code).position(offset);
+        (p.line, p.column)
+    }
+
+    #[test]
+    fn get_position_single_and_multi_line() {
+        assert_eq!(pos("SELECT * FROM users", 0), (1, 0));
+        assert_eq!(pos("SELECT * FROM users", 7), (1, 7));
+        assert_eq!(pos("SELECT * FROM users", 19), (1, 19)); // end of line
+        assert_eq!(pos("SELECT *\nFROM users", 9), (2, 0)); // second line start
+        assert_eq!(pos("SELECT *\nFROM users", 14), (2, 5)); // second line middle
+        assert_eq!(pos("SELECT *\nFROM users\nWHERE id = 1", 21), (3, 1));
+    }
+
+    #[test]
+    fn get_position_edge_cases() {
+        assert_eq!(pos("", 0), (1, 0)); // empty string
+        assert_eq!(pos("\n\n\n", 2), (3, 0)); // only newlines
+        assert_eq!(pos("SELECT *\r\nFROM users", 10), (2, 0)); // CRLF
+        assert_eq!(pos("SELECT * FROM users", 29), (1, 29)); // beyond length
+        assert_eq!(pos("SELECT * FROM users\n", 20), (2, 0)); // trailing newline
+        assert_eq!(pos("SELECT *\nFROM users\r\nWHERE id = 1\n", 21), (3, 0)); // mixed
+    }
+
+    #[test]
+    fn line_start_offsets() {
+        assert_eq!(Source::new("SELECT * FROM users").line_starts, vec![0]);
+        assert_eq!(
+            Source::new("SELECT *\nFROM users\nWHERE id = 1").line_starts,
+            vec![0, 9, 20]
+        );
+        assert_eq!(
+            Source::new("SELECT *\n\nFROM users").line_starts,
+            vec![0, 9, 10]
+        );
+        assert_eq!(
+            Source::new("SELECT *\n\n\nFROM users").line_starts,
+            vec![0, 9, 10, 11]
+        );
+    }
+
+    #[test]
+    fn byte_to_unit_identity_and_multibyte() {
+        let ascii = Source::new("SELECT * FROM users");
+        assert_eq!(ascii.byte_to_unit(0), Some(0));
+        assert_eq!(ascii.byte_to_unit(7), Some(7));
+        assert_eq!(ascii.byte_to_unit(19), Some(19));
+
+        // "-- 日本語\nSELECT 1": each CJK char is 3 UTF-8 bytes, 1 UTF-16 unit.
+        let s = Source::new("-- 日本語\nSELECT 1");
+        assert_eq!(s.byte_to_unit(20), Some(14)); // the `1`
+        assert_eq!(s.byte_to_unit(13), Some(7)); // the `S`
+    }
+
+    #[test]
+    fn byte_to_unit_surrogate_pairs_and_clamping() {
+        // "😀" is 4 UTF-8 bytes and 2 UTF-16 units (a surrogate pair).
+        let s = Source::new("-- 😀\nSELECT 1");
+        assert_eq!(s.byte_to_unit(15), Some(13)); // the `1`
+        assert_eq!(s.byte_to_unit(3), Some(3)); // first byte of the emoji
+        // Byte offsets past the end clamp to the UTF-16 length.
+        let cjk = Source::new("日本語");
+        assert_eq!(cjk.byte_to_unit(100), Some(cjk.len()));
+    }
 }
