@@ -24,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 76] = [
+pub const RULE_NAMES: [&str; 77] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -101,6 +101,7 @@ pub const RULE_NAMES: [&str; 76] = [
     "no-misleading-array-reverse",
     "no-alphabetical-sort",
     "no-for-in-iterable",
+    "no-associative-arrays",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -125,14 +126,16 @@ pub fn scan_sonarjs(
     }
 
     // Semantic analysis resolves identifier references and declaration sites,
-    // which `no-misleading-array-reverse`, `no-alphabetical-sort`, and
-    // `no-for-in-iterable` need (to prove that an identifier refers to an
-    // array). Build it only when one of those rules is active so the other
+    // which `no-misleading-array-reverse`, `no-alphabetical-sort`,
+    // `no-for-in-iterable`, and `no-associative-arrays` need (to prove that an
+    // identifier refers to an array). Build it only when one of those rules is
+    // active so the other
     // rules don't pay for an extra AST walk. Benign semantic errors (e.g.
     // redeclarations) do not block scanning.
     let needs_semantic = options.has_rule("no-misleading-array-reverse")
         || options.has_rule("no-alphabetical-sort")
-        || options.has_rule("no-for-in-iterable");
+        || options.has_rule("no-for-in-iterable")
+        || options.has_rule("no-associative-arrays");
     let semantic = needs_semantic.then(|| {
         SemanticBuilder::new()
             .build(&parser_return.program)

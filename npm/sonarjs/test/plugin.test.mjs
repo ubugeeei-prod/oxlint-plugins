@@ -170,6 +170,7 @@ describe('sonarjs plugin shape', () => {
       'no-misleading-array-reverse',
       'no-alphabetical-sort',
       'no-for-in-iterable',
+      'no-associative-arrays',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -246,6 +247,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-misleading-array-reverse']).toBe('object');
     expect(typeof plugin.rules['no-alphabetical-sort']).toBe('object');
     expect(typeof plugin.rules['no-for-in-iterable']).toBe('object');
+    expect(typeof plugin.rules['no-associative-arrays']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -330,6 +332,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-misleading-array-reverse']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-alphabetical-sort']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-for-in-iterable']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-associative-arrays']).toBe('error');
   });
 });
 
@@ -2014,5 +2017,48 @@ describe('no-for-in-iterable rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-for-in-iterable)');
+  });
+});
+
+describe('no-associative-arrays rule', () => {
+  it('reports a computed non-numeric string-key write on an array variable', () => {
+    const source = "const a = [];\na['key'] = 1;";
+    const reports = runRule('no-associative-arrays', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noAssociativeArray');
+  });
+
+  it('reports a static non-numeric key write on an array variable', () => {
+    const source = 'const a = [];\na.foo = 1;';
+    const reports = runRule('no-associative-arrays', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noAssociativeArray');
+  });
+
+  it('does not report a numeric index write', () => {
+    const source = 'const a = [];\na[0] = 1;';
+    const reports = runRule('no-associative-arrays', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a length write', () => {
+    const source = 'const a = [];\na.length = 0;';
+    const reports = runRule('no-associative-arrays', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a write on a non-array object', () => {
+    const source = 'const o = {};\no.foo = 1;';
+    const reports = runRule('no-associative-arrays', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-associative-arrays through the CLI', () => {
+    const source = "const a = [];\na['key'] = 1;";
+    const result = runOxlint('no-associative-arrays', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-associative-arrays)');
   });
 });
