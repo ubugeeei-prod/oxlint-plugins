@@ -17,6 +17,18 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'no-alter-column-type': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... ALTER COLUMN ... TYPE ...` because it can rewrite the table under an ACCESS EXCLUSIVE lock',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noAlterColumnType:
+        '`ALTER COLUMN ... TYPE` can rewrite the entire table under an ACCESS EXCLUSIVE lock. For non-trivial tables, add a new column, dual-write, backfill, and swap — or use `USING` only for known-safe conversions in a separate migration.',
+    },
+  },
   'no-cluster': {
     type: 'problem',
     description:
@@ -27,6 +39,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noCluster:
         '`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.',
+    },
+  },
+  'no-create-role': {
+    type: 'suggestion',
+    description:
+      'Disallow `CREATE ROLE` / `CREATE USER` in application migrations; manage roles in a separate operator workflow',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noCreateRole:
+        '`CREATE ROLE` / `CREATE USER` belongs in an operator-managed bootstrap (Terraform, Pulumi, a runbook), not in application migrations. Migration files run with whichever role the deploy uses and are not the right place to manage permissions.',
     },
   },
   'no-distinct-on-without-order-by': {
@@ -41,6 +65,18 @@ const ruleMeta = Object.freeze({
         '`DISTINCT ON (...)` keeps an arbitrary row from each group unless `ORDER BY` is specified. Add an `ORDER BY` whose leading columns match the `DISTINCT ON` expressions.',
     },
   },
+  'no-drop-column': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... DROP COLUMN` — every reader of the dropped column breaks at deploy time',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDropColumn:
+        '`DROP COLUMN` breaks every running app that still references the column. Roll it out as a two-step migration: stop reading the column in the application, deploy, then drop it in a follow-up release.',
+    },
+  },
   'no-drop-database': {
     type: 'problem',
     description:
@@ -51,6 +87,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noDropDatabase:
         '`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.',
+    },
+  },
+  'no-drop-not-null': {
+    type: 'suggestion',
+    description:
+      'Disallow `ALTER COLUMN ... DROP NOT NULL` — relaxing a NOT NULL constraint surprises every consumer that already assumes the column is non-null',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDropNotNull:
+        '`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table.',
     },
   },
   'no-select-star': {
@@ -77,6 +125,18 @@ const ruleMeta = Object.freeze({
         'Comma-separated tables in `FROM` are an implicit cross join. Use explicit `JOIN ... ON ...` so the join condition lives next to the join.',
     },
   },
+  'no-order-by-ordinal': {
+    type: 'suggestion',
+    description:
+      'Disallow `ORDER BY <position>` (positional/ordinal references); use the column name or alias instead',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noOrderByOrdinal:
+        '`ORDER BY <position>` silently breaks when the SELECT list changes. Use the column name or alias instead.',
+    },
+  },
   'no-rename-column': {
     type: 'problem',
     description:
@@ -99,6 +159,18 @@ const ruleMeta = Object.freeze({
     messages: {
       noRenameTable:
         "`RENAME TO` breaks every running app that still queries the old name. The safer pattern is `CREATE VIEW old AS SELECT * FROM new` so old callers keep working until they're migrated, then drop the view in a separate deploy.",
+    },
+  },
+  'no-rule': {
+    type: 'problem',
+    description:
+      "Disallow `CREATE RULE`; PostgreSQL's rule system is a known foot-gun and is effectively deprecated in favor of triggers and views",
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noRule:
+        "Avoid `CREATE RULE`. PostgreSQL's rule system has surprising semantics around row counts, RETURNING, and updatable views; use a trigger or an updatable view instead.",
     },
   },
   'no-set-not-null': {
@@ -137,6 +209,18 @@ const ruleMeta = Object.freeze({
         '`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.',
     },
   },
+  'no-unlogged-table': {
+    type: 'problem',
+    description:
+      'Disallow `CREATE UNLOGGED TABLE` because unlogged tables are truncated on crash and not replicated',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noUnloggedTable:
+        '`UNLOGGED` tables skip WAL: they are truncated on crash, not replicated to standbys, and not restored from base backups. If a cache table is what you want, document it explicitly and disable this rule for that file.',
+    },
+  },
   'no-vacuum-full': {
     type: 'problem',
     description:
@@ -149,6 +233,18 @@ const ruleMeta = Object.freeze({
         '`VACUUM FULL` takes `ACCESS EXCLUSIVE` and rewrites the whole table; the table is unavailable for the duration. For shrinking a bloated table on a live database, use `pg_repack` or `pg_squeeze`. A plain `VACUUM` (no `FULL`) is fine.',
     },
   },
+  'no-with-recursive-without-limit': {
+    type: 'problem',
+    description:
+      "Disallow `WITH RECURSIVE` queries that have no `LIMIT` on the outer SELECT, which can run unboundedly if the recursion's termination condition is wrong",
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noLimit:
+        'Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly.',
+    },
+  },
   'require-limit': {
     type: 'suggestion',
     description: 'Require LIMIT clause in SELECT statements',
@@ -158,6 +254,17 @@ const ruleMeta = Object.freeze({
     messages: {
       missingLimit:
         'SELECT statement should include a LIMIT clause to prevent excessive data retrieval',
+    },
+  },
+  'require-where-in-update': {
+    type: 'problem',
+    description: 'Require a WHERE clause in UPDATE statements',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingWhere:
+        'UPDATE without WHERE rewrites every row in the table. Add a WHERE clause to scope the change.',
     },
   },
 });
