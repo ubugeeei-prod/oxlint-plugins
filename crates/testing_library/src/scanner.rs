@@ -1,13 +1,14 @@
 //! Driver for testing-library rules. Heavy per-rule logic lives in `checks.rs`.
 
 use oxc_span::Span;
-use oxlint_plugins_carton::SmallVec;
+use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::helpers::{find_all, line_prefix, span_for};
 use crate::types::{Diagnostic, LineIndex, TestingLibraryOptions};
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,
+    pub(crate) filename: &'a str,
     pub(crate) line_index: LineIndex,
     pub(crate) diagnostics: SmallVec<[Diagnostic; 32]>,
     pub(crate) options: &'a TestingLibraryOptions,
@@ -117,10 +118,19 @@ impl<'a> Scanner<'a> {
     }
 
     pub(crate) fn report(&mut self, rule_name: &'static str, message: &'static str, span: Span) {
+        self.report_message(rule_name, message.into(), span);
+    }
+
+    pub(crate) fn report_message(
+        &mut self,
+        rule_name: &'static str,
+        message: CompactString,
+        span: Span,
+    ) {
         if self.options.has_rule(rule_name) {
             self.diagnostics.push(Diagnostic {
                 rule_name,
-                message: message.into(),
+                message,
                 loc: self.line_index.loc_for_span(self.source_text, span),
             });
         }

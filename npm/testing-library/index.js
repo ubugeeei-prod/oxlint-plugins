@@ -132,9 +132,34 @@ function createTestingLibraryRule(ruleName) {
 }
 
 function diagnosticsForRule(context, ruleName) {
-  return diagnosticsForContext(context, { ruleNames: [ruleName] }).filter(
+  return diagnosticsForContext(context, scanOptionsForRule(ruleName, context.options)).filter(
     (diagnostic) => diagnostic.ruleName === ruleName,
   );
+}
+
+function scanOptionsForRule(ruleName, options) {
+  const scanOptions = { ruleNames: [ruleName] };
+  if (ruleName !== 'consistent-data-testid') {
+    return scanOptions;
+  }
+
+  const raw = options?.[0];
+  if (!raw || typeof raw !== 'object') {
+    return scanOptions;
+  }
+
+  if (typeof raw.testIdPattern === 'string') {
+    scanOptions.testIdPattern = raw.testIdPattern;
+  }
+  if (typeof raw.testIdAttribute === 'string') {
+    scanOptions.testIdAttribute = [raw.testIdAttribute];
+  } else if (Array.isArray(raw.testIdAttribute)) {
+    scanOptions.testIdAttribute = raw.testIdAttribute.filter((value) => typeof value === 'string');
+  }
+  if (typeof raw.customMessage === 'string') {
+    scanOptions.customMessage = raw.customMessage;
+  }
+  return scanOptions;
 }
 
 function diagnosticsForContext(context, options) {

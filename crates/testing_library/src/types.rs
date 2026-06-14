@@ -23,7 +23,15 @@ pub struct Diagnostic {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TestingLibraryOptions {
     pub rule_names: SmallVec<[CompactString; 29]>,
+    /// `consistent-data-testid` regex source. Upstream defaults this to `""`,
+    /// which compiles to `//` and matches every value, so an unset pattern
+    /// never reports. `{fileName}` is substituted with the derived file name.
     pub test_id_pattern: CompactString,
+    /// Attribute name(s) checked by `consistent-data-testid` (upstream default
+    /// `["data-testid"]`).
+    pub test_id_attribute: SmallVec<[CompactString; 1]>,
+    /// Optional override message for `consistent-data-testid`.
+    pub custom_message: Option<CompactString>,
 }
 
 impl Default for TestingLibraryOptions {
@@ -33,7 +41,9 @@ impl Default for TestingLibraryOptions {
                 .iter()
                 .map(|rule_name| CompactString::from(*rule_name))
                 .collect(),
-            test_id_pattern: CompactString::from("kebab-case"),
+            test_id_pattern: CompactString::default(),
+            test_id_attribute: [CompactString::from("data-testid")].into_iter().collect(),
+            custom_message: None,
         }
     }
 }

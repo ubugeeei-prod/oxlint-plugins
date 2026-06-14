@@ -30,16 +30,6 @@ pub(crate) fn quoted_value_after(source_text: &str, start: usize) -> Option<(&st
     Some((&source_text[value_start..value_end], value_start, value_end))
 }
 
-pub(crate) fn is_kebab_case(value: &str) -> bool {
-    !value.is_empty()
-        && value
-            .bytes()
-            .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'-')
-        && !value.starts_with('-')
-        && !value.ends_with('-')
-        && !value.contains("--")
-}
-
 pub(crate) fn count_occurrences(source_text: &str, pattern: &str) -> usize {
     source_text.match_indices(pattern).count()
 }

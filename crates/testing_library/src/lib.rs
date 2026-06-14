@@ -74,6 +74,7 @@ pub fn scan_testing_library(
 
     let mut scanner = Scanner {
         source_text,
+        filename,
         line_index: LineIndex::new(source_text),
         diagnostics: SmallVec::new(),
         options,

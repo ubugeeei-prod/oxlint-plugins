@@ -19,6 +19,10 @@ function scanTestingLibrary(sourceText, filename = 'file.test.tsx', options = {}
       ? raw.ruleNames.filter((ruleName) => typeof ruleName === 'string' && ruleName.length > 0)
       : undefined,
     testIdPattern: typeof raw.testIdPattern === 'string' ? raw.testIdPattern : undefined,
+    testIdAttribute: Array.isArray(raw.testIdAttribute)
+      ? raw.testIdAttribute.filter((value) => typeof value === 'string' && value.length > 0)
+      : undefined,
+    customMessage: typeof raw.customMessage === 'string' ? raw.customMessage : undefined,
   });
 }
 
