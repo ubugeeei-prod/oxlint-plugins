@@ -23,7 +23,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 64] = [
+pub const RULE_NAMES: [&str; 65] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -88,6 +88,7 @@ pub const RULE_NAMES: [&str; 64] = [
     "no-collection-size-mischeck",
     "index-of-compare-to-positive-number",
     "no-nested-functions",
+    "too-many-break-or-continue-in-loop",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -131,6 +132,8 @@ pub fn scan_sonarjs(
         excluded_string_starts: SmallVec::new(),
         cyclomatic_complexity_stack: SmallVec::new(),
         function_nesting_depth: 0,
+        breakable_stack: SmallVec::new(),
+        pending_loop_label: None,
     };
     scanner.visit_program(&parser_return.program);
     scanner.diagnostics

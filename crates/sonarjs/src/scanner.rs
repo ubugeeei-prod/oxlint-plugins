@@ -4,14 +4,14 @@
 
 use oxc_ast::ast::{
     ArrowFunctionExpression, AssignmentExpression, BinaryExpression, BindingIdentifier,
-    BlockStatement, CallExpression, CatchClause, Class, ConditionalExpression, DoWhileStatement,
-    ExportAllDeclaration, ExportNamedDeclaration, ExpressionStatement, ForInStatement,
-    ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
-    ImportDeclaration, ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment,
-    LabeledStatement, LogicalExpression, NewExpression, Program, RegExpLiteral, ReturnStatement,
-    StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement, TSIntersectionType,
-    TSPropertySignature, TSUnionType, TemplateLiteral, TryStatement, UnaryExpression,
-    WhileStatement, YieldExpression,
+    BlockStatement, BreakStatement, CallExpression, CatchClause, Class, ConditionalExpression,
+    ContinueStatement, DoWhileStatement, ExportAllDeclaration, ExportNamedDeclaration,
+    ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function, FunctionBody,
+    IdentifierReference, IfStatement, ImportDeclaration, ImportExpression, JSXAttribute,
+    JSXAttributeValue, JSXElement, JSXFragment, LabeledStatement, LogicalExpression, NewExpression,
+    Program, RegExpLiteral, ReturnStatement, Statement, StaticMemberExpression, StringLiteral,
+    SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType,
+    TemplateLiteral, TryStatement, UnaryExpression, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -19,6 +19,25 @@ use oxc_syntax::scope::ScopeFlags;
 use oxlint_plugins_carton::SmallVec;
 
 use crate::{Diagnostic, DiagnosticData, DiagnosticFix, LineIndex, SonarjsOptions};
+
+/// Distinguishes loop frames from switch frames on the breakable stack, so
+/// that the `too-many-break-or-continue-in-loop` rule can correctly decide
+/// which jumps actually target a given loop.
+pub(crate) enum BreakableKind {
+    Loop,
+    Switch,
+}
+
+/// One entry on the breakable stack, representing an open loop or switch.
+pub(crate) struct BreakableFrame<'a> {
+    pub(crate) kind: BreakableKind,
+    /// Label attached to this loop or switch, if the statement was directly
+    /// preceded by a labeled-statement wrapper.
+    pub(crate) label: Option<&'a str>,
+    /// Number of `break`/`continue` statements that target this frame.
+    pub(crate) jump_count: u32,
+    pub(crate) span: Span,
+}
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,
@@ -74,6 +93,17 @@ pub(crate) struct Scanner<'a> {
     /// `no-nested-functions`. Incremented on entry to any function-like node and
     /// decremented on exit. Depth 1 = outermost function in the file.
     pub(crate) function_nesting_depth: u32,
+    /// Stack of open breakable contexts (loops and switch statements), used by
+    /// `too-many-break-or-continue-in-loop` to count jumps that target each
+    /// loop. One frame is pushed on entry to each loop or switch and popped on
+    /// exit; break/continue handlers update the innermost matching frame.
+    pub(crate) breakable_stack: SmallVec<[BreakableFrame<'a>; 8]>,
+    /// Holds the label name while we are inside a `LabeledStatement` whose
+    /// body is directly a loop or switch statement, so that the loop/switch
+    /// visitor can attach the label to the newly-pushed frame. Consumed (via
+    /// `take`) by the loop/switch visitor and reset to `None` defensively
+    /// after each `walk_labeled_statement` completes.
+    pub(crate) pending_loop_label: Option<&'a str>,
 }
 
 impl<'a> Scanner<'a> {
@@ -150,7 +180,10 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_prefer_default_last(it);
         self.switch_depth += 1;
         let counted = self.enter_nested_control_flow(it.span);
+        let sw_label = self.pending_loop_label.take();
+        self.enter_breakable_switch(it.span, sw_label);
         walk::walk_switch_statement(self, it);
+        self.leave_breakable_switch();
         self.leave_nested_control_flow(counted);
         self.switch_depth -= 1;
     }
@@ -211,9 +244,12 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_for_in(it);
         self.check_redundant_continue(&it.body);
         self.add_cyclomatic_complexity();
+        let label = self.pending_loop_label.take();
+        self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_for_in_statement(self, it);
         self.leave_nested_control_flow(counted);
+        self.leave_breakable_loop();
     }
 
     fn visit_for_statement(&mut self, it: &ForStatement<'a>) {
@@ -223,35 +259,47 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.check_no_nested_assignment_condition(test);
         }
         self.add_cyclomatic_complexity();
+        let label = self.pending_loop_label.take();
+        self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_for_statement(self, it);
         self.leave_nested_control_flow(counted);
+        self.leave_breakable_loop();
     }
 
     fn visit_while_statement(&mut self, it: &WhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
         self.check_no_nested_assignment_condition(&it.test);
         self.add_cyclomatic_complexity();
+        let label = self.pending_loop_label.take();
+        self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_while_statement(self, it);
         self.leave_nested_control_flow(counted);
+        self.leave_breakable_loop();
     }
 
     fn visit_do_while_statement(&mut self, it: &DoWhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
         self.check_no_nested_assignment_condition(&it.test);
         self.add_cyclomatic_complexity();
+        let label = self.pending_loop_label.take();
+        self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_do_while_statement(self, it);
         self.leave_nested_control_flow(counted);
+        self.leave_breakable_loop();
     }
 
     fn visit_for_of_statement(&mut self, it: &ForOfStatement<'a>) {
         self.check_redundant_continue(&it.body);
         self.add_cyclomatic_complexity();
+        let label = self.pending_loop_label.take();
+        self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         walk::walk_for_of_statement(self, it);
         self.leave_nested_control_flow(counted);
+        self.leave_breakable_loop();
     }
 
     fn visit_binding_identifier(&mut self, it: &BindingIdentifier<'a>) {
@@ -322,7 +370,22 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_labeled_statement(&mut self, it: &LabeledStatement<'a>) {
         self.check_no_labels(it);
+        // If the body is directly a loop or switch, hand the label off so the
+        // loop/switch visitor can attach it to the breakable-stack frame.
+        match &it.body {
+            Statement::ForStatement(_)
+            | Statement::ForInStatement(_)
+            | Statement::ForOfStatement(_)
+            | Statement::WhileStatement(_)
+            | Statement::DoWhileStatement(_)
+            | Statement::SwitchStatement(_) => {
+                self.pending_loop_label = Some(it.label.name.as_str());
+            }
+            _ => {}
+        }
         walk::walk_labeled_statement(self, it);
+        // Defensive clear in case the loop/switch visitor was not reached.
+        self.pending_loop_label = None;
     }
 
     fn visit_expression_statement(&mut self, it: &ExpressionStatement<'a>) {
@@ -367,6 +430,18 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_return_statement(&mut self, it: &ReturnStatement<'a>) {
         self.record_return(it.argument.is_some());
         walk::walk_return_statement(self, it);
+    }
+
+    fn visit_break_statement(&mut self, it: &BreakStatement<'a>) {
+        let label = it.label.as_ref().map(|l| l.name.as_str());
+        self.handle_break_jump(label);
+        walk::walk_break_statement(self, it);
+    }
+
+    fn visit_continue_statement(&mut self, it: &ContinueStatement<'a>) {
+        let label = it.label.as_ref().map(|l| l.name.as_str());
+        self.handle_continue_jump(label);
+        walk::walk_continue_statement(self, it);
     }
 
     fn visit_yield_expression(&mut self, it: &YieldExpression<'a>) {

@@ -3096,3 +3096,154 @@ fn no_nested_functions_sibling_functions_do_not_accumulate() {
     let diagnostics = scan("no-nested-functions", source);
     assert!(diagnostics.is_empty());
 }
+
+// --- too-many-break-or-continue-in-loop tests ---
+
+#[test]
+fn too_many_break_two_breaks_in_while_flagged() {
+    // Two breaks targeting the while loop → flagged once at the loop span.
+    let source = "while (a) { if (b) break; if (c) break; }";
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "too-many-break-or-continue-in-loop"
+    );
+    assert_eq!(diagnostics[0].message_id, "tooManyBreakContinue");
+}
+
+#[test]
+fn too_many_break_one_break_one_continue_flagged() {
+    // One break plus one continue in the same loop → count = 2 → flagged.
+    let source = "for (;;) { if (a) break; if (b) continue; }";
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "tooManyBreakContinue");
+}
+
+#[test]
+fn too_many_break_single_break_not_flagged() {
+    // Only one jump → not flagged.
+    let source = "while (a) { if (b) break; }";
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn too_many_break_single_continue_not_flagged() {
+    // Only one continue → not flagged.
+    let source = "for (let i = 0; i < 10; i++) { if (a) continue; }";
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn too_many_break_zero_jumps_not_flagged() {
+    // No break or continue → not flagged.
+    let source = "while (a) { doWork(); }";
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn too_many_break_two_breaks_inside_nested_switch_not_flagged() {
+    // Both breaks target the inner switch → loop count = 0 → not flagged.
+    let source = concat!(
+        "while (a) {",
+        "  switch (x) {",
+        "    case 1: break;",
+        "    case 2: break;",
+        "  }",
+        "}",
+    );
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn too_many_break_one_own_break_plus_switch_break_not_flagged() {
+    // One break targets the loop, one targets the nested switch → loop count = 1 → not flagged.
+    let source = concat!(
+        "while (a) {",
+        "  switch (x) { case 1: break; }",
+        "  if (b) break;",
+        "}",
+    );
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn too_many_break_continue_inside_switch_inside_loop_flagged() {
+    // An unlabeled continue skips the switch frame and targets the loop.
+    // With two such continues (one direct, one via switch) the loop count >= 2 → flagged.
+    let source = concat!(
+        "while (a) {",
+        "  if (c) continue;",
+        "  switch (x) { case 1: continue; }",
+        "}",
+    );
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "tooManyBreakContinue");
+}
+
+#[test]
+fn too_many_break_nested_loops_inner_flagged_outer_not() {
+    // Inner loop has two breaks → flagged. Outer loop has one break → not flagged.
+    let source = concat!(
+        "for (let i = 0; i < 10; i++) {",
+        "  for (let j = 0; j < 10; j++) {",
+        "    if (a) break;",
+        "    if (b) break;",
+        "  }",
+        "  if (c) break;",
+        "}",
+    );
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert_eq!(diagnostics.len(), 1);
+    // The diagnostic is on the inner loop, which starts later in the source.
+    assert!(diagnostics[0].loc.start_column > 0 || diagnostics[0].loc.start_line > 1);
+}
+
+#[test]
+fn too_many_break_inner_loop_break_does_not_count_for_outer() {
+    // An unlabeled break inside the inner loop targets the inner loop, not the outer.
+    // The outer loop therefore has zero jumps → not flagged.
+    let source = concat!("while (a) {", "  while (b) { if (c) break; }", "}",);
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn too_many_break_labeled_jump_targets_outer_loop() {
+    // `continue outer` and `break outer` both target the outer loop → count 2 → flagged.
+    let source = concat!(
+        "outer: for (;;) {",
+        "  for (;;) {",
+        "    if (a) continue outer;",
+        "    if (b) break outer;",
+        "  }",
+        "}",
+    );
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    // Outer loop should be flagged; inner loop has zero of its own jumps.
+    assert!(
+        diagnostics
+            .iter()
+            .any(|d| d.message_id == "tooManyBreakContinue")
+    );
+    let outer_reports = diagnostics
+        .iter()
+        .filter(|d| d.message_id == "tooManyBreakContinue")
+        .count();
+    assert_eq!(outer_reports, 1);
+}
+
+#[test]
+fn too_many_break_sibling_loops_each_with_one_break_not_flagged() {
+    // Each sibling loop has exactly one break → neither is flagged.
+    let source = concat!("while (a) { if (b) break; }", "while (c) { if (d) break; }",);
+    let diagnostics = scan("too-many-break-or-continue-in-loop", source);
+    assert!(diagnostics.is_empty());
+}
