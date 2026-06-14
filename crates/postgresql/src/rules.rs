@@ -3,18 +3,27 @@
 
 use crate::RuleDef;
 
+mod no_alter_column_type;
 mod no_cluster;
+mod no_create_role;
 mod no_distinct_on_without_order_by;
+mod no_drop_column;
 mod no_drop_database;
+mod no_drop_not_null;
 mod no_implicit_join;
 mod no_natural_join;
+mod no_order_by_ordinal;
 mod no_rename_column;
+mod no_rule;
 mod no_select_star;
 mod no_set_not_null;
 mod no_set_search_path;
 mod no_temporary_table;
+mod no_unlogged_table;
 mod no_vacuum_full;
+mod no_with_recursive_without_limit;
 mod require_limit;
+mod require_where_in_update;
 
 /// Every upstream rule name (89), in inventory order. Used by the JS adapter to
 /// know the full surface even while only a subset is implemented.
@@ -112,25 +121,44 @@ pub const RULE_NAMES: [&str; 89] = [
 
 /// Rules implemented in Rust so far (a growing subset of [`RULE_NAMES`]).
 pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
+    "no-alter-column-type",
     "no-cluster",
+    "no-create-role",
     "no-distinct-on-without-order-by",
+    "no-drop-column",
     "no-drop-database",
+    "no-drop-not-null",
     "no-implicit-join",
     "no-natural-join",
+    "no-order-by-ordinal",
     "no-rename-column",
+    "no-rule",
     "no-select-star",
     "no-set-not-null",
     "no-set-search-path",
     "no-temporary-table",
+    "no-unlogged-table",
     "no-vacuum-full",
+    "no-with-recursive-without-limit",
     "require-limit",
+    "require-where-in-update",
 ];
 
 /// Dispatch table consulted by [`crate::scan_postgresql`].
 pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
+        name: "no-alter-column-type",
+        run: no_alter_column_type::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-cluster",
         run: no_cluster::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-create-role",
+        run: no_create_role::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -139,8 +167,18 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-drop-column",
+        run: no_drop_column::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-drop-database",
         run: no_drop_database::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-drop-not-null",
+        run: no_drop_not_null::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -154,8 +192,18 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-order-by-ordinal",
+        run: no_order_by_ordinal::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-rename-column",
         run: no_rename_column::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-rule",
+        run: no_rule::run,
         uses_parse_error: false,
     },
     RuleDef {
@@ -179,13 +227,28 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-unlogged-table",
+        run: no_unlogged_table::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "no-vacuum-full",
         run: no_vacuum_full::run,
         uses_parse_error: false,
     },
     RuleDef {
+        name: "no-with-recursive-without-limit",
+        run: no_with_recursive_without_limit::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
         name: "require-limit",
         run: require_limit::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "require-where-in-update",
+        run: require_where_in_update::run,
         uses_parse_error: false,
     },
 ];
