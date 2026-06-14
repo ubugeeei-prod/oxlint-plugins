@@ -151,6 +151,9 @@ const messages = Object.freeze({
   'no-tab': {
     noTab: 'Replace this tab character with spaces.',
   },
+  'fixme-tag': {
+    fixmeTag: 'Address this FIXME-tagged comment.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -222,6 +225,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow creating an Error (or Error subtype) with 'new' as a bare statement without throwing it; the value is discarded and this is almost always a bug",
   'no-tab':
     'Disallow tab characters in source files; tabs render inconsistently across editors and tools, so spaces should be used instead',
+  'fixme-tag':
+    'Disallow FIXME-tagged comments; a FIXME marks code that is known-broken and must be addressed before shipping',
 });
 
 const ruleTypes = Object.freeze({
@@ -263,6 +268,7 @@ const ruleTypes = Object.freeze({
   'prefer-single-boolean-return': 'suggestion',
   'no-unthrown-error': 'problem',
   'no-tab': 'suggestion',
+  'fixme-tag': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -304,6 +310,7 @@ const recommendedRuleConfig = Object.freeze({
   'prefer-single-boolean-return': 'error',
   'no-unthrown-error': 'error',
   'no-tab': 'error',
+  'fixme-tag': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

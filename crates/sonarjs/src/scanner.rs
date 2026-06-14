@@ -74,6 +74,7 @@ impl Scanner<'_> {
 impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_program(&mut self, it: &Program<'a>) {
         self.check_no_tab();
+        self.check_fixme_tag(&it.comments);
         walk::walk_program(self, it);
     }
 

@@ -132,6 +132,7 @@ describe('sonarjs plugin shape', () => {
       'prefer-single-boolean-return',
       'no-unthrown-error',
       'no-tab',
+      'fixme-tag',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -171,6 +172,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['prefer-single-boolean-return']).toBe('object');
     expect(typeof plugin.rules['no-unthrown-error']).toBe('object');
     expect(typeof plugin.rules['no-tab']).toBe('object');
+    expect(typeof plugin.rules['fixme-tag']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -210,6 +212,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/prefer-single-boolean-return']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-unthrown-error']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-tab']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/fixme-tag']).toBe('error');
   });
 });
 
@@ -861,5 +864,22 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-tab)');
+  });
+
+  it('reports fixme-tag for a line comment containing FIXME through the adapter', () => {
+    const source = '// FIXME do x';
+    const reports = runRule('fixme-tag', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('fixmeTag');
+  });
+
+  it('reports fixme-tag through the CLI', () => {
+    const source = '// FIXME do x';
+    const result = runOxlint('fixme-tag', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(fixme-tag)');
   });
 });
