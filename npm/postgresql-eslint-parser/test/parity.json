@@ -1,11 +1,4 @@
 {
   "_doc": "Fixtures listed in `quarantine` are known to diverge from upstream and are temporarily skipped while the port reaches parity. Drive this list to empty: every upstream fixture must eventually pass exactly. Anything NOT listed here is asserted to match upstream byte-for-byte (AST + visitorKeys).",
-  "quarantine": [
-    "advanced-features",
-    "complex-queries",
-    "ddl",
-    "dollar-quote",
-    "plv8",
-    "procedures"
-  ]
+  "quarantine": []
 }

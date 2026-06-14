@@ -72,15 +72,31 @@ pub fn add_types(node: &mut Value) {
                     map.insert("type".to_string(), Value::String(bare.to_string()));
                 } else if let Some(type_key) = map
                     .iter()
-                    .find(|(k, v)| !is_special(k) && v.is_object())
+                    .find(|(k, v)| !is_special(k) && (v.is_object() || v.is_array()))
                     .map(|(k, _)| k.clone())
                 {
-                    // Inline the wrapped body up into this node.
-                    if let Some(Value::Object(body)) = map.remove(&type_key) {
-                        map.insert("type".to_string(), Value::String(type_key));
-                        for (k, v) in body {
-                            map.insert(k, v);
+                    // Inline the wrapped body up into this node. libpg_query
+                    // usually wraps a node as a single-key object
+                    // (`{ SelectStmt: { … } }`), but some nodes surface bare
+                    // with an array-valued field as the de-facto wrapper — e.g.
+                    // a bare `TypeName` whose `names` list becomes
+                    // `type: "names"` with its items spread as `"0"`, `"1"`, …
+                    // Upstream relies on JS `isRecord` treating arrays as
+                    // objects and `Object.assign(node, array)` copying array
+                    // indices as string keys; we mirror that here.
+                    map.insert("type".to_string(), Value::String(type_key.clone()));
+                    match map.remove(&type_key) {
+                        Some(Value::Object(body)) => {
+                            for (k, v) in body {
+                                map.insert(k, v);
+                            }
                         }
+                        Some(Value::Array(items)) => {
+                            for (index, item) in items.into_iter().enumerate() {
+                                map.insert(index.to_string(), item);
+                            }
+                        }
+                        _ => {}
                     }
                 }
             }
