@@ -174,7 +174,8 @@
       "code": "[(hi)[something]][ref]\n\n[ref]: https://example.com"
     },
     {
-      "code": "| ESLint                        | Sunset                            |\n| ----------------------------- | --------------------------------- |\n| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |"
+      "code": "| ESLint                        | Sunset                            |\n| ----------------------------- | --------------------------------- |\n| [ESLint](https://eslint.org/) | ![A beautiful sunset](sunset.png) |",
+      "language": "markdown/gfm"
     },
     {
       "code": "$(A \\cdot x)[i] = \\sum_{j=1}^{n} A[i][j] , x[j]$",
@@ -329,6 +330,7 @@
     },
     {
       "code": "(~~foo~~)[]",
+      "language": "markdown/gfm",
       "errors": [
         {
           "messageId": "reversedSyntax",
@@ -355,6 +357,7 @@
     },
     {
       "code": "[^1]: !(Footnote alt)[https://example.com]",
+      "language": "markdown/gfm",
       "errors": [
         {
           "messageId": "reversedSyntax",
@@ -368,6 +371,7 @@
     },
     {
       "code": "[^1]: (Footnote text)[https://example.com]",
+      "language": "markdown/gfm",
       "errors": [
         {
           "messageId": "reversedSyntax",
@@ -655,6 +659,7 @@
     },
     {
       "code": "| ESLint                        | Sunset                            |\n| ----------------------------- | --------------------------------- |\n| (ESLint)[https://eslint.org/] | !(A beautiful sunset)[sunset.png] |",
+      "language": "markdown/gfm",
       "errors": [
         {
           "messageId": "reversedSyntax",

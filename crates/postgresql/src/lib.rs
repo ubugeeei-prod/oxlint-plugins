@@ -10,6 +10,8 @@
 use pg_query as _;
 
 mod ast;
+mod embedded_code;
+mod eslint;
 mod ffi;
 mod manipulate;
 mod parse;
@@ -22,6 +24,12 @@ use serde_json::Value;
 
 use crate::parse::{ParseError, parse};
 use crate::text::Source;
+
+/// The parser entry points consumed by `npm/postgresql-eslint-parser`:
+/// `parse_for_eslint` returns the `{ ast, visitorKeys, scopeManager }` value,
+/// `parse_for_eslint_json` serializes it for the NAPI boundary, and `parse_ast`
+/// returns only the AST (upstream's `parse`).
+pub use crate::eslint::{parse_ast, parse_for_eslint, parse_for_eslint_json};
 
 /// Every upstream rule name, in the order listed in the port inventory.
 pub use crate::rules::RULE_NAMES;
