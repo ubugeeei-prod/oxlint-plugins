@@ -2081,3 +2081,54 @@ fn does_not_report_no_same_line_conditional_when_preceding_is_not_if() {
     let diagnostics = scan("no-same-line-conditional", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_nested_assignment_in_if_condition() {
+    let source = "if (x = compute()) { use(x); }";
+    let diagnostics = scan("no-nested-assignment", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-nested-assignment");
+    assert_eq!(diagnostics[0].message_id, "nestedAssignment");
+}
+
+#[test]
+fn reports_no_nested_assignment_in_while_condition() {
+    let source = "while (node = node.next) { visit(node); }";
+    let diagnostics = scan("no-nested-assignment", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_no_nested_assignment_for_chained_assignment() {
+    let source = "a = b = c;";
+    let diagnostics = scan("no-nested-assignment", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_nested_assignment_for_plain_statement() {
+    let source = "x = compute();";
+    let diagnostics = scan("no-nested-assignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_nested_assignment_for_for_loop_init_and_update() {
+    let source = "for (i = 0; i < 10; i = i + 1) { use(i); }";
+    let diagnostics = scan("no-nested-assignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_nested_assignment_for_equality_in_condition() {
+    let source = "if (x === compute()) { use(x); }";
+    let diagnostics = scan("no-nested-assignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_nested_assignment_for_compound_assignment_in_condition() {
+    let source = "while (x += 1) { use(x); }";
+    let diagnostics = scan("no-nested-assignment", source);
+    assert!(diagnostics.is_empty());
+}

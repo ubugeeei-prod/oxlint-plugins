@@ -12622,19 +12622,19 @@
       },
       {
         "name": "no-nested-assignment",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-nested-assignment (Sonar key S1121). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only \u2014 never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room narrow port (Sonar key S1121). Flags an `=` assignment used as an if/while/do-while/for condition (check_no_nested_assignment_condition on the relevant `test`) and the right-hand side of a chained `=` assignment (check_no_nested_assignment_chain from visit_assignment_expression). Restricted to the AssignmentOperator::Assign operator for a zero-false-positive subset; other sub-expression positions (call args, declarator init, literals) and compound operators are a documented follow-up. for-loop init/update are intentionally not flagged. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "no-nested-conditional",

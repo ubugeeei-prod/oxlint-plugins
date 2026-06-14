@@ -151,6 +151,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_all_duplicated_branches_if(it);
         self.check_elseif_without_else(it);
         self.check_prefer_single_boolean_return(it);
+        self.check_no_nested_assignment_condition(&it.test);
         walk::walk_if_statement(self, it);
     }
 
@@ -163,16 +164,21 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_for_statement(&mut self, it: &ForStatement<'a>) {
         self.check_prefer_while(it);
         self.check_redundant_continue(&it.body);
+        if let Some(test) = &it.test {
+            self.check_no_nested_assignment_condition(test);
+        }
         walk::walk_for_statement(self, it);
     }
 
     fn visit_while_statement(&mut self, it: &WhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
+        self.check_no_nested_assignment_condition(&it.test);
         walk::walk_while_statement(self, it);
     }
 
     fn visit_do_while_statement(&mut self, it: &DoWhileStatement<'a>) {
         self.check_redundant_continue(&it.body);
+        self.check_no_nested_assignment_condition(&it.test);
         walk::walk_do_while_statement(self, it);
     }
 
@@ -190,6 +196,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_non_existent_operator(it);
         self.check_no_built_in_override_assignment(it);
         self.check_class_prototype(it);
+        self.check_no_nested_assignment_chain(it);
         walk::walk_assignment_expression(self, it);
     }
 
