@@ -1210,3 +1210,35 @@ fn does_not_report_no_small_switch_for_switch_with_two_cases_and_default() {
     let diagnostics = scan("no-small-switch", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_prefer_default_last_when_default_is_first() {
+    let source = "switch (x) { default: break; case 1: break; }";
+    let diagnostics = scan("prefer-default-last", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "prefer-default-last");
+    assert_eq!(diagnostics[0].message_id, "defaultLast");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_prefer_default_last_when_default_is_in_the_middle() {
+    let source = "switch (x) { case 1: break; default: break; case 2: break; }";
+    let diagnostics = scan("prefer-default-last", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "defaultLast");
+}
+
+#[test]
+fn does_not_report_prefer_default_last_when_default_is_last() {
+    let source = "switch (x) { case 1: break; default: break; }";
+    let diagnostics = scan("prefer-default-last", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_default_last_when_there_is_no_default() {
+    let source = "switch (x) { case 1: break; case 2: break; }";
+    let diagnostics = scan("prefer-default-last", source);
+    assert!(diagnostics.is_empty());
+}

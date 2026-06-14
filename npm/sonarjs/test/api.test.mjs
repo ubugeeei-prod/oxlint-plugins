@@ -30,6 +30,7 @@ const expectedRuleNames = [
   'for-in',
   'prefer-while',
   'no-small-switch',
+  'prefer-default-last',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -985,6 +986,34 @@ describe('sonarjs native API', () => {
   it('does not report no-small-switch for a switch with two cases and a default', () => {
     const source = 'switch (x) { case 1: break; case 2: break; default: break; }';
     const diagnostics = scan('no-small-switch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports prefer-default-last when default is the first clause', () => {
+    const source = 'switch (x) { default: break; case 1: break; }';
+    const diagnostics = scan('prefer-default-last', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('prefer-default-last');
+    expect(diagnostics[0].messageId).toBe('defaultLast');
+    expect(diagnostics[0].loc.startLine).toBe(1);
+  });
+
+  it('reports prefer-default-last when default is in the middle', () => {
+    const source = 'switch (x) { case 1: break; default: break; case 2: break; }';
+    const diagnostics = scan('prefer-default-last', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('defaultLast');
+  });
+
+  it('does not report prefer-default-last when default is the last clause', () => {
+    const source = 'switch (x) { case 1: break; default: break; }';
+    const diagnostics = scan('prefer-default-last', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report prefer-default-last when there is no default clause', () => {
+    const source = 'switch (x) { case 1: break; case 2: break; }';
+    const diagnostics = scan('prefer-default-last', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

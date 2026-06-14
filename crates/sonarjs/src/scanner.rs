@@ -84,6 +84,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_max_switch_cases(it);
         self.check_no_case_label_in_switch(it);
         self.check_no_small_switch(it);
+        self.check_prefer_default_last(it);
         self.switch_depth += 1;
         walk::walk_switch_statement(self, it);
         self.switch_depth -= 1;
