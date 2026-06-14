@@ -4124,3 +4124,36 @@ fn does_not_report_compound_bitwise_assignment() {
     let diagnostics = scan("bitwise-operators", "let a = 0;\na &= b;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_same_argument_assert_equal() {
+    let diagnostics = scan("no-same-argument-assert", "assert.equal(x, x);");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_same_argument_assert_strict_equal_member() {
+    let diagnostics = scan(
+        "no-same-argument-assert",
+        "assert.strictEqual(foo.bar, foo.bar);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_same_argument_assert_with_different_args() {
+    let diagnostics = scan("no-same-argument-assert", "assert.equal(x, y);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_same_argument_assert_for_non_assert_call() {
+    let diagnostics = scan("no-same-argument-assert", "foo(x, x);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_same_argument_assert_with_single_argument() {
+    let diagnostics = scan("no-same-argument-assert", "assert.ok(x);");
+    assert!(diagnostics.is_empty());
+}

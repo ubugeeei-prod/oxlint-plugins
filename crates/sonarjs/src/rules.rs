@@ -59,6 +59,7 @@ mod no_redundant_boolean;
 mod no_redundant_jump;
 mod no_redundant_optional;
 mod no_regex_spaces;
+mod no_same_argument_assert;
 mod no_same_line_conditional;
 mod no_skipped_tests;
 mod no_small_switch;
