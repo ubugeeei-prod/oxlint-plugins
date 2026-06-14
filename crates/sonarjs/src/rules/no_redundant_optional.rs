@@ -39,9 +39,10 @@ pub(crate) const RULE_NAME: &str = "no-redundant-optional";
 fn type_has_undefined(ty: &TSType) -> bool {
     match ty {
         TSType::TSUndefinedKeyword(_) => true,
-        TSType::TSUnionType(union) => {
-            union.types.iter().any(|t| matches!(t, TSType::TSUndefinedKeyword(_)))
-        }
+        TSType::TSUnionType(union) => union
+            .types
+            .iter()
+            .any(|t| matches!(t, TSType::TSUndefinedKeyword(_))),
         _ => false,
     }
 }
