@@ -1089,9 +1089,9 @@ const ruleMeta = Object.freeze({
     },
   },
   'require-table-columns': {
-    type: 'suggestion',
+    type: 'problem',
     description:
-      'Require that every `CREATE TABLE` contains a configurable set of columns, with per-table-name pattern overrides and an optional exclusion pattern',
+      'Require every `CREATE TABLE` to include a configured set of columns (e.g. multi-tenant / audit columns like `tenant_id`, `created_at`, `updated_by`)',
     recommended: false,
     fixable: undefined,
     schema: [
@@ -1101,6 +1101,8 @@ const ruleMeta = Object.freeze({
           columns: {
             type: 'array',
             items: { type: 'string' },
+            uniqueItems: true,
+            minItems: 1,
           },
           overrides: {
             type: 'array',
@@ -1111,6 +1113,7 @@ const ruleMeta = Object.freeze({
                 columns: {
                   type: 'array',
                   items: { type: 'string' },
+                  uniqueItems: true,
                 },
               },
               required: ['pattern', 'columns'],
