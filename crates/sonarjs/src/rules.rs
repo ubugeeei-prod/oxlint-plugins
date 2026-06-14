@@ -4,6 +4,7 @@
 mod anchor_precedence;
 mod arguments_usage;
 mod array_constructor;
+mod bitwise_operators;
 mod class_name;
 mod class_prototype;
 mod code_eval;

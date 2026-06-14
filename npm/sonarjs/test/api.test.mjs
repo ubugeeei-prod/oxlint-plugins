@@ -80,6 +80,7 @@ const expectedRuleNames = [
   'no-alphabetical-sort',
   'no-for-in-iterable',
   'no-associative-arrays',
+  'bitwise-operators',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

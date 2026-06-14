@@ -284,6 +284,9 @@ const messages = Object.freeze({
   'no-associative-arrays': {
     noAssociativeArray: 'Use an object or a Map instead of this array with non-numeric keys.',
   },
+  'bitwise-operators': {
+    bitwiseOperator: 'Review this use of a bitwise operator; "&&" or "||" may have been intended.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -436,6 +439,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow "for...in" loops over arrays; use a "for...of" loop to iterate values instead',
   'no-associative-arrays':
     'Disallow assigning non-numeric keys to arrays; use an object or a Map instead',
+  'bitwise-operators':
+    'Disallow a bitwise "&" or "|" whose operand is a boolean-valued expression (comparison, logical, "!", or boolean literal), which is likely a typo for "&&" or "||"',
 });
 
 const ruleTypes = Object.freeze({
@@ -516,6 +521,7 @@ const ruleTypes = Object.freeze({
   'no-alphabetical-sort': 'suggestion',
   'no-for-in-iterable': 'suggestion',
   'no-associative-arrays': 'suggestion',
+  'bitwise-operators': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -596,6 +602,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-alphabetical-sort': 'error',
   'no-for-in-iterable': 'error',
   'no-associative-arrays': 'error',
+  'bitwise-operators': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
