@@ -17,6 +17,25 @@ const diagnosticsCache = new WeakMap();
 // Per-rule ESLint `meta` (description, messages, fixable, schema), keyed by rule
 // name. Entries are added as each upstream rule is ported.
 const ruleMeta = Object.freeze({
+  'align-column-definitions': {
+    type: 'layout',
+    description:
+      'Align column definitions vertically inside `CREATE TABLE` so that name, type, and constraints share consistent column offsets',
+    recommended: false,
+    fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          gap: { type: 'integer', minimum: 1 },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      misaligned: 'Column definitions in this CREATE TABLE are not vertically aligned.',
+    },
+  },
   'align-values': {
     type: 'layout',
     description:
