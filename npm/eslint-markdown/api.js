@@ -41,6 +41,7 @@ function normalizeOptions(options) {
     checkMissingTableCells: normalizeBoolean(options.checkMissingTableCells),
     math: normalizeBoolean(options.math),
     frontmatter: normalizeBoolean(options.frontmatter),
+    commonmark: normalizeBoolean(options.commonmark),
   };
 }
 
