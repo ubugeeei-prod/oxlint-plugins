@@ -13,6 +13,7 @@ const MDAST_RULES: &[&str] = &[
     "no-empty-definitions",
     "no-missing-atx-heading-space",
     "no-missing-label-refs",
+    "no-reference-like-urls",
     "no-reversed-media-syntax",
     "no-space-in-emphasis",
     "no-unused-definitions",
@@ -327,8 +328,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("no-multiple-h1") {
         scan_multiple_h1(source_text, &line_index, &facts, &mut diagnostics);
     }
-    if options.is_enabled("no-reference-like-urls") {
-        scan_reference_like_urls(source_text, &line_index, &facts, &mut diagnostics);
+    if options.is_enabled("no-reference-like-urls")
+        && let Some(tree) = &mdast
+    {
+        scan_reference_like_urls(source_text, &line_index, tree, &mut diagnostics);
     }
     if options.is_enabled("no-reversed-media-syntax")
         && let Some(tree) = &mdast
@@ -1688,44 +1691,79 @@ fn scan_multiple_h1(
 fn scan_reference_like_urls(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let definitions = definition_ids(facts, false);
-    for link in &facts.links {
-        let normalized = normalize_identifier(link.url.as_str());
-        if definitions.contains(&normalized) {
-            diagnostics.push(Diagnostic {
-                rule_name: "no-reference-like-urls",
-                message_id: "referenceLikeUrl",
-                data: DiagnosticData {
-                    link_type: Some(CompactString::from(if link.is_image {
-                        "image"
-                    } else {
-                        "link"
-                    })),
-                    prefix: Some(CompactString::from(if link.is_image { "!" } else { "" })),
-                    ..DiagnosticData::default()
-                },
-                loc: line_index.loc_for_span(source_text, link.span),
-                fix: Some(DiagnosticFix {
-                    start: utf16_offset(source_text, link.span.start),
-                    end: utf16_offset(source_text, link.span.end),
-                    replacement: {
-                        let mut out = CompactString::new("");
-                        if link.is_image {
-                            out.push('!');
-                        }
-                        out.push('[');
-                        out.push_str(link.label.as_str());
-                        out.push_str("][");
-                        out.push_str(link.url.as_str());
-                        out.push(']');
-                        out
-                    },
-                }),
-            });
+    // Inline `[label](destination [title])` / `![label](...)`, capturing the raw
+    // label and destination (the destination keeps any leading whitespace, which
+    // the autofix preserves and `normalize_identifier` trims). Mirrors upstream's
+    // `linkOrImagePattern` (the `(?<![ \t])` lookbehinds are omitted — they do not
+    // change captures for the already-valid links mdast hands us).
+    let Ok(inline_re) = Regex::new(
+        r#"\[((?:\\.|[^()\\]|\([\s\S]*\))*?)\]\(([ \t]*\r?\n?[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?[ \t]*\)$"#,
+    ) else {
+        return;
+    };
+
+    let mut definitions = FastHashSet::<CompactString>::default();
+    let mut media: SmallVec<[&mdast::Node; 16]> = SmallVec::new();
+    visit_mdast(tree, &mut |node| match node {
+        mdast::Node::Definition(definition) => {
+            definitions.insert(normalize_identifier(
+                definition.label.as_deref().unwrap_or(""),
+            ));
         }
+        mdast::Node::Link(_) | mdast::Node::Image(_) => media.push(node),
+        _ => {}
+    });
+
+    for node in &media {
+        let Some(span) = node_span(node) else {
+            continue;
+        };
+        let (is_image, has_title) = match node {
+            mdast::Node::Image(image) => (true, image.title.is_some()),
+            mdast::Node::Link(link) => (false, link.title.is_some()),
+            _ => continue,
+        };
+        let text = source_text.get(span.start..span.end).unwrap_or("");
+        let Some(caps) = inline_re.captures(text) else {
+            continue;
+        };
+        let (Some(label), Some(destination)) = (caps.get(1), caps.get(2)) else {
+            continue;
+        };
+        let destination_src = destination.as_str();
+        if !definitions.contains(&normalize_identifier(destination_src)) {
+            continue;
+        }
+        let prefix = if is_image { "!" } else { "" };
+        // Auto-fix only when there is no title (the AST treats a missing and an
+        // empty title alike, so reconstructing it would be lossy).
+        let fix = (!has_title).then(|| {
+            let mut replacement = CompactString::from(prefix);
+            replacement.push('[');
+            replacement.push_str(label.as_str());
+            replacement.push_str("][");
+            replacement.push_str(destination_src);
+            replacement.push(']');
+            DiagnosticFix {
+                start: utf16_offset(source_text, span.start),
+                end: utf16_offset(source_text, span.end),
+                replacement,
+            }
+        });
+        diagnostics.push(Diagnostic {
+            rule_name: "no-reference-like-urls",
+            message_id: "referenceLikeUrl",
+            data: DiagnosticData {
+                link_type: Some(CompactString::from(if is_image { "image" } else { "link" })),
+                prefix: Some(CompactString::from(prefix)),
+                ..DiagnosticData::default()
+            },
+            loc: line_index.loc_for_span(source_text, span),
+            fix,
+        });
     }
 }
 
@@ -2296,15 +2334,6 @@ fn definition_diagnostic(
         loc: line_index.loc_for_span(source_text, definition.span),
         fix: None,
     }
-}
-
-fn definition_ids(facts: &MarkdownFacts<'_>, footnotes: bool) -> FastHashSet<CompactString> {
-    facts
-        .definitions
-        .iter()
-        .filter(|definition| definition.is_footnote == footnotes)
-        .map(|definition| definition.identifier.clone())
-        .collect()
 }
 
 fn is_allowed(values: &[CompactString], identifier: &CompactString) -> bool {

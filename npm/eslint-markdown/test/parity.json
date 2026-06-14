@@ -12,10 +12,6 @@
     "no-multiple-h1": {
       "level": "off",
       "note": "Frontmatter-title (YAML/TOML/JSON) interaction with the first H1 differs from upstream."
-    },
-    "no-reference-like-urls": {
-      "level": "off",
-      "note": "Broad divergence detecting inline URLs that collide with definition identifiers."
     }
   }
 }
