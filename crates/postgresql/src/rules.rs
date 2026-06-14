@@ -41,6 +41,7 @@ mod no_unlogged_table;
 mod no_update_primary_key;
 mod no_update_without_from_binding;
 mod no_vacuum_full;
+mod no_volatile_default_on_add_column;
 mod no_with_recursive_without_limit;
 mod prefer_exists_over_in_subquery;
 mod require_if_exists;
@@ -186,6 +187,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-update-primary-key",
     "no-update-without-from-binding",
     "no-vacuum-full",
+    "no-volatile-default-on-add-column",
     "no-with-recursive-without-limit",
     "prefer-exists-over-in-subquery",
     "require-if-exists",
@@ -388,6 +390,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
     RuleDef {
         name: "no-vacuum-full",
         run: no_vacuum_full::run,
+        uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-volatile-default-on-add-column",
+        run: no_volatile_default_on_add_column::run,
         uses_parse_error: false,
     },
     RuleDef {

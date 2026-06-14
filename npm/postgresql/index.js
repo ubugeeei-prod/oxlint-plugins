@@ -487,6 +487,18 @@ const ruleMeta = Object.freeze({
         '`VACUUM FULL` takes `ACCESS EXCLUSIVE` and rewrites the whole table; the table is unavailable for the duration. For shrinking a bloated table on a live database, use `pg_repack` or `pg_squeeze`. A plain `VACUUM` (no `FULL`) is fine.',
     },
   },
+  'no-volatile-default-on-add-column': {
+    type: 'problem',
+    description:
+      'Disallow `ALTER TABLE ... ADD COLUMN ... DEFAULT <volatile>()`; volatile defaults force a full table rewrite under `ACCESS EXCLUSIVE` because the stable-default short-cut cannot be used',
+    recommended: false,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noVolatileDefault:
+        '`{{fn}}()` is VOLATILE — using it as a column DEFAULT on `ADD COLUMN` forces PostgreSQL to rewrite the entire table under `ACCESS EXCLUSIVE`. Add the column without a default, then `UPDATE` rows in batches.',
+    },
+  },
   'no-with-recursive-without-limit': {
     type: 'problem',
     description:
