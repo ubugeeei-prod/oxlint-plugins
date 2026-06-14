@@ -534,14 +534,21 @@ fn collect_inline_links(source_text: &str, facts: &mut MarkdownFacts<'_>) {
 }
 
 fn collect_html_tags(source_text: &str, facts: &mut MarkdownFacts<'_>) {
-    let Ok(tag_re) = Regex::new(r#"(?is)<[a-z][a-z0-9-]*(?:\s[^>]*)?/?>"#) else {
+    // Mirror upstream's `htmlTagPattern`: an attribute value may contain `>`
+    // when wrapped in quotes, so the tag does not end at the first raw `>`.
+    let Ok(tag_re) =
+        Regex::new(r#"(?i)<[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?/?>"#)
+    else {
         return;
     };
-    for mat in tag_re.find_iter(source_text) {
+    // Upstream strips HTML comments before scanning for tags; blank out comment
+    // interiors first (preserving byte length and newlines so offsets stay valid).
+    let stripped = strip_html_comments(source_text);
+    for mat in tag_re.find_iter(&stripped) {
         if in_fenced_range(facts, mat.start()) {
             continue;
         }
-        let raw = mat.as_str();
+        let raw = source_text.get(mat.start()..mat.end()).unwrap_or("");
         let name = html_tag_name(raw);
         if name.is_empty() {
             continue;
@@ -555,6 +562,26 @@ fn collect_html_tags(source_text: &str, facts: &mut MarkdownFacts<'_>) {
             raw: CompactString::from(raw),
         });
     }
+}
+
+// Replace the interior of every `<!-- ... -->` comment with spaces, keeping the
+// byte length and any newlines so byte offsets into the original text stay valid
+// (mirrors upstream `stripHtmlComments`, which replaces each non-newline unit).
+fn strip_html_comments(source_text: &str) -> CompactString {
+    let Ok(comment_re) = Regex::new(r"(?s)<!--.*?-->") else {
+        return CompactString::from(source_text);
+    };
+    let replaced = comment_re.replace_all(source_text, |caps: &regex::Captures| {
+        caps[0]
+            .bytes()
+            .map(|byte| match byte {
+                b'\n' => '\n',
+                b'\r' => '\r',
+                _ => ' ',
+            })
+            .collect::<CompactString>()
+    });
+    CompactString::from(replaced.as_ref())
 }
 
 // Span from the opening fence start through the end of the language token,
@@ -933,6 +960,12 @@ fn scan_no_html(
         }) {
             continue;
         }
+        // Upstream truncates the reported span at the first line ending inside
+        // the matched tag (`firstNewlineIndex`).
+        let raw = source_text.get(tag.span.start..tag.span.end).unwrap_or("");
+        let end = raw
+            .find(['\n', '\r'])
+            .map_or(tag.span.end, |idx| tag.span.start + idx);
         diagnostics.push(Diagnostic {
             rule_name: "no-html",
             message_id: "disallowedElement",
@@ -940,7 +973,13 @@ fn scan_no_html(
                 name: Some(tag.name.clone()),
                 ..DiagnosticData::default()
             },
-            loc: line_index.loc_for_span(source_text, tag.span),
+            loc: line_index.loc_for_span(
+                source_text,
+                ByteSpan {
+                    start: tag.span.start,
+                    end,
+                },
+            ),
             fix: None,
         });
     }
