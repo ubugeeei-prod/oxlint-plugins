@@ -147,6 +147,18 @@ const ruleMeta = Object.freeze({
         '`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table.',
     },
   },
+  'no-drop-schema-cascade': {
+    type: 'problem',
+    description:
+      'Disallow `DROP SCHEMA ... CASCADE`; it silently removes every object in the schema',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      noDropSchemaCascade:
+        "`DROP SCHEMA ... CASCADE` removes every table, view, function, and sequence in the schema with no preview. List the objects you actually want to drop instead, or drop the schema only when it's already empty.",
+    },
+  },
   'no-drop-table-cascade': {
     type: 'problem',
     description: 'Disallow `DROP TABLE ... CASCADE` because it silently removes dependent objects',
