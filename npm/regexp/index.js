@@ -288,6 +288,10 @@ const messages = Object.freeze({
     unexpected:
       'This quantifier contradicts the preceding `\\b` assertion and can never be entered.',
   },
+  'no-useless-set-operand': {
+    unexpected:
+      'This set operation has a useless operand (the operands are disjoint or one is a subset of the other).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -400,6 +404,8 @@ const ruleDescriptions = Object.freeze({
     'require optimal quantifiers for concatenated quantifiers (narrow: adjacent quantifiers on the same single element)',
   'no-contradiction-with-assertion':
     'disallow elements that contradict assertions (narrow: min-zero quantifier on a same-class literal right after `\\b`)',
+  'no-useless-set-operand':
+    'disallow unnecessary elements in expression character classes (narrow: shorthand `&&`/`--` operands that are disjoint or subsets)',
 });
 const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
@@ -474,6 +480,7 @@ const ruleTypes = Object.freeze({
   'no-useless-assertions': 'problem',
   'optimal-quantifier-concatenation': 'suggestion',
   'no-contradiction-with-assertion': 'problem',
+  'no-useless-set-operand': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -497,6 +504,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-useless-assertions': 'error',
   'optimal-quantifier-concatenation': 'error',
   'no-contradiction-with-assertion': 'error',
+  'no-useless-set-operand': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedRegexpRuleNames());

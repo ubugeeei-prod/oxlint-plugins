@@ -1,0 +1,186 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-set-operand.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-set-operand.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[\\w--\\d]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[\\w&&\\d]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d' is a subset of '\\w', so the result of the intersection is always going to be '\\d'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[\\d]/v"
+    },
+    {
+      "code": "/[\\w&&\\s]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w' and '\\s' are disjoint, so the result of the intersection is always going to be the empty set.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[]/v"
+    },
+    {
+      "code": "/[^\\w&&\\s]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w' and '\\s' are disjoint, so the result of the intersection is always going to be the empty set.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[^]/v"
+    },
+    {
+      "code": "/[\\w&&[\\d\\s]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\s' can be removed without changing the result of the subtraction.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[[\\d]]/v"
+    },
+    {
+      "code": "/[\\w&&[^\\d\\s]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\s' can be removed without changing the result of the subtraction.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[\\w&&[^\\d]]/v"
+    },
+    {
+      "code": "/[\\w--\\s]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\w' and '\\s' are disjoint, so the subtraction doesn't do anything.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[\\w]/v"
+    },
+    {
+      "code": "/[\\d--\\w]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d' is a subset of '\\w', so the result of the subtraction is always going to be the empty set.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[]/v"
+    },
+    {
+      "code": "/[^\\d--\\w]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d' is a subset of '\\w', so the result of the subtraction is always going to be the empty set.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 10
+        }
+      ],
+      "output": "/[^]/v"
+    },
+    {
+      "code": "/[\\w--[\\d\\s]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\s' can be removed without changing the result of the subtraction.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 12
+        }
+      ],
+      "output": "/[\\w--[\\d]]/v"
+    },
+    {
+      "code": "/[\\w--[^\\d\\s]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\s' can be removed without changing the result of the subtraction.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": "/[\\w--[^\\d]]/v"
+    },
+    {
+      "code": "/[\\w--[a\\q{aa|b}]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'aa' can be removed without changing the result of the subtraction.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[\\w--[a\\q{b}]]/v"
+    },
+    {
+      "code": "/[\\w--[a\\q{aa}]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'aa' can be removed without changing the result of the subtraction.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[\\w--[a]]/v"
+    },
+    {
+      "code": "/[\\w--\\q{a|aa}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'aa' can be removed without changing the result of the subtraction.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[\\w--\\q{a}]/v"
+    }
+  ]
+}

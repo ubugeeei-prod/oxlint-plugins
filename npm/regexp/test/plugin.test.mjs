@@ -213,6 +213,10 @@ const validCases = [
   ['no-contradiction-with-assertion', 'plain char after boundary', 'const re = /a\\ba/u;\n'],
   ['no-contradiction-with-assertion', 'consistent quantifier', 'const re = /a\\b-*a/u;\n'],
   ['no-contradiction-with-assertion', 'boundary after group', 'const re = /(?:aa|a\\b)-?a/u;\n'],
+  // no-useless-set-operand
+  ['no-useless-set-operand', 'meaningful subset removal', 'const re = /[\\w--\\d]/v;\n'],
+  ['no-useless-set-operand', 'not v-mode', 'const re = /[\\w&&\\d]/u;\n'],
+  ['no-useless-set-operand', 'nested-class operand', 'const re = /[\\w&&[\\d\\s]]/v;\n'],
 ];
 
 const invalidCases = [
@@ -604,6 +608,25 @@ const invalidCases = [
     'no-contradiction-with-assertion',
     'brace min-zero quantifier after boundary',
     'const re = /a\\ba{0,3}-/u;\n',
+    ['unexpected'],
+  ],
+  // no-useless-set-operand
+  [
+    'no-useless-set-operand',
+    'intersection subset operand',
+    'const re = /[\\w&&\\d]/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-useless-set-operand',
+    'intersection disjoint operands',
+    'const re = /[\\w&&\\s]/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-useless-set-operand',
+    'subtraction left subset of right',
+    'const re = /[\\d--\\w]/v;\n',
     ['unexpected'],
   ],
 ];

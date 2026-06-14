@@ -2125,6 +2125,152 @@ fn quantifier_min_is_zero(bytes: &[u8], index: usize) -> bool {
     }
 }
 
+/// The set relationship between two non-negated predefined shorthands
+/// (`\d`, `\w`, `\s`), used by the narrow `no-useless-set-operand` and
+/// `simplify-set-operations` detectors.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(crate) enum ShorthandRelation {
+    /// The two sets have no characters in common.
+    Disjoint,
+    /// Left ⊆ Right (and not equal).
+    LeftSubsetRight,
+    /// Right ⊆ Left (and not equal).
+    RightSubsetLeft,
+    /// The two sets are equal.
+    Equal,
+}
+
+/// Returns the set relationship between two non-negated shorthand letters
+/// (`b'd'`, `b'w'`, `b's'`), or `None` when the pair is not one of the
+/// statically-known relationships.
+///
+/// Known facts (ASCII/Unicode-stable for these classes): `\d ⊆ \w`, and `\s`
+/// is disjoint from both `\d` and `\w`.
+pub(crate) fn shorthand_relation(left: u8, right: u8) -> Option<ShorthandRelation> {
+    match (left, right) {
+        (b'd', b'd') | (b'w', b'w') | (b's', b's') => Some(ShorthandRelation::Equal),
+        (b'd', b'w') => Some(ShorthandRelation::LeftSubsetRight),
+        (b'w', b'd') => Some(ShorthandRelation::RightSubsetLeft),
+        (b'd', b's') | (b's', b'd') | (b'w', b's') | (b's', b'w') => {
+            Some(ShorthandRelation::Disjoint)
+        }
+        _ => None,
+    }
+}
+
+/// A v-mode character class reduced to the narrow shape the set-operation
+/// detectors understand: exactly two operands joined by `&&` or `--`, where
+/// each operand is a single non-negated predefined shorthand `\d`/`\w`/`\s`.
+pub(crate) struct ShorthandSetOp {
+    pub(crate) left: u8,
+    pub(crate) right: u8,
+    /// `true` for intersection (`&&`), `false` for subtraction (`--`).
+    pub(crate) intersection: bool,
+}
+
+/// Parse a single character class body (the bytes strictly between `[` and `]`)
+/// as a two-operand shorthand set operation. A leading `^` negation is allowed
+/// and ignored (it does not change the operand-to-operand relationship). Any
+/// nested `[...]`, string literals `\q{...}`, extra operands, or non-shorthand
+/// operands yield `None` so the detectors stay sound.
+pub(crate) fn parse_shorthand_set_op(body: &[u8]) -> Option<ShorthandSetOp> {
+    let mut start = 0;
+    if body.first() == Some(&b'^') {
+        start = 1;
+    }
+    let body = &body[start..];
+    // Locate the operator: `&&` or `--`. The operands must each be exactly
+    // `\d`/`\w`/`\s`, i.e. two bytes, so the operator sits at offset 2.
+    if body.len() != 6 {
+        return None;
+    }
+    let left_shorthand = parse_single_shorthand(&body[0..2])?;
+    let right_shorthand = parse_single_shorthand(&body[4..6])?;
+    let intersection = match (body[2], body[3]) {
+        (b'&', b'&') => true,
+        (b'-', b'-') => false,
+        _ => return None,
+    };
+    Some(ShorthandSetOp {
+        left: left_shorthand,
+        right: right_shorthand,
+        intersection,
+    })
+}
+
+/// Returns the lowercase shorthand letter for a two-byte `\d`/`\w`/`\s`
+/// sequence, or `None` for anything else (including the negated `\D`/`\W`/`\S`).
+fn parse_single_shorthand(bytes: &[u8]) -> Option<u8> {
+    if bytes.len() == 2 && bytes[0] == b'\\' && matches!(bytes[1], b'd' | b'w' | b's') {
+        Some(bytes[1])
+    } else {
+        None
+    }
+}
+
+/// Narrow-form detector for `no-useless-set-operand`.
+///
+/// Scans a v-mode pattern for the first character class of the exact shape
+/// `[ ^? OP1 (&& | --) OP2 ]` where both operands are non-negated predefined
+/// shorthands (`\d`/`\w`/`\s`) and the operation has a redundant operand:
+///
+/// * `A && B` where `A` and `B` are disjoint — the intersection is empty.
+/// * `A && B` where one operand is a subset of (or equal to) the other — the
+///   superset operand is redundant.
+/// * `A -- B` where `A` and `B` are disjoint — subtracting `B` removes nothing.
+/// * `A -- B` where `A ⊆ B` — the subtraction yields the empty set.
+///
+/// The single upstream valid case `[\w--\d]` (`\d ⊂ \w`, a meaningful removal)
+/// does not match any of these conditions, so it is never flagged. Nested
+/// classes, string literals, and negated-shorthand operands are out of scope
+/// and yield no diagnostic.
+///
+/// `caller` must only invoke this for patterns carrying the `v` flag.
+pub(crate) fn has_useless_set_operand(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                if let Some(close) = find_class_end_nested(bytes, index) {
+                    let body = &bytes[index + 1..close];
+                    if let Some(op) = parse_shorthand_set_op(body)
+                        && let Some(relation) = shorthand_relation(op.left, op.right)
+                    {
+                        let useless = if op.intersection {
+                            // For `&&` every statically-known relation leaves a
+                            // useless operand: disjoint → empty result; subset
+                            // (either direction) or equal → the superset operand
+                            // is redundant.
+                            true
+                        } else {
+                            // For `--`: disjoint (removes nothing), `left ⊆ right`
+                            // (result empty), or equal (result empty). The
+                            // upstream-valid `[\w--\d]` is `right ⊂ left`, which
+                            // is intentionally NOT in this set.
+                            matches!(
+                                relation,
+                                ShorthandRelation::Disjoint
+                                    | ShorthandRelation::LeftSubsetRight
+                                    | ShorthandRelation::Equal
+                            )
+                        };
+                        if useless {
+                            return true;
+                        }
+                    }
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
 /// A single quantifiable atom recognised by the narrow
 /// `optimal-quantifier-concatenation` detector: an unambiguous single element
 /// whose matched-character set is independent of position.

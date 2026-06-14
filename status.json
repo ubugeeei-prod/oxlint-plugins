@@ -9227,7 +9227,7 @@
       },
       {
         "name": "no-useless-set-operand",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
