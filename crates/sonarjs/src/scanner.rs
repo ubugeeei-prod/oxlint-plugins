@@ -4,7 +4,7 @@
 
 use oxc_ast::ast::{
     ArrowFunctionExpression, AssignmentExpression, BinaryExpression, BindingIdentifier,
-    BlockStatement, CallExpression, CatchClause, ConditionalExpression, DoWhileStatement,
+    BlockStatement, CallExpression, CatchClause, Class, ConditionalExpression, DoWhileStatement,
     ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function, FunctionBody,
     IdentifierReference, IfStatement, LabeledStatement, LogicalExpression, NewExpression, Program,
     RegExpLiteral, ReturnStatement, StaticMemberExpression, SwitchCase, SwitchStatement,
@@ -92,6 +92,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_function_declaration_in_block(it);
         self.check_no_same_line_conditional(&it.body);
         walk::walk_block_statement(self, it);
+    }
+
+    fn visit_class(&mut self, it: &Class<'a>) {
+        self.check_class_name(it);
+        walk::walk_class(self, it);
     }
 
     fn visit_template_literal(&mut self, it: &TemplateLiteral<'a>) {

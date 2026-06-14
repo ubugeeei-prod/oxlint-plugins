@@ -2206,3 +2206,40 @@ fn does_not_report_no_useless_increment_for_standalone_increment() {
     let diagnostics = scan("no-useless-increment", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_class_name_for_lowercase_class() {
+    let source = "class myClass {}";
+    let diagnostics = scan("class-name", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "class-name");
+    assert_eq!(diagnostics[0].message_id, "className");
+}
+
+#[test]
+fn reports_class_name_for_underscore_class() {
+    let source = "class _Helper {}";
+    let diagnostics = scan("class-name", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_class_name_for_pascal_case_class() {
+    let source = "class MyClass {}";
+    let diagnostics = scan("class-name", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_class_name_for_anonymous_class() {
+    let source = "export default class {}";
+    let diagnostics = scan("class-name", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_class_name_for_lowercase_class_expression() {
+    let source = "const C = class widget {};";
+    let diagnostics = scan("class-name", source);
+    assert_eq!(diagnostics.len(), 1);
+}
