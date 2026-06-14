@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "no-cascade",
-      "code": "CREATE TABLE t (\n  id integer,\n  fid integer REFERENCES other(id),\n  fid2 integer REFERENCES other(id) ON DELETE RESTRICT,\n  fid3 integer REFERENCES other(id) ON DELETE SET NULL\n);\nALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (fid) REFERENCES other(id) ON DELETE NO ACTION;\n"
+      "code": "CREATE TABLE t (\n  id integer,\n  fid integer REFERENCES other(id),\n  fid2 integer REFERENCES other(id) ON DELETE RESTRICT,\n  fid3 integer REFERENCES other(id) ON DELETE SET NULL\n);\nALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (fid) REFERENCES other(id) ON DELETE NO ACTION;"
     }
   ],
   "invalid": [
     {
       "name": "cascade",
-      "code": "CREATE TABLE t (\n  id integer,\n  fid integer REFERENCES other(id) ON DELETE CASCADE\n);\nALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (fid) REFERENCES other(id) ON DELETE CASCADE;\n",
+      "code": "CREATE TABLE t (\n  id integer,\n  fid integer REFERENCES other(id) ON DELETE CASCADE\n);\nALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (fid) REFERENCES other(id) ON DELETE CASCADE;",
       "errors": [
         {
           "messageId": "noCascade",

@@ -9,11 +9,11 @@
   "valid": [
     {
       "name": "jsonb-column",
-      "code": "CREATE TABLE events (payload JSONB);\n"
+      "code": "CREATE TABLE events (payload JSONB);"
     },
     {
       "name": "never-json",
-      "code": "CREATE TABLE t (payload json);\n",
+      "code": "CREATE TABLE t (payload json);",
       "options": [
         {
           "style": "never"
@@ -22,13 +22,13 @@
     },
     {
       "name": "other-column",
-      "code": "CREATE TABLE events (id INT);\n"
+      "code": "CREATE TABLE events (id INT);"
     }
   ],
   "invalid": [
     {
       "name": "json-column",
-      "code": "CREATE TABLE events (payload JSON);\n",
+      "code": "CREATE TABLE events (payload JSON);",
       "errors": [
         {
           "messageId": "preferJsonb",
@@ -43,7 +43,7 @@
     },
     {
       "name": "never-jsonb",
-      "code": "CREATE TABLE t (payload jsonb);\n",
+      "code": "CREATE TABLE t (payload jsonb);",
       "options": [
         {
           "style": "never"
@@ -63,7 +63,7 @@
     },
     {
       "name": "qualified-json",
-      "code": "CREATE TABLE events (payload pg_catalog.json);\n",
+      "code": "CREATE TABLE events (payload pg_catalog.json);",
       "errors": [
         {
           "messageId": "preferJsonb",

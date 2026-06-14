@@ -9,15 +9,15 @@
   "valid": [
     {
       "name": "compound-expression-with-as",
-      "code": "-- TypeCast (`expr::type`), dotted ColumnRef (`t.col`) and CASE expressions\n-- expose parser ranges that stop in the middle of the value expression\n-- (e.g. on `::` between the inner expr and the type name, or on the\n-- first dotted segment). The rule must still see `AS` as present.\n-- (Regression: the rule used to look at the token immediately after the\n-- parser-reported value range and, when that token was `ulid` / `.` /\n-- `WHEN` instead of `AS`, it inserted `AS` in the middle of the\n-- expression, producing `()::AS ulid`, `uAS .col`, `CASE AS WHEN ...`.)\nSELECT\n  generate_ulid_plv8()::ulid AS some_id,\n  u.user_id AS created_by,\n  CASE WHEN x = 1 THEN 'a' WHEN x = 2 THEN 'b' ELSE 'c' END AS label\nFROM users u;\n"
+      "code": "-- TypeCast (`expr::type`), dotted ColumnRef (`t.col`) and CASE expressions\n-- expose parser ranges that stop in the middle of the value expression\n-- (e.g. on `::` between the inner expr and the type name, or on the\n-- first dotted segment). The rule must still see `AS` as present.\n-- (Regression: the rule used to look at the token immediately after the\n-- parser-reported value range and, when that token was `ulid` / `.` /\n-- `WHEN` instead of `AS`, it inserted `AS` in the middle of the\n-- expression, producing `()::AS ulid`, `uAS .col`, `CASE AS WHEN ...`.)\nSELECT\n  generate_ulid_plv8()::ulid AS some_id,\n  u.user_id AS created_by,\n  CASE WHEN x = 1 THEN 'a' WHEN x = 2 THEN 'b' ELSE 'c' END AS label\nFROM users u;"
     },
     {
       "name": "explicit-as",
-      "code": "SELECT id AS user_id, name AS full_name FROM users;\nSELECT id, name FROM users;\nSELECT * FROM users;\nINSERT INTO users (id, name) VALUES (1, 'a');\nUPDATE users SET name = 'b' WHERE id = 1;\n"
+      "code": "SELECT id AS user_id, name AS full_name FROM users;\nSELECT id, name FROM users;\nSELECT * FROM users;\nINSERT INTO users (id, name) VALUES (1, 'a');\nUPDATE users SET name = 'b' WHERE id = 1;"
     },
     {
       "name": "never-no-as",
-      "code": "SELECT id user_id FROM users;\n",
+      "code": "SELECT id user_id FROM users;",
       "options": [
         {
           "style": "never"
@@ -28,7 +28,7 @@
   "invalid": [
     {
       "name": "bare-alias",
-      "code": "SELECT id user_id, name full_name FROM users;\n",
+      "code": "SELECT id user_id, name full_name FROM users;",
       "errors": [
         {
           "messageId": "preferAs",
@@ -51,7 +51,7 @@
     },
     {
       "name": "compound-expression-without-as",
-      "code": "-- When the alias is omitted on a TypeCast value the rule's old logic\n-- would have corrupted `()::ulid id` into `()::AS ulid id` (parser range\n-- ends mid-cast). The defensive check requires the next token to match\n-- the alias name before inserting `AS`, so we only flag the bare ones\n-- whose next token actually is the alias.\nSELECT\n  COUNT(*) total,\n  id user_id\nFROM users;\n",
+      "code": "-- When the alias is omitted on a TypeCast value the rule's old logic\n-- would have corrupted `()::ulid id` into `()::AS ulid id` (parser range\n-- ends mid-cast). The defensive check requires the next token to match\n-- the alias name before inserting `AS`, so we only flag the bare ones\n-- whose next token actually is the alias.\nSELECT\n  COUNT(*) total,\n  id user_id\nFROM users;",
       "errors": [
         {
           "messageId": "preferAs",
@@ -66,7 +66,7 @@
     },
     {
       "name": "never-with-as",
-      "code": "SELECT id AS user_id FROM users;\n",
+      "code": "SELECT id AS user_id FROM users;",
       "options": [
         {
           "style": "never"

@@ -39,6 +39,7 @@ mod no_unlogged_table;
 mod no_update_without_from_binding;
 mod no_vacuum_full;
 mod no_with_recursive_without_limit;
+mod prefer_current_timestamp_over_now;
 mod prefer_exists_over_in_subquery;
 mod require_limit;
 mod require_named_constraint;
@@ -180,6 +181,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-update-without-from-binding",
     "no-vacuum-full",
     "no-with-recursive-without-limit",
+    "prefer-current-timestamp-over-now",
     "prefer-exists-over-in-subquery",
     "require-limit",
     "require-named-constraint",
@@ -371,6 +373,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "no-with-recursive-without-limit",
         run: no_with_recursive_without_limit::run,
         uses_parse_error: false,
+    },
+    RuleDef {
+        name: "prefer-current-timestamp-over-now",
+        run: prefer_current_timestamp_over_now::run,
+        uses_parse_error: true,
     },
     RuleDef {
         name: "prefer-exists-over-in-subquery",

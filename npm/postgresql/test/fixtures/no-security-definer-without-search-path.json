@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "with-set",
-      "code": "CREATE FUNCTION fn() RETURNS void\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = pg_catalog, pg_temp\nAS $$ BEGIN END $$;\n\n-- SECURITY INVOKER (the default) is fine.\nCREATE FUNCTION fn2() RETURNS void\nLANGUAGE plpgsql\nSECURITY INVOKER\nAS $$ BEGIN END $$;\n\n-- No SECURITY DEFINER → out of scope.\nCREATE FUNCTION fn3() RETURNS void\nLANGUAGE plpgsql\nAS $$ BEGIN END $$;\n"
+      "code": "CREATE FUNCTION fn() RETURNS void\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = pg_catalog, pg_temp\nAS $$ BEGIN END $$;\n\n-- SECURITY INVOKER (the default) is fine.\nCREATE FUNCTION fn2() RETURNS void\nLANGUAGE plpgsql\nSECURITY INVOKER\nAS $$ BEGIN END $$;\n\n-- No SECURITY DEFINER → out of scope.\nCREATE FUNCTION fn3() RETURNS void\nLANGUAGE plpgsql\nAS $$ BEGIN END $$;"
     }
   ],
   "invalid": [
     {
       "name": "missing-set",
-      "code": "CREATE FUNCTION fn() RETURNS void\nLANGUAGE plpgsql\nSECURITY DEFINER\nAS $$ BEGIN END $$;\n",
+      "code": "CREATE FUNCTION fn() RETURNS void\nLANGUAGE plpgsql\nSECURITY DEFINER\nAS $$ BEGIN END $$;",
       "errors": [
         {
           "messageId": "missingSearchPath",

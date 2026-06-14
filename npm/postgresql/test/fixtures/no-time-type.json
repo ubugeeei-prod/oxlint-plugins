@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "interval",
-      "code": "CREATE TABLE jobs (id int, duration interval);\n"
+      "code": "CREATE TABLE jobs (id int, duration interval);"
     },
     {
       "name": "timestamptz",
-      "code": "CREATE TABLE shifts (id int, start_at timestamptz);\n"
+      "code": "CREATE TABLE shifts (id int, start_at timestamptz);"
     }
   ],
   "invalid": [
     {
       "name": "time",
-      "code": "CREATE TABLE shifts (id int, start_at time);\n",
+      "code": "CREATE TABLE shifts (id int, start_at time);",
       "errors": [
         {
           "messageId": "noTimeType",
@@ -34,7 +34,7 @@
     },
     {
       "name": "timetz",
-      "code": "CREATE TABLE shifts (id int, start_at timetz);\n",
+      "code": "CREATE TABLE shifts (id int, start_at timetz);",
       "errors": [
         {
           "messageId": "noTimeType",

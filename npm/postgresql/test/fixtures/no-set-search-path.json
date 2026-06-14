@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "other-set",
-      "code": "SET TIME ZONE 'UTC';\n"
+      "code": "SET TIME ZONE 'UTC';"
     },
     {
       "name": "qualified",
-      "code": "SELECT id FROM audit.events;\n"
+      "code": "SELECT id FROM audit.events;"
     }
   ],
   "invalid": [
     {
       "name": "set-search-path",
-      "code": "SET search_path TO audit, public;\n",
+      "code": "SET search_path TO audit, public;",
       "errors": [
         {
           "messageId": "noSetSearchPath",

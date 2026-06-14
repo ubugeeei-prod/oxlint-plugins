@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "plain",
-      "code": "DROP SCHEMA staging;\n"
+      "code": "DROP SCHEMA staging;"
     },
     {
       "name": "restrict",
-      "code": "DROP SCHEMA staging RESTRICT;\n"
+      "code": "DROP SCHEMA staging RESTRICT;"
     }
   ],
   "invalid": [
     {
       "name": "cascade",
-      "code": "DROP SCHEMA staging CASCADE;\n",
+      "code": "DROP SCHEMA staging CASCADE;",
       "errors": [
         {
           "messageId": "noDropSchemaCascade",

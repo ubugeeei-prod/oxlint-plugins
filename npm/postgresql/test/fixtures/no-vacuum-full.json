@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "analyze",
-      "code": "VACUUM ANALYZE users;\n"
+      "code": "VACUUM ANALYZE users;"
     },
     {
       "name": "plain-vacuum",
-      "code": "VACUUM users;\n"
+      "code": "VACUUM users;"
     }
   ],
   "invalid": [
     {
       "name": "full",
-      "code": "VACUUM FULL users;\n",
+      "code": "VACUUM FULL users;",
       "errors": [
         {
           "messageId": "noVacuumFull",

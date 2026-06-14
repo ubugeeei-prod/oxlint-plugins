@@ -9,13 +9,13 @@
   "valid": [
     {
       "name": "qualified",
-      "code": "CREATE TABLE app.users (id bigint PRIMARY KEY);\n"
+      "code": "CREATE TABLE app.users (id bigint PRIMARY KEY);"
     }
   ],
   "invalid": [
     {
       "name": "unqualified",
-      "code": "CREATE TABLE users (id bigint PRIMARY KEY);\n",
+      "code": "CREATE TABLE users (id bigint PRIMARY KEY);",
       "errors": [
         {
           "messageId": "requireSchemaQualifiedTable",

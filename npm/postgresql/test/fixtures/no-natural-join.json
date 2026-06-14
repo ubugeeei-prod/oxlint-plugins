@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "join-on",
-      "code": "SELECT 1 FROM a JOIN b ON a.id = b.id;\n"
+      "code": "SELECT 1 FROM a JOIN b ON a.id = b.id;"
     },
     {
       "name": "join-using",
-      "code": "SELECT 1 FROM a JOIN b USING (id);\n"
+      "code": "SELECT 1 FROM a JOIN b USING (id);"
     }
   ],
   "invalid": [
     {
       "name": "natural-join",
-      "code": "SELECT 1 FROM a NATURAL JOIN b;\n",
+      "code": "SELECT 1 FROM a NATURAL JOIN b;",
       "errors": [
         {
           "messageId": "noNaturalJoin",
@@ -34,7 +34,7 @@
     },
     {
       "name": "natural-left-join",
-      "code": "SELECT 1 FROM a NATURAL LEFT JOIN b;\n",
+      "code": "SELECT 1 FROM a NATURAL LEFT JOIN b;",
       "errors": [
         {
           "messageId": "noNaturalJoin",

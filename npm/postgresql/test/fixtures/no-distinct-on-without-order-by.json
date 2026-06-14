@@ -9,17 +9,17 @@
   "valid": [
     {
       "name": "distinct-on-with-order",
-      "code": "SELECT DISTINCT ON (customer_id) customer_id, amount\nFROM orders\nORDER BY customer_id, created_at DESC;\n"
+      "code": "SELECT DISTINCT ON (customer_id) customer_id, amount\nFROM orders\nORDER BY customer_id, created_at DESC;"
     },
     {
       "name": "plain-distinct",
-      "code": "SELECT DISTINCT customer_id FROM orders;\n"
+      "code": "SELECT DISTINCT customer_id FROM orders;"
     }
   ],
   "invalid": [
     {
       "name": "distinct-on-no-order",
-      "code": "SELECT DISTINCT ON (customer_id) customer_id, amount FROM orders;\n",
+      "code": "SELECT DISTINCT ON (customer_id) customer_id, amount FROM orders;",
       "errors": [
         {
           "messageId": "noDistinctOnWithoutOrderBy",
