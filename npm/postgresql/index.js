@@ -761,6 +761,16 @@ const ruleMeta = Object.freeze({
         '`SET search_path` makes name resolution depend on session state and is a known foot-gun for security-definer functions and CREATE statements. Qualify identifiers with their schema (`audit.events`, `public.users`) instead.',
     },
   },
+  'no-syntax-error': {
+    type: 'problem',
+    description: 'Disallow PostgreSQL syntax errors',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      syntaxError: 'PostgreSQL syntax error: {{message}}',
+    },
+  },
   'no-temporary-table': {
     type: 'suggestion',
     description:

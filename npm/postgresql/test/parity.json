@@ -1,4 +1,11 @@
 {
-  "_doc": "Per-rule upstream-parity enforcement for the eslint-plugin-postgresql port. Levels: 'full' (default for any implemented rule not listed here) enforces exact parity for every captured valid/invalid case; 'off' quarantines a rule whose Rust core still diverges from upstream, registering its cases as skipped until promoted back to 'full'. Rules not yet implemented in Rust are skipped automatically. The end state is zero 'off' entries.",
-  "rules": {}
+  "_doc": "Per-rule upstream-parity enforcement for the eslint-plugin-postgresql port. Levels: 'full' (default for any implemented rule not listed here) enforces exact parity for every captured valid/invalid case; 'off' quarantines a rule whose Rust core still diverges from upstream, registering its cases as skipped until promoted back to 'full'. Rules not yet implemented in Rust are skipped automatically. The end state is zero 'off' entries. A rule may stay 'full' while listing specific `divergentCases` (case name -> reason): documented cross-runtime divergences that are not reproducible (or are more correct) under the native libpg_query port; those individual cases are skipped while every other case stays enforced.",
+  "rules": {
+    "no-syntax-error": {
+      "level": "full",
+      "divergentCases": {
+        "unterminated-string": "Upstream's expected message (\"Unexpected token 'u', \\\"unterminat\\\"... is not valid JSON\") is a V8 JSON.parse artifact: upstream's @libpg-query/parser WASM build emits malformed JSON for an unterminated string literal, and the JS parser surfaces V8's JSON.parse error instead of the SQL error. The native libpg_query port instead reports the real PostgreSQL error (\"unterminated quoted string at or near ...\") at the identical program span. This is a more-correct, non-reproducible cross-runtime difference; all other no-syntax-error cases match upstream exactly."
+      }
+    }
+  }
 }

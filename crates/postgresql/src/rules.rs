@@ -54,6 +54,7 @@ mod no_select_into;
 mod no_select_star;
 mod no_set_not_null;
 mod no_set_search_path;
+mod no_syntax_error;
 mod no_temporary_table;
 mod no_time_type;
 mod no_truncate_cascade;
@@ -231,6 +232,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "no-select-star",
     "no-set-not-null",
     "no-set-search-path",
+    "no-syntax-error",
     "no-temporary-table",
     "no-time-type",
     "no-truncate-cascade",
@@ -518,6 +520,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "no-set-search-path",
         run: no_set_search_path::run,
         uses_parse_error: false,
+    },
+    RuleDef {
+        name: "no-syntax-error",
+        run: no_syntax_error::run,
+        uses_parse_error: true,
     },
     RuleDef {
         name: "no-temporary-table",

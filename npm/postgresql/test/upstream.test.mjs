@@ -39,6 +39,17 @@ function levelFor(rule) {
   return parityRules[rule]?.level ?? 'full';
 }
 
+// A rule may stay at `full` parity while a SPECIFIC captured case is a known,
+// documented cross-runtime divergence (e.g. an error-message string that is an
+// artifact of upstream's JS/WASM environment, not reproducible — or more
+// correct — under the native libpg_query port). Such cases are listed in
+// parity.json under the rule's `divergentCases` and registered as skipped (with
+// the reason) so coverage stays visible; every OTHER case is still enforced.
+function divergentCasesFor(rule) {
+  const cases = parityRules[rule]?.divergentCases;
+  return cases && typeof cases === 'object' ? cases : {};
+}
+
 function label(testCase, index) {
   return `#${index} ${testCase.name ?? JSON.stringify(testCase.code)}`;
 }
@@ -84,7 +95,14 @@ for (const file of fixtureFiles) {
       return;
     }
 
+    const divergent = divergentCasesFor(rule);
+
     for (const [index, testCase] of valid.entries()) {
+      const reason = divergent[testCase.name];
+      if (reason) {
+        it.skip(`valid ${label(testCase, index)} — known divergence: ${reason}`, () => {});
+        continue;
+      }
       it(`valid ${label(testCase, index)}`, () => {
         const { reports } = runRule(rule, testCase);
         expect(reports, `unexpected diagnostics: ${JSON.stringify(reports)}`).toEqual([]);
@@ -92,6 +110,11 @@ for (const file of fixtureFiles) {
     }
 
     for (const [index, testCase] of invalid.entries()) {
+      const reason = divergent[testCase.name];
+      if (reason) {
+        it.skip(`invalid ${label(testCase, index)} — known divergence: ${reason}`, () => {});
+        continue;
+      }
       it(`invalid ${label(testCase, index)}`, () => {
         const { reports, output } = runRule(rule, testCase);
         assertErrors(reports, testCase.errors ?? []);
