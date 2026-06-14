@@ -4967,19 +4967,19 @@
       },
       {
         "name": "consistent-fk-not-valid",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
-        "typeAware": true,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule consistent-fk-not-valid."
+        "notes": "Rust port validated against upstream test fixtures."
       },
       {
         "name": "consistent-identity-over-serial",

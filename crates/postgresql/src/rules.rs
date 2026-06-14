@@ -7,6 +7,7 @@ mod consistent_as_for_column_alias;
 mod consistent_between_over_and;
 mod consistent_create_or_replace;
 mod consistent_explicit_inner_join;
+mod consistent_fk_not_valid;
 mod consistent_identity_over_serial;
 mod consistent_reindex_concurrently;
 mod no_add_check_constraint_without_not_valid;
@@ -171,6 +172,7 @@ pub const IMPLEMENTED_RULE_NAMES: &[&str] = &[
     "consistent-between-over-and",
     "consistent-create-or-replace",
     "consistent-explicit-inner-join",
+    "consistent-fk-not-valid",
     "consistent-identity-over-serial",
     "consistent-reindex-concurrently",
     "no-add-check-constraint-without-not-valid",
@@ -257,6 +259,11 @@ pub(crate) const REGISTRY: &[RuleDef] = &[
         name: "consistent-explicit-inner-join",
         run: consistent_explicit_inner_join::run,
         uses_parse_error: true,
+    },
+    RuleDef {
+        name: "consistent-fk-not-valid",
+        run: consistent_fk_not_valid::run,
+        uses_parse_error: false,
     },
     RuleDef {
         name: "consistent-identity-over-serial",
