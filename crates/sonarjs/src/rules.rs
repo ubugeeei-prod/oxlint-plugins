@@ -62,6 +62,7 @@ mod no_useless_increment;
 mod non_existent_operator;
 mod prefer_default_last;
 mod prefer_immediate_return;
+mod prefer_promise_shorthand;
 mod prefer_single_boolean_return;
 mod prefer_while;
 mod single_char_in_character_classes;

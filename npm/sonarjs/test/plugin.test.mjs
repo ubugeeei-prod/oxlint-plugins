@@ -161,6 +161,7 @@ describe('sonarjs plugin shape', () => {
       'too-many-break-or-continue-in-loop',
       'code-eval',
       'void-use',
+      'prefer-promise-shorthand',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -228,6 +229,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-nested-functions']).toBe('object');
     expect(typeof plugin.rules['too-many-break-or-continue-in-loop']).toBe('object');
     expect(typeof plugin.rules['code-eval']).toBe('object');
+    expect(typeof plugin.rules['prefer-promise-shorthand']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -303,6 +305,7 @@ describe('sonarjs plugin shape', () => {
       'error',
     );
     expect(plugin.configs.recommended.rules['sonarjs/code-eval']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/prefer-promise-shorthand']).toBe('error');
   });
 });
 
@@ -1564,5 +1567,62 @@ describe('void-use rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(void-use)');
+  });
+});
+
+describe('prefer-promise-shorthand rule', () => {
+  it('reports prefer-promise-shorthand for arrow expression body calling resolve', () => {
+    const source = 'const p = new Promise((resolve) => resolve(42));';
+    const reports = runRule('prefer-promise-shorthand', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('preferShorthand');
+  });
+
+  it('reports prefer-promise-shorthand for arrow expression body calling resolve with no arg', () => {
+    const source = 'const p = new Promise((resolve) => resolve());';
+    const reports = runRule('prefer-promise-shorthand', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('preferShorthand');
+  });
+
+  it('reports prefer-promise-shorthand for two-param arrow calling reject', () => {
+    const source = 'const p = new Promise((resolve, reject) => reject(err));';
+    const reports = runRule('prefer-promise-shorthand', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('preferShorthand');
+  });
+
+  it('reports prefer-promise-shorthand for function expression block body', () => {
+    const source = 'const p = new Promise(function (resolve) { resolve(1); });';
+    const reports = runRule('prefer-promise-shorthand', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('preferShorthand');
+  });
+
+  it('does not report when the executor has multiple statements', () => {
+    const source = 'const p = new Promise((resolve, reject) => { doStuff(); resolve(1); });';
+    const reports = runRule('prefer-promise-shorthand', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the call is not to resolve or reject', () => {
+    const source = 'const p = new Promise((resolve) => setTimeout(resolve, 100));';
+    const reports = runRule('prefer-promise-shorthand', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the executor is not an inline function', () => {
+    const source = 'const p = new Promise(executor);';
+    const reports = runRule('prefer-promise-shorthand', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports prefer-promise-shorthand through the CLI', () => {
+    const source = 'const p = new Promise((resolve) => resolve(42));';
+    const result = runOxlint('prefer-promise-shorthand', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(prefer-promise-shorthand)');
   });
 });

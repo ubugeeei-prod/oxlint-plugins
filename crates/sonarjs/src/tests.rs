@@ -3366,3 +3366,87 @@ fn does_not_report_void_use_for_unary_minus() {
     let diagnostics = scan("void-use", "const n = -x;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_prefer_promise_shorthand_arrow_expression_resolve() {
+    let source = "const p = new Promise((resolve) => resolve(42));";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "prefer-promise-shorthand");
+    assert_eq!(diagnostics[0].message_id, "preferShorthand");
+}
+
+#[test]
+fn reports_prefer_promise_shorthand_arrow_expression_resolve_no_arg() {
+    let source = "const p = new Promise((resolve) => resolve());";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferShorthand");
+}
+
+#[test]
+fn reports_prefer_promise_shorthand_two_params_reject() {
+    let source = "const p = new Promise((resolve, reject) => reject(err));";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferShorthand");
+}
+
+#[test]
+fn reports_prefer_promise_shorthand_function_expression() {
+    let source = "const p = new Promise(function (resolve) { resolve(1); });";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferShorthand");
+}
+
+#[test]
+fn reports_prefer_promise_shorthand_arrow_block_body() {
+    let source = "const p = new Promise((resolve) => { resolve(1); });";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferShorthand");
+}
+
+#[test]
+fn reports_prefer_promise_shorthand_arrow_block_body_return() {
+    let source = "const p = new Promise((resolve) => { return resolve(1); });";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferShorthand");
+}
+
+#[test]
+fn does_not_report_prefer_promise_shorthand_multiple_statements() {
+    let source = "const p = new Promise((resolve, reject) => { doStuff(); resolve(1); });";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_promise_shorthand_call_not_resolve() {
+    let source = "const p = new Promise((resolve) => setTimeout(resolve, 100));";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_promise_shorthand_two_args_to_resolve() {
+    let source = "const p = new Promise((resolve) => resolve(1, 2));";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_promise_shorthand_executor_is_identifier() {
+    let source = "const p = new Promise(executor);";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_prefer_promise_shorthand_arg_is_other_param() {
+    let source = "const p = new Promise((resolve, reject) => resolve(reject));";
+    let diagnostics = scan("prefer-promise-shorthand", source);
+    assert!(diagnostics.is_empty());
+}
