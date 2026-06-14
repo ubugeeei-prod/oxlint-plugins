@@ -43,6 +43,7 @@ const expectedRuleNames = [
   'no-tab',
   'fixme-tag',
   'todo-tag',
+  'no-sonar-comments',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1537,6 +1538,32 @@ describe('sonarjs native API', () => {
   it('does not report todo-tag for source with no comments', () => {
     const source = 'const a = 1;';
     const diagnostics = scan('todo-tag', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-sonar-comments for a comment containing NOSONAR', () => {
+    const source = '// NOSONAR suppress this';
+    const diagnostics = scan('no-sonar-comments', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-sonar-comments');
+    expect(diagnostics[0].messageId).toBe('noSonarComments');
+  });
+
+  it('reports no-sonar-comments for a block comment containing NOSONAR', () => {
+    const source = '/* NOSONAR */';
+    const diagnostics = scan('no-sonar-comments', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-sonar-comments for a plain comment', () => {
+    const source = '// just a comment';
+    const diagnostics = scan('no-sonar-comments', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-sonar-comments for source with no comments', () => {
+    const source = 'const a = 1;';
+    const diagnostics = scan('no-sonar-comments', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

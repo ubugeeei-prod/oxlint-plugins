@@ -1897,3 +1897,33 @@ fn does_not_report_todo_tag_for_source_with_no_comments() {
     let diagnostics = scan("todo-tag", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_sonar_comments_for_comment_containing_nosonar() {
+    let source = "// NOSONAR suppress this";
+    let diagnostics = scan("no-sonar-comments", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-sonar-comments");
+    assert_eq!(diagnostics[0].message_id, "noSonarComments");
+}
+
+#[test]
+fn reports_no_sonar_comments_for_block_comment_containing_nosonar() {
+    let source = "/* NOSONAR */";
+    let diagnostics = scan("no-sonar-comments", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_sonar_comments_for_plain_comment() {
+    let source = "// just a comment";
+    let diagnostics = scan("no-sonar-comments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_sonar_comments_for_source_with_no_comments() {
+    let source = "const a = 1;";
+    let diagnostics = scan("no-sonar-comments", source);
+    assert!(diagnostics.is_empty());
+}

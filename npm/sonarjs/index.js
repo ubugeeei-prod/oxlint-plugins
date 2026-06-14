@@ -157,6 +157,9 @@ const messages = Object.freeze({
   'todo-tag': {
     todoTag: 'Complete the task tracked by this TODO-tagged comment.',
   },
+  'no-sonar-comments': {
+    noSonarComments: 'Remove this NOSONAR comment and fix the underlying issue.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -232,6 +235,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow FIXME-tagged comments; a FIXME marks code that is known-broken and must be addressed before shipping',
   'todo-tag':
     'Disallow TODO-tagged comments; a TODO marks incomplete work that should be tracked and completed',
+  'no-sonar-comments':
+    'Disallow NOSONAR comments; they suppress analysis and can hide real issues that should be fixed',
 });
 
 const ruleTypes = Object.freeze({
@@ -275,6 +280,7 @@ const ruleTypes = Object.freeze({
   'no-tab': 'suggestion',
   'fixme-tag': 'suggestion',
   'todo-tag': 'suggestion',
+  'no-sonar-comments': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -318,6 +324,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-tab': 'error',
   'fixme-tag': 'error',
   'todo-tag': 'error',
+  'no-sonar-comments': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
