@@ -36,6 +36,7 @@ const expectedRuleNames = [
   'no-redundant-optional',
   'prefer-immediate-return',
   'no-redundant-jump',
+  'no-primitive-wrappers',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1244,6 +1245,46 @@ describe('sonarjs native API', () => {
   it('does not report no-redundant-jump for a labeled continue', () => {
     const source = 'outer: for (;;) { foo(); continue outer; }';
     const diagnostics = scan('no-redundant-jump', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-primitive-wrappers for new Number(1)', () => {
+    const source = 'const n = new Number(1);';
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-primitive-wrappers');
+    expect(diagnostics[0].messageId).toBe('primitiveWrapper');
+  });
+
+  it('reports no-primitive-wrappers for new String("x")', () => {
+    const source = "const s = new String('x');";
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('primitiveWrapper');
+  });
+
+  it('reports no-primitive-wrappers for new Boolean(false)', () => {
+    const source = 'const b = new Boolean(false);';
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('primitiveWrapper');
+  });
+
+  it('does not report no-primitive-wrappers for Number(1) (call, no new)', () => {
+    const source = 'const n = Number(1);';
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-primitive-wrappers for new Array(3) (not a primitive wrapper)', () => {
+    const source = 'const a = new Array(3);';
+    const diagnostics = scan('no-primitive-wrappers', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-primitive-wrappers for new Foo() (unknown constructor)', () => {
+    const source = 'const f = new Foo();';
+    const diagnostics = scan('no-primitive-wrappers', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

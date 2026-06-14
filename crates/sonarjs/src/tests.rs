@@ -1548,3 +1548,50 @@ fn does_not_report_redundant_jump_for_non_block_loop_body() {
     let diagnostics = scan("no-redundant-jump", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_primitive_wrappers_for_new_number() {
+    let source = "const n = new Number(1);";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-primitive-wrappers");
+    assert_eq!(diagnostics[0].message_id, "primitiveWrapper");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_no_primitive_wrappers_for_new_string() {
+    let source = "const s = new String('x');";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "primitiveWrapper");
+}
+
+#[test]
+fn reports_no_primitive_wrappers_for_new_boolean() {
+    let source = "const b = new Boolean(false);";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "primitiveWrapper");
+}
+
+#[test]
+fn does_not_report_no_primitive_wrappers_for_call_without_new() {
+    let source = "const n = Number(1);";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_primitive_wrappers_for_new_array() {
+    let source = "const a = new Array(3);";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_primitive_wrappers_for_unknown_constructor() {
+    let source = "const f = new Foo();";
+    let diagnostics = scan("no-primitive-wrappers", source);
+    assert!(diagnostics.is_empty());
+}
