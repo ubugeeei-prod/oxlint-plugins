@@ -443,6 +443,17 @@ const ruleMeta = Object.freeze({
         'Table-level CHECK / UNIQUE / FOREIGN KEY / EXCLUSION constraints should be named with `CONSTRAINT <name>`. Auto-generated names are unpredictable across environments and make later `DROP CONSTRAINT` / `ALTER CONSTRAINT` migrations brittle.',
     },
   },
+  'require-primary-key': {
+    type: 'suggestion',
+    description: 'Require every `CREATE TABLE` to have a PRIMARY KEY',
+    recommended: true,
+    fixable: undefined,
+    schema: [],
+    messages: {
+      missingPrimaryKey:
+        'Table `{{table}}` has no PRIMARY KEY. Tables without one cannot be replicated cleanly, cannot be sharded predictably, and break almost every ORM. Add one as either a column constraint or a table-level constraint.',
+    },
+  },
   'require-where-in-delete': {
     type: 'problem',
     description: 'Require a WHERE clause in DELETE statements',
