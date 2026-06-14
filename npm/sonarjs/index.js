@@ -181,6 +181,10 @@ const messages = Object.freeze({
   'no-nested-incdec': {
     nestedIncDec: 'Extract this increment or decrement operator into a separate statement.',
   },
+  'no-useless-increment': {
+    uselessIncrement:
+      'Remove this useless increment or decrement; the updated value is immediately discarded.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -270,6 +274,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow assignments inside sub-expressions such as loop and branch conditions or chained assignments',
   'no-nested-incdec':
     'Disallow increment and decrement operators used as a function or constructor call argument',
+  'no-useless-increment':
+    'Disallow assigning a postfix increment or decrement of a variable back to that same variable',
 });
 
 const ruleTypes = Object.freeze({
@@ -320,6 +326,7 @@ const ruleTypes = Object.freeze({
   'no-same-line-conditional': 'suggestion',
   'no-nested-assignment': 'suggestion',
   'no-nested-incdec': 'suggestion',
+  'no-useless-increment': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -370,6 +377,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-same-line-conditional': 'error',
   'no-nested-assignment': 'error',
   'no-nested-incdec': 'error',
+  'no-useless-increment': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

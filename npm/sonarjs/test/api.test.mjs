@@ -50,6 +50,7 @@ const expectedRuleNames = [
   'no-same-line-conditional',
   'no-nested-assignment',
   'no-nested-incdec',
+  'no-useless-increment',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1771,6 +1772,38 @@ describe('sonarjs native API', () => {
   it('does not report no-nested-incdec for the update clause of a for loop', () => {
     const source = 'for (let i = 0; i < n; i++) {\n  use(i);\n}';
     const diagnostics = scan('no-nested-incdec', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-useless-increment for a postfix self-increment assignment', () => {
+    const source = 'i = i++;';
+    const diagnostics = scan('no-useless-increment', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-useless-increment');
+    expect(diagnostics[0].messageId).toBe('uselessIncrement');
+  });
+
+  it('reports no-useless-increment for a postfix self-decrement assignment', () => {
+    const source = 'j = j--;';
+    const diagnostics = scan('no-useless-increment', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report no-useless-increment for a prefix increment assignment', () => {
+    const source = 'i = ++i;';
+    const diagnostics = scan('no-useless-increment', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-useless-increment for an increment of a different variable', () => {
+    const source = 'i = j++;';
+    const diagnostics = scan('no-useless-increment', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-useless-increment for a standalone increment statement', () => {
+    const source = 'i++;';
+    const diagnostics = scan('no-useless-increment', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

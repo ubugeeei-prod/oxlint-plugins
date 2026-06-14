@@ -2169,3 +2169,40 @@ fn does_not_report_no_nested_incdec_for_for_loop_update() {
     let diagnostics = scan("no-nested-incdec", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_useless_increment_for_postfix_self_increment() {
+    let source = "i = i++;";
+    let diagnostics = scan("no-useless-increment", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-useless-increment");
+    assert_eq!(diagnostics[0].message_id, "uselessIncrement");
+}
+
+#[test]
+fn reports_no_useless_increment_for_postfix_self_decrement() {
+    let source = "j = j--;";
+    let diagnostics = scan("no-useless-increment", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_no_useless_increment_for_prefix_increment() {
+    let source = "i = ++i;";
+    let diagnostics = scan("no-useless-increment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_increment_for_different_variable() {
+    let source = "i = j++;";
+    let diagnostics = scan("no-useless-increment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_useless_increment_for_standalone_increment() {
+    let source = "i++;";
+    let diagnostics = scan("no-useless-increment", source);
+    assert!(diagnostics.is_empty());
+}

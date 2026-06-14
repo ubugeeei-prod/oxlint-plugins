@@ -42,6 +42,7 @@ mod no_sonar_comments;
 mod no_tab;
 mod no_unthrown_error;
 mod no_useless_catch;
+mod no_useless_increment;
 mod non_existent_operator;
 mod prefer_default_last;
 mod prefer_immediate_return;
