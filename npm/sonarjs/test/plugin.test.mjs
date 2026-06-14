@@ -172,6 +172,7 @@ describe('sonarjs plugin shape', () => {
       'no-for-in-iterable',
       'no-associative-arrays',
       'bitwise-operators',
+      'no-same-argument-assert',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -250,6 +251,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-for-in-iterable']).toBe('object');
     expect(typeof plugin.rules['no-associative-arrays']).toBe('object');
     expect(typeof plugin.rules['bitwise-operators']).toBe('object');
+    expect(typeof plugin.rules['no-same-argument-assert']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -336,6 +338,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-for-in-iterable']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-associative-arrays']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/bitwise-operators']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-same-argument-assert']).toBe('error');
   });
 });
 
@@ -2106,5 +2109,48 @@ describe('bitwise-operators rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(bitwise-operators)');
+  });
+});
+
+describe('no-same-argument-assert rule', () => {
+  it('reports assert.equal called with the same argument twice', () => {
+    const source = 'assert.equal(x, x);';
+    const reports = runRule('no-same-argument-assert', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('sameArgumentAssert');
+  });
+
+  it('reports assert.strictEqual called with the same member expression twice', () => {
+    const source = 'assert.strictEqual(foo.bar, foo.bar);';
+    const reports = runRule('no-same-argument-assert', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('sameArgumentAssert');
+  });
+
+  it('does not report assert.equal called with different arguments', () => {
+    const source = 'assert.equal(x, y);';
+    const reports = runRule('no-same-argument-assert', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a generic call with repeated arguments', () => {
+    const source = 'foo(x, x);';
+    const reports = runRule('no-same-argument-assert', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an assertion with a single argument', () => {
+    const source = 'assert.ok(x);';
+    const reports = runRule('no-same-argument-assert', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-same-argument-assert through the CLI', () => {
+    const source = 'assert.equal(x, x);';
+    const result = runOxlint('no-same-argument-assert', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-same-argument-assert)');
   });
 });

@@ -287,6 +287,10 @@ const messages = Object.freeze({
   'bitwise-operators': {
     bitwiseOperator: 'Review this use of a bitwise operator; "&&" or "||" may have been intended.',
   },
+  'no-same-argument-assert': {
+    sameArgumentAssert:
+      'Replace this assertion; the actual and expected arguments are the same expression.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -441,6 +445,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow assigning non-numeric keys to arrays; use an object or a Map instead',
   'bitwise-operators':
     'Disallow a bitwise "&" or "|" whose operand is a boolean-valued expression (comparison, logical, "!", or boolean literal), which is likely a typo for "&&" or "||"',
+  'no-same-argument-assert':
+    'Disallow a Chai "assert.<method>(...)" call whose first two arguments are the same source expression, since it compares a value to itself and is trivially true',
 });
 
 const ruleTypes = Object.freeze({
@@ -522,6 +528,7 @@ const ruleTypes = Object.freeze({
   'no-for-in-iterable': 'suggestion',
   'no-associative-arrays': 'suggestion',
   'bitwise-operators': 'suggestion',
+  'no-same-argument-assert': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -603,6 +610,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-for-in-iterable': 'error',
   'no-associative-arrays': 'error',
   'bitwise-operators': 'error',
+  'no-same-argument-assert': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
