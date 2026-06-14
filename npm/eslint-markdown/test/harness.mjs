@@ -110,6 +110,9 @@ export function runRule(ruleName, testCase) {
     options: testCase.options ?? [],
     sourceCode,
     filename: testCase.filename ?? 'file.md',
+    // Mirror the upstream RuleTester case's languageOptions (e.g. `{ math: true }`),
+    // which the adapter maps onto the scan options.
+    languageOptions: testCase.languageOptions,
     report(descriptor) {
       descriptors.push(descriptor);
     },

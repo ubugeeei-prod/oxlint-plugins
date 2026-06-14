@@ -9,10 +9,6 @@
       "level": "off",
       "note": "False positives on URLs inside link/definition labels, HTML attributes, and existing autolinks."
     },
-    "no-missing-label-refs": {
-      "level": "off",
-      "note": "Broad divergence in shortcut/collapsed reference resolution."
-    },
     "no-missing-link-fragments": {
       "level": "off",
       "note": "Broad divergence in heading-anchor slugging and fragment matching."

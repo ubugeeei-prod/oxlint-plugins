@@ -339,6 +339,10 @@ function diagnosticsForRule(context, ruleName) {
   }
 
   const scanOptions = optionsForRule(ruleName, context.options?.[0]);
+  // `languageOptions.math` enables `$...$` math parsing (off by default upstream).
+  if (context.languageOptions?.math === true) {
+    scanOptions.math = true;
+  }
   const cacheKey = `${ruleName}\0${JSON.stringify(scanOptions)}`;
   let diagnostics = bySource.get(cacheKey);
   if (!diagnostics) {
