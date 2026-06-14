@@ -4681,3 +4681,66 @@ fn does_not_report_export_all_reexport() {
     let diagnostics = scan("no-wildcard-import", source);
     assert!(diagnostics.is_empty());
 }
+
+// misplaced-loop-counter tests
+
+#[test]
+fn reports_misplaced_loop_counter_increment() {
+    let source = "for (let i = 0; i < 10; j++) {}";
+    let diagnostics = scan("misplaced-loop-counter", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "misplaced-loop-counter");
+    assert_eq!(diagnostics[0].message_id, "misplacedCounter");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_misplaced_loop_counter_compound_assign() {
+    let source = "for (let i = 0; i < 10; k += 1) {}";
+    let diagnostics = scan("misplaced-loop-counter", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "misplacedCounter");
+}
+
+#[test]
+fn reports_misplaced_loop_counter_sequence_all_disjoint() {
+    let source = "for (let i = 0; i < 10; j++, k++) {}";
+    let diagnostics = scan("misplaced-loop-counter", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "misplacedCounter");
+}
+
+#[test]
+fn does_not_report_misplaced_loop_counter_matching_update() {
+    let source = "for (let i = 0; i < 10; i++) {}";
+    let diagnostics = scan("misplaced-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_misplaced_loop_counter_sequence_overlap() {
+    let source = "for (let i = 0, j = 0; i < 10 && j < 5; i++, j++) {}";
+    let diagnostics = scan("misplaced-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_misplaced_loop_counter_member_condition() {
+    let source = "for (let i = 0; arr[i] < 10; i++) {}";
+    let diagnostics = scan("misplaced-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_misplaced_loop_counter_no_test_or_update() {
+    let source = "for (;;) {}";
+    let diagnostics = scan("misplaced-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_misplaced_loop_counter_call_condition_no_identifier() {
+    let source = "for (let i = 0; cond(); i++) {}";
+    let diagnostics = scan("misplaced-loop-counter", source);
+    assert!(diagnostics.is_empty());
+}

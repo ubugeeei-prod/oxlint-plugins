@@ -323,6 +323,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_for_statement(&mut self, it: &ForStatement<'a>) {
         self.check_prefer_while(it);
         self.check_for_loop_increment_sign(it);
+        self.check_misplaced_loop_counter(it);
         self.check_no_equals_in_for_termination(it);
         self.check_redundant_continue(&it.body);
         if let Some(test) = &it.test {

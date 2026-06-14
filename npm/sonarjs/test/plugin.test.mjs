@@ -181,6 +181,7 @@ describe('sonarjs plugin shape', () => {
       'array-callback-without-return',
       'no-wildcard-import',
       'updated-loop-counter',
+      'misplaced-loop-counter',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -268,6 +269,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['array-callback-without-return']).toBe('object');
     expect(typeof plugin.rules['no-wildcard-import']).toBe('object');
     expect(typeof plugin.rules['updated-loop-counter']).toBe('object');
+    expect(typeof plugin.rules['misplaced-loop-counter']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -363,6 +365,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/array-callback-without-return']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-wildcard-import']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/updated-loop-counter']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/misplaced-loop-counter']).toBe('error');
   });
 });
 
@@ -2615,5 +2618,54 @@ describe('updated-loop-counter rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(updated-loop-counter)');
+  });
+});
+
+describe('misplaced-loop-counter rule', () => {
+  it('reports an update that increments a variable absent from the condition', () => {
+    const source = 'for (let i = 0; i < 10; j++) {}';
+    const reports = runRule('misplaced-loop-counter', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('misplacedCounter');
+  });
+
+  it('reports a compound assignment to a non-condition variable', () => {
+    const source = 'for (let i = 0; i < 10; k += 1) {}';
+    const reports = runRule('misplaced-loop-counter', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('misplacedCounter');
+  });
+
+  it('does not report when the update advances the condition counter', () => {
+    const source = 'for (let i = 0; i < 10; i++) {}';
+    const reports = runRule('misplaced-loop-counter', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a comma update overlapping the condition', () => {
+    const source = 'for (let i = 0, j = 0; i < 10 && j < 5; i++, j++) {}';
+    const reports = runRule('misplaced-loop-counter', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the condition uses the counter inside a member access', () => {
+    const source = 'for (let i = 0; arr[i] < 10; i++) {}';
+    const reports = runRule('misplaced-loop-counter', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a loop with no test or update', () => {
+    const source = 'for (;;) {}';
+    const reports = runRule('misplaced-loop-counter', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports misplaced-loop-counter through the CLI', () => {
+    const source = 'for (let i = 0; i < 10; j++) {}';
+    const result = runOxlint('misplaced-loop-counter', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(misplaced-loop-counter)');
   });
 });

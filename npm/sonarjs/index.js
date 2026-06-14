@@ -319,6 +319,10 @@ const messages = Object.freeze({
     noCounterUpdate:
       "Do not update the loop counter inside the loop body; use the for-statement's update clause.",
   },
+  'misplaced-loop-counter': {
+    misplacedCounter:
+      "This loop's update clause does not modify any variable checked in its condition.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -491,6 +495,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow wildcard (namespace) imports such as \'import * as ns from "mod"\'; import only the specific members you need to keep code readable and tree-shakeable',
   'updated-loop-counter':
     'Disallow updating a classic "for" loop counter inside the loop body (reassignment, compound assignment, or increment/decrement); advance the counter only in the update clause',
+  'misplaced-loop-counter':
+    'Disallow a classic "for" loop whose update clause modifies only variable(s) absent from the loop condition (e.g. "i < 10" with "j++"), since the tested counter is never advanced by the header',
 });
 
 const ruleTypes = Object.freeze({
@@ -581,6 +587,7 @@ const ruleTypes = Object.freeze({
   'no-parameter-reassignment': 'suggestion',
   'no-wildcard-import': 'suggestion',
   'updated-loop-counter': 'suggestion',
+  'misplaced-loop-counter': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -671,6 +678,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-parameter-reassignment': 'error',
   'no-wildcard-import': 'error',
   'updated-loop-counter': 'error',
+  'misplaced-loop-counter': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
