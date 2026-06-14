@@ -1349,3 +1349,49 @@ fn does_not_report_no_useless_catch_for_destructured_param() {
     let diagnostics = scan("no-useless-catch", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_redundant_optional_for_union_with_undefined() {
+    let source = "interface I { a?: string | undefined; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-redundant-optional");
+    assert_eq!(diagnostics[0].message_id, "redundantOptional");
+}
+
+#[test]
+fn reports_no_redundant_optional_for_undefined_type_directly() {
+    let source = "interface I { b?: undefined; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantOptional");
+}
+
+#[test]
+fn reports_no_redundant_optional_for_multi_member_union_with_undefined() {
+    let source = "interface I { c?: number | string | undefined; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantOptional");
+}
+
+#[test]
+fn does_not_report_no_redundant_optional_when_no_undefined_in_type() {
+    let source = "interface I { a?: string; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_redundant_optional_for_non_optional_property_with_undefined() {
+    let source = "interface I { b: string | undefined; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_redundant_optional_for_optional_property_with_null_not_undefined() {
+    let source = "interface I { c?: string | null; }";
+    let diagnostics = scan("no-redundant-optional", source);
+    assert!(diagnostics.is_empty());
+}

@@ -33,6 +33,7 @@ const expectedRuleNames = [
   'prefer-default-last',
   'no-inverted-boolean-check',
   'no-useless-catch',
+  'no-redundant-optional',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1095,6 +1096,46 @@ describe('sonarjs native API', () => {
   it('does not report no-useless-catch when catch body has no throw', () => {
     const source = 'try { f(); } catch (e) { handle(e); }';
     const diagnostics = scan('no-useless-catch', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-redundant-optional for optional property with union including undefined', () => {
+    const source = 'interface I { a?: string | undefined; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-redundant-optional');
+    expect(diagnostics[0].messageId).toBe('redundantOptional');
+  });
+
+  it('reports no-redundant-optional for optional property typed as undefined directly', () => {
+    const source = 'interface I { b?: undefined; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantOptional');
+  });
+
+  it('reports no-redundant-optional for optional property with multi-member union including undefined', () => {
+    const source = 'interface I { c?: number | string | undefined; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantOptional');
+  });
+
+  it('does not report no-redundant-optional for optional property without undefined in type', () => {
+    const source = 'interface I { a?: string; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-redundant-optional for non-optional property with undefined in type', () => {
+    const source = 'interface I { b: string | undefined; }';
+    const diagnostics = scan('no-redundant-optional', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-redundant-optional for optional property with null but not undefined', () => {
+    const source = 'interface I { c?: string | null; }';
+    const diagnostics = scan('no-redundant-optional', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
