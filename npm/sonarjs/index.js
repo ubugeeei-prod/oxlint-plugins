@@ -274,6 +274,9 @@ const messages = Object.freeze({
       'Move this array "reverse" operation to a separate statement or operate on a copy; ' +
       'it mutates the original array in place.',
   },
+  'no-alphabetical-sort': {
+    provideCompareFunction: 'Provide a compare function to avoid sorting elements alphabetically.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -420,6 +423,8 @@ const ruleDescriptions = Object.freeze({
   'no-misleading-array-reverse':
     'Disallow using the return value of the in-place array-mutating methods ' +
     '"reverse" and "sort" as if they returned a new array',
+  'no-alphabetical-sort':
+    'Require a compare function when calling "sort" or "toSorted" on an array',
 });
 
 const ruleTypes = Object.freeze({
@@ -497,6 +502,7 @@ const ruleTypes = Object.freeze({
   'single-character-alternation': 'suggestion',
   'empty-string-repetition': 'suggestion',
   'no-misleading-array-reverse': 'suggestion',
+  'no-alphabetical-sort': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -574,6 +580,7 @@ const recommendedRuleConfig = Object.freeze({
   'single-character-alternation': 'error',
   'empty-string-repetition': 'error',
   'no-misleading-array-reverse': 'error',
+  'no-alphabetical-sort': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -3881,3 +3881,70 @@ fn does_not_report_misleading_array_reverse_when_variable_reassigned() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_alphabetical_sort_on_array_literal() {
+    let diagnostics = scan("no-alphabetical-sort", "[3, 1, 2].sort();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-alphabetical-sort");
+    assert_eq!(diagnostics[0].message_id, "provideCompareFunction");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_alphabetical_sort_on_resolved_array_variable() {
+    let diagnostics = scan("no-alphabetical-sort", "const a = [3, 1, 2];\na.sort();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "provideCompareFunction");
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+}
+
+#[test]
+fn reports_alphabetical_to_sorted_on_array_literal() {
+    let diagnostics = scan("no-alphabetical-sort", "[3, 1, 2].toSorted();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "provideCompareFunction");
+}
+
+#[test]
+fn does_not_report_alphabetical_sort_with_compare_function() {
+    let diagnostics = scan("no-alphabetical-sort", "[3, 1, 2].sort((x, y) => x - y);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_alphabetical_sort_on_non_array_receiver() {
+    let diagnostics = scan(
+        "no-alphabetical-sort",
+        "const obj = { sort() {} };\nobj.sort();",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_alphabetical_sort_on_unresolvable_receiver() {
+    let diagnostics = scan("no-alphabetical-sort", "function f(a) {\n  a.sort();\n}");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_alphabetical_sort_on_non_sort_call() {
+    let diagnostics = scan("no-alphabetical-sort", "[3, 1, 2].map((x) => x);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_alphabetical_sort_on_string_literal_array() {
+    // Alphabetical order is the expected sort for strings, so a string-only
+    // array literal is exempt (matches the type-aware upstream behaviour).
+    let diagnostics = scan("no-alphabetical-sort", "['b', 'a', 'c'].sort();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_alphabetical_sort_on_mixed_string_and_number_array() {
+    // A non-string element keeps the missing comparator a likely defect.
+    let diagnostics = scan("no-alphabetical-sort", "['b', 1].sort();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "provideCompareFunction");
+}

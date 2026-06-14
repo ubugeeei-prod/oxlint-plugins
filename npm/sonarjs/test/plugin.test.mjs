@@ -168,6 +168,7 @@ describe('sonarjs plugin shape', () => {
       'single-character-alternation',
       'empty-string-repetition',
       'no-misleading-array-reverse',
+      'no-alphabetical-sort',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -242,6 +243,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['single-character-alternation']).toBe('object');
     expect(typeof plugin.rules['empty-string-repetition']).toBe('object');
     expect(typeof plugin.rules['no-misleading-array-reverse']).toBe('object');
+    expect(typeof plugin.rules['no-alphabetical-sort']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -324,6 +326,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/single-character-alternation']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/empty-string-repetition']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-misleading-array-reverse']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-alphabetical-sort']).toBe('error');
   });
 });
 
@@ -1927,5 +1930,49 @@ describe('no-misleading-array-reverse rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-misleading-array-reverse)');
+  });
+});
+
+describe('no-alphabetical-sort rule', () => {
+  it('reports sort() with no compare function on an array literal', () => {
+    const source = '[3, 1, 2].sort();';
+    const reports = runRule('no-alphabetical-sort', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('provideCompareFunction');
+  });
+
+  it('reports sort() with no compare function on a known array variable', () => {
+    const source = 'const a = [3, 1, 2];\na.sort();';
+    const reports = runRule('no-alphabetical-sort', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('provideCompareFunction');
+  });
+
+  it('reports toSorted() with no compare function on an array literal', () => {
+    const source = '[3, 1, 2].toSorted();';
+    const reports = runRule('no-alphabetical-sort', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('provideCompareFunction');
+  });
+
+  it('does not report sort() with a compare function', () => {
+    const source = '[3, 1, 2].sort((x, y) => x - y);';
+    const reports = runRule('no-alphabetical-sort', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report sort() on a non-array receiver', () => {
+    const source = 'const obj = { sort() {} };\nobj.sort();';
+    const reports = runRule('no-alphabetical-sort', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-alphabetical-sort through the CLI', () => {
+    const source = '[3, 1, 2].sort();';
+    const result = runOxlint('no-alphabetical-sort', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-alphabetical-sort)');
   });
 });

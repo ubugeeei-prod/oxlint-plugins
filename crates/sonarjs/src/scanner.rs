@@ -49,8 +49,9 @@ pub(crate) struct Scanner<'a> {
     pub(crate) options: &'a SonarjsOptions,
     pub(crate) diagnostics: SmallVec<[Diagnostic; 32]>,
     /// Scoping information from semantic analysis, present only when a rule that
-    /// needs reference resolution (currently `no-misleading-array-reverse`) is
-    /// enabled. Used to resolve an identifier use to its declaration symbol.
+    /// needs reference resolution (`no-misleading-array-reverse`,
+    /// `no-alphabetical-sort`) is enabled. Used to resolve an identifier use to
+    /// its declaration symbol.
     pub(crate) scoping: Option<&'a Scoping>,
     /// AST nodes from semantic analysis, paired with `scoping`. Used to look up
     /// a symbol's declaration site (e.g. the `VariableDeclarator` initialiser).
@@ -426,6 +427,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_nested_incdec_call(it);
         self.check_code_eval_call(it);
         self.check_pseudo_random(it);
+        self.check_no_alphabetical_sort(it);
         self.record_iife_callee(&it.callee);
         walk::walk_call_expression(self, it);
     }

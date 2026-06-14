@@ -24,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 74] = [
+pub const RULE_NAMES: [&str; 75] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -99,6 +99,7 @@ pub const RULE_NAMES: [&str; 74] = [
     "single-character-alternation",
     "empty-string-repetition",
     "no-misleading-array-reverse",
+    "no-alphabetical-sort",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -123,11 +124,13 @@ pub fn scan_sonarjs(
     }
 
     // Semantic analysis resolves identifier references and declaration sites,
-    // which only `no-misleading-array-reverse` needs (to prove that a receiver
-    // identifier refers to an array). Build it only when that rule is active so
-    // the other rules don't pay for an extra AST walk. Benign semantic errors
-    // (e.g. redeclarations) do not block scanning.
-    let needs_semantic = options.has_rule("no-misleading-array-reverse");
+    // which `no-misleading-array-reverse` and `no-alphabetical-sort` need (to
+    // prove that a receiver identifier refers to an array). Build it only when
+    // one of those rules is active so the other rules don't pay for an extra
+    // AST walk. Benign semantic errors (e.g. redeclarations) do not block
+    // scanning.
+    let needs_semantic =
+        options.has_rule("no-misleading-array-reverse") || options.has_rule("no-alphabetical-sort");
     let semantic = needs_semantic.then(|| {
         SemanticBuilder::new()
             .build(&parser_return.program)
