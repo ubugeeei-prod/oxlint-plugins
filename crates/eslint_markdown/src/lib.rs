@@ -7,7 +7,11 @@ use regex::Regex;
 // Rules whose logic is driven by the markdown-rs mdast tree (mirroring upstream's
 // mdast-based rules) rather than the regex `MarkdownFacts`. The tree is parsed
 // once per scan only when one of these rules is active.
-const MDAST_RULES: &[&str] = &["no-empty-definitions", "require-alt-text"];
+const MDAST_RULES: &[&str] = &[
+    "no-empty-definitions",
+    "no-unused-definitions",
+    "require-alt-text",
+];
 
 // Parse the source into an mdast tree with the same constructs upstream enables
 // for `markdown/gfm` (GFM tables, autolink literals, footnotes, strikethrough).
@@ -313,8 +317,10 @@ pub fn scan_eslint_markdown(
     if options.is_enabled("no-space-in-emphasis") {
         scan_space_in_emphasis(source_text, &line_index, &facts, options, &mut diagnostics);
     }
-    if options.is_enabled("no-unused-definitions") {
-        scan_unused_definitions(source_text, &line_index, &facts, options, &mut diagnostics);
+    if options.is_enabled("no-unused-definitions")
+        && let Some(tree) = &mdast
+    {
+        scan_unused_definitions(source_text, &line_index, tree, options, &mut diagnostics);
     }
     if options.is_enabled("require-alt-text")
         && let Some(tree) = &mdast
@@ -1466,40 +1472,93 @@ fn scan_space_in_emphasis(
 fn scan_unused_definitions(
     source_text: &str,
     line_index: &LineIndex,
-    facts: &MarkdownFacts<'_>,
+    tree: &mdast::Node,
     options: &ScanOptions,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let used = used_label_ids(facts, false);
-    let used_footnotes = used_label_ids(facts, true);
-    for definition in &facts.definitions {
-        if definition.is_footnote {
-            if options.check_footnote_definitions
-                && !is_allowed(&options.allow_footnote_definitions, &definition.identifier)
-                && !used_footnotes.contains(&definition.identifier)
-            {
-                diagnostics.push(definition_diagnostic(
-                    "no-unused-definitions",
-                    "unusedFootnoteDefinition",
-                    source_text,
-                    line_index,
-                    definition,
-                    None,
-                ));
-            }
-        } else if !is_allowed(&options.allow_definitions, &definition.identifier)
-            && !used.contains(&definition.identifier)
-        {
-            diagnostics.push(definition_diagnostic(
-                "no-unused-definitions",
-                "unusedDefinition",
-                source_text,
-                line_index,
-                definition,
-                None,
+    // (identifier, label-for-data, span, is_footnote)
+    let mut defs: SmallVec<[(CompactString, CompactString, ByteSpan, bool); 16]> = SmallVec::new();
+    let mut used = FastHashSet::<CompactString>::default();
+    let mut used_footnotes = FastHashSet::<CompactString>::default();
+
+    visit_mdast(tree, &mut |node| match node {
+        mdast::Node::LinkReference(reference) => {
+            used.insert(reference_identifier(
+                reference.label.as_deref(),
+                &reference.identifier,
             ));
         }
+        mdast::Node::ImageReference(reference) => {
+            used.insert(reference_identifier(
+                reference.label.as_deref(),
+                &reference.identifier,
+            ));
+        }
+        mdast::Node::FootnoteReference(reference) => {
+            used_footnotes.insert(reference_identifier(
+                reference.label.as_deref(),
+                &reference.identifier,
+            ));
+        }
+        mdast::Node::Definition(definition) => {
+            if let Some(span) = node_span(node) {
+                let label = definition.label.as_deref().unwrap_or("");
+                defs.push((
+                    normalize_identifier(label),
+                    CompactString::from(label.trim()),
+                    span,
+                    false,
+                ));
+            }
+        }
+        mdast::Node::FootnoteDefinition(definition) => {
+            if let Some(span) = node_span(node) {
+                let label = definition.label.as_deref().unwrap_or("");
+                defs.push((
+                    normalize_identifier(label),
+                    CompactString::from(label),
+                    span,
+                    true,
+                ));
+            }
+        }
+        _ => {}
+    });
+
+    for (identifier, label, span, is_footnote) in &defs {
+        let (allow, used_set, message_id) = if *is_footnote {
+            if !options.check_footnote_definitions {
+                continue;
+            }
+            (
+                &options.allow_footnote_definitions,
+                &used_footnotes,
+                "unusedFootnoteDefinition",
+            )
+        } else {
+            (&options.allow_definitions, &used, "unusedDefinition")
+        };
+        if !is_allowed(allow, identifier) && !used_set.contains(identifier) {
+            diagnostics.push(Diagnostic {
+                rule_name: "no-unused-definitions",
+                message_id,
+                data: DiagnosticData {
+                    identifier: Some(identifier.clone()),
+                    label: Some(label.clone()),
+                    ..DiagnosticData::default()
+                },
+                loc: line_index.loc_for_span(source_text, *span),
+                fix: None,
+            });
+        }
     }
+}
+
+// The normalized identifier of a reference, from its label (falling back to the
+// mdast identifier when a label is absent), kept consistent with how definition
+// identifiers are normalized.
+fn reference_identifier(label: Option<&str>, identifier: &str) -> CompactString {
+    normalize_identifier(label.unwrap_or(identifier))
 }
 
 fn scan_require_alt_text(
@@ -1713,15 +1772,6 @@ fn definition_ids(facts: &MarkdownFacts<'_>, footnotes: bool) -> FastHashSet<Com
         .iter()
         .filter(|definition| definition.is_footnote == footnotes)
         .map(|definition| definition.identifier.clone())
-        .collect()
-}
-
-fn used_label_ids(facts: &MarkdownFacts<'_>, footnotes: bool) -> FastHashSet<CompactString> {
-    facts
-        .label_refs
-        .iter()
-        .filter(|label_ref| label_ref.is_footnote == footnotes)
-        .map(|label_ref| normalize_identifier(label_ref.label.as_str()))
         .collect()
 }
 
