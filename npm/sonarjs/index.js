@@ -269,6 +269,11 @@ const messages = Object.freeze({
     emptyStringRepetition:
       'Rework this part of the regex to not repeat an expression that can match the empty string.',
   },
+  'no-misleading-array-reverse': {
+    misleadingReverse:
+      'Move this array "reverse" operation to a separate statement or operate on a copy; ' +
+      'it mutates the original array in place.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -412,6 +417,9 @@ const ruleDescriptions = Object.freeze({
     'use a character class instead',
   'empty-string-repetition':
     'Disallow repetition quantifiers applied to a sub-pattern that can match the empty string',
+  'no-misleading-array-reverse':
+    'Disallow using the return value of the in-place array-mutating methods ' +
+    '"reverse" and "sort" as if they returned a new array',
 });
 
 const ruleTypes = Object.freeze({
@@ -488,6 +496,7 @@ const ruleTypes = Object.freeze({
   'no-global-this': 'suggestion',
   'single-character-alternation': 'suggestion',
   'empty-string-repetition': 'suggestion',
+  'no-misleading-array-reverse': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -564,6 +573,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-global-this': 'error',
   'single-character-alternation': 'error',
   'empty-string-repetition': 'error',
+  'no-misleading-array-reverse': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

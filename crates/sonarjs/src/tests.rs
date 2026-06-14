@@ -3808,3 +3808,76 @@ fn does_not_report_empty_string_repetition_plus_on_char_class() {
     let diagnostics = scan("empty-string-repetition", "const re = /[a-z]+/;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_misleading_array_reverse_assigned_from_array_variable() {
+    let diagnostics = scan(
+        "no-misleading-array-reverse",
+        "const a = [1, 2, 3];\nconst b = a.reverse();",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-misleading-array-reverse");
+    assert_eq!(diagnostics[0].message_id, "misleadingReverse");
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+}
+
+#[test]
+fn reports_misleading_array_sort_assigned_from_array_variable() {
+    let diagnostics = scan(
+        "no-misleading-array-reverse",
+        "const a = [3, 1, 2];\nlet b;\nb = a.sort();",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "misleadingReverse");
+}
+
+#[test]
+fn does_not_report_misleading_array_reverse_bare_statement() {
+    let diagnostics = scan(
+        "no-misleading-array-reverse",
+        "const a = [1, 2, 3];\na.reverse();",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_misleading_array_reverse_on_fresh_array_literal() {
+    let diagnostics = scan("no-misleading-array-reverse", "const c = [1, 2].reverse();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_misleading_array_reverse_on_spread_copy() {
+    let diagnostics = scan(
+        "no-misleading-array-reverse",
+        "const a = [1, 2, 3];\nconst b = [...a].reverse();",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_misleading_array_reverse_on_function_parameter() {
+    let diagnostics = scan(
+        "no-misleading-array-reverse",
+        "function f(a) {\n  const b = a.reverse();\n  return b;\n}",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_misleading_array_reverse_on_non_array_variable() {
+    let diagnostics = scan(
+        "no-misleading-array-reverse",
+        "const obj = { reverse() {} };\nconst b = obj.reverse();",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_misleading_array_reverse_when_variable_reassigned() {
+    let diagnostics = scan(
+        "no-misleading-array-reverse",
+        "let a = [1, 2, 3];\na = a.reverse();",
+    );
+    assert!(diagnostics.is_empty());
+}

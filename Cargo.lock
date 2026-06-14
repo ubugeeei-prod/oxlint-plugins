@@ -1392,6 +1392,7 @@ dependencies = [
  "oxc_ast_visit",
  "oxc_parser",
  "oxc_regular_expression",
+ "oxc_semantic",
  "oxc_span",
  "oxc_syntax",
  "oxlint-plugins-_carton",

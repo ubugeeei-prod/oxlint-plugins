@@ -15,6 +15,7 @@ mod tests;
 use oxc_allocator::Allocator;
 use oxc_ast_visit::Visit;
 use oxc_parser::Parser;
+use oxc_semantic::SemanticBuilder;
 use oxc_span::SourceType;
 use oxlint_plugins_carton::SmallVec;
 
@@ -23,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 73] = [
+pub const RULE_NAMES: [&str; 74] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -97,6 +98,7 @@ pub const RULE_NAMES: [&str; 73] = [
     "no-global-this",
     "single-character-alternation",
     "empty-string-repetition",
+    "no-misleading-array-reverse",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -120,11 +122,27 @@ pub fn scan_sonarjs(
         return SmallVec::new();
     }
 
+    // Semantic analysis resolves identifier references and declaration sites,
+    // which only `no-misleading-array-reverse` needs (to prove that a receiver
+    // identifier refers to an array). Build it only when that rule is active so
+    // the other rules don't pay for an extra AST walk. Benign semantic errors
+    // (e.g. redeclarations) do not block scanning.
+    let needs_semantic = options.has_rule("no-misleading-array-reverse");
+    let semantic = needs_semantic.then(|| {
+        SemanticBuilder::new()
+            .build(&parser_return.program)
+            .semantic
+    });
+    let scoping = semantic.as_ref().map(|semantic| semantic.scoping());
+    let nodes = semantic.as_ref().map(|semantic| semantic.nodes());
+
     let mut scanner = Scanner {
         source_text,
         line_index: LineIndex::new(source_text),
         options,
         diagnostics: SmallVec::new(),
+        scoping,
+        nodes,
         template_literal_depth: 0,
         switch_depth: 0,
         conditional_depth: 0,

@@ -76,6 +76,7 @@ const expectedRuleNames = [
   'no-global-this',
   'single-character-alternation',
   'empty-string-repetition',
+  'no-misleading-array-reverse',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
