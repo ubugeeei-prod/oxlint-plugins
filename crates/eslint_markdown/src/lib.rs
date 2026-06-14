@@ -3,6 +3,54 @@
 use markdown::mdast;
 use oxlint_plugins_carton::{CompactString, FastHashMap, FastHashSet, SmallVec};
 use regex::Regex;
+use std::sync::LazyLock;
+
+// Static compiled regexes for constant patterns (compiled once per process).
+static HTML_COMMENT_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?s)<!--.*?-->").expect("valid regex"));
+static LABEL_REF_CONTENT_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"\[((?:\\.|[^\[\]\\])*)\](?:\[((?:\\.|[^\]\\])*)\])?").expect("valid regex")
+});
+static ILLEGAL_SHORTHAND_TAIL_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"\]\[\s+\]$").expect("valid regex"));
+static HTML_HEADING_OPEN_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?is)<h([1-6])[^>]*>").expect("valid regex"));
+static HTML_INNER_TAG_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"(?is)</?[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?(?:/\s*)?>"#)
+        .expect("valid regex")
+});
+static IMG_TAG_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"(?i)<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?/?>"#).expect("valid regex")
+});
+static LABEL_TAIL_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"\]\[([^\]]+)\]").expect("valid regex"));
+static LABEL_OPEN_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"!?\[([^\]]+)\]").expect("valid regex"));
+static INLINE_LINK_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"!?\[[^\]\n]*\]\([^\)\n]*\)").expect("valid regex"));
+static HTML_TAG_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"(?i)<[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?/?>"#)
+        .expect("valid regex")
+});
+static REFERENCE_LIKE_URL_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r#"\[((?:\\.|[^()\\]|\([\s\S]*\))*?)\]\(([ \t]*\r?\n?[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?[ \t]*\)$"#,
+    )
+    .expect("valid regex")
+});
+static REVERSED_MEDIA_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\r\n])*)\]")
+        .expect("valid regex")
+});
+static LINE_REF_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$").expect("valid regex"));
+static CUSTOM_ID_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"\{#([^}\s]+)\}\s*$").expect("valid regex"));
+static HTML_ID_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"(?i)<[^>]+\s(?:id|name)\s*=\s*["']?([^"'\s>]+)["']?"#).expect("valid regex")
+});
+static H1_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?is)<h1[^>]*>[\s\S]*?</h1\s*>").expect("valid regex"));
 
 // Rules whose logic is driven by the markdown-rs mdast tree (mirroring upstream's
 // mdast-based rules) rather than the regex `MarkdownFacts`. The tree is parsed
@@ -25,8 +73,20 @@ const MDAST_RULES: &[&str] = &[
 
 // Parse the source into an mdast tree with the same constructs upstream enables
 // for `markdown/gfm` (GFM tables, autolink literals, footnotes, strikethrough).
-fn parse_mdast(source_text: &str, math: bool, frontmatter: bool) -> Option<mdast::Node> {
-    let mut options = markdown::ParseOptions::gfm();
+fn parse_mdast(
+    source_text: &str,
+    math: bool,
+    frontmatter: bool,
+    commonmark: bool,
+) -> Option<mdast::Node> {
+    // The dialect mirrors the upstream RuleTester `language`: `markdown/gfm`
+    // (default for Oxlint) adds tables, autolink literals, strikethrough and
+    // footnotes; `markdown/commonmark` enables none of those.
+    let mut options = if commonmark {
+        markdown::ParseOptions::default()
+    } else {
+        markdown::ParseOptions::gfm()
+    };
     if math {
         options.constructs.math_flow = true;
         options.constructs.math_text = true;
@@ -103,6 +163,8 @@ pub struct ScanOptions {
     pub math: bool,
     /// Whether `---`/`+++` frontmatter is parsed (upstream `languageOptions.frontmatter`).
     pub frontmatter: bool,
+    /// Parse as CommonMark instead of GFM (upstream `language: "markdown/commonmark"`).
+    pub commonmark: bool,
 }
 
 impl Default for ScanOptions {
@@ -130,6 +192,7 @@ impl Default for ScanOptions {
             check_missing_table_cells: false,
             math: false,
             frontmatter: false,
+            commonmark: false,
         }
     }
 }
@@ -214,17 +277,9 @@ struct FenceFact {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-struct HeadingFact {
-    depth: u8,
-    text: CompactString,
-    span: ByteSpan,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
 struct DefinitionFact {
     identifier: CompactString,
     label: CompactString,
-    url: CompactString,
     span: ByteSpan,
     is_footnote: bool,
     line: u32,
@@ -233,34 +288,22 @@ struct DefinitionFact {
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct LinkFact {
     is_image: bool,
-    label: CompactString,
     url: CompactString,
     span: ByteSpan,
-    url_span: ByteSpan,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-struct LabelRefFact {
-    label: CompactString,
-    span: ByteSpan,
-    is_footnote: bool,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct HtmlTagFact {
     name: CompactString,
     span: ByteSpan,
-    raw: CompactString,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 struct MarkdownFacts<'a> {
     lines: SmallVec<[LineFact<'a>; 64]>,
     fences: SmallVec<[FenceFact; 8]>,
-    headings: SmallVec<[HeadingFact; 16]>,
     definitions: SmallVec<[DefinitionFact; 16]>,
     links: SmallVec<[LinkFact; 32]>,
-    label_refs: SmallVec<[LabelRefFact; 32]>,
     html_tags: SmallVec<[HtmlTagFact; 16]>,
 }
 
@@ -268,14 +311,34 @@ pub fn implemented_eslint_markdown_rule_names() -> &'static [&'static str] {
     &RULE_NAMES
 }
 
+const FACTS_RULES: &[&str] = &[
+    "fenced-code-language",
+    "fenced-code-meta",
+    "no-duplicate-definitions",
+    "no-empty-images",
+    "no-empty-links",
+    "no-html",
+    "no-invalid-label-refs",
+    "table-column-count",
+];
+
 pub fn scan_eslint_markdown(
     source_text: &str,
     options: &ScanOptions,
 ) -> SmallVec<[Diagnostic; 32]> {
     let line_index = LineIndex::new(source_text);
-    let facts = collect_facts(source_text);
+    let facts = if FACTS_RULES.iter().any(|r| options.is_enabled(r)) {
+        collect_facts(source_text)
+    } else {
+        MarkdownFacts::default()
+    };
     let mdast = if MDAST_RULES.iter().any(|rule| options.is_enabled(rule)) {
-        parse_mdast(source_text, options.math, options.frontmatter)
+        parse_mdast(
+            source_text,
+            options.math,
+            options.frontmatter,
+            options.commonmark,
+        )
     } else {
         None
     };
@@ -378,7 +441,6 @@ fn collect_facts(source_text: &str) -> MarkdownFacts<'_> {
     let mut facts = MarkdownFacts::default();
     collect_lines(source_text, &mut facts);
     collect_fences(source_text, &mut facts);
-    collect_headings(&mut facts);
     collect_definitions(&mut facts);
     collect_inline_links(source_text, &mut facts);
     collect_html_tags(source_text, &mut facts);
@@ -462,54 +524,6 @@ fn collect_fences(source_text: &str, facts: &mut MarkdownFacts<'_>) {
     }
 }
 
-fn collect_headings(facts: &mut MarkdownFacts<'_>) {
-    for line in &facts.lines {
-        if line.in_fence {
-            continue;
-        }
-        if let Some((depth, text)) = parse_atx_heading(line.text) {
-            facts.headings.push(HeadingFact {
-                depth,
-                text: CompactString::from(text),
-                span: ByteSpan {
-                    start: line.start,
-                    end: line.end,
-                },
-            });
-        }
-    }
-
-    for index in 1..facts.lines.len() {
-        let line = &facts.lines[index];
-        if line.in_fence {
-            continue;
-        }
-        let trimmed = line.text.trim();
-        let depth = if trimmed.chars().all(|ch| ch == '=') && trimmed.len() >= 3 {
-            Some(1)
-        } else if trimmed.chars().all(|ch| ch == '-') && trimmed.len() >= 3 {
-            Some(2)
-        } else {
-            None
-        };
-        let Some(depth) = depth else {
-            continue;
-        };
-        let prev = &facts.lines[index - 1];
-        if prev.text.trim().is_empty() || prev.in_fence {
-            continue;
-        }
-        facts.headings.push(HeadingFact {
-            depth,
-            text: CompactString::from(prev.text.trim()),
-            span: ByteSpan {
-                start: prev.start,
-                end: line.end,
-            },
-        });
-    }
-}
-
 fn collect_definitions(facts: &mut MarkdownFacts<'_>) {
     for line in &facts.lines {
         if line.in_fence {
@@ -529,13 +543,11 @@ fn collect_definitions(facts: &mut MarkdownFacts<'_>) {
             continue;
         };
         let raw_label = &rest[label_start..close];
-        let url = rest[close + 2..].trim();
         let label = CompactString::from(raw_label.trim());
         let identifier = normalize_identifier(raw_label);
         facts.definitions.push(DefinitionFact {
             identifier,
             label,
-            url: CompactString::from(trim_definition_url(url)),
             span: ByteSpan {
                 start: line.start + (line.text.len() - trimmed.len()),
                 end: line.end,
@@ -546,13 +558,8 @@ fn collect_definitions(facts: &mut MarkdownFacts<'_>) {
     }
 }
 
-fn collect_inline_links(source_text: &str, facts: &mut MarkdownFacts<'_>) {
-    let Ok(inline_link_re) = Regex::new(r"!?\[[^\]\n]*\]\([^\)\n]*\)") else {
-        return;
-    };
-    let Ok(label_ref_re) = Regex::new(r"!?\[[^\]\n]*\](?:\[[^\]\n]*\])?") else {
-        return;
-    };
+fn collect_inline_links(_source_text: &str, facts: &mut MarkdownFacts<'_>) {
+    let inline_link_re = &*INLINE_LINK_RE;
 
     for line in &facts.lines {
         if line.in_fence || is_definition_line(line.text) {
@@ -564,27 +571,13 @@ fn collect_inline_links(source_text: &str, facts: &mut MarkdownFacts<'_>) {
                 facts.links.push(link);
             }
         }
-        for mat in label_ref_re.find_iter(line.text) {
-            let absolute_start = line.start + mat.start();
-            let absolute_end = line.start + mat.end();
-            if source_text.get(absolute_end..absolute_end + 1) == Some("(") {
-                continue;
-            }
-            if let Some(label_ref) = parse_label_ref(mat.as_str(), absolute_start, absolute_end) {
-                facts.label_refs.push(label_ref);
-            }
-        }
     }
 }
 
 fn collect_html_tags(source_text: &str, facts: &mut MarkdownFacts<'_>) {
     // Mirror upstream's `htmlTagPattern`: an attribute value may contain `>`
     // when wrapped in quotes, so the tag does not end at the first raw `>`.
-    let Ok(tag_re) =
-        Regex::new(r#"(?i)<[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?/?>"#)
-    else {
-        return;
-    };
+    let tag_re = &*HTML_TAG_RE;
     // Upstream strips HTML comments before scanning for tags; blank out comment
     // interiors first (preserving byte length and newlines so offsets stay valid).
     let stripped = strip_html_comments(source_text);
@@ -603,7 +596,6 @@ fn collect_html_tags(source_text: &str, facts: &mut MarkdownFacts<'_>) {
                 start: mat.start(),
                 end: mat.end(),
             },
-            raw: CompactString::from(raw),
         });
     }
 }
@@ -612,10 +604,7 @@ fn collect_html_tags(source_text: &str, facts: &mut MarkdownFacts<'_>) {
 // byte length and any newlines so byte offsets into the original text stay valid
 // (mirrors upstream `stripHtmlComments`, which replaces each non-newline unit).
 fn strip_html_comments(source_text: &str) -> CompactString {
-    let Ok(comment_re) = Regex::new(r"(?s)<!--.*?-->") else {
-        return CompactString::from(source_text);
-    };
-    let replaced = comment_re.replace_all(source_text, |caps: &regex::Captures| {
+    let replaced = HTML_COMMENT_RE.replace_all(source_text, |caps: &regex::Captures| {
         caps[0]
             .bytes()
             .map(|byte| match byte {
@@ -1323,12 +1312,8 @@ fn scan_invalid_label_refs(
     // Mirror upstream: scan for `][label]` (`labelPattern`), and flag it only
     // when the trailing reference is whitespace-only (`illegalShorthandTailPattern`
     // = `/\]\[\s+\]$/`). The reported label is the leading bracket's contents.
-    let Ok(label_re) = Regex::new(r"\]\[([^\]]+)\]") else {
-        return;
-    };
-    let Ok(first_re) = Regex::new(r"!?\[([^\]]+)\]") else {
-        return;
-    };
+    let label_re = &*LABEL_TAIL_RE;
+    let first_re = &*LABEL_OPEN_RE;
     let mut search_from = 0;
     while search_from < source_text.len() {
         let Some(mat) = label_re.find_at(source_text, search_from) else {
@@ -1587,13 +1572,9 @@ fn find_missing_references(
         start -= 1;
     }
     let node_text = source_text.get(start..span.end).unwrap_or("");
-    let Ok(label_re) = Regex::new(r"\[((?:\\.|[^\[\]\\])*)\](?:\[((?:\\.|[^\]\\])*)\])?") else {
-        return;
-    };
     // `illegalShorthandTailPattern`: `][<whitespace>]` — handled by
     // no-invalid-label-refs, so skip it here.
-    let illegal = Regex::new(r"\]\[\s+\]$").ok();
-    for caps in label_re.captures_iter(node_text) {
+    for caps in LABEL_REF_CONTENT_RE.captures_iter(node_text) {
         let Some(whole) = caps.get(0) else {
             continue;
         };
@@ -1606,10 +1587,7 @@ fn find_missing_references(
         if backslashes % 2 == 1 {
             continue;
         }
-        if illegal
-            .as_ref()
-            .is_some_and(|re| re.is_match(whole.as_str()))
-        {
+        if ILLEGAL_SHORTHAND_TAIL_RE.is_match(whole.as_str()) {
             continue;
         }
         let left = caps.get(1);
@@ -1643,9 +1621,9 @@ fn scan_missing_link_fragments(
         .as_ref()
         .filter(|pattern| !pattern.is_empty())
         .and_then(|pattern| Regex::new(pattern.as_str()).ok());
-    let line_ref = Regex::new(r"^L\d+(?:C\d+)?(?:-L\d+(?:C\d+)?)?$").ok();
-    let custom_id = Regex::new(r"\{#([^}\s]+)\}\s*$").ok();
-    let html_id = Regex::new(r#"(?i)<[^>]+\s(?:id|name)\s*=\s*["']?([^"'\s>]+)["']?"#).ok();
+    let line_ref = &*LINE_REF_RE;
+    let custom_id = &*CUSTOM_ID_RE;
+    let html_id = &*HTML_ID_RE;
 
     // Heading anchors, HTML id/name anchors and HTML `<hN>` headings, slugged
     // (with GitHub-style de-duplication) in document order, plus the implicit
@@ -1659,19 +1637,16 @@ fn scan_missing_link_fragments(
         mdast::Node::Heading(_) => {
             let (_, text) = heading_sequence_and_text(node);
             let id = custom_id
-                .as_ref()
-                .and_then(|re| re.captures(&text))
+                .captures(&text)
                 .and_then(|caps| caps.get(1))
                 .map_or(text.clone(), |group| CompactString::from(group.as_str()));
             fragment_ids.insert(slugger.slug(&id));
         }
         mdast::Node::Html(html) => {
             let stripped = strip_html_comments(&html.value);
-            if let Some(re) = &html_id {
-                for caps in re.captures_iter(&stripped) {
-                    if let Some(id) = caps.get(1) {
-                        fragment_ids.insert(slugger.slug(id.as_str()));
-                    }
+            for caps in html_id.captures_iter(&stripped) {
+                if let Some(id) = caps.get(1) {
+                    fragment_ids.insert(slugger.slug(id.as_str()));
                 }
             }
             for id in html_heading_texts(&stripped) {
@@ -1698,7 +1673,7 @@ fn scan_missing_link_fragments(
         if allow_pattern
             .as_ref()
             .is_some_and(|re| re.is_match(&decoded))
-            || line_ref.as_ref().is_some_and(|re| re.is_match(&decoded))
+            || line_ref.is_match(&decoded)
         {
             continue;
         }
@@ -1781,37 +1756,48 @@ fn github_base_slug(value: &str) -> CompactString {
     out
 }
 
+// Find `</hN` (case-insensitive, N = depth_byte) followed by optional ASCII
+// whitespace then `>`. Returns the byte offset of `<` within `text`, or `None`.
+fn find_html_heading_close(text: &str, depth_byte: u8) -> Option<usize> {
+    let bytes = text.as_bytes();
+    let len = bytes.len();
+    let mut i = 0;
+    while i + 4 <= len {
+        if bytes[i] == b'<'
+            && bytes[i + 1] == b'/'
+            && (bytes[i + 2] == b'h' || bytes[i + 2] == b'H')
+            && bytes[i + 3] == depth_byte
+        {
+            let mut j = i + 4;
+            while j < len && matches!(bytes[j], b' ' | b'\t' | b'\r' | b'\n') {
+                j += 1;
+            }
+            if j < len && bytes[j] == b'>' {
+                return Some(i);
+            }
+        }
+        i += 1;
+    }
+    None
+}
+
 // Extract the plain text of each `<hN>...</hN>` HTML heading (inner tags removed),
 // matching upstream's `htmlHeadingPattern` (Rust regex lacks the backreference, so
 // the closing tag is matched explicitly).
 fn html_heading_texts(html: &str) -> SmallVec<[CompactString; 4]> {
     let mut out = SmallVec::new();
-    let Ok(open_re) = Regex::new(r"(?is)<h([1-6])[^>]*>") else {
-        return out;
-    };
-    let Ok(tag_re) = Regex::new(
-        r#"(?is)</?[a-z0-9]+(?:-[a-z0-9]+)*(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?(?:/\s*)?>"#,
-    ) else {
-        return out;
-    };
-    for caps in open_re.captures_iter(html) {
+    for caps in HTML_HEADING_OPEN_RE.captures_iter(html) {
         let (Some(whole), Some(depth)) = (caps.get(0), caps.get(1)) else {
             continue;
         };
-        // The closing tag is matched case-insensitively (e.g. `</H3>`).
-        let Ok(close_re) = Regex::new(&{
-            let mut pattern = CompactString::from(r"(?i)</h");
-            pattern.push_str(depth.as_str());
-            pattern.push_str(r"\s*>");
-            pattern
-        }) else {
-            continue;
-        };
         let rest = &html[whole.end()..];
-        if let Some(close_at) = close_re.find(rest) {
-            let children = &rest[..close_at.start()];
+        // Find the closing `</hN>` tag using a plain byte scan (case-insensitive,
+        // optional whitespace before `>`) to avoid a per-iteration regex compile.
+        let depth_byte = depth.as_str().as_bytes()[0];
+        if let Some(close_at) = find_html_heading_close(rest, depth_byte) {
+            let children = &rest[..close_at];
             out.push(CompactString::from(
-                tag_re.replace_all(children, "").as_ref(),
+                HTML_INNER_TAG_RE.replace_all(children, "").as_ref(),
             ));
         }
     }
@@ -1858,7 +1844,6 @@ fn scan_multiple_h1(
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
     let frontmatter_title = options.frontmatter_title.as_deref();
-    let h1_re = Regex::new(r"(?is)<h1[^>]*>[\s\S]*?</h1\s*>").ok();
     let mut count = 0u32;
     let report = |span: ByteSpan, diagnostics: &mut SmallVec<[Diagnostic; 32]>| {
         diagnostics.push(Diagnostic {
@@ -1885,18 +1870,16 @@ fn scan_multiple_h1(
                 return;
             };
             let stripped = strip_html_comments(&html.value);
-            if let Some(re) = &h1_re {
-                for mat in re.find_iter(&stripped) {
-                    count += 1;
-                    if count > 1 {
-                        report(
-                            ByteSpan {
-                                start: span.start + mat.start(),
-                                end: span.start + mat.end(),
-                            },
-                            diagnostics,
-                        );
-                    }
+            for mat in H1_RE.find_iter(&stripped) {
+                count += 1;
+                if count > 1 {
+                    report(
+                        ByteSpan {
+                            start: span.start + mat.start(),
+                            end: span.start + mat.end(),
+                        },
+                        diagnostics,
+                    );
                 }
             }
         }
@@ -1923,11 +1906,7 @@ fn scan_reference_like_urls(
     // the autofix preserves and `normalize_identifier` trims). Mirrors upstream's
     // `linkOrImagePattern` (the `(?<![ \t])` lookbehinds are omitted — they do not
     // change captures for the already-valid links mdast hands us).
-    let Ok(inline_re) = Regex::new(
-        r#"\[((?:\\.|[^()\\]|\([\s\S]*\))*?)\]\(([ \t]*\r?\n?[ \t]*(?:<[^>]*>|[^ \t()]+))(?:[ \t]*\r?\n?[ \t]*(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*\r?\n?[ \t]*\)$"#,
-    ) else {
-        return;
-    };
+    let inline_re = &*REFERENCE_LIKE_URL_RE;
 
     let mut definitions = FastHashSet::<CompactString>::default();
     let mut media: SmallVec<[&mdast::Node; 16]> = SmallVec::new();
@@ -1999,11 +1978,7 @@ fn scan_reversed_media(
 ) {
     // `(label)[url]` (reversed link/image syntax), where the leading `(` is not
     // backslash-escaped and the trailing `]` is not followed by `(`.
-    let Ok(reversed_re) =
-        Regex::new(r"\(((?:\\.|[^()\\]|\([\s\S]*\))*)\)\[((?:\\.|[^\]\\\r\n])*)\]")
-    else {
-        return;
-    };
+    let reversed_re = &*REVERSED_MEDIA_RE;
     visit_mdast(tree, &mut |node| {
         if !matches!(
             node,
@@ -2406,11 +2381,8 @@ fn scan_html_img_alt(
     span: ByteSpan,
     diagnostics: &mut SmallVec<[Diagnostic; 32]>,
 ) {
-    let Ok(img_re) = Regex::new(r#"(?i)<img(?:\s(?:[^>"']|"[^"]*"|'[^']*')*)?/?>"#) else {
-        return;
-    };
     let text = strip_html_comments(source_text.get(span.start..span.end).unwrap_or(""));
-    for mat in img_re.find_iter(&text) {
+    for mat in IMG_TAG_RE.find_iter(&text) {
         let tag = mat.as_str();
         if html_attribute(tag, "aria-hidden")
             .flatten()
@@ -2604,26 +2576,6 @@ fn split_fence_info(info: &str) -> (Option<CompactString>, Option<CompactString>
     (lang, meta)
 }
 
-fn parse_atx_heading(line: &str) -> Option<(u8, &str)> {
-    let (indent, trimmed) = split_indent(line);
-    if indent > 3 {
-        return None;
-    }
-    let hashes = trimmed.bytes().take_while(|byte| *byte == b'#').count();
-    if !(1..=6).contains(&hashes) {
-        return None;
-    }
-    let after = trimmed.as_bytes().get(hashes).copied();
-    if !matches!(after, Some(b' ' | b'\t') | None) {
-        return None;
-    }
-    let mut text = trimmed[hashes..].trim();
-    if text.ends_with('#') {
-        text = text.trim_end_matches('#').trim_end();
-    }
-    Some((hashes as u8, text))
-}
-
 fn is_definition_line(line: &str) -> bool {
     let trimmed = line.trim_start();
     trimmed.starts_with('[') && trimmed.contains("]:")
@@ -2635,46 +2587,15 @@ fn parse_inline_link(raw: &str, absolute_start: usize) -> Option<LinkFact> {
     let label_close = raw[label_open + 1..].find(']')? + label_open + 1;
     let url_open = raw[label_close + 1..].find('(')? + label_close + 1;
     let url_close = raw.rfind(')')?;
-    let label = &raw[label_open + 1..label_close];
     let url = raw[url_open + 1..url_close].trim();
     Some(LinkFact {
         is_image,
-        label: CompactString::from(label),
         url: CompactString::from(url.trim_matches(['<', '>'])),
         span: ByteSpan {
             start: absolute_start,
             end: absolute_start + raw.len(),
         },
-        url_span: ByteSpan {
-            start: absolute_start + url_open + 1,
-            end: absolute_start + url_close,
-        },
     })
-}
-
-fn parse_label_ref(raw: &str, absolute_start: usize, absolute_end: usize) -> Option<LabelRefFact> {
-    let is_image = raw.starts_with('!');
-    let start = usize::from(is_image);
-    let first_close = raw[start + 1..].find(']')? + start + 1;
-    let is_footnote = raw[start + 1..].starts_with('^');
-    let label = if raw.as_bytes().get(first_close + 1) == Some(&b'[') {
-        let second_close = raw[first_close + 2..].find(']')? + first_close + 2;
-        &raw[first_close + 2..second_close]
-    } else {
-        &raw[start + 1..first_close]
-    };
-    Some(LabelRefFact {
-        label: CompactString::from(label.trim_start_matches('^')),
-        span: ByteSpan {
-            start: absolute_start,
-            end: absolute_end,
-        },
-        is_footnote,
-    })
-}
-
-fn trim_definition_url(url: &str) -> &str {
-    url.trim().trim_matches(['<', '>'])
 }
 
 fn normalize_identifier(value: &str) -> CompactString {

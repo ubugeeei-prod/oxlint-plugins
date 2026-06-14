@@ -195,10 +195,10 @@ fn traverse_visitor_keys(node: &Value, visitor_keys: &mut Map<String, Value>) {
     // (see `manipulate::add_types`) rely on that ordering, so reproduce it here
     // rather than using serde_json's raw insertion order.
     for key in js_key_order(object) {
-        if SKIP_KEYS.contains(&key.as_str()) {
+        if SKIP_KEYS.contains(&key) {
             continue;
         }
-        let Some(value) = object.get(&key) else {
+        let Some(value) = object.get(key) else {
             continue;
         };
         match value {
@@ -207,7 +207,7 @@ fn traverse_visitor_keys(node: &Value, visitor_keys: &mut Map<String, Value>) {
                 // Upstream adds the key when the array holds an object *or* is
                 // simply non-empty (so non-empty primitive arrays count too).
                 if contains_object || !items.is_empty() {
-                    add_visitor_key(visitor_keys, &ty, &key);
+                    add_visitor_key(visitor_keys, &ty, key);
                 }
                 if contains_object {
                     for item in items {
@@ -216,7 +216,7 @@ fn traverse_visitor_keys(node: &Value, visitor_keys: &mut Map<String, Value>) {
                 }
             }
             Value::Object(_) => {
-                add_visitor_key(visitor_keys, &ty, &key);
+                add_visitor_key(visitor_keys, &ty, key);
                 traverse_visitor_keys(value, visitor_keys);
             }
             _ => {}
@@ -228,17 +228,17 @@ fn traverse_visitor_keys(node: &Value, visitor_keys: &mut Map<String, Value>) {
 /// array-index keys (`"0"`, `"1"`, …) first in ascending numeric order, then the
 /// remaining keys in insertion order. Mirrors the order upstream's JS
 /// `Object.entries`/`Object.keys` yields.
-fn js_key_order(object: &Map<String, Value>) -> Vec<String> {
-    let mut index_keys: Vec<u32> = Vec::new();
-    let mut other_keys: Vec<String> = Vec::new();
+fn js_key_order(object: &Map<String, Value>) -> Vec<&str> {
+    let mut index_keys: Vec<(u32, &str)> = Vec::new();
+    let mut other_keys: Vec<&str> = Vec::new();
     for key in object.keys() {
         match array_index(key) {
-            Some(index) => index_keys.push(index),
-            None => other_keys.push(key.clone()),
+            Some(index) => index_keys.push((index, key.as_str())),
+            None => other_keys.push(key.as_str()),
         }
     }
-    index_keys.sort_unstable();
-    let mut ordered: Vec<String> = index_keys.into_iter().map(|i| i.to_string()).collect();
+    index_keys.sort_unstable_by_key(|(index, _)| *index);
+    let mut ordered: Vec<&str> = index_keys.into_iter().map(|(_, key)| key).collect();
     ordered.extend(other_keys);
     ordered
 }

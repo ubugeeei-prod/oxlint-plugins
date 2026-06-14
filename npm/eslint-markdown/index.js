@@ -348,6 +348,12 @@ function diagnosticsForRule(context, ruleName) {
   if (context.languageOptions?.frontmatter) {
     scanOptions.frontmatter = true;
   }
+  // Dialect: Oxlint drives Markdown as GFM by default. The parity harness selects
+  // the CommonMark dialect (upstream `language: "markdown/commonmark"`) by setting
+  // `languageOptions.commonmark`.
+  if (context.languageOptions?.commonmark === true) {
+    scanOptions.commonmark = true;
+  }
   const cacheKey = `${ruleName}\0${JSON.stringify(scanOptions)}`;
   let diagnostics = bySource.get(cacheKey);
   if (!diagnostics) {
