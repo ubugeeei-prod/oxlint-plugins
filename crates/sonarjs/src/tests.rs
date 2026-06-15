@@ -5748,3 +5748,57 @@ fn no_require_or_define_no_flag_different_name() {
     let diagnostics = scan("no-require-or-define", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_invalid_regexp_reports_unclosed_bracket() {
+    let source = "new RegExp('[');";
+    let diagnostics = scan("no-invalid-regexp", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-invalid-regexp");
+    assert_eq!(diagnostics[0].message_id, "invalidRegExp");
+}
+
+#[test]
+fn no_invalid_regexp_reports_call_form_unclosed_group() {
+    let source = "RegExp('(');";
+    let diagnostics = scan("no-invalid-regexp", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "invalidRegExp");
+}
+
+#[test]
+fn no_invalid_regexp_reports_invalid_flag() {
+    let source = "new RegExp('a', 'z');";
+    let diagnostics = scan("no-invalid-regexp", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "invalidRegExp");
+}
+
+#[test]
+fn no_invalid_regexp_does_not_report_valid_pattern() {
+    let source = "new RegExp('abc');";
+    let diagnostics = scan("no-invalid-regexp", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_invalid_regexp_does_not_report_cooked_digit_escape() {
+    // JS source: new RegExp('\\d+'); — cooked value is \d+, a valid pattern
+    let source = "new RegExp('\\\\d+');";
+    let diagnostics = scan("no-invalid-regexp", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_invalid_regexp_does_not_report_dynamic_arg() {
+    let source = "new RegExp(somePattern);";
+    let diagnostics = scan("no-invalid-regexp", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_invalid_regexp_does_not_report_valid_quantifier() {
+    let source = "new RegExp('a{2,3}');";
+    let diagnostics = scan("no-invalid-regexp", source);
+    assert!(diagnostics.is_empty());
+}

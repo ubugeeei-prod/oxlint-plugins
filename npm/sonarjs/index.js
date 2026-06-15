@@ -377,6 +377,10 @@ const messages = Object.freeze({
   'no-require-or-define': {
     noRequireOrDefine: "Use a standard 'import' statement instead of 'require' or 'define'.",
   },
+  'no-invalid-regexp': {
+    invalidRegExp:
+      'This regular expression is invalid; fix the pattern (or flags) passed to RegExp.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -583,6 +587,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow using the 'in' operator to test whether a value is an element of an array; use 'Array.prototype.includes' or 'Array.prototype.indexOf' instead, because 'in' checks property keys, not values",
   'no-require-or-define':
     "Disallow CommonJS 'require()' calls and AMD 'define()' calls; use ES module 'import' statements instead",
+  'no-invalid-regexp':
+    'Disallow a syntactically invalid regular expression pattern or flag string passed as a string literal to the RegExp constructor; applies to both new RegExp(...) and RegExp(...) call forms',
 });
 
 const ruleTypes = Object.freeze({
@@ -690,6 +696,7 @@ const ruleTypes = Object.freeze({
   'no-identical-functions': 'suggestion',
   'no-in-misuse': 'problem',
   'no-require-or-define': 'suggestion',
+  'no-invalid-regexp': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -797,6 +804,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-identical-functions': 'error',
   'no-in-misuse': 'error',
   'no-require-or-define': 'error',
+  'no-invalid-regexp': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

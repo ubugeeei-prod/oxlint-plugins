@@ -501,6 +501,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_array_callback_without_return(it);
         self.check_array_constructor_call(it);
         self.check_no_nested_incdec_call(it);
+        self.check_no_invalid_regexp_call(it);
         self.check_no_undefined_argument_call(it);
         self.check_code_eval_call(it);
         self.check_pseudo_random(it);
@@ -547,6 +548,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_new_expression(&mut self, it: &NewExpression<'a>) {
+        self.check_no_invalid_regexp_new(it);
         self.check_no_primitive_wrappers(it);
         self.check_array_constructor_new(it);
         self.check_no_nested_incdec_new(it);
