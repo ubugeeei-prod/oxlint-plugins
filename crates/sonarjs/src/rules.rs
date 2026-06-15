@@ -17,6 +17,7 @@ mod cognitive_complexity;
 mod comma_or_logical_or_case;
 mod concise_regex;
 mod constructor_for_side_effects;
+mod cookie_no_httponly;
 mod cyclomatic_complexity;
 mod declarations_in_global_scope;
 mod deprecation;

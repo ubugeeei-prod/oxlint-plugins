@@ -255,6 +255,7 @@ describe('sonarjs plugin shape', () => {
       'encryption-secure-mode',
       'no-unsafe-unzip',
       'disabled-timeout',
+      'cookie-no-httponly',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6046,5 +6047,46 @@ describe('disabled-timeout rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(disabled-timeout)');
+  });
+});
+
+describe('cookie-no-httponly rule', () => {
+  it('reports an httpOnly: false config property', () => {
+    const source = 'const c = { httpOnly: false };';
+    const reports = runRule('cookie-no-httponly', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('cookieNoHttpOnly');
+  });
+
+  it('reports a nested cookie httpOnly: false property', () => {
+    const source = 'session({ cookie: { httpOnly: false } });';
+    const reports = runRule('cookie-no-httponly', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report httpOnly: true', () => {
+    const source = 'const c = { httpOnly: true };';
+    const reports = runRule('cookie-no-httponly', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a dynamic httpOnly value', () => {
+    const source = 'const c = { httpOnly: x };';
+    const reports = runRule('cookie-no-httponly', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different key set to false', () => {
+    const source = 'const c = { secure: false };';
+    const reports = runRule('cookie-no-httponly', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports cookie-no-httponly through the CLI', () => {
+    const result = runOxlint('cookie-no-httponly', 'const c = { httpOnly: false };');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(cookie-no-httponly)');
   });
 });

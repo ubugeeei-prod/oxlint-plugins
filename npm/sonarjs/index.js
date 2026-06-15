@@ -588,6 +588,10 @@ const messages = Object.freeze({
     disabledTimeout:
       'This timeout value overflows the 32-bit range and silently disables the timeout; use 0 to disable intentionally or a value within range.',
   },
+  'cookie-no-httponly': {
+    cookieNoHttpOnly:
+      'Set this cookie\'s "httpOnly" flag to true to make it inaccessible to client-side scripts.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -957,6 +961,9 @@ const ruleDescriptions = Object.freeze({
   'disabled-timeout':
     'Disallow Mocha this.timeout() values that overflow the 32-bit setTimeout range ' +
     '(greater than 2147483647) and thereby silently disable the timeout instead of applying it',
+  'cookie-no-httponly':
+    'Flag cookie/session configuration that disables the HttpOnly flag; matches an ' +
+    'object property "httpOnly" set to the boolean literal false',
 });
 
 const ruleTypes = Object.freeze({
@@ -1121,6 +1128,7 @@ const ruleTypes = Object.freeze({
   'encryption-secure-mode': 'problem',
   'no-unsafe-unzip': 'problem',
   'disabled-timeout': 'problem',
+  'cookie-no-httponly': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1284,6 +1292,7 @@ const recommendedRuleConfig = Object.freeze({
   'encryption-secure-mode': 'error',
   'no-unsafe-unzip': 'error',
   'disabled-timeout': 'error',
+  'cookie-no-httponly': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
