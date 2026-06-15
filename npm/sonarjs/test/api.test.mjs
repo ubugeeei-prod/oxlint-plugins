@@ -164,6 +164,7 @@ const expectedRuleNames = [
   'encryption-secure-mode',
   'no-unsafe-unzip',
   'disabled-timeout',
+  'cookie-no-httponly',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3263,6 +3264,40 @@ describe('disabled-timeout rule', () => {
   it('does not report a non-this receiver', () => {
     const source = 'foo.timeout(2147483648);';
     const diagnostics = scan('disabled-timeout', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('cookie-no-httponly rule', () => {
+  it('reports an httpOnly: false config property', () => {
+    const source = 'const c = { httpOnly: false };';
+    const diagnostics = scan('cookie-no-httponly', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('cookie-no-httponly');
+    expect(diagnostics[0].messageId).toBe('cookieNoHttpOnly');
+  });
+
+  it('reports a nested cookie httpOnly: false property', () => {
+    const source = 'session({ cookie: { httpOnly: false } });';
+    const diagnostics = scan('cookie-no-httponly', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report httpOnly: true', () => {
+    const source = 'const c = { httpOnly: true };';
+    const diagnostics = scan('cookie-no-httponly', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a dynamic httpOnly value', () => {
+    const source = 'const c = { httpOnly: x };';
+    const diagnostics = scan('cookie-no-httponly', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different key set to false', () => {
+    const source = 'const c = { secure: false };';
+    const diagnostics = scan('cookie-no-httponly', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

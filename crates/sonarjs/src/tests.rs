@@ -8971,3 +8971,36 @@ fn disabled_timeout_does_not_report_dynamic_argument() {
     let diagnostics = scan("disabled-timeout", "this.timeout(x);");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn cookie_no_httponly_reports_direct_false() {
+    let diagnostics = scan("cookie-no-httponly", "const c = { httpOnly: false };");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn cookie_no_httponly_reports_nested_cookie_config() {
+    let diagnostics = scan(
+        "cookie-no-httponly",
+        "session({ cookie: { httpOnly: false } });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn cookie_no_httponly_does_not_report_true() {
+    let diagnostics = scan("cookie-no-httponly", "const c = { httpOnly: true };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cookie_no_httponly_does_not_report_dynamic_value() {
+    let diagnostics = scan("cookie-no-httponly", "const c = { httpOnly: x };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cookie_no_httponly_does_not_report_other_key() {
+    let diagnostics = scan("cookie-no-httponly", "const c = { secure: false };");
+    assert!(diagnostics.is_empty());
+}
