@@ -145,6 +145,7 @@ const expectedRuleNames = [
   'no-incomplete-assertions',
   'destructuring-assignment-syntax',
   'no-element-overwrite',
+  'no-redundant-assignments',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3086,6 +3087,37 @@ describe('prefer-regexp-exec rule', () => {
 
   it('does not report dynamic match arguments', () => {
     const diagnostics = scan('prefer-regexp-exec', 'const result = str.match(pattern);');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-redundant-assignments rule', () => {
+  it('reports a self-assignment x = x', () => {
+    const diagnostics = scan('no-redundant-assignments', 'x = x;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-redundant-assignments');
+    expect(diagnostics[0].messageId).toBe('redundantAssignment');
+  });
+
+  it('reports the first of two adjacent assignments to the same identifier', () => {
+    const diagnostics = scan('no-redundant-assignments', 'let y = 0;\ny = 1;\ny = 2;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-redundant-assignments');
+    expect(diagnostics[0].messageId).toBe('redundantAssignment');
+  });
+
+  it('does not report a regular assignment to a different identifier', () => {
+    const diagnostics = scan('no-redundant-assignments', 'x = y;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a read-modify-write', () => {
+    const diagnostics = scan('no-redundant-assignments', 'let x = 1;\nx = x + 1;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when an intervening statement separates the assignments', () => {
+    const diagnostics = scan('no-redundant-assignments', 'let x = 1;\nfoo();\nx = 2;');
     expect(diagnostics).toHaveLength(0);
   });
 });

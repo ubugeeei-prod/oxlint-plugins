@@ -7935,3 +7935,50 @@ fn no_element_overwrite_works_in_function_body() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "elementOverwrite");
 }
+
+#[test]
+fn no_redundant_assignments_reports_self_assignment() {
+    let source = "x = x;";
+    let diagnostics = scan("no-redundant-assignments", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-redundant-assignments");
+    assert_eq!(diagnostics[0].message_id, "redundantAssignment");
+}
+
+#[test]
+fn no_redundant_assignments_reports_adjacent_dead_reassignment() {
+    let source = "let y = 0;\ny = 1;\ny = 2;";
+    let diagnostics = scan("no-redundant-assignments", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-redundant-assignments");
+    assert_eq!(diagnostics[0].message_id, "redundantAssignment");
+}
+
+#[test]
+fn no_redundant_assignments_does_not_report_different_identifiers() {
+    let source = "x = y;";
+    let diagnostics = scan("no-redundant-assignments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_redundant_assignments_does_not_report_read_modify_write() {
+    let source = "let x = 1;\nx = x + 1;";
+    let diagnostics = scan("no-redundant-assignments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_redundant_assignments_does_not_report_when_intervening_statement_present() {
+    let source = "let x = 1;\nfoo();\nx = 2;";
+    let diagnostics = scan("no-redundant-assignments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_redundant_assignments_works_in_function_body() {
+    let source = "function f() { let x = 0; x = 1; x = 2; }";
+    let diagnostics = scan("no-redundant-assignments", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantAssignment");
+}
