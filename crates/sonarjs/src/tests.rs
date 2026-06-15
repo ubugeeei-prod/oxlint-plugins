@@ -5439,3 +5439,55 @@ fn does_not_report_generic_call_with_paren_on_type_args_line() {
     let diagnostics = scan("call-argument-line", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_empty_object_decl_followed_by_property_assignment() {
+    let source = "let p = {};\np.name = \"John\";";
+    let diagnostics = scan("prefer-object-literal", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "prefer-object-literal");
+    assert_eq!(diagnostics[0].message_id, "preferObjectLiteral");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_empty_object_decl_followed_by_computed_property_assignment() {
+    let source = "let p = {};\np[\"name\"] = \"John\";";
+    let diagnostics = scan("prefer-object-literal", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_non_empty_object_literal_declaration() {
+    let source = "let p = { name: \"John\" };\np.age = 42;";
+    let diagnostics = scan("prefer-object-literal", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_when_next_statement_reads_the_variable() {
+    let source = "let p = {};\nfoo(p);";
+    let diagnostics = scan("prefer-object-literal", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_empty_object_decl_with_no_following_statement() {
+    let source = "let p = {};";
+    let diagnostics = scan("prefer-object-literal", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_when_initializer_is_not_an_empty_literal() {
+    let source = "let p = getObj();\np.x = 1;";
+    let diagnostics = scan("prefer-object-literal", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_property_assignment_to_a_different_variable() {
+    let source = "let p = {};\nq.name = \"John\";";
+    let diagnostics = scan("prefer-object-literal", source);
+    assert!(diagnostics.is_empty());
+}

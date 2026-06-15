@@ -360,6 +360,9 @@ const messages = Object.freeze({
     sameLineAsCallee:
       'Make the arguments of this call start on the same line as the function name.',
   },
+  'prefer-object-literal': {
+    preferObjectLiteral: 'Declare this object with its properties in a single object literal.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -556,6 +559,8 @@ const ruleDescriptions = Object.freeze({
     'Require a publicly accessible static class field (explicit "public" or no accessibility modifier) to be declared "readonly"; static fields that are private, protected, readonly, declared with a "#private" key, or non-static are not flagged (modifier-based; applies to both JS and TS source)',
   'call-argument-line':
     "Require a function call's opening parenthesis (and therefore its argument list) to begin on the same line as the end of the callee; writing the call's parentheses on the line below the function name is reported, while wrapping the arguments across lines with the open parenthesis still on the callee's line is allowed",
+  'prefer-object-literal':
+    'Require an object to be created and initialized with a single object literal rather than declared as an empty object and then populated with property assignments; flags an empty object-literal declaration whose immediately following sibling statement assigns to a property of that same variable',
 });
 
 const ruleTypes = Object.freeze({
@@ -658,6 +663,7 @@ const ruleTypes = Object.freeze({
   'use-type-alias': 'suggestion',
   'public-static-readonly': 'suggestion',
   'call-argument-line': 'suggestion',
+  'prefer-object-literal': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -760,6 +766,7 @@ const recommendedRuleConfig = Object.freeze({
   'use-type-alias': 'error',
   'public-static-readonly': 'error',
   'call-argument-line': 'error',
+  'prefer-object-literal': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
