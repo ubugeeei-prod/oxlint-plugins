@@ -125,6 +125,7 @@ const expectedRuleNames = [
   'no-variable-usage-before-declaration',
   'arguments-order',
   'unicode-aware-regex',
+  'no-undefined-assignment',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
