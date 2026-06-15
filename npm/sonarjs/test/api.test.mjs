@@ -161,6 +161,7 @@ const expectedRuleNames = [
   'slow-regex',
   'web-sql-database',
   'no-intrusive-permissions',
+  'encryption-secure-mode',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

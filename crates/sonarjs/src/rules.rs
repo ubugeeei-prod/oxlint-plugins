@@ -25,6 +25,7 @@ mod different_types_comparison;
 mod duplicates_in_character_class;
 mod elseif_without_else;
 mod empty_string_repetition;
+mod encryption_secure_mode;
 mod expression_complexity;
 mod file_name_differ_from_class;
 mod fixme_tag;

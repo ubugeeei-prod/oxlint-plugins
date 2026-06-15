@@ -252,6 +252,7 @@ describe('sonarjs plugin shape', () => {
       'slow-regex',
       'web-sql-database',
       'no-intrusive-permissions',
+      'encryption-secure-mode',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5901,5 +5902,57 @@ describe('no-intrusive-permissions rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-intrusive-permissions)');
+  });
+});
+
+describe('encryption-secure-mode rule', () => {
+  it('reports crypto.createCipheriv with CBC mode', () => {
+    const source = 'crypto.createCipheriv("aes-128-cbc", key, iv);';
+    const reports = runRule('encryption-secure-mode', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('insecureCipherMode');
+  });
+
+  it('reports createCipheriv with ECB mode (case-insensitive)', () => {
+    const source = 'createCipheriv("AES-256-ECB", key, iv);';
+    const reports = runRule('encryption-secure-mode', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('insecureCipherMode');
+  });
+
+  it('reports crypto.createDecipheriv with ECB mode', () => {
+    const source = 'crypto.createDecipheriv("des-ecb", key, iv);';
+    const reports = runRule('encryption-secure-mode', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('insecureCipherMode');
+  });
+
+  it('does not report a secure GCM mode', () => {
+    const source = 'crypto.createCipheriv("aes-256-gcm", key, iv);';
+    const reports = runRule('encryption-secure-mode', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-crypto callee', () => {
+    const source = 'foo("aes-128-cbc");';
+    const reports = runRule('encryption-secure-mode', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a dynamic, non-literal algorithm', () => {
+    const source = 'crypto.createCipheriv(algo, key, iv);';
+    const reports = runRule('encryption-secure-mode', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports encryption-secure-mode through the CLI', () => {
+    const result = runOxlint(
+      'encryption-secure-mode',
+      'crypto.createCipheriv("aes-128-cbc", key, iv);',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(encryption-secure-mode)');
   });
 });
