@@ -64,6 +64,9 @@ const messages = Object.freeze({
   'no-labels': {
     noLabels: 'Remove this label and refactor the code to use structured control flow instead.',
   },
+  'label-position': {
+    removeLabel: 'Remove this label or move it directly onto a loop or switch statement.',
+  },
   'no-delete-var': {
     noDeleteVar:
       "Do not use 'delete' on a variable; it has no effect. Use 'delete' only to remove object properties.",
@@ -504,6 +507,7 @@ const ruleDescriptions = Object.freeze({
     'Disallow identical sub-expressions on both sides of binary or logical operators where the result is constant or redundant',
   'arguments-usage': "Disallow use of the 'arguments' object; use rest parameters instead",
   'no-labels': 'Disallow labeled statements; use structured control flow instead',
+  'label-position': 'Disallow labels on statements other than loops and switch statements',
   'no-delete-var':
     "Disallow 'delete' applied to a plain variable; use it only on object properties",
   'constructor-for-side-effects':
@@ -781,6 +785,7 @@ const ruleTypes = Object.freeze({
   'no-identical-expressions': 'problem',
   'arguments-usage': 'suggestion',
   'no-labels': 'suggestion',
+  'label-position': 'suggestion',
   'no-delete-var': 'problem',
   'constructor-for-side-effects': 'problem',
   'no-empty-character-class': 'problem',
@@ -916,6 +921,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-identical-expressions': 'error',
   'arguments-usage': 'error',
   'no-labels': 'error',
+  'label-position': 'error',
   'no-delete-var': 'error',
   'constructor-for-side-effects': 'error',
   'no-empty-character-class': 'error',

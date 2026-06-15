@@ -16,6 +16,7 @@ const expectedRuleNames = [
   'no-identical-expressions',
   'arguments-usage',
   'no-labels',
+  'label-position',
   'no-delete-var',
   'constructor-for-side-effects',
   'no-empty-character-class',
@@ -596,6 +597,35 @@ describe('sonarjs native API', () => {
     const source = 'const x = 1;';
     const diagnostics = scan('no-labels', source);
     expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports label-position for labels that are not directly on a loop or switch', () => {
+    const source = 'unused: doWork();\nblock: { doWork(); }\nconditional: if (ready) { doWork(); }';
+    const diagnostics = scan('label-position', source);
+    expect(diagnostics).toHaveLength(3);
+    expect(diagnostics[0].ruleName).toBe('label-position');
+    expect(diagnostics[0].messageId).toBe('removeLabel');
+  });
+
+  it('does not report label-position for directly labelled breakable statements', () => {
+    const source = `
+      labelled_for: for (;;) { break labelled_for; }
+      labelled_for_in: for (const key in object) { break labelled_for_in; }
+      labelled_for_of: for (const value of values) { break labelled_for_of; }
+      labelled_while: while (condition) { break labelled_while; }
+      labelled_do: do { break labelled_do; } while (condition);
+      labelled_switch: switch (value) { case 1: break labelled_switch; }
+    `;
+    const diagnostics = scan('label-position', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports label-position for an outer nested label', () => {
+    const source = 'outer: inner: for (;;) { break outer; }';
+    const diagnostics = scan('label-position', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('removeLabel');
+    expect(diagnostics[0].loc.startColumn).toBe(0);
   });
 
   it('reports no-delete-var for delete applied to a bare variable', () => {

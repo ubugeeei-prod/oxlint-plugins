@@ -31,6 +31,7 @@ mod hashing;
 mod inconsistent_function_call;
 mod index_of_compare_to_positive_number;
 mod inverted_assertion_arguments;
+mod label_position;
 mod link_with_target_blank;
 mod max_lines;
 mod max_lines_per_function;

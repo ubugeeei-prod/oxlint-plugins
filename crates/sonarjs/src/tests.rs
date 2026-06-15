@@ -625,6 +625,50 @@ fn does_not_report_no_labels_for_plain_variable_declaration() {
 }
 
 #[test]
+fn reports_label_position_for_expression_label() {
+    let source = "unused: doWork();";
+    let diagnostics = scan("label-position", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "label-position");
+    assert_eq!(diagnostics[0].message_id, "removeLabel");
+}
+
+#[test]
+fn reports_label_position_for_block_and_if_labels() {
+    let source = "block: { doWork(); }\nconditional: if (ready) { doWork(); }";
+    let diagnostics = scan("label-position", source);
+    assert_eq!(diagnostics.len(), 2);
+    assert!(
+        diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.message_id == "removeLabel")
+    );
+}
+
+#[test]
+fn does_not_report_label_position_for_directly_labelled_breakable_statements() {
+    let source = "
+        labelled_for: for (;;) { break labelled_for; }
+        labelled_for_in: for (const key in object) { break labelled_for_in; }
+        labelled_for_of: for (const value of values) { break labelled_for_of; }
+        labelled_while: while (condition) { break labelled_while; }
+        labelled_do: do { break labelled_do; } while (condition);
+        labelled_switch: switch (value) { case 1: break labelled_switch; }
+    ";
+    let diagnostics = scan("label-position", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_label_position_for_outer_nested_label() {
+    let source = "outer: inner: for (;;) { break outer; }";
+    let diagnostics = scan("label-position", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "removeLabel");
+    assert_eq!(diagnostics[0].loc.start_column, 0);
+}
+
+#[test]
 fn reports_no_delete_var_for_bare_variable() {
     let source = "delete x;";
     let diagnostics = scan("no-delete-var", source);
