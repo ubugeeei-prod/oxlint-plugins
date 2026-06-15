@@ -510,6 +510,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_empty_character_class(it);
         self.check_no_empty_group(it);
         self.check_no_empty_alternatives(it);
+        self.check_no_empty_after_reluctant(it);
         self.check_no_regex_spaces(it);
         self.check_no_control_regex(it);
         self.check_single_char_in_character_classes(it);
