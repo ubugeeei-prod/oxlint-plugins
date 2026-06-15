@@ -129,6 +129,7 @@ const expectedRuleNames = [
   'no-ignored-return',
   'file-name-differ-from-class',
   'no-unenclosed-multiline-block',
+  'inconsistent-function-call',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2926,6 +2927,23 @@ describe('file-name-differ-from-class', () => {
       'export class Foo {} export class Bar {}',
       'baz.ts',
     );
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports a function declaration called both as plain call and constructor', () => {
+    const diagnostics = scan('inconsistent-function-call', 'function f() {} f(); new f();');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('inconsistent-function-call');
+    expect(diagnostics[0].messageId).toBe('inconsistentFunctionCall');
+  });
+
+  it('does not report a function called only as a plain call', () => {
+    const diagnostics = scan('inconsistent-function-call', 'function f() {} f(); f();');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a function called only as a constructor', () => {
+    const diagnostics = scan('inconsistent-function-call', 'function f() {} new f(); new f();');
     expect(diagnostics).toHaveLength(0);
   });
 });
