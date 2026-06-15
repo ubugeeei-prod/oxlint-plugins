@@ -12462,19 +12462,19 @@
       },
       {
         "name": "no-invalid-regexp",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-invalid-regexp (Sonar key S5856). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port from public RSPEC S5856. Validates string-literal patterns passed to new RegExp(...) and RegExp(...) using the oxc LiteralParser with the cooked string value. Dynamic arguments are skipped to avoid false positives. Dynamic flags fall back to empty-string validation. Invalid flags (unknown letter, duplicate, conflicting u+v) are caught by the flags parser. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-invariant-returns",

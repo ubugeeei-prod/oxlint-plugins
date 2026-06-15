@@ -198,6 +198,7 @@ describe('sonarjs plugin shape', () => {
       'no-identical-functions',
       'no-in-misuse',
       'no-require-or-define',
+      'no-invalid-regexp',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -302,6 +303,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-identical-functions']).toBe('object');
     expect(typeof plugin.rules['no-in-misuse']).toBe('object');
     expect(typeof plugin.rules['no-require-or-define']).toBe('object');
+    expect(typeof plugin.rules['no-invalid-regexp']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -414,6 +416,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-identical-functions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-in-misuse']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-require-or-define']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-invalid-regexp']).toBe('error');
   });
 });
 
@@ -3414,5 +3417,49 @@ describe('no-require-or-define rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-require-or-define)');
+  });
+});
+
+describe('no-invalid-regexp rule', () => {
+  it('reports an unclosed bracket passed to new RegExp', () => {
+    const reports = runRule('no-invalid-regexp', "new RegExp('[');");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('invalidRegExp');
+  });
+
+  it('reports an unclosed group passed to RegExp call', () => {
+    const reports = runRule('no-invalid-regexp', "RegExp('(');");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('invalidRegExp');
+  });
+
+  it('reports an invalid flag', () => {
+    const reports = runRule('no-invalid-regexp', "new RegExp('a', 'z');");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('invalidRegExp');
+  });
+
+  it('does not report a valid pattern', () => {
+    const reports = runRule('no-invalid-regexp', "new RegExp('abc');");
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the argument is a variable', () => {
+    const reports = runRule('no-invalid-regexp', 'new RegExp(somePattern);');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a valid digit escape (cooked value is valid)', () => {
+    // JS source: new RegExp('\\d+') — the cooked string value is \d+ which is valid
+    const reports = runRule('no-invalid-regexp', "new RegExp('\\\\d+');");
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-invalid-regexp through the CLI', () => {
+    const result = runOxlint('no-invalid-regexp', "new RegExp('[');");
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-invalid-regexp)');
   });
 });
