@@ -534,6 +534,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_labeled_statement(&mut self, it: &LabeledStatement<'a>) {
         self.check_no_labels(it);
+        self.check_label_position(it);
         // If the body is directly a loop or switch, hand the label off so the
         // loop/switch visitor can attach it to the breakable-stack frame.
         match &it.body {
