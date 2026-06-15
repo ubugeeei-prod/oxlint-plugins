@@ -9169,3 +9169,50 @@ fn file_permissions_reports_any_receiver_chmod() {
     let diagnostics = scan("file-permissions", "foo.chmodSync(0o777);");
     assert_eq!(diagnostics.len(), 1);
 }
+
+#[test]
+fn file_uploads_reports_disk_storage_without_destination() {
+    let diagnostics = scan("file-uploads", "multer.diskStorage({ filename: fn });");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "file-uploads");
+    assert_eq!(diagnostics[0].message_id, "fileUploads");
+}
+
+#[test]
+fn file_uploads_does_not_report_disk_storage_with_destination() {
+    let diagnostics = scan(
+        "file-uploads",
+        r#"multer.diskStorage({ destination: "/up", filename: fn });"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn file_uploads_does_not_report_string_key_destination() {
+    let diagnostics = scan(
+        "file-uploads",
+        r#"multer.diskStorage({ ["destination"]: d });"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn file_uploads_reports_any_receiver_disk_storage() {
+    // The check keys off the distinctive `diskStorage` property name only, so an
+    // aliased/unrelated receiver missing a destination is still flagged
+    // (documented zero-FP trade-off).
+    let diagnostics = scan("file-uploads", "foo.diskStorage({ filename: fn });");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn file_uploads_does_not_report_disk_storage_without_object_argument() {
+    let diagnostics = scan("file-uploads", "multer.diskStorage();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn file_uploads_does_not_report_unrelated_call() {
+    let diagnostics = scan("file-uploads", "bar();");
+    assert!(diagnostics.is_empty());
+}

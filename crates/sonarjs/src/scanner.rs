@@ -641,6 +641,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_post_message(it);
         self.check_csrf(it);
         self.check_file_permissions(it);
+        self.check_file_uploads(it);
         self.check_web_sql_database(it);
         self.check_no_intrusive_permissions(it);
         self.check_no_unsafe_unzip(it);

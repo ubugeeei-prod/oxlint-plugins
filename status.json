@@ -11166,19 +11166,19 @@
       },
       {
         "name": "file-uploads",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule file-uploads (Sonar key S2598). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S2598. Flags a multer diskStorage configuration that omits an explicit destination: a call whose callee is a static member expression named diskStorage whose object-literal first argument has no \"destination\" property (identifier or string key). Without a destination, uploaded files default to the OS temporary directory. The diskStorage name is distinctive, so matching on it regardless of receiver stays zero-false-positive; diskStorage calls without an object argument are skipped. Formidable's uploadDir hotspot requires instance dataflow and is out of scope. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "fixme-tag",
