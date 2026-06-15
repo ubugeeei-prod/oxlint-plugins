@@ -5491,3 +5491,54 @@ fn does_not_report_property_assignment_to_a_different_variable() {
     let diagnostics = scan("prefer-object-literal", source);
     assert!(diagnostics.is_empty());
 }
+
+// --- no-undefined-argument (S4623) ---
+
+#[test]
+fn no_undefined_argument_reports_sole_undefined() {
+    let diagnostics = scan("no-undefined-argument", "foo(undefined);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-argument");
+    assert_eq!(diagnostics[0].message_id, "removeUndefined");
+}
+
+#[test]
+fn no_undefined_argument_reports_trailing_undefined() {
+    let diagnostics = scan("no-undefined-argument", "foo(1, undefined);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-argument");
+    assert_eq!(diagnostics[0].message_id, "removeUndefined");
+}
+
+#[test]
+fn no_undefined_argument_reports_new_expression() {
+    let diagnostics = scan("no-undefined-argument", "new Foo(undefined);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-argument");
+    assert_eq!(diagnostics[0].message_id, "removeUndefined");
+}
+
+#[test]
+fn no_undefined_argument_no_report_undefined_not_last() {
+    let diagnostics = scan("no-undefined-argument", "foo(undefined, 1);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_undefined_argument_no_report_no_args() {
+    let diagnostics = scan("no-undefined-argument", "foo();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_undefined_argument_no_report_non_undefined_args() {
+    let diagnostics = scan("no-undefined-argument", "foo(1, 2);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_undefined_argument_no_report_spread() {
+    let source = "foo(...args);";
+    let diagnostics = scan("no-undefined-argument", source);
+    assert!(diagnostics.is_empty());
+}

@@ -76,6 +76,7 @@ mod no_skipped_tests;
 mod no_small_switch;
 mod no_sonar_comments;
 mod no_tab;
+mod no_undefined_argument;
 mod no_unthrown_error;
 mod no_useless_catch;
 mod no_useless_increment;

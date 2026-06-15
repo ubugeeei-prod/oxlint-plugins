@@ -363,6 +363,9 @@ const messages = Object.freeze({
   'prefer-object-literal': {
     preferObjectLiteral: 'Declare this object with its properties in a single object literal.',
   },
+  'no-undefined-argument': {
+    removeUndefined: "Remove this redundant 'undefined' argument.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -561,6 +564,8 @@ const ruleDescriptions = Object.freeze({
     "Require a function call's opening parenthesis (and therefore its argument list) to begin on the same line as the end of the callee; writing the call's parentheses on the line below the function name is reported, while wrapping the arguments across lines with the open parenthesis still on the callee's line is allowed",
   'prefer-object-literal':
     'Require an object to be created and initialized with a single object literal rather than declared as an empty object and then populated with property assignments; flags an empty object-literal declaration whose immediately following sibling statement assigns to a property of that same variable',
+  'no-undefined-argument':
+    "Disallow passing the literal 'undefined' as the last argument to a function or constructor call; omitting it is equivalent and avoids redundant noise",
 });
 
 const ruleTypes = Object.freeze({
@@ -664,6 +669,7 @@ const ruleTypes = Object.freeze({
   'public-static-readonly': 'suggestion',
   'call-argument-line': 'suggestion',
   'prefer-object-literal': 'suggestion',
+  'no-undefined-argument': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -767,6 +773,7 @@ const recommendedRuleConfig = Object.freeze({
   'public-static-readonly': 'error',
   'call-argument-line': 'error',
   'prefer-object-literal': 'error',
+  'no-undefined-argument': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
