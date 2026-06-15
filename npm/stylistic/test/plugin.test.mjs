@@ -80,6 +80,7 @@ const stylisticRuleFixtures = [
   ['operator-linebreak', 'const x = 1\n  + 2;\n', [], ['operatorAtBeginning']],
   ['keyword-spacing', 'if(foo) {}\n', [], ['missingAfter']],
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
+  ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
 ];
 
 function runRule(ruleName, sourceText, options, settings) {
@@ -209,6 +210,30 @@ describe('stylistic plugin', () => {
     const sourceText = "/*\n \t ignored\n*/\n'\\\n \t literal';\n`\n \t template\n`;\n";
 
     expect(runRule('no-mixed-spaces-and-tabs', sourceText, [])).toEqual([]);
+  });
+
+  it('supports one-var-declaration-per-line modes and fixes', () => {
+    expect(
+      messageIds(runRule('one-var-declaration-per-line', 'var a, b;\n', ['initializations'])),
+    ).toEqual([]);
+
+    const reports = runRule('one-var-declaration-per-line', 'var a, b;\n', ['always']);
+    expect(reports).toMatchObject([{ messageId: 'expectVarOnNewline' }]);
+    expect(
+      reports[0].suggest?.[0]?.fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([{ range: [7, 7], replacementText: '\n' }]);
+  });
+
+  it('ignores one-var-declaration-per-line inside for headers', () => {
+    expect(
+      messageIds(
+        runRule('one-var-declaration-per-line', 'for (let a = 0, b = 0;;) {}\n', ['always']),
+      ),
+    ).toEqual([]);
   });
 
   it('shares configured stylistic settings across enabled rules', () => {

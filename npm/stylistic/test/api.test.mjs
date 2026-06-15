@@ -8,6 +8,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-trailing-spaces');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('quote-props');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('line-comment-position');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'one-var-declaration-per-line',
+    );
   });
 
   it('runs multiple stylistic rules through one native call', () => {
