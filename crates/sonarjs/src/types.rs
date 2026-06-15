@@ -13,6 +13,7 @@ use crate::RULE_NAMES;
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct DiagnosticData {
     pub value: Option<CompactString>,
+    pub format: Option<CompactString>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -62,6 +63,9 @@ pub struct SonarjsOptions {
     /// Maximum nesting depth of functions for `no-nested-functions` (S2004);
     /// the SonarJS default is 4.
     pub no_nested_functions_threshold: u32,
+    /// Naming convention for `function-name` (S100); the SonarJS default is
+    /// `^[_a-z][a-zA-Z0-9]*$`.
+    pub function_name_format: CompactString,
 }
 
 impl Default for SonarjsOptions {
@@ -79,6 +83,7 @@ impl Default for SonarjsOptions {
             no_duplicate_string_threshold: 3,
             cyclomatic_complexity_threshold: 10,
             no_nested_functions_threshold: 4,
+            function_name_format: CompactString::from("^[_a-z][a-zA-Z0-9]*$"),
         }
     }
 }

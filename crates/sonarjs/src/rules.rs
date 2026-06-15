@@ -22,6 +22,7 @@ mod fixme_tag;
 mod for_in;
 mod for_loop_increment_sign;
 mod function_inside_loop;
+mod function_name;
 mod generator_without_yield;
 mod hashing;
 mod index_of_compare_to_positive_number;

@@ -270,6 +270,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_class(&mut self, it: &Class<'a>) {
         self.check_class_name(it);
+        self.check_function_name_class(it);
         walk::walk_class(self, it);
     }
 
@@ -473,6 +474,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_hardcoded_passwords_declarator(it);
         self.check_no_use_of_empty_return_value_var(it);
         self.check_block_scoped_var(it);
+        self.check_function_name_variable(it);
         walk::walk_variable_declarator(self, it);
     }
 
@@ -599,6 +601,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
+        self.check_function_name_declaration(it);
         if let Some(body) = &it.body {
             self.check_no_identical_functions(it.params.span.start, body.span.end, it.span);
         }
@@ -636,6 +639,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_object_property(&mut self, it: &ObjectProperty<'a>) {
         self.check_no_hardcoded_passwords_object_property(it);
+        self.check_function_name_object_property(it);
         walk::walk_object_property(self, it);
     }
 
