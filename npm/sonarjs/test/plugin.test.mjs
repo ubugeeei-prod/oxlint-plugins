@@ -243,6 +243,7 @@ describe('sonarjs plugin shape', () => {
       'bool-param-default',
       'post-message',
       'in-operator-type-error',
+      'different-types-comparison',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5501,5 +5502,62 @@ describe('in-operator-type-error rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(in-operator-type-error)');
+  });
+});
+
+describe('different-types-comparison rule', () => {
+  it('reports a strict comparison between a string and a number literal', () => {
+    const source = '"a" === 1;';
+    const reports = runRule('different-types-comparison', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('differentTypesComparison');
+  });
+
+  it('reports a strict comparison between null and a number literal', () => {
+    const source = 'null === 0;';
+    const reports = runRule('different-types-comparison', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('differentTypesComparison');
+  });
+
+  it('reports a strict inequality between a number and a string literal', () => {
+    const source = '5 !== "5";';
+    const reports = runRule('different-types-comparison', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('differentTypesComparison');
+  });
+
+  it('reports a strict comparison between a bigint and a number literal', () => {
+    const source = '1n === 1;';
+    const reports = runRule('different-types-comparison', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('differentTypesComparison');
+  });
+
+  it('does not report a same-kind literal comparison', () => {
+    const source = '1 === 2;';
+    const reports = runRule('different-types-comparison', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when an operand is not a literal', () => {
+    const source = 'x === 1;';
+    const reports = runRule('different-types-comparison', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report loose equality between different-typed literals', () => {
+    const source = '1 == "1";';
+    const reports = runRule('different-types-comparison', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports different-types-comparison through the CLI', () => {
+    const source = '"a" === 1;';
+    const result = runOxlint('different-types-comparison', source, 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(different-types-comparison)');
   });
 });

@@ -152,6 +152,7 @@ const expectedRuleNames = [
   'bool-param-default',
   'post-message',
   'in-operator-type-error',
+  'different-types-comparison',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

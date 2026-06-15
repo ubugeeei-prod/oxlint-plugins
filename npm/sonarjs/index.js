@@ -544,6 +544,10 @@ const messages = Object.freeze({
     inOperatorTypeError:
       'The right operand of "in" must be an object; a primitive value here throws a TypeError at runtime.',
   },
+  'different-types-comparison': {
+    differentTypesComparison:
+      'These operands have different primitive types, so this strict comparison is always constant.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -875,6 +879,10 @@ const ruleDescriptions = Object.freeze({
   'in-operator-type-error':
     'Disallow the "in" operator with a primitive literal right operand (string, number, ' +
     'bigint, boolean, or null), which always throws a TypeError at runtime',
+  'different-types-comparison':
+    'Disallow strict equality (===/!==) between two primitive literals of provably ' +
+    'different types, where the comparison is always constant; flags only the ' +
+    'unambiguous literal-vs-literal subset',
 });
 
 const ruleTypes = Object.freeze({
@@ -1027,6 +1035,7 @@ const ruleTypes = Object.freeze({
   'bool-param-default': 'suggestion',
   'post-message': 'problem',
   'in-operator-type-error': 'problem',
+  'different-types-comparison': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1178,6 +1187,7 @@ const recommendedRuleConfig = Object.freeze({
   'bool-param-default': 'error',
   'post-message': 'error',
   'in-operator-type-error': 'error',
+  'different-types-comparison': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

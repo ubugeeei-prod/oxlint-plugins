@@ -8379,3 +8379,63 @@ fn in_operator_type_error_does_not_report_identifier_both_operands() {
     let diagnostics = scan("in-operator-type-error", "const r = key in foo;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn different_types_comparison_reports_string_vs_number() {
+    let diagnostics = scan("different-types-comparison", r#""a" === 1;"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "different-types-comparison");
+    assert_eq!(diagnostics[0].message_id, "differentTypesComparison");
+}
+
+#[test]
+fn different_types_comparison_reports_null_vs_number() {
+    let diagnostics = scan("different-types-comparison", "null === 0;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "differentTypesComparison");
+}
+
+#[test]
+fn different_types_comparison_reports_boolean_vs_string() {
+    let diagnostics = scan("different-types-comparison", r#"true === "x";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "differentTypesComparison");
+}
+
+#[test]
+fn different_types_comparison_reports_number_vs_string_strict_inequality() {
+    let diagnostics = scan("different-types-comparison", r#"5 !== "5";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "differentTypesComparison");
+}
+
+#[test]
+fn different_types_comparison_reports_bigint_vs_number() {
+    let diagnostics = scan("different-types-comparison", "1n === 1;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "differentTypesComparison");
+}
+
+#[test]
+fn different_types_comparison_does_not_report_same_kind_numbers() {
+    let diagnostics = scan("different-types-comparison", "1 === 2;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn different_types_comparison_does_not_report_same_kind_strings() {
+    let diagnostics = scan("different-types-comparison", r#""a" === "b";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn different_types_comparison_does_not_report_non_literal_operand() {
+    let diagnostics = scan("different-types-comparison", "x === 1;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn different_types_comparison_does_not_report_loose_equality() {
+    let diagnostics = scan("different-types-comparison", r#"1 == "1";"#);
+    assert!(diagnostics.is_empty());
+}
