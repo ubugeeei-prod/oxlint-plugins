@@ -132,6 +132,7 @@ const expectedRuleNames = [
   'no-unenclosed-multiline-block',
   'inconsistent-function-call',
   'new-operator-misuse',
+  'no-empty-test-file',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2977,6 +2978,23 @@ describe('file-name-differ-from-class', () => {
 
   it('does not report a function called only as a constructor', () => {
     const diagnostics = scan('inconsistent-function-call', 'function f() {} new f(); new f();');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-empty-test-file for a test file with no it/test calls', () => {
+    const diagnostics = scan('no-empty-test-file', "import {x} from './x';", 'foo.test.ts');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-empty-test-file');
+    expect(diagnostics[0].messageId).toBe('emptyTestFile');
+  });
+
+  it('does not report no-empty-test-file when it() is present in a test file', () => {
+    const diagnostics = scan('no-empty-test-file', "it('works', () => {});", 'foo.test.ts');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-empty-test-file for a non-test filename', () => {
+    const diagnostics = scan('no-empty-test-file', "import {x} from './x';", 'foo.ts');
     expect(diagnostics).toHaveLength(0);
   });
 });

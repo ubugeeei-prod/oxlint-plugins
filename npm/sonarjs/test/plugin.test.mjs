@@ -223,6 +223,7 @@ describe('sonarjs plugin shape', () => {
       'no-unenclosed-multiline-block',
       'inconsistent-function-call',
       'new-operator-misuse',
+      'no-empty-test-file',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -352,6 +353,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-unenclosed-multiline-block']).toBe('object');
     expect(typeof plugin.rules['inconsistent-function-call']).toBe('object');
     expect(typeof plugin.rules['new-operator-misuse']).toBe('object');
+    expect(typeof plugin.rules['no-empty-test-file']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -491,6 +493,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-unenclosed-multiline-block']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/inconsistent-function-call']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/new-operator-misuse']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-empty-test-file']).toBe('error');
   });
 });
 
@@ -4578,5 +4581,42 @@ describe('new-operator-misuse rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(new-operator-misuse)');
+  });
+});
+
+describe('no-empty-test-file rule', () => {
+  it('reports a test file with no it/test calls', () => {
+    const source = "import {x} from './x';";
+    const reports = runRule('no-empty-test-file', source, { filename: 'foo.test.ts' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyTestFile');
+  });
+
+  it('reports a spec file with only describe and no it/test calls', () => {
+    const source = "describe('x', () => {});";
+    const reports = runRule('no-empty-test-file', source, { filename: 'a.spec.ts' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyTestFile');
+  });
+
+  it('does not report when it() is present in the test file', () => {
+    const source = "it('works', () => {});";
+    const reports = runRule('no-empty-test-file', source, { filename: 'foo.test.ts' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report for a non-test filename', () => {
+    const source = "import {x} from './x';";
+    const reports = runRule('no-empty-test-file', source, { filename: 'foo.ts' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-empty-test-file through the CLI', () => {
+    const source = "import {x} from './x';";
+    const result = runOxlint('no-empty-test-file', source, 'foo.test.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-test-file)');
   });
 });
