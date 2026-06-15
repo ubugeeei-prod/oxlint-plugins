@@ -42,6 +42,7 @@ impl<'a> Scanner<'a> {
         }
         let data = DiagnosticData {
             value: Some(CompactString::from(ident.name.as_str())),
+            format: None,
         };
         self.report_with_data(RULE_NAME, "updateConst", data, ident.span, None);
     }

@@ -52,6 +52,7 @@ const expectedRuleNames = [
   'no-nested-incdec',
   'no-useless-increment',
   'class-name',
+  'function-name',
   'max-lines',
   'nested-control-flow',
   'max-lines-per-function',
@@ -1947,6 +1948,37 @@ describe('sonarjs native API', () => {
     const source = 'const C = class widget {};';
     const diagnostics = scan('class-name', source);
     expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports function-name for declarations and method keys', () => {
+    const source =
+      'function Bad_name() {} const Bad_name2 = () => {}; class C { Bad_name3() {} #Bad_name4() {} }';
+    const diagnostics = scan('function-name', source);
+    expect(diagnostics).toHaveLength(3);
+    expect(diagnostics.map((diagnostic) => diagnostic.data.value)).toEqual([
+      'Bad_name',
+      'Bad_name2',
+      'Bad_name3',
+    ]);
+    expect(diagnostics[0].ruleName).toBe('function-name');
+    expect(diagnostics[0].messageId).toBe('renameFunction');
+    expect(diagnostics[0].data.format).toBe('^[_a-z][a-zA-Z0-9]*$');
+  });
+
+  it('passes the function-name format through the native boundary', () => {
+    const diagnostics = scanSonarjs(
+      'function goodName() {} function GoodName() {} const goodName2 = () => {};',
+      'sample.ts',
+      { ruleNames: ['function-name'], functionNameFormat: '^[A-Z][A-Za-z0-9]*$' },
+    );
+    expect(diagnostics).toHaveLength(2);
+    expect(diagnostics.map((diagnostic) => diagnostic.data.value)).toEqual([
+      'goodName',
+      'goodName2',
+    ]);
+    expect(
+      diagnostics.every((diagnostic) => diagnostic.data.format === '^[A-Z][A-Za-z0-9]*$'),
+    ).toBe(true);
   });
 
   it('passes the max-switch-cases threshold through the native boundary', () => {

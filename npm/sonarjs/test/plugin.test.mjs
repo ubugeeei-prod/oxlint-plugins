@@ -143,6 +143,7 @@ describe('sonarjs plugin shape', () => {
       'no-nested-incdec',
       'no-useless-increment',
       'class-name',
+      'function-name',
       'max-lines',
       'nested-control-flow',
       'max-lines-per-function',
@@ -276,6 +277,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-nested-incdec']).toBe('object');
     expect(typeof plugin.rules['no-useless-increment']).toBe('object');
     expect(typeof plugin.rules['class-name']).toBe('object');
+    expect(typeof plugin.rules['function-name']).toBe('object');
     expect(typeof plugin.rules['max-lines']).toBe('object');
     expect(typeof plugin.rules['nested-control-flow']).toBe('object');
     expect(typeof plugin.rules['max-lines-per-function']).toBe('object');
@@ -410,6 +412,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-incdec']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-increment']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/class-name']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/function-name']).toBeUndefined();
     expect(plugin.configs.recommended.rules['sonarjs/max-lines']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/nested-control-flow']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/max-lines-per-function']).toBe('error');
@@ -1638,6 +1641,36 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(class-name)');
+  });
+
+  it('reports function-name through the adapter', () => {
+    const source = 'function Bad_name() {} const Bad_name2 = () => {};';
+    const reports = runRule('function-name', source);
+    expect(reports).toHaveLength(2);
+    expect(reports[0].messageId).toBe('renameFunction');
+    expect(reports[0].data).toEqual({
+      value: 'Bad_name',
+      format: '^[_a-z][a-zA-Z0-9]*$',
+    });
+  });
+
+  it('honors the function-name "format" option', () => {
+    const source = 'function goodName() {} function GoodName() {} const goodName2 = () => {};';
+    const reports = runRule('function-name', source, {
+      options: [{ format: '^[A-Z][A-Za-z0-9]*$' }],
+    });
+    expect(reports).toHaveLength(2);
+    expect(reports.map((report) => report.data.value)).toEqual(['goodName', 'goodName2']);
+  });
+
+  it('reports function-name through the CLI', () => {
+    const source = 'function Bad_name() {}';
+    const result = runOxlint('function-name', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(function-name)');
   });
 
   it('honors the max-switch-cases "maximum" option', () => {

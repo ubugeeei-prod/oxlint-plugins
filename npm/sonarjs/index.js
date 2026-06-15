@@ -218,6 +218,10 @@ const messages = Object.freeze({
   'class-name': {
     className: 'Rename this class to start with an uppercase letter (PascalCase).',
   },
+  'function-name': {
+    renameFunction:
+      'Rename this function "{{value}}" to match the regular expression "{{format}}".',
+  },
   'max-lines': {
     maxLines: 'This file has more lines than the maximum allowed; split it into smaller files.',
   },
@@ -591,6 +595,7 @@ const ruleDescriptions = Object.freeze({
     'Disallow assigning a postfix increment or decrement of a variable back to that same variable',
   'class-name':
     'Require class names to start with an uppercase letter, following the PascalCase convention',
+  'function-name': 'Require function and method names to match the configured regular expression',
   'max-lines':
     'Disallow files with more code lines than the configured maximum (the "maximum" option; default 1000); blank lines and comment-only lines are not counted',
   'max-lines-per-function':
@@ -825,6 +830,7 @@ const ruleTypes = Object.freeze({
   'no-nested-incdec': 'suggestion',
   'no-useless-increment': 'suggestion',
   'class-name': 'suggestion',
+  'function-name': 'suggestion',
   'max-lines': 'suggestion',
   'max-lines-per-function': 'suggestion',
   'nested-control-flow': 'suggestion',
@@ -1144,6 +1150,15 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'function-name') {
+    return [
+      {
+        type: 'object',
+        properties: { format: { type: 'string' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   if (ruleName === 'cognitive-complexity') {
     return [
       {
@@ -1183,6 +1198,9 @@ function scanOptionsForRule(context, ruleName) {
   }
   if (ruleName === 'no-nested-functions' && Number.isInteger(raw.threshold)) {
     options.noNestedFunctionsThreshold = raw.threshold;
+  }
+  if (ruleName === 'function-name' && typeof raw.format === 'string') {
+    options.functionNameFormat = raw.format;
   }
   if (ruleName === 'cognitive-complexity' && Number.isInteger(raw.threshold)) {
     options.cognitiveComplexityThreshold = raw.threshold;

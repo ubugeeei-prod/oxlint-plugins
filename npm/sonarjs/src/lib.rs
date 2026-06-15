@@ -27,6 +27,7 @@ mod napi_abi {
         pub no_duplicate_string_threshold: Option<u32>,
         pub cyclomatic_complexity_threshold: Option<u32>,
         pub no_nested_functions_threshold: Option<u32>,
+        pub function_name_format: Option<String>,
         pub cognitive_complexity_threshold: Option<u32>,
     }
 
@@ -34,6 +35,7 @@ mod napi_abi {
     #[derive(Clone, Debug, Default)]
     pub struct DiagnosticData {
         pub value: Option<String>,
+        pub format: Option<String>,
     }
 
     #[napi(object)]
@@ -105,6 +107,10 @@ mod napi_abi {
             no_nested_functions_threshold: options
                 .no_nested_functions_threshold
                 .unwrap_or(default_options.no_nested_functions_threshold),
+            function_name_format: options
+                .function_name_format
+                .map(CompactString::from)
+                .unwrap_or(default_options.function_name_format),
             cognitive_complexity_threshold: options
                 .cognitive_complexity_threshold
                 .unwrap_or(default_options.cognitive_complexity_threshold),
@@ -117,6 +123,7 @@ mod napi_abi {
                 message_id: diagnostic.message_id.to_owned(),
                 data: DiagnosticData {
                     value: diagnostic.data.value.map(|value| value.into_string()),
+                    format: diagnostic.data.format.map(|value| value.into_string()),
                 },
                 loc: DiagnosticLoc {
                     start_line: diagnostic.loc.start_line,

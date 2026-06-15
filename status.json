@@ -11262,19 +11262,19 @@
       },
       {
         "name": "function-name",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule function-name (Sonar key S100). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room Rust/Oxc port of Sonar key S100. Checks function declarations, function/arrow variable initializers, class/object method keys, and object property keys whose value is a function/arrow against the configured format (default ^[_a-z][a-zA-Z0-9]*$). Ignores assignments, IIFEs, private names, and string/numeric keys to match observed upstream behavior. Includes native API, plugin harness, option-forwarding, and CLI coverage."
       },
       {
         "name": "function-return-type",
@@ -16032,19 +16032,19 @@
       },
       {
         "name": "no-mixed-spaces-and-tabs",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-mixed-spaces-and-tabs."
+        "notes": "Rust source-wide line scan port of @stylistic/no-mixed-spaces-and-tabs, including smart-tabs support, block-comment continuation suppression, and literal/template-line suppression."
       },
       {
         "name": "nonblock-statement-body-position",
