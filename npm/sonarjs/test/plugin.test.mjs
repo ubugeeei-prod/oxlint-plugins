@@ -201,6 +201,7 @@ describe('sonarjs plugin shape', () => {
       'no-in-misuse',
       'no-require-or-define',
       'no-invalid-regexp',
+      'no-invariant-returns',
       'no-extra-arguments',
       'link-with-target-blank',
       'no-weak-cipher',
@@ -320,6 +321,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-in-misuse']).toBe('object');
     expect(typeof plugin.rules['no-require-or-define']).toBe('object');
     expect(typeof plugin.rules['no-invalid-regexp']).toBe('object');
+    expect(typeof plugin.rules['no-invariant-returns']).toBe('object');
     expect(typeof plugin.rules['no-extra-arguments']).toBe('object');
     expect(typeof plugin.rules['link-with-target-blank']).toBe('object');
     expect(typeof plugin.rules['no-weak-cipher']).toBe('object');
@@ -447,6 +449,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-in-misuse']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-require-or-define']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-invalid-regexp']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-invariant-returns']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-extra-arguments']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/link-with-target-blank']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-weak-cipher']).toBe('error');
@@ -3572,6 +3575,36 @@ describe('no-invalid-regexp rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-invalid-regexp)');
+  });
+});
+
+describe('no-invariant-returns rule', () => {
+  it('reports a function that always returns the same value', () => {
+    const source = 'function f(x) {\n  if (x > 0) return 42;\n  return 42;\n}';
+    const reports = runRule('no-invariant-returns', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('invariantReturn');
+  });
+
+  it('does not report when return values differ', () => {
+    const source = 'function f(x) {\n  if (x > 0) return 1;\n  return 2;\n}';
+    const reports = runRule('no-invariant-returns', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when a bare return is present', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  return 42;\n}';
+    const reports = runRule('no-invariant-returns', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-invariant-returns through the CLI', () => {
+    const source = 'function f(x) {\n  if (x > 0) return 42;\n  return 42;\n}';
+    const result = runOxlint('no-invariant-returns', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-invariant-returns)');
   });
 });
 
