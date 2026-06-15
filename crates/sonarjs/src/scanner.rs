@@ -191,6 +191,11 @@ pub(crate) struct Scanner<'a> {
     /// `visit_call_expression` / `visit_new_expression`; consumed in
     /// `finalize_inconsistent_function_call` after the walk completes.
     pub(crate) fn_call_new_records: SmallVec<[(SymbolId, bool, bool, Span); 16]>,
+    /// Set to `true` as soon as a call expression whose callee is `it` or
+    /// `test` (or a `.only`/`.skip`/`.each` variant) is encountered during
+    /// the AST walk. Consumed by `finalize_no_empty_test_file` to decide
+    /// whether a test file contains any test cases.
+    pub(crate) saw_test_call: bool,
 }
 
 impl<'a> Scanner<'a> {
@@ -272,6 +277,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.finalize_use_type_alias();
         self.finalize_inconsistent_function_call();
         self.check_file_name_differ_from_class(it);
+        self.finalize_no_empty_test_file(it);
     }
 
     fn visit_block_statement(&mut self, it: &BlockStatement<'a>) {
@@ -551,6 +557,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_call_expression(&mut self, it: &CallExpression<'a>) {
         self.check_no_skipped_tests_call(it);
         self.check_no_code_after_done(it);
+        self.check_no_empty_test_file_call(it);
         self.check_array_callback_without_return(it);
         self.check_array_constructor_call(it);
         self.check_no_nested_incdec_call(it);
@@ -607,6 +614,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_new_expression(&mut self, it: &NewExpression<'a>) {
+        self.check_new_operator_misuse(it);
         self.check_no_invalid_regexp_new(it);
         self.check_no_primitive_wrappers(it);
         self.check_array_constructor_new(it);
