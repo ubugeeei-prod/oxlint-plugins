@@ -261,6 +261,7 @@ describe('sonarjs plugin shape', () => {
       'csrf',
       'file-permissions',
       'file-uploads',
+      'cors',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6307,5 +6308,58 @@ describe('file-uploads rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(file-uploads)');
+  });
+});
+
+describe('cors rule', () => {
+  it('reports a setHeader call with a wildcard Access-Control-Allow-Origin', () => {
+    const source = 'res.setHeader("Access-Control-Allow-Origin", "*");';
+    const reports = runRule('cors', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('cors');
+  });
+
+  it('reports a cors() middleware call with origin "*"', () => {
+    const source = 'cors({ origin: "*" });';
+    const reports = runRule('cors', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('reports a headers object literal with a wildcard origin', () => {
+    const source = 'res.writeHead(200, { "Access-Control-Allow-Origin": "*" });';
+    const reports = runRule('cors', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report a specific origin in setHeader', () => {
+    const source = 'res.setHeader("Access-Control-Allow-Origin", "https://ex.com");';
+    const reports = runRule('cors', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a specific origin in cors()', () => {
+    const source = 'cors({ origin: "https://ex.com" });';
+    const reports = runRule('cors', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a bare cors() call', () => {
+    const source = 'cors();';
+    const reports = runRule('cors', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an unrelated setHeader call', () => {
+    const source = 'res.setHeader("Content-Type", "x");';
+    const reports = runRule('cors', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports cors through the CLI', () => {
+    const result = runOxlint('cors', 'res.setHeader("Access-Control-Allow-Origin", "*");');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(cors)');
   });
 });

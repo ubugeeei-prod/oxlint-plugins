@@ -611,6 +611,9 @@ const messages = Object.freeze({
     fileUploads:
       'Configure an explicit upload destination; without it, uploaded files are written to the OS temporary directory.',
   },
+  cors: {
+    cors: 'This permissive CORS policy allows any origin; restrict it to trusted origins.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1000,6 +1003,10 @@ const ruleDescriptions = Object.freeze({
     'Flag multer.diskStorage configuration that omits an explicit destination; ' +
     'matches a diskStorage({ ... }) call whose object-literal first argument has no ' +
     '"destination" property (uploaded files would default to the OS temporary directory)',
+  cors:
+    'Flag permissive CORS configurations that trust any origin with the wildcard "*"; ' +
+    'matches setHeader("Access-Control-Allow-Origin", "*"), cors({ origin: "*" }), and ' +
+    'a headers object literal with Access-Control-Allow-Origin set to "*"',
 });
 
 const ruleTypes = Object.freeze({
@@ -1170,6 +1177,7 @@ const ruleTypes = Object.freeze({
   csrf: 'problem',
   'file-permissions': 'problem',
   'file-uploads': 'problem',
+  cors: 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1339,6 +1347,7 @@ const recommendedRuleConfig = Object.freeze({
   csrf: 'error',
   'file-permissions': 'error',
   'file-uploads': 'error',
+  cors: 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
