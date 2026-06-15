@@ -15,6 +15,7 @@ mod code_eval;
 mod comma_or_logical_or_case;
 mod constructor_for_side_effects;
 mod cyclomatic_complexity;
+mod deprecation;
 mod duplicates_in_character_class;
 mod elseif_without_else;
 mod empty_string_repetition;

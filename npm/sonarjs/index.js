@@ -474,6 +474,10 @@ const messages = Object.freeze({
   'no-empty-test-file': {
     emptyTestFile: "This test file does not contain any test cases ('it'/'test').",
   },
+  deprecation: {
+    deprecatedUse:
+      'Do not use code that is marked as deprecated; replace it with the recommended alternative.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -750,6 +754,10 @@ const ruleDescriptions = Object.freeze({
     "Disallow using 'new' with an arrow function; arrow functions cannot be constructors and always throw a TypeError",
   'no-empty-test-file':
     'Require test files (whose name contains .test. or .spec.) to contain at least one it() or test() call; a test file with no test cases is always a bug',
+  deprecation:
+    'Disallow using a same-file function or class whose declaration is immediately preceded by a ' +
+    'block comment containing @deprecated; covers only local declarations to avoid false positives ' +
+    'in the absence of cross-module type information',
 });
 
 const ruleTypes = Object.freeze({
@@ -883,6 +891,7 @@ const ruleTypes = Object.freeze({
   'inconsistent-function-call': 'problem',
   'new-operator-misuse': 'problem',
   'no-empty-test-file': 'problem',
+  deprecation: 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1015,6 +1024,7 @@ const recommendedRuleConfig = Object.freeze({
   'inconsistent-function-call': 'error',
   'new-operator-misuse': 'error',
   'no-empty-test-file': 'error',
+  deprecation: 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
