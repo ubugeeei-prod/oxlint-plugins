@@ -124,6 +124,8 @@ const expectedRuleNames = [
   'no-variable-usage-before-declaration',
   'arguments-order',
   'unicode-aware-regex',
+  'no-undefined-assignment',
+  'no-empty-after-reluctant',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2854,6 +2856,36 @@ describe('unicode-aware-regex rule', () => {
 
   it('does not report a regex without a property escape', () => {
     const diagnostics = scan('unicode-aware-regex', 'const r = /[a-z]/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-empty-after-reluctant', () => {
+  it('reports a lazy star with nothing following', () => {
+    const diagnostics = scan('no-empty-after-reluctant', 'const r = /a*?/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-empty-after-reluctant');
+    expect(diagnostics[0].messageId).toBe('emptyAfterReluctant');
+  });
+
+  it('reports a lazy star followed by a boundary assertion', () => {
+    const diagnostics = scan('no-empty-after-reluctant', 'const r = /a*?$/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('emptyAfterReluctant');
+  });
+
+  it('does not report a lazy star followed by a literal character', () => {
+    const diagnostics = scan('no-empty-after-reluctant', 'const r = /a*?b/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a lazy plus (min == 1)', () => {
+    const diagnostics = scan('no-empty-after-reluctant', 'const r = /a+?/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a greedy star', () => {
+    const diagnostics = scan('no-empty-after-reluctant', 'const r = /a*/;');
     expect(diagnostics).toHaveLength(0);
   });
 });
