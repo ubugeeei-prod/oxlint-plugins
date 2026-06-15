@@ -462,6 +462,10 @@ const messages = Object.freeze({
     unenclosedMultilineBlock:
       'This line is indented as if it belongs to the preceding unbraced block, but it does not; add braces or fix the indentation.',
   },
+  'inconsistent-function-call': {
+    inconsistentFunctionCall:
+      "This function is invoked both as a constructor (with 'new') and as a plain function; use it consistently.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -732,6 +736,9 @@ const ruleDescriptions = Object.freeze({
     'Disallow a sibling statement that is indented as if it belongs to a preceding unbraced ' +
     'control-structure body (if/for/while/else without braces), since it always executes ' +
     'unconditionally despite appearing guarded',
+  'inconsistent-function-call':
+    'Disallow calling a function both as a plain call and as a constructor (with new) within ' +
+    'the same file; pick one calling convention and apply it consistently',
 });
 
 const ruleTypes = Object.freeze({
@@ -862,6 +869,7 @@ const ruleTypes = Object.freeze({
   'no-ignored-return': 'problem',
   'file-name-differ-from-class': 'suggestion',
   'no-unenclosed-multiline-block': 'suggestion',
+  'inconsistent-function-call': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -992,6 +1000,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-ignored-return': 'error',
   'file-name-differ-from-class': 'error',
   'no-unenclosed-multiline-block': 'error',
+  'inconsistent-function-call': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

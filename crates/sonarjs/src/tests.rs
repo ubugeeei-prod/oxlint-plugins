@@ -7006,3 +7006,49 @@ fn does_not_report_no_unenclosed_multiline_block_for_single_line_if() {
     let diagnostics = scan("no-unenclosed-multiline-block", "if (c) a();");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_inconsistent_function_call_for_function_declaration_called_both_ways() {
+    let source = "function f() {} f(); new f();";
+    let diagnostics = scan("inconsistent-function-call", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "inconsistent-function-call");
+    assert_eq!(diagnostics[0].message_id, "inconsistentFunctionCall");
+}
+
+#[test]
+fn reports_inconsistent_function_call_for_arrow_called_both_ways() {
+    let source = "const f = () => {}; f(); new f();";
+    let diagnostics = scan("inconsistent-function-call", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "inconsistent-function-call");
+    assert_eq!(diagnostics[0].message_id, "inconsistentFunctionCall");
+}
+
+#[test]
+fn does_not_report_inconsistent_function_call_when_only_plain_calls() {
+    let source = "function f() {} f(); f();";
+    let diagnostics = scan("inconsistent-function-call", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inconsistent_function_call_when_only_constructor_calls() {
+    let source = "function f() {} new f(); new f();";
+    let diagnostics = scan("inconsistent-function-call", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inconsistent_function_call_for_different_functions() {
+    let source = "function f() {} function g() {} f(); new g();";
+    let diagnostics = scan("inconsistent-function-call", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_inconsistent_function_call_for_member_expression_callee() {
+    let source = "const obj = { f: function() {} }; obj.f(); new obj.f();";
+    let diagnostics = scan("inconsistent-function-call", source);
+    assert!(diagnostics.is_empty());
+}

@@ -11390,15 +11390,15 @@
       },
       {
         "name": "inconsistent-function-call",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
-          "insta": false,
-          "vitest": false,
+          "insta": true,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
