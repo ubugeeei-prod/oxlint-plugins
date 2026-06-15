@@ -128,6 +128,7 @@ mod no_weak_cipher;
 mod no_wildcard_import;
 mod non_existent_operator;
 mod object_alt_content;
+mod operation_returning_nan;
 mod post_message;
 mod prefer_default_last;
 mod prefer_immediate_return;

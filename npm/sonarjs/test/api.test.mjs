@@ -153,6 +153,7 @@ const expectedRuleNames = [
   'post-message',
   'in-operator-type-error',
   'different-types-comparison',
+  'operation-returning-nan',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
