@@ -6677,3 +6677,51 @@ fn does_not_report_unicode_aware_regex_for_escaped_backslash_before_p() {
     let diagnostics = scan("unicode-aware-regex", source);
     assert!(diagnostics.is_empty());
 }
+
+// ---- no-undefined-assignment -----------------------------------------------
+
+#[test]
+fn reports_plain_variable_assigned_undefined() {
+    let source = "x = undefined;";
+    let diagnostics = scan("no-undefined-assignment", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-assignment");
+    assert_eq!(diagnostics[0].message_id, "noUndefinedAssignment");
+}
+
+#[test]
+fn reports_property_assigned_undefined() {
+    let source = "obj.prop = undefined;";
+    let diagnostics = scan("no-undefined-assignment", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-assignment");
+    assert_eq!(diagnostics[0].message_id, "noUndefinedAssignment");
+}
+
+#[test]
+fn does_not_report_assignment_of_null() {
+    let source = "x = null;";
+    let diagnostics = scan("no-undefined-assignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_assignment_of_void_zero() {
+    let source = "x = void 0;";
+    let diagnostics = scan("no-undefined-assignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_strict_equality_comparison_with_undefined() {
+    let source = "if (x === undefined) {}";
+    let diagnostics = scan("no-undefined-assignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_assignment_of_function_call() {
+    let source = "x = foo();";
+    let diagnostics = scan("no-undefined-assignment", source);
+    assert!(diagnostics.is_empty());
+}
