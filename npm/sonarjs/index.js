@@ -510,6 +510,10 @@ const messages = Object.freeze({
   'no-commented-code': {
     commentedCode: 'Remove this commented-out code.',
   },
+  'destructuring-assignment-syntax': {
+    useDestructuring:
+      'Use destructuring to merge these consecutive property extractions into a single declaration.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -811,6 +815,10 @@ const ruleDescriptions = Object.freeze({
   'no-commented-code':
     'Disallow sections of code that have been commented out; ' +
     'commented-out code makes files harder to read and should be removed',
+  'destructuring-assignment-syntax':
+    'Require destructuring when two or more consecutive single-declarator const/let statements ' +
+    'each extract a property from the same plain identifier and the binding name matches the ' +
+    'property name (e.g. const a = obj.a; const b = obj.b; → const { a, b } = obj;)',
 });
 
 const ruleTypes = Object.freeze({
@@ -954,6 +962,7 @@ const ruleTypes = Object.freeze({
   'prefer-regexp-exec': 'suggestion',
   'no-fallthrough': 'problem',
   'no-commented-code': 'suggestion',
+  'destructuring-assignment-syntax': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1096,6 +1105,7 @@ const recommendedRuleConfig = Object.freeze({
   'prefer-regexp-exec': 'error',
   'no-fallthrough': 'error',
   'no-commented-code': 'error',
+  'destructuring-assignment-syntax': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

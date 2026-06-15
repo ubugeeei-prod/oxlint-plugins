@@ -234,6 +234,7 @@ describe('sonarjs plugin shape', () => {
       'no-fallthrough',
       'no-commented-code',
       'no-incomplete-assertions',
+      'destructuring-assignment-syntax',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -373,6 +374,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-fallthrough']).toBe('object');
     expect(typeof plugin.rules['no-commented-code']).toBe('object');
     expect(typeof plugin.rules['no-incomplete-assertions']).toBe('object');
+    expect(typeof plugin.rules['destructuring-assignment-syntax']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -522,6 +524,9 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-fallthrough']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-commented-code']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-incomplete-assertions']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/destructuring-assignment-syntax']).toBe(
+      'error',
+    );
   });
 });
 
@@ -5025,5 +5030,61 @@ describe('no-incomplete-assertions rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-incomplete-assertions)');
+  });
+});
+
+describe('destructuring-assignment-syntax rule', () => {
+  it('reports the second consecutive extraction from the same object', () => {
+    const source = 'const a = obj.a;\nconst b = obj.b;';
+    const reports = runRule('destructuring-assignment-syntax', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useDestructuring');
+  });
+
+  it('reports each declaration from the third onward in a longer group', () => {
+    const source = 'const a = obj.a;\nconst b = obj.b;\nconst c = obj.c;';
+    const reports = runRule('destructuring-assignment-syntax', source);
+    expect(reports).toHaveLength(2);
+    expect(reports[0].messageId).toBe('useDestructuring');
+    expect(reports[1].messageId).toBe('useDestructuring');
+  });
+
+  it('does not report a lone extraction with no consecutive partner', () => {
+    const source = 'const a = obj.a;';
+    const reports = runRule('destructuring-assignment-syntax', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when binding name differs from property name', () => {
+    const source = 'const x = obj.a;\nconst y = obj.b;';
+    const reports = runRule('destructuring-assignment-syntax', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when source is a chained member expression', () => {
+    const source = 'const a = foo.bar.a;\nconst b = foo.bar.b;';
+    const reports = runRule('destructuring-assignment-syntax', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when extractions come from different objects', () => {
+    const source = 'const a = foo.a;\nconst b = bar.b;';
+    const reports = runRule('destructuring-assignment-syntax', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report non-consecutive matching declarations separated by another statement', () => {
+    const source = 'const a = obj.a;\ndoSomething();\nconst b = obj.b;';
+    const reports = runRule('destructuring-assignment-syntax', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports destructuring-assignment-syntax through the CLI', () => {
+    const source = 'const a = obj.a;\nconst b = obj.b;';
+    const result = runOxlint('destructuring-assignment-syntax', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(destructuring-assignment-syntax)');
   });
 });

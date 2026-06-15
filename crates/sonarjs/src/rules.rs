@@ -18,6 +18,7 @@ mod constructor_for_side_effects;
 mod cyclomatic_complexity;
 mod declarations_in_global_scope;
 mod deprecation;
+mod destructuring_assignment_syntax;
 mod duplicates_in_character_class;
 mod elseif_without_else;
 mod empty_string_repetition;
