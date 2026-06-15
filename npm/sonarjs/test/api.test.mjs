@@ -118,6 +118,7 @@ const expectedRuleNames = [
   'no-unused-function-argument',
   'object-alt-content',
   'no-use-of-empty-return-value',
+  'no-duplicated-branches',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
