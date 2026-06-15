@@ -561,6 +561,10 @@ const messages = Object.freeze({
     conciseRegex:
       'Use a concise character class shorthand (\\d, \\D, or \\w) instead of this verbose character class.',
   },
+  'no-misleading-character-class': {
+    misleadingCharacterClass:
+      'This character class contains a multi-code-unit character; without the "u" flag it is split into surrogate halves and will not match as intended.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -909,6 +913,9 @@ const ruleDescriptions = Object.freeze({
   'concise-regex':
     'Prefer concise character class shorthands; flags only the exact verbose forms ' +
     '[0-9] (\\d), [^0-9] (\\D), and [A-Za-z0-9_] (\\w)',
+  'no-misleading-character-class':
+    'Disallow astral (multi-code-unit) characters in a regex character class without the ' +
+    '"u"/"v" flag, where they are silently split into surrogate halves',
 });
 
 const ruleTypes = Object.freeze({
@@ -1066,6 +1073,7 @@ const ruleTypes = Object.freeze({
   'production-debug': 'problem',
   'no-hardcoded-secrets': 'problem',
   'concise-regex': 'suggestion',
+  'no-misleading-character-class': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1222,6 +1230,7 @@ const recommendedRuleConfig = Object.freeze({
   'production-debug': 'error',
   'no-hardcoded-secrets': 'error',
   'concise-regex': 'error',
+  'no-misleading-character-class': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
