@@ -602,6 +602,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_control_regex(it);
         self.check_single_char_in_character_classes(it);
         self.check_duplicates_in_character_class(it);
+        self.check_concise_regex(it);
         self.check_anchor_precedence(it);
         self.check_single_character_alternation(it);
         self.check_empty_string_repetition(it);

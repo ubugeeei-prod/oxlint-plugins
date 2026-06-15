@@ -15,6 +15,7 @@ mod class_prototype;
 mod code_eval;
 mod cognitive_complexity;
 mod comma_or_logical_or_case;
+mod concise_regex;
 mod constructor_for_side_effects;
 mod cyclomatic_complexity;
 mod declarations_in_global_scope;
