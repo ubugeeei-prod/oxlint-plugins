@@ -217,6 +217,7 @@ describe('sonarjs plugin shape', () => {
       'block-scoped-var',
       'no-variable-usage-before-declaration',
       'arguments-order',
+      'updated-const-var',
       'unicode-aware-regex',
       'no-undefined-assignment',
       'no-empty-after-reluctant',
@@ -351,6 +352,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['block-scoped-var']).toBe('object');
     expect(typeof plugin.rules['no-variable-usage-before-declaration']).toBe('object');
     expect(typeof plugin.rules['arguments-order']).toBe('object');
+    expect(typeof plugin.rules['updated-const-var']).toBe('object');
     expect(typeof plugin.rules['unicode-aware-regex']).toBe('object');
     expect(typeof plugin.rules['no-undefined-assignment']).toBe('object');
     expect(typeof plugin.rules['no-empty-after-reluctant']).toBe('object');
@@ -495,6 +497,7 @@ describe('sonarjs plugin shape', () => {
       'error',
     );
     expect(plugin.configs.recommended.rules['sonarjs/arguments-order']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/updated-const-var']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/unicode-aware-regex']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-undefined-assignment']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-after-reluctant']).toBe('error');
@@ -4410,6 +4413,51 @@ describe('arguments-order rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(arguments-order)');
+  });
+});
+
+describe('updated-const-var rule', () => {
+  it('reports simple and compound assignments to const bindings', () => {
+    const source = 'const x = 1, y = 2; x = 3; y += 4;';
+    const reports = runRule('updated-const-var', source);
+    expect(reports).toHaveLength(2);
+    expect(reports.map((report) => report.messageId)).toEqual(['updateConst', 'updateConst']);
+  });
+
+  it('reports update expressions against const bindings', () => {
+    const reports = runRule('updated-const-var', 'const x = 1; ++x; x++;');
+    expect(reports).toHaveLength(2);
+    expect(reports.map((report) => report.messageId)).toEqual(['updateConst', 'updateConst']);
+  });
+
+  it('reports destructuring and for-in/of assignment targets', () => {
+    const source = 'const x = 1, y = 2, z = 3; ({ x } = obj); [y] = values; for (z of values) {}';
+    const reports = runRule('updated-const-var', source);
+    expect(reports).toHaveLength(3);
+    expect(reports.map((report) => report.messageId)).toEqual([
+      'updateConst',
+      'updateConst',
+      'updateConst',
+    ]);
+  });
+
+  it('does not report let/var assignments, property writes, or shadowed names', () => {
+    const source = [
+      'let x = 1; x = 2;',
+      'var y = 1; y++;',
+      'const obj = {}; obj.x = 1;',
+      'const z = 1; function f(z) { z = 2; }',
+    ].join('\\n');
+    const reports = runRule('updated-const-var', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports updated-const-var through the CLI', () => {
+    const result = runOxlint('updated-const-var', 'const x = 1; x = 2;');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(updated-const-var)');
   });
 });
 
