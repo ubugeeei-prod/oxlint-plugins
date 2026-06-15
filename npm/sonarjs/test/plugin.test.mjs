@@ -250,6 +250,7 @@ describe('sonarjs plugin shape', () => {
       'concise-regex',
       'no-misleading-character-class',
       'slow-regex',
+      'web-sql-database',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5810,5 +5811,41 @@ describe('slow-regex rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(slow-regex)');
+  });
+});
+
+describe('web-sql-database rule', () => {
+  it('reports a global openDatabase call', () => {
+    const source = 'openDatabase("db", "1.0", "desc", 1024);';
+    const reports = runRule('web-sql-database', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('webSqlDatabase');
+  });
+
+  it('reports window.openDatabase', () => {
+    const source = 'window.openDatabase("db");';
+    const reports = runRule('web-sql-database', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('webSqlDatabase');
+  });
+
+  it('does not report an unrelated method call', () => {
+    const source = 'obj.query();';
+    const reports = runRule('web-sql-database', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a property access without a call', () => {
+    const source = 'const x = openDatabase;';
+    const reports = runRule('web-sql-database', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports web-sql-database through the CLI', () => {
+    const result = runOxlint('web-sql-database', 'window.openDatabase("db");');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(web-sql-database)');
   });
 });

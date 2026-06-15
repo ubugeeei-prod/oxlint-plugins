@@ -8752,3 +8752,46 @@ fn slow_regex_does_not_report_bounded_outer_quantifier() {
     let diagnostics = scan("slow-regex", "/(a+){2,3}/");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn web_sql_database_reports_global_open_database_call() {
+    let diagnostics = scan(
+        "web-sql-database",
+        r#"openDatabase("db", "1.0", "desc", 1024);"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "web-sql-database");
+    assert_eq!(diagnostics[0].message_id, "webSqlDatabase");
+}
+
+#[test]
+fn web_sql_database_reports_window_open_database_call() {
+    let diagnostics = scan("web-sql-database", r#"window.openDatabase("db");"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "webSqlDatabase");
+}
+
+#[test]
+fn web_sql_database_reports_member_open_database_regardless_of_receiver() {
+    let diagnostics = scan("web-sql-database", "db.openDatabase();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "webSqlDatabase");
+}
+
+#[test]
+fn web_sql_database_does_not_report_unrelated_call() {
+    let diagnostics = scan("web-sql-database", "foo();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn web_sql_database_does_not_report_property_access_without_call() {
+    let diagnostics = scan("web-sql-database", "const x = openDatabase;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn web_sql_database_does_not_report_unrelated_method_call() {
+    let diagnostics = scan("web-sql-database", "obj.query();");
+    assert!(diagnostics.is_empty());
+}
