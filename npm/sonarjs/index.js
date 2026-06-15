@@ -577,6 +577,9 @@ const messages = Object.freeze({
     intrusivePermission:
       'Requesting this browser permission is intrusive; make sure it is necessary and properly justified.',
   },
+  'encryption-secure-mode': {
+    insecureCipherMode: 'Use a secure cipher mode (e.g. GCM); ECB and CBC are vulnerable.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -937,6 +940,9 @@ const ruleDescriptions = Object.freeze({
   'no-intrusive-permissions':
     'Flag requests for intrusive browser permissions; matches the distinctive ' +
     'geolocation, Notification.requestPermission, and permissions.query call chains',
+  'encryption-secure-mode':
+    'Disallow insecure block-cipher modes; flags Node crypto cipher/decipher factory ' +
+    'calls whose string-literal cipher spec names the ECB or CBC mode (e.g. aes-128-cbc)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1098,6 +1104,7 @@ const ruleTypes = Object.freeze({
   'slow-regex': 'problem',
   'web-sql-database': 'problem',
   'no-intrusive-permissions': 'problem',
+  'encryption-secure-mode': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1258,6 +1265,7 @@ const recommendedRuleConfig = Object.freeze({
   'slow-regex': 'error',
   'web-sql-database': 'error',
   'no-intrusive-permissions': 'error',
+  'encryption-secure-mode': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

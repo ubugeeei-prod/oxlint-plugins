@@ -8856,3 +8856,45 @@ fn no_intrusive_permissions_does_not_report_bare_member_without_call() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn encryption_secure_mode_reports_cbc_member_call() {
+    let diagnostics = scan(
+        "encryption-secure-mode",
+        r#"crypto.createCipheriv("aes-128-cbc", k, iv);"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn encryption_secure_mode_reports_ecb_identifier_call() {
+    let diagnostics = scan(
+        "encryption-secure-mode",
+        r#"createCipheriv("AES-256-ECB", k, iv);"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn encryption_secure_mode_does_not_report_gcm_mode() {
+    let diagnostics = scan(
+        "encryption-secure-mode",
+        r#"crypto.createCipheriv("aes-256-gcm", k, iv);"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn encryption_secure_mode_does_not_report_wrong_callee() {
+    let diagnostics = scan("encryption-secure-mode", r#"foo("aes-128-cbc");"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn encryption_secure_mode_does_not_report_dynamic_algorithm() {
+    let diagnostics = scan(
+        "encryption-secure-mode",
+        "crypto.createCipheriv(algo, k, iv);",
+    );
+    assert!(diagnostics.is_empty());
+}
