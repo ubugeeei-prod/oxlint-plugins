@@ -10862,19 +10862,19 @@
       },
       {
         "name": "deprecation",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule deprecation (Sonar key S1874). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (S1874). Narrow same-file subset: flags identifier references to local function/class declarations immediately preceded by a block comment containing @deprecated. Cross-module references and variable declarations excluded to avoid false positives in the absence of type information. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "destructuring-assignment-syntax",

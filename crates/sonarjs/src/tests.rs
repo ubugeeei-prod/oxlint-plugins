@@ -7098,3 +7098,51 @@ fn does_not_report_no_empty_test_file_for_non_test_filename() {
     let diagnostics = scan_with_file("no-empty-test-file", source, "foo.ts");
     assert!(diagnostics.is_empty());
 }
+
+// deprecation tests
+
+#[test]
+fn reports_deprecation_for_call_to_deprecated_function() {
+    let source = "/** @deprecated */ function old() {} old();";
+    let diagnostics = scan("deprecation", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "deprecation");
+    assert_eq!(diagnostics[0].message_id, "deprecatedUse");
+}
+
+#[test]
+fn reports_deprecation_for_reference_to_deprecated_class() {
+    let source = "/** @deprecated */ class OldClass {} new OldClass();";
+    let diagnostics = scan("deprecation", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "deprecation");
+    assert_eq!(diagnostics[0].message_id, "deprecatedUse");
+}
+
+#[test]
+fn does_not_report_deprecation_for_non_deprecated_function() {
+    let source = "function modern() {} modern();";
+    let diagnostics = scan("deprecation", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_deprecation_for_deprecated_function_never_called() {
+    let source = "/** @deprecated */ function old() {}";
+    let diagnostics = scan("deprecation", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_deprecation_for_line_comment_with_at_deprecated() {
+    let source = "// @deprecated\nfunction old() {} old();";
+    let diagnostics = scan("deprecation", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_deprecation_when_comment_not_adjacent() {
+    let source = "/** @deprecated */ function unrelated() {}\nfunction other() {} other();";
+    let diagnostics = scan("deprecation", source);
+    assert!(diagnostics.is_empty());
+}
