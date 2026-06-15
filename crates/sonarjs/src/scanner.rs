@@ -155,6 +155,13 @@ pub(crate) struct Scanner<'a> {
     /// reset at every function boundary. A function entered while the top frame
     /// is `> 0` is defined inside a loop.
     pub(crate) loop_depth_in_function: SmallVec<[u32; 8]>,
+    /// Stack of span values for every currently-open function or arrow scope,
+    /// pushed on entry and popped on exit. Used by
+    /// `no-variable-usage-before-declaration` to determine whether a reference
+    /// and its variable declarator are in the same enclosing function (same
+    /// depth in the stack), or whether the reference is inside a nested
+    /// function/arrow (deeper depth) and therefore a safe closure.
+    pub(crate) fn_span_stack: SmallVec<[Span; 8]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -471,6 +478,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_identifier_reference(&mut self, it: &IdentifierReference<'a>) {
         self.check_arguments_usage(it);
+        self.check_no_variable_usage_before_declaration(it);
         walk::walk_identifier_reference(self, it);
     }
 
@@ -523,6 +531,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_call_argument_line(it);
         self.check_no_require_or_define(it);
         self.check_no_extra_arguments(it);
+        self.check_arguments_order(it);
         self.record_iife_callee(&it.callee);
         walk::walk_call_expression(self, it);
     }
@@ -581,7 +590,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_function_inside_loop(it.span);
         self.enter_this_binding_scope();
         self.check_no_unused_function_argument_fn(it);
+        self.fn_span_stack.push(it.span);
         walk::walk_function(self, it, flags);
+        self.fn_span_stack.pop();
         self.leave_this_binding_scope();
         self.leave_function_inside_loop();
         self.leave_nested_function();
@@ -635,7 +646,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_nested_function(it.span);
         self.enter_function_inside_loop(it.span);
         self.check_no_unused_function_argument_arrow(it);
+        self.fn_span_stack.push(it.span);
         walk::walk_arrow_function_expression(self, it);
+        self.fn_span_stack.pop();
         self.leave_function_inside_loop();
         self.leave_nested_function();
         self.leave_cyclomatic_scope();
