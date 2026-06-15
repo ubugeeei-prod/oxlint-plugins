@@ -216,6 +216,7 @@ describe('sonarjs plugin shape', () => {
       'arguments-order',
       'updated-const-var',
       'unicode-aware-regex',
+      'no-undefined-assignment',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -338,6 +339,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['arguments-order']).toBe('object');
     expect(typeof plugin.rules['updated-const-var']).toBe('object');
     expect(typeof plugin.rules['unicode-aware-regex']).toBe('object');
+    expect(typeof plugin.rules['no-undefined-assignment']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -470,6 +472,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/arguments-order']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/updated-const-var']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/unicode-aware-regex']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-undefined-assignment']).toBe('error');
   });
 });
 
@@ -4323,5 +4326,42 @@ describe('unicode-aware-regex rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(unicode-aware-regex)');
+  });
+});
+
+describe('no-undefined-assignment rule', () => {
+  it('reports a plain variable assigned undefined', () => {
+    const source = 'x = undefined;';
+    const reports = runRule('no-undefined-assignment', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noUndefinedAssignment');
+  });
+
+  it('reports a property assigned undefined', () => {
+    const source = 'obj.prop = undefined;';
+    const reports = runRule('no-undefined-assignment', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noUndefinedAssignment');
+  });
+
+  it('does not report assignment of null', () => {
+    const source = 'x = null;';
+    const reports = runRule('no-undefined-assignment', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report assignment of void 0', () => {
+    const source = 'x = void 0;';
+    const reports = runRule('no-undefined-assignment', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-undefined-assignment through the CLI', () => {
+    const source = 'x = undefined;';
+    const result = runOxlint('no-undefined-assignment', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-undefined-assignment)');
   });
 });
