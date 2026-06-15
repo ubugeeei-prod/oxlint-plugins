@@ -100,6 +100,7 @@ impl<'a> Scanner<'a> {
         }
         let data = DiagnosticData {
             value: Some(param_count.to_compact_string()),
+            format: None,
         };
         self.report_with_data(RULE_NAME, "extraArguments", data, call.span, None);
     }
