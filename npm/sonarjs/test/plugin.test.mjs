@@ -224,6 +224,7 @@ describe('sonarjs plugin shape', () => {
       'inconsistent-function-call',
       'new-operator-misuse',
       'no-empty-test-file',
+      'deprecation',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -354,6 +355,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['inconsistent-function-call']).toBe('object');
     expect(typeof plugin.rules['new-operator-misuse']).toBe('object');
     expect(typeof plugin.rules['no-empty-test-file']).toBe('object');
+    expect(typeof plugin.rules['deprecation']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -494,6 +496,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/inconsistent-function-call']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/new-operator-misuse']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-test-file']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/deprecation']).toBe('error');
   });
 });
 
@@ -4633,5 +4636,35 @@ describe('no-empty-test-file rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-test-file)');
+  });
+});
+
+describe('deprecation rule', () => {
+  it('reports a call to a locally-declared deprecated function', () => {
+    const source = '/** @deprecated */ function old() {} old();';
+    const reports = runRule('deprecation', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('deprecatedUse');
+  });
+
+  it('does not report a call to a function without a @deprecated block comment', () => {
+    const source = 'function modern() {} modern();';
+    const reports = runRule('deprecation', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the deprecated function is never called', () => {
+    const source = '/** @deprecated */ function old() {}';
+    const reports = runRule('deprecation', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports deprecation through the CLI', () => {
+    const source = '/** @deprecated */ function old() {} old();';
+    const result = runOxlint('deprecation', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(deprecation)');
   });
 });
