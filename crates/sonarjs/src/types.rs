@@ -62,6 +62,9 @@ pub struct SonarjsOptions {
     /// Maximum nesting depth of functions for `no-nested-functions` (S2004);
     /// the SonarJS default is 4.
     pub no_nested_functions_threshold: u32,
+    /// Maximum cognitive complexity per function for `cognitive-complexity` (S3776);
+    /// the SonarJS default is 15.
+    pub cognitive_complexity_threshold: u32,
 }
 
 impl Default for SonarjsOptions {
@@ -79,6 +82,7 @@ impl Default for SonarjsOptions {
             no_duplicate_string_threshold: 3,
             cyclomatic_complexity_threshold: 10,
             no_nested_functions_threshold: 4,
+            cognitive_complexity_threshold: 15,
         }
     }
 }

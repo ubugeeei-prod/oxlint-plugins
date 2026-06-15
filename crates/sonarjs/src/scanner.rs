@@ -202,6 +202,12 @@ pub(crate) struct Scanner<'a> {
     /// consulted by `check_deprecation_reference` to flag calls to those
     /// symbols.
     pub(crate) deprecated_symbols: SmallVec<[SymbolId; 8]>,
+    /// Depth of currently-open function scopes during the OXC visitor walk,
+    /// used by `cognitive-complexity`. When depth > 0 the visitor is inside a
+    /// function whose body was already scored recursively by the outer
+    /// function's standalone `score_function_body` call, so the inner function
+    /// must not be scored again.
+    pub(crate) cognitive_complexity_fn_depth: u32,
 }
 
 impl<'a> Scanner<'a> {
@@ -639,6 +645,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         if let Some(body) = &it.body {
             self.check_no_identical_functions(it.params.span.start, body.span.end, it.span);
         }
+        self.check_cognitive_complexity_fn(it);
         let track = self.enter_generator(it);
         self.enter_return_scope(it.span);
         self.enter_invariant_return_scope(it.span);
@@ -649,7 +656,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_this_binding_scope();
         self.check_no_unused_function_argument_fn(it);
         self.fn_span_stack.push(it.span);
+        self.cognitive_complexity_fn_depth += 1;
         walk::walk_function(self, it, flags);
+        self.cognitive_complexity_fn_depth -= 1;
         self.fn_span_stack.pop();
         self.leave_this_binding_scope();
         self.leave_function_inside_loop();
@@ -699,6 +708,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         if !it.expression {
             self.check_no_identical_functions(it.params.span.start, it.body.span.end, it.span);
         }
+        self.check_cognitive_complexity_arrow(it);
         self.enter_return_scope(it.span);
         if !it.expression {
             self.enter_invariant_return_scope(it.span);
@@ -709,7 +719,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_function_inside_loop(it.span);
         self.check_no_unused_function_argument_arrow(it);
         self.fn_span_stack.push(it.span);
+        self.cognitive_complexity_fn_depth += 1;
         walk::walk_arrow_function_expression(self, it);
+        self.cognitive_complexity_fn_depth -= 1;
         self.fn_span_stack.pop();
         self.leave_function_inside_loop();
         self.leave_nested_function();
