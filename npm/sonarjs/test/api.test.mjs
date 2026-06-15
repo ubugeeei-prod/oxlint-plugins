@@ -110,6 +110,7 @@ const expectedRuleNames = [
   'no-invalid-regexp',
   'no-extra-arguments',
   'link-with-target-blank',
+  'no-hardcoded-passwords',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
