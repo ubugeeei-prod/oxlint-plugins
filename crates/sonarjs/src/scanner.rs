@@ -573,6 +573,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_property_definition(&mut self, it: &PropertyDefinition<'a>) {
+        self.check_public_static_readonly(it);
         self.enter_this_binding_scope();
         walk::walk_property_definition(self, it);
         self.leave_this_binding_scope();

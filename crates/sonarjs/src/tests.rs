@@ -5316,3 +5316,68 @@ let d: A & B;\nlet e: A & B;\nlet f: A & B;";
     let diagnostics = scan("use-type-alias", source);
     assert_eq!(diagnostics.len(), 2);
 }
+
+#[test]
+fn reports_public_default_static_field() {
+    let source = "class C { static x = 1; }";
+    let diagnostics = scan("public-static-readonly", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "public-static-readonly");
+}
+
+#[test]
+fn reports_explicit_public_static_field() {
+    let source = "class C { public static x = 1; }";
+    let diagnostics = scan("public-static-readonly", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn reports_uninitialized_public_static_field() {
+    let source = "class C { static x: number; }";
+    let diagnostics = scan("public-static-readonly", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_declare_public_static_field() {
+    // An ambient `declare` field has no runtime storage, so it is exempt.
+    let source = "class C { declare static x: number; }";
+    let diagnostics = scan("public-static-readonly", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_static_readonly_field() {
+    let source = "class C { static readonly x = 1; }";
+    let diagnostics = scan("public-static-readonly", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_private_static_field() {
+    let source = "class C { private static x = 1; }";
+    let diagnostics = scan("public-static-readonly", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_protected_static_field() {
+    let source = "class C { protected static x = 1; }";
+    let diagnostics = scan("public-static-readonly", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_non_static_field() {
+    let source = "class C { x = 1; }";
+    let diagnostics = scan("public-static-readonly", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_static_private_key_field() {
+    let source = "class C { static #x = 1; }";
+    let diagnostics = scan("public-static-readonly", source);
+    assert!(diagnostics.is_empty());
+}

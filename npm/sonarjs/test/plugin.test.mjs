@@ -191,6 +191,7 @@ describe('sonarjs plugin shape', () => {
       'function-inside-loop',
       'no-useless-intersection',
       'use-type-alias',
+      'public-static-readonly',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -288,6 +289,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['function-inside-loop']).toBe('object');
     expect(typeof plugin.rules['no-useless-intersection']).toBe('object');
     expect(typeof plugin.rules['use-type-alias']).toBe('object');
+    expect(typeof plugin.rules['public-static-readonly']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -393,6 +395,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/function-inside-loop']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-intersection']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/use-type-alias']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/public-static-readonly']).toBe('error');
   });
 });
 
@@ -602,6 +605,53 @@ describe('use-type-alias rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(use-type-alias)');
+  });
+});
+
+describe('public-static-readonly rule', () => {
+  it('reports a public-by-default static field through the adapter', () => {
+    const reports = runRule('public-static-readonly', 'class C { static x = 1; }');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('publicStaticReadonly');
+  });
+
+  it('reports an explicit public static field through the adapter', () => {
+    const reports = runRule('public-static-readonly', 'class C { public static x = 1; }');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('publicStaticReadonly');
+  });
+
+  it('does not report a static readonly field', () => {
+    const reports = runRule('public-static-readonly', 'class C { static readonly x = 1; }');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a private static field', () => {
+    const reports = runRule('public-static-readonly', 'class C { private static x = 1; }');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a protected static field', () => {
+    const reports = runRule('public-static-readonly', 'class C { protected static x = 1; }');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-static field', () => {
+    const reports = runRule('public-static-readonly', 'class C { x = 1; }');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a static #private field', () => {
+    const reports = runRule('public-static-readonly', 'class C { static #x = 1; }');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports public-static-readonly through the CLI', () => {
+    const result = runOxlint('public-static-readonly', 'class C { static x = 1; }', 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(public-static-readonly)');
   });
 });
 
