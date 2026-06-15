@@ -244,6 +244,7 @@ describe('sonarjs plugin shape', () => {
       'post-message',
       'in-operator-type-error',
       'different-types-comparison',
+      'operation-returning-nan',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5559,5 +5560,55 @@ describe('different-types-comparison rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(different-types-comparison)');
+  });
+});
+
+describe('operation-returning-nan rule', () => {
+  it('reports an arrow function operand in a multiplication', () => {
+    const source = 'const x = (() => {}) * 2;';
+    const reports = runRule('operation-returning-nan', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('operationReturningNan');
+  });
+
+  it('reports a function expression operand in a subtraction', () => {
+    const source = 'const x = (function(){}) - 1;';
+    const reports = runRule('operation-returning-nan', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('operationReturningNan');
+  });
+
+  it('reports a plain object literal operand', () => {
+    const source = 'const x = ({a:1}) / 2;';
+    const reports = runRule('operation-returning-nan', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('operationReturningNan');
+  });
+
+  it('does not report an object literal with a custom valueOf', () => {
+    const source = 'const x = ({valueOf(){return 5}}) * 2;';
+    const reports = runRule('operation-returning-nan', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an array operand', () => {
+    const source = 'const x = [] * 2;';
+    const reports = runRule('operation-returning-nan', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report the + operator', () => {
+    const source = 'const x = "a" + {};';
+    const reports = runRule('operation-returning-nan', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports operation-returning-nan through the CLI', () => {
+    const source = 'const x = ({}) * 2;';
+    const result = runOxlint('operation-returning-nan', source, 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(operation-returning-nan)');
   });
 });

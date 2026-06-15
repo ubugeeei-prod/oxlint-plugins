@@ -8439,3 +8439,78 @@ fn different_types_comparison_does_not_report_loose_equality() {
     let diagnostics = scan("different-types-comparison", r#"1 == "1";"#);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn operation_returning_nan_reports_arrow_function_operand() {
+    let diagnostics = scan("operation-returning-nan", "const x = (() => {}) * 2;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "operation-returning-nan");
+    assert_eq!(diagnostics[0].message_id, "operationReturningNan");
+}
+
+#[test]
+fn operation_returning_nan_reports_function_expression_operand() {
+    let diagnostics = scan("operation-returning-nan", "const x = (function(){}) - 1;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "operation-returning-nan");
+    assert_eq!(diagnostics[0].message_id, "operationReturningNan");
+}
+
+#[test]
+fn operation_returning_nan_reports_empty_object_operand() {
+    let diagnostics = scan("operation-returning-nan", "const x = ({}) * 2;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "operationReturningNan");
+}
+
+#[test]
+fn operation_returning_nan_reports_plain_data_object_operand() {
+    let diagnostics = scan("operation-returning-nan", "const x = ({a:1}) / 2;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "operationReturningNan");
+}
+
+#[test]
+fn operation_returning_nan_does_not_report_object_with_value_of() {
+    // A custom valueOf can produce a finite number, so the object is not plain.
+    let diagnostics = scan(
+        "operation-returning-nan",
+        "const x = ({valueOf(){return 5}}) * 2;",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn operation_returning_nan_does_not_report_object_with_to_string() {
+    let diagnostics = scan(
+        "operation-returning-nan",
+        r#"const x = ({toString(){return "5"}}) * 2;"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn operation_returning_nan_does_not_report_array_operand() {
+    // [] * 2 === 0 and [5] * 2 === 10 — arrays are not reliably NaN.
+    let diagnostics = scan("operation-returning-nan", "const x = [] * 2;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn operation_returning_nan_does_not_report_identifier_operand() {
+    let diagnostics = scan("operation-returning-nan", "const x = y * 2;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn operation_returning_nan_does_not_report_addition_operator() {
+    // The + operator is excluded entirely (string concatenation / coercion).
+    let diagnostics = scan("operation-returning-nan", r#"const x = "a" + {};"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn operation_returning_nan_does_not_report_numeric_operands() {
+    let diagnostics = scan("operation-returning-nan", "const x = 1 + 2;");
+    assert!(diagnostics.is_empty());
+}

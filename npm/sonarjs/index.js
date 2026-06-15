@@ -548,6 +548,9 @@ const messages = Object.freeze({
     differentTypesComparison:
       'These operands have different primitive types, so this strict comparison is always constant.',
   },
+  'operation-returning-nan': {
+    operationReturningNan: 'This arithmetic operation will always evaluate to NaN.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -883,6 +886,9 @@ const ruleDescriptions = Object.freeze({
     'Disallow strict equality (===/!==) between two primitive literals of provably ' +
     'different types, where the comparison is always constant; flags only the ' +
     'unambiguous literal-vs-literal subset',
+  'operation-returning-nan':
+    'Disallow arithmetic operations (excluding +) where an operand is a function, class, or ' +
+    'plain object literal that always coerces to NaN',
 });
 
 const ruleTypes = Object.freeze({
@@ -1036,6 +1042,7 @@ const ruleTypes = Object.freeze({
   'post-message': 'problem',
   'in-operator-type-error': 'problem',
   'different-types-comparison': 'problem',
+  'operation-returning-nan': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1188,6 +1195,7 @@ const recommendedRuleConfig = Object.freeze({
   'post-message': 'error',
   'in-operator-type-error': 'error',
   'different-types-comparison': 'error',
+  'operation-returning-nan': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
