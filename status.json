@@ -13150,19 +13150,19 @@
       },
       {
         "name": "no-unsafe-unzip",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-unsafe-unzip (Sonar key S5042). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (S5042). Flags a CallExpression whose callee is a static member expression named 'extractAllTo' (adm-zip's whole-archive extraction), which risks a zip-bomb denial of service. Deliberately narrow to the distinctive adm-zip method name to stay zero-false-positive: the secure per-entry 'extractEntryTo' and the generic 'tar.x'/'extract'/'open'/'loadAsync' APIs are intentionally not flagged. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-unthrown-error",

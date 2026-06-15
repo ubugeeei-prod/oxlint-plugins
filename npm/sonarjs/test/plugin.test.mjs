@@ -253,6 +253,7 @@ describe('sonarjs plugin shape', () => {
       'web-sql-database',
       'no-intrusive-permissions',
       'encryption-secure-mode',
+      'no-unsafe-unzip',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5954,5 +5955,47 @@ describe('encryption-secure-mode rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(encryption-secure-mode)');
+  });
+});
+
+describe('no-unsafe-unzip rule', () => {
+  it('reports adm-zip extractAllTo', () => {
+    const source = 'zip.extractAllTo(".");';
+    const reports = runRule('no-unsafe-unzip', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unsafeUnzip');
+  });
+
+  it('reports extractAllTo on a new AdmZip instance', () => {
+    const source = 'new AdmZip("f.zip").extractAllTo("./out");';
+    const reports = runRule('no-unsafe-unzip', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unsafeUnzip');
+  });
+
+  it('does not report the per-entry extractEntryTo method', () => {
+    const source = 'zip.extractEntryTo(e, ".");';
+    const reports = runRule('no-unsafe-unzip', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report the generic tar.x method', () => {
+    const source = 'tar.x({ file: "f" });';
+    const reports = runRule('no-unsafe-unzip', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a bare call', () => {
+    const source = 'foo();';
+    const reports = runRule('no-unsafe-unzip', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-unsafe-unzip through the CLI', () => {
+    const result = runOxlint('no-unsafe-unzip', 'zip.extractAllTo(".");');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-unsafe-unzip)');
   });
 });

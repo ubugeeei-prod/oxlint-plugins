@@ -580,6 +580,10 @@ const messages = Object.freeze({
   'encryption-secure-mode': {
     insecureCipherMode: 'Use a secure cipher mode (e.g. GCM); ECB and CBC are vulnerable.',
   },
+  'no-unsafe-unzip': {
+    unsafeUnzip:
+      'Expanding this archive without limiting size or entry count risks a zip-bomb denial of service.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -943,6 +947,9 @@ const ruleDescriptions = Object.freeze({
   'encryption-secure-mode':
     'Disallow insecure block-cipher modes; flags Node crypto cipher/decipher factory ' +
     'calls whose string-literal cipher spec names the ECB or CBC mode (e.g. aes-128-cbc)',
+  'no-unsafe-unzip':
+    'Flag archive expansion that risks a zip-bomb denial of service; matches the ' +
+    'distinctive adm-zip extractAllTo(...) method only (deliberately narrow to stay zero-false-positive)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1105,6 +1112,7 @@ const ruleTypes = Object.freeze({
   'web-sql-database': 'problem',
   'no-intrusive-permissions': 'problem',
   'encryption-secure-mode': 'problem',
+  'no-unsafe-unzip': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1266,6 +1274,7 @@ const recommendedRuleConfig = Object.freeze({
   'web-sql-database': 'error',
   'no-intrusive-permissions': 'error',
   'encryption-secure-mode': 'error',
+  'no-unsafe-unzip': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

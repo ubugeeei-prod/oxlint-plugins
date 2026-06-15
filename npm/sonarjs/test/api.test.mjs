@@ -162,6 +162,7 @@ const expectedRuleNames = [
   'web-sql-database',
   'no-intrusive-permissions',
   'encryption-secure-mode',
+  'no-unsafe-unzip',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

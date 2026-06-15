@@ -8898,3 +8898,38 @@ fn encryption_secure_mode_does_not_report_dynamic_algorithm() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_unsafe_unzip_reports_extract_all_to() {
+    let diagnostics = scan("no-unsafe-unzip", r#"zip.extractAllTo(".");"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-unsafe-unzip");
+    assert_eq!(diagnostics[0].message_id, "unsafeUnzip");
+}
+
+#[test]
+fn no_unsafe_unzip_reports_extract_all_to_on_new_expression() {
+    let diagnostics = scan(
+        "no-unsafe-unzip",
+        r#"new AdmZip("f.zip").extractAllTo("./out");"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn no_unsafe_unzip_does_not_report_extract_entry_to() {
+    let diagnostics = scan("no-unsafe-unzip", r#"zip.extractEntryTo(e, ".");"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unsafe_unzip_does_not_report_generic_tar_x() {
+    let diagnostics = scan("no-unsafe-unzip", r#"tar.x({ file: "f" });"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unsafe_unzip_does_not_report_bare_call() {
+    let diagnostics = scan("no-unsafe-unzip", "foo();");
+    assert!(diagnostics.is_empty());
+}
