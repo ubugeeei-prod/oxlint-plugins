@@ -262,6 +262,7 @@ describe('sonarjs plugin shape', () => {
       'file-permissions',
       'file-uploads',
       'cors',
+      'dns-prefetching',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6361,5 +6362,34 @@ describe('cors rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(cors)');
+  });
+});
+
+describe('dns-prefetching rule', () => {
+  it('reports dnsPrefetchControl with allow: true', () => {
+    const source = 'helmet.dnsPrefetchControl({ allow: true });';
+    const reports = runRule('dns-prefetching', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('dnsPrefetching');
+  });
+
+  it('does not report dnsPrefetchControl with allow: false', () => {
+    const source = 'helmet.dnsPrefetchControl({ allow: false });';
+    const reports = runRule('dns-prefetching', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report dnsPrefetchControl with no arguments', () => {
+    const source = 'helmet.dnsPrefetchControl();';
+    const reports = runRule('dns-prefetching', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports dns-prefetching through the CLI', () => {
+    const result = runOxlint('dns-prefetching', 'helmet.dnsPrefetchControl({ allow: true });');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(dns-prefetching)');
   });
 });

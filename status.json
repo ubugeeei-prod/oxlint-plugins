@@ -10958,19 +10958,19 @@
       },
       {
         "name": "dns-prefetching",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule dns-prefetching (Sonar key S5743). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S5743. Flags helmet dnsPrefetchControl calls whose first object argument has an allow property set to the boolean literal true (re-enabling DNS prefetching). The distinctive dnsPrefetchControl method name keeps this zero-false-positive; allow: false, no-args, and non-literal values are not flagged. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "dompurify-unsafe-config",
