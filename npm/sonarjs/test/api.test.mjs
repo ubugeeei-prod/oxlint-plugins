@@ -168,6 +168,7 @@ const expectedRuleNames = [
   'content-security-policy',
   'certificate-transparency',
   'csrf',
+  'file-permissions',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3409,6 +3410,46 @@ describe('csrf rule', () => {
   it('does not report a non-csrf callee', () => {
     const source = 'foo({ ignoreMethods: ["POST"] });';
     const diagnostics = scan('csrf', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('file-permissions rule', () => {
+  it('reports a chmodSync mode that grants rwx to others', () => {
+    const source = 'fs.chmodSync("/x", 0o777);';
+    const diagnostics = scan('file-permissions', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('file-permissions');
+    expect(diagnostics[0].messageId).toBe('weakFilePermissions');
+  });
+
+  it('reports an async chmod with a trailing callback', () => {
+    const source = 'fs.chmod("/x", 0o666, cb);';
+    const diagnostics = scan('file-permissions', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports a permissive umask', () => {
+    const source = 'process.umask(0o000);';
+    const diagnostics = scan('file-permissions', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report a chmod mode without "others" bits', () => {
+    const source = 'fs.chmodSync("/x", 0o750);';
+    const diagnostics = scan('file-permissions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a restrictive umask', () => {
+    const source = 'process.umask(0o077);';
+    const diagnostics = scan('file-permissions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a dynamic (non-literal) mode', () => {
+    const source = 'fs.chmodSync("/x", mode);';
+    const diagnostics = scan('file-permissions', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

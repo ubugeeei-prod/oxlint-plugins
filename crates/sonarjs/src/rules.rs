@@ -33,6 +33,7 @@ mod empty_string_repetition;
 mod encryption_secure_mode;
 mod expression_complexity;
 mod file_name_differ_from_class;
+mod file_permissions;
 mod fixme_tag;
 mod for_in;
 mod for_loop_increment_sign;

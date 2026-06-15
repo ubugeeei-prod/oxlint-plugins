@@ -9117,3 +9117,55 @@ fn csrf_does_not_report_wrong_callee() {
     let diagnostics = scan("csrf", "foo({ ignoreMethods: [\"POST\"] });");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn file_permissions_reports_chmod_sync_others_rwx() {
+    let diagnostics = scan("file-permissions", r#"fs.chmodSync("/x", 0o777);"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "file-permissions");
+    assert_eq!(diagnostics[0].message_id, "weakFilePermissions");
+}
+
+#[test]
+fn file_permissions_reports_async_chmod_with_callback() {
+    let diagnostics = scan("file-permissions", r#"fs.chmod("/x", 0o666, cb);"#);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn file_permissions_reports_permissive_umask() {
+    let diagnostics = scan("file-permissions", "process.umask(0o000);");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn file_permissions_reports_bare_umask_identifier() {
+    let diagnostics = scan("file-permissions", "umask(0o022);");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn file_permissions_does_not_report_chmod_without_others_bits() {
+    let diagnostics = scan("file-permissions", r#"fs.chmodSync("/x", 0o750);"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn file_permissions_does_not_report_restrictive_umask() {
+    let diagnostics = scan("file-permissions", "process.umask(0o077);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn file_permissions_does_not_report_dynamic_mode() {
+    let diagnostics = scan("file-permissions", r#"fs.chmodSync("/x", mode);"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn file_permissions_reports_any_receiver_chmod() {
+    // The chmod-family check keys off the property name only, so an unrelated
+    // receiver is still flagged (documented zero-FP trade-off).
+    let diagnostics = scan("file-permissions", "foo.chmodSync(0o777);");
+    assert_eq!(diagnostics.len(), 1);
+}
