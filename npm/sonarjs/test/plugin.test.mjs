@@ -197,6 +197,7 @@ describe('sonarjs plugin shape', () => {
       'no-undefined-argument',
       'no-identical-functions',
       'no-in-misuse',
+      'no-require-or-define',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -300,6 +301,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-undefined-argument']).toBe('object');
     expect(typeof plugin.rules['no-identical-functions']).toBe('object');
     expect(typeof plugin.rules['no-in-misuse']).toBe('object');
+    expect(typeof plugin.rules['no-require-or-define']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -411,6 +413,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-undefined-argument']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-identical-functions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-in-misuse']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-require-or-define']).toBe('error');
   });
 });
 
@@ -3368,5 +3371,48 @@ describe('no-in-misuse rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-in-misuse)');
+  });
+});
+
+describe('no-require-or-define rule', () => {
+  it('flags a bare require() call', () => {
+    const reports = runRule('no-require-or-define', "require('fs');");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noRequireOrDefine');
+  });
+
+  it('flags require() used in a variable declaration', () => {
+    const reports = runRule('no-require-or-define', "const x = require('./utils');");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noRequireOrDefine');
+  });
+
+  it('flags a bare define() call', () => {
+    const reports = runRule('no-require-or-define', "define(['dep'], function(dep) {});");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noRequireOrDefine');
+  });
+
+  it('does not flag a member-expression require', () => {
+    const reports = runRule('no-require-or-define', "foo.require('x');");
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not flag an ES import statement', () => {
+    const reports = runRule('no-require-or-define', "import x from 'fs';");
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not flag a function whose name only contains require as a substring', () => {
+    const reports = runRule('no-require-or-define', 'function f() { requireSomething(); }');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-require-or-define through the CLI', () => {
+    const result = runOxlint('no-require-or-define', "require('fs');");
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-require-or-define)');
   });
 });
