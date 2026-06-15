@@ -11950,19 +11950,19 @@
       },
       {
         "name": "no-empty-after-reluctant",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-empty-after-reluctant (Sonar key S6019). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6019 from public RSPEC description only. No upstream source, tests, fixtures, or messages were consulted. Flags a reluctant (lazy) quantifier with min==0 when every subsequent term in the same alternative can match the empty string. Conservative can_match_empty: under-reports rather than FPs."
       },
       {
         "name": "no-empty-alternatives",
