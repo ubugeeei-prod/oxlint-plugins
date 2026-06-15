@@ -503,6 +503,9 @@ const messages = Object.freeze({
     noFallthrough:
       'End this switch case with an unconditional jump, or add an intentional fallthrough comment.',
   },
+  'no-commented-code': {
+    commentedCode: 'Remove this commented-out code.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -799,6 +802,9 @@ const ruleDescriptions = Object.freeze({
     'Prefer RegExp.prototype.exec() over String.prototype.match() when matching a non-global regular-expression literal',
   'no-fallthrough':
     'Require non-empty switch cases to end with an unconditional jump, unless an intentional fallthrough comment is present',
+  'no-commented-code':
+    'Disallow sections of code that have been commented out; ' +
+    'commented-out code makes files harder to read and should be removed',
 });
 
 const ruleTypes = Object.freeze({
@@ -940,6 +946,7 @@ const ruleTypes = Object.freeze({
   'expression-complexity': 'suggestion',
   'prefer-regexp-exec': 'suggestion',
   'no-fallthrough': 'problem',
+  'no-commented-code': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1080,6 +1087,7 @@ const recommendedRuleConfig = Object.freeze({
   'expression-complexity': 'error',
   'prefer-regexp-exec': 'error',
   'no-fallthrough': 'error',
+  'no-commented-code': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

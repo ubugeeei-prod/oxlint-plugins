@@ -293,6 +293,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_fixme_tag(&it.comments);
         self.check_todo_tag(&it.comments);
         self.check_no_sonar_comments(&it.comments);
+        self.check_no_commented_code(&it.comments);
         self.check_declarations_in_global_scope_program(it);
         self.check_no_same_line_conditional(&it.body);
         self.check_no_unenclosed_multiline_block(&it.body);

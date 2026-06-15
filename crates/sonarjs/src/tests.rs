@@ -7686,3 +7686,53 @@ fn no_fallthrough_reports_labeled_break_conservatively() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "noFallthrough");
 }
+
+// no-commented-code
+
+#[test]
+fn no_commented_code_flags_line_comment_with_variable_declaration() {
+    let source = "// const x = 1;";
+    let diagnostics = scan("no-commented-code", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-commented-code");
+    assert_eq!(diagnostics[0].message_id, "commentedCode");
+}
+
+#[test]
+fn no_commented_code_flags_block_comment_with_if_statement() {
+    // An if statement with an assignment body is valid at module top level
+    // and ends with "}" — a strong code signal.
+    let source = "/* if (cond) { doSomething(); } */";
+    let diagnostics = scan("no-commented-code", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-commented-code");
+    assert_eq!(diagnostics[0].message_id, "commentedCode");
+}
+
+#[test]
+fn no_commented_code_does_not_flag_prose_comment() {
+    let source = "// This returns the user name";
+    let diagnostics = scan("no-commented-code", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_commented_code_does_not_flag_jsdoc_comment() {
+    let source = "/** @param x */";
+    let diagnostics = scan("no-commented-code", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_commented_code_does_not_flag_todo_comment() {
+    let source = "// TODO: fix";
+    let diagnostics = scan("no-commented-code", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_commented_code_does_not_flag_url_comment() {
+    let source = "// see https://example.com";
+    let diagnostics = scan("no-commented-code", source);
+    assert!(diagnostics.is_empty());
+}
