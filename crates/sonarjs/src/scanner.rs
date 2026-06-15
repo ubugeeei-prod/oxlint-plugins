@@ -257,6 +257,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_switch_statement(&mut self, it: &SwitchStatement<'a>) {
         self.check_no_nested_switch(it);
         self.check_no_all_duplicated_branches_switch(it);
+        self.check_no_duplicated_branches_switch(it);
         self.check_max_switch_cases(it);
         self.check_no_case_label_in_switch(it);
         self.check_no_small_switch(it);
@@ -319,6 +320,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_collapsible_if(it);
         self.check_no_identical_conditions(it);
         self.check_no_all_duplicated_branches_if(it);
+        self.check_no_duplicated_branches_if(it);
         self.check_elseif_without_else(it);
         self.check_prefer_single_boolean_return(it);
         self.check_no_nested_assignment_condition(&it.test);
@@ -444,6 +446,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         }
         self.check_no_hardcoded_passwords_declarator(it);
         self.check_no_use_of_empty_return_value_var(it);
+        self.check_block_scoped_var(it);
         walk::walk_variable_declarator(self, it);
     }
 
