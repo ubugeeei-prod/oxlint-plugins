@@ -131,6 +131,7 @@ const expectedRuleNames = [
   'file-name-differ-from-class',
   'no-unenclosed-multiline-block',
   'inconsistent-function-call',
+  'new-operator-misuse',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
