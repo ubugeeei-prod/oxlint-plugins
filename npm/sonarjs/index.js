@@ -514,6 +514,10 @@ const messages = Object.freeze({
     useDestructuring:
       'Use destructuring to merge these consecutive property extractions into a single declaration.',
   },
+  'no-element-overwrite': {
+    elementOverwrite:
+      'This collection element is overwritten before it is read; the earlier assignment is dead.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -819,6 +823,10 @@ const ruleDescriptions = Object.freeze({
     'Require destructuring when two or more consecutive single-declarator const/let statements ' +
     'each extract a property from the same plain identifier and the binding name matches the ' +
     'property name (e.g. const a = obj.a; const b = obj.b; → const { a, b } = obj;)',
+  'no-element-overwrite':
+    'Disallow writing to the same collection element (array index or object property) twice in ' +
+    'consecutive statements with no read in between; the first write is dead and is almost ' +
+    'always a bug (wrong index or key)',
 });
 
 const ruleTypes = Object.freeze({
@@ -963,6 +971,7 @@ const ruleTypes = Object.freeze({
   'no-fallthrough': 'problem',
   'no-commented-code': 'suggestion',
   'destructuring-assignment-syntax': 'suggestion',
+  'no-element-overwrite': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1106,6 +1115,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-fallthrough': 'error',
   'no-commented-code': 'error',
   'destructuring-assignment-syntax': 'error',
+  'no-element-overwrite': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

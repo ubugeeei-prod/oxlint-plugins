@@ -11934,19 +11934,19 @@
       },
       {
         "name": "no-element-overwrite",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-element-overwrite (Sonar key S4143). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of SonarJS S4143. Rust core scans consecutive ExpressionStatement pairs in every statement list (program, block, function body, switch case). Flags the first of two adjacent plain-identifier member-expression writes with the same literal key or static property name where the second RHS does not reference the element being written (read-modify-write guard). Only literal computed keys are checked to avoid false positives with variable indices. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-empty-after-reluctant",

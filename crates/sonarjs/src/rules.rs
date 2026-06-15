@@ -59,6 +59,7 @@ mod no_delete_var;
 mod no_duplicate_in_composite;
 mod no_duplicate_string;
 mod no_duplicated_branches;
+mod no_element_overwrite;
 mod no_empty_after_reluctant;
 mod no_empty_alternatives;
 mod no_empty_character_class;

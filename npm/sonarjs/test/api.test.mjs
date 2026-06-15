@@ -144,6 +144,7 @@ const expectedRuleNames = [
   'no-commented-code',
   'no-incomplete-assertions',
   'destructuring-assignment-syntax',
+  'no-element-overwrite',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

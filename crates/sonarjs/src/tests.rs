@@ -7867,3 +7867,71 @@ fn destructuring_assignment_syntax_works_with_let_keyword() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "useDestructuring");
 }
+
+#[test]
+fn no_element_overwrite_reports_consecutive_numeric_index_writes() {
+    let source = "var a = [];\na[0] = 1;\na[0] = 2;";
+    let diagnostics = scan("no-element-overwrite", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-element-overwrite");
+    assert_eq!(diagnostics[0].message_id, "elementOverwrite");
+}
+
+#[test]
+fn no_element_overwrite_reports_consecutive_string_key_writes() {
+    let source = "var m = {};\nm[\"x\"] = 1;\nm[\"x\"] = 2;";
+    let diagnostics = scan("no-element-overwrite", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "elementOverwrite");
+}
+
+#[test]
+fn no_element_overwrite_reports_consecutive_static_prop_writes() {
+    let source = "var obj = {};\nobj.x = 1;\nobj.x = 2;";
+    let diagnostics = scan("no-element-overwrite", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "elementOverwrite");
+}
+
+#[test]
+fn no_element_overwrite_does_not_report_different_indices() {
+    let source = "var a = [];\na[0] = 1;\na[1] = 2;";
+    let diagnostics = scan("no-element-overwrite", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_element_overwrite_does_not_report_when_intervening_statement_present() {
+    let source = "var a = [];\na[0] = 1;\nfoo();\na[0] = 2;";
+    let diagnostics = scan("no-element-overwrite", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_element_overwrite_does_not_report_read_modify_write() {
+    let source = "var a = [];\na[0] = 1;\na[0] = a[0] + 1;";
+    let diagnostics = scan("no-element-overwrite", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_element_overwrite_does_not_report_different_static_properties() {
+    let source = "var obj = {};\nobj.x = 1;\nobj.y = 2;";
+    let diagnostics = scan("no-element-overwrite", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_element_overwrite_does_not_report_variable_computed_key() {
+    let source = "var a = [];\na[i] = 1;\na[i] = 2;";
+    let diagnostics = scan("no-element-overwrite", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_element_overwrite_works_in_function_body() {
+    let source = "function f() { var a = []; a[0] = 1; a[0] = 2; }";
+    let diagnostics = scan("no-element-overwrite", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "elementOverwrite");
+}
