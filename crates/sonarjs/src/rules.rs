@@ -54,6 +54,7 @@ mod no_hardcoded_ip;
 mod no_identical_conditions;
 mod no_identical_expressions;
 mod no_identical_functions;
+mod no_in_misuse;
 mod no_inconsistent_returns;
 mod no_inverted_boolean_check;
 mod no_labels;

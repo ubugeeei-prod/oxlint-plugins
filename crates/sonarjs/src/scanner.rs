@@ -287,6 +287,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_collection_size_mischeck(it);
         self.check_index_of_compare_to_positive_number(it);
         self.check_bitwise_operators(it);
+        self.check_no_in_misuse(it);
         walk::walk_binary_expression(self, it);
     }
 
