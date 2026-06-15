@@ -447,6 +447,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_useless_increment(it);
         self.check_no_associative_arrays(it);
         self.check_no_hardcoded_passwords_assignment(it);
+        self.check_no_undefined_assignment_expression(it);
         if matches!(it.operator, AssignmentOperator::Assign) {
             self.check_no_misleading_array_reverse(&it.right);
         }
@@ -471,6 +472,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.check_no_misleading_array_reverse(init);
         }
         self.check_no_hardcoded_passwords_declarator(it);
+        self.check_no_undefined_assignment_declarator(it);
         self.check_no_use_of_empty_return_value_var(it);
         self.check_block_scoped_var(it);
         walk::walk_variable_declarator(self, it);
@@ -636,6 +638,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_object_property(&mut self, it: &ObjectProperty<'a>) {
         self.check_no_hardcoded_passwords_object_property(it);
+        self.check_no_undefined_assignment_object_property(it);
         walk::walk_object_property(self, it);
     }
 

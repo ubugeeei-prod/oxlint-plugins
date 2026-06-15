@@ -5573,6 +5573,96 @@ fn no_undefined_argument_no_report_spread() {
     assert!(diagnostics.is_empty());
 }
 
+// --- no-undefined-assignment (S2138) ---
+
+#[test]
+fn no_undefined_assignment_reports_variable_initializer() {
+    let diagnostics = scan("no-undefined-assignment", "let value = undefined;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-assignment");
+    assert_eq!(diagnostics[0].message_id, "useNull");
+}
+
+#[test]
+fn no_undefined_assignment_reports_assignment_rhs() {
+    let diagnostics = scan("no-undefined-assignment", "config.value = undefined;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-assignment");
+    assert_eq!(diagnostics[0].message_id, "useNull");
+}
+
+#[test]
+fn no_undefined_assignment_reports_compound_assignment_rhs() {
+    let diagnostics = scan("no-undefined-assignment", "value ??= undefined;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-assignment");
+    assert_eq!(diagnostics[0].message_id, "useNull");
+}
+
+#[test]
+fn no_undefined_assignment_reports_object_property_value() {
+    let diagnostics = scan(
+        "no-undefined-assignment",
+        "const value = { key: undefined };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-assignment");
+    assert_eq!(diagnostics[0].message_id, "useNull");
+}
+
+#[test]
+fn no_undefined_assignment_reports_object_shorthand() {
+    let diagnostics = scan("no-undefined-assignment", "const value = { undefined };");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-assignment");
+    assert_eq!(diagnostics[0].message_id, "useNull");
+}
+
+#[test]
+fn no_undefined_assignment_reports_parenthesized_undefined() {
+    let diagnostics = scan("no-undefined-assignment", "value = ((undefined));");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-undefined-assignment");
+    assert_eq!(diagnostics[0].message_id, "useNull");
+}
+
+#[test]
+fn no_undefined_assignment_no_report_non_assignment_uses() {
+    let source = r#"
+foo(undefined);
+new Foo(undefined);
+const values = [undefined];
+throw undefined;
+"#;
+    let diagnostics = scan("no-undefined-assignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_undefined_assignment_no_report_defaults_and_class_fields() {
+    let source = r#"
+function f(a = undefined) {}
+let { a = undefined } = source;
+let [b = undefined] = source;
+class C {
+  field = undefined;
+}
+"#;
+    let diagnostics = scan("no-undefined-assignment", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_undefined_assignment_no_report_void_zero_or_null() {
+    let source = r#"
+let a = void 0;
+b = null;
+const c = { key: void 0 };
+"#;
+    let diagnostics = scan("no-undefined-assignment", source);
+    assert!(diagnostics.is_empty());
+}
+
 #[test]
 fn no_identical_functions_reports_second_of_two_identical() {
     let source = r#"function a(x) {

@@ -13102,19 +13102,19 @@
       },
       {
         "name": "no-undefined-assignment",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-undefined-assignment (Sonar key S2138). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S2138). Flags a bare `undefined` identifier used as an assigned value in VariableDeclarator initializers, AssignmentExpression right-hand sides (including compound/logical assignments), and ObjectProperty values including shorthand `{ undefined }`. Parenthesized `undefined` is unwrapped; `void 0`, defaults, call/new arguments, array elements, and class field initializers are intentionally not flagged. Upstream source, fixtures, tests, and messages were not copied."
       },
       {
         "name": "no-unenclosed-multiline-block",

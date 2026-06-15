@@ -106,6 +106,7 @@ const expectedRuleNames = [
   'call-argument-line',
   'prefer-object-literal',
   'no-undefined-argument',
+  'no-undefined-assignment',
   'no-identical-functions',
   'no-in-misuse',
   'no-require-or-define',

@@ -197,6 +197,7 @@ describe('sonarjs plugin shape', () => {
       'call-argument-line',
       'prefer-object-literal',
       'no-undefined-argument',
+      'no-undefined-assignment',
       'no-identical-functions',
       'no-in-misuse',
       'no-require-or-define',
@@ -318,6 +319,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['call-argument-line']).toBe('object');
     expect(typeof plugin.rules['prefer-object-literal']).toBe('object');
     expect(typeof plugin.rules['no-undefined-argument']).toBe('object');
+    expect(typeof plugin.rules['no-undefined-assignment']).toBe('object');
     expect(typeof plugin.rules['no-identical-functions']).toBe('object');
     expect(typeof plugin.rules['no-in-misuse']).toBe('object');
     expect(typeof plugin.rules['no-require-or-define']).toBe('object');
@@ -447,6 +449,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/call-argument-line']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-object-literal']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-undefined-argument']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-undefined-assignment']).toBeUndefined();
     expect(plugin.configs.recommended.rules['sonarjs/no-identical-functions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-in-misuse']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-require-or-define']).toBe('error');
@@ -3394,6 +3397,68 @@ describe('no-undefined-argument rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-undefined-argument)');
+  });
+});
+
+describe('no-undefined-assignment rule', () => {
+  it('reports a variable initialized to undefined', () => {
+    const reports = runRule('no-undefined-assignment', 'let value = undefined;');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useNull');
+  });
+
+  it('reports assignment and compound assignment right-hand sides', () => {
+    const reports = runRule('no-undefined-assignment', 'value = undefined; obj.key ??= undefined;');
+    expect(reports).toHaveLength(2);
+    expect(reports.map((report) => report.messageId)).toEqual(['useNull', 'useNull']);
+  });
+
+  it('reports object property values including shorthand undefined', () => {
+    const reports = runRule(
+      'no-undefined-assignment',
+      'const value = { key: undefined, undefined };',
+    );
+    expect(reports).toHaveLength(2);
+    expect(reports.map((report) => report.messageId)).toEqual(['useNull', 'useNull']);
+  });
+
+  it('reports parenthesized undefined assignments', () => {
+    const reports = runRule('no-undefined-assignment', 'value = ((undefined));');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useNull');
+  });
+
+  it('does not report non-assignment undefined uses', () => {
+    const source = [
+      'foo(undefined);',
+      'new Foo(undefined);',
+      'const values = [undefined];',
+      'throw undefined;',
+    ].join('\\n');
+    const reports = runRule('no-undefined-assignment', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report defaults, class fields, void 0, or null', () => {
+    const source = [
+      'function f(a = undefined) {}',
+      'let { a = undefined } = source;',
+      'let [b = undefined] = source;',
+      'class C { field = undefined; }',
+      'let a = void 0;',
+      'b = null;',
+      'const c = { key: void 0 };',
+    ].join('\\n');
+    const reports = runRule('no-undefined-assignment', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-undefined-assignment through the CLI', () => {
+    const result = runOxlint('no-undefined-assignment', 'let value = undefined;');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-undefined-assignment)');
   });
 });
 

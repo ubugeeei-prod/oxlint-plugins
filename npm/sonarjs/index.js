@@ -376,6 +376,9 @@ const messages = Object.freeze({
   'no-undefined-argument': {
     removeUndefined: "Remove this redundant 'undefined' argument.",
   },
+  'no-undefined-assignment': {
+    useNull: 'Use null instead.',
+  },
   'no-identical-functions': {
     identicalFunctions:
       'Update this function so that its implementation is not identical to the one on line {{value}}.',
@@ -644,6 +647,8 @@ const ruleDescriptions = Object.freeze({
     'Require an object to be created and initialized with a single object literal rather than declared as an empty object and then populated with property assignments; flags an empty object-literal declaration whose immediately following sibling statement assigns to a property of that same variable',
   'no-undefined-argument':
     "Disallow passing the literal 'undefined' as the last argument to a function or constructor call; omitting it is equivalent and avoids redundant noise",
+  'no-undefined-assignment':
+    "Disallow assigning the bare 'undefined' identifier as a value; prefer null when an explicit empty value is needed",
   'no-identical-functions':
     'Disallow two functions in the same file whose parameter list and body are byte-for-byte identical; such duplication is almost always a copy-paste mistake or a missed abstraction (functions spanning fewer than 3 lines are exempt)',
   'no-in-misuse':
@@ -796,6 +801,7 @@ const ruleTypes = Object.freeze({
   'call-argument-line': 'suggestion',
   'prefer-object-literal': 'suggestion',
   'no-undefined-argument': 'suggestion',
+  'no-undefined-assignment': 'suggestion',
   'no-identical-functions': 'suggestion',
   'no-in-misuse': 'problem',
   'no-require-or-define': 'suggestion',
