@@ -139,6 +139,7 @@ const expectedRuleNames = [
   'deprecation',
   'cognitive-complexity',
   'expression-complexity',
+  'prefer-regexp-exec',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3061,6 +3062,25 @@ describe('file-name-differ-from-class', () => {
     // 3 logical && operators: a&&b&&c&&d → 3 is not > 3 → 0 diagnostics
     const source = 'const x = a && b && c && d;';
     const diagnostics = scan('expression-complexity', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('prefer-regexp-exec rule', () => {
+  it('reports String#match with a non-global RegExp literal', () => {
+    const diagnostics = scan('prefer-regexp-exec', 'const result = str.match(/foo/u);');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('prefer-regexp-exec');
+    expect(diagnostics[0].messageId).toBe('preferRegExpExec');
+  });
+
+  it('does not report global RegExp literals', () => {
+    const diagnostics = scan('prefer-regexp-exec', 'const result = str.match(/foo/gu);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report dynamic match arguments', () => {
+    const diagnostics = scan('prefer-regexp-exec', 'const result = str.match(pattern);');
     expect(diagnostics).toHaveLength(0);
   });
 });

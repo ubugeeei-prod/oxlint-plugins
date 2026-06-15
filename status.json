@@ -13582,19 +13582,19 @@
       },
       {
         "name": "prefer-regexp-exec",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule prefer-regexp-exec (Sonar key S6594). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6594). Flags String#match(...) calls whose sole argument is a non-global regular-expression literal, recommending RegExp#exec() for first-match extraction. Global regex literals, dynamic arguments, unrelated methods, and extra arguments are skipped to avoid false positives. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "prefer-single-boolean-return",

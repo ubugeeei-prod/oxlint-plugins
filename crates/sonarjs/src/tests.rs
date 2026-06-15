@@ -7585,3 +7585,51 @@ fn expression_complexity_uses_default_threshold_when_unset() {
     let diagnostics = scan("expression-complexity", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn prefer_regexp_exec_reports_match_with_non_global_regex_literal() {
+    let diagnostics = scan("prefer-regexp-exec", "const result = str.match(/foo/u);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "prefer-regexp-exec");
+    assert_eq!(diagnostics[0].message_id, "preferRegExpExec");
+}
+
+#[test]
+fn prefer_regexp_exec_reports_member_receiver_match() {
+    let diagnostics = scan(
+        "prefer-regexp-exec",
+        "const result = object.value.match(/bar/);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "preferRegExpExec");
+}
+
+#[test]
+fn prefer_regexp_exec_does_not_report_global_regex_literal() {
+    let diagnostics = scan("prefer-regexp-exec", "const result = str.match(/foo/gu);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn prefer_regexp_exec_does_not_report_dynamic_pattern() {
+    let diagnostics = scan("prefer-regexp-exec", "const result = str.match(pattern);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn prefer_regexp_exec_does_not_report_unrelated_method() {
+    let diagnostics = scan(
+        "prefer-regexp-exec",
+        "const result = str.replace(/foo/u, 'bar');",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn prefer_regexp_exec_does_not_report_extra_match_arguments() {
+    let diagnostics = scan(
+        "prefer-regexp-exec",
+        "const result = str.match(/foo/u, extra);",
+    );
+    assert!(diagnostics.is_empty());
+}
