@@ -18,6 +18,7 @@ mod cyclomatic_complexity;
 mod duplicates_in_character_class;
 mod elseif_without_else;
 mod empty_string_repetition;
+mod file_name_differ_from_class;
 mod fixme_tag;
 mod for_in;
 mod for_loop_increment_sign;

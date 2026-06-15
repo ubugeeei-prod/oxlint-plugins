@@ -13,6 +13,14 @@ fn scan(rule_name: &str, source: &str) -> SmallVec<[Diagnostic; 32]> {
     scan_sonarjs(source, "sample.ts", &options)
 }
 
+fn scan_with_file(rule_name: &str, source: &str, filename: &str) -> SmallVec<[Diagnostic; 32]> {
+    let options = SonarjsOptions {
+        rule_names: [CompactString::from(rule_name)].into_iter().collect(),
+        ..SonarjsOptions::default()
+    };
+    scan_sonarjs(source, filename, &options)
+}
+
 #[test]
 fn reports_template_literal_nested_in_another() {
     let diagnostics = scan(
@@ -6872,4 +6880,65 @@ fn does_not_report_no_ignored_return_for_push_on_array_literal() {
     let source = "[1, 2].push(3);";
     let diagnostics = scan("no-ignored-return", source);
     assert!(diagnostics.is_empty());
+}
+
+// ---- file-name-differ-from-class -----------------------------------------------
+
+#[test]
+fn reports_file_name_differ_from_class_when_names_differ() {
+    let source = "export class Foo {}";
+    let diagnostics = scan_with_file("file-name-differ-from-class", source, "bar.ts");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "file-name-differ-from-class");
+    assert_eq!(diagnostics[0].message_id, "fileNameDifferFromClass");
+}
+
+#[test]
+fn does_not_report_file_name_differ_from_class_when_exact_match() {
+    let source = "export class Foo {}";
+    let diagnostics = scan_with_file("file-name-differ-from-class", source, "foo.ts");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_file_name_differ_from_class_pascal_vs_kebab() {
+    let source = "export class FooBar {}";
+    let diagnostics = scan_with_file("file-name-differ-from-class", source, "foo-bar.ts");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_file_name_differ_from_class_case_insensitive() {
+    let source = "export class Foo {}";
+    let diagnostics = scan_with_file("file-name-differ-from-class", source, "Foo.ts");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_file_name_differ_from_class_tsx_extension() {
+    let source = "export class Foo {}";
+    let diagnostics = scan_with_file("file-name-differ-from-class", source, "foo.tsx");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_file_name_differ_from_class_no_exported_class() {
+    let source = "class Foo {} export {};";
+    let diagnostics = scan_with_file("file-name-differ-from-class", source, "bar.ts");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_file_name_differ_from_class_multiple_exports() {
+    let source = "export class Foo {} export class Bar {}";
+    let diagnostics = scan_with_file("file-name-differ-from-class", source, "baz.ts");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_file_name_differ_from_class_export_default() {
+    let source = "export default class Foo {}";
+    let diagnostics = scan_with_file("file-name-differ-from-class", source, "bar.ts");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "fileNameDifferFromClass");
 }
