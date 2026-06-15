@@ -82,6 +82,7 @@ impl<'a> Scanner<'a> {
         if let Some(line) = earlier_line {
             let data = DiagnosticData {
                 value: Some(line.to_compact_string()),
+                format: None,
             };
             self.report_with_data(RULE_NAME, "identicalFunctions", data, func_span, None);
         }

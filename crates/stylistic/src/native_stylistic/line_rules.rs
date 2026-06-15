@@ -7,6 +7,7 @@ use super::{
         ReplacementDiagnostic, option_bool, option_str, option_usize, push_diagnostic,
         push_replacement_diagnostic,
     },
+    lexer::{Token, TokenKind, tokenize},
     line_index::{LineInfo, Newline},
 };
 
@@ -145,6 +146,39 @@ pub(crate) fn check_no_trailing_spaces(
                 )),
             );
         }
+    }
+}
+
+pub(crate) fn check_no_mixed_spaces_and_tabs(
+    source_text: &str,
+    lines: &[LineInfo],
+    options: &Value,
+    diagnostics: &mut Vec<LintDiagnostic>,
+) {
+    let smart_tabs = smart_tabs_enabled(options);
+    let tokens = tokenize(source_text);
+
+    for (line_index, line) in lines.iter().enumerate() {
+        let Some((start, end)) = mixed_indent_range(source_text.as_bytes(), line, smart_tabs)
+        else {
+            continue;
+        };
+        if is_ignored_mixed_indent_position(&tokens, lines, line_index, start) {
+            continue;
+        }
+        push_diagnostic(
+            diagnostics,
+            "no-mixed-spaces-and-tabs",
+            "mixedSpacesAndTabs",
+            "Mixed spaces and tabs.",
+            start,
+            end,
+            None::<(
+                &'static str,
+                &'static str,
+                fn(crate::TextRange) -> crate::LintFix,
+            )>,
+        );
     }
 }
 
@@ -338,4 +372,210 @@ fn trim_ascii_space_end(bytes: &[u8], start: usize, end: usize) -> usize {
         cursor -= 1;
     }
     start
+}
+
+fn smart_tabs_enabled(options: &Value) -> bool {
+    match options {
+        Value::Array(items) => items.first().is_some_and(|value| {
+            value.as_bool().unwrap_or(false) || value.as_str() == Some("smart-tabs")
+        }),
+        Value::Bool(value) => *value,
+        Value::String(value) => value == "smart-tabs",
+        _ => false,
+    }
+}
+
+fn mixed_indent_range(bytes: &[u8], line: &LineInfo, smart_tabs: bool) -> Option<(usize, usize)> {
+    if smart_tabs {
+        smart_tabs_mixed_indent_range(bytes, line)
+    } else {
+        default_mixed_indent_range(bytes, line)
+    }
+}
+
+fn default_mixed_indent_range(bytes: &[u8], line: &LineInfo) -> Option<(usize, usize)> {
+    let first = *bytes.get(line.start)?;
+    if !matches!(first, b' ' | b'\t') {
+        return None;
+    }
+
+    let mut cursor = line.start + 1;
+    while cursor < line.content_end && bytes[cursor] == first {
+        cursor += 1;
+    }
+
+    if cursor < line.content_end
+        && ((first == b' ' && bytes[cursor] == b'\t') || (first == b'\t' && bytes[cursor] == b' '))
+    {
+        Some((cursor - 1, cursor + 1))
+    } else {
+        None
+    }
+}
+
+fn smart_tabs_mixed_indent_range(bytes: &[u8], line: &LineInfo) -> Option<(usize, usize)> {
+    let mut cursor = line.start;
+    while cursor < line.content_end && bytes[cursor] == b'\t' {
+        cursor += 1;
+    }
+
+    let spaces_start = cursor;
+    while cursor < line.content_end && bytes[cursor] == b' ' {
+        cursor += 1;
+    }
+
+    if cursor > spaces_start && cursor < line.content_end && bytes[cursor] == b'\t' {
+        Some((cursor - 1, cursor + 1))
+    } else {
+        None
+    }
+}
+
+fn is_ignored_mixed_indent_position(
+    tokens: &[Token],
+    lines: &[LineInfo],
+    line_index: usize,
+    start: usize,
+) -> bool {
+    tokens.iter().any(|token| {
+        if start < token.start || start >= token.end {
+            return false;
+        }
+
+        match token.kind {
+            TokenKind::BlockComment => line_index > line_index_for_offset(lines, token.start),
+            TokenKind::String
+            | TokenKind::NoSubTemplate
+            | TokenKind::TemplateHead
+            | TokenKind::TemplateMiddle
+            | TokenKind::TemplateTail => true,
+            _ => false,
+        }
+    })
+}
+
+fn line_index_for_offset(lines: &[LineInfo], offset: usize) -> usize {
+    lines
+        .partition_point(|line| line.start <= offset)
+        .saturating_sub(1)
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json::Value;
+
+    use super::{check_no_mixed_spaces_and_tabs, mixed_indent_range};
+    use crate::native_stylistic::line_index::collect_lines;
+
+    fn run(source: &str, options: serde_json::Value) -> Vec<crate::LintDiagnostic> {
+        let lines = collect_lines(source);
+        let mut diagnostics = Vec::new();
+        check_no_mixed_spaces_and_tabs(source, &lines, &options, &mut diagnostics);
+        diagnostics
+    }
+
+    fn no_options() -> Value {
+        Value::Array(Vec::new())
+    }
+
+    fn smart_tabs_option() -> Value {
+        Value::Array(Vec::from([Value::String("smart-tabs".to_owned())]))
+    }
+
+    fn boolean_smart_tabs_option() -> Value {
+        Value::Array(Vec::from([Value::Bool(true)]))
+    }
+
+    fn reported_texts<'a>(
+        source: &'a str,
+        diagnostics: &'a [crate::LintDiagnostic],
+    ) -> Vec<&'a str> {
+        diagnostics
+            .iter()
+            .map(|diagnostic| {
+                &source[diagnostic.range.start as usize..diagnostic.range.end as usize]
+            })
+            .collect()
+    }
+
+    #[test]
+    fn reports_mixed_indentation() {
+        let source = "function add() {\n\t return 1;\n   \treturn 2;\n}\n";
+        let diagnostics = run(source, no_options());
+
+        assert_eq!(
+            diagnostics
+                .iter()
+                .map(|diagnostic| diagnostic.message_id.as_str())
+                .collect::<Vec<_>>(),
+            ["mixedSpacesAndTabs", "mixedSpacesAndTabs"],
+        );
+        assert_eq!(reported_texts(source, &diagnostics), ["\t ", " \t"]);
+    }
+
+    #[test]
+    fn honors_smart_tabs_alignment() {
+        let source = "\t   aligned\n\t \tbad\n  \tbad\n";
+        let diagnostics = run(source, smart_tabs_option());
+
+        assert_eq!(reported_texts(source, &diagnostics), [" \t", " \t"]);
+    }
+
+    #[test]
+    fn honors_deprecated_boolean_smart_tabs_option() {
+        let source = "\t    aligned\n\t\t\t   \tbad\n";
+        let diagnostics = run(source, boolean_smart_tabs_option());
+
+        assert_eq!(reported_texts(source, &diagnostics), [" \t"]);
+    }
+
+    #[test]
+    fn ignores_block_comment_continuations_and_literal_lines() {
+        let source = "/*\n \t ignored\n*/\n'\\\n \t literal';\n`\n \t template\n`;\n \tcode;\n";
+        let diagnostics = run(source, no_options());
+
+        assert_eq!(reported_texts(source, &diagnostics), [" \t"]);
+    }
+
+    #[test]
+    fn reports_first_comment_lines_but_ignores_continuations() {
+        let source = "\t // comment\n \t/* first line */\n/*\n \t continuation\n*/\n";
+        let diagnostics = run(source, no_options());
+
+        assert_eq!(reported_texts(source, &diagnostics), ["\t ", " \t"]);
+    }
+
+    #[test]
+    fn reports_template_substitution_indentation_but_ignores_template_body() {
+        let source = "`foo${\n \t  5 }bar`;\nconst foo = `${console}\n\t body`;\n";
+        let diagnostics = run(source, smart_tabs_option());
+
+        assert_eq!(reported_texts(source, &diagnostics), [" \t"]);
+    }
+
+    #[test]
+    fn uses_upstream_style_violation_ranges() {
+        let source = "\t return x;\n   \tfoo\n\t\t\t   \tbar\n";
+        let diagnostics = run(source, no_options());
+        assert_eq!(reported_texts(source, &diagnostics), ["\t ", " \t", "\t "]);
+
+        let smart_diagnostics = run(source, smart_tabs_option());
+        assert_eq!(reported_texts(source, &smart_diagnostics), [" \t", " \t"]);
+    }
+
+    #[test]
+    fn computes_default_indent_ranges() {
+        let source = "\t foo\n   \tfoo\nfoo \t\n";
+        let lines = collect_lines(source);
+
+        let first = mixed_indent_range(source.as_bytes(), &lines[0], false).unwrap();
+        let second = mixed_indent_range(source.as_bytes(), &lines[1], false).unwrap();
+
+        assert_eq!(&source[first.0..first.1], "\t ");
+        assert_eq!(&source[second.0..second.1], " \t");
+        assert_eq!(
+            mixed_indent_range(source.as_bytes(), &lines[2], false),
+            None
+        );
+    }
 }

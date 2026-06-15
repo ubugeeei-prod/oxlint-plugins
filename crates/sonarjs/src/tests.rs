@@ -2328,6 +2328,101 @@ fn reports_class_name_for_lowercase_class_expression() {
     assert_eq!(diagnostics.len(), 1);
 }
 
+#[test]
+fn reports_function_name_for_declarations_not_matching_default_format() {
+    let source = "function Bad_name() {} function goodName() {} function _ok1() {}";
+    let diagnostics = scan("function-name", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "function-name");
+    assert_eq!(diagnostics[0].message_id, "renameFunction");
+    assert_eq!(diagnostics[0].data.value.as_deref(), Some("Bad_name"));
+    assert_eq!(
+        diagnostics[0].data.format.as_deref(),
+        Some("^[_a-z][a-zA-Z0-9]*$")
+    );
+}
+
+#[test]
+fn reports_function_name_for_variable_initialized_with_function_or_arrow() {
+    let source = "const Bad_name = function() {}; const Bad_name2 = () => {}; const goodName = function Bad_name() {};";
+    let diagnostics = scan("function-name", source);
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].data.value.as_deref(), Some("Bad_name"));
+    assert_eq!(diagnostics[1].data.value.as_deref(), Some("Bad_name2"));
+}
+
+#[test]
+fn reports_function_name_for_class_and_object_method_keys() {
+    let source = r#"
+class C {
+  Bad_name() {}
+  async Bad_name2() {}
+  get Bad_name3() { return 1; }
+  #Bad_name4() {}
+}
+const obj = { Bad_name5() {}, goodName() {} };
+"#;
+    let diagnostics = scan("function-name", source);
+    let names: SmallVec<[&str; 4]> = diagnostics
+        .iter()
+        .filter_map(|diagnostic| diagnostic.data.value.as_deref())
+        .collect();
+    assert_eq!(
+        &names[..],
+        ["Bad_name", "Bad_name2", "Bad_name3", "Bad_name5"]
+    );
+}
+
+#[test]
+fn reports_function_name_for_object_property_function_values() {
+    let source = r#"const obj = {
+  Bad_name: function() {},
+  Bad_name2: () => {},
+  goodName: function Bad_name3() {},
+  ["Bad_name4"]: function() {},
+};"#;
+    let diagnostics = scan("function-name", source);
+    let names: SmallVec<[&str; 2]> = diagnostics
+        .iter()
+        .filter_map(|diagnostic| diagnostic.data.value.as_deref())
+        .collect();
+    assert_eq!(&names[..], ["Bad_name", "Bad_name2"]);
+}
+
+#[test]
+fn does_not_report_function_name_for_assignments_iifes_or_private_names() {
+    let source = r#"
+let Bad_name;
+Bad_name = function() {};
+Bad_name = () => {};
+(function Bad_name2() {})();
+class C { #Bad_name3() {} }
+"#;
+    let diagnostics = scan("function-name", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn function_name_respects_custom_format() {
+    let mut options = options_for("function-name");
+    options.function_name_format = CompactString::from("^[A-Z][A-Za-z0-9]*$");
+    let diagnostics = scan_sonarjs(
+        "function goodName() {} function GoodName() {} const goodName2 = () => {}; class C { goodName3() {} GoodName2() {} }",
+        "sample.ts",
+        &options,
+    );
+    let names: SmallVec<[&str; 3]> = diagnostics
+        .iter()
+        .filter_map(|diagnostic| diagnostic.data.value.as_deref())
+        .collect();
+    assert_eq!(&names[..], ["goodName", "goodName2", "goodName3"]);
+    assert!(
+        diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.data.format.as_deref() == Some("^[A-Z][A-Za-z0-9]*$"))
+    );
+}
+
 fn options_for(rule_name: &str) -> SonarjsOptions {
     SonarjsOptions {
         rule_names: [CompactString::from(rule_name)].into_iter().collect(),
