@@ -353,6 +353,9 @@ const messages = Object.freeze({
   'use-type-alias': {
     useTypeAlias: 'Replace this repeated union/intersection type with a named type alias.',
   },
+  'public-static-readonly': {
+    publicStaticReadonly: 'Make this public static field "readonly".',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -545,6 +548,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow a TypeScript intersection type that contains an "any", "never", or "unknown" keyword member, which collapses or is absorbed by the intersection and makes it pointless (syntactic keyword cases only; type-aware subtype/supertype redundancy is out of scope)',
   'use-type-alias':
     'Require extracting a union or intersection type into a named type alias when the same composite type (compared by exact source text, order-sensitive) appears at least 3 times in a file; the first occurrence of each repeated type is reported',
+  'public-static-readonly':
+    'Require a publicly accessible static class field (explicit "public" or no accessibility modifier) to be declared "readonly"; static fields that are private, protected, readonly, declared with a "#private" key, or non-static are not flagged (modifier-based; applies to both JS and TS source)',
 });
 
 const ruleTypes = Object.freeze({
@@ -645,6 +650,7 @@ const ruleTypes = Object.freeze({
   'function-inside-loop': 'suggestion',
   'no-useless-intersection': 'suggestion',
   'use-type-alias': 'suggestion',
+  'public-static-readonly': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -745,6 +751,7 @@ const recommendedRuleConfig = Object.freeze({
   'function-inside-loop': 'error',
   'no-useless-intersection': 'error',
   'use-type-alias': 'error',
+  'public-static-readonly': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

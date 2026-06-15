@@ -88,6 +88,7 @@ mod prefer_single_boolean_return;
 mod prefer_while;
 mod process_argv;
 mod pseudo_random;
+mod public_static_readonly;
 mod reduce_initial_value;
 mod shorthand_property_grouping;
 mod single_char_in_character_classes;
