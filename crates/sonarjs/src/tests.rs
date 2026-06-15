@@ -6644,6 +6644,54 @@ fn block_scoped_var_does_not_report_var_at_function_top_level() {
 }
 
 #[test]
+fn declarations_in_global_scope_reports_top_level_function() {
+    let diagnostics = scan("declarations-in-global-scope", "function f() {}\n");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "declarations-in-global-scope");
+    assert_eq!(diagnostics[0].message_id, "defineLocally");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn declarations_in_global_scope_reports_exported_named_functions() {
+    let source = "export function f() {}\nexport default function g() {}\n";
+    let diagnostics = scan("declarations-in-global-scope", source);
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].message_id, "defineLocally");
+    assert_eq!(diagnostics[1].message_id, "defineLocally");
+}
+
+#[test]
+fn declarations_in_global_scope_allows_anonymous_default_function() {
+    let diagnostics = scan(
+        "declarations-in-global-scope",
+        "export default function () {}\n",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn declarations_in_global_scope_reports_top_level_var_declarators() {
+    let diagnostics = scan("declarations-in-global-scope", "var a = 1, b = 2;\n");
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
+fn declarations_in_global_scope_reports_var_inside_top_level_block() {
+    let source = "if (enabled) { var leaked = 1; }\n";
+    let diagnostics = scan("declarations-in-global-scope", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "defineLocally");
+}
+
+#[test]
+fn declarations_in_global_scope_allows_let_const_and_require_var() {
+    let source = "let a = 1;\nconst b = 2;\nvar fs = require('fs');\n";
+    let diagnostics = scan("declarations-in-global-scope", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn block_scoped_var_does_not_report_var_used_only_inside_block() {
     let source = "function f(c) { if (c) { var x = 1; return x; } }";
     let diagnostics = scan("block-scoped-var", source);
@@ -7115,6 +7163,28 @@ fn reports_file_name_differ_from_class_export_default() {
     let diagnostics = scan_with_file("file-name-differ-from-class", source, "bar.ts");
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "fileNameDifferFromClass");
+}
+
+#[test]
+fn declarations_in_global_scope_reports_non_require_in_mixed_var() {
+    let source = "var fs = require('fs'), value = 1;\n";
+    let diagnostics = scan("declarations-in-global-scope", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "defineLocally");
+}
+
+#[test]
+fn declarations_in_global_scope_only_reports_outer_function_when_inner_declarations_are_local() {
+    let source = "function outer() { var local = 1; function inner() {} }\n";
+    let diagnostics = scan("declarations-in-global-scope", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn declarations_in_global_scope_allows_var_inside_class_static_block() {
+    let source = "class C { static { var local = 1; } }\n";
+    let diagnostics = scan("declarations-in-global-scope", source);
+    assert!(diagnostics.is_empty());
 }
 
 #[test]

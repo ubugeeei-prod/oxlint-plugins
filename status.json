@@ -10846,19 +10846,19 @@
       },
       {
         "name": "declarations-in-global-scope",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule declarations-in-global-scope (Sonar key S3798). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S3798. Reports named top-level function declarations and module-scope var declarations, including var declarations nested in top-level blocks; allows let/const, anonymous default function exports, var require(...) bindings, declarations inside functions, and class static block locals. Behaviour was implemented from observed output and public RSPEC only."
       },
       {
         "name": "deprecation",
@@ -16096,19 +16096,19 @@
       },
       {
         "name": "one-var-declaration-per-line",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule one-var-declaration-per-line."
+        "notes": "Rust native token-scan port of @stylistic/one-var-declaration-per-line with always/initializations modes, for-header exclusions, nested initializer handling, and fix suggestions."
       },
       {
         "name": "padding-line-between-statements",

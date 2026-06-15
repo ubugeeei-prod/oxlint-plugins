@@ -4,11 +4,12 @@
 
 use serde_json::Value;
 
-use crate::LintDiagnostic;
+use crate::{LintDiagnostic, LintFix, TextRange};
 
 use super::context::{
     BraceKind, BracketKind, ParenUse, Scan, has_newline, is_whitespace, option_keyword,
-    option_object_bool, punct_is, report_missing_space, report_replace, report_unexpected_space,
+    option_object_bool, punct_is, push as push_context_diagnostic, report_missing_space,
+    report_replace, report_unexpected_space,
 };
 use super::helpers::{is_identifier_continue, is_identifier_start, option_usize, push_diagnostic};
 use super::lexer::TokenKind;
@@ -2188,6 +2189,267 @@ pub(crate) fn check_keyword_spacing(
     }
 }
 
+// ---------------------------------------------------------------------------
+// one-var-declaration-per-line
+// ---------------------------------------------------------------------------
+
+#[derive(Clone, Copy, Debug)]
+struct VarDeclarator {
+    first: usize,
+    last: usize,
+    has_init: bool,
+}
+
+pub(crate) fn check_one_var_declaration_per_line(
+    scan: &Scan,
+    options: &Value,
+    diagnostics: &mut Vec<LintDiagnostic>,
+) {
+    const RULE: &str = "one-var-declaration-per-line";
+    let always = option_keyword(options, "initializations") == "always";
+    let starts = line_starts(scan.source());
+    let tokens = scan.tokens();
+
+    for keyword in 0..tokens.len() {
+        if !is_variable_declaration_keyword(scan, keyword)
+            || is_for_header_declaration(scan, keyword)
+        {
+            continue;
+        }
+
+        let declarators = variable_declarators(scan, keyword, &starts);
+        for pair in declarators.windows(2) {
+            let [previous, current] = pair else {
+                continue;
+            };
+            if token_end_line(scan, &starts, previous.last)
+                != token_start_line(scan, &starts, current.first)
+            {
+                continue;
+            }
+            if !(always || previous.has_init || current.has_init) {
+                continue;
+            }
+
+            push_context_diagnostic(
+                diagnostics,
+                RULE,
+                "expectVarOnNewline",
+                "Expected variable declaration to be on a new line.",
+                tokens[current.first].start,
+                tokens[current.last].end,
+                "insertNewline",
+                "Insert a newline.",
+                LintFix::replace_range(
+                    TextRange::new(
+                        tokens[current.first].start as u32,
+                        tokens[current.first].start as u32,
+                    ),
+                    "\n",
+                ),
+            );
+        }
+    }
+}
+
+fn is_variable_declaration_keyword(scan: &Scan, index: usize) -> bool {
+    let token = &scan.tokens()[index];
+    if token.kind != TokenKind::Identifier {
+        return false;
+    }
+    let text = scan.token_text(index);
+    if !matches!(text, "var" | "let" | "const") {
+        return false;
+    }
+    if scan
+        .prev_significant(index)
+        .is_some_and(|prev| punct_is(&scan.tokens()[prev], scan.source(), "."))
+    {
+        return false;
+    }
+    let Some(next) = scan.next_significant(index) else {
+        return false;
+    };
+    match text {
+        "var" | "const" => true,
+        "let" => {
+            scan.tokens()[next].kind == TokenKind::Identifier
+                || punct_is(&scan.tokens()[next], scan.source(), "{")
+                || punct_is(&scan.tokens()[next], scan.source(), "[")
+        }
+        _ => false,
+    }
+}
+
+fn is_for_header_declaration(scan: &Scan, keyword: usize) -> bool {
+    let Some(prev) = scan.prev_significant(keyword) else {
+        return false;
+    };
+    if !punct_is(&scan.tokens()[prev], scan.source(), "(") {
+        return false;
+    }
+    let Some(before_paren) = scan.prev_significant(prev) else {
+        return false;
+    };
+    if scan.token_text(before_paren) == "for" {
+        return true;
+    }
+    scan.token_text(before_paren) == "await"
+        && scan
+            .prev_significant(before_paren)
+            .is_some_and(|before_await| scan.token_text(before_await) == "for")
+}
+
+fn variable_declarators(scan: &Scan, keyword: usize, starts: &[usize]) -> Vec<VarDeclarator> {
+    let mut declarators = Vec::new();
+    let Some(mut cursor) = scan.next_significant(keyword) else {
+        return declarators;
+    };
+
+    while cursor < scan.tokens().len() {
+        let Some((declarator, next)) = parse_var_declarator(scan, cursor, starts) else {
+            break;
+        };
+        declarators.push(declarator);
+        let Some(next) = next else {
+            break;
+        };
+        if !punct_is(&scan.tokens()[next], scan.source(), ",") {
+            break;
+        }
+        let Some(next_start) = scan.next_significant(next) else {
+            break;
+        };
+        if declaration_list_terminates_at(scan, next_start) {
+            break;
+        }
+        cursor = next_start;
+    }
+
+    declarators
+}
+
+fn parse_var_declarator(
+    scan: &Scan,
+    start: usize,
+    starts: &[usize],
+) -> Option<(VarDeclarator, Option<usize>)> {
+    if declaration_list_terminates_at(scan, start) {
+        return None;
+    }
+
+    let mut cursor = start;
+    let mut last = start;
+    let mut has_init = false;
+    while cursor < scan.tokens().len() {
+        if cursor != start && starts_asi_statement(scan, starts, last, cursor) {
+            return Some((
+                VarDeclarator {
+                    first: start,
+                    last,
+                    has_init,
+                },
+                None,
+            ));
+        }
+
+        let token = &scan.tokens()[cursor];
+        if token.kind.is_comment() {
+            cursor += 1;
+            continue;
+        }
+        if declaration_delimiter(scan, cursor) {
+            return Some((
+                VarDeclarator {
+                    first: start,
+                    last,
+                    has_init,
+                },
+                Some(cursor),
+            ));
+        }
+        if punct_is(token, scan.source(), "=") {
+            has_init = true;
+            last = cursor;
+            cursor += 1;
+            continue;
+        }
+        if matches!(scan.token_text(cursor), "(" | "[" | "{") {
+            if let Some(partner) = scan.partner(cursor) {
+                last = partner;
+                cursor = partner + 1;
+                continue;
+            }
+        }
+        last = cursor;
+        cursor += 1;
+    }
+
+    Some((
+        VarDeclarator {
+            first: start,
+            last,
+            has_init,
+        },
+        None,
+    ))
+}
+
+fn declaration_delimiter(scan: &Scan, index: usize) -> bool {
+    let token = &scan.tokens()[index];
+    punct_is(token, scan.source(), ",")
+        || punct_is(token, scan.source(), ";")
+        || punct_is(token, scan.source(), ")")
+        || punct_is(token, scan.source(), "}")
+}
+
+fn declaration_list_terminates_at(scan: &Scan, index: usize) -> bool {
+    let token = &scan.tokens()[index];
+    punct_is(token, scan.source(), ";")
+        || punct_is(token, scan.source(), ")")
+        || punct_is(token, scan.source(), "}")
+}
+
+fn starts_asi_statement(scan: &Scan, starts: &[usize], previous: usize, current: usize) -> bool {
+    if token_start_line(scan, starts, current) <= token_end_line(scan, starts, previous) {
+        return false;
+    }
+    if matches!(
+        scan.token_text(previous),
+        "," | "="
+            | ":"
+            | "?"
+            | "."
+            | "=>"
+            | "+"
+            | "-"
+            | "*"
+            | "/"
+            | "%"
+            | "**"
+            | "&&"
+            | "||"
+            | "??"
+            | "&"
+            | "|"
+            | "^"
+            | "<<"
+            | ">>"
+            | ">>>"
+    ) {
+        return false;
+    }
+    !matches!(scan.token_text(current), "," | ";" | "=") && scan.token_ends_expression(previous)
+}
+
+fn token_start_line(scan: &Scan, starts: &[usize], index: usize) -> usize {
+    line_number(starts, scan.tokens()[index].start)
+}
+
+fn token_end_line(scan: &Scan, starts: &[usize], index: usize) -> usize {
+    line_number(starts, scan.tokens()[index].end)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2952,6 +3214,83 @@ mod tests {
         assert_eq!(run(check_keyword_spacing, "return;", Value::Null).len(), 0);
         assert_eq!(
             run(check_keyword_spacing, "for (const x of y) {}", Value::Null).len(),
+            0
+        );
+    }
+
+    #[test]
+    fn one_var_declaration_per_line_initializations_default() {
+        assert_eq!(
+            run(
+                check_one_var_declaration_per_line,
+                "var a, b, c = 0;",
+                Value::Null,
+            )
+            .iter()
+            .map(|diagnostic| diagnostic.message_id.as_str())
+            .collect::<Vec<_>>(),
+            ["expectVarOnNewline"]
+        );
+        assert_eq!(
+            run(
+                check_one_var_declaration_per_line,
+                "var a, b;\nlet c,\n  d = 0;",
+                Value::Null,
+            )
+            .len(),
+            0
+        );
+    }
+
+    #[test]
+    fn one_var_declaration_per_line_always_reports_plain_declarations() {
+        let options = serde_json::from_str(r#"["always"]"#).unwrap();
+        let diagnostics = run(
+            check_one_var_declaration_per_line,
+            "export let a, b;",
+            options,
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "expectVarOnNewline");
+        assert_eq!(
+            diagnostics[0].suggestions[0].fixes[0].replacement_text,
+            "\n"
+        );
+    }
+
+    #[test]
+    fn one_var_declaration_per_line_ignores_for_headers() {
+        let options = serde_json::from_str(r#"["always"]"#).unwrap();
+        assert_eq!(
+            run(
+                check_one_var_declaration_per_line,
+                "for (let a = 0, b = 0;;) {}\nfor (const x of y) {}",
+                options,
+            )
+            .len(),
+            0
+        );
+    }
+
+    #[test]
+    fn one_var_declaration_per_line_handles_nested_initializers() {
+        let options = serde_json::from_str(r#"["always"]"#).unwrap();
+        assert_eq!(
+            run(
+                check_one_var_declaration_per_line,
+                "var a = {\n  value: call(1, 2)\n}, b;",
+                options,
+            )
+            .len(),
+            1
+        );
+        assert_eq!(
+            run(
+                check_one_var_declaration_per_line,
+                "var a = [one, two],\n  b;",
+                serde_json::from_str(r#"["always"]"#).unwrap(),
+            )
+            .len(),
             0
         );
     }

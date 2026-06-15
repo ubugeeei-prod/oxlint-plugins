@@ -17,6 +17,10 @@ const messages = Object.freeze({
   'array-callback-without-return': {
     addReturn: 'Add a "return" statement to this callback.',
   },
+  'declarations-in-global-scope': {
+    defineLocally:
+      'Move this declaration into a local scope, or attach it explicitly to the global object.',
+  },
   'no-nested-template-literals': {
     nestedTemplateLiteral:
       'Do not nest template literals. Extract the inner template literal into a separate variable.',
@@ -492,6 +496,8 @@ const messages = Object.freeze({
 const ruleDescriptions = Object.freeze({
   'array-callback-without-return':
     'Require a return statement in callbacks of array methods that build a result',
+  'declarations-in-global-scope':
+    'Disallow function and var declarations that create global or module-scope bindings',
   'no-nested-template-literals': 'Disallow nested template literals',
   'no-nested-switch': 'Disallow nested switch statements',
   'no-nested-conditional': 'Disallow nested conditional (ternary) expressions',
@@ -777,6 +783,7 @@ const ruleDescriptions = Object.freeze({
 
 const ruleTypes = Object.freeze({
   'array-callback-without-return': 'suggestion',
+  'declarations-in-global-scope': 'suggestion',
   'no-nested-template-literals': 'suggestion',
   'no-nested-switch': 'suggestion',
   'no-nested-conditional': 'suggestion',
@@ -914,6 +921,7 @@ const ruleTypes = Object.freeze({
 
 const recommendedRuleConfig = Object.freeze({
   'array-callback-without-return': 'error',
+  'declarations-in-global-scope': 'error',
   'no-nested-template-literals': 'error',
   'no-nested-switch': 'error',
   'no-nested-conditional': 'error',
