@@ -8795,3 +8795,64 @@ fn web_sql_database_does_not_report_unrelated_method_call() {
     let diagnostics = scan("web-sql-database", "obj.query();");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_intrusive_permissions_reports_get_current_position() {
+    let diagnostics = scan(
+        "no-intrusive-permissions",
+        "navigator.geolocation.getCurrentPosition(cb);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-intrusive-permissions");
+}
+
+#[test]
+fn no_intrusive_permissions_reports_watch_position() {
+    let diagnostics = scan(
+        "no-intrusive-permissions",
+        "navigator.geolocation.watchPosition(cb);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn no_intrusive_permissions_reports_notification_request_permission() {
+    let diagnostics = scan(
+        "no-intrusive-permissions",
+        "Notification.requestPermission();",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn no_intrusive_permissions_reports_permissions_query() {
+    let diagnostics = scan(
+        "no-intrusive-permissions",
+        r#"navigator.permissions.query({name:"geolocation"});"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn no_intrusive_permissions_does_not_report_user_agent_access() {
+    let diagnostics = scan(
+        "no-intrusive-permissions",
+        "const ua = navigator.userAgent;",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_intrusive_permissions_does_not_report_wrong_object_chain() {
+    let diagnostics = scan("no-intrusive-permissions", "foo.getCurrentPosition();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_intrusive_permissions_does_not_report_bare_member_without_call() {
+    let diagnostics = scan(
+        "no-intrusive-permissions",
+        "const g = navigator.geolocation;",
+    );
+    assert!(diagnostics.is_empty());
+}

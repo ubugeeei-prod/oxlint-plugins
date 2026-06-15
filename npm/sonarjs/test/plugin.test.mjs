@@ -251,6 +251,7 @@ describe('sonarjs plugin shape', () => {
       'no-misleading-character-class',
       'slow-regex',
       'web-sql-database',
+      'no-intrusive-permissions',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5847,5 +5848,58 @@ describe('web-sql-database rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(web-sql-database)');
+  });
+});
+
+describe('no-intrusive-permissions rule', () => {
+  it('reports navigator.geolocation.getCurrentPosition', () => {
+    const source = 'navigator.geolocation.getCurrentPosition(cb);';
+    const reports = runRule('no-intrusive-permissions', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('intrusivePermission');
+  });
+
+  it('reports navigator.geolocation.watchPosition', () => {
+    const source = 'navigator.geolocation.watchPosition(cb);';
+    const reports = runRule('no-intrusive-permissions', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('intrusivePermission');
+  });
+
+  it('reports Notification.requestPermission', () => {
+    const source = 'Notification.requestPermission();';
+    const reports = runRule('no-intrusive-permissions', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('intrusivePermission');
+  });
+
+  it('reports navigator.permissions.query', () => {
+    const source = 'navigator.permissions.query({ name: "geolocation" });';
+    const reports = runRule('no-intrusive-permissions', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('intrusivePermission');
+  });
+
+  it('does not report a bare member access without a call', () => {
+    const source = 'const g = navigator.geolocation;';
+    const reports = runRule('no-intrusive-permissions', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a matching method on an unrelated object', () => {
+    const source = 'foo.getCurrentPosition();';
+    const reports = runRule('no-intrusive-permissions', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-intrusive-permissions through the CLI', () => {
+    const result = runOxlint(
+      'no-intrusive-permissions',
+      'navigator.geolocation.getCurrentPosition(cb);',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-intrusive-permissions)');
   });
 });
