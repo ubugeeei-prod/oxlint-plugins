@@ -94,6 +94,7 @@ mod no_inverted_boolean_check;
 mod no_labels;
 mod no_literal_call;
 mod no_misleading_array_reverse;
+mod no_misleading_character_class;
 mod no_nested_assignment;
 mod no_nested_conditional;
 mod no_nested_functions;

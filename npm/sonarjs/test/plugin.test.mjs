@@ -248,6 +248,7 @@ describe('sonarjs plugin shape', () => {
       'production-debug',
       'no-hardcoded-secrets',
       'concise-regex',
+      'no-misleading-character-class',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5743,5 +5744,34 @@ describe('concise-regex rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(concise-regex)');
+  });
+});
+
+describe('no-misleading-character-class rule', () => {
+  it('reports an astral character inside a class without the u flag', () => {
+    const source = 'const r = /[\u{1F44D}]/;';
+    const reports = runRule('no-misleading-character-class', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('misleadingCharacterClass');
+  });
+
+  it('does not report when the u flag is present', () => {
+    const source = 'const r = /[\u{1F44D}]/u;';
+    const reports = runRule('no-misleading-character-class', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a BMP-only character class', () => {
+    const source = 'const r = /[abc]/;';
+    const reports = runRule('no-misleading-character-class', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-misleading-character-class through the CLI', () => {
+    const result = runOxlint('no-misleading-character-class', 'const r = /[\u{1F44D}]/;');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-misleading-character-class)');
   });
 });

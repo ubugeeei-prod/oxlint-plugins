@@ -157,6 +157,7 @@ const expectedRuleNames = [
   'production-debug',
   'no-hardcoded-secrets',
   'concise-regex',
+  'no-misleading-character-class',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

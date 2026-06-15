@@ -8660,3 +8660,42 @@ fn concise_regex_does_not_report_already_concise() {
     let diagnostics = scan("concise-regex", "const r = /\\d/;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_misleading_character_class_reports_astral_char_in_class() {
+    let diagnostics = scan("no-misleading-character-class", "/[👍]/");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-misleading-character-class");
+    assert_eq!(diagnostics[0].message_id, "misleadingCharacterClass");
+}
+
+#[test]
+fn no_misleading_character_class_reports_astral_char_among_bmp() {
+    let diagnostics = scan("no-misleading-character-class", "/[a👍b]/");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "misleadingCharacterClass");
+}
+
+#[test]
+fn no_misleading_character_class_does_not_report_with_u_flag() {
+    let diagnostics = scan("no-misleading-character-class", "/[👍]/u");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_misleading_character_class_does_not_report_with_v_flag() {
+    let diagnostics = scan("no-misleading-character-class", "/[👍]/v");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_misleading_character_class_does_not_report_bmp_only_class() {
+    let diagnostics = scan("no-misleading-character-class", "/[abc]/");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_misleading_character_class_does_not_report_astral_outside_class() {
+    let diagnostics = scan("no-misleading-character-class", "/👍/");
+    assert!(diagnostics.is_empty());
+}

@@ -607,6 +607,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_single_character_alternation(it);
         self.check_empty_string_repetition(it);
         self.check_unicode_aware_regex(it);
+        self.check_no_misleading_character_class(it);
         walk::walk_reg_exp_literal(self, it);
     }
 
