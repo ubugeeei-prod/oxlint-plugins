@@ -6035,3 +6035,63 @@ fn no_ignored_exceptions_does_not_report_catch_with_line_comment() {
     let diagnostics = scan("no-ignored-exceptions", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_unused_function_argument_reports_trailing_unused_param() {
+    let source = "function f(a, b) { return a; }";
+    let diagnostics = scan("no-unused-function-argument", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-unused-function-argument");
+    assert_eq!(diagnostics[0].message_id, "unusedFunctionArgument");
+}
+
+#[test]
+fn no_unused_function_argument_reports_trailing_unused_arrow_param() {
+    let source = "const g = (x, y, z) => x + y;";
+    let diagnostics = scan("no-unused-function-argument", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-unused-function-argument");
+    assert_eq!(diagnostics[0].message_id, "unusedFunctionArgument");
+}
+
+#[test]
+fn no_unused_function_argument_does_not_report_all_params_used() {
+    let source = "function f(a, b) { return a + b; }";
+    let diagnostics = scan("no-unused-function-argument", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_function_argument_does_not_report_early_unused_when_trailing_used() {
+    let source = "function f(a, b) { return b; }";
+    let diagnostics = scan("no-unused-function-argument", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_function_argument_does_not_report_underscore_prefixed() {
+    let source = "function f(_unused) {}";
+    let diagnostics = scan("no-unused-function-argument", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_function_argument_does_not_report_param_used_in_nested_fn() {
+    let source = "function f(a) { return inner(); function inner() { return a; } }";
+    let diagnostics = scan("no-unused-function-argument", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_function_argument_does_not_report_rest_param() {
+    let source = "function f(a, ...rest) {}";
+    let diagnostics = scan("no-unused-function-argument", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_function_argument_does_not_report_destructuring_param() {
+    let source = "function f({ x }) {}";
+    let diagnostics = scan("no-unused-function-argument", source);
+    assert!(diagnostics.is_empty());
+}
