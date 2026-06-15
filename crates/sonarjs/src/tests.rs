@@ -8699,3 +8699,56 @@ fn no_misleading_character_class_does_not_report_astral_outside_class() {
     let diagnostics = scan("no-misleading-character-class", "/👍/");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn slow_regex_reports_plus_over_plus_group() {
+    let diagnostics = scan("slow-regex", "/(a+)+/");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "slow-regex");
+    assert_eq!(diagnostics[0].message_id, "slowRegex");
+}
+
+#[test]
+fn slow_regex_reports_star_over_star_group() {
+    let diagnostics = scan("slow-regex", "/(a*)*/");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "slowRegex");
+}
+
+#[test]
+fn slow_regex_reports_plus_over_dotstar_group() {
+    let diagnostics = scan("slow-regex", "/(.*)+$/");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "slowRegex");
+}
+
+#[test]
+fn slow_regex_reports_plus_over_digit_plus_group() {
+    let diagnostics = scan("slow-regex", "/(\\d+)+/");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "slowRegex");
+}
+
+#[test]
+fn slow_regex_does_not_report_unquantified_inner_group() {
+    let diagnostics = scan("slow-regex", "/(ab)+/");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn slow_regex_does_not_report_single_quantifier() {
+    let diagnostics = scan("slow-regex", "/a+/");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn slow_regex_does_not_report_bounded_inner_quantifier() {
+    let diagnostics = scan("slow-regex", "/(a{2,5})+/");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn slow_regex_does_not_report_bounded_outer_quantifier() {
+    let diagnostics = scan("slow-regex", "/(a+){2,3}/");
+    assert!(diagnostics.is_empty());
+}

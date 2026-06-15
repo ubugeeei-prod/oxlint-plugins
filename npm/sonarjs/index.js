@@ -565,6 +565,10 @@ const messages = Object.freeze({
     misleadingCharacterClass:
       'This character class contains a multi-code-unit character; without the "u" flag it is split into surrogate halves and will not match as intended.',
   },
+  'slow-regex': {
+    slowRegex:
+      'This nested quantifier can cause catastrophic backtracking (super-linear runtime) on crafted input.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -916,6 +920,9 @@ const ruleDescriptions = Object.freeze({
   'no-misleading-character-class':
     'Disallow astral (multi-code-unit) characters in a regex character class without the ' +
     '"u"/"v" flag, where they are silently split into surrogate halves',
+  'slow-regex':
+    'Disallow super-linear regular expressions; flags only the nested unbounded ' +
+    'quantifier shape (e.g. (a+)+) that causes catastrophic backtracking',
 });
 
 const ruleTypes = Object.freeze({
@@ -1074,6 +1081,7 @@ const ruleTypes = Object.freeze({
   'no-hardcoded-secrets': 'problem',
   'concise-regex': 'suggestion',
   'no-misleading-character-class': 'problem',
+  'slow-regex': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1231,6 +1239,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-hardcoded-secrets': 'error',
   'concise-regex': 'error',
   'no-misleading-character-class': 'error',
+  'slow-regex': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
