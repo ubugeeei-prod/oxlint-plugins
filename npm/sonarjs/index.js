@@ -427,6 +427,9 @@ const messages = Object.freeze({
     blockScopedVar:
       "Declare this variable in the enclosing scope, or use 'let'/'const' — it is a 'var' used outside the block where it is declared.",
   },
+  'no-variable-usage-before-declaration': {
+    usedBeforeDeclaration: 'This variable is used before its declaration; declare it before use.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -666,6 +669,9 @@ const ruleDescriptions = Object.freeze({
   'block-scoped-var':
     "Disallow 'var' declarations inside a block (if/for/while/do/switch/bare-block) when the binding" +
     ' is used outside that block; use block-scoped let/const or declare the variable in the enclosing scope',
+  'no-variable-usage-before-declaration':
+    'Disallow referencing a variable before its var/let/const declaration appears in the source ' +
+    'text; function declarations are excluded because their hoisting is intentional',
 });
 
 const ruleTypes = Object.freeze({
@@ -787,6 +793,7 @@ const ruleTypes = Object.freeze({
   'no-use-of-empty-return-value': 'problem',
   'no-duplicated-branches': 'problem',
   'block-scoped-var': 'suggestion',
+  'no-variable-usage-before-declaration': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -908,6 +915,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-use-of-empty-return-value': 'error',
   'no-duplicated-branches': 'error',
   'block-scoped-var': 'error',
+  'no-variable-usage-before-declaration': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

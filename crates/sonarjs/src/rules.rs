@@ -96,6 +96,7 @@ mod no_use_of_empty_return_value;
 mod no_useless_catch;
 mod no_useless_increment;
 mod no_useless_intersection;
+mod no_variable_usage_before_declaration;
 mod no_weak_cipher;
 mod no_wildcard_import;
 mod non_existent_operator;
