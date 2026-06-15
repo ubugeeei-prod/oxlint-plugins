@@ -474,6 +474,9 @@ const messages = Object.freeze({
     deprecatedUse:
       'Do not use code that is marked as deprecated; replace it with the recommended alternative.',
   },
+  'cognitive-complexity': {
+    cognitiveComplexity: 'Refactor this function to reduce its Cognitive Complexity.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -753,6 +756,9 @@ const ruleDescriptions = Object.freeze({
     'Disallow using a same-file function or class whose declaration is immediately preceded by a ' +
     'block comment containing @deprecated; covers only local declarations to avoid false positives ' +
     'in the absence of cross-module type information',
+  'cognitive-complexity':
+    'Disallow functions whose Cognitive Complexity exceeds the configured threshold (the "threshold" option; default 15); ' +
+    'nesting depth is factored into the increment for each structural element',
 });
 
 const ruleTypes = Object.freeze({
@@ -886,6 +892,7 @@ const ruleTypes = Object.freeze({
   'new-operator-misuse': 'problem',
   'no-empty-test-file': 'problem',
   deprecation: 'suggestion',
+  'cognitive-complexity': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1019,6 +1026,7 @@ const recommendedRuleConfig = Object.freeze({
   'new-operator-misuse': 'error',
   'no-empty-test-file': 'error',
   deprecation: 'error',
+  'cognitive-complexity': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
@@ -1129,6 +1137,15 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'cognitive-complexity') {
+    return [
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   return [];
 }
 
@@ -1159,6 +1176,9 @@ function scanOptionsForRule(context, ruleName) {
   }
   if (ruleName === 'no-nested-functions' && Number.isInteger(raw.threshold)) {
     options.noNestedFunctionsThreshold = raw.threshold;
+  }
+  if (ruleName === 'cognitive-complexity' && Number.isInteger(raw.threshold)) {
+    options.cognitiveComplexityThreshold = raw.threshold;
   }
   return options;
 }

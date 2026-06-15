@@ -24,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 130] = [
+pub const RULE_NAMES: [&str; 131] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -155,6 +155,7 @@ pub const RULE_NAMES: [&str; 130] = [
     "new-operator-misuse",
     "no-empty-test-file",
     "deprecation",
+    "cognitive-complexity",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -246,6 +247,7 @@ pub fn scan_sonarjs(
         fn_call_new_records: SmallVec::new(),
         saw_test_call: false,
         deprecated_symbols: SmallVec::new(),
+        cognitive_complexity_fn_depth: 0,
     };
     scanner.visit_program(&parser_return.program);
     scanner.diagnostics
