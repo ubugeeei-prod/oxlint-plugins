@@ -516,6 +516,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_anchor_precedence(it);
         self.check_single_character_alternation(it);
         self.check_empty_string_repetition(it);
+        self.check_unicode_aware_regex(it);
         walk::walk_reg_exp_literal(self, it);
     }
 

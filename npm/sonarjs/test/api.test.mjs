@@ -124,6 +124,7 @@ const expectedRuleNames = [
   'no-variable-usage-before-declaration',
   'arguments-order',
   'updated-const-var',
+  'unicode-aware-regex',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2838,6 +2839,37 @@ describe('updated-const-var rule', () => {
 
   it('does not report let assignments or const property writes', () => {
     const diagnostics = scan('updated-const-var', 'let x = 1; x = 2; const obj = {}; obj.x = 1;');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('unicode-aware-regex rule', () => {
+  it('reports a \\p{...} property escape without u flag', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /\\p{Letter}/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('unicode-aware-regex');
+    expect(diagnostics[0].messageId).toBe('unicodeAwareRegex');
+  });
+
+  it('reports a \\P{...} negative property escape without u flag', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /\\P{ASCII}/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('unicode-aware-regex');
+    expect(diagnostics[0].messageId).toBe('unicodeAwareRegex');
+  });
+
+  it('does not report when the u flag is present', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /\\p{Letter}/u;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the v flag is present', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /\\p{Letter}/v;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a regex without a property escape', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /[a-z]/;');
     expect(diagnostics).toHaveLength(0);
   });
 });

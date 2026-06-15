@@ -6623,6 +6623,7 @@ fn does_not_report_single_argument_call() {
     assert!(diagnostics.is_empty());
 }
 
+
 // ---- updated-const-var -----------------------------------------------------
 
 #[test]
@@ -6697,5 +6698,62 @@ fn updated_const_var_does_not_report_shadowed_assignments() {
 fn updated_const_var_does_not_report_for_declarations() {
     let source = "for (const x in obj) {} for (const y of values) {}";
     let diagnostics = scan("updated-const-var", source);
+    assert!(diagnostics.is_empty());
+}
+
+// ---- unicode-aware-regex ---------------------------------------------------
+
+#[test]
+fn reports_unicode_aware_regex_for_property_escape_without_u_flag() {
+    let source = "const r = /\\p{Letter}/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unicode-aware-regex");
+    assert_eq!(diagnostics[0].message_id, "unicodeAwareRegex");
+}
+
+#[test]
+fn reports_unicode_aware_regex_for_negative_property_escape_without_u_flag() {
+    let source = "const r = /\\P{ASCII}/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unicode-aware-regex");
+    assert_eq!(diagnostics[0].message_id, "unicodeAwareRegex");
+}
+
+#[test]
+fn reports_unicode_aware_regex_with_other_flags_but_not_u() {
+    let source = "const r = /\\p{Letter}/gi;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unicodeAwareRegex");
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_with_u_flag() {
+    let source = "const r = /\\p{Letter}/u;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_with_v_flag() {
+    let source = "const r = /\\p{Letter}/v;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_without_property_escape() {
+    let source = "const r = /[a-z]+/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_for_escaped_backslash_before_p() {
+    // \\p{ is a literal backslash followed by p{, not a property escape.
+    let source = "const r = /\\\\p{3}/;";
+    let diagnostics = scan("unicode-aware-regex", source);
     assert!(diagnostics.is_empty());
 }
