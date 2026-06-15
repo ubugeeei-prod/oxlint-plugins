@@ -111,6 +111,7 @@ const expectedRuleNames = [
   'no-in-misuse',
   'no-require-or-define',
   'no-invalid-regexp',
+  'no-invariant-returns',
   'no-extra-arguments',
   'link-with-target-blank',
   'no-weak-cipher',
@@ -1778,6 +1779,32 @@ describe('sonarjs native API', () => {
       'function outer() {\n  return 1;\n  function inner() {\n    if (a) return;\n    return 2;\n  }\n}';
     const diagnostics = scan('no-inconsistent-returns', source);
     expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports no-invariant-returns for a function always returning the same value', () => {
+    const source = 'function f(x) {\n  if (x > 0) return 42;\n  return 42;\n}';
+    const diagnostics = scan('no-invariant-returns', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-invariant-returns');
+    expect(diagnostics[0].messageId).toBe('invariantReturn');
+  });
+
+  it('does not report no-invariant-returns when return values differ', () => {
+    const source = 'function f(x) {\n  if (x > 0) return 1;\n  return 2;\n}';
+    const diagnostics = scan('no-invariant-returns', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-invariant-returns with only one value return', () => {
+    const source = 'function f(x) {\n  if (x) return 42;\n}';
+    const diagnostics = scan('no-invariant-returns', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-invariant-returns when a bare return is present', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  return 42;\n}';
+    const diagnostics = scan('no-invariant-returns', source);
+    expect(diagnostics).toHaveLength(0);
   });
 
   it('reports no-same-line-conditional for an if on the closing brace line', () => {

@@ -200,6 +200,10 @@ const messages = Object.freeze({
     inconsistentReturns:
       'Refactor this function to use "return" consistently, either always with a value or always without.',
   },
+  'no-invariant-returns': {
+    invariantReturn:
+      "This function always returns the same value; the return value does not depend on the function's logic.",
+  },
   'no-same-line-conditional': {
     sameLineConditional:
       'Move this "if" to a new line or add the missing "else" to clarify the intent.',
@@ -534,6 +538,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow function declarations nested directly inside a block; use a function expression or move it to the top level',
   'no-inconsistent-returns':
     'Disallow mixing value returns and bare returns in the same function; return a value on all paths or none',
+  'no-invariant-returns':
+    "Disallow functions that always return the same value regardless of their logic; the return value should depend on the function's input or state",
   'no-same-line-conditional':
     'Disallow an "if" statement placed on the same line as the closing brace of a preceding sibling "if"',
   'no-nested-assignment':
@@ -736,6 +742,7 @@ const ruleTypes = Object.freeze({
   'array-constructor': 'suggestion',
   'no-function-declaration-in-block': 'suggestion',
   'no-inconsistent-returns': 'suggestion',
+  'no-invariant-returns': 'suggestion',
   'no-same-line-conditional': 'suggestion',
   'no-nested-assignment': 'suggestion',
   'no-nested-incdec': 'suggestion',
@@ -858,6 +865,7 @@ const recommendedRuleConfig = Object.freeze({
   'array-constructor': 'error',
   'no-function-declaration-in-block': 'error',
   'no-inconsistent-returns': 'error',
+  'no-invariant-returns': 'error',
   'no-same-line-conditional': 'error',
   'no-nested-assignment': 'error',
   'no-nested-incdec': 'error',
