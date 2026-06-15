@@ -554,6 +554,9 @@ const messages = Object.freeze({
   'production-debug': {
     productionDebug: 'Remove this "debugger" statement.',
   },
+  'no-hardcoded-secrets': {
+    hardcodedSecret: 'Revoke and change this secret, as it is compromised by being hardcoded here.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -895,6 +898,10 @@ const ruleDescriptions = Object.freeze({
   'production-debug':
     'Disallow leaving debug features active in production code; flags only the ' +
     'unambiguous "debugger" statement (console.* and alert/confirm/prompt are not flagged)',
+  'no-hardcoded-secrets':
+    'Disallow hardcoded secret/credential string literals assigned to a secret-named identifier ' +
+    '(secret, apiKey, token, access_token, private_key, etc.); ' +
+    'provide secrets via configuration or environment variables instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -1050,6 +1057,7 @@ const ruleTypes = Object.freeze({
   'different-types-comparison': 'problem',
   'operation-returning-nan': 'problem',
   'production-debug': 'problem',
+  'no-hardcoded-secrets': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1204,6 +1212,7 @@ const recommendedRuleConfig = Object.freeze({
   'different-types-comparison': 'error',
   'operation-returning-nan': 'error',
   'production-debug': 'error',
+  'no-hardcoded-secrets': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

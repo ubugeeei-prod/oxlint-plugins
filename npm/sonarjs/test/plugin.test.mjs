@@ -246,6 +246,7 @@ describe('sonarjs plugin shape', () => {
       'different-types-comparison',
       'operation-returning-nan',
       'production-debug',
+      'no-hardcoded-secrets',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5655,5 +5656,48 @@ describe('production-debug rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(production-debug)');
+  });
+});
+
+describe('no-hardcoded-secrets rule', () => {
+  it('reports a hardcoded secret assigned to an apiKey variable', () => {
+    const source = 'const apiKey = "AKIA1234567890ABCD";';
+    const reports = runRule('no-hardcoded-secrets', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hardcodedSecret');
+  });
+
+  it('reports a hardcoded secret in an object property', () => {
+    const source = 'const x = { secret: "s3cr3tVal" };';
+    const reports = runRule('no-hardcoded-secrets', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hardcodedSecret');
+  });
+
+  it('does not report a partial name match', () => {
+    const source = 'const tokenizer = "someValueHere";';
+    const reports = runRule('no-hardcoded-secrets', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-string-literal initializer', () => {
+    const source = 'const apiKey = process.env.KEY;';
+    const reports = runRule('no-hardcoded-secrets', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a well-known placeholder value', () => {
+    const source = 'const apiKey = "token";';
+    const reports = runRule('no-hardcoded-secrets', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-hardcoded-secrets through the CLI', () => {
+    const source = 'const token = "ghp_realLongTokenValue123";';
+    const result = runOxlint('no-hardcoded-secrets', source, 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-hardcoded-secrets)');
   });
 });

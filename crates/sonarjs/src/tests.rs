@@ -8554,3 +8554,56 @@ fn production_debug_does_not_report_ordinary_return() {
     let diagnostics = scan("production-debug", "function f(){ return 1; }");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_hardcoded_secrets_reports_apikey_variable_declarator() {
+    let source = "const apiKey = \"AKIA1234567890ABCD\";";
+    let diagnostics = scan("no-hardcoded-secrets", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-hardcoded-secrets");
+    assert_eq!(diagnostics[0].message_id, "hardcodedSecret");
+}
+
+#[test]
+fn no_hardcoded_secrets_reports_token_variable_declarator() {
+    let source = "const token = \"ghp_realLongTokenValue123\";";
+    let diagnostics = scan("no-hardcoded-secrets", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "hardcodedSecret");
+}
+
+#[test]
+fn no_hardcoded_secrets_reports_object_property() {
+    let source = "const x = { secret: \"s3cr3tVal\" };";
+    let diagnostics = scan("no-hardcoded-secrets", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "hardcodedSecret");
+}
+
+#[test]
+fn no_hardcoded_secrets_does_not_report_partial_name_match() {
+    let source = "const tokenizer = \"x\";";
+    let diagnostics = scan("no-hardcoded-secrets", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hardcoded_secrets_does_not_report_empty_value() {
+    let source = "const apiKey = \"\";";
+    let diagnostics = scan("no-hardcoded-secrets", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hardcoded_secrets_does_not_report_non_literal_init() {
+    let source = "const apiKey = process.env.KEY;";
+    let diagnostics = scan("no-hardcoded-secrets", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hardcoded_secrets_does_not_report_placeholder_value() {
+    let source = "const apiKey = \"token\";";
+    let diagnostics = scan("no-hardcoded-secrets", source);
+    assert!(diagnostics.is_empty());
+}
