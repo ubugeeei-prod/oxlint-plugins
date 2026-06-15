@@ -699,6 +699,10 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_deprecation_function(it);
         if let Some(body) = &it.body {
             self.check_no_identical_functions(it.params.span.start, body.span.end, it.span);
+            // Only concrete functions (those with a body) can carry a default
+            // value; overload/abstract/ambient signatures (`body == None`) and
+            // type-only signature nodes must not be flagged.
+            self.check_bool_param_default(&it.params);
         }
         self.check_cognitive_complexity_fn(it);
         let track = self.enter_generator(it);
@@ -766,6 +770,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         if !it.expression {
             self.check_no_identical_functions(it.params.span.start, it.body.span.end, it.span);
         }
+        // Arrow functions always have a body (block or expression), so their
+        // parameters can always carry a default value.
+        self.check_bool_param_default(&it.params);
         self.check_cognitive_complexity_arrow(it);
         self.enter_return_scope(it.span);
         if !it.expression {

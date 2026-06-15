@@ -240,6 +240,7 @@ describe('sonarjs plugin shape', () => {
       'no-unused-collection',
       'no-empty-collection',
       'no-redundant-parentheses',
+      'bool-param-default',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5318,5 +5319,92 @@ describe('no-redundant-parentheses rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-redundant-parentheses)');
+  });
+});
+
+describe('bool-param-default rule', () => {
+  it('reports an optional boolean function parameter without a default', () => {
+    const source = 'function f(flag?: boolean) {}';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('boolParamDefault');
+  });
+
+  it('reports an optional boolean arrow-function parameter', () => {
+    const source = 'const g = (flag?: boolean) => {};';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('boolParamDefault');
+  });
+
+  it('reports an optional boolean class-method parameter', () => {
+    const source = 'class C { m(flag?: boolean) {} }';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('boolParamDefault');
+  });
+
+  it('does not report a required boolean parameter', () => {
+    const source = 'function f(flag: boolean) {}';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an optional boolean parameter with a default', () => {
+    const source = 'function f(flag: boolean = false) {}';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a union annotation', () => {
+    const source = 'function f(flag?: boolean | undefined) {}';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an interface method signature', () => {
+    const source = 'interface I { m(flag?: boolean): void; }';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a type-alias function type', () => {
+    const source = 'type T = (flag?: boolean) => void;';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a type-literal method signature', () => {
+    const source = 'type O = { m(flag?: boolean): void };';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an abstract method', () => {
+    const source = 'abstract class C { abstract m(flag?: boolean): void; }';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an overload signature, only its implementation', () => {
+    const source = 'function f(flag?: boolean): void; function f(flag?: boolean) { return flag; }';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('boolParamDefault');
+  });
+
+  it('does not report an ambient declared function', () => {
+    const source = 'declare function f(flag?: boolean): void;';
+    const reports = runRule('bool-param-default', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports bool-param-default through the CLI', () => {
+    const source = 'function f(flag?: boolean) {}';
+    const result = runOxlint('bool-param-default', source, 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(bool-param-default)');
   });
 });
