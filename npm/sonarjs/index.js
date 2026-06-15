@@ -451,6 +451,10 @@ const messages = Object.freeze({
     emptyAfterReluctant:
       'This reluctant quantifier will always match the empty string because everything that follows it is optional or there is nothing after it; review the pattern.',
   },
+  'no-ignored-return': {
+    ignoredReturn:
+      'The return value of this pure method call is discarded; use the result or remove the call.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -708,6 +712,10 @@ const ruleDescriptions = Object.freeze({
   'no-empty-after-reluctant':
     'Disallow a reluctant (lazy) quantifier that can match the empty string when every following ' +
     'term in the same alternative is also optional or absent, making the quantifier always match empty',
+  'no-ignored-return':
+    'Disallow discarding the return value of a pure built-in method call when the receiver is a ' +
+    'literal of a statically-known type (string, number, or array literal); restricted to ' +
+    'literal receivers only to avoid false positives in the absence of type information',
 });
 
 const ruleTypes = Object.freeze({
@@ -835,6 +843,7 @@ const ruleTypes = Object.freeze({
   'unicode-aware-regex': 'problem',
   'no-undefined-assignment': 'suggestion',
   'no-empty-after-reluctant': 'problem',
+  'no-ignored-return': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -961,6 +970,7 @@ const recommendedRuleConfig = Object.freeze({
   'unicode-aware-regex': 'error',
   'no-undefined-assignment': 'error',
   'no-empty-after-reluctant': 'error',
+  'no-ignored-return': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

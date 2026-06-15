@@ -588,6 +588,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_expression_statement(&mut self, it: &ExpressionStatement<'a>) {
         self.check_constructor_for_side_effects(it);
         self.check_no_unthrown_error(it);
+        self.check_no_ignored_return(it);
         walk::walk_expression_statement(self, it);
     }
 
