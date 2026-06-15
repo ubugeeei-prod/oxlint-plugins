@@ -12094,19 +12094,19 @@
       },
       {
         "name": "no-fallthrough",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-fallthrough (Sonar key S128). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room Rust/Oxc port of SonarJS no-fallthrough (S128). Reports non-empty switch cases that can continue into the next case, with support for break/return/throw/continue termination, all-branches-terminating if/try forms, empty grouped cases, and intentional fallthrough comments. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-for-in-iterable",

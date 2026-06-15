@@ -499,6 +499,10 @@ const messages = Object.freeze({
     preferRegExpExec:
       'Use RegExp.prototype.exec() instead of String.prototype.match() for a non-global regular expression.',
   },
+  'no-fallthrough': {
+    noFallthrough:
+      'End this switch case with an unconditional jump, or add an intentional fallthrough comment.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -793,6 +797,8 @@ const ruleDescriptions = Object.freeze({
     'operators inside nested function or arrow-function bodies are counted independently',
   'prefer-regexp-exec':
     'Prefer RegExp.prototype.exec() over String.prototype.match() when matching a non-global regular-expression literal',
+  'no-fallthrough':
+    'Require non-empty switch cases to end with an unconditional jump, unless an intentional fallthrough comment is present',
 });
 
 const ruleTypes = Object.freeze({
@@ -933,6 +939,7 @@ const ruleTypes = Object.freeze({
   'cognitive-complexity': 'suggestion',
   'expression-complexity': 'suggestion',
   'prefer-regexp-exec': 'suggestion',
+  'no-fallthrough': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1072,6 +1079,7 @@ const recommendedRuleConfig = Object.freeze({
   'cognitive-complexity': 'error',
   'expression-complexity': 'error',
   'prefer-regexp-exec': 'error',
+  'no-fallthrough': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

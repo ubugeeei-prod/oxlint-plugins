@@ -7633,3 +7633,56 @@ fn prefer_regexp_exec_does_not_report_extra_match_arguments() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_fallthrough_reports_case_without_terminating_jump() {
+    let source = "switch (x) { case 1: doWork(); case 2: done(); break; }";
+    let diagnostics = scan("no-fallthrough", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-fallthrough");
+    assert_eq!(diagnostics[0].message_id, "noFallthrough");
+}
+
+#[test]
+fn no_fallthrough_allows_break_return_throw_and_continue() {
+    let source = "while (ok) { switch (x) { case 1: break; case 2: return; case 3: throw err; case 4: continue; case 5: done(); } }";
+    let diagnostics = scan("no-fallthrough", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_fallthrough_allows_empty_grouped_case() {
+    let source = "switch (x) { case 1: case 2: doWork(); break; }";
+    let diagnostics = scan("no-fallthrough", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_fallthrough_allows_intentional_comment() {
+    let source = "switch (x) { case 1: doWork(); // falls through\ncase 2: done(); break; }";
+    let diagnostics = scan("no-fallthrough", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_fallthrough_allows_if_else_when_both_paths_terminate() {
+    let source = "switch (x) { case 1: if (ok) { return; } else { throw err; } case 2: done(); }";
+    let diagnostics = scan("no-fallthrough", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_fallthrough_reports_if_without_else() {
+    let source = "switch (x) { case 1: if (ok) { break; } case 2: done(); }";
+    let diagnostics = scan("no-fallthrough", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noFallthrough");
+}
+
+#[test]
+fn no_fallthrough_reports_labeled_break_conservatively() {
+    let source = "switch (x) { case 1: block: { break block; } case 2: done(); }";
+    let diagnostics = scan("no-fallthrough", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noFallthrough");
+}

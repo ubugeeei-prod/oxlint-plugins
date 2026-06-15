@@ -140,6 +140,7 @@ const expectedRuleNames = [
   'cognitive-complexity',
   'expression-complexity',
   'prefer-regexp-exec',
+  'no-fallthrough',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
