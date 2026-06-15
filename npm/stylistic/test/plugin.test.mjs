@@ -80,6 +80,7 @@ const stylisticRuleFixtures = [
   ['operator-linebreak', 'const x = 1\n  + 2;\n', [], ['operatorAtBeginning']],
   ['keyword-spacing', 'if(foo) {}\n', [], ['missingAfter']],
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
+  ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
 ];
 
@@ -210,6 +211,47 @@ describe('stylistic plugin', () => {
     const sourceText = "/*\n \t ignored\n*/\n'\\\n \t literal';\n`\n \t template\n`;\n";
 
     expect(runRule('no-mixed-spaces-and-tabs', sourceText, [])).toEqual([]);
+  });
+
+  it('supports lines-between-class-members options and fixes', () => {
+    const neverReports = runRule('lines-between-class-members', 'class C { a() {}\n\nb() {} }\n', [
+      'never',
+    ]);
+
+    expect(neverReports).toMatchObject([{ messageId: 'never' }]);
+    expect(
+      neverReports[0].suggest?.[0]?.fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([
+      { range: ['class C { a() {}'.length, 'class C { a() {}\n\n'.length], replacementText: '\n' },
+    ]);
+
+    expect(
+      messageIds(
+        runRule('lines-between-class-members', 'class C { a() {}\nb() {} }\n', [
+          'always',
+          { exceptAfterSingleLine: true },
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  it('supports lines-between-class-members enforce pairs', () => {
+    expect(
+      messageIds(
+        runRule('lines-between-class-members', 'class C { a() {}\nb() {}\nfield;\n\nnext; }\n', [
+          {
+            enforce: [
+              { blankLine: 'always', prev: 'method', next: 'method' },
+              { blankLine: 'never', prev: 'field', next: 'field' },
+            ],
+          },
+        ]),
+      ),
+    ).toEqual(['always', 'never']);
   });
 
   it('supports one-var-declaration-per-line modes and fixes', () => {
