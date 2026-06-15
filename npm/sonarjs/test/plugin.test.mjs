@@ -245,6 +245,7 @@ describe('sonarjs plugin shape', () => {
       'in-operator-type-error',
       'different-types-comparison',
       'operation-returning-nan',
+      'production-debug',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5610,5 +5611,49 @@ describe('operation-returning-nan rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(operation-returning-nan)');
+  });
+});
+
+describe('production-debug rule', () => {
+  it('reports a debugger statement inside a function body', () => {
+    const source = 'function f() { debugger; }';
+    const reports = runRule('production-debug', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('productionDebug');
+  });
+
+  it('reports a debugger statement nested in a block', () => {
+    const source = 'if (x) { debugger; }';
+    const reports = runRule('production-debug', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('productionDebug');
+  });
+
+  it('reports a top-level debugger statement', () => {
+    const source = 'debugger;';
+    const reports = runRule('production-debug', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('productionDebug');
+  });
+
+  it('does not report console.* calls', () => {
+    const source = 'console.log(1); console.debug(2);';
+    const reports = runRule('production-debug', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report alert/confirm/prompt calls', () => {
+    const source = 'alert(1); confirm("x"); prompt("y");';
+    const reports = runRule('production-debug', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports production-debug through the CLI', () => {
+    const source = 'function f() { debugger; }';
+    const result = runOxlint('production-debug', source, 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(production-debug)');
   });
 });

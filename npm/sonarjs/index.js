@@ -551,6 +551,9 @@ const messages = Object.freeze({
   'operation-returning-nan': {
     operationReturningNan: 'This arithmetic operation will always evaluate to NaN.',
   },
+  'production-debug': {
+    productionDebug: 'Remove this "debugger" statement.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -889,6 +892,9 @@ const ruleDescriptions = Object.freeze({
   'operation-returning-nan':
     'Disallow arithmetic operations (excluding +) where an operand is a function, class, or ' +
     'plain object literal that always coerces to NaN',
+  'production-debug':
+    'Disallow leaving debug features active in production code; flags only the ' +
+    'unambiguous "debugger" statement (console.* and alert/confirm/prompt are not flagged)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1043,6 +1049,7 @@ const ruleTypes = Object.freeze({
   'in-operator-type-error': 'problem',
   'different-types-comparison': 'problem',
   'operation-returning-nan': 'problem',
+  'production-debug': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1196,6 +1203,7 @@ const recommendedRuleConfig = Object.freeze({
   'in-operator-type-error': 'error',
   'different-types-comparison': 'error',
   'operation-returning-nan': 'error',
+  'production-debug': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

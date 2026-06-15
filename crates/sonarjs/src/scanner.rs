@@ -6,17 +6,17 @@ use oxc_ast::AstKind;
 use oxc_ast::ast::{
     AccessorProperty, ArrowFunctionExpression, AssignmentExpression, AssignmentTarget,
     BinaryExpression, BindingIdentifier, BindingPattern, BlockStatement, BreakStatement,
-    CallExpression, CatchClause, Class, ConditionalExpression, ContinueStatement, DoWhileStatement,
-    ExportAllDeclaration, ExportNamedDeclaration, Expression, ExpressionStatement, ForInStatement,
-    ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
-    ImportDeclaration, ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment,
-    JSXOpeningElement, LabeledStatement, LogicalExpression, NewExpression, ObjectExpression,
-    ObjectProperty, ParenthesizedExpression, Program, PropertyDefinition, RegExpLiteral,
-    ReturnStatement, SimpleAssignmentTarget, Statement, StaticBlock, StaticMemberExpression,
-    StringLiteral, SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature,
-    TSUnionType, TaggedTemplateExpression, TemplateLiteral, ThisExpression, TryStatement,
-    UnaryExpression, UpdateExpression, VariableDeclaration, VariableDeclarator, WhileStatement,
-    YieldExpression,
+    CallExpression, CatchClause, Class, ConditionalExpression, ContinueStatement,
+    DebuggerStatement, DoWhileStatement, ExportAllDeclaration, ExportNamedDeclaration, Expression,
+    ExpressionStatement, ForInStatement, ForOfStatement, ForStatement, Function, FunctionBody,
+    IdentifierReference, IfStatement, ImportDeclaration, ImportExpression, JSXAttribute,
+    JSXAttributeValue, JSXElement, JSXFragment, JSXOpeningElement, LabeledStatement,
+    LogicalExpression, NewExpression, ObjectExpression, ObjectProperty, ParenthesizedExpression,
+    Program, PropertyDefinition, RegExpLiteral, ReturnStatement, SimpleAssignmentTarget, Statement,
+    StaticBlock, StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement,
+    TSIntersectionType, TSPropertySignature, TSUnionType, TaggedTemplateExpression,
+    TemplateLiteral, ThisExpression, TryStatement, UnaryExpression, UpdateExpression,
+    VariableDeclaration, VariableDeclarator, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_semantic::{AstNodes, Scoping, SymbolId};
@@ -822,6 +822,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         let label = it.label.as_ref().map(|l| l.name.as_str());
         self.handle_continue_jump(label);
         walk::walk_continue_statement(self, it);
+    }
+
+    fn visit_debugger_statement(&mut self, it: &DebuggerStatement) {
+        self.check_production_debug(it);
+        walk::walk_debugger_statement(self, it);
     }
 
     fn visit_yield_expression(&mut self, it: &YieldExpression<'a>) {
