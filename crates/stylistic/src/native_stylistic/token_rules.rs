@@ -18,6 +18,7 @@ use super::context::{
     Scan, has_newline, is_whitespace, option_keyword, option_object_bool, punct_is,
     report_missing_space, report_replace, report_unexpected_space,
 };
+use super::helpers::push_diagnostic;
 use super::lexer::TokenKind;
 
 // ---------------------------------------------------------------------------
@@ -676,6 +677,167 @@ pub(crate) fn check_spaced_comment(
     }
 }
 
+// ---------------------------------------------------------------------------
+// line-comment-position
+// ---------------------------------------------------------------------------
+
+pub(crate) fn check_line_comment_position(
+    scan: &Scan,
+    options: &Value,
+    diagnostics: &mut Vec<LintDiagnostic>,
+) {
+    const RULE: &str = "line-comment-position";
+    let config = LineCommentPositionConfig::from_options(options);
+
+    for (index, token) in scan.tokens().iter().enumerate() {
+        if token.kind != TokenKind::LineComment {
+            continue;
+        }
+
+        let comment_value = &scan.source()[token.start + 2..token.end];
+        if config.should_ignore(comment_value) {
+            continue;
+        }
+
+        let is_on_same_line = index
+            .checked_sub(1)
+            .and_then(|previous_index| scan.tokens().get(previous_index))
+            .is_some_and(|previous| !has_newline(scan.gap(previous, token)));
+
+        match config.position {
+            LineCommentPosition::Above if is_on_same_line => push_diagnostic(
+                diagnostics,
+                RULE,
+                "above",
+                "Expected comment to be above code.",
+                token.start,
+                token.end,
+                None::<(
+                    &'static str,
+                    &'static str,
+                    fn(crate::TextRange) -> crate::LintFix,
+                )>,
+            ),
+            LineCommentPosition::Beside if !is_on_same_line => push_diagnostic(
+                diagnostics,
+                RULE,
+                "beside",
+                "Expected comment to be beside code.",
+                token.start,
+                token.end,
+                None::<(
+                    &'static str,
+                    &'static str,
+                    fn(crate::TextRange) -> crate::LintFix,
+                )>,
+            ),
+            _ => {}
+        }
+    }
+}
+
+#[derive(Clone, Copy)]
+enum LineCommentPosition {
+    Above,
+    Beside,
+}
+
+struct LineCommentPositionConfig {
+    position: LineCommentPosition,
+    apply_default_ignore_patterns: bool,
+    custom_ignore: Option<regex::Regex>,
+}
+
+impl LineCommentPositionConfig {
+    fn from_options(options: &Value) -> Self {
+        let option = first_option(options);
+        let mut position = LineCommentPosition::Above;
+        let mut ignore_pattern = None;
+        let mut apply_default_patterns = true;
+        let mut apply_default_ignore_patterns = None;
+
+        match option {
+            Some(Value::String(value)) if value == "beside" => {
+                position = LineCommentPosition::Beside;
+            }
+            Some(Value::Object(object)) => {
+                if object
+                    .get("position")
+                    .and_then(Value::as_str)
+                    .is_some_and(|value| value == "beside")
+                {
+                    position = LineCommentPosition::Beside;
+                }
+                ignore_pattern = object.get("ignorePattern").and_then(Value::as_str);
+                if let Some(value) = object.get("applyDefaultPatterns").and_then(Value::as_bool) {
+                    apply_default_patterns = value;
+                }
+                apply_default_ignore_patterns = object
+                    .get("applyDefaultIgnorePatterns")
+                    .and_then(Value::as_bool);
+            }
+            _ => {}
+        }
+
+        let custom_ignore = ignore_pattern.and_then(|pattern| regex::Regex::new(pattern).ok());
+        Self {
+            position,
+            apply_default_ignore_patterns: apply_default_ignore_patterns
+                .unwrap_or(apply_default_patterns),
+            custom_ignore,
+        }
+    }
+
+    fn should_ignore(&self, comment_value: &str) -> bool {
+        (self.apply_default_ignore_patterns && is_default_ignored_line_comment(comment_value))
+            || self
+                .custom_ignore
+                .as_ref()
+                .is_some_and(|regex| regex.is_match(comment_value))
+    }
+}
+
+fn first_option(options: &Value) -> Option<&Value> {
+    match options {
+        Value::Array(items) => items.first(),
+        Value::Null => None,
+        other => Some(other),
+    }
+}
+
+fn is_default_ignored_line_comment(comment_value: &str) -> bool {
+    let trimmed = comment_value.trim_start_matches([' ', '\t', '\u{000b}', '\u{000c}']);
+    is_comments_ignore_pattern(trimmed) || is_fallthrough_comment(trimmed)
+}
+
+fn is_comments_ignore_pattern(trimmed: &str) -> bool {
+    trimmed.starts_with("eslint")
+        || trimmed.starts_with("jscs")
+        || starts_with_word_and_space(trimmed, "jshint")
+        || starts_with_word_and_space(trimmed, "jslint")
+        || starts_with_word_and_space(trimmed, "istanbul")
+        || starts_with_word_and_space(trimmed, "global")
+        || starts_with_word_and_space(trimmed, "globals")
+        || starts_with_word_and_space(trimmed, "exported")
+}
+
+fn starts_with_word_and_space(text: &str, word: &str) -> bool {
+    text.strip_prefix(word)
+        .and_then(|rest| rest.as_bytes().first().copied())
+        .is_some_and(is_ascii_space)
+}
+
+fn is_ascii_space(byte: u8) -> bool {
+    matches!(byte, b' ' | b'\t' | 0x0b | 0x0c)
+}
+
+fn is_fallthrough_comment(trimmed: &str) -> bool {
+    trimmed.starts_with("fallthrough")
+        || trimmed.starts_with("fall through")
+        || trimmed.starts_with("fallsthrough")
+        || trimmed.starts_with("falls through")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -693,6 +855,18 @@ mod tests {
 
     fn ids(diagnostics: &[LintDiagnostic]) -> Vec<&str> {
         diagnostics.iter().map(|d| d.message_id.as_str()).collect()
+    }
+
+    fn object_options<const N: usize>(entries: [(&str, Value); N]) -> Value {
+        Value::Array(
+            std::iter::once(Value::Object(
+                entries
+                    .into_iter()
+                    .map(|(key, value)| (key.to_owned(), value))
+                    .collect(),
+            ))
+            .collect(),
+        )
     }
 
     #[test]
@@ -812,5 +986,103 @@ mod tests {
             ["expectedSpaceAfter"]
         );
         assert!(run(check_spaced_comment, "/** jsdoc */", Value::Null).is_empty());
+    }
+
+    #[test]
+    fn line_comment_position_defaults_to_above() {
+        assert_eq!(
+            ids(&run(
+                check_line_comment_position,
+                "const value = 1; // inline\n// above\nvalue;\n",
+                Value::Null
+            )),
+            ["above"]
+        );
+        assert_eq!(
+            run(
+                check_line_comment_position,
+                "const value = 1; // inline\n",
+                Value::Null
+            )[0]
+            .range
+            .start,
+            17
+        );
+    }
+
+    #[test]
+    fn line_comment_position_beside_reports_above_comments() {
+        let options = Value::Array(std::iter::once(Value::String("beside".into())).collect());
+        assert_eq!(
+            ids(&run(
+                check_line_comment_position,
+                "// above\nvalue; // beside\n",
+                options
+            )),
+            ["beside"]
+        );
+    }
+
+    #[test]
+    fn line_comment_position_honors_default_ignores() {
+        assert!(
+            run(
+                check_line_comment_position,
+                "value; // eslint-disable-line\nvalue; // global NAME\nvalue; // globals NAME: true\nvalue; // jshint ignore:line\nvalue; // jslint vars: true\nvalue; // istanbul ignore next\nvalue; // jscs: disable\nvalue; // exported NAME\nvalue; // fallthrough\nvalue; // fall through\nvalue; // falls through\n",
+                Value::Null
+            )
+            .is_empty()
+        );
+        assert_eq!(
+            ids(&run(
+                check_line_comment_position,
+                "value; // globalization is a word\nvalue; // mentioning falls through\n",
+                Value::Null
+            )),
+            ["above", "above"]
+        );
+    }
+
+    #[test]
+    fn line_comment_position_honors_custom_and_deprecated_ignore_options() {
+        let custom = object_options([
+            ("position", Value::String("above".into())),
+            ("ignorePattern", Value::String("linter|pragma".into())),
+        ]);
+        assert_eq!(
+            ids(&run(
+                check_line_comment_position,
+                "value; // linter\nvalue; // invalid\n",
+                custom
+            )),
+            ["above"]
+        );
+
+        let disabled_default = object_options([
+            ("position", Value::String("beside".into())),
+            ("applyDefaultPatterns", Value::Bool(false)),
+        ]);
+        assert_eq!(
+            ids(&run(
+                check_line_comment_position,
+                "// jscs: disable\nvalue;\n",
+                disabled_default
+            )),
+            ["beside"]
+        );
+
+        let new_option_takes_precedence = object_options([
+            ("position", Value::String("beside".into())),
+            ("applyDefaultPatterns", Value::Bool(true)),
+            ("applyDefaultIgnorePatterns", Value::Bool(false)),
+        ]);
+        assert_eq!(
+            ids(&run(
+                check_line_comment_position,
+                "// jscs: disable\nvalue;\n",
+                new_option_takes_precedence
+            )),
+            ["beside"]
+        );
     }
 }
