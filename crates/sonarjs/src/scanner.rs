@@ -15,7 +15,7 @@ use oxc_ast::ast::{
     SimpleAssignmentTarget, Statement, StaticBlock, StaticMemberExpression, StringLiteral,
     SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType,
     TaggedTemplateExpression, TemplateLiteral, ThisExpression, TryStatement, UnaryExpression,
-    UpdateExpression, VariableDeclarator, WhileStatement, YieldExpression,
+    UpdateExpression, VariableDeclaration, VariableDeclarator, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_semantic::{AstNodes, Scoping, SymbolId};
@@ -281,6 +281,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_fixme_tag(&it.comments);
         self.check_todo_tag(&it.comments);
         self.check_no_sonar_comments(&it.comments);
+        self.check_declarations_in_global_scope_program(it);
         self.check_no_same_line_conditional(&it.body);
         self.check_no_unenclosed_multiline_block(&it.body);
         self.check_prefer_object_literal(&it.body);
@@ -500,6 +501,13 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.check_updated_loop_counter(ident, it.span);
         }
         walk::walk_update_expression(self, it);
+    }
+
+    fn visit_variable_declaration(&mut self, it: &VariableDeclaration<'a>) {
+        if self.function_nesting_depth == 0 && self.this_binding_depth == 0 {
+            self.check_declarations_in_global_scope_var(it);
+        }
+        walk::walk_variable_declaration(self, it);
     }
 
     fn visit_variable_declarator(&mut self, it: &VariableDeclarator<'a>) {
