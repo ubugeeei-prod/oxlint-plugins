@@ -35,6 +35,7 @@ mod max_switch_cases;
 mod max_union_size;
 mod misplaced_loop_counter;
 mod nested_control_flow;
+mod new_operator_misuse;
 mod no_all_duplicated_branches;
 mod no_alphabetical_sort;
 mod no_array_delete;
