@@ -466,6 +466,10 @@ const messages = Object.freeze({
     inconsistentFunctionCall:
       "This function is invoked both as a constructor (with 'new') and as a plain function; use it consistently.",
   },
+  'new-operator-misuse': {
+    newOperatorMisuse:
+      "Do not use 'new' with an arrow function; arrow functions are not constructors and this throws a TypeError.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -739,6 +743,8 @@ const ruleDescriptions = Object.freeze({
   'inconsistent-function-call':
     'Disallow calling a function both as a plain call and as a constructor (with new) within ' +
     'the same file; pick one calling convention and apply it consistently',
+  'new-operator-misuse':
+    "Disallow using 'new' with an arrow function; arrow functions cannot be constructors and always throw a TypeError",
 });
 
 const ruleTypes = Object.freeze({
@@ -870,6 +876,7 @@ const ruleTypes = Object.freeze({
   'file-name-differ-from-class': 'suggestion',
   'no-unenclosed-multiline-block': 'suggestion',
   'inconsistent-function-call': 'problem',
+  'new-operator-misuse': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1001,6 +1008,7 @@ const recommendedRuleConfig = Object.freeze({
   'file-name-differ-from-class': 'error',
   'no-unenclosed-multiline-block': 'error',
   'inconsistent-function-call': 'error',
+  'new-operator-misuse': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

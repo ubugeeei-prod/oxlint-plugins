@@ -7052,3 +7052,53 @@ fn does_not_report_inconsistent_function_call_for_member_expression_callee() {
     let diagnostics = scan("inconsistent-function-call", source);
     assert!(diagnostics.is_empty());
 }
+
+// new-operator-misuse tests
+
+#[test]
+fn reports_new_operator_misuse_on_inline_arrow() {
+    let source = "new (() => {})();";
+    let diagnostics = scan("new-operator-misuse", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "new-operator-misuse");
+    assert_eq!(diagnostics[0].message_id, "newOperatorMisuse");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_new_operator_misuse_on_identifier_resolving_to_arrow() {
+    let source = "const f = () => {};\nnew f();";
+    let diagnostics = scan("new-operator-misuse", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "new-operator-misuse");
+    assert_eq!(diagnostics[0].message_id, "newOperatorMisuse");
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+}
+
+#[test]
+fn does_not_report_new_operator_misuse_on_regular_function() {
+    let source = "function F() {}\nnew F();";
+    let diagnostics = scan("new-operator-misuse", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_new_operator_misuse_on_class() {
+    let source = "class C {}\nnew C();";
+    let diagnostics = scan("new-operator-misuse", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_new_operator_misuse_on_unresolved_identifier() {
+    let source = "new Foo();";
+    let diagnostics = scan("new-operator-misuse", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_new_operator_misuse_on_function_expression() {
+    let source = "const g = function() {};\nnew g();";
+    let diagnostics = scan("new-operator-misuse", source);
+    assert!(diagnostics.is_empty());
+}
