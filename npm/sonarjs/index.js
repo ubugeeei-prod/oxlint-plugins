@@ -319,6 +319,10 @@ const messages = Object.freeze({
     invertedArguments:
       'Swap these assertion arguments so the actual value comes first and the expected value second.',
   },
+  'no-incomplete-assertions': {
+    incompleteAssertion:
+      'Complete this assertion: add a terminal assertion property or method call after "expect(...)".',
+  },
   'for-loop-increment-sign': {
     wrongDirection:
       'This loop update moves the counter away from the termination condition, so the loop may not stop as intended.',
@@ -675,6 +679,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow a Chai "assert.<method>(...)" call whose first two arguments are the same source expression, since it compares a value to itself and is trivially true',
   'inverted-assertion-arguments':
     'Disallow a Chai "assert.<method>(...)" call whose first argument is a literal constant and second is not, since the actual/expected arguments were likely inverted',
+  'no-incomplete-assertions':
+    'Disallow a Chai BDD "expect(value)" chain used as a statement that never reaches a terminal assertion property or method call, so the test always passes silently',
   'for-loop-increment-sign':
     'Disallow a "for" loop whose update clause moves the counter away from the relational termination condition (e.g. "i < n" with "i--"), which can prevent the loop from terminating',
   'no-equals-in-for-termination':
@@ -895,6 +901,7 @@ const ruleTypes = Object.freeze({
   'bitwise-operators': 'suggestion',
   'no-same-argument-assert': 'suggestion',
   'inverted-assertion-arguments': 'suggestion',
+  'no-incomplete-assertions': 'problem',
   'for-loop-increment-sign': 'suggestion',
   'no-equals-in-for-termination': 'suggestion',
   'reduce-initial-value': 'suggestion',
@@ -1036,6 +1043,7 @@ const recommendedRuleConfig = Object.freeze({
   'bitwise-operators': 'error',
   'no-same-argument-assert': 'error',
   'inverted-assertion-arguments': 'error',
+  'no-incomplete-assertions': 'error',
   'for-loop-increment-sign': 'error',
   'no-equals-in-for-termination': 'error',
   'reduce-initial-value': 'error',

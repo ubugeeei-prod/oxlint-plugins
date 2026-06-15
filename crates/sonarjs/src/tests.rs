@@ -4534,6 +4534,59 @@ fn does_not_report_inverted_assertion_arguments_for_non_equality_method() {
 }
 
 #[test]
+fn reports_no_incomplete_assertions_bare_expect_call() {
+    let diagnostics = scan("no-incomplete-assertions", "expect(x);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-incomplete-assertions");
+    assert_eq!(diagnostics[0].message_id, "incompleteAssertion");
+}
+
+#[test]
+fn reports_no_incomplete_assertions_expect_dot_to() {
+    let diagnostics = scan("no-incomplete-assertions", "expect(x).to;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "incompleteAssertion");
+}
+
+#[test]
+fn reports_no_incomplete_assertions_expect_to_be() {
+    let diagnostics = scan("no-incomplete-assertions", "expect(x).to.be;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "incompleteAssertion");
+}
+
+#[test]
+fn reports_no_incomplete_assertions_expect_not() {
+    let diagnostics = scan("no-incomplete-assertions", "expect(x).not;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "incompleteAssertion");
+}
+
+#[test]
+fn does_not_report_no_incomplete_assertions_expect_true_terminal() {
+    let diagnostics = scan("no-incomplete-assertions", "expect(x).to.be.true;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_incomplete_assertions_expect_equal_call() {
+    let diagnostics = scan("no-incomplete-assertions", "expect(x).to.equal(42);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_incomplete_assertions_non_expect_call() {
+    let diagnostics = scan("no-incomplete-assertions", "foo(x);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_incomplete_assertions_namespaced_expect() {
+    let diagnostics = scan("no-incomplete-assertions", "chai.expect(x).to;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn reports_for_loop_increment_sign_increasing_cond_decrements() {
     let source = "for (let i = 0; i < 10; i--) {}";
     let diagnostics = scan("for-loop-increment-sign", source);
