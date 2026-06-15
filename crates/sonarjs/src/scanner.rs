@@ -10,8 +10,8 @@ use oxc_ast::ast::{
     ExportAllDeclaration, ExportNamedDeclaration, Expression, ExpressionStatement, ForInStatement,
     ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
     ImportDeclaration, ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment,
-    LabeledStatement, LogicalExpression, NewExpression, ObjectExpression, Program,
-    PropertyDefinition, RegExpLiteral, ReturnStatement, SimpleAssignmentTarget, Statement,
+    JSXOpeningElement, LabeledStatement, LogicalExpression, NewExpression, ObjectExpression,
+    Program, PropertyDefinition, RegExpLiteral, ReturnStatement, SimpleAssignmentTarget, Statement,
     StaticBlock, StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement,
     TSIntersectionType, TSPropertySignature, TSUnionType, TaggedTemplateExpression,
     TemplateLiteral, ThisExpression, TryStatement, UnaryExpression, UpdateExpression,
@@ -651,6 +651,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_jsx_element(&mut self, it: &JSXElement<'a>) {
         self.mark_jsx();
         walk::walk_jsx_element(self, it);
+    }
+
+    fn visit_jsx_opening_element(&mut self, it: &JSXOpeningElement<'a>) {
+        self.check_link_with_target_blank(it);
+        walk::walk_jsx_opening_element(self, it);
     }
 
     fn visit_jsx_fragment(&mut self, it: &JSXFragment<'a>) {

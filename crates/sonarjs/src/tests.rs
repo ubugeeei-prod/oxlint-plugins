@@ -5862,3 +5862,78 @@ fn no_extra_arguments_does_not_report_spread_argument() {
     let diagnostics = scan("no-extra-arguments", source);
     assert!(diagnostics.is_empty());
 }
+
+fn scan_jsx(rule_name: &str, source: &str) -> SmallVec<[Diagnostic; 32]> {
+    let options = SonarjsOptions {
+        rule_names: [CompactString::from(rule_name)].into_iter().collect(),
+        ..SonarjsOptions::default()
+    };
+    scan_sonarjs(source, "sample.tsx", &options)
+}
+
+#[test]
+fn link_with_target_blank_reports_anchor_without_rel() {
+    let source = r#"<a target="_blank">link</a>"#;
+    let diagnostics = scan_jsx("link-with-target-blank", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "link-with-target-blank");
+    assert_eq!(diagnostics[0].message_id, "targetBlankNoOpener");
+}
+
+#[test]
+fn link_with_target_blank_reports_anchor_with_rel_lacking_noopener() {
+    let source = r#"<a target="_blank" rel="nofollow">link</a>"#;
+    let diagnostics = scan_jsx("link-with-target-blank", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "targetBlankNoOpener");
+}
+
+#[test]
+fn link_with_target_blank_does_not_report_anchor_with_rel_noopener() {
+    let source = r#"<a target="_blank" rel="noopener">link</a>"#;
+    let diagnostics = scan_jsx("link-with-target-blank", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn link_with_target_blank_does_not_report_anchor_with_rel_noreferrer() {
+    let source = r#"<a target="_blank" rel="noreferrer">link</a>"#;
+    let diagnostics = scan_jsx("link-with-target-blank", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn link_with_target_blank_does_not_report_anchor_without_target() {
+    let source = r#"<a href="/x">link</a>"#;
+    let diagnostics = scan_jsx("link-with-target-blank", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn link_with_target_blank_does_not_report_anchor_with_target_self() {
+    let source = r#"<a target="_self">link</a>"#;
+    let diagnostics = scan_jsx("link-with-target-blank", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn link_with_target_blank_does_not_report_anchor_with_spread() {
+    let source = r#"<a {...props} target="_blank">link</a>"#;
+    let diagnostics = scan_jsx("link-with-target-blank", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn link_with_target_blank_does_not_report_anchor_with_dynamic_rel() {
+    let source = r#"<a target="_blank" rel={dyn}>link</a>"#;
+    let diagnostics = scan_jsx("link-with-target-blank", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn link_with_target_blank_reports_area_without_rel() {
+    let source = r#"<area target="_blank" />"#;
+    let diagnostics = scan_jsx("link-with-target-blank", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "targetBlankNoOpener");
+}

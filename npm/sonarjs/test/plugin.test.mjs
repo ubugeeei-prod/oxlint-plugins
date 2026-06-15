@@ -200,6 +200,7 @@ describe('sonarjs plugin shape', () => {
       'no-require-or-define',
       'no-invalid-regexp',
       'no-extra-arguments',
+      'link-with-target-blank',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -306,6 +307,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-require-or-define']).toBe('object');
     expect(typeof plugin.rules['no-invalid-regexp']).toBe('object');
     expect(typeof plugin.rules['no-extra-arguments']).toBe('object');
+    expect(typeof plugin.rules['link-with-target-blank']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -420,6 +422,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-require-or-define']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-invalid-regexp']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-extra-arguments']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/link-with-target-blank']).toBe('error');
   });
 });
 
@@ -3525,5 +3528,66 @@ describe('no-extra-arguments rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-extra-arguments)');
+  });
+});
+
+describe('link-with-target-blank rule', () => {
+  it('reports <a target="_blank"> with no rel attribute', () => {
+    const src = '<a target="_blank">link</a>';
+    const reports = runRule('link-with-target-blank', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('targetBlankNoOpener');
+  });
+
+  it('reports <a target="_blank"> with rel lacking noopener/noreferrer', () => {
+    const src = '<a target="_blank" rel="nofollow">link</a>';
+    const reports = runRule('link-with-target-blank', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('targetBlankNoOpener');
+  });
+
+  it('does not report <a target="_blank" rel="noopener">', () => {
+    const src = '<a target="_blank" rel="noopener">link</a>';
+    const reports = runRule('link-with-target-blank', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report <a target="_blank" rel="noreferrer">', () => {
+    const src = '<a target="_blank" rel="noreferrer">link</a>';
+    const reports = runRule('link-with-target-blank', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report <a> with no target attribute', () => {
+    const src = '<a href="/x">link</a>';
+    const reports = runRule('link-with-target-blank', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report <a target="_self">', () => {
+    const src = '<a target="_self">link</a>';
+    const reports = runRule('link-with-target-blank', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report <a {...props} target="_blank"> (spread attribute)', () => {
+    const src = '<a {...props} target="_blank">link</a>';
+    const reports = runRule('link-with-target-blank', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report <a target="_blank" rel={dyn}> (dynamic rel)', () => {
+    const src = '<a target="_blank" rel={dyn}>link</a>';
+    const reports = runRule('link-with-target-blank', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports link-with-target-blank through the CLI', () => {
+    const src = '<a target="_blank">link</a>';
+    const result = runOxlint('link-with-target-blank', src, 'sample.tsx');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(link-with-target-blank)');
   });
 });

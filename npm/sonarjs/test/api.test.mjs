@@ -109,6 +109,7 @@ const expectedRuleNames = [
   'no-require-or-define',
   'no-invalid-regexp',
   'no-extra-arguments',
+  'link-with-target-blank',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

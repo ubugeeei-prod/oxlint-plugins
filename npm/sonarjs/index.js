@@ -384,6 +384,10 @@ const messages = Object.freeze({
   'no-extra-arguments': {
     extraArguments: 'This function is called with more arguments than it declares ({{value}}).',
   },
+  'link-with-target-blank': {
+    targetBlankNoOpener:
+      "Add 'rel=\"noopener\"' (or 'noreferrer') to this link with target=\"_blank\" to prevent the opened page from accessing 'window.opener'.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -594,6 +598,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow a syntactically invalid regular expression pattern or flag string passed as a string literal to the RegExp constructor; applies to both new RegExp(...) and RegExp(...) call forms',
   'no-extra-arguments':
     'Disallow calling a function with more arguments than the function declares parameters (conservative: only const/let/var-assigned function expressions and arrow functions are checked)',
+  'link-with-target-blank':
+    'Require <a> and <area> JSX elements with target="_blank" to also carry a rel attribute containing "noopener" or "noreferrer", to prevent the opened page from accessing window.opener (reverse-tabnabbing)',
 });
 
 const ruleTypes = Object.freeze({
@@ -703,6 +709,7 @@ const ruleTypes = Object.freeze({
   'no-require-or-define': 'suggestion',
   'no-invalid-regexp': 'problem',
   'no-extra-arguments': 'problem',
+  'link-with-target-blank': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -812,6 +819,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-require-or-define': 'error',
   'no-invalid-regexp': 'error',
   'no-extra-arguments': 'error',
+  'link-with-target-blank': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
