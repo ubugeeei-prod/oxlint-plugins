@@ -15,6 +15,7 @@ const stylisticRuleFixtures = [
   ['eol-last', 'const x = 1;', [], ['missing']],
   ['linebreak-style', 'const x = 1;\r\n', ['unix'], ['expectedUnix']],
   ['no-multiple-empty-lines', 'const a = 1;\n\n\nconst b = 2;\n', [{ max: 1 }], ['tooMany']],
+  ['no-mixed-spaces-and-tabs', 'function f() {\n\t return 1;\n}\n', [], ['mixedSpacesAndTabs']],
   ['no-tabs', 'const\tlabel = 1;\n', [], ['unexpectedTab']],
   ['no-trailing-spaces', 'const x = 1;  \n', [], ['trailingSpace']],
   ['quotes', 'const label = "value";\n', ['single'], ['wrongQuote']],
@@ -166,6 +167,48 @@ describe('stylistic plugin', () => {
         node: { range: [14, 21] },
       },
     ]);
+  });
+
+  it('reports no-mixed-spaces-and-tabs with upstream-style ranges', () => {
+    const sourceText = '\t return x;\n   \tfoo\n';
+    const line2Start = sourceText.indexOf('   \tfoo');
+
+    expect(runRule('no-mixed-spaces-and-tabs', sourceText, [])).toMatchObject([
+      {
+        messageId: 'mixedSpacesAndTabs',
+        node: { range: [0, 2] },
+      },
+      {
+        messageId: 'mixedSpacesAndTabs',
+        node: { range: [line2Start + 2, line2Start + 4] },
+      },
+    ]);
+  });
+
+  it('honors no-mixed-spaces-and-tabs smart-tabs from shared settings', () => {
+    const sourceText = '\t    aligned\n\t\t\t   \tbad\n';
+    const badLineStart = sourceText.indexOf('\t\t\t   \tbad');
+
+    expect(
+      runRule('no-mixed-spaces-and-tabs', sourceText, [], {
+        corsaStylistic: {
+          rules: {
+            'no-mixed-spaces-and-tabs': ['smart-tabs'],
+          },
+        },
+      }),
+    ).toMatchObject([
+      {
+        messageId: 'mixedSpacesAndTabs',
+        node: { range: [badLineStart + 5, badLineStart + 7] },
+      },
+    ]);
+  });
+
+  it('skips no-mixed-spaces-and-tabs inside comment continuations and literals', () => {
+    const sourceText = "/*\n \t ignored\n*/\n'\\\n \t literal';\n`\n \t template\n`;\n";
+
+    expect(runRule('no-mixed-spaces-and-tabs', sourceText, [])).toEqual([]);
   });
 
   it('shares configured stylistic settings across enabled rules', () => {
