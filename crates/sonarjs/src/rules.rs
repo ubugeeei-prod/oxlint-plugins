@@ -96,6 +96,7 @@ mod no_sonar_comments;
 mod no_tab;
 mod no_undefined_argument;
 mod no_undefined_assignment;
+mod no_unenclosed_multiline_block;
 mod no_unthrown_error;
 mod no_unused_function_argument;
 mod no_use_of_empty_return_value;

@@ -129,6 +129,7 @@ const expectedRuleNames = [
   'no-empty-after-reluctant',
   'no-ignored-return',
   'file-name-differ-from-class',
+  'no-unenclosed-multiline-block',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
