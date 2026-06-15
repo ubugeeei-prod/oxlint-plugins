@@ -537,6 +537,9 @@ const messages = Object.freeze({
     boolParamDefault:
       'Provide a default value for this optional boolean parameter so callers are not forced to reason about three states.',
   },
+  'post-message': {
+    postMessage: 'Specify a target origin instead of "*" for this cross-document message.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -862,6 +865,9 @@ const ruleDescriptions = Object.freeze({
   'bool-param-default':
     'Require a default value for optional boolean function parameters typed exactly as ' +
     'the boolean keyword, so callers need not distinguish false from an omitted argument',
+  'post-message':
+    'Disallow sending cross-document messages with a "*" wildcard target origin; flags ' +
+    'only the unambiguous postMessage(message, "*") sending subset',
 });
 
 const ruleTypes = Object.freeze({
@@ -1012,6 +1018,7 @@ const ruleTypes = Object.freeze({
   'no-empty-collection': 'problem',
   'no-redundant-parentheses': 'suggestion',
   'bool-param-default': 'suggestion',
+  'post-message': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1161,6 +1168,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-empty-collection': 'error',
   'no-redundant-parentheses': 'error',
   'bool-param-default': 'error',
+  'post-message': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

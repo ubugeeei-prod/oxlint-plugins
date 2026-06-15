@@ -8289,3 +8289,45 @@ fn bool_param_default_reports_concrete_method_with_body() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "boolParamDefault");
 }
+
+#[test]
+fn post_message_reports_wildcard_target_origin() {
+    let diagnostics = scan("post-message", r#"win.postMessage(data, "*");"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "post-message");
+    assert_eq!(diagnostics[0].message_id, "postMessage");
+}
+
+#[test]
+fn post_message_reports_wildcard_regardless_of_receiver_type() {
+    let diagnostics = scan("post-message", r#"el.postMessage(x, "*");"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "postMessage");
+}
+
+#[test]
+fn post_message_does_not_report_specific_target_origin() {
+    let diagnostics = scan(
+        "post-message",
+        r#"win.postMessage(data, "https://example.com");"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn post_message_does_not_report_single_argument() {
+    let diagnostics = scan("post-message", "worker.postMessage(data);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn post_message_does_not_report_variable_target_origin() {
+    let diagnostics = scan("post-message", "win.postMessage(data, origin);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn post_message_does_not_report_array_second_argument() {
+    let diagnostics = scan("post-message", "worker.postMessage(data, [buffer]);");
+    assert!(diagnostics.is_empty());
+}
