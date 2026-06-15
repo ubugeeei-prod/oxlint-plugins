@@ -608,6 +608,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_new_expression(&mut self, it: &NewExpression<'a>) {
+        self.check_new_operator_misuse(it);
         self.check_no_invalid_regexp_new(it);
         self.check_no_primitive_wrappers(it);
         self.check_array_constructor_new(it);
