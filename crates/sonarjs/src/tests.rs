@@ -6993,3 +6993,32 @@ fn reports_file_name_differ_from_class_export_default() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "fileNameDifferFromClass");
 }
+
+#[test]
+fn reports_no_unenclosed_multiline_block_for_indented_sibling_after_unbraced_if() {
+    let source = "if (c)\n  a();\n  b();";
+    let diagnostics = scan("no-unenclosed-multiline-block", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-unenclosed-multiline-block");
+    assert_eq!(diagnostics[0].message_id, "unenclosedMultilineBlock");
+}
+
+#[test]
+fn does_not_report_no_unenclosed_multiline_block_when_body_is_braced() {
+    let source = "if (c) {\n  a();\n  b();\n}";
+    let diagnostics = scan("no-unenclosed-multiline-block", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_unenclosed_multiline_block_when_sibling_at_outer_column() {
+    let source = "if (c)\n  a();\nb();";
+    let diagnostics = scan("no-unenclosed-multiline-block", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_unenclosed_multiline_block_for_single_line_if() {
+    let diagnostics = scan("no-unenclosed-multiline-block", "if (c) a();");
+    assert!(diagnostics.is_empty());
+}
