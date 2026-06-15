@@ -2055,6 +2055,36 @@ fn reports_no_inconsistent_returns_only_for_inner_scope() {
 }
 
 #[test]
+fn reports_no_invariant_returns_for_function_always_returning_same_value() {
+    let source = "function f(x) { if (x > 0) return 42; return 42; }";
+    let diagnostics = scan("no-invariant-returns", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-invariant-returns");
+    assert_eq!(diagnostics[0].message_id, "invariantReturn");
+}
+
+#[test]
+fn does_not_report_no_invariant_returns_when_values_differ() {
+    let source = "function f(x) { if (x > 0) return 1; return 2; }";
+    let diagnostics = scan("no-invariant-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_invariant_returns_with_only_one_value_return() {
+    let source = "function f(x) { if (x) return 42; }";
+    let diagnostics = scan("no-invariant-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_invariant_returns_when_bare_return_present() {
+    let source = "function f(x) { if (!x) return; return 42; }";
+    let diagnostics = scan("no-invariant-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn reports_no_same_line_conditional_for_if_on_closing_brace_line() {
     let source = "if (a) {\n  doA();\n} if (b) {\n  doB();\n}";
     let diagnostics = scan("no-same-line-conditional", source);
