@@ -6666,3 +6666,58 @@ fn does_not_report_single_argument_call() {
     let diagnostics = scan("arguments-order", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_unicode_aware_regex_for_property_escape_without_u_flag() {
+    let source = "const r = /\\p{Letter}/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unicode-aware-regex");
+    assert_eq!(diagnostics[0].message_id, "unicodeAwareRegex");
+}
+
+#[test]
+fn reports_unicode_aware_regex_for_negative_property_escape_without_u_flag() {
+    let source = "const r = /\\P{ASCII}/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unicode-aware-regex");
+    assert_eq!(diagnostics[0].message_id, "unicodeAwareRegex");
+}
+
+#[test]
+fn reports_unicode_aware_regex_with_other_flags_but_not_u() {
+    let source = "const r = /\\p{Letter}/gi;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unicodeAwareRegex");
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_with_u_flag() {
+    let source = "const r = /\\p{Letter}/u;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_with_v_flag() {
+    let source = "const r = /\\p{Letter}/v;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_without_property_escape() {
+    let source = "const r = /[a-z]+/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_for_escaped_backslash_before_p() {
+    // \\p{ is a literal backslash followed by p{, not a property escape.
+    let source = "const r = /\\\\p{3}/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}

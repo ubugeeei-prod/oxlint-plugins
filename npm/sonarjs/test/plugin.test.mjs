@@ -215,6 +215,7 @@ describe('sonarjs plugin shape', () => {
       'block-scoped-var',
       'no-variable-usage-before-declaration',
       'arguments-order',
+      'unicode-aware-regex',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -336,6 +337,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['block-scoped-var']).toBe('object');
     expect(typeof plugin.rules['no-variable-usage-before-declaration']).toBe('object');
     expect(typeof plugin.rules['arguments-order']).toBe('object');
+    expect(typeof plugin.rules['unicode-aware-regex']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -467,6 +469,7 @@ describe('sonarjs plugin shape', () => {
       'error',
     );
     expect(plugin.configs.recommended.rules['sonarjs/arguments-order']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/unicode-aware-regex']).toBe('error');
   });
 });
 
@@ -4291,5 +4294,22 @@ describe('arguments-order rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(arguments-order)');
+  });
+});
+
+describe('unicode-aware-regex rule', () => {
+  it('reports a \\p{...} property escape without u flag through the adapter', () => {
+    const source = 'const r = /\\p{Letter}/;';
+    const reports = runRule('unicode-aware-regex', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unicodeAwareRegex');
+  });
+
+  it('reports unicode-aware-regex through the CLI', () => {
+    const result = runOxlint('unicode-aware-regex', 'const r = /\\p{Letter}/;');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(unicode-aware-regex)');
   });
 });
