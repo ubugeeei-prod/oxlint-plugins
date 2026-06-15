@@ -56,6 +56,7 @@ mod no_empty_after_reluctant;
 mod no_empty_alternatives;
 mod no_empty_character_class;
 mod no_empty_group;
+mod no_empty_test_file;
 mod no_equals_in_for_termination;
 mod no_exclusive_tests;
 mod no_extra_arguments;

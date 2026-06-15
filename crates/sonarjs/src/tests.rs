@@ -7067,3 +7067,34 @@ fn does_not_report_new_operator_misuse_on_function_expression() {
     let diagnostics = scan("new-operator-misuse", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_no_empty_test_file_for_test_file_with_no_test_calls() {
+    let source = "import {x} from './x';";
+    let diagnostics = scan_with_file("no-empty-test-file", source, "foo.test.ts");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-empty-test-file");
+    assert_eq!(diagnostics[0].message_id, "emptyTestFile");
+}
+
+#[test]
+fn reports_no_empty_test_file_for_spec_file_with_only_describe() {
+    let source = "describe('x', () => {});";
+    let diagnostics = scan_with_file("no-empty-test-file", source, "a.spec.ts");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyTestFile");
+}
+
+#[test]
+fn does_not_report_no_empty_test_file_when_it_call_is_present() {
+    let source = "it('works', () => {});";
+    let diagnostics = scan_with_file("no-empty-test-file", source, "foo.test.ts");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_test_file_for_non_test_filename() {
+    let source = "import {x} from './x';";
+    let diagnostics = scan_with_file("no-empty-test-file", source, "foo.ts");
+    assert!(diagnostics.is_empty());
+}
