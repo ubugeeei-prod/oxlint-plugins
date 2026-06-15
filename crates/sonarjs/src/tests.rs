@@ -9004,3 +9004,45 @@ fn cookie_no_httponly_does_not_report_other_key() {
     let diagnostics = scan("cookie-no-httponly", "const c = { secure: false };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn content_security_policy_reports_helmet_false() {
+    let diagnostics = scan(
+        "content-security-policy",
+        "helmet({ contentSecurityPolicy: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn content_security_policy_reports_direct_false() {
+    let diagnostics = scan(
+        "content-security-policy",
+        "const x = { contentSecurityPolicy: false };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn content_security_policy_does_not_report_true() {
+    let diagnostics = scan(
+        "content-security-policy",
+        "helmet({ contentSecurityPolicy: true });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn content_security_policy_does_not_report_dynamic_value() {
+    let diagnostics = scan(
+        "content-security-policy",
+        "const x = { contentSecurityPolicy: opts };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn content_security_policy_does_not_report_other_key() {
+    let diagnostics = scan("content-security-policy", "const x = { csp: false };");
+    assert!(diagnostics.is_empty());
+}

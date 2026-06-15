@@ -256,6 +256,7 @@ describe('sonarjs plugin shape', () => {
       'no-unsafe-unzip',
       'disabled-timeout',
       'cookie-no-httponly',
+      'content-security-policy',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6088,5 +6089,49 @@ describe('cookie-no-httponly rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(cookie-no-httponly)');
+  });
+});
+
+describe('content-security-policy rule', () => {
+  it('reports helmet contentSecurityPolicy: false', () => {
+    const source = 'helmet({ contentSecurityPolicy: false });';
+    const reports = runRule('content-security-policy', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('contentSecurityPolicy');
+  });
+
+  it('reports a direct contentSecurityPolicy: false property', () => {
+    const source = 'const x = { contentSecurityPolicy: false };';
+    const reports = runRule('content-security-policy', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report contentSecurityPolicy: true', () => {
+    const source = 'helmet({ contentSecurityPolicy: true });';
+    const reports = runRule('content-security-policy', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a dynamic contentSecurityPolicy value', () => {
+    const source = 'const x = { contentSecurityPolicy: opts };';
+    const reports = runRule('content-security-policy', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different key set to false', () => {
+    const source = 'const x = { csp: false };';
+    const reports = runRule('content-security-policy', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports content-security-policy through the CLI', () => {
+    const result = runOxlint(
+      'content-security-policy',
+      'helmet({ contentSecurityPolicy: false });',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(content-security-policy)');
   });
 });

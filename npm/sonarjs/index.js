@@ -592,6 +592,10 @@ const messages = Object.freeze({
     cookieNoHttpOnly:
       'Set this cookie\'s "httpOnly" flag to true to make it inaccessible to client-side scripts.',
   },
+  'content-security-policy': {
+    contentSecurityPolicy:
+      'Do not disable Content Security Policy (contentSecurityPolicy: false) — it is an important defense against XSS.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -964,6 +968,9 @@ const ruleDescriptions = Object.freeze({
   'cookie-no-httponly':
     'Flag cookie/session configuration that disables the HttpOnly flag; matches an ' +
     'object property "httpOnly" set to the boolean literal false',
+  'content-security-policy':
+    'Flag helmet configuration that disables the Content Security Policy; matches an ' +
+    'object property "contentSecurityPolicy" set to the boolean literal false',
 });
 
 const ruleTypes = Object.freeze({
@@ -1129,6 +1136,7 @@ const ruleTypes = Object.freeze({
   'no-unsafe-unzip': 'problem',
   'disabled-timeout': 'problem',
   'cookie-no-httponly': 'problem',
+  'content-security-policy': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1293,6 +1301,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-unsafe-unzip': 'error',
   'disabled-timeout': 'error',
   'cookie-no-httponly': 'error',
+  'content-security-policy': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
