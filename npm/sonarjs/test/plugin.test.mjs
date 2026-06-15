@@ -241,6 +241,7 @@ describe('sonarjs plugin shape', () => {
       'no-empty-collection',
       'no-redundant-parentheses',
       'bool-param-default',
+      'post-message',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5406,5 +5407,48 @@ describe('bool-param-default rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(bool-param-default)');
+  });
+});
+
+describe('post-message rule', () => {
+  it('reports a cross-document message sent with the "*" wildcard target origin', () => {
+    const source = 'win.postMessage(data, "*");';
+    const reports = runRule('post-message', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('postMessage');
+  });
+
+  it('reports the wildcard origin regardless of the receiver type', () => {
+    const source = 'el.postMessage(payload, "*");';
+    const reports = runRule('post-message', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('postMessage');
+  });
+
+  it('does not report a specific target origin', () => {
+    const source = 'win.postMessage(data, "https://example.com");';
+    const reports = runRule('post-message', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a single-argument postMessage call', () => {
+    const source = 'worker.postMessage(data);';
+    const reports = runRule('post-message', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a variable target origin', () => {
+    const source = 'win.postMessage(data, origin);';
+    const reports = runRule('post-message', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports post-message through the CLI', () => {
+    const source = 'win.postMessage(data, "*");';
+    const result = runOxlint('post-message', source, 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(post-message)');
   });
 });
