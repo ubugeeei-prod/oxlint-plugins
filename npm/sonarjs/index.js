@@ -455,6 +455,10 @@ const messages = Object.freeze({
     fileNameDifferFromClass:
       'Rename this file to match the name of the class it exports, or rename the class to match the file.',
   },
+  'no-unenclosed-multiline-block': {
+    unenclosedMultilineBlock:
+      'This line is indented as if it belongs to the preceding unbraced block, but it does not; add braces or fix the indentation.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -719,6 +723,10 @@ const ruleDescriptions = Object.freeze({
     'Require that a file exporting exactly one named class be named after that class; ' +
     'the comparison strips hyphens and underscores and ignores case so that ' +
     '"MyClass", "my-class", and "my_class" all match each other',
+  'no-unenclosed-multiline-block':
+    'Disallow a sibling statement that is indented as if it belongs to a preceding unbraced ' +
+    'control-structure body (if/for/while/else without braces), since it always executes ' +
+    'unconditionally despite appearing guarded',
 });
 
 const ruleTypes = Object.freeze({
@@ -847,6 +855,7 @@ const ruleTypes = Object.freeze({
   'no-empty-after-reluctant': 'problem',
   'no-ignored-return': 'problem',
   'file-name-differ-from-class': 'suggestion',
+  'no-unenclosed-multiline-block': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -975,6 +984,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-empty-after-reluctant': 'error',
   'no-ignored-return': 'error',
   'file-name-differ-from-class': 'error',
+  'no-unenclosed-multiline-block': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
