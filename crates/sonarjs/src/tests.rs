@@ -5999,7 +5999,6 @@ fn no_hardcoded_passwords_does_not_report_partial_name_match() {
 }
 
 #[test]
-#[test]
 fn hashing_reports_crypto_create_hash_md5() {
     let source = "const h = crypto.createHash(\"md5\");";
     let diagnostics = scan("hashing", source);
