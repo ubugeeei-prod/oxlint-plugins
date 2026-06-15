@@ -11998,19 +11998,19 @@
       },
       {
         "name": "no-empty-collection",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-empty-collection (Sonar key S4158). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of SonarJS S4158 (inverse of no-unused-collection). Rust/Oxc semantic analysis tracks const/let bindings initialised with an EMPTY array-like collection ([] or new Map/Set/Array/WeakMap/WeakSet with no args). Object literals are excluded to stay zero-FP. Every resolved reference is classified as write/populate (populating method call push/unshift/splice/set/add/fill/copyWithin, or plain = member assignment), read (curated query/iteration members, for..of, spread, index read), or ambiguous (anything else). The declaration is flagged only when at least one read exists and zero writes and zero ambiguous references do. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-empty-group",

@@ -526,6 +526,10 @@ const messages = Object.freeze({
     unusedCollection:
       'The contents of this collection are never read; the collection is only ever written to.',
   },
+  'no-empty-collection': {
+    emptyCollection:
+      'This collection is empty and is never populated; reading from it has no effect.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -842,6 +846,9 @@ const ruleDescriptions = Object.freeze({
   'no-unused-collection':
     'Disallow const/let collection bindings (array, object, Map, Set, etc.) that are ' +
     'populated via mutating operations but whose contents are never read',
+  'no-empty-collection':
+    'Disallow reading from const/let array-like collection bindings (array, Map, Set, ' +
+    'WeakMap, WeakSet) that are initialised empty and are never populated with any element',
 });
 
 const ruleTypes = Object.freeze({
@@ -989,6 +996,7 @@ const ruleTypes = Object.freeze({
   'no-element-overwrite': 'problem',
   'no-redundant-assignments': 'suggestion',
   'no-unused-collection': 'problem',
+  'no-empty-collection': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1135,6 +1143,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-element-overwrite': 'error',
   'no-redundant-assignments': 'error',
   'no-unused-collection': 'error',
+  'no-empty-collection': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -238,6 +238,7 @@ describe('sonarjs plugin shape', () => {
       'no-element-overwrite',
       'no-redundant-assignments',
       'no-unused-collection',
+      'no-empty-collection',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5237,5 +5238,48 @@ describe('no-unused-collection rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-unused-collection)');
+  });
+});
+
+describe('no-empty-collection rule', () => {
+  it('reports an array that is read but never populated', () => {
+    const source = 'const a = [];\nfunction f() { return a.length; }';
+    const reports = runRule('no-empty-collection', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyCollection');
+  });
+
+  it('reports a Map that is queried but never populated', () => {
+    const source = 'const m = new Map();\nfunction f(k) { return m.has(k); }';
+    const reports = runRule('no-empty-collection', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyCollection');
+  });
+
+  it('does not report when the array is populated via push', () => {
+    const source = 'const a = [];\na.push(1);\nfunction f() { return a.length; }';
+    const reports = runRule('no-empty-collection', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the array is passed to a function', () => {
+    const source = 'const a = [];\nfill(a);\nfunction f() { return a.length; }';
+    const reports = runRule('no-empty-collection', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report object literals', () => {
+    const source = 'const o = {};\nfunction f() { return o.x; }';
+    const reports = runRule('no-empty-collection', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-empty-collection through the CLI', () => {
+    const source = 'const a = [];\nfunction f() { return a.length; }';
+    const result = runOxlint('no-empty-collection', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-collection)');
   });
 });
