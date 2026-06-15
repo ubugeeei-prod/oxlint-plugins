@@ -8331,3 +8331,51 @@ fn post_message_does_not_report_array_second_argument() {
     let diagnostics = scan("post-message", "worker.postMessage(data, [buffer]);");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn in_operator_type_error_reports_string_right_operand() {
+    let diagnostics = scan("in-operator-type-error", r#"const r = "a" in "s";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "in-operator-type-error");
+    assert_eq!(diagnostics[0].message_id, "inOperatorTypeError");
+}
+
+#[test]
+fn in_operator_type_error_reports_numeric_right_operand() {
+    let diagnostics = scan("in-operator-type-error", "const r = 0 in 5;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "in-operator-type-error");
+    assert_eq!(diagnostics[0].message_id, "inOperatorTypeError");
+}
+
+#[test]
+fn in_operator_type_error_reports_null_right_operand() {
+    let diagnostics = scan("in-operator-type-error", "const r = k in null;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "in-operator-type-error");
+    assert_eq!(diagnostics[0].message_id, "inOperatorTypeError");
+}
+
+#[test]
+fn in_operator_type_error_does_not_report_identifier_right_operand() {
+    let diagnostics = scan("in-operator-type-error", r#"const r = "x" in obj;"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn in_operator_type_error_does_not_report_object_literal_right_operand() {
+    let diagnostics = scan("in-operator-type-error", r#"const r = "x" in {};"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn in_operator_type_error_does_not_report_array_literal_right_operand() {
+    let diagnostics = scan("in-operator-type-error", r#"const r = "x" in [];"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn in_operator_type_error_does_not_report_identifier_both_operands() {
+    let diagnostics = scan("in-operator-type-error", "const r = key in foo;");
+    assert!(diagnostics.is_empty());
+}

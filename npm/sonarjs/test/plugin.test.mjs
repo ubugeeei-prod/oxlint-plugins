@@ -242,6 +242,7 @@ describe('sonarjs plugin shape', () => {
       'no-redundant-parentheses',
       'bool-param-default',
       'post-message',
+      'in-operator-type-error',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5450,5 +5451,55 @@ describe('post-message rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(post-message)');
+  });
+});
+
+describe('in-operator-type-error rule', () => {
+  it('reports a string-literal right operand', () => {
+    const source = 'const r = "a" in "s";';
+    const reports = runRule('in-operator-type-error', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('inOperatorTypeError');
+  });
+
+  it('reports a numeric-literal right operand', () => {
+    const source = 'const r = 0 in 5;';
+    const reports = runRule('in-operator-type-error', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('inOperatorTypeError');
+  });
+
+  it('reports a null-literal right operand', () => {
+    const source = 'const r = k in null;';
+    const reports = runRule('in-operator-type-error', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('inOperatorTypeError');
+  });
+
+  it('does not report an identifier right operand', () => {
+    const source = 'const r = "x" in obj;';
+    const reports = runRule('in-operator-type-error', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an object-literal right operand', () => {
+    const source = 'const r = "x" in {};';
+    const reports = runRule('in-operator-type-error', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an array-literal right operand', () => {
+    const source = 'const r = "x" in [];';
+    const reports = runRule('in-operator-type-error', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports in-operator-type-error through the CLI', () => {
+    const source = 'const r = "a" in "s";';
+    const result = runOxlint('in-operator-type-error', source, 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(in-operator-type-error)');
   });
 });

@@ -377,6 +377,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_index_of_compare_to_positive_number(it);
         self.check_bitwise_operators(it);
         self.check_no_in_misuse(it);
+        self.check_in_operator_type_error(it);
         walk::walk_binary_expression(self, it);
     }
 
