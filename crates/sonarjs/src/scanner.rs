@@ -446,6 +446,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_nested_assignment_chain(it);
         self.check_no_useless_increment(it);
         self.check_no_associative_arrays(it);
+        self.check_no_undefined_assignment(it);
         self.check_no_hardcoded_passwords_assignment(it);
         if matches!(it.operator, AssignmentOperator::Assign) {
             self.check_no_misleading_array_reverse(&it.right);
