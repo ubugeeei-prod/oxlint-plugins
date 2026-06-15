@@ -11150,19 +11150,19 @@
       },
       {
         "name": "file-permissions",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule file-permissions (Sonar key S2612). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S2612. Flags fs chmod-family calls (chmod/chmodSync/fchmod/fchmodSync/lchmod/lchmodSync) whose numeric-literal mode sets any \"others\" bit (mode & 0o007 != 0), and umask calls whose numeric-literal value fails to restrict all \"others\" bits (value & 0o007 != 0o007). Only numeric-literal modes are checked (zero-false-positive). SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "file-uploads",

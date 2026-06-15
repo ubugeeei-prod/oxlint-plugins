@@ -603,6 +603,10 @@ const messages = Object.freeze({
   csrf: {
     csrf: 'Do not disable CSRF protection for state-changing HTTP methods (POST/PUT/DELETE/PATCH).',
   },
+  'file-permissions': {
+    weakFilePermissions:
+      'Make sure this permissive file access is safe; granting access to "others" can be a security risk.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -985,6 +989,9 @@ const ruleDescriptions = Object.freeze({
     'Flag csurf middleware configuration that disables CSRF protection for unsafe ' +
     'HTTP methods; matches a csrf({ ignoreMethods: [...] }) call whose array lists ' +
     'a state-changing verb (POST/PUT/DELETE/PATCH)',
+  'file-permissions':
+    'Flag fs chmod-family calls or process.umask calls whose numeric mode grants ' +
+    'permissions to "others"; only numeric-literal modes are checked (zero-false-positive)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1153,6 +1160,7 @@ const ruleTypes = Object.freeze({
   'content-security-policy': 'problem',
   'certificate-transparency': 'problem',
   csrf: 'problem',
+  'file-permissions': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1320,6 +1328,7 @@ const recommendedRuleConfig = Object.freeze({
   'content-security-policy': 'error',
   'certificate-transparency': 'error',
   csrf: 'error',
+  'file-permissions': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

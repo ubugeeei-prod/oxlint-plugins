@@ -259,6 +259,7 @@ describe('sonarjs plugin shape', () => {
       'content-security-policy',
       'certificate-transparency',
       'csrf',
+      'file-permissions',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6223,5 +6224,52 @@ describe('csrf rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(csrf)');
+  });
+});
+
+describe('file-permissions rule', () => {
+  it('reports a chmodSync mode that grants rwx to others', () => {
+    const source = 'fs.chmodSync("/x", 0o777);';
+    const reports = runRule('file-permissions', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('weakFilePermissions');
+  });
+
+  it('reports an async chmod with a trailing callback', () => {
+    const source = 'fs.chmod("/x", 0o666, cb);';
+    const reports = runRule('file-permissions', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('reports a permissive umask', () => {
+    const source = 'process.umask(0o000);';
+    const reports = runRule('file-permissions', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report a chmod mode without "others" bits', () => {
+    const source = 'fs.chmodSync("/x", 0o750);';
+    const reports = runRule('file-permissions', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a restrictive umask', () => {
+    const source = 'process.umask(0o077);';
+    const reports = runRule('file-permissions', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a dynamic (non-literal) mode', () => {
+    const source = 'fs.chmodSync("/x", mode);';
+    const reports = runRule('file-permissions', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports file-permissions through the CLI', () => {
+    const result = runOxlint('file-permissions', 'fs.chmodSync("/x", 0o777);');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(file-permissions)');
   });
 });
