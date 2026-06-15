@@ -381,6 +381,9 @@ const messages = Object.freeze({
     invalidRegExp:
       'This regular expression is invalid; fix the pattern (or flags) passed to RegExp.',
   },
+  'no-extra-arguments': {
+    extraArguments: 'This function is called with more arguments than it declares ({{value}}).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -589,6 +592,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow CommonJS 'require()' calls and AMD 'define()' calls; use ES module 'import' statements instead",
   'no-invalid-regexp':
     'Disallow a syntactically invalid regular expression pattern or flag string passed as a string literal to the RegExp constructor; applies to both new RegExp(...) and RegExp(...) call forms',
+  'no-extra-arguments':
+    'Disallow calling a function with more arguments than the function declares parameters (conservative: only const/let/var-assigned function expressions and arrow functions are checked)',
 });
 
 const ruleTypes = Object.freeze({
@@ -697,6 +702,7 @@ const ruleTypes = Object.freeze({
   'no-in-misuse': 'problem',
   'no-require-or-define': 'suggestion',
   'no-invalid-regexp': 'problem',
+  'no-extra-arguments': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -805,6 +811,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-in-misuse': 'error',
   'no-require-or-define': 'error',
   'no-invalid-regexp': 'error',
+  'no-extra-arguments': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
