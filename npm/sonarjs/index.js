@@ -451,6 +451,10 @@ const messages = Object.freeze({
     ignoredReturn:
       'The return value of this pure method call is discarded; use the result or remove the call.',
   },
+  'file-name-differ-from-class': {
+    fileNameDifferFromClass:
+      'Rename this file to match the name of the class it exports, or rename the class to match the file.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -711,6 +715,10 @@ const ruleDescriptions = Object.freeze({
     'Disallow discarding the return value of a pure built-in method call when the receiver is a ' +
     'literal of a statically-known type (string, number, or array literal); restricted to ' +
     'literal receivers only to avoid false positives in the absence of type information',
+  'file-name-differ-from-class':
+    'Require that a file exporting exactly one named class be named after that class; ' +
+    'the comparison strips hyphens and underscores and ignores case so that ' +
+    '"MyClass", "my-class", and "my_class" all match each other',
 });
 
 const ruleTypes = Object.freeze({
@@ -838,6 +846,7 @@ const ruleTypes = Object.freeze({
   'no-undefined-assignment': 'suggestion',
   'no-empty-after-reluctant': 'problem',
   'no-ignored-return': 'problem',
+  'file-name-differ-from-class': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -965,6 +974,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-undefined-assignment': 'error',
   'no-empty-after-reluctant': 'error',
   'no-ignored-return': 'error',
+  'file-name-differ-from-class': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

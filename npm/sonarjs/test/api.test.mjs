@@ -127,6 +127,7 @@ const expectedRuleNames = [
   'no-undefined-assignment',
   'no-empty-after-reluctant',
   'no-ignored-return',
+  'file-name-differ-from-class',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2887,6 +2888,43 @@ describe('no-empty-after-reluctant', () => {
 
   it('does not report a greedy star', () => {
     const diagnostics = scan('no-empty-after-reluctant', 'const r = /a*/;');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('file-name-differ-from-class', () => {
+  it('reports when the exported class name does not match the file stem', () => {
+    const diagnostics = scan('file-name-differ-from-class', 'export class Foo {}', 'bar.ts');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('file-name-differ-from-class');
+    expect(diagnostics[0].messageId).toBe('fileNameDifferFromClass');
+  });
+
+  it('does not report when the class name matches the stem exactly', () => {
+    const diagnostics = scan('file-name-differ-from-class', 'export class Foo {}', 'foo.ts');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when PascalCase class matches a kebab-case stem', () => {
+    const diagnostics = scan(
+      'file-name-differ-from-class',
+      'export class MyClass {}',
+      'my-class.ts',
+    );
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when there is no exported class', () => {
+    const diagnostics = scan('file-name-differ-from-class', 'class Foo {} export {};', 'bar.ts');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when there are multiple exported classes', () => {
+    const diagnostics = scan(
+      'file-name-differ-from-class',
+      'export class Foo {} export class Bar {}',
+      'baz.ts',
+    );
     expect(diagnostics).toHaveLength(0);
   });
 });
