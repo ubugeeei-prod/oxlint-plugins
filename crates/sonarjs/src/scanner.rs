@@ -702,6 +702,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_catch_clause(&mut self, it: &CatchClause<'a>) {
         self.check_no_useless_catch(it);
+        self.check_no_ignored_exceptions(it);
         self.add_cyclomatic_complexity();
         walk::walk_catch_clause(self, it);
     }

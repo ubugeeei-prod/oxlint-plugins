@@ -392,6 +392,9 @@ const messages = Object.freeze({
     hardcodedPassword:
       'Remove this hardcoded password; provide credentials via configuration or environment instead.',
   },
+  'no-ignored-exceptions': {
+    ignoredException: 'Handle this exception or explain in a comment why it can be safely ignored.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -607,6 +610,9 @@ const ruleDescriptions = Object.freeze({
   'no-hardcoded-passwords':
     'Disallow hardcoded password string literals assigned to a password-named identifier; ' +
     'provide credentials via configuration or environment variables instead',
+  'no-ignored-exceptions':
+    'Disallow empty catch blocks that silently swallow exceptions; ' +
+    'at minimum log or rethrow the exception, or add a comment explaining why it is safe to ignore',
 });
 
 const ruleTypes = Object.freeze({
@@ -718,6 +724,7 @@ const ruleTypes = Object.freeze({
   'no-extra-arguments': 'problem',
   'link-with-target-blank': 'problem',
   'no-hardcoded-passwords': 'suggestion',
+  'no-ignored-exceptions': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -829,6 +836,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-extra-arguments': 'error',
   'link-with-target-blank': 'error',
   'no-hardcoded-passwords': 'error',
+  'no-ignored-exceptions': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
