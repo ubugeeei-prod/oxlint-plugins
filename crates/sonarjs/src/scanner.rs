@@ -500,6 +500,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_alphabetical_sort(it);
         self.check_reduce_initial_value(it);
         self.check_no_literal_call(it);
+        self.check_call_argument_line(it);
         self.record_iife_callee(&it.callee);
         walk::walk_call_expression(self, it);
     }

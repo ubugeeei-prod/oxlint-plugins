@@ -101,6 +101,7 @@ const expectedRuleNames = [
   'no-useless-intersection',
   'use-type-alias',
   'public-static-readonly',
+  'call-argument-line',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

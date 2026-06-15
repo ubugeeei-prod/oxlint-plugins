@@ -5381,3 +5381,61 @@ fn does_not_report_static_private_key_field() {
     let diagnostics = scan("public-static-readonly", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_call_with_paren_on_next_line() {
+    let source = "foo\n(arg);";
+    let diagnostics = scan("call-argument-line", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "call-argument-line");
+    assert_eq!(diagnostics[0].message_id, "sameLineAsCallee");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn does_not_report_call_with_paren_on_same_line() {
+    let diagnostics = scan("call-argument-line", "foo(arg);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_call_with_wrapped_arguments() {
+    let source = "foo(\n  a,\n  b\n);";
+    let diagnostics = scan("call-argument-line", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_member_call() {
+    let diagnostics = scan("call-argument-line", "obj.method(x);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_member_call_with_paren_on_next_line() {
+    let source = "obj.method\n(x);";
+    let diagnostics = scan("call-argument-line", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+}
+
+#[test]
+fn reports_zero_argument_call_with_paren_on_next_line() {
+    let source = "foo\n();";
+    let diagnostics = scan("call-argument-line", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn does_not_report_call_with_comment_before_same_line_paren() {
+    let source = "foo /* c */ (x);";
+    let diagnostics = scan("call-argument-line", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_generic_call_with_paren_on_type_args_line() {
+    let source = "foo<number>(x);";
+    let diagnostics = scan("call-argument-line", source);
+    assert!(diagnostics.is_empty());
+}
