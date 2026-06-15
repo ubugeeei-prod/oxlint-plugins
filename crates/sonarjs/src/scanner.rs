@@ -531,6 +531,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_call_argument_line(it);
         self.check_no_require_or_define(it);
         self.check_no_extra_arguments(it);
+        self.check_arguments_order(it);
         self.record_iife_callee(&it.callee);
         walk::walk_call_expression(self, it);
     }
