@@ -52,6 +52,7 @@ mod no_clear_text_protocols;
 mod no_code_after_done;
 mod no_collapsible_if;
 mod no_collection_size_mischeck;
+mod no_commented_code;
 mod no_control_regex;
 mod no_delete_var;
 mod no_duplicate_in_composite;

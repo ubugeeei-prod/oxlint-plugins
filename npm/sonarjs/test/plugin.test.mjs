@@ -232,6 +232,7 @@ describe('sonarjs plugin shape', () => {
       'expression-complexity',
       'prefer-regexp-exec',
       'no-fallthrough',
+      'no-commented-code',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -369,6 +370,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['cognitive-complexity']).toBe('object');
     expect(typeof plugin.rules['expression-complexity']).toBe('object');
     expect(typeof plugin.rules['no-fallthrough']).toBe('object');
+    expect(typeof plugin.rules['no-commented-code']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -516,6 +518,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/cognitive-complexity']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/expression-complexity']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-fallthrough']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-commented-code']).toBe('error');
   });
 });
 
@@ -4945,5 +4948,36 @@ describe('no-fallthrough rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-fallthrough)');
+  });
+});
+
+describe('no-commented-code rule', () => {
+  it('reports no-commented-code for a line comment with a variable declaration through the adapter', () => {
+    const source = '// const x = 1;';
+    const reports = runRule('no-commented-code', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('commentedCode');
+  });
+
+  it('reports no-commented-code for a block comment with an if statement through the adapter', () => {
+    const source = '/* if (cond) { doSomething(); } */';
+    const reports = runRule('no-commented-code', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('commentedCode');
+  });
+
+  it('does not report no-commented-code for a plain prose line comment through the adapter', () => {
+    const source = '// This returns the user name';
+    const reports = runRule('no-commented-code', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-commented-code through the CLI', () => {
+    const source = '// const x = 1;';
+    const result = runOxlint('no-commented-code', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-commented-code)');
   });
 });
