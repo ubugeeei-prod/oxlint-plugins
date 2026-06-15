@@ -10622,19 +10622,19 @@
       },
       {
         "name": "cognitive-complexity",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
-          "insta": false,
-          "vitest": false,
+          "insta": true,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule cognitive-complexity (Sonar key S3776). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S3776). Recursive standalone scorer tracks nesting depth for structural elements and operator-change runs for &&/||. No upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "comma-or-logical-or-case",

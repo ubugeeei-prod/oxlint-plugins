@@ -66,6 +66,9 @@ pub struct SonarjsOptions {
     /// Naming convention for `function-name` (S100); the SonarJS default is
     /// `^[_a-z][a-zA-Z0-9]*$`.
     pub function_name_format: CompactString,
+    /// Maximum cognitive complexity per function for `cognitive-complexity` (S3776);
+    /// the SonarJS default is 15.
+    pub cognitive_complexity_threshold: u32,
 }
 
 impl Default for SonarjsOptions {
@@ -84,6 +87,7 @@ impl Default for SonarjsOptions {
             cyclomatic_complexity_threshold: 10,
             no_nested_functions_threshold: 4,
             function_name_format: CompactString::from("^[_a-z][a-zA-Z0-9]*$"),
+            cognitive_complexity_threshold: 15,
         }
     }
 }
