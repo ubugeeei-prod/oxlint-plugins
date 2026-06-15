@@ -11486,19 +11486,19 @@
       },
       {
         "name": "label-position",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule label-position (Sonar key S1439). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S1439. Reports labels whose direct body is not a loop (for/for-in/for-of/while/do-while) or switch statement; nested labels intentionally report the outer label because it is not directly attached to the breakable statement. Implemented in the Rust scanner with NAPI, API, adapter, and Oxlint CLI coverage."
       },
       {
         "name": "link-with-target-blank",

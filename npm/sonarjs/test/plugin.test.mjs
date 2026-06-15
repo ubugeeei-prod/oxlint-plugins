@@ -107,6 +107,7 @@ describe('sonarjs plugin shape', () => {
       'no-identical-expressions',
       'arguments-usage',
       'no-labels',
+      'label-position',
       'no-delete-var',
       'constructor-for-side-effects',
       'no-empty-character-class',
@@ -241,6 +242,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-identical-expressions']).toBe('object');
     expect(typeof plugin.rules['arguments-usage']).toBe('object');
     expect(typeof plugin.rules['no-labels']).toBe('object');
+    expect(typeof plugin.rules['label-position']).toBe('object');
     expect(typeof plugin.rules['no-delete-var']).toBe('object');
     expect(typeof plugin.rules['constructor-for-side-effects']).toBe('object');
     expect(typeof plugin.rules['no-empty-character-class']).toBe('object');
@@ -374,6 +376,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-identical-expressions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/arguments-usage']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-labels']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/label-position']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-delete-var']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/constructor-for-side-effects']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-character-class']).toBe('error');
@@ -893,6 +896,29 @@ describe('sonarjs rules through direct adapter harness', () => {
     expect(reports[0].messageId).toBe('noLabels');
   });
 
+  it('reports label-position through the adapter', () => {
+    const source = 'unused: doWork();';
+    const reports = runRule('label-position', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('removeLabel');
+  });
+
+  it('allows direct loop and switch labels through the adapter', () => {
+    const source = `
+      labelled_for: for (;;) { break labelled_for; }
+      labelled_switch: switch (value) { case 1: break labelled_switch; }
+    `;
+    const reports = runRule('label-position', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports only the outer nested label through the adapter', () => {
+    const source = 'outer: inner: for (;;) { break outer; }';
+    const reports = runRule('label-position', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('removeLabel');
+  });
+
   it('reports no-delete-var through the adapter', () => {
     const source = 'delete x;';
     const reports = runRule('no-delete-var', source);
@@ -1105,6 +1131,16 @@ describe('sonarjs rules through oxlint jsPlugins', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-labels)');
+  });
+
+  it('reports label-position through the CLI', () => {
+    const source = 'unused: doWork();';
+    const result = runOxlint('label-position', source);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(label-position)');
   });
 
   it('reports no-delete-var through the CLI', () => {
