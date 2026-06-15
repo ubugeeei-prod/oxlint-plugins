@@ -395,6 +395,10 @@ const messages = Object.freeze({
   'no-ignored-exceptions': {
     ignoredException: 'Handle this exception or explain in a comment why it can be safely ignored.',
   },
+  'no-unused-function-argument': {
+    unusedFunctionArgument:
+      'Remove this unused trailing function parameter or rename it with a leading underscore to mark it as intentional.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -613,6 +617,9 @@ const ruleDescriptions = Object.freeze({
   'no-ignored-exceptions':
     'Disallow empty catch blocks that silently swallow exceptions; ' +
     'at minimum log or rethrow the exception, or add a comment explaining why it is safe to ignore',
+  'no-unused-function-argument':
+    'Disallow trailing function parameters that are never referenced; parameters that appear ' +
+    'before a used parameter are exempt (they cannot be removed without changing call sites)',
 });
 
 const ruleTypes = Object.freeze({
@@ -725,6 +732,7 @@ const ruleTypes = Object.freeze({
   'link-with-target-blank': 'problem',
   'no-hardcoded-passwords': 'suggestion',
   'no-ignored-exceptions': 'problem',
+  'no-unused-function-argument': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -837,6 +845,7 @@ const recommendedRuleConfig = Object.freeze({
   'link-with-target-blank': 'error',
   'no-hardcoded-passwords': 'error',
   'no-ignored-exceptions': 'error',
+  'no-unused-function-argument': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

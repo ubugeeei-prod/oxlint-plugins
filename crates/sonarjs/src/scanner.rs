@@ -572,6 +572,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_nested_function(it.span);
         self.enter_function_inside_loop(it.span);
         self.enter_this_binding_scope();
+        self.check_no_unused_function_argument_fn(it);
         walk::walk_function(self, it, flags);
         self.leave_this_binding_scope();
         self.leave_function_inside_loop();
@@ -625,6 +626,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_cyclomatic_scope(it.span);
         self.enter_nested_function(it.span);
         self.enter_function_inside_loop(it.span);
+        self.check_no_unused_function_argument_arrow(it);
         walk::walk_arrow_function_expression(self, it);
         self.leave_function_inside_loop();
         self.leave_nested_function();

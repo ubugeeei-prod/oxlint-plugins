@@ -203,6 +203,7 @@ describe('sonarjs plugin shape', () => {
       'link-with-target-blank',
       'no-hardcoded-passwords',
       'no-ignored-exceptions',
+      'no-unused-function-argument',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -312,6 +313,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['link-with-target-blank']).toBe('object');
     expect(typeof plugin.rules['no-hardcoded-passwords']).toBe('object');
     expect(typeof plugin.rules['no-ignored-exceptions']).toBe('object');
+    expect(typeof plugin.rules['no-unused-function-argument']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -429,6 +431,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/link-with-target-blank']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-passwords']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-ignored-exceptions']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-unused-function-argument']).toBe('error');
   });
 });
 
@@ -3701,5 +3704,66 @@ describe('no-ignored-exceptions rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-ignored-exceptions)');
+  });
+});
+
+describe('no-unused-function-argument rule', () => {
+  it('reports a trailing unused parameter in a function declaration', () => {
+    const src = 'function f(a, b) { return a; }';
+    const reports = runRule('no-unused-function-argument', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unusedFunctionArgument');
+  });
+
+  it('reports a trailing unused parameter in an arrow function', () => {
+    const src = 'const g = (x, y, z) => x + y;';
+    const reports = runRule('no-unused-function-argument', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unusedFunctionArgument');
+  });
+
+  it('does not report when all parameters are used', () => {
+    const src = 'function f(a, b) { return a + b; }';
+    const reports = runRule('no-unused-function-argument', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an earlier unused param when the trailing one is used', () => {
+    const src = 'function f(a, b) { return b; }';
+    const reports = runRule('no-unused-function-argument', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an underscore-prefixed parameter', () => {
+    const src = 'function f(_unused) {}';
+    const reports = runRule('no-unused-function-argument', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the param is used inside a nested function', () => {
+    const src = 'function f(a) { return inner(); function inner() { return a; } }';
+    const reports = runRule('no-unused-function-argument', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a function with a rest parameter', () => {
+    const src = 'function f(a, ...rest) {}';
+    const reports = runRule('no-unused-function-argument', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a function with a destructuring parameter', () => {
+    const src = 'function f({ x }) {}';
+    const reports = runRule('no-unused-function-argument', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-unused-function-argument through the CLI', () => {
+    const src = 'function f(a, b) { return a; }';
+    const result = runOxlint('no-unused-function-argument', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-unused-function-argument)');
   });
 });
