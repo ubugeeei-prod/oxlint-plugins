@@ -132,6 +132,7 @@ const expectedRuleNames = [
   'inconsistent-function-call',
   'new-operator-misuse',
   'no-empty-test-file',
+  'deprecation',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

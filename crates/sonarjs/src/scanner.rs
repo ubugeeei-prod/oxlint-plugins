@@ -196,6 +196,12 @@ pub(crate) struct Scanner<'a> {
     /// the AST walk. Consumed by `finalize_no_empty_test_file` to decide
     /// whether a test file contains any test cases.
     pub(crate) saw_test_call: bool,
+    /// Symbol IDs of function/class declarations that are immediately preceded
+    /// by a block comment containing `@deprecated`. Populated during the walk
+    /// (in `check_deprecation_function` / `check_deprecation_class`) and
+    /// consulted by `check_deprecation_reference` to flag calls to those
+    /// symbols.
+    pub(crate) deprecated_symbols: SmallVec<[SymbolId; 8]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -290,6 +296,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_class(&mut self, it: &Class<'a>) {
         self.check_class_name(it);
+        self.check_deprecation_class(it);
         walk::walk_class(self, it);
     }
 
@@ -520,6 +527,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_identifier_reference(&mut self, it: &IdentifierReference<'a>) {
         self.check_arguments_usage(it);
         self.check_no_variable_usage_before_declaration(it);
+        self.check_deprecation_reference(it);
         walk::walk_identifier_reference(self, it);
     }
 
@@ -627,6 +635,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
+        self.check_deprecation_function(it);
         if let Some(body) = &it.body {
             self.check_no_identical_functions(it.params.span.start, body.span.end, it.span);
         }
