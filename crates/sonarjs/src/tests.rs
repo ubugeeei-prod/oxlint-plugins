@@ -6623,7 +6623,6 @@ fn does_not_report_single_argument_call() {
     assert!(diagnostics.is_empty());
 }
 
-
 // ---- updated-const-var -----------------------------------------------------
 
 #[test]
