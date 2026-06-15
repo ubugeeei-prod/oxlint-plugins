@@ -163,6 +163,7 @@ const expectedRuleNames = [
   'no-intrusive-permissions',
   'encryption-secure-mode',
   'no-unsafe-unzip',
+  'disabled-timeout',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3234,6 +3235,34 @@ describe('no-redundant-parentheses rule', () => {
   it('does not report precedence grouping', () => {
     const source = 'const r = (a + b) * c;';
     const diagnostics = scan('no-redundant-parentheses', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('disabled-timeout rule', () => {
+  it('reports a this.timeout value past the 32-bit maximum', () => {
+    const source = 'this.timeout(2147483648);';
+    const diagnostics = scan('disabled-timeout', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('disabled-timeout');
+    expect(diagnostics[0].messageId).toBe('disabledTimeout');
+  });
+
+  it('does not report this.timeout(0)', () => {
+    const source = 'this.timeout(0);';
+    const diagnostics = scan('disabled-timeout', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a value within the valid range', () => {
+    const source = 'this.timeout(5000);';
+    const diagnostics = scan('disabled-timeout', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-this receiver', () => {
+    const source = 'foo.timeout(2147483648);';
+    const diagnostics = scan('disabled-timeout', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

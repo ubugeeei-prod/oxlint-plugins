@@ -254,6 +254,7 @@ describe('sonarjs plugin shape', () => {
       'no-intrusive-permissions',
       'encryption-secure-mode',
       'no-unsafe-unzip',
+      'disabled-timeout',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5997,5 +5998,53 @@ describe('no-unsafe-unzip rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-unsafe-unzip)');
+  });
+});
+
+describe('disabled-timeout rule', () => {
+  it('reports this.timeout one past the 32-bit maximum', () => {
+    const source = 'this.timeout(2147483648);';
+    const reports = runRule('disabled-timeout', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('disabledTimeout');
+  });
+
+  it('reports this.timeout far past the 32-bit maximum', () => {
+    const source = 'this.timeout(9999999999);';
+    const reports = runRule('disabled-timeout', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('disabledTimeout');
+  });
+
+  it('does not report this.timeout(0)', () => {
+    const source = 'this.timeout(0);';
+    const reports = runRule('disabled-timeout', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a value within the valid range', () => {
+    const source = 'this.timeout(5000);';
+    const reports = runRule('disabled-timeout', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-this receiver', () => {
+    const source = 'foo.timeout(2147483648);';
+    const reports = runRule('disabled-timeout', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a dynamic (non-literal) argument', () => {
+    const source = 'this.timeout(x);';
+    const reports = runRule('disabled-timeout', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports disabled-timeout through the CLI', () => {
+    const result = runOxlint('disabled-timeout', 'this.timeout(2147483648);');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(disabled-timeout)');
   });
 });

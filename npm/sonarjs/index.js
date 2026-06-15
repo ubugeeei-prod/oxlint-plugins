@@ -584,6 +584,10 @@ const messages = Object.freeze({
     unsafeUnzip:
       'Expanding this archive without limiting size or entry count risks a zip-bomb denial of service.',
   },
+  'disabled-timeout': {
+    disabledTimeout:
+      'This timeout value overflows the 32-bit range and silently disables the timeout; use 0 to disable intentionally or a value within range.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -950,6 +954,9 @@ const ruleDescriptions = Object.freeze({
   'no-unsafe-unzip':
     'Flag archive expansion that risks a zip-bomb denial of service; matches the ' +
     'distinctive adm-zip extractAllTo(...) method only (deliberately narrow to stay zero-false-positive)',
+  'disabled-timeout':
+    'Disallow Mocha this.timeout() values that overflow the 32-bit setTimeout range ' +
+    '(greater than 2147483647) and thereby silently disable the timeout instead of applying it',
 });
 
 const ruleTypes = Object.freeze({
@@ -1113,6 +1120,7 @@ const ruleTypes = Object.freeze({
   'no-intrusive-permissions': 'problem',
   'encryption-secure-mode': 'problem',
   'no-unsafe-unzip': 'problem',
+  'disabled-timeout': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1275,6 +1283,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-intrusive-permissions': 'error',
   'encryption-secure-mode': 'error',
   'no-unsafe-unzip': 'error',
+  'disabled-timeout': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
