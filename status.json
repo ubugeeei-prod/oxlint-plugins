@@ -15904,19 +15904,19 @@
       },
       {
         "name": "lines-between-class-members",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule lines-between-class-members."
+        "notes": "Rust native token-scan port of @stylistic/lines-between-class-members with support for always/never, enforce pairs, exceptAfterSingleLine, conservative overload skips, comments, and semicolon-less member boundaries."
       },
       {
         "name": "member-delimiter-style",

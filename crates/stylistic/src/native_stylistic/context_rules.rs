@@ -12,7 +12,7 @@ use super::context::{
     report_replace, report_unexpected_space,
 };
 use super::helpers::{is_identifier_continue, is_identifier_start, option_usize, push_diagnostic};
-use super::lexer::TokenKind;
+use super::lexer::{Token, TokenKind};
 
 /// Spacing check shared by the `{ }` / `[ ]` bracket-spacing rules: enforces
 /// "always" (one inner space) or "never" (no inner space) just inside a pair of
@@ -2190,6 +2190,562 @@ pub(crate) fn check_keyword_spacing(
 }
 
 // ---------------------------------------------------------------------------
+// lines-between-class-members
+// ---------------------------------------------------------------------------
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum ClassMemberKind {
+    Field,
+    Method,
+    Other,
+}
+
+#[derive(Clone, Copy, Debug)]
+struct ClassMember {
+    first: usize,
+    last: usize,
+    kind: ClassMemberKind,
+    overload: bool,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum BlankLine {
+    Always,
+    Never,
+}
+
+pub(crate) fn check_lines_between_class_members(
+    scan: &Scan,
+    options: &Value,
+    diagnostics: &mut Vec<LintDiagnostic>,
+) {
+    const RULE: &str = "lines-between-class-members";
+    let settings = LinesBetweenClassMembersOptions::from_options(options);
+    let starts = line_starts(scan.source());
+    let tokens = scan.tokens();
+
+    for body_open in class_body_opens(scan) {
+        let Some(body_close) = scan.partner(body_open) else {
+            continue;
+        };
+        let members = class_members(scan, body_open, body_close);
+        for pair in members.windows(2) {
+            let [previous, next] = pair else {
+                continue;
+            };
+            let Some(blank_line) = settings.blank_line_between(previous.kind, next.kind) else {
+                continue;
+            };
+            if blank_line == BlankLine::Always
+                && settings.except_after_single_line
+                && same_line(&starts, &tokens[previous.first], &tokens[previous.last])
+            {
+                continue;
+            }
+            if blank_line == BlankLine::Always
+                && settings.except_after_overload
+                && (previous.overload || next.overload)
+            {
+                continue;
+            }
+
+            let previous_last = previous.last;
+            let next_first = next.first;
+            let before_padding =
+                last_consecutive_after(scan, &starts, previous_last, next_first, 1);
+            let after_padding =
+                first_consecutive_before(scan, &starts, next_first, previous_last, 1);
+            let padded = token_start_line(&starts, &tokens[after_padding])
+                .saturating_sub(token_end_line(&starts, &tokens[before_padding]))
+                > 1;
+            let has_token_in_padding = token_between(scan, before_padding, after_padding);
+
+            match (blank_line, padded) {
+                (BlankLine::Always, false) => {
+                    if has_token_in_padding {
+                        report_plain(
+                            diagnostics,
+                            RULE,
+                            "always",
+                            "Expected blank line between class members.",
+                            tokens[next_first].start,
+                            tokens[next_first].end,
+                        );
+                    } else {
+                        push_context_diagnostic(
+                            diagnostics,
+                            RULE,
+                            "always",
+                            "Expected blank line between class members.",
+                            tokens[next_first].start,
+                            tokens[next_first].end,
+                            "insertBlankLine",
+                            "Insert a blank line.",
+                            LintFix::replace_range(
+                                TextRange::new(
+                                    tokens[before_padding].end as u32,
+                                    tokens[before_padding].end as u32,
+                                ),
+                                "\n",
+                            ),
+                        );
+                    }
+                }
+                (BlankLine::Never, true) => {
+                    if has_token_in_padding {
+                        report_plain(
+                            diagnostics,
+                            RULE,
+                            "never",
+                            "Unexpected blank line between class members.",
+                            tokens[next_first].start,
+                            tokens[next_first].end,
+                        );
+                    } else {
+                        push_context_diagnostic(
+                            diagnostics,
+                            RULE,
+                            "never",
+                            "Unexpected blank line between class members.",
+                            tokens[next_first].start,
+                            tokens[next_first].end,
+                            "removeBlankLine",
+                            "Remove the blank line.",
+                            LintFix::replace_range(
+                                TextRange::new(
+                                    tokens[before_padding].end as u32,
+                                    tokens[after_padding].start as u32,
+                                ),
+                                "\n",
+                            ),
+                        );
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+struct LinesBetweenClassMembersOptions {
+    default: Option<BlankLine>,
+    enforce: Vec<EnforceClassMembers>,
+    except_after_single_line: bool,
+    except_after_overload: bool,
+}
+
+#[derive(Clone, Debug)]
+struct EnforceClassMembers {
+    blank_line: BlankLine,
+    prev: ClassMemberMatcher,
+    next: ClassMemberMatcher,
+}
+
+#[derive(Clone, Copy, Debug)]
+enum ClassMemberMatcher {
+    Any,
+    Field,
+    Method,
+}
+
+impl LinesBetweenClassMembersOptions {
+    fn from_options(options: &Value) -> Self {
+        let first = match options {
+            Value::Array(items) => items.first(),
+            Value::Null => None,
+            other => Some(other),
+        };
+        let second = match options {
+            Value::Array(items) => items.get(1),
+            _ => None,
+        };
+
+        let mut settings = LinesBetweenClassMembersOptions {
+            default: Some(BlankLine::Always),
+            enforce: Vec::new(),
+            except_after_single_line: false,
+            except_after_overload: true,
+        };
+
+        match first {
+            Some(Value::String(value)) => {
+                settings.default = match value.as_str() {
+                    "never" => Some(BlankLine::Never),
+                    _ => Some(BlankLine::Always),
+                };
+            }
+            Some(Value::Object(object)) => {
+                settings.default = None;
+                if let Some(Value::Array(items)) = object.get("enforce") {
+                    for item in items {
+                        let Some(object) = item.as_object() else {
+                            continue;
+                        };
+                        let Some(blank_line) = object
+                            .get("blankLine")
+                            .and_then(Value::as_str)
+                            .and_then(BlankLine::from_str)
+                        else {
+                            continue;
+                        };
+                        let prev = object
+                            .get("prev")
+                            .and_then(Value::as_str)
+                            .and_then(ClassMemberMatcher::from_str)
+                            .unwrap_or(ClassMemberMatcher::Any);
+                        let next = object
+                            .get("next")
+                            .and_then(Value::as_str)
+                            .and_then(ClassMemberMatcher::from_str)
+                            .unwrap_or(ClassMemberMatcher::Any);
+                        settings.enforce.push(EnforceClassMembers {
+                            blank_line,
+                            prev,
+                            next,
+                        });
+                    }
+                }
+            }
+            _ => {}
+        }
+
+        if let Some(object) = second.and_then(Value::as_object) {
+            if let Some(value) = object.get("exceptAfterSingleLine").and_then(Value::as_bool) {
+                settings.except_after_single_line = value;
+            }
+            if let Some(value) = object.get("exceptAfterOverload").and_then(Value::as_bool) {
+                settings.except_after_overload = value;
+            }
+        }
+
+        settings
+    }
+
+    fn blank_line_between(
+        &self,
+        previous: ClassMemberKind,
+        next: ClassMemberKind,
+    ) -> Option<BlankLine> {
+        self.enforce
+            .iter()
+            .rev()
+            .find(|enforce| enforce.prev.matches(previous) && enforce.next.matches(next))
+            .map(|enforce| enforce.blank_line)
+            .or(self.default)
+    }
+}
+
+impl BlankLine {
+    fn from_str(value: &str) -> Option<Self> {
+        match value {
+            "always" => Some(BlankLine::Always),
+            "never" => Some(BlankLine::Never),
+            _ => None,
+        }
+    }
+}
+
+impl ClassMemberMatcher {
+    fn from_str(value: &str) -> Option<Self> {
+        match value {
+            "*" => Some(ClassMemberMatcher::Any),
+            "field" => Some(ClassMemberMatcher::Field),
+            "method" => Some(ClassMemberMatcher::Method),
+            _ => None,
+        }
+    }
+
+    fn matches(self, kind: ClassMemberKind) -> bool {
+        matches!(
+            (self, kind),
+            (ClassMemberMatcher::Any, _)
+                | (ClassMemberMatcher::Field, ClassMemberKind::Field)
+                | (ClassMemberMatcher::Method, ClassMemberKind::Method)
+        )
+    }
+}
+
+fn class_body_opens(scan: &Scan) -> Vec<usize> {
+    let tokens = scan.tokens();
+    let mut opens = Vec::new();
+    for index in 0..tokens.len() {
+        if !(tokens[index].kind == TokenKind::Identifier && scan.token_text(index) == "class") {
+            continue;
+        }
+        let mut cursor = index + 1;
+        while cursor < tokens.len() {
+            if punct_is(&tokens[cursor], scan.source(), "{")
+                && scan.brace_kind(cursor) == BraceKind::Block
+            {
+                opens.push(cursor);
+                break;
+            }
+            if matches!(scan.token_text(cursor), ";" | "}") {
+                break;
+            }
+            if matches!(scan.token_text(cursor), "(" | "[" | "{") {
+                if let Some(partner) = scan.partner(cursor) {
+                    cursor = partner + 1;
+                    continue;
+                }
+            }
+            cursor += 1;
+        }
+    }
+    opens
+}
+
+fn class_members(scan: &Scan, body_open: usize, body_close: usize) -> Vec<ClassMember> {
+    let mut members = Vec::new();
+    let mut cursor = body_open + 1;
+    while cursor < body_close {
+        let Some(first) = next_member_token(scan, cursor, body_close) else {
+            break;
+        };
+        let (member, next_cursor) = parse_class_member(scan, first, body_close);
+        if let Some(member) = member {
+            members.push(member);
+        }
+        cursor = next_cursor.max(first + 1);
+    }
+    members
+}
+
+fn next_member_token(scan: &Scan, start: usize, body_close: usize) -> Option<usize> {
+    (start..body_close).find(|&index| {
+        !scan.tokens()[index].kind.is_comment()
+            && !punct_is(&scan.tokens()[index], scan.source(), ";")
+    })
+}
+
+fn parse_class_member(
+    scan: &Scan,
+    first: usize,
+    body_close: usize,
+) -> (Option<ClassMember>, usize) {
+    let tokens = scan.tokens();
+    let mut cursor = first;
+    let mut kind = ClassMemberKind::Field;
+    let mut saw_assignment = false;
+    let mut saw_method_paren = false;
+
+    while cursor < body_close {
+        let token = &tokens[cursor];
+        if token.kind.is_comment() {
+            cursor += 1;
+            continue;
+        }
+
+        if punct_is(token, scan.source(), ";") {
+            let previous = previous_non_comment(scan, cursor).unwrap_or(first);
+            let semicolon_less_boundary = token_start_line_from_scan(scan, previous)
+                != token_start_line_from_scan(scan, cursor)
+                && scan
+                    .next_significant(cursor)
+                    .filter(|&next| next < body_close)
+                    .is_some_and(|next| {
+                        token_start_line_from_scan(scan, next)
+                            == token_start_line_from_scan(scan, cursor)
+                    });
+            let last = if semicolon_less_boundary {
+                previous
+            } else {
+                cursor
+            };
+            if saw_method_paren && !saw_assignment {
+                kind = ClassMemberKind::Method;
+            }
+            return (
+                Some(ClassMember {
+                    first,
+                    last,
+                    kind,
+                    overload: kind == ClassMemberKind::Method,
+                }),
+                cursor + 1,
+            );
+        }
+
+        if punct_is(token, scan.source(), "=") {
+            saw_assignment = true;
+        }
+
+        if punct_is(token, scan.source(), "(") {
+            if !saw_assignment && is_method_parameter_list(scan, first, cursor) {
+                saw_method_paren = true;
+            }
+            if let Some(partner) = scan.partner(cursor) {
+                cursor = partner + 1;
+                continue;
+            }
+        }
+
+        if punct_is(token, scan.source(), "[") {
+            if let Some(partner) = scan.partner(cursor) {
+                cursor = partner + 1;
+                continue;
+            }
+        }
+
+        if punct_is(token, scan.source(), "{") {
+            let Some(partner) = scan.partner(cursor) else {
+                return (None, cursor + 1);
+            };
+            if is_class_member_body(scan, first, cursor, saw_assignment) {
+                let member_kind = if scan.token_text(first) == "static" && first + 1 == cursor {
+                    ClassMemberKind::Other
+                } else {
+                    ClassMemberKind::Method
+                };
+                return (
+                    Some(ClassMember {
+                        first,
+                        last: partner,
+                        kind: member_kind,
+                        overload: false,
+                    }),
+                    partner + 1,
+                );
+            }
+            cursor = partner + 1;
+            continue;
+        }
+
+        cursor += 1;
+    }
+
+    let last = previous_non_comment_before(scan, body_close, first).unwrap_or(first);
+    (
+        Some(ClassMember {
+            first,
+            last,
+            kind,
+            overload: false,
+        }),
+        body_close,
+    )
+}
+
+fn is_method_parameter_list(scan: &Scan, first: usize, paren: usize) -> bool {
+    let Some(prev) = scan.prev_significant(paren) else {
+        return false;
+    };
+    if prev < first {
+        return false;
+    }
+    if matches!(
+        scan.token_text(prev),
+        "if" | "for" | "while" | "switch" | "catch" | "with"
+    ) {
+        return false;
+    }
+    true
+}
+
+fn is_class_member_body(
+    scan: &Scan,
+    first: usize,
+    open_brace: usize,
+    saw_assignment: bool,
+) -> bool {
+    if saw_assignment {
+        return false;
+    }
+    if scan.token_text(first) == "static" && first + 1 == open_brace {
+        return true;
+    }
+    scan.prev_significant(open_brace)
+        .is_some_and(|prev| punct_is(&scan.tokens()[prev], scan.source(), ")"))
+}
+
+fn previous_non_comment(scan: &Scan, index: usize) -> Option<usize> {
+    (0..index)
+        .rev()
+        .find(|&candidate| !scan.tokens()[candidate].kind.is_comment())
+}
+
+fn previous_non_comment_before(scan: &Scan, before: usize, min: usize) -> Option<usize> {
+    (min..before)
+        .rev()
+        .find(|&candidate| !scan.tokens()[candidate].kind.is_comment())
+}
+
+fn same_line(starts: &[usize], first: &Token, last: &Token) -> bool {
+    token_start_line(starts, first) == token_end_line(starts, last)
+}
+
+fn token_start_line_from_scan(scan: &Scan, index: usize) -> usize {
+    line_number(&line_starts(scan.source()), scan.tokens()[index].start)
+}
+
+fn token_start_line(starts: &[usize], token: &Token) -> usize {
+    line_number(starts, token.start)
+}
+
+fn token_end_line(starts: &[usize], token: &Token) -> usize {
+    line_number(starts, token.end)
+}
+
+fn last_consecutive_after(
+    scan: &Scan,
+    starts: &[usize],
+    previous_last: usize,
+    next_first: usize,
+    max_line_gap: usize,
+) -> usize {
+    let mut current = previous_last;
+    loop {
+        let Some(after) = next_token_before(current, next_first) else {
+            return current;
+        };
+        if token_start_line(starts, &scan.tokens()[after])
+            .saturating_sub(token_end_line(starts, &scan.tokens()[current]))
+            <= max_line_gap
+        {
+            current = after;
+        } else {
+            return current;
+        }
+    }
+}
+
+fn first_consecutive_before(
+    scan: &Scan,
+    starts: &[usize],
+    next_first: usize,
+    previous_last: usize,
+    max_line_gap: usize,
+) -> usize {
+    let mut current = next_first;
+    loop {
+        let Some(before) = previous_token_after(current, previous_last) else {
+            return current;
+        };
+        if token_start_line(starts, &scan.tokens()[current])
+            .saturating_sub(token_end_line(starts, &scan.tokens()[before]))
+            <= max_line_gap
+        {
+            current = before;
+        } else {
+            return current;
+        }
+    }
+}
+
+fn next_token_before(current: usize, stop: usize) -> Option<usize> {
+    (current + 1..stop).next()
+}
+
+fn previous_token_after(current: usize, stop: usize) -> Option<usize> {
+    (stop + 1..current).next_back()
+}
+
+fn token_between(_scan: &Scan, before: usize, after: usize) -> bool {
+    before + 1 < after
+}
+
+// ---------------------------------------------------------------------------
 // one-var-declaration-per-line
 // ---------------------------------------------------------------------------
 
@@ -2222,8 +2778,8 @@ pub(crate) fn check_one_var_declaration_per_line(
             let [previous, current] = pair else {
                 continue;
             };
-            if token_end_line(scan, &starts, previous.last)
-                != token_start_line(scan, &starts, current.first)
+            if lbcm_token_end_line(scan, &starts, previous.last)
+                != lbcm_token_start_line(scan, &starts, current.first)
             {
                 continue;
             }
@@ -2411,7 +2967,7 @@ fn declaration_list_terminates_at(scan: &Scan, index: usize) -> bool {
 }
 
 fn starts_asi_statement(scan: &Scan, starts: &[usize], previous: usize, current: usize) -> bool {
-    if token_start_line(scan, starts, current) <= token_end_line(scan, starts, previous) {
+    if lbcm_token_start_line(scan, starts, current) <= lbcm_token_end_line(scan, starts, previous) {
         return false;
     }
     if matches!(
@@ -2442,11 +2998,11 @@ fn starts_asi_statement(scan: &Scan, starts: &[usize], previous: usize, current:
     !matches!(scan.token_text(current), "," | ";" | "=") && scan.token_ends_expression(previous)
 }
 
-fn token_start_line(scan: &Scan, starts: &[usize], index: usize) -> usize {
+fn lbcm_token_start_line(scan: &Scan, starts: &[usize], index: usize) -> usize {
     line_number(starts, scan.tokens()[index].start)
 }
 
-fn token_end_line(scan: &Scan, starts: &[usize], index: usize) -> usize {
+fn lbcm_token_end_line(scan: &Scan, starts: &[usize], index: usize) -> usize {
     line_number(starts, scan.tokens()[index].end)
 }
 
@@ -3215,6 +3771,117 @@ mod tests {
         assert_eq!(
             run(check_keyword_spacing, "for (const x of y) {}", Value::Null).len(),
             0
+        );
+    }
+
+    #[test]
+    fn lines_between_class_members_requires_blank_line_by_default() {
+        assert_eq!(
+            ids(&run(
+                check_lines_between_class_members,
+                "class C { a() {}\nb() {} }",
+                Value::Null,
+            )),
+            ["always"]
+        );
+        assert_eq!(
+            run(
+                check_lines_between_class_members,
+                "class C { a() {}\n\nb() {} }",
+                Value::Null,
+            )
+            .len(),
+            0
+        );
+    }
+
+    #[test]
+    fn lines_between_class_members_disallows_blank_line_with_never() {
+        let options = serde_json::from_str(r#"["never"]"#).unwrap();
+        let diagnostics = run(
+            check_lines_between_class_members,
+            "class C { a() {}\n\nb() {} }",
+            options,
+        );
+        assert_eq!(ids(&diagnostics), ["never"]);
+        assert_eq!(
+            diagnostics[0].suggestions[0].fixes[0].replacement_text,
+            "\n"
+        );
+    }
+
+    #[test]
+    fn lines_between_class_members_supports_exceptions_and_comments() {
+        let except_single_line =
+            serde_json::from_str(r#"["always", { "exceptAfterSingleLine": true }]"#).unwrap();
+        assert_eq!(
+            run(
+                check_lines_between_class_members,
+                "class C { a() {}\nb() {} }",
+                except_single_line,
+            )
+            .len(),
+            0
+        );
+
+        assert_eq!(
+            ids(&run(
+                check_lines_between_class_members,
+                "class C { a() {}\n// attached\nb() {} }",
+                Value::Null,
+            )),
+            ["always"]
+        );
+        assert_eq!(
+            run(
+                check_lines_between_class_members,
+                "class C { a() {}\n\n// attached\nb() {} }",
+                Value::Null,
+            )
+            .len(),
+            0
+        );
+    }
+
+    #[test]
+    fn lines_between_class_members_supports_enforce_pairs() {
+        let options = serde_json::from_str(
+            r#"[{
+                "enforce": [
+                    { "blankLine": "always", "prev": "method", "next": "method" },
+                    { "blankLine": "never", "prev": "field", "next": "field" }
+                ]
+            }]"#,
+        )
+        .unwrap();
+        assert_eq!(
+            ids(&run(
+                check_lines_between_class_members,
+                "class C { a() {}\nb() {}\nfield;\n\nnext; }",
+                options,
+            )),
+            ["always", "never"]
+        );
+    }
+
+    #[test]
+    fn lines_between_class_members_handles_semicolon_less_boundaries() {
+        assert_eq!(
+            run(
+                check_lines_between_class_members,
+                "class C { foo\n\n;bar }",
+                Value::Null,
+            )
+            .len(),
+            0
+        );
+        assert_eq!(
+            ids(&run(
+                check_lines_between_class_members,
+                "class C { foo\n;bar }",
+                Value::Null,
+            )),
+            ["always"]
         );
     }
 

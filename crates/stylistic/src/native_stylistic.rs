@@ -437,6 +437,12 @@ const ONE_VAR_DECLARATION_PER_LINE_MESSAGES: &[(&str, &str)] = &[
     ),
     ("insertNewline", "Insert a newline."),
 ];
+const LINES_BETWEEN_CLASS_MEMBERS_MESSAGES: &[(&str, &str)] = &[
+    ("always", "Expected blank line between class members."),
+    ("never", "Unexpected blank line between class members."),
+    ("insertBlankLine", "Insert a blank line."),
+    ("removeBlankLine", "Remove the blank line."),
+];
 
 /// One stylistic rule invocation requested by the JavaScript bridge.
 #[derive(Clone, Debug, Deserialize)]
@@ -711,6 +717,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         docs_description: "Require or disallow newlines around variable declarations.",
         messages: ONE_VAR_DECLARATION_PER_LINE_MESSAGES,
     },
+    StylisticRuleDefinition {
+        name: "lines-between-class-members",
+        docs_description: "Require or disallow an empty line between class members.",
+        messages: LINES_BETWEEN_CLASS_MEMBERS_MESSAGES,
+    },
 ];
 
 /// Rule names that run over the shared token + bracket-matching scan.
@@ -755,6 +766,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "keyword-spacing",
     "line-comment-position",
     "one-var-declaration-per-line",
+    "lines-between-class-members",
 ];
 
 /// Returns metadata for every Rust-backed stylistic rule.
@@ -946,6 +958,9 @@ fn run_token_rule(
         }
         "one-var-declaration-per-line" => {
             context_rules::check_one_var_declaration_per_line(scan, options, diagnostics)
+        }
+        "lines-between-class-members" => {
+            context_rules::check_lines_between_class_members(scan, options, diagnostics)
         }
         _ => {}
     }

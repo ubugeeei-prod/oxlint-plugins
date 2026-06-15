@@ -11,6 +11,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'one-var-declaration-per-line',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'lines-between-class-members',
+    );
   });
 
   it('runs multiple stylistic rules through one native call', () => {
