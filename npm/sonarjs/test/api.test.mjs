@@ -92,6 +92,7 @@ const expectedRuleNames = [
   'reduce-initial-value',
   'no-parameter-reassignment',
   'array-callback-without-return',
+  'declarations-in-global-scope',
   'no-wildcard-import',
   'updated-loop-counter',
   'misplaced-loop-counter',

@@ -183,6 +183,7 @@ describe('sonarjs plugin shape', () => {
       'reduce-initial-value',
       'no-parameter-reassignment',
       'array-callback-without-return',
+      'declarations-in-global-scope',
       'no-wildcard-import',
       'updated-loop-counter',
       'misplaced-loop-counter',
@@ -316,6 +317,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['reduce-initial-value']).toBe('object');
     expect(typeof plugin.rules['no-parameter-reassignment']).toBe('object');
     expect(typeof plugin.rules['array-callback-without-return']).toBe('object');
+    expect(typeof plugin.rules['declarations-in-global-scope']).toBe('object');
     expect(typeof plugin.rules['no-wildcard-import']).toBe('object');
     expect(typeof plugin.rules['updated-loop-counter']).toBe('object');
     expect(typeof plugin.rules['misplaced-loop-counter']).toBe('object');
@@ -457,6 +459,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/reduce-initial-value']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-parameter-reassignment']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/array-callback-without-return']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/declarations-in-global-scope']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-wildcard-import']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/updated-loop-counter']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/misplaced-loop-counter']).toBe('error');
@@ -3036,6 +3039,56 @@ describe('array-callback-without-return rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(array-callback-without-return)');
+  });
+});
+
+describe('declarations-in-global-scope rule', () => {
+  it('reports a top-level function declaration', () => {
+    const reports = runRule('declarations-in-global-scope', 'function f() {}');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('defineLocally');
+  });
+
+  it('reports named exported function declarations', () => {
+    const source = 'export function f() {}\nexport default function g() {}';
+    const reports = runRule('declarations-in-global-scope', source);
+    expect(reports).toHaveLength(2);
+  });
+
+  it('does not report anonymous default function exports', () => {
+    const reports = runRule('declarations-in-global-scope', 'export default function () {}');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports every non-require top-level var declarator', () => {
+    const source = "var fs = require('fs'), value = 1, other = 2;";
+    const reports = runRule('declarations-in-global-scope', source);
+    expect(reports).toHaveLength(2);
+  });
+
+  it('reports var declarations nested in top-level blocks', () => {
+    const reports = runRule('declarations-in-global-scope', 'if (enabled) { var leaked = 1; }');
+    expect(reports).toHaveLength(1);
+  });
+
+  it('only reports the outer function when other declarations are local or allowed', () => {
+    const source = `
+      let a = 1;
+      const b = 2;
+      var fs = require('fs');
+      function outer() { var local = 1; function inner() {} }
+      class C { static { var staticLocal = 1; } }
+    `;
+    const reports = runRule('declarations-in-global-scope', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('reports declarations-in-global-scope through the CLI', () => {
+    const result = runOxlint('declarations-in-global-scope', 'var leaked = 1;');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(declarations-in-global-scope)');
   });
 });
 
