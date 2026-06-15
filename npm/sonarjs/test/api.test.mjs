@@ -165,6 +165,7 @@ const expectedRuleNames = [
   'no-unsafe-unzip',
   'disabled-timeout',
   'cookie-no-httponly',
+  'content-security-policy',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3298,6 +3299,40 @@ describe('cookie-no-httponly rule', () => {
   it('does not report a different key set to false', () => {
     const source = 'const c = { secure: false };';
     const diagnostics = scan('cookie-no-httponly', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('content-security-policy rule', () => {
+  it('reports helmet contentSecurityPolicy: false', () => {
+    const source = 'helmet({ contentSecurityPolicy: false });';
+    const diagnostics = scan('content-security-policy', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('content-security-policy');
+    expect(diagnostics[0].messageId).toBe('contentSecurityPolicy');
+  });
+
+  it('reports a direct contentSecurityPolicy: false property', () => {
+    const source = 'const x = { contentSecurityPolicy: false };';
+    const diagnostics = scan('content-security-policy', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report contentSecurityPolicy: true', () => {
+    const source = 'helmet({ contentSecurityPolicy: true });';
+    const diagnostics = scan('content-security-policy', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a dynamic contentSecurityPolicy value', () => {
+    const source = 'const x = { contentSecurityPolicy: opts };';
+    const diagnostics = scan('content-security-policy', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different key set to false', () => {
+    const source = 'const x = { csp: false };';
+    const diagnostics = scan('content-security-policy', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
