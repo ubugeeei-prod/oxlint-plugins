@@ -569,6 +569,10 @@ const messages = Object.freeze({
     slowRegex:
       'This nested quantifier can cause catastrophic backtracking (super-linear runtime) on crafted input.',
   },
+  'web-sql-database': {
+    webSqlDatabase:
+      'The Web SQL Database API is deprecated and removed from the web platform; do not use it.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -923,6 +927,9 @@ const ruleDescriptions = Object.freeze({
   'slow-regex':
     'Disallow super-linear regular expressions; flags only the nested unbounded ' +
     'quantifier shape (e.g. (a+)+) that causes catastrophic backtracking',
+  'web-sql-database':
+    'Disallow use of the deprecated, removed, and security-sensitive Web SQL Database ' +
+    'API; flags any call to openDatabase(...) (global or as a member, e.g. window.openDatabase)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1082,6 +1089,7 @@ const ruleTypes = Object.freeze({
   'concise-regex': 'suggestion',
   'no-misleading-character-class': 'problem',
   'slow-regex': 'problem',
+  'web-sql-database': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1240,6 +1248,7 @@ const recommendedRuleConfig = Object.freeze({
   'concise-regex': 'error',
   'no-misleading-character-class': 'error',
   'slow-regex': 'error',
+  'web-sql-database': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

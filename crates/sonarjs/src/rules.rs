@@ -157,3 +157,4 @@ mod updated_const_var;
 mod updated_loop_counter;
 mod use_type_alias;
 mod void_use;
+mod web_sql_database;
