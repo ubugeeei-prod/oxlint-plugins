@@ -5999,6 +5999,99 @@ fn no_hardcoded_passwords_does_not_report_partial_name_match() {
 }
 
 #[test]
+fn hashing_reports_crypto_create_hash_md5() {
+    let source = "const h = crypto.createHash(\"md5\");";
+    let diagnostics = scan("hashing", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "hashing");
+    assert_eq!(diagnostics[0].message_id, "weakHash");
+}
+
+#[test]
+fn hashing_reports_webcrypto_sha1_digest() {
+    let source = "crypto.subtle.digest(\"SHA-1\", data);";
+    let diagnostics = scan("hashing", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "weakHash");
+}
+
+#[test]
+fn hashing_does_not_report_sha256() {
+    let source = "const h = crypto.createHash(\"sha256\");";
+    let diagnostics = scan("hashing", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn hashing_does_not_report_dynamic_algorithm() {
+    let source = "const h = crypto.createHash(algorithm);";
+    let diagnostics = scan("hashing", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_clear_text_protocols_reports_http_url() {
+    let source = "const url = \"http://example.com\";";
+    let diagnostics = scan("no-clear-text-protocols", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-clear-text-protocols");
+    assert_eq!(diagnostics[0].message_id, "clearTextProtocol");
+}
+
+#[test]
+fn no_clear_text_protocols_reports_clear_text_websocket_url() {
+    let source = "const url = \"ws://example.com/socket\";";
+    let diagnostics = scan("no-clear-text-protocols", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "clearTextProtocol");
+}
+
+#[test]
+fn no_clear_text_protocols_does_not_report_encrypted_protocols() {
+    let source = "const a = \"https://example.com\"; const b = \"wss://example.com/socket\";";
+    let diagnostics = scan("no-clear-text-protocols", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_clear_text_protocols_does_not_report_protocol_label() {
+    let source = "const label = \"http: status\";";
+    let diagnostics = scan("no-clear-text-protocols", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_weak_cipher_reports_des_cipher_creation() {
+    let source = "const c = crypto.createCipheriv(\"des-cbc\", key, iv);";
+    let diagnostics = scan("no-weak-cipher", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-weak-cipher");
+    assert_eq!(diagnostics[0].message_id, "weakCipher");
+}
+
+#[test]
+fn no_weak_cipher_reports_bare_rc4_cipher_factory() {
+    let source = "const c = createCipher(\"rc4\", password);";
+    let diagnostics = scan("no-weak-cipher", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "weakCipher");
+}
+
+#[test]
+fn no_weak_cipher_does_not_report_aes_gcm() {
+    let source = "const c = crypto.createCipheriv(\"aes-256-gcm\", key, iv);";
+    let diagnostics = scan("no-weak-cipher", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_weak_cipher_does_not_report_dynamic_algorithm() {
+    let source = "const c = crypto.createCipheriv(algorithm, key, iv);";
+    let diagnostics = scan("no-weak-cipher", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn no_ignored_exceptions_reports_empty_catch_with_binding() {
     let source = "try { foo(); } catch (e) {}";
     let diagnostics = scan("no-ignored-exceptions", source);

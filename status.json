@@ -2212,7 +2212,7 @@
       },
       {
         "name": "no-unused-disable",
-        "status": "approximation",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
@@ -2221,10 +2221,10 @@
         "tests": {
           "insta": true,
           "vitest": true,
-          "lsp": false,
+          "lsp": true,
           "oxlintIntegration": true
         },
-        "notes": "Deprecated upstream (use reportUnusedDisableDirectives). Approximation built on sourceCode.getDisableDirectives().problems; the upstream RuleTester suite needs the ESLint runtime, so the rule is covered by a synthetic-problem mechanism test (insta + Vitest) instead of the espree replay harness."
+        "notes": "Deprecated upstream (use reportUnusedDisableDirectives). Rust/NAPI port built on sourceCode.getDisableDirectives().problems; the upstream RuleTester suite needs the ESLint runtime, so coverage uses synthetic-problem Rust/API/CLI/LSP tests instead of the espree replay harness."
       }
     ]
   },
@@ -8422,7 +8422,7 @@
       "repository": "https://github.com/ota-meshi/eslint-plugin-regexp",
       "license": "MIT"
     },
-    "status": "in-progress",
+    "status": "ported",
     "typeAware": false,
     "rules": [
       {
@@ -8703,15 +8703,15 @@
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-contradiction-with-assertion."
+        "notes": "Narrow Rust pattern scan via has_assertion_contradiction for a word-boundary followed by a same-class min-zero quantifier; covered by Rust unit tests and native/plugin Vitest tests."
       },
       {
         "name": "no-dupe-characters-character-class",
@@ -8959,15 +8959,15 @@
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-potentially-useless-backreference."
+        "notes": "Rust pattern state tracks capture groups directly quantified with `?` or `*` and flags backreferences to those maybe-unmatched groups; covered by Rust unit tests and native/plugin Vitest tests."
       },
       {
         "name": "no-standalone-backslash",
@@ -9071,15 +9071,15 @@
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-assertions."
+        "notes": "Narrow Rust word-boundary scan via has_useless_word_boundary for `\\b`/`\\B` between literal neighbours with known word class; covered by Rust unit tests and native/plugin Vitest tests."
       },
       {
         "name": "no-useless-backreference",
@@ -9231,15 +9231,15 @@
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule no-useless-set-operand."
+        "notes": "Narrow Rust v-mode set-operation scan via has_useless_set_operand for redundant shorthand intersections and subtractions; covered by Rust unit tests and native/plugin Vitest tests."
       },
       {
         "name": "no-useless-string-literal",
@@ -9295,15 +9295,15 @@
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule optimal-quantifier-concatenation."
+        "notes": "Narrow Rust pattern scan via has_mergeable_quantifier_concatenation for adjacent same-element quantifiers where at least one side is greedily unbounded; covered by Rust unit tests and native/plugin Vitest tests."
       },
       {
         "name": "prefer-character-class",
@@ -9551,15 +9551,15 @@
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule prefer-set-operation."
+        "notes": "Narrow Rust v-mode scan via has_preferable_set_operation for a character lookaround adjacent to a compatible character element; covered by Rust unit tests and native/plugin Vitest tests."
       },
       {
         "name": "prefer-star-quantifier",
@@ -9631,15 +9631,15 @@
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule simplify-set-operations."
+        "notes": "Narrow Rust v-mode set-operation scan via has_simplifiable_set_operation for intersections with negated nested-class operands; covered by Rust unit tests and native/plugin Vitest tests."
       },
       {
         "name": "sort-alternatives",
@@ -9679,15 +9679,15 @@
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
           "oxlintIntegration": false
         },
-        "notes": "Pending port of upstream rule strict."
+        "notes": "Narrow Rust strict-mode scan via first_strict_violation for non-u/non-v regexps with invalid escapes, unescaped source characters, and quantified assertions; covered by Rust unit tests and native/plugin Vitest tests."
       },
       {
         "name": "unicode-escape",
@@ -11342,19 +11342,19 @@
       },
       {
         "name": "hashing",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule hashing (Sonar key S4790). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S4790). Flags weak string-literal hashing algorithms (MD4, MD5, SHA-1) passed directly to createHash(...) or *.subtle.digest(...). Dynamic algorithms and non-WebCrypto bare digest(...) calls are intentionally skipped. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "hidden-files",
@@ -11758,19 +11758,19 @@
       },
       {
         "name": "no-clear-text-protocols",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-clear-text-protocols (Sonar key S5332). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S5332). Flags string literals containing clear-text URL schemes http://, ftp://, telnet://, ws://, or ldap://. Encrypted schemes and protocol-like labels without // are ignored; dynamic strings and template literals are intentionally out of scope. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-code-after-done",
@@ -13342,19 +13342,19 @@
       },
       {
         "name": "no-weak-cipher",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-weak-cipher (Sonar key S5547). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S5547). Flags weak string-literal cipher algorithms (DES, RC2, RC4, Blowfish/BF, IDEA) passed directly to Node-style createCipher/createCipheriv/createDecipher/createDecipheriv calls. Dynamic algorithms and unrelated API names are intentionally skipped. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-weak-keys",

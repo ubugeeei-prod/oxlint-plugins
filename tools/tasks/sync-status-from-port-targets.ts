@@ -217,6 +217,7 @@ const PACKAGE_MAP: Record<
     typeAware: true,
   },
   'postgresql-eslint-parser': { pkgName: null },
+  'eslint-plugin-astro': { pkgName: null },
 };
 
 const manifest = JSON.parse(

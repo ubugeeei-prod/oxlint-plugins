@@ -98,3 +98,7 @@
 	path = upstream/eslint-plugin-mocha
 	url = https://github.com/lo1tuma/eslint-plugin-mocha
 	shallow = true
+[submodule "upstream/eslint-plugin-astro"]
+	path = upstream/eslint-plugin-astro
+	url = https://github.com/ota-meshi/eslint-plugin-astro
+	shallow = true

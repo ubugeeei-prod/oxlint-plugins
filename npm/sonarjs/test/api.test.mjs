@@ -72,6 +72,8 @@ const expectedRuleNames = [
   'void-use',
   'prefer-promise-shorthand',
   'pseudo-random',
+  'hashing',
+  'no-clear-text-protocols',
   'no-hardcoded-ip',
   'no-global-this',
   'single-character-alternation',
@@ -110,6 +112,7 @@ const expectedRuleNames = [
   'no-invalid-regexp',
   'no-extra-arguments',
   'link-with-target-blank',
+  'no-weak-cipher',
   'no-hardcoded-passwords',
   'no-ignored-exceptions',
   'no-unused-function-argument',
@@ -2216,6 +2219,55 @@ describe('sonarjs native API', () => {
     expect(diagnostics).toHaveLength(0);
   });
 
+  it('reports hashing for crypto.createHash("md5")', () => {
+    const diagnostics = scan('hashing', 'const h = crypto.createHash("md5");');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('hashing');
+    expect(diagnostics[0].messageId).toBe('weakHash');
+  });
+
+  it('reports hashing for WebCrypto SHA-1 digest', () => {
+    const diagnostics = scan('hashing', 'crypto.subtle.digest("SHA-1", data);');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('weakHash');
+  });
+
+  it('does not report hashing for sha256', () => {
+    const diagnostics = scan('hashing', 'const h = crypto.createHash("sha256");');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report hashing for a dynamic algorithm', () => {
+    const diagnostics = scan('hashing', 'const h = crypto.createHash(algorithm);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-clear-text-protocols for an http URL literal', () => {
+    const diagnostics = scan('no-clear-text-protocols', 'const url = "http://example.com";');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-clear-text-protocols');
+    expect(diagnostics[0].messageId).toBe('clearTextProtocol');
+  });
+
+  it('reports no-clear-text-protocols for a clear-text WebSocket URL', () => {
+    const diagnostics = scan('no-clear-text-protocols', 'const url = "ws://example.com/socket";');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('clearTextProtocol');
+  });
+
+  it('does not report no-clear-text-protocols for encrypted protocols', () => {
+    const diagnostics = scan(
+      'no-clear-text-protocols',
+      'const a = "https://example.com"; const b = "wss://example.com/socket";',
+    );
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-clear-text-protocols for a non-URL http label', () => {
+    const diagnostics = scan('no-clear-text-protocols', 'const label = "http: status";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
   it('reports process-argv for a direct process.argv access', () => {
     const diagnostics = scan('process-argv', 'const a = process.argv;');
     expect(diagnostics).toHaveLength(1);
@@ -2334,6 +2386,38 @@ describe('sonarjs native API', () => {
 
   it('does not report no-hardcoded-ip for a three-octet partial address', () => {
     const diagnostics = scan('no-hardcoded-ip', 'const s = "192.168.1";');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports no-weak-cipher for DES cipher creation', () => {
+    const diagnostics = scan(
+      'no-weak-cipher',
+      'const c = crypto.createCipheriv("des-cbc", key, iv);',
+    );
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-weak-cipher');
+    expect(diagnostics[0].messageId).toBe('weakCipher');
+  });
+
+  it('reports no-weak-cipher for a bare RC4 cipher factory', () => {
+    const diagnostics = scan('no-weak-cipher', 'const c = createCipher("rc4", password);');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('weakCipher');
+  });
+
+  it('does not report no-weak-cipher for AES-GCM', () => {
+    const diagnostics = scan(
+      'no-weak-cipher',
+      'const c = crypto.createCipheriv("aes-256-gcm", key, iv);',
+    );
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-weak-cipher for a dynamic algorithm', () => {
+    const diagnostics = scan(
+      'no-weak-cipher',
+      'const c = crypto.createCipheriv(algorithm, key, iv);',
+    );
     expect(diagnostics).toHaveLength(0);
   });
 

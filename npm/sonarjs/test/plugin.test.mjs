@@ -163,6 +163,8 @@ describe('sonarjs plugin shape', () => {
       'void-use',
       'prefer-promise-shorthand',
       'pseudo-random',
+      'hashing',
+      'no-clear-text-protocols',
       'no-hardcoded-ip',
       'no-global-this',
       'single-character-alternation',
@@ -201,6 +203,7 @@ describe('sonarjs plugin shape', () => {
       'no-invalid-regexp',
       'no-extra-arguments',
       'link-with-target-blank',
+      'no-weak-cipher',
       'no-hardcoded-passwords',
       'no-ignored-exceptions',
       'no-unused-function-argument',
@@ -273,6 +276,8 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['code-eval']).toBe('object');
     expect(typeof plugin.rules['prefer-promise-shorthand']).toBe('object');
     expect(typeof plugin.rules['pseudo-random']).toBe('object');
+    expect(typeof plugin.rules['hashing']).toBe('object');
+    expect(typeof plugin.rules['no-clear-text-protocols']).toBe('object');
     expect(typeof plugin.rules['no-hardcoded-ip']).toBe('object');
     expect(typeof plugin.rules['no-global-this']).toBe('object');
     expect(typeof plugin.rules['single-character-alternation']).toBe('object');
@@ -311,6 +316,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-invalid-regexp']).toBe('object');
     expect(typeof plugin.rules['no-extra-arguments']).toBe('object');
     expect(typeof plugin.rules['link-with-target-blank']).toBe('object');
+    expect(typeof plugin.rules['no-weak-cipher']).toBe('object');
     expect(typeof plugin.rules['no-hardcoded-passwords']).toBe('object');
     expect(typeof plugin.rules['no-ignored-exceptions']).toBe('object');
     expect(typeof plugin.rules['no-unused-function-argument']).toBe('object');
@@ -391,6 +397,8 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/code-eval']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-promise-shorthand']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/pseudo-random']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/hashing']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-clear-text-protocols']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-ip']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-global-this']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/single-character-alternation']).toBe('error');
@@ -429,6 +437,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-invalid-regexp']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-extra-arguments']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/link-with-target-blank']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-weak-cipher']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-passwords']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-ignored-exceptions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-unused-function-argument']).toBe('error');
@@ -2101,6 +2110,73 @@ describe('no-hardcoded-ip rule', () => {
   });
 });
 
+describe('hashing rule', () => {
+  it('reports MD5 hashing through the adapter', () => {
+    const reports = runRule('hashing', 'const h = crypto.createHash("md5");');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('weakHash');
+  });
+
+  it('reports SHA-1 WebCrypto digest through the adapter', () => {
+    const reports = runRule('hashing', 'crypto.subtle.digest("SHA-1", data);');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('weakHash');
+  });
+
+  it('does not report strong hashing algorithms', () => {
+    const reports = runRule('hashing', 'const h = crypto.createHash("sha256");');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report dynamic hashing algorithms', () => {
+    const reports = runRule('hashing', 'const h = crypto.createHash(algorithm);');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports hashing through the CLI', () => {
+    const result = runOxlint('hashing', 'const h = crypto.createHash("sha1");');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(hashing)');
+  });
+});
+
+describe('no-clear-text-protocols rule', () => {
+  it('reports an HTTP URL through the adapter', () => {
+    const reports = runRule('no-clear-text-protocols', 'const url = "http://example.com";');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('clearTextProtocol');
+  });
+
+  it('reports a clear-text WebSocket URL through the adapter', () => {
+    const reports = runRule('no-clear-text-protocols', 'const url = "ws://example.com/socket";');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('clearTextProtocol');
+  });
+
+  it('does not report encrypted URL protocols', () => {
+    const reports = runRule(
+      'no-clear-text-protocols',
+      'const a = "https://example.com"; const b = "wss://example.com/socket";',
+    );
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a protocol-like label without URL authority', () => {
+    const reports = runRule('no-clear-text-protocols', 'const label = "http: status";');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-clear-text-protocols through the CLI', () => {
+    const result = runOxlint('no-clear-text-protocols', 'const url = "ftp://example.com/file";');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-clear-text-protocols)');
+  });
+});
+
 describe('no-global-this rule', () => {
   it('reports no-global-this for a top-level this expression through the adapter', () => {
     const source = 'this.foo = 1;';
@@ -3765,5 +3841,46 @@ describe('no-unused-function-argument rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-unused-function-argument)');
+  });
+});
+
+describe('no-weak-cipher rule', () => {
+  it('reports DES cipher creation through the adapter', () => {
+    const reports = runRule(
+      'no-weak-cipher',
+      'const c = crypto.createCipheriv("des-cbc", key, iv);',
+    );
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('weakCipher');
+  });
+
+  it('reports RC4 cipher creation through the adapter', () => {
+    const reports = runRule('no-weak-cipher', 'const c = createCipher("rc4", password);');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('weakCipher');
+  });
+
+  it('does not report a modern authenticated cipher', () => {
+    const reports = runRule(
+      'no-weak-cipher',
+      'const c = crypto.createCipheriv("aes-256-gcm", key, iv);',
+    );
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report dynamic cipher algorithms', () => {
+    const reports = runRule(
+      'no-weak-cipher',
+      'const c = crypto.createCipheriv(algorithm, key, iv);',
+    );
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-weak-cipher through the CLI', () => {
+    const result = runOxlint('no-weak-cipher', 'const c = crypto.createCipheriv("des", k, i);');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-weak-cipher)');
   });
 });

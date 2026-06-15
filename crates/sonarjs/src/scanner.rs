@@ -485,6 +485,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_string_literal(&mut self, it: &StringLiteral<'a>) {
         self.record_string_literal(it);
+        self.check_no_clear_text_protocols(it);
         self.check_no_hardcoded_ip(it);
         walk::walk_string_literal(self, it);
     }
@@ -507,6 +508,8 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_undefined_argument_call(it);
         self.check_code_eval_call(it);
         self.check_pseudo_random(it);
+        self.check_hashing(it);
+        self.check_no_weak_cipher(it);
         self.check_no_same_argument_assert(it);
         self.check_inverted_assertion_arguments(it);
         self.check_no_alphabetical_sort(it);
