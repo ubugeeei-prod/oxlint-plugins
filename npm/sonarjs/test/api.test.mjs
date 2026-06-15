@@ -170,6 +170,7 @@ const expectedRuleNames = [
   'csrf',
   'file-permissions',
   'file-uploads',
+  'cors',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3485,6 +3486,52 @@ describe('file-uploads rule', () => {
   it('does not report an unrelated call', () => {
     const source = 'bar();';
     const diagnostics = scan('file-uploads', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('cors rule', () => {
+  it('reports a setHeader call with a wildcard Access-Control-Allow-Origin', () => {
+    const source = 'res.setHeader("Access-Control-Allow-Origin", "*");';
+    const diagnostics = scan('cors', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('cors');
+    expect(diagnostics[0].messageId).toBe('cors');
+  });
+
+  it('reports a cors() middleware call with origin "*"', () => {
+    const source = 'cors({ origin: "*" });';
+    const diagnostics = scan('cors', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('reports a headers object literal with a wildcard origin', () => {
+    const source = 'res.writeHead(200, { "Access-Control-Allow-Origin": "*" });';
+    const diagnostics = scan('cors', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report a specific origin in setHeader', () => {
+    const source = 'res.setHeader("Access-Control-Allow-Origin", "https://ex.com");';
+    const diagnostics = scan('cors', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a specific origin in cors()', () => {
+    const source = 'cors({ origin: "https://ex.com" });';
+    const diagnostics = scan('cors', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a bare cors() call', () => {
+    const source = 'cors();';
+    const diagnostics = scan('cors', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an unrelated setHeader call', () => {
+    const source = 'res.setHeader("Content-Type", "x");';
+    const diagnostics = scan('cors', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

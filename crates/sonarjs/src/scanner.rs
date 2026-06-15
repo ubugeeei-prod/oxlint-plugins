@@ -640,6 +640,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_pseudo_random(it);
         self.check_post_message(it);
         self.check_csrf(it);
+        self.check_cors(it);
         self.check_file_permissions(it);
         self.check_file_uploads(it);
         self.check_web_sql_database(it);

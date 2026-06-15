@@ -9216,3 +9216,75 @@ fn file_uploads_does_not_report_unrelated_call() {
     let diagnostics = scan("file-uploads", "bar();");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn cors_reports_set_header_wildcard_origin() {
+    let diagnostics = scan(
+        "cors",
+        r#"res.setHeader("Access-Control-Allow-Origin", "*");"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "cors");
+    assert_eq!(diagnostics[0].message_id, "cors");
+}
+
+#[test]
+fn cors_reports_set_header_wildcard_case_insensitive_name() {
+    let diagnostics = scan(
+        "cors",
+        r#"res.setHeader("access-control-allow-origin", "*");"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn cors_reports_cors_middleware_wildcard_origin() {
+    let diagnostics = scan("cors", r#"cors({ origin: "*" });"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "cors");
+}
+
+#[test]
+fn cors_reports_write_head_header_object_wildcard() {
+    let diagnostics = scan(
+        "cors",
+        r#"res.writeHead(200, { "Access-Control-Allow-Origin": "*" });"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn cors_does_not_report_set_header_specific_origin() {
+    let diagnostics = scan(
+        "cors",
+        r#"res.setHeader("Access-Control-Allow-Origin", "https://ex.com");"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cors_does_not_report_cors_middleware_specific_origin() {
+    let diagnostics = scan("cors", r#"cors({ origin: "https://ex.com" });"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cors_does_not_report_bare_cors_call() {
+    let diagnostics = scan("cors", "cors();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cors_does_not_report_unrelated_set_header() {
+    let diagnostics = scan("cors", r#"res.setHeader("Content-Type", "x");"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cors_does_not_report_dynamic_set_header_origin() {
+    let diagnostics = scan(
+        "cors",
+        r#"res.setHeader("Access-Control-Allow-Origin", origin);"#,
+    );
+    assert!(diagnostics.is_empty());
+}
