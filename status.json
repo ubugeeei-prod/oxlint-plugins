@@ -11918,19 +11918,19 @@
       },
       {
         "name": "no-duplicated-branches",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-duplicated-branches (Sonar key S1871). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of SonarJS S1871. Rust core checks if/else-if/else chains and switch statements for any two branches with byte-identical implementations (the second duplicate branch is reported). Differs from no-all-duplicated-branches (S3923) which requires ALL branches to match. Empty blocks and fall-through cases are excluded. Head detection for if-chains reuses the shared if_chain_seen set. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-element-overwrite",

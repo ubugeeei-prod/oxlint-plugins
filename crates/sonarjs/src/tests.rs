@@ -6360,3 +6360,83 @@ fn no_use_of_empty_return_value_does_not_flag_return_in_nested_fn() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "useOfEmptyReturnValue");
 }
+
+#[test]
+fn no_duplicated_branches_reports_else_identical_to_if() {
+    let source = "if (a) { doWork(); } else { doWork(); }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-duplicated-branches");
+    assert_eq!(diagnostics[0].message_id, "duplicatedBranch");
+}
+
+#[test]
+fn no_duplicated_branches_reports_duplicate_else_if_branch() {
+    let source = "if (a) { doWork(); } else if (b) { other(); } else if (c) { doWork(); }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "duplicatedBranch");
+}
+
+#[test]
+fn no_duplicated_branches_does_not_report_when_all_differ() {
+    let source = "if (a) { one(); } else if (b) { two(); } else { three(); }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_duplicated_branches_does_not_report_lone_if() {
+    let source = "if (a) { doWork(); }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_duplicated_branches_does_not_report_if_else_if_without_else() {
+    // Two branches that differ — no duplicate
+    let source = "if (a) { doWork(); } else if (b) { other(); }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_duplicated_branches_reports_duplicate_switch_case() {
+    let source = "switch (x) { case 1: doWork(); break; case 2: doWork(); break; }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-duplicated-branches");
+    assert_eq!(diagnostics[0].message_id, "duplicatedBranch");
+}
+
+#[test]
+fn no_duplicated_branches_does_not_report_switch_all_differ() {
+    let source = "switch (x) { case 1: one(); break; case 2: two(); break; }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_duplicated_branches_does_not_report_switch_fall_through() {
+    // Fall-through cases have empty consequents and should be skipped
+    let source = "switch (x) { case 1: case 2: doWork(); break; }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_duplicated_branches_does_not_report_if_else_if_same_but_no_all_match() {
+    // if and else-if are same, else differs: reports the duplicate else-if
+    let source = "if (a) { doWork(); } else if (b) { doWork(); } else { other(); }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "duplicatedBranch");
+}
+
+#[test]
+fn no_duplicated_branches_switch_duplicate_default_case() {
+    let source = "switch (x) { case 1: doWork(); break; default: doWork(); break; }";
+    let diagnostics = scan("no-duplicated-branches", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "duplicatedBranch");
+}
