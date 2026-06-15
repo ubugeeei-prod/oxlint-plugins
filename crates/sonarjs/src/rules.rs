@@ -6,6 +6,7 @@ mod arguments_usage;
 mod array_callback_without_return;
 mod array_constructor;
 mod bitwise_operators;
+mod block_scoped_var;
 mod call_argument_line;
 mod class_name;
 mod class_prototype;

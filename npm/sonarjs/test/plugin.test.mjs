@@ -210,6 +210,7 @@ describe('sonarjs plugin shape', () => {
       'object-alt-content',
       'no-use-of-empty-return-value',
       'no-duplicated-branches',
+      'block-scoped-var',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -326,6 +327,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['object-alt-content']).toBe('object');
     expect(typeof plugin.rules['no-use-of-empty-return-value']).toBe('object');
     expect(typeof plugin.rules['no-duplicated-branches']).toBe('object');
+    expect(typeof plugin.rules['block-scoped-var']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -450,6 +452,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/object-alt-content']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-use-of-empty-return-value']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-duplicated-branches']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/block-scoped-var']).toBe('error');
   });
 });
 
@@ -4083,5 +4086,41 @@ describe('no-duplicated-branches rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-duplicated-branches)');
+  });
+});
+
+describe('block-scoped-var rule', () => {
+  it('reports a var declared inside an if-block and used after it', () => {
+    const source = 'function f(c) { if (c) { var x = 1; } return x; }';
+    const reports = runRule('block-scoped-var', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('blockScopedVar');
+  });
+
+  it('does not report a var used only inside the block where it is declared', () => {
+    const source = 'function f(c) { if (c) { var x = 1; return x; } }';
+    const reports = runRule('block-scoped-var', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a var declared at function top level', () => {
+    const source = 'function f() { var x = 1; return x; }';
+    const reports = runRule('block-scoped-var', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report let or const declared inside a block', () => {
+    const source = 'function f(c) { if (c) { let y = 1; } }';
+    const reports = runRule('block-scoped-var', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports block-scoped-var through the CLI', () => {
+    const source = 'function f(c) { if (c) { var x = 1; } return x; }';
+    const result = runOxlint('block-scoped-var', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(block-scoped-var)');
   });
 });
