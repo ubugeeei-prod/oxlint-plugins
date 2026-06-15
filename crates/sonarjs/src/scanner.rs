@@ -622,6 +622,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_require_or_define(it);
         self.check_no_extra_arguments(it);
         self.check_arguments_order(it);
+        self.check_prefer_regexp_exec(it);
         self.record_iife_callee(&it.callee);
         self.record_call_inconsistent_function_call(it);
         walk::walk_call_expression(self, it);

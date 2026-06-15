@@ -230,6 +230,7 @@ describe('sonarjs plugin shape', () => {
       'deprecation',
       'cognitive-complexity',
       'expression-complexity',
+      'prefer-regexp-exec',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -4879,5 +4880,37 @@ describe('expression-complexity rule', () => {
         additionalProperties: false,
       },
     ]);
+  });
+});
+
+describe('prefer-regexp-exec rule', () => {
+  it('reports String#match with a non-global RegExp literal through the adapter', () => {
+    const reports = runRule('prefer-regexp-exec', 'const result = str.match(/foo/u);');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('preferRegExpExec');
+  });
+
+  it('reports a member receiver with a non-global RegExp literal', () => {
+    const reports = runRule('prefer-regexp-exec', 'const result = object.value.match(/bar/);');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('preferRegExpExec');
+  });
+
+  it('does not report global RegExp literals', () => {
+    const reports = runRule('prefer-regexp-exec', 'const result = str.match(/foo/g);');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report dynamic match arguments', () => {
+    const reports = runRule('prefer-regexp-exec', 'const result = str.match(pattern);');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports prefer-regexp-exec through the CLI', () => {
+    const result = runOxlint('prefer-regexp-exec', 'const result = str.match(/foo/u);');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(prefer-regexp-exec)');
   });
 });

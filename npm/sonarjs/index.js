@@ -495,6 +495,10 @@ const messages = Object.freeze({
     expressionComplexity:
       'Refactor this expression to reduce the number of logical and conditional operators.',
   },
+  'prefer-regexp-exec': {
+    preferRegExpExec:
+      'Use RegExp.prototype.exec() instead of String.prototype.match() for a non-global regular expression.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -787,6 +791,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow expressions with more than the configured number of logical (&&, ||, ??) ' +
     'and conditional (?:) operators (the "threshold" option; default 3); ' +
     'operators inside nested function or arrow-function bodies are counted independently',
+  'prefer-regexp-exec':
+    'Prefer RegExp.prototype.exec() over String.prototype.match() when matching a non-global regular-expression literal',
 });
 
 const ruleTypes = Object.freeze({
@@ -926,6 +932,7 @@ const ruleTypes = Object.freeze({
   deprecation: 'suggestion',
   'cognitive-complexity': 'suggestion',
   'expression-complexity': 'suggestion',
+  'prefer-regexp-exec': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1064,6 +1071,7 @@ const recommendedRuleConfig = Object.freeze({
   deprecation: 'error',
   'cognitive-complexity': 'error',
   'expression-complexity': 'error',
+  'prefer-regexp-exec': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
