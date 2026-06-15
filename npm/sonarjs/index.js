@@ -259,6 +259,12 @@ const messages = Object.freeze({
     pseudoRandom:
       'Use a cryptographically secure random number generator instead of Math.random().',
   },
+  hashing: {
+    weakHash: 'Use a stronger hashing algorithm for security-sensitive data.',
+  },
+  'no-clear-text-protocols': {
+    clearTextProtocol: 'Use an encrypted protocol instead of this clear-text URL.',
+  },
   'no-hardcoded-ip': {
     hardcodedIp: 'Make this IP address configurable rather than hardcoding it in source code.',
   },
@@ -387,6 +393,9 @@ const messages = Object.freeze({
   'link-with-target-blank': {
     targetBlankNoOpener:
       "Add 'rel=\"noopener\"' (or 'noreferrer') to this link with target=\"_blank\" to prevent the opened page from accessing 'window.opener'.",
+  },
+  'no-weak-cipher': {
+    weakCipher: 'Use a modern cipher instead of this weak cipher algorithm.',
   },
   'no-hardcoded-passwords': {
     hardcodedPassword:
@@ -534,6 +543,9 @@ const ruleDescriptions = Object.freeze({
     'Disallow new Promise(executor) when the executor immediately calls resolve or reject with at most one argument; use Promise.resolve or Promise.reject instead',
   'pseudo-random':
     'Disallow Math.random() in security-sensitive contexts; use a cryptographically secure random number generator instead',
+  hashing: 'Disallow obsolete hashing algorithms such as MD5 and SHA-1 in crypto hashing APIs',
+  'no-clear-text-protocols':
+    'Disallow clear-text URL protocols such as http, ftp, telnet, ws, and ldap in string literals',
   'no-hardcoded-ip':
     'Disallow hardcoded IP addresses in string literals; make them configurable instead',
   'no-global-this':
@@ -611,6 +623,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow calling a function with more arguments than the function declares parameters (conservative: only const/let/var-assigned function expressions and arrow functions are checked)',
   'link-with-target-blank':
     'Require <a> and <area> JSX elements with target="_blank" to also carry a rel attribute containing "noopener" or "noreferrer", to prevent the opened page from accessing window.opener (reverse-tabnabbing)',
+  'no-weak-cipher':
+    'Disallow weak cipher algorithms such as DES, RC2, RC4, Blowfish, and IDEA in Node-style crypto cipher APIs',
   'no-hardcoded-passwords':
     'Disallow hardcoded password string literals assigned to a password-named identifier; ' +
     'provide credentials via configuration or environment variables instead',
@@ -693,6 +707,8 @@ const ruleTypes = Object.freeze({
   'void-use': 'suggestion',
   'prefer-promise-shorthand': 'suggestion',
   'pseudo-random': 'suggestion',
+  hashing: 'suggestion',
+  'no-clear-text-protocols': 'suggestion',
   'no-hardcoded-ip': 'suggestion',
   'no-global-this': 'suggestion',
   'single-character-alternation': 'suggestion',
@@ -730,6 +746,7 @@ const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
   'no-extra-arguments': 'problem',
   'link-with-target-blank': 'problem',
+  'no-weak-cipher': 'suggestion',
   'no-hardcoded-passwords': 'suggestion',
   'no-ignored-exceptions': 'problem',
   'no-unused-function-argument': 'suggestion',
@@ -806,6 +823,8 @@ const recommendedRuleConfig = Object.freeze({
   'void-use': 'error',
   'prefer-promise-shorthand': 'error',
   'pseudo-random': 'error',
+  hashing: 'error',
+  'no-clear-text-protocols': 'error',
   'no-hardcoded-ip': 'error',
   'no-global-this': 'error',
   'single-character-alternation': 'error',
@@ -843,6 +862,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-invalid-regexp': 'error',
   'no-extra-arguments': 'error',
   'link-with-target-blank': 'error',
+  'no-weak-cipher': 'error',
   'no-hardcoded-passwords': 'error',
   'no-ignored-exceptions': 'error',
   'no-unused-function-argument': 'error',

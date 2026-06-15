@@ -11342,19 +11342,19 @@
       },
       {
         "name": "hashing",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule hashing (Sonar key S4790). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S4790). Flags weak string-literal hashing algorithms (MD4, MD5, SHA-1) passed directly to createHash(...) or *.subtle.digest(...). Dynamic algorithms and non-WebCrypto bare digest(...) calls are intentionally skipped. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "hidden-files",
@@ -11758,19 +11758,19 @@
       },
       {
         "name": "no-clear-text-protocols",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-clear-text-protocols (Sonar key S5332). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S5332). Flags string literals containing clear-text URL schemes http://, ftp://, telnet://, ws://, or ldap://. Encrypted schemes and protocol-like labels without // are ignored; dynamic strings and template literals are intentionally out of scope. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-code-after-done",
@@ -13342,19 +13342,19 @@
       },
       {
         "name": "no-weak-cipher",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-weak-cipher (Sonar key S5547). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S5547). Flags weak string-literal cipher algorithms (DES, RC2, RC4, Blowfish/BF, IDEA) passed directly to Node-style createCipher/createCipheriv/createDecipher/createDecipheriv calls. Dynamic algorithms and unrelated API names are intentionally skipped. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-weak-keys",
