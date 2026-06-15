@@ -340,6 +340,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_for_in_statement(&mut self, it: &ForInStatement<'a>) {
         self.check_for_in(it);
         self.check_no_for_in_iterable(it);
+        self.check_updated_const_var_for_left(&it.left);
         self.check_redundant_continue(&it.body);
         self.add_cyclomatic_complexity();
         let label = self.pending_loop_label.take();
@@ -403,6 +404,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_for_of_statement(&mut self, it: &ForOfStatement<'a>) {
+        self.check_updated_const_var_for_left(&it.left);
         self.check_redundant_continue(&it.body);
         self.add_cyclomatic_complexity();
         let label = self.pending_loop_label.take();
@@ -428,6 +430,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_useless_increment(it);
         self.check_no_associative_arrays(it);
         self.check_no_hardcoded_passwords_assignment(it);
+        self.check_updated_const_var_assignment(&it.left);
         if matches!(it.operator, AssignmentOperator::Assign) {
             self.check_no_misleading_array_reverse(&it.right);
         }
@@ -444,6 +447,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.check_no_parameter_reassignment_update(ident, it.span);
             self.check_updated_loop_counter(ident, it.span);
         }
+        self.check_updated_const_var_update(&it.argument);
         walk::walk_update_expression(self, it);
     }
 

@@ -6592,3 +6592,80 @@ fn does_not_report_single_argument_call() {
     let diagnostics = scan("arguments-order", source);
     assert!(diagnostics.is_empty());
 }
+
+// ---- updated-const-var -----------------------------------------------------
+
+#[test]
+fn updated_const_var_reports_simple_assignment() {
+    let diagnostics = scan("updated-const-var", "const x = 1; x = 2;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "updated-const-var");
+    assert_eq!(diagnostics[0].message_id, "updateConst");
+    assert_eq!(diagnostics[0].data.value.as_deref(), Some("x"));
+}
+
+#[test]
+fn updated_const_var_reports_compound_assignment() {
+    let diagnostics = scan("updated-const-var", "const x = 1; x += 2;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "updated-const-var");
+    assert_eq!(diagnostics[0].message_id, "updateConst");
+}
+
+#[test]
+fn updated_const_var_reports_update_expression() {
+    let diagnostics = scan("updated-const-var", "const x = 1; ++x; x++;");
+    assert_eq!(diagnostics.len(), 2);
+    assert!(
+        diagnostics
+            .iter()
+            .all(|d| d.rule_name == "updated-const-var")
+    );
+    assert!(diagnostics.iter().all(|d| d.message_id == "updateConst"));
+}
+
+#[test]
+fn updated_const_var_reports_destructuring_assignment_targets() {
+    let source = "const x = 1, y = 2; ({ x } = obj); [y] = values;";
+    let diagnostics = scan("updated-const-var", source);
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].data.value.as_deref(), Some("x"));
+    assert_eq!(diagnostics[1].data.value.as_deref(), Some("y"));
+}
+
+#[test]
+fn updated_const_var_reports_for_in_and_for_of_targets() {
+    let source = "const x = 1, y = 2; for (x in obj) {} for (y of values) {}";
+    let diagnostics = scan("updated-const-var", source);
+    assert_eq!(diagnostics.len(), 2);
+    assert!(
+        diagnostics
+            .iter()
+            .all(|d| d.rule_name == "updated-const-var")
+    );
+}
+
+#[test]
+fn updated_const_var_does_not_report_let_var_or_property_writes() {
+    let source = r#"
+let x = 1; x = 2;
+var y = 1; y++;
+const obj = {}; obj.x = 1;
+"#;
+    let diagnostics = scan("updated-const-var", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn updated_const_var_does_not_report_shadowed_assignments() {
+    let source = "const x = 1; function f(x) { x = 2; } { let x = 3; x = 4; }";
+    let diagnostics = scan("updated-const-var", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn updated_const_var_does_not_report_for_declarations() {
+    let source = "for (const x in obj) {} for (const y of values) {}";
+    let diagnostics = scan("updated-const-var", source);
+    assert!(diagnostics.is_empty());
+}

@@ -122,6 +122,7 @@ const expectedRuleNames = [
   'block-scoped-var',
   'no-variable-usage-before-declaration',
   'arguments-order',
+  'updated-const-var',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2795,6 +2796,21 @@ describe('arguments-order rule', () => {
 
   it('does not report when argument names do not match parameter names', () => {
     const diagnostics = scan('arguments-order', 'function f(a, b) {} const x = 1, y = 2; f(x, y);');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('updated-const-var rule', () => {
+  it('reports a const binding reassignment', () => {
+    const diagnostics = scan('updated-const-var', 'const x = 1; x = 2;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('updated-const-var');
+    expect(diagnostics[0].messageId).toBe('updateConst');
+    expect(diagnostics[0].data.value).toBe('x');
+  });
+
+  it('does not report let assignments or const property writes', () => {
+    const diagnostics = scan('updated-const-var', 'let x = 1; x = 2; const obj = {}; obj.x = 1;');
     expect(diagnostics).toHaveLength(0);
   });
 });

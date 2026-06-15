@@ -431,6 +431,9 @@ const messages = Object.freeze({
     argumentsOrder:
       'These arguments match the parameter names but are passed in a different order; check for swapped arguments.',
   },
+  'updated-const-var': {
+    updateConst: 'Correct this attempt to modify "{{value}}" or use "let" in its declaration.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -676,6 +679,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow calling a function with arguments that match the parameter names but in a ' +
     'transposed (swapped) order; detects only calls where every argument is a plain identifier ' +
     'whose name is one of the declared parameter names, reordered',
+  'updated-const-var':
+    'Disallow assigning to a const binding, including update expressions, destructuring assignments, and for-in/for-of assignment targets',
 });
 
 const ruleTypes = Object.freeze({
@@ -798,6 +803,7 @@ const ruleTypes = Object.freeze({
   'block-scoped-var': 'suggestion',
   'no-variable-usage-before-declaration': 'problem',
   'arguments-order': 'problem',
+  'updated-const-var': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -920,6 +926,7 @@ const recommendedRuleConfig = Object.freeze({
   'block-scoped-var': 'error',
   'no-variable-usage-before-declaration': 'error',
   'arguments-order': 'error',
+  'updated-const-var': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

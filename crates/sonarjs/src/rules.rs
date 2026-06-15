@@ -117,6 +117,7 @@ mod single_character_alternation;
 mod standard_input;
 mod todo_tag;
 mod too_many_break_or_continue_in_loop;
+mod updated_const_var;
 mod updated_loop_counter;
 mod use_type_alias;
 mod void_use;
