@@ -153,6 +153,30 @@ describe('regexp native API', () => {
     expect(scanRegexp('const = ;', 'fixture.js')).toEqual([]);
   });
 
+  it('reports the completed pattern-analysis rules through the native API', () => {
+    const cases = [
+      ['no-contradiction-with-assertion', 'unexpected', 'const re = /a\\ba*-/u;\n'],
+      [
+        'no-potentially-useless-backreference',
+        'potentiallyUselessBackreference',
+        'const re = /(a)?\\1/;\n',
+      ],
+      ['no-useless-assertions', 'unexpected', 'const re = /a\\bb/u;\n'],
+      ['no-useless-set-operand', 'unexpected', 'const re = /[\\w&&\\d]/v;\n'],
+      ['optimal-quantifier-concatenation', 'unexpected', 'const re = /aa*/u;\n'],
+      ['prefer-set-operation', 'unexpected', 'const re = /(?!a)\\w/v;\n'],
+      ['simplify-set-operations', 'unexpected', 'const re = /[a&&[^b]]/v;\n'],
+      ['strict', 'unescapedSourceCharacter', 'const re = /]/;\n'],
+    ];
+
+    for (const [ruleName, messageId, source] of cases) {
+      expect(
+        scanRegexp(source, 'fixture.js').find((diagnostic) => diagnostic.ruleName === ruleName),
+        ruleName,
+      ).toMatchObject({ ruleName, messageId });
+    }
+  });
+
   it('reports each literal separately', () => {
     const diagnostics = scanRegexp('const a = /[]/u; const b = /a|/u;\n', 'fixture.js');
     // Each `u`-only literal fires require-unicode-sets-regexp once on top of
