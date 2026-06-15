@@ -7146,3 +7146,139 @@ fn does_not_report_deprecation_when_comment_not_adjacent() {
     let diagnostics = scan("deprecation", source);
     assert!(diagnostics.is_empty());
 }
+
+// --- cognitive-complexity (S3776) ---
+
+fn scan_cognitive(source: &str, threshold: u32) -> SmallVec<[Diagnostic; 32]> {
+    let mut options = options_for("cognitive-complexity");
+    options.cognitive_complexity_threshold = threshold;
+    scan_sonarjs(source, "sample.ts", &options)
+}
+
+#[test]
+fn cognitive_complexity_matrix_1_single_if() {
+    // function f(a){ if(a){} }  → score 1; threshold 0 → report (1>0)
+    let d = scan_cognitive("function f(a){ if(a){} }", 0);
+    assert_eq!(d.len(), 1, "case 1: expected 1 report");
+    assert_eq!(d[0].rule_name, "cognitive-complexity");
+    assert_eq!(d[0].message_id, "cognitiveComplexity");
+    // At threshold 1, score 1 is not > 1 → no report
+    let d2 = scan_cognitive("function f(a){ if(a){} }", 1);
+    assert!(d2.is_empty(), "case 1: at threshold 1 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_2_nested_ifs() {
+    // if(a){ if(b){ if(c){} } }  → 1+2+3=6; threshold 5 → report
+    let d = scan_cognitive("function f(a,b,c){ if(a){ if(b){ if(c){} } } }", 5);
+    assert_eq!(d.len(), 1, "case 2: expected 1 report at threshold 5");
+    // threshold 6: score 6 is not > 6 → no report
+    let d2 = scan_cognitive("function f(a,b,c){ if(a){ if(b){ if(c){} } } }", 6);
+    assert!(d2.is_empty(), "case 2: at threshold 6 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_3_else_if_chain() {
+    // if(a){} else if(b){} else {}  → 3; threshold 2 → report
+    let d = scan_cognitive("function f(a,b){ if(a){} else if(b){} else {} }", 2);
+    assert_eq!(d.len(), 1, "case 3: expected 1 report at threshold 2");
+    let d2 = scan_cognitive("function f(a,b){ if(a){} else if(b){} else {} }", 3);
+    assert!(d2.is_empty(), "case 3: at threshold 3 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_4_and_operator() {
+    // if(a && b){}  → if(1) + &&(1) = 2; threshold 1 → report
+    let d = scan_cognitive("function f(a,b){ if(a && b){} }", 1);
+    assert_eq!(d.len(), 1, "case 4: expected 1 report at threshold 1");
+    let d2 = scan_cognitive("function f(a,b){ if(a && b){} }", 2);
+    assert!(d2.is_empty(), "case 4: at threshold 2 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_5_chained_and() {
+    // if(a && b && c){}  → if(1) + one-&&-run(1) = 2
+    let d = scan_cognitive("function f(a,b,c){ if(a && b && c){} }", 1);
+    assert_eq!(d.len(), 1, "case 5: expected 1 report at threshold 1");
+    let d2 = scan_cognitive("function f(a,b,c){ if(a && b && c){} }", 2);
+    assert!(d2.is_empty(), "case 5: at threshold 2 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_6_or_and_mixed() {
+    // if(a || b && c){}  → if(1) + ||(1) + &&(1) = 3
+    let d = scan_cognitive("function f(a,b,c){ if(a || b && c){} }", 2);
+    assert_eq!(d.len(), 1, "case 6: expected 1 report at threshold 2");
+    let d2 = scan_cognitive("function f(a,b,c){ if(a || b && c){} }", 3);
+    assert!(d2.is_empty(), "case 6: at threshold 3 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_7_nested_loops() {
+    // for(;;){ while(true){} }  → for(1) + while(1+1=2) = 3
+    let d = scan_cognitive("function f(){ for(;;){ while(true){} } }", 2);
+    assert_eq!(d.len(), 1, "case 7: expected 1 report at threshold 2");
+    let d2 = scan_cognitive("function f(){ for(;;){ while(true){} } }", 3);
+    assert!(d2.is_empty(), "case 7: at threshold 3 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_8_catch() {
+    // try{}catch(e){}  → catch(1+0=1) = 1
+    let d = scan_cognitive("function f(){ try{}catch(e){} }", 0);
+    assert_eq!(d.len(), 1, "case 8: expected 1 report");
+    let d2 = scan_cognitive("function f(){ try{}catch(e){} }", 1);
+    assert!(d2.is_empty(), "case 8: at threshold 1 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_9_ternary() {
+    // return a ? 1 : 2  → ternary(1+0=1) = 1
+    let d = scan_cognitive("function f(a){ return a ? 1 : 2; }", 0);
+    assert_eq!(d.len(), 1, "case 9: expected 1 report");
+    let d2 = scan_cognitive("function f(a){ return a ? 1 : 2; }", 1);
+    assert!(d2.is_empty(), "case 9: at threshold 1 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_10_continue_label() {
+    // for(;;){ if(x) continue LBL; }  → for(1)+if(2)+continue-label(1)=4
+    let d = scan_cognitive("function f(){ LBL: for(;;){ if(x) continue LBL; } }", 3);
+    assert_eq!(d.len(), 1, "case 10: expected 1 report at threshold 3");
+    let d2 = scan_cognitive("function f(){ LBL: for(;;){ if(x) continue LBL; } }", 4);
+    assert!(d2.is_empty(), "case 10: at threshold 4 should not report");
+}
+
+#[test]
+fn cognitive_complexity_matrix_11_empty_function() {
+    // function f(){}  → 0; threshold 0 → not > 0 → no report
+    let d = scan_cognitive("function f(){}", 0);
+    assert!(d.is_empty(), "case 11: empty function should have score 0");
+}
+
+#[test]
+fn cognitive_complexity_default_threshold_is_15() {
+    // A function with score 15 should NOT be reported under the default
+    // threshold of 15 (15 is not > 15).
+    // Build a function with score exactly 15: 5 sequential if(a&&b){} → 5*(1+1)=10
+    // plus 5 more ifs at top level: total 10 ifs + 5 operators = 10+5 = 15
+    let src = "function f(a,b){ if(a&&b){} if(a&&b){} if(a&&b){} if(a&&b){} if(a&&b){} \
+               if(a){} if(a){} if(a){} if(a){} if(a){} }";
+    let d = scan("cognitive-complexity", src);
+    assert!(
+        d.is_empty(),
+        "score 15 should not be reported at default threshold 15"
+    );
+}
+
+#[test]
+fn cognitive_complexity_nested_function_accrues_to_outer() {
+    // Inner function's body adds to outer total at nesting+1.
+    // function outer(){ function inner(a){ if(a){} } }
+    // inner is a nested function at nesting=1; if(a) inside at nesting=2 → 1+2=3 > threshold 2
+    let d = scan_cognitive(
+        "function outer(){ function inner(a){ if(a){ if(a){} } } }",
+        2,
+    );
+    assert_eq!(d.len(), 1, "nested fn complexity accrues to outer");
+}
