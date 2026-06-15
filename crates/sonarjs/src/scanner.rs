@@ -662,6 +662,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_jsx_element(&mut self, it: &JSXElement<'a>) {
         self.mark_jsx();
+        self.check_object_alt_content(it);
         walk::walk_jsx_element(self, it);
     }
 
