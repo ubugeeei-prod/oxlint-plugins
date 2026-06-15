@@ -8170,3 +8170,122 @@ fn no_redundant_parentheses_reports_nested_inside_call_argument() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "redundantParentheses");
 }
+
+#[test]
+fn bool_param_default_reports_optional_boolean_function_param() {
+    let diagnostics = scan("bool-param-default", "function f(flag?: boolean) {}");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "bool-param-default");
+    assert_eq!(diagnostics[0].message_id, "boolParamDefault");
+}
+
+#[test]
+fn bool_param_default_does_not_report_required_boolean_param() {
+    let diagnostics = scan("bool-param-default", "function f(flag: boolean) {}");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_does_not_report_param_with_default() {
+    let diagnostics = scan("bool-param-default", "function f(flag: boolean = false) {}");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_does_not_report_union_annotation() {
+    let diagnostics = scan(
+        "bool-param-default",
+        "function f(flag?: boolean | undefined) {}",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_reports_optional_boolean_arrow_param() {
+    let diagnostics = scan("bool-param-default", "const g = (flag?: boolean) => {};");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "boolParamDefault");
+}
+
+#[test]
+fn bool_param_default_reports_optional_boolean_method_param() {
+    let diagnostics = scan("bool-param-default", "class C { m(flag?: boolean) {} }");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "boolParamDefault");
+}
+
+#[test]
+fn bool_param_default_does_not_report_untyped_optional_param() {
+    let diagnostics = scan("bool-param-default", "function f(flag?) {}");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_does_not_report_boolean_array_annotation() {
+    let diagnostics = scan("bool-param-default", "function f(flags?: boolean[]) {}");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_does_not_report_interface_method_signature() {
+    let diagnostics = scan(
+        "bool-param-default",
+        "interface I { m(flag?: boolean): void; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_does_not_report_type_alias_function_type() {
+    let diagnostics = scan("bool-param-default", "type T = (flag?: boolean) => void;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_does_not_report_type_literal_method_signature() {
+    let diagnostics = scan(
+        "bool-param-default",
+        "type O = { m(flag?: boolean): void };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_does_not_report_abstract_method() {
+    let diagnostics = scan(
+        "bool-param-default",
+        "abstract class C { abstract m(flag?: boolean): void; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_reports_only_overload_implementation_not_signature() {
+    // The bodiless overload signature must NOT be flagged; only the concrete
+    // implementation (which has a body) is reported.
+    let diagnostics = scan(
+        "bool-param-default",
+        "function f(flag?: boolean): void; function f(flag?: boolean) { return flag; }",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "boolParamDefault");
+}
+
+#[test]
+fn bool_param_default_does_not_report_ambient_declare_function() {
+    let diagnostics = scan(
+        "bool-param-default",
+        "declare function f(flag?: boolean): void;",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn bool_param_default_reports_concrete_method_with_body() {
+    let diagnostics = scan(
+        "bool-param-default",
+        "class C { m(flag?: boolean) { return flag; } }",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "boolParamDefault");
+}

@@ -533,6 +533,10 @@ const messages = Object.freeze({
   'no-redundant-parentheses': {
     redundantParentheses: 'Remove these redundant parentheses.',
   },
+  'bool-param-default': {
+    boolParamDefault:
+      'Provide a default value for this optional boolean parameter so callers are not forced to reason about three states.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -855,6 +859,9 @@ const ruleDescriptions = Object.freeze({
   'no-redundant-parentheses':
     'Disallow redundant parentheses; flags only the unambiguous nested ' +
     'double-parenthesis subset ((x)) where the inner pair adds no grouping',
+  'bool-param-default':
+    'Require a default value for optional boolean function parameters typed exactly as ' +
+    'the boolean keyword, so callers need not distinguish false from an omitted argument',
 });
 
 const ruleTypes = Object.freeze({
@@ -1004,6 +1011,7 @@ const ruleTypes = Object.freeze({
   'no-unused-collection': 'problem',
   'no-empty-collection': 'problem',
   'no-redundant-parentheses': 'suggestion',
+  'bool-param-default': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1152,6 +1160,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-unused-collection': 'error',
   'no-empty-collection': 'error',
   'no-redundant-parentheses': 'error',
+  'bool-param-default': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

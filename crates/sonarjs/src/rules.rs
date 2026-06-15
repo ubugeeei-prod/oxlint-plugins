@@ -8,6 +8,7 @@ mod array_callback_without_return;
 mod array_constructor;
 mod bitwise_operators;
 mod block_scoped_var;
+mod bool_param_default;
 mod call_argument_line;
 mod class_name;
 mod class_prototype;

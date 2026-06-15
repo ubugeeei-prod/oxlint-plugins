@@ -149,6 +149,7 @@ const expectedRuleNames = [
   'no-unused-collection',
   'no-empty-collection',
   'no-redundant-parentheses',
+  'bool-param-default',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
