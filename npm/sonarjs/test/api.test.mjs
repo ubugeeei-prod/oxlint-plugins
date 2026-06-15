@@ -151,6 +151,7 @@ const expectedRuleNames = [
   'no-redundant-parentheses',
   'bool-param-default',
   'post-message',
+  'in-operator-type-error',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

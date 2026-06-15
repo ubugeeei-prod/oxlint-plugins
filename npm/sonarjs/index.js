@@ -540,6 +540,10 @@ const messages = Object.freeze({
   'post-message': {
     postMessage: 'Specify a target origin instead of "*" for this cross-document message.',
   },
+  'in-operator-type-error': {
+    inOperatorTypeError:
+      'The right operand of "in" must be an object; a primitive value here throws a TypeError at runtime.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -868,6 +872,9 @@ const ruleDescriptions = Object.freeze({
   'post-message':
     'Disallow sending cross-document messages with a "*" wildcard target origin; flags ' +
     'only the unambiguous postMessage(message, "*") sending subset',
+  'in-operator-type-error':
+    'Disallow the "in" operator with a primitive literal right operand (string, number, ' +
+    'bigint, boolean, or null), which always throws a TypeError at runtime',
 });
 
 const ruleTypes = Object.freeze({
@@ -1019,6 +1026,7 @@ const ruleTypes = Object.freeze({
   'no-redundant-parentheses': 'suggestion',
   'bool-param-default': 'suggestion',
   'post-message': 'problem',
+  'in-operator-type-error': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1169,6 +1177,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-redundant-parentheses': 'error',
   'bool-param-default': 'error',
   'post-message': 'error',
+  'in-operator-type-error': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
