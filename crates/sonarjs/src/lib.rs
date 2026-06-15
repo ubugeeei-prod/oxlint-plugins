@@ -24,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 125] = [
+pub const RULE_NAMES: [&str; 127] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -150,6 +150,8 @@ pub const RULE_NAMES: [&str; 125] = [
     "no-empty-after-reluctant",
     "no-ignored-return",
     "file-name-differ-from-class",
+    "no-unenclosed-multiline-block",
+    "inconsistent-function-call",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -194,7 +196,8 @@ pub fn scan_sonarjs(
         || options.has_rule("no-use-of-empty-return-value")
         || options.has_rule("block-scoped-var")
         || options.has_rule("no-variable-usage-before-declaration")
-        || options.has_rule("arguments-order");
+        || options.has_rule("arguments-order")
+        || options.has_rule("inconsistent-function-call");
     let semantic = needs_semantic.then(|| {
         SemanticBuilder::new()
             .build(&parser_return.program)
@@ -235,6 +238,7 @@ pub fn scan_sonarjs(
         loop_counter_symbols: SmallVec::new(),
         loop_depth_in_function: core::iter::once(0u32).collect(),
         fn_span_stack: SmallVec::new(),
+        fn_call_new_records: SmallVec::new(),
     };
     scanner.visit_program(&parser_return.program);
     scanner.diagnostics
