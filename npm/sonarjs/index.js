@@ -424,6 +424,13 @@ const messages = Object.freeze({
     blockScopedVar:
       "Declare this variable in the enclosing scope, or use 'let'/'const' — it is a 'var' used outside the block where it is declared.",
   },
+  'no-variable-usage-before-declaration': {
+    usedBeforeDeclaration: 'This variable is used before its declaration; declare it before use.',
+  },
+  'arguments-order': {
+    argumentsOrder:
+      'These arguments match the parameter names but are passed in a different order; check for swapped arguments.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -662,6 +669,13 @@ const ruleDescriptions = Object.freeze({
   'block-scoped-var':
     "Disallow 'var' declarations inside a block (if/for/while/do/switch/bare-block) when the binding" +
     ' is used outside that block; use block-scoped let/const or declare the variable in the enclosing scope',
+  'no-variable-usage-before-declaration':
+    'Disallow referencing a variable before its var/let/const declaration appears in the source ' +
+    'text; function declarations are excluded because their hoisting is intentional',
+  'arguments-order':
+    'Disallow calling a function with arguments that match the parameter names but in a ' +
+    'transposed (swapped) order; detects only calls where every argument is a plain identifier ' +
+    'whose name is one of the declared parameter names, reordered',
 });
 
 const ruleTypes = Object.freeze({
@@ -782,6 +796,8 @@ const ruleTypes = Object.freeze({
   'no-use-of-empty-return-value': 'problem',
   'no-duplicated-branches': 'problem',
   'block-scoped-var': 'suggestion',
+  'no-variable-usage-before-declaration': 'problem',
+  'arguments-order': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -902,6 +918,8 @@ const recommendedRuleConfig = Object.freeze({
   'no-use-of-empty-return-value': 'error',
   'no-duplicated-branches': 'error',
   'block-scoped-var': 'error',
+  'no-variable-usage-before-declaration': 'error',
+  'arguments-order': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
