@@ -430,6 +430,13 @@ const LINE_COMMENT_POSITION_MESSAGES: &[(&str, &str)] = &[
     ("above", "Expected comment to be above code."),
     ("beside", "Expected comment to be beside code."),
 ];
+const ONE_VAR_DECLARATION_PER_LINE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "expectVarOnNewline",
+        "Expected variable declaration to be on a new line.",
+    ),
+    ("insertNewline", "Insert a newline."),
+];
 
 /// One stylistic rule invocation requested by the JavaScript bridge.
 #[derive(Clone, Debug, Deserialize)]
@@ -699,6 +706,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         docs_description: "Enforce position of line comments.",
         messages: LINE_COMMENT_POSITION_MESSAGES,
     },
+    StylisticRuleDefinition {
+        name: "one-var-declaration-per-line",
+        docs_description: "Require or disallow newlines around variable declarations.",
+        messages: ONE_VAR_DECLARATION_PER_LINE_MESSAGES,
+    },
 ];
 
 /// Rule names that run over the shared token + bracket-matching scan.
@@ -742,6 +754,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "operator-linebreak",
     "keyword-spacing",
     "line-comment-position",
+    "one-var-declaration-per-line",
 ];
 
 /// Returns metadata for every Rust-backed stylistic rule.
@@ -930,6 +943,9 @@ fn run_token_rule(
         "keyword-spacing" => context_rules::check_keyword_spacing(scan, options, diagnostics),
         "line-comment-position" => {
             token_rules::check_line_comment_position(scan, options, diagnostics)
+        }
+        "one-var-declaration-per-line" => {
+            context_rules::check_one_var_declaration_per_line(scan, options, diagnostics)
         }
         _ => {}
     }
