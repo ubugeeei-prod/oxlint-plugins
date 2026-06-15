@@ -426,6 +426,10 @@ const KEYWORD_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("insertSpace", "Insert a space."),
     ("removeSpace", "Remove the whitespace."),
 ];
+const LINE_COMMENT_POSITION_MESSAGES: &[(&str, &str)] = &[
+    ("above", "Expected comment to be above code."),
+    ("beside", "Expected comment to be beside code."),
+];
 
 /// One stylistic rule invocation requested by the JavaScript bridge.
 #[derive(Clone, Debug, Deserialize)]
@@ -690,6 +694,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         docs_description: "Enforce consistent spacing before and after keywords.",
         messages: KEYWORD_SPACING_MESSAGES,
     },
+    StylisticRuleDefinition {
+        name: "line-comment-position",
+        docs_description: "Enforce position of line comments.",
+        messages: LINE_COMMENT_POSITION_MESSAGES,
+    },
 ];
 
 /// Rule names that run over the shared token + bracket-matching scan.
@@ -732,6 +741,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "implicit-arrow-linebreak",
     "operator-linebreak",
     "keyword-spacing",
+    "line-comment-position",
 ];
 
 /// Returns metadata for every Rust-backed stylistic rule.
@@ -918,6 +928,9 @@ fn run_token_rule(
         }
         "operator-linebreak" => context_rules::check_operator_linebreak(scan, options, diagnostics),
         "keyword-spacing" => context_rules::check_keyword_spacing(scan, options, diagnostics),
+        "line-comment-position" => {
+            token_rules::check_line_comment_position(scan, options, diagnostics)
+        }
         _ => {}
     }
 }
