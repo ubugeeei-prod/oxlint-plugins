@@ -263,6 +263,7 @@ describe('sonarjs plugin shape', () => {
       'file-uploads',
       'cors',
       'dns-prefetching',
+      'disabled-auto-escaping',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6391,5 +6392,44 @@ describe('dns-prefetching rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(dns-prefetching)');
+  });
+});
+
+describe('disabled-auto-escaping rule', () => {
+  it('reports a Handlebars noEscape: true compile option', () => {
+    const source = 'Handlebars.compile(src, { noEscape: true });';
+    const reports = runRule('disabled-auto-escaping', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('disabledAutoEscaping');
+  });
+
+  it('reports overriding Mustache.escape', () => {
+    const source = 'Mustache.escape = function (t) { return t; };';
+    const reports = runRule('disabled-auto-escaping', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('disabledAutoEscaping');
+  });
+
+  it('does not report noEscape: false', () => {
+    const source = 'Handlebars.compile(src, { noEscape: false });';
+    const reports = runRule('disabled-auto-escaping', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal noEscape value', () => {
+    const source = 'Handlebars.compile(src, { noEscape: x });';
+    const reports = runRule('disabled-auto-escaping', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports disabled-auto-escaping through the CLI', () => {
+    const result = runOxlint(
+      'disabled-auto-escaping',
+      'Handlebars.compile(src, { noEscape: true });',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(disabled-auto-escaping)');
   });
 });

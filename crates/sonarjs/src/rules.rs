@@ -27,6 +27,7 @@ mod declarations_in_global_scope;
 mod deprecation;
 mod destructuring_assignment_syntax;
 mod different_types_comparison;
+mod disabled_auto_escaping;
 mod disabled_timeout;
 mod dns_prefetching;
 mod duplicates_in_character_class;

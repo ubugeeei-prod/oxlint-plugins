@@ -9340,3 +9340,57 @@ fn dns_prefetching_does_not_report_unrelated_callee() {
     let diagnostics = scan("dns-prefetching", "bar();");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn disabled_auto_escaping_reports_handlebars_no_escape_true() {
+    let diagnostics = scan(
+        "disabled-auto-escaping",
+        "Handlebars.compile(src, { noEscape: true });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "disabled-auto-escaping");
+}
+
+#[test]
+fn disabled_auto_escaping_reports_mustache_escape_override() {
+    let diagnostics = scan(
+        "disabled-auto-escaping",
+        "Mustache.escape = function (t) { return t; };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "disabled-auto-escaping");
+}
+
+#[test]
+fn disabled_auto_escaping_does_not_report_no_escape_false() {
+    let diagnostics = scan(
+        "disabled-auto-escaping",
+        "Handlebars.compile(src, { noEscape: false });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn disabled_auto_escaping_does_not_report_non_literal_value() {
+    let diagnostics = scan(
+        "disabled-auto-escaping",
+        "Handlebars.compile(src, { noEscape: x });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn disabled_auto_escaping_does_not_report_generic_html_key() {
+    // `html: true` is too generic to flag without knowing the receiving API.
+    let diagnostics = scan("disabled-auto-escaping", "md({ html: true });");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn disabled_auto_escaping_does_not_report_other_escape_assignment() {
+    let diagnostics = scan(
+        "disabled-auto-escaping",
+        "Other.escape = function (t) { return t; };",
+    );
+    assert!(diagnostics.is_empty());
+}

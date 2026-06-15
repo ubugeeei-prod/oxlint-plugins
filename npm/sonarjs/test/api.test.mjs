@@ -172,6 +172,7 @@ const expectedRuleNames = [
   'file-uploads',
   'cors',
   'dns-prefetching',
+  'disabled-auto-escaping',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3561,6 +3562,41 @@ describe('dns-prefetching rule', () => {
   it('does not report a non-literal allow value', () => {
     const source = 'helmet.dnsPrefetchControl({ allow: x });';
     const diagnostics = scan('dns-prefetching', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('disabled-auto-escaping rule', () => {
+  it('reports a Handlebars noEscape: true compile option', () => {
+    const source = 'Handlebars.compile(src, { noEscape: true });';
+    const diagnostics = scan('disabled-auto-escaping', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('disabled-auto-escaping');
+    expect(diagnostics[0].messageId).toBe('disabledAutoEscaping');
+  });
+
+  it('reports overriding Mustache.escape', () => {
+    const source = 'Mustache.escape = function (t) { return t; };';
+    const diagnostics = scan('disabled-auto-escaping', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('disabledAutoEscaping');
+  });
+
+  it('does not report noEscape: false', () => {
+    const source = 'Handlebars.compile(src, { noEscape: false });';
+    const diagnostics = scan('disabled-auto-escaping', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal noEscape value', () => {
+    const source = 'Handlebars.compile(src, { noEscape: x });';
+    const diagnostics = scan('disabled-auto-escaping', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a generic html: true option', () => {
+    const source = 'md({ html: true });';
+    const diagnostics = scan('disabled-auto-escaping', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

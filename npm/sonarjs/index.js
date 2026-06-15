@@ -618,6 +618,9 @@ const messages = Object.freeze({
     dnsPrefetching:
       'Enabling DNS prefetching can leak information about the links a user is offered; disable it unless required.',
   },
+  'disabled-auto-escaping': {
+    disabledAutoEscaping: 'Do not disable template auto-escaping; it is a key defense against XSS.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1015,6 +1018,9 @@ const ruleDescriptions = Object.freeze({
     'Flag helmet configuration that re-enables DNS prefetching; matches a ' +
     'dnsPrefetchControl({ allow: true }) call whose allow property is the boolean ' +
     'literal true',
+  'disabled-auto-escaping':
+    "Flag disabling a template engine's HTML auto-escaping; matches an object property " +
+    '"noEscape" set to the boolean literal true (Handlebars) and assigning to Mustache.escape',
 });
 
 const ruleTypes = Object.freeze({
@@ -1187,6 +1193,7 @@ const ruleTypes = Object.freeze({
   'file-uploads': 'problem',
   cors: 'problem',
   'dns-prefetching': 'problem',
+  'disabled-auto-escaping': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1358,6 +1365,7 @@ const recommendedRuleConfig = Object.freeze({
   'file-uploads': 'error',
   cors: 'error',
   'dns-prefetching': 'error',
+  'disabled-auto-escaping': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
