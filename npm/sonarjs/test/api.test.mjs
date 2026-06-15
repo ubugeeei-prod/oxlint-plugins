@@ -166,6 +166,7 @@ const expectedRuleNames = [
   'disabled-timeout',
   'cookie-no-httponly',
   'content-security-policy',
+  'certificate-transparency',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3333,6 +3334,40 @@ describe('content-security-policy rule', () => {
   it('does not report a different key set to false', () => {
     const source = 'const x = { csp: false };';
     const diagnostics = scan('content-security-policy', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('certificate-transparency rule', () => {
+  it('reports helmet expectCt: false', () => {
+    const source = 'helmet({ expectCt: false });';
+    const diagnostics = scan('certificate-transparency', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('certificate-transparency');
+    expect(diagnostics[0].messageId).toBe('certificateTransparency');
+  });
+
+  it('reports a direct expectCt: false config property', () => {
+    const source = 'const x = { expectCt: false };';
+    const diagnostics = scan('certificate-transparency', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report expectCt: true', () => {
+    const source = 'const x = { expectCt: true };';
+    const diagnostics = scan('certificate-transparency', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a dynamic expectCt value', () => {
+    const source = 'const x = { expectCt: o };';
+    const diagnostics = scan('certificate-transparency', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different key set to false', () => {
+    const source = 'const x = { other: false };';
+    const diagnostics = scan('certificate-transparency', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

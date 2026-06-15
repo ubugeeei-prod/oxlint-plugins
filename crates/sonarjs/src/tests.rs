@@ -9046,3 +9046,35 @@ fn content_security_policy_does_not_report_other_key() {
     let diagnostics = scan("content-security-policy", "const x = { csp: false };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn certificate_transparency_reports_helmet_expect_ct_false() {
+    let diagnostics = scan("certificate-transparency", "helmet({ expectCt: false })");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "certificate-transparency");
+    assert_eq!(diagnostics[0].message_id, "certificateTransparency");
+}
+
+#[test]
+fn certificate_transparency_reports_direct_false() {
+    let diagnostics = scan("certificate-transparency", "const x = { expectCt: false }");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn certificate_transparency_does_not_report_true() {
+    let diagnostics = scan("certificate-transparency", "const x = { expectCt: true }");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn certificate_transparency_does_not_report_dynamic_value() {
+    let diagnostics = scan("certificate-transparency", "const x = { expectCt: o }");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn certificate_transparency_does_not_report_other_key() {
+    let diagnostics = scan("certificate-transparency", "const x = { other: false }");
+    assert!(diagnostics.is_empty());
+}

@@ -596,6 +596,10 @@ const messages = Object.freeze({
     contentSecurityPolicy:
       'Do not disable Content Security Policy (contentSecurityPolicy: false) — it is an important defense against XSS.',
   },
+  'certificate-transparency': {
+    certificateTransparency:
+      'Do not disable Certificate Transparency monitoring (expectCt: false).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -971,6 +975,9 @@ const ruleDescriptions = Object.freeze({
   'content-security-policy':
     'Flag helmet configuration that disables the Content Security Policy; matches an ' +
     'object property "contentSecurityPolicy" set to the boolean literal false',
+  'certificate-transparency':
+    'Flag helmet configuration that disables Certificate Transparency monitoring; ' +
+    'matches an object property "expectCt" set to the boolean literal false',
 });
 
 const ruleTypes = Object.freeze({
@@ -1137,6 +1144,7 @@ const ruleTypes = Object.freeze({
   'disabled-timeout': 'problem',
   'cookie-no-httponly': 'problem',
   'content-security-policy': 'problem',
+  'certificate-transparency': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1302,6 +1310,7 @@ const recommendedRuleConfig = Object.freeze({
   'disabled-timeout': 'error',
   'cookie-no-httponly': 'error',
   'content-security-policy': 'error',
+  'certificate-transparency': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
