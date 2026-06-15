@@ -470,6 +470,9 @@ const messages = Object.freeze({
     newOperatorMisuse:
       "Do not use 'new' with an arrow function; arrow functions are not constructors and this throws a TypeError.",
   },
+  'no-empty-test-file': {
+    emptyTestFile: "This test file does not contain any test cases ('it'/'test').",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -745,6 +748,8 @@ const ruleDescriptions = Object.freeze({
     'the same file; pick one calling convention and apply it consistently',
   'new-operator-misuse':
     "Disallow using 'new' with an arrow function; arrow functions cannot be constructors and always throw a TypeError",
+  'no-empty-test-file':
+    'Require test files (whose name contains .test. or .spec.) to contain at least one it() or test() call; a test file with no test cases is always a bug',
 });
 
 const ruleTypes = Object.freeze({
@@ -877,6 +882,7 @@ const ruleTypes = Object.freeze({
   'no-unenclosed-multiline-block': 'suggestion',
   'inconsistent-function-call': 'problem',
   'new-operator-misuse': 'problem',
+  'no-empty-test-file': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1009,6 +1015,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-unenclosed-multiline-block': 'error',
   'inconsistent-function-call': 'error',
   'new-operator-misuse': 'error',
+  'no-empty-test-file': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
