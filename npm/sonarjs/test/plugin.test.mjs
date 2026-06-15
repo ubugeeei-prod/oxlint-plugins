@@ -229,6 +229,7 @@ describe('sonarjs plugin shape', () => {
       'no-empty-test-file',
       'deprecation',
       'cognitive-complexity',
+      'expression-complexity',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -364,6 +365,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-empty-test-file']).toBe('object');
     expect(typeof plugin.rules['deprecation']).toBe('object');
     expect(typeof plugin.rules['cognitive-complexity']).toBe('object');
+    expect(typeof plugin.rules['expression-complexity']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -509,6 +511,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-test-file']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/deprecation']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/cognitive-complexity']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/expression-complexity']).toBe('error');
   });
 });
 
@@ -4825,6 +4828,51 @@ describe('cognitive-complexity rule', () => {
 
   it('exposes the cognitive-complexity threshold option in the rule schema', () => {
     expect(plugin.rules['cognitive-complexity'].meta.schema).toEqual([
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ]);
+  });
+});
+
+describe('expression-complexity rule', () => {
+  it('reports expression-complexity when expression exceeds the default threshold of 3', () => {
+    // 4 logical && operators: a&&b&&c&&d&&e → 4 > 3 → 1 report
+    const source = 'const x = a && b && c && d && e;';
+    const reports = runRule('expression-complexity', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('expressionComplexity');
+  });
+
+  it('does not report expression-complexity when expression is at the threshold', () => {
+    // 3 logical && operators: a&&b&&c&&d → 3 is not > 3 → 0 reports
+    const source = 'const x = a && b && c && d;';
+    const reports = runRule('expression-complexity', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports expression-complexity through the adapter with a custom threshold', () => {
+    // 3 operators > threshold 2 → 1 report
+    const source = 'const x = a && b && c && d;';
+    const reports = runRule('expression-complexity', source, { options: [{ threshold: 2 }] });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('expressionComplexity');
+  });
+
+  it('reports expression-complexity through the CLI', () => {
+    // 4 logical && operators → 4 > default threshold 3 → reported by CLI
+    const src = 'const x = a && b && c && d && e;';
+    const result = runOxlint('expression-complexity', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(expression-complexity)');
+  });
+
+  it('exposes the expression-complexity threshold option in the rule schema', () => {
+    expect(plugin.rules['expression-complexity'].meta.schema).toEqual([
       {
         type: 'object',
         properties: { threshold: { type: 'integer' } },

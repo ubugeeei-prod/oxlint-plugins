@@ -145,6 +145,18 @@ pub(crate) struct Scanner<'a> {
     /// points inside nested functions update only the innermost frame; top-level
     /// decision points find an empty stack and are silently ignored.
     pub(crate) cyclomatic_complexity_stack: SmallVec<[(Span, u32); 8]>,
+    /// Per-scope stack for `expression-complexity` (S1067). One frame is pushed
+    /// at program entry (for module-level expressions) and an additional frame on
+    /// entry to every function or arrow-function scope so that nested function
+    /// bodies are scored independently. Each frame stores
+    /// `(nesting_level, operator_count, top_span)`:
+    /// - `nesting_level`: how deep inside the current logical/conditional chain
+    ///   we currently are; 0 means we are between top-level expressions.
+    /// - `operator_count`: total `&&`/`||`/`??`/`?:` operators accumulated since
+    ///   the current top-level expression began.
+    /// - `top_span`: span of the outermost operator in the current chain, used
+    ///   as the report location when the count exceeds the threshold.
+    pub(crate) expression_complexity_stack: SmallVec<[(u32, u32, Span); 8]>,
     /// Current nesting depth of function/arrow definitions, used by
     /// `no-nested-functions`. Incremented on entry to any function-like node and
     /// decremented on exit. Depth 1 = outermost function in the file.
@@ -285,7 +297,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_same_line_conditional(&it.body);
         self.check_no_unenclosed_multiline_block(&it.body);
         self.check_prefer_object_literal(&it.body);
+        self.enter_expression_complexity_scope();
         walk::walk_program(self, it);
+        self.leave_expression_complexity_scope();
         self.finalize_no_duplicate_string();
         self.finalize_use_type_alias();
         self.finalize_inconsistent_function_call();
@@ -357,7 +371,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_logical_expression(&mut self, it: &LogicalExpression<'a>) {
         self.check_no_identical_expressions_logical(it);
         self.add_cyclomatic_complexity();
+        self.enter_expression_complexity_op(it.span);
         walk::walk_logical_expression(self, it);
+        self.leave_expression_complexity_op();
     }
 
     fn visit_unary_expression(&mut self, it: &UnaryExpression<'a>) {
@@ -373,9 +389,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_nested_conditional(it);
         self.check_no_redundant_boolean_conditional(it);
         self.add_cyclomatic_complexity();
+        self.enter_expression_complexity_op(it.span);
         self.conditional_depth += 1;
         walk::walk_conditional_expression(self, it);
         self.conditional_depth -= 1;
+        self.leave_expression_complexity_op();
     }
 
     fn visit_if_statement(&mut self, it: &IfStatement<'a>) {
@@ -667,6 +685,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_invariant_return_scope(it.span);
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);
+        self.enter_expression_complexity_scope();
         self.enter_nested_function(it.span);
         self.enter_function_inside_loop(it.span);
         self.enter_this_binding_scope();
@@ -679,6 +698,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.leave_this_binding_scope();
         self.leave_function_inside_loop();
         self.leave_nested_function();
+        self.leave_expression_complexity_scope();
         self.leave_cyclomatic_scope();
         self.leave_return_scope();
         self.leave_invariant_return_scope();
@@ -732,6 +752,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         }
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);
+        self.enter_expression_complexity_scope();
         self.enter_nested_function(it.span);
         self.enter_function_inside_loop(it.span);
         self.check_no_unused_function_argument_arrow(it);
@@ -742,6 +763,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.fn_span_stack.pop();
         self.leave_function_inside_loop();
         self.leave_nested_function();
+        self.leave_expression_complexity_scope();
         self.leave_cyclomatic_scope();
         self.leave_return_scope();
         if !it.expression {

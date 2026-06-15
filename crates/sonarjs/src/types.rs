@@ -69,6 +69,10 @@ pub struct SonarjsOptions {
     /// Maximum cognitive complexity per function for `cognitive-complexity` (S3776);
     /// the SonarJS default is 15.
     pub cognitive_complexity_threshold: u32,
+    /// Maximum number of logical (`&&`, `||`, `??`) and conditional (`?:`)
+    /// operators per top-level expression for `expression-complexity` (S1067);
+    /// the SonarJS default is 3.
+    pub expression_complexity_threshold: u32,
 }
 
 impl Default for SonarjsOptions {
@@ -88,6 +92,7 @@ impl Default for SonarjsOptions {
             no_nested_functions_threshold: 4,
             function_name_format: CompactString::from("^[_a-z][a-zA-Z0-9]*$"),
             cognitive_complexity_threshold: 15,
+            expression_complexity_threshold: 3,
         }
     }
 }
