@@ -6440,3 +6440,42 @@ fn no_duplicated_branches_switch_duplicate_default_case() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "duplicatedBranch");
 }
+
+#[test]
+fn block_scoped_var_reports_var_used_after_if_block() {
+    let source = "function f(c) { if (c) { var x = 1; } return x; }";
+    let diagnostics = scan("block-scoped-var", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "block-scoped-var");
+    assert_eq!(diagnostics[0].message_id, "blockScopedVar");
+}
+
+#[test]
+fn block_scoped_var_reports_for_loop_counter_used_after_loop() {
+    let source = "function f(n) { for (var i = 0; i < n; i++) {} return i; }";
+    let diagnostics = scan("block-scoped-var", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "block-scoped-var");
+    assert_eq!(diagnostics[0].message_id, "blockScopedVar");
+}
+
+#[test]
+fn block_scoped_var_does_not_report_var_at_function_top_level() {
+    let source = "function f() { var x = 1; return x; }";
+    let diagnostics = scan("block-scoped-var", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn block_scoped_var_does_not_report_var_used_only_inside_block() {
+    let source = "function f(c) { if (c) { var x = 1; return x; } }";
+    let diagnostics = scan("block-scoped-var", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn block_scoped_var_does_not_report_let_in_block() {
+    let source = "function f(c) { if (c) { let y = 1; return y; } }";
+    let diagnostics = scan("block-scoped-var", source);
+    assert!(diagnostics.is_empty());
+}

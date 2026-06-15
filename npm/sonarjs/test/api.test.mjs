@@ -119,6 +119,7 @@ const expectedRuleNames = [
   'object-alt-content',
   'no-use-of-empty-return-value',
   'no-duplicated-branches',
+  'block-scoped-var',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2743,6 +2744,36 @@ describe('shorthand-property-grouping rule', () => {
 
   it('does not report an object with no shorthand properties', () => {
     const diagnostics = scan('shorthand-property-grouping', 'const o = { x: 1, y: 2 };');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('block-scoped-var rule', () => {
+  it('reports a var used outside the if-block where it is declared', () => {
+    const diagnostics = scan(
+      'block-scoped-var',
+      'function f(c) { if (c) { var x = 1; } return x; }',
+    );
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('block-scoped-var');
+    expect(diagnostics[0].messageId).toBe('blockScopedVar');
+  });
+
+  it('does not report a var used only inside the block where it is declared', () => {
+    const diagnostics = scan(
+      'block-scoped-var',
+      'function f(c) { if (c) { var x = 1; return x; } }',
+    );
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a var declared at function top level', () => {
+    const diagnostics = scan('block-scoped-var', 'function f() { var x = 1; return x; }');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report let or const even when used outside the block', () => {
+    const diagnostics = scan('block-scoped-var', 'function f(c) { if (c) { let y = 1; } }');
     expect(diagnostics).toHaveLength(0);
   });
 });

@@ -420,6 +420,10 @@ const messages = Object.freeze({
     duplicatedBranch:
       "This branch's implementation is duplicated on another branch; merge or differentiate them.",
   },
+  'block-scoped-var': {
+    blockScopedVar:
+      "Declare this variable in the enclosing scope, or use 'let'/'const' — it is a 'var' used outside the block where it is declared.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -655,6 +659,9 @@ const ruleDescriptions = Object.freeze({
   'no-duplicated-branches':
     'Disallow any two branches in an if/else-if/else chain, or any two case/default clauses in a ' +
     'switch statement, from having byte-identical implementations; merge or differentiate them',
+  'block-scoped-var':
+    "Disallow 'var' declarations inside a block (if/for/while/do/switch/bare-block) when the binding" +
+    ' is used outside that block; use block-scoped let/const or declare the variable in the enclosing scope',
 });
 
 const ruleTypes = Object.freeze({
@@ -774,6 +781,7 @@ const ruleTypes = Object.freeze({
   'object-alt-content': 'problem',
   'no-use-of-empty-return-value': 'problem',
   'no-duplicated-branches': 'problem',
+  'block-scoped-var': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -893,6 +901,7 @@ const recommendedRuleConfig = Object.freeze({
   'object-alt-content': 'error',
   'no-use-of-empty-return-value': 'error',
   'no-duplicated-branches': 'error',
+  'block-scoped-var': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
