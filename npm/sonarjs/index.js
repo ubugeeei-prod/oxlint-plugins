@@ -607,6 +607,10 @@ const messages = Object.freeze({
     weakFilePermissions:
       'Make sure this permissive file access is safe; granting access to "others" can be a security risk.',
   },
+  'file-uploads': {
+    fileUploads:
+      'Configure an explicit upload destination; without it, uploaded files are written to the OS temporary directory.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -992,6 +996,10 @@ const ruleDescriptions = Object.freeze({
   'file-permissions':
     'Flag fs chmod-family calls or process.umask calls whose numeric mode grants ' +
     'permissions to "others"; only numeric-literal modes are checked (zero-false-positive)',
+  'file-uploads':
+    'Flag multer.diskStorage configuration that omits an explicit destination; ' +
+    'matches a diskStorage({ ... }) call whose object-literal first argument has no ' +
+    '"destination" property (uploaded files would default to the OS temporary directory)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1161,6 +1169,7 @@ const ruleTypes = Object.freeze({
   'certificate-transparency': 'problem',
   csrf: 'problem',
   'file-permissions': 'problem',
+  'file-uploads': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1329,6 +1338,7 @@ const recommendedRuleConfig = Object.freeze({
   'certificate-transparency': 'error',
   csrf: 'error',
   'file-permissions': 'error',
+  'file-uploads': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

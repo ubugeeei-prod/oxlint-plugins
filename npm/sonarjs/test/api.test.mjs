@@ -169,6 +169,7 @@ const expectedRuleNames = [
   'certificate-transparency',
   'csrf',
   'file-permissions',
+  'file-uploads',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3450,6 +3451,40 @@ describe('file-permissions rule', () => {
   it('does not report a dynamic (non-literal) mode', () => {
     const source = 'fs.chmodSync("/x", mode);';
     const diagnostics = scan('file-permissions', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('file-uploads rule', () => {
+  it('reports a diskStorage configuration without a destination', () => {
+    const source = 'multer.diskStorage({ filename: fn });';
+    const diagnostics = scan('file-uploads', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('file-uploads');
+    expect(diagnostics[0].messageId).toBe('fileUploads');
+  });
+
+  it('does not report a diskStorage configuration with a destination', () => {
+    const source = 'multer.diskStorage({ destination: "/up", filename: fn });';
+    const diagnostics = scan('file-uploads', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('flags an aliased receiver missing a destination', () => {
+    const source = 'foo.diskStorage({ filename: fn });';
+    const diagnostics = scan('file-uploads', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report a diskStorage call without an object argument', () => {
+    const source = 'multer.diskStorage();';
+    const diagnostics = scan('file-uploads', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an unrelated call', () => {
+    const source = 'bar();';
+    const diagnostics = scan('file-uploads', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

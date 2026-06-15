@@ -34,6 +34,7 @@ mod encryption_secure_mode;
 mod expression_complexity;
 mod file_name_differ_from_class;
 mod file_permissions;
+mod file_uploads;
 mod fixme_tag;
 mod for_in;
 mod for_loop_increment_sign;

@@ -260,6 +260,7 @@ describe('sonarjs plugin shape', () => {
       'certificate-transparency',
       'csrf',
       'file-permissions',
+      'file-uploads',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6271,5 +6272,40 @@ describe('file-permissions rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(file-permissions)');
+  });
+});
+
+describe('file-uploads rule', () => {
+  it('reports a diskStorage configuration without a destination', () => {
+    const source = 'multer.diskStorage({ filename: fn });';
+    const reports = runRule('file-uploads', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('fileUploads');
+  });
+
+  it('does not report a diskStorage configuration with a destination', () => {
+    const source = 'multer.diskStorage({ destination: "/up", filename: fn });';
+    const reports = runRule('file-uploads', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('flags an aliased receiver missing a destination', () => {
+    const source = 'foo.diskStorage({ filename: fn });';
+    const reports = runRule('file-uploads', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report a diskStorage call without an object argument', () => {
+    const source = 'multer.diskStorage();';
+    const reports = runRule('file-uploads', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports file-uploads through the CLI', () => {
+    const result = runOxlint('file-uploads', 'multer.diskStorage({ filename: fn });');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(file-uploads)');
   });
 });
