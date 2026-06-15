@@ -219,6 +219,7 @@ describe('sonarjs plugin shape', () => {
       'no-empty-after-reluctant',
       'no-ignored-return',
       'file-name-differ-from-class',
+      'no-unenclosed-multiline-block',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -344,6 +345,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-empty-after-reluctant']).toBe('object');
     expect(typeof plugin.rules['no-ignored-return']).toBe('object');
     expect(typeof plugin.rules['file-name-differ-from-class']).toBe('object');
+    expect(typeof plugin.rules['no-unenclosed-multiline-block']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -479,6 +481,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-after-reluctant']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-ignored-return']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/file-name-differ-from-class']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-unenclosed-multiline-block']).toBe('error');
   });
 });
 
@@ -4433,5 +4436,35 @@ describe('file-name-differ-from-class rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(file-name-differ-from-class)');
+  });
+});
+
+describe('no-unenclosed-multiline-block rule', () => {
+  it('reports a sibling statement indented as if inside an unbraced if body', () => {
+    const source = 'if (c)\n  a();\n  b();';
+    const reports = runRule('no-unenclosed-multiline-block', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unenclosedMultilineBlock');
+  });
+
+  it('does not report when the body is braced', () => {
+    const source = 'if (c) {\n  a();\n  b();\n}';
+    const reports = runRule('no-unenclosed-multiline-block', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the sibling is at the outer indentation level', () => {
+    const source = 'if (c)\n  a();\nb();';
+    const reports = runRule('no-unenclosed-multiline-block', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-unenclosed-multiline-block through the CLI', () => {
+    const source = 'if (c)\n  a();\n  b();';
+    const result = runOxlint('no-unenclosed-multiline-block', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-unenclosed-multiline-block)');
   });
 });

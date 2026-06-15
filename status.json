@@ -13118,19 +13118,19 @@
       },
       {
         "name": "no-unenclosed-multiline-block",
-        "status": "pending",
-        "published": false,
+        "status": "ported",
+        "published": true,
         "oxlintBuiltin": false,
-        "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "typeAware": true,
+        "rustCore": true,
+        "napi": true,
         "tests": {
-          "insta": false,
-          "vitest": false,
-          "lsp": false,
-          "oxlintIntegration": false
+          "insta": true,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-unenclosed-multiline-block (Sonar key S2681). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S2681). Flags a sibling statement indented as if it belongs to an unbraced control-structure body (if/for/while/else without braces). Column-based indentation check: next sibling column > control keyword column AND >= body statement column, on a later line. No upstream source, tests, fixtures, or message strings were consulted or copied."
       },
       {
         "name": "no-uniq-key",
