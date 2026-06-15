@@ -455,6 +455,21 @@
       "rules": { "type": "none" },
       "docsUrlTemplate": null,
       "notes": "Parser dependency of eslint-plugin-postgresql (no lint rules of its own). Required so the postgresql rules can be ported."
+    },
+    {
+      "id": "eslint-plugin-astro",
+      "npm": "eslint-plugin-astro",
+      "repo": "https://github.com/ota-meshi/eslint-plugin-astro",
+      "submodule": "upstream/eslint-plugin-astro",
+      "packageSubdir": ".",
+      "baselineVersion": "1.7.0",
+      "pinnedRef": "v1.7.0",
+      "license": "MIT",
+      "monorepo": false,
+      "expectedRuleCount": 19,
+      "rules": { "type": "glob", "dir": "src/rules", "ext": ".ts", "exclude": ["index.ts"] },
+      "docsUrlTemplate": "https://ota-meshi.github.io/eslint-plugin-astro/rules/{rule}/",
+      "notes": "Lints .astro files via astro-eslint-parser; full parity depends on that parser (cf. eslint-plugin-svelte / eslint-plugin-vue, which are excluded, and @unocss/eslint-plugin)."
     }
   ]
 }
