@@ -120,6 +120,7 @@ const expectedRuleNames = [
   'no-use-of-empty-return-value',
   'no-duplicated-branches',
   'block-scoped-var',
+  'no-variable-usage-before-declaration',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

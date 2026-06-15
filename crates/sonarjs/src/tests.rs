@@ -6479,3 +6479,76 @@ fn block_scoped_var_does_not_report_let_in_block() {
     let diagnostics = scan("block-scoped-var", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn reports_var_usage_before_declaration_at_module_level() {
+    let source = "console.log(x); var x = 5;";
+    let diagnostics = scan("no-variable-usage-before-declaration", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "no-variable-usage-before-declaration"
+    );
+    assert_eq!(diagnostics[0].message_id, "usedBeforeDeclaration");
+}
+
+#[test]
+fn reports_let_usage_before_declaration_at_module_level() {
+    let source = "console.log(y); let y = 10;";
+    let diagnostics = scan("no-variable-usage-before-declaration", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "usedBeforeDeclaration");
+}
+
+#[test]
+fn reports_const_usage_before_declaration_at_module_level() {
+    let source = "console.log(z); const z = 99;";
+    let diagnostics = scan("no-variable-usage-before-declaration", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "usedBeforeDeclaration");
+}
+
+#[test]
+fn reports_var_usage_before_declaration_inside_function() {
+    let source = "function f() { console.log(a); var a = 1; }";
+    let diagnostics = scan("no-variable-usage-before-declaration", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "usedBeforeDeclaration");
+}
+
+#[test]
+fn does_not_report_variable_usage_after_declaration() {
+    let source = "var x = 5; console.log(x);";
+    let diagnostics = scan("no-variable-usage-before-declaration", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_function_declaration_called_before_it_appears() {
+    let source = "foo(); function foo() { return 1; }";
+    let diagnostics = scan("no-variable-usage-before-declaration", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_reference_in_nested_function_defined_before_var() {
+    // cb is defined before var val, but cb is called after — safe closure.
+    let source = "function outer() { function cb() { console.log(val); } var val = 3; cb(); }";
+    let diagnostics = scan("no-variable-usage-before-declaration", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_reference_in_nested_arrow_defined_before_var() {
+    let source = "function outer() { const cb = () => console.log(v); var v = 7; cb(); }";
+    let diagnostics = scan("no-variable-usage-before-declaration", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_usage_of_function_parameter() {
+    // Function parameters are not variable declarators; must not be flagged.
+    let source = "function f(p) { return p; }";
+    let diagnostics = scan("no-variable-usage-before-declaration", source);
+    assert!(diagnostics.is_empty());
+}

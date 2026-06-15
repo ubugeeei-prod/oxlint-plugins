@@ -211,6 +211,7 @@ describe('sonarjs plugin shape', () => {
       'no-use-of-empty-return-value',
       'no-duplicated-branches',
       'block-scoped-var',
+      'no-variable-usage-before-declaration',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -328,6 +329,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-use-of-empty-return-value']).toBe('object');
     expect(typeof plugin.rules['no-duplicated-branches']).toBe('object');
     expect(typeof plugin.rules['block-scoped-var']).toBe('object');
+    expect(typeof plugin.rules['no-variable-usage-before-declaration']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -453,6 +455,9 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-use-of-empty-return-value']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-duplicated-branches']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/block-scoped-var']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-variable-usage-before-declaration']).toBe(
+      'error',
+    );
   });
 });
 
@@ -4122,5 +4127,61 @@ describe('block-scoped-var rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(block-scoped-var)');
+  });
+});
+
+describe('no-variable-usage-before-declaration rule', () => {
+  it('reports a var variable used before its declaration at module level', () => {
+    const source = 'console.log(x); var x = 5;';
+    const reports = runRule('no-variable-usage-before-declaration', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('usedBeforeDeclaration');
+  });
+
+  it('reports a let variable used before its declaration at module level', () => {
+    const source = 'console.log(y); let y = 10;';
+    const reports = runRule('no-variable-usage-before-declaration', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('usedBeforeDeclaration');
+  });
+
+  it('reports a var variable used before its declaration inside a function', () => {
+    const source = 'function f() { console.log(z); var z = 1; }';
+    const reports = runRule('no-variable-usage-before-declaration', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('usedBeforeDeclaration');
+  });
+
+  it('does not report a variable used after its declaration', () => {
+    const source = 'var x = 5; console.log(x);';
+    const reports = runRule('no-variable-usage-before-declaration', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a function called before its declaration', () => {
+    const source = 'foo(); function foo() {}';
+    const reports = runRule('no-variable-usage-before-declaration', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a reference inside a nested function defined before the var', () => {
+    const source = 'function outer() { function cb() { console.log(val); } var val = 3; cb(); }';
+    const reports = runRule('no-variable-usage-before-declaration', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a reference inside an arrow defined before the var', () => {
+    const source = 'function outer() { const cb = () => console.log(v); var v = 7; cb(); }';
+    const reports = runRule('no-variable-usage-before-declaration', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-variable-usage-before-declaration through the CLI', () => {
+    const source = 'console.log(x); var x = 5;';
+    const result = runOxlint('no-variable-usage-before-declaration', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-variable-usage-before-declaration)');
   });
 });
