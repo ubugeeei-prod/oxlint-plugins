@@ -257,6 +257,7 @@ describe('sonarjs plugin shape', () => {
       'disabled-timeout',
       'cookie-no-httponly',
       'content-security-policy',
+      'certificate-transparency',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6133,5 +6134,46 @@ describe('content-security-policy rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(content-security-policy)');
+  });
+});
+
+describe('certificate-transparency rule', () => {
+  it('reports helmet expectCt: false', () => {
+    const source = 'helmet({ expectCt: false });';
+    const reports = runRule('certificate-transparency', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('certificateTransparency');
+  });
+
+  it('reports a direct expectCt: false config property', () => {
+    const source = 'const x = { expectCt: false };';
+    const reports = runRule('certificate-transparency', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report expectCt: true', () => {
+    const source = 'const x = { expectCt: true };';
+    const reports = runRule('certificate-transparency', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a dynamic expectCt value', () => {
+    const source = 'const x = { expectCt: o };';
+    const reports = runRule('certificate-transparency', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different key set to false', () => {
+    const source = 'const x = { other: false };';
+    const reports = runRule('certificate-transparency', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports certificate-transparency through the CLI', () => {
+    const result = runOxlint('certificate-transparency', 'helmet({ expectCt: false });');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(certificate-transparency)');
   });
 });

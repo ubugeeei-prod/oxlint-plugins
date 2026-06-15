@@ -10,6 +10,7 @@ mod bitwise_operators;
 mod block_scoped_var;
 mod bool_param_default;
 mod call_argument_line;
+mod certificate_transparency;
 mod class_name;
 mod class_prototype;
 mod code_eval;
