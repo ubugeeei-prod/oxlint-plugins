@@ -5700,3 +5700,51 @@ fn no_in_misuse_does_not_report_object_right_operand() {
     let diagnostics = scan("no-in-misuse", r#"const found = "apple" in { apple: 1 };"#);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_require_or_define_flags_require_call() {
+    let source = "require('fs');";
+    let diagnostics = scan("no-require-or-define", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-require-or-define");
+    assert_eq!(diagnostics[0].message_id, "noRequireOrDefine");
+}
+
+#[test]
+fn no_require_or_define_flags_require_in_assignment() {
+    let source = "const x = require('fs');";
+    let diagnostics = scan("no-require-or-define", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-require-or-define");
+    assert_eq!(diagnostics[0].message_id, "noRequireOrDefine");
+}
+
+#[test]
+fn no_require_or_define_flags_define_call() {
+    let source = "define(['dep'], function(dep) {});";
+    let diagnostics = scan("no-require-or-define", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-require-or-define");
+    assert_eq!(diagnostics[0].message_id, "noRequireOrDefine");
+}
+
+#[test]
+fn no_require_or_define_no_flag_member_require() {
+    let source = "foo.require('x');";
+    let diagnostics = scan("no-require-or-define", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_require_or_define_no_flag_es_import() {
+    let source = "import x from 'fs';";
+    let diagnostics = scan("no-require-or-define", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_require_or_define_no_flag_different_name() {
+    let source = "function f() { requireSomething(); }";
+    let diagnostics = scan("no-require-or-define", source);
+    assert!(diagnostics.is_empty());
+}

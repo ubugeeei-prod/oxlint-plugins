@@ -374,6 +374,9 @@ const messages = Object.freeze({
     inMisuse:
       "Use 'indexOf' or 'includes' to check for the presence of a value in this array; the 'in' operator only checks property keys.",
   },
+  'no-require-or-define': {
+    noRequireOrDefine: "Use a standard 'import' statement instead of 'require' or 'define'.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -578,6 +581,8 @@ const ruleDescriptions = Object.freeze({
     'Disallow two functions in the same file whose parameter list and body are byte-for-byte identical; such duplication is almost always a copy-paste mistake or a missed abstraction (functions spanning fewer than 3 lines are exempt)',
   'no-in-misuse':
     "Disallow using the 'in' operator to test whether a value is an element of an array; use 'Array.prototype.includes' or 'Array.prototype.indexOf' instead, because 'in' checks property keys, not values",
+  'no-require-or-define':
+    "Disallow CommonJS 'require()' calls and AMD 'define()' calls; use ES module 'import' statements instead",
 });
 
 const ruleTypes = Object.freeze({
@@ -684,6 +689,7 @@ const ruleTypes = Object.freeze({
   'no-undefined-argument': 'suggestion',
   'no-identical-functions': 'suggestion',
   'no-in-misuse': 'problem',
+  'no-require-or-define': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -790,6 +796,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-undefined-argument': 'error',
   'no-identical-functions': 'error',
   'no-in-misuse': 'error',
+  'no-require-or-define': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
