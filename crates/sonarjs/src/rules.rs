@@ -66,6 +66,7 @@ mod no_ignored_exceptions;
 mod no_in_misuse;
 mod no_inconsistent_returns;
 mod no_invalid_regexp;
+mod no_invariant_returns;
 mod no_inverted_boolean_check;
 mod no_labels;
 mod no_literal_call;
