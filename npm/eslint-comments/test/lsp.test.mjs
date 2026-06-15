@@ -117,4 +117,47 @@ describe('LSP diagnostics fixture', () => {
       ]
     `);
   });
+
+  it('emits diagnostics for unused disables with synthetic lint problems', () => {
+    const ruleName = 'no-unused-disable';
+    const reports = runRule(ruleName, {
+      code: '\n/*eslint-disable no-alert*/\nalert("ok");\n',
+      disableDirectiveProblems: [],
+    });
+
+    expect(toLspDiagnostics(ruleName, reports)).toMatchInlineSnapshot(`
+      [
+        {
+          "code": "eslint-comments/no-unused-disable",
+          "message": "Unused eslint-disable directive (no problems were reported from 'no-alert').",
+          "range": {
+            "end": {
+              "character": 25,
+              "line": 1,
+            },
+            "start": {
+              "character": 17,
+              "line": 1,
+            },
+          },
+          "severity": 1,
+          "source": "oxlint-plugins",
+        },
+      ]
+    `);
+  });
+
+  it('suppresses no-unused-disable diagnostics when a matching problem exists', () => {
+    const reports = runRule('no-unused-disable', {
+      code: '\n/*eslint-disable no-alert*/\nalert("ok");\n',
+      disableDirectiveProblems: [
+        {
+          ruleId: 'no-alert',
+          loc: { start: { line: 3, column: 0 } },
+        },
+      ],
+    });
+
+    expect(reports).toEqual([]);
+  });
 });
