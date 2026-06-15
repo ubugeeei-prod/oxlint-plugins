@@ -160,6 +160,7 @@ const expectedRuleNames = [
   'no-misleading-character-class',
   'slow-regex',
   'web-sql-database',
+  'no-intrusive-permissions',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

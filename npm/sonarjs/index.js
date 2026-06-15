@@ -573,6 +573,10 @@ const messages = Object.freeze({
     webSqlDatabase:
       'The Web SQL Database API is deprecated and removed from the web platform; do not use it.',
   },
+  'no-intrusive-permissions': {
+    intrusivePermission:
+      'Requesting this browser permission is intrusive; make sure it is necessary and properly justified.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -930,6 +934,9 @@ const ruleDescriptions = Object.freeze({
   'web-sql-database':
     'Disallow use of the deprecated, removed, and security-sensitive Web SQL Database ' +
     'API; flags any call to openDatabase(...) (global or as a member, e.g. window.openDatabase)',
+  'no-intrusive-permissions':
+    'Flag requests for intrusive browser permissions; matches the distinctive ' +
+    'geolocation, Notification.requestPermission, and permissions.query call chains',
 });
 
 const ruleTypes = Object.freeze({
@@ -1090,6 +1097,7 @@ const ruleTypes = Object.freeze({
   'no-misleading-character-class': 'problem',
   'slow-regex': 'problem',
   'web-sql-database': 'problem',
+  'no-intrusive-permissions': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1249,6 +1257,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-misleading-character-class': 'error',
   'slow-regex': 'error',
   'web-sql-database': 'error',
+  'no-intrusive-permissions': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
