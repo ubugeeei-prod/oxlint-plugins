@@ -5542,3 +5542,92 @@ fn no_undefined_argument_no_report_spread() {
     let diagnostics = scan("no-undefined-argument", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_identical_functions_reports_second_of_two_identical() {
+    let source = r#"function a(x) {
+  if (x > 0) return x;
+  return -x;
+}
+function b(x) {
+  if (x > 0) return x;
+  return -x;
+}"#;
+    let diagnostics = scan("no-identical-functions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-identical-functions");
+    assert_eq!(diagnostics[0].message_id, "identicalFunctions");
+    assert_eq!(diagnostics[0].data.value.as_deref(), Some("1"));
+}
+
+#[test]
+fn no_identical_functions_reports_two_duplicates_of_three() {
+    let source = r#"function a(x) {
+  if (x > 0) return x;
+  return -x;
+}
+function b(x) {
+  if (x > 0) return x;
+  return -x;
+}
+function c(x) {
+  if (x > 0) return x;
+  return -x;
+}"#;
+    let diagnostics = scan("no-identical-functions", source);
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
+fn no_identical_functions_no_report_below_threshold() {
+    // Single-line functions: below the 3-line threshold — never flagged.
+    let source = "function a(x) { return x; }\nfunction b(x) { return x; }";
+    let diagnostics = scan("no-identical-functions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_identical_functions_no_report_different_bodies() {
+    let source = r#"function a(x) {
+  if (x > 0) return x;
+  return -x;
+}
+function b(x) {
+  if (x > 0) return x + 1;
+  return -x;
+}"#;
+    let diagnostics = scan("no-identical-functions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_identical_functions_no_report_whitespace_difference() {
+    // Bodies differ only in whitespace — conservative port does NOT flag these.
+    let source = "function a(x) {\n  return x;\n  }\nfunction b(x) {\n return x;\n}";
+    let diagnostics = scan("no-identical-functions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_identical_functions_no_report_expression_bodied_arrow() {
+    // Expression-bodied arrows (no block body) are never flagged.
+    let source = "const f = x => x + 1;\nconst g = x => x + 1;";
+    let diagnostics = scan("no-identical-functions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_identical_functions_reports_block_bodied_arrows() {
+    let source = r#"const f = (x) => {
+  if (x > 0) return x;
+  return -x;
+};
+const g = (x) => {
+  if (x > 0) return x;
+  return -x;
+};"#;
+    let diagnostics = scan("no-identical-functions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-identical-functions");
+    assert_eq!(diagnostics[0].message_id, "identicalFunctions");
+}

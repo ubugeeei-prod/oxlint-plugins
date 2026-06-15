@@ -1387,6 +1387,7 @@ dependencies = [
 name = "oxlint-plugins-sonarjs"
 version = "0.0.0"
 dependencies = [
+ "compact_str",
  "insta",
  "oxc_allocator",
  "oxc_ast",

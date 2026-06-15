@@ -105,6 +105,10 @@ pub(crate) struct Scanner<'a> {
     /// Span-start offsets of functions/arrows that are IIFEs (callee of a call);
     /// `max-lines-per-function` never reports these.
     pub(crate) iife_function_starts: SmallVec<[u32; 8]>,
+    /// (impl_text, start_line) of every qualifying function already visited, used
+    /// by `no-identical-functions` to detect duplicate implementations. A function
+    /// qualifies when its span spans at least 3 lines.
+    pub(crate) seen_function_impls: SmallVec<[(&'a str, u32); 16]>,
     /// (value, span) of every string literal seen, for `no-duplicate-string`.
     pub(crate) string_literals: SmallVec<[(&'a str, Span); 32]>,
     /// Span-start offsets of string literals in excluded positions (import/export
@@ -551,6 +555,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
+        if let Some(body) = &it.body {
+            self.check_no_identical_functions(it.params.span.start, body.span.end, it.span);
+        }
         let track = self.enter_generator(it);
         self.enter_return_scope(it.span);
         self.jsx_function_stack.push(false);
@@ -598,6 +605,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_arrow_function_expression(&mut self, it: &ArrowFunctionExpression<'a>) {
+        if !it.expression {
+            self.check_no_identical_functions(it.params.span.start, it.body.span.end, it.span);
+        }
         self.enter_return_scope(it.span);
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);

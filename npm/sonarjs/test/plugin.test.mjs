@@ -195,6 +195,7 @@ describe('sonarjs plugin shape', () => {
       'call-argument-line',
       'prefer-object-literal',
       'no-undefined-argument',
+      'no-identical-functions',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -296,6 +297,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['call-argument-line']).toBe('object');
     expect(typeof plugin.rules['prefer-object-literal']).toBe('object');
     expect(typeof plugin.rules['no-undefined-argument']).toBe('object');
+    expect(typeof plugin.rules['no-identical-functions']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -405,6 +407,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/call-argument-line']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/prefer-object-literal']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-undefined-argument']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-identical-functions']).toBe('error');
   });
 });
 
@@ -3265,5 +3268,53 @@ describe('no-undefined-argument rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-undefined-argument)');
+  });
+});
+
+describe('no-identical-functions rule', () => {
+  const twoIdentical = [
+    'function a(x) {',
+    '  if (x > 0) return x;',
+    '  return -x;',
+    '}',
+    'function b(x) {',
+    '  if (x > 0) return x;',
+    '  return -x;',
+    '}',
+  ].join('\n');
+
+  it('reports the second of two identical functions', () => {
+    const reports = runRule('no-identical-functions', twoIdentical);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('identicalFunctions');
+  });
+
+  it('does not report two functions with different bodies', () => {
+    const src = [
+      'function a(x) {',
+      '  if (x > 0) return x;',
+      '  return -x;',
+      '}',
+      'function b(x) {',
+      '  if (x > 0) return x + 1;',
+      '  return -x;',
+      '}',
+    ].join('\n');
+    const reports = runRule('no-identical-functions', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report expression-bodied arrow functions', () => {
+    const src = 'const f = x => x + 1;\nconst g = x => x + 1;';
+    const reports = runRule('no-identical-functions', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-identical-functions through the CLI', () => {
+    const result = runOxlint('no-identical-functions', twoIdentical);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-identical-functions)');
   });
 });
