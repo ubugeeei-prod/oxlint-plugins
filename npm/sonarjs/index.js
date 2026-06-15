@@ -600,6 +600,9 @@ const messages = Object.freeze({
     certificateTransparency:
       'Do not disable Certificate Transparency monitoring (expectCt: false).',
   },
+  csrf: {
+    csrf: 'Do not disable CSRF protection for state-changing HTTP methods (POST/PUT/DELETE/PATCH).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -978,6 +981,10 @@ const ruleDescriptions = Object.freeze({
   'certificate-transparency':
     'Flag helmet configuration that disables Certificate Transparency monitoring; ' +
     'matches an object property "expectCt" set to the boolean literal false',
+  csrf:
+    'Flag csurf middleware configuration that disables CSRF protection for unsafe ' +
+    'HTTP methods; matches a csrf({ ignoreMethods: [...] }) call whose array lists ' +
+    'a state-changing verb (POST/PUT/DELETE/PATCH)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1145,6 +1152,7 @@ const ruleTypes = Object.freeze({
   'cookie-no-httponly': 'problem',
   'content-security-policy': 'problem',
   'certificate-transparency': 'problem',
+  csrf: 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1311,6 +1319,7 @@ const recommendedRuleConfig = Object.freeze({
   'cookie-no-httponly': 'error',
   'content-security-policy': 'error',
   'certificate-transparency': 'error',
+  csrf: 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

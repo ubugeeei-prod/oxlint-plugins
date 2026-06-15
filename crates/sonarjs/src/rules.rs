@@ -20,6 +20,7 @@ mod concise_regex;
 mod constructor_for_side_effects;
 mod content_security_policy;
 mod cookie_no_httponly;
+mod csrf;
 mod cyclomatic_complexity;
 mod declarations_in_global_scope;
 mod deprecation;

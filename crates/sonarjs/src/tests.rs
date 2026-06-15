@@ -9078,3 +9078,42 @@ fn certificate_transparency_does_not_report_other_key() {
     let diagnostics = scan("certificate-transparency", "const x = { other: false }");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn csrf_reports_unsafe_method_mixed_with_safe() {
+    let diagnostics = scan("csrf", "csrf({ ignoreMethods: [\"POST\",\"GET\"] });");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn csrf_reports_single_unsafe_method() {
+    let diagnostics = scan("csrf", "csrf({ ignoreMethods: [\"PUT\"] });");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn csrf_does_not_report_only_safe_methods() {
+    let diagnostics = scan(
+        "csrf",
+        "csrf({ ignoreMethods: [\"GET\",\"HEAD\",\"OPTIONS\"] });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn csrf_does_not_report_bare_call() {
+    let diagnostics = scan("csrf", "csrf();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn csrf_does_not_report_without_ignore_methods() {
+    let diagnostics = scan("csrf", "csrf({ cookie: true });");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn csrf_does_not_report_wrong_callee() {
+    let diagnostics = scan("csrf", "foo({ ignoreMethods: [\"POST\"] });");
+    assert!(diagnostics.is_empty());
+}
