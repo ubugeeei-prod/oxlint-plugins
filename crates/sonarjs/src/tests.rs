@@ -2055,6 +2055,36 @@ fn reports_no_inconsistent_returns_only_for_inner_scope() {
 }
 
 #[test]
+fn reports_no_invariant_returns_for_function_always_returning_same_value() {
+    let source = "function f(x) { if (x > 0) return 42; return 42; }";
+    let diagnostics = scan("no-invariant-returns", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-invariant-returns");
+    assert_eq!(diagnostics[0].message_id, "invariantReturn");
+}
+
+#[test]
+fn does_not_report_no_invariant_returns_when_values_differ() {
+    let source = "function f(x) { if (x > 0) return 1; return 2; }";
+    let diagnostics = scan("no-invariant-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_invariant_returns_with_only_one_value_return() {
+    let source = "function f(x) { if (x) return 42; }";
+    let diagnostics = scan("no-invariant-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_invariant_returns_when_bare_return_present() {
+    let source = "function f(x) { if (!x) return; return 42; }";
+    let diagnostics = scan("no-invariant-returns", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn reports_no_same_line_conditional_for_if_on_closing_brace_line() {
     let source = "if (a) {\n  doA();\n} if (b) {\n  doB();\n}";
     let diagnostics = scan("no-same-line-conditional", source);
@@ -6590,5 +6620,60 @@ fn does_not_report_fewer_args_than_params() {
 fn does_not_report_single_argument_call() {
     let source = "function f(a) {} const a = 1; f(a);";
     let diagnostics = scan("arguments-order", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn reports_unicode_aware_regex_for_property_escape_without_u_flag() {
+    let source = "const r = /\\p{Letter}/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unicode-aware-regex");
+    assert_eq!(diagnostics[0].message_id, "unicodeAwareRegex");
+}
+
+#[test]
+fn reports_unicode_aware_regex_for_negative_property_escape_without_u_flag() {
+    let source = "const r = /\\P{ASCII}/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unicode-aware-regex");
+    assert_eq!(diagnostics[0].message_id, "unicodeAwareRegex");
+}
+
+#[test]
+fn reports_unicode_aware_regex_with_other_flags_but_not_u() {
+    let source = "const r = /\\p{Letter}/gi;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unicodeAwareRegex");
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_with_u_flag() {
+    let source = "const r = /\\p{Letter}/u;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_with_v_flag() {
+    let source = "const r = /\\p{Letter}/v;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_without_property_escape() {
+    let source = "const r = /[a-z]+/;";
+    let diagnostics = scan("unicode-aware-regex", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_unicode_aware_regex_for_escaped_backslash_before_p() {
+    // \\p{ is a literal backslash followed by p{, not a property escape.
+    let source = "const r = /\\\\p{3}/;";
+    let diagnostics = scan("unicode-aware-regex", source);
     assert!(diagnostics.is_empty());
 }

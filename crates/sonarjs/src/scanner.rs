@@ -19,7 +19,7 @@ use oxc_ast::ast::{
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_semantic::{AstNodes, Scoping, SymbolId};
-use oxc_span::Span;
+use oxc_span::{GetSpan, Span};
 use oxc_syntax::operator::AssignmentOperator;
 use oxc_syntax::scope::ScopeFlags;
 use oxlint_plugins_carton::SmallVec;
@@ -32,6 +32,19 @@ use crate::{Diagnostic, DiagnosticData, DiagnosticFix, LineIndex, SonarjsOptions
 pub(crate) enum BreakableKind {
     Loop,
     Switch,
+}
+
+/// One entry on the invariant-return stack, one per open function or arrow
+/// scope. The `no-invariant-returns` rule flags scopes where every explicit
+/// value return yields the same source text.
+pub(crate) struct InvariantReturnFrame<'a> {
+    /// Span of the enclosing function or arrow, used as the report location.
+    pub(crate) span: Span,
+    /// Source text of each `return <expr>;` argument seen so far.
+    pub(crate) return_values: SmallVec<[&'a str; 4]>,
+    /// Set to `true` when a bare `return;` is seen; a bare return exempts the
+    /// scope from the invariant-return check.
+    pub(crate) has_bare_return: bool,
 }
 
 /// One entry on the loop-counter stack, one per enclosing classic `for` loop
@@ -91,6 +104,12 @@ pub(crate) struct Scanner<'a> {
     /// Pushed on entry to a function/arrow and popped on exit;
     /// `no-inconsistent-returns` reports a scope whose frame has both kinds set.
     pub(crate) return_kind_stack: SmallVec<[(Span, bool, bool); 8]>,
+    /// Stack of frames, one per currently-open function or arrow scope, collecting
+    /// the source-text of every explicit value `return <expr>;` and recording
+    /// whether a bare `return;` was seen. Pushed on entry and popped on exit;
+    /// `no-invariant-returns` reports a scope where all collected return
+    /// expressions are byte-identical (at least two, no bare return).
+    pub(crate) invariant_return_stack: SmallVec<[InvariantReturnFrame<'a>; 8]>,
     /// Current nesting depth of control-flow statements (if/for/while/switch/try),
     /// used by `nested-control-flow`. `else if` branches do not add depth.
     pub(crate) control_flow_depth: u32,
@@ -493,6 +512,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_anchor_precedence(it);
         self.check_single_character_alternation(it);
         self.check_empty_string_repetition(it);
+        self.check_unicode_aware_regex(it);
         walk::walk_reg_exp_literal(self, it);
     }
 
@@ -584,6 +604,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         }
         let track = self.enter_generator(it);
         self.enter_return_scope(it.span);
+        self.enter_invariant_return_scope(it.span);
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);
         self.enter_nested_function(it.span);
@@ -598,6 +619,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.leave_nested_function();
         self.leave_cyclomatic_scope();
         self.leave_return_scope();
+        self.leave_invariant_return_scope();
         self.leave_generator(it, track);
         self.check_max_lines_per_function(it.span);
     }
@@ -641,6 +663,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.check_no_identical_functions(it.params.span.start, it.body.span.end, it.span);
         }
         self.enter_return_scope(it.span);
+        if !it.expression {
+            self.enter_invariant_return_scope(it.span);
+        }
         self.jsx_function_stack.push(false);
         self.enter_cyclomatic_scope(it.span);
         self.enter_nested_function(it.span);
@@ -653,11 +678,16 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.leave_nested_function();
         self.leave_cyclomatic_scope();
         self.leave_return_scope();
+        if !it.expression {
+            self.leave_invariant_return_scope();
+        }
         self.check_max_lines_per_function(it.span);
     }
 
     fn visit_return_statement(&mut self, it: &ReturnStatement<'a>) {
         self.record_return(it.argument.is_some());
+        let value_text = it.argument.as_ref().map(|arg| self.text(arg.span()));
+        self.record_invariant_return(value_text);
         self.check_no_use_of_empty_return_value_return(it);
         walk::walk_return_statement(self, it);
     }
