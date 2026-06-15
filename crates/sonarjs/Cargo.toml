@@ -9,6 +9,7 @@ version.workspace = true
 publish = false
 
 [dependencies]
+compact_str.workspace = true
 oxc_allocator.workspace = true
 oxc_ast.workspace = true
 oxc_ast_visit.workspace = true
