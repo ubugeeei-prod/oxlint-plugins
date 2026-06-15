@@ -192,6 +192,7 @@ describe('sonarjs plugin shape', () => {
       'no-useless-intersection',
       'use-type-alias',
       'public-static-readonly',
+      'call-argument-line',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -290,6 +291,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-useless-intersection']).toBe('object');
     expect(typeof plugin.rules['use-type-alias']).toBe('object');
     expect(typeof plugin.rules['public-static-readonly']).toBe('object');
+    expect(typeof plugin.rules['call-argument-line']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -396,6 +398,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-useless-intersection']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/use-type-alias']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/public-static-readonly']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/call-argument-line']).toBe('error');
   });
 });
 
@@ -652,6 +655,42 @@ describe('public-static-readonly rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(public-static-readonly)');
+  });
+});
+
+describe('call-argument-line rule', () => {
+  it('reports a call whose open paren starts on a new line through the adapter', () => {
+    const reports = runRule('call-argument-line', 'foo\n(arg);');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('sameLineAsCallee');
+  });
+
+  it('reports a zero-argument call whose paren starts on a new line', () => {
+    const reports = runRule('call-argument-line', 'foo\n();');
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report a call with the paren on the callee line', () => {
+    const reports = runRule('call-argument-line', 'foo(arg);');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report arguments wrapped across lines with the paren on the callee line', () => {
+    const reports = runRule('call-argument-line', 'foo(\n  a,\n  b\n);');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a member call with the paren on the callee line', () => {
+    const reports = runRule('call-argument-line', 'obj.method(x);');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports call-argument-line through the CLI', () => {
+    const result = runOxlint('call-argument-line', 'foo\n(arg);', 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(call-argument-line)');
   });
 });
 

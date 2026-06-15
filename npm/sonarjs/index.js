@@ -356,6 +356,10 @@ const messages = Object.freeze({
   'public-static-readonly': {
     publicStaticReadonly: 'Make this public static field "readonly".',
   },
+  'call-argument-line': {
+    sameLineAsCallee:
+      'Make the arguments of this call start on the same line as the function name.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -550,6 +554,8 @@ const ruleDescriptions = Object.freeze({
     'Require extracting a union or intersection type into a named type alias when the same composite type (compared by exact source text, order-sensitive) appears at least 3 times in a file; the first occurrence of each repeated type is reported',
   'public-static-readonly':
     'Require a publicly accessible static class field (explicit "public" or no accessibility modifier) to be declared "readonly"; static fields that are private, protected, readonly, declared with a "#private" key, or non-static are not flagged (modifier-based; applies to both JS and TS source)',
+  'call-argument-line':
+    "Require a function call's opening parenthesis (and therefore its argument list) to begin on the same line as the end of the callee; writing the call's parentheses on the line below the function name is reported, while wrapping the arguments across lines with the open parenthesis still on the callee's line is allowed",
 });
 
 const ruleTypes = Object.freeze({
@@ -651,6 +657,7 @@ const ruleTypes = Object.freeze({
   'no-useless-intersection': 'suggestion',
   'use-type-alias': 'suggestion',
   'public-static-readonly': 'suggestion',
+  'call-argument-line': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -752,6 +759,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-useless-intersection': 'error',
   'use-type-alias': 'error',
   'public-static-readonly': 'error',
+  'call-argument-line': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
