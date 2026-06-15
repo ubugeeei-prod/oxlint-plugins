@@ -147,6 +147,7 @@ const expectedRuleNames = [
   'no-element-overwrite',
   'no-redundant-assignments',
   'no-unused-collection',
+  'no-empty-collection',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3155,6 +3156,41 @@ describe('no-unused-collection rule', () => {
   it('does not report when the length property is read', () => {
     const source = 'const a = [];\na.push(1);\nconst b = a.length;';
     const diagnostics = scan('no-unused-collection', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-empty-collection rule', () => {
+  it('reports an array that is read but never populated', () => {
+    const source = 'const a = [];\nfunction f() { return a.length; }';
+    const diagnostics = scan('no-empty-collection', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-empty-collection');
+    expect(diagnostics[0].messageId).toBe('emptyCollection');
+  });
+
+  it('reports a Map that is queried but never populated', () => {
+    const source = 'const m = new Map();\nfunction f(k) { return m.has(k); }';
+    const diagnostics = scan('no-empty-collection', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('emptyCollection');
+  });
+
+  it('does not report when the array is populated via push', () => {
+    const source = 'const a = [];\na.push(1);\nfunction f() { return a.length; }';
+    const diagnostics = scan('no-empty-collection', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the array is passed to a function', () => {
+    const source = 'const a = [];\nfill(a);\nfunction f() { return a.length; }';
+    const diagnostics = scan('no-empty-collection', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report object literals', () => {
+    const source = 'const o = {};\nfunction f() { return o.x; }';
+    const diagnostics = scan('no-empty-collection', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

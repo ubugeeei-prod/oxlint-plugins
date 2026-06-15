@@ -552,6 +552,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_block_scoped_var(it);
         self.check_function_name_variable(it);
         self.check_unused_collection(it);
+        self.check_empty_collection(it);
         walk::walk_variable_declarator(self, it);
     }
 

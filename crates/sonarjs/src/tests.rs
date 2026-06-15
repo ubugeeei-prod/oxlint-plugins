@@ -8035,3 +8035,85 @@ fn no_unused_collection_does_not_report_when_no_write_references() {
     let diagnostics = scan("no-unused-collection", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_empty_collection_reports_array_read_but_never_populated() {
+    let source = "const a = [];\nfunction f() { return a.length; }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-empty-collection");
+    assert_eq!(diagnostics[0].message_id, "emptyCollection");
+}
+
+#[test]
+fn no_empty_collection_reports_map_queried_but_never_populated() {
+    let source = "const m = new Map();\nfunction f(k) { return m.has(k); }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyCollection");
+}
+
+#[test]
+fn no_empty_collection_reports_indexed_read_but_never_populated() {
+    let source = "const a = [];\nfunction f() { return a[0]; }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyCollection");
+}
+
+#[test]
+fn no_empty_collection_does_not_report_when_populated_via_push() {
+    let source = "const a = [];\na.push(1);\nfunction f() { return a.length; }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_empty_collection_does_not_report_when_populated_via_index_assignment() {
+    let source = "const a = [];\na[0] = 1;\nfunction f() { return a[0]; }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_empty_collection_does_not_report_when_map_populated_via_set() {
+    let source = "const m = new Map();\nm.set('k', 1);\nfunction f(k) { return m.has(k); }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_empty_collection_does_not_report_when_passed_to_function() {
+    let source = "const a = [];\nfill(a);\nfunction f() { return a.length; }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_empty_collection_does_not_report_when_never_read() {
+    let source = "const a = [];";
+    let diagnostics = scan("no-empty-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_empty_collection_does_not_report_when_initially_populated() {
+    let source = "const a = [1];\nfunction f() { return a.length; }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_empty_collection_does_not_report_object_literal() {
+    let source = "const o = {};\nfunction f() { return o.x; }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_empty_collection_reports_iterated_via_for_of() {
+    let source = "const a = [];\nfor (const x of a) { use(x); }";
+    let diagnostics = scan("no-empty-collection", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyCollection");
+}
