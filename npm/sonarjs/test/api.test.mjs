@@ -116,6 +116,7 @@ const expectedRuleNames = [
   'no-hardcoded-passwords',
   'no-ignored-exceptions',
   'no-unused-function-argument',
+  'object-alt-content',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

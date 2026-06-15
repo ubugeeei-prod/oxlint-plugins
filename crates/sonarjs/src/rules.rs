@@ -95,6 +95,7 @@ mod no_useless_intersection;
 mod no_weak_cipher;
 mod no_wildcard_import;
 mod non_existent_operator;
+mod object_alt_content;
 mod prefer_default_last;
 mod prefer_immediate_return;
 mod prefer_object_literal;
