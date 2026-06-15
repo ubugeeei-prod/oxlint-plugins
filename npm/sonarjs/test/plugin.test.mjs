@@ -235,6 +235,7 @@ describe('sonarjs plugin shape', () => {
       'no-commented-code',
       'no-incomplete-assertions',
       'destructuring-assignment-syntax',
+      'no-element-overwrite',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -375,6 +376,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-commented-code']).toBe('object');
     expect(typeof plugin.rules['no-incomplete-assertions']).toBe('object');
     expect(typeof plugin.rules['destructuring-assignment-syntax']).toBe('object');
+    expect(typeof plugin.rules['no-element-overwrite']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -527,6 +529,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/destructuring-assignment-syntax']).toBe(
       'error',
     );
+    expect(plugin.configs.recommended.rules['sonarjs/no-element-overwrite']).toBe('error');
   });
 });
 
@@ -5086,5 +5089,61 @@ describe('destructuring-assignment-syntax rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(destructuring-assignment-syntax)');
+  });
+});
+
+describe('no-element-overwrite rule', () => {
+  it('reports the first of two consecutive writes to the same numeric-literal index', () => {
+    const source = 'var a = [];\na[0] = 1;\na[0] = 2;';
+    const reports = runRule('no-element-overwrite', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('elementOverwrite');
+  });
+
+  it('reports the first of two consecutive writes to the same string-literal key', () => {
+    const source = 'var m = {};\nm["x"] = 1;\nm["x"] = 2;';
+    const reports = runRule('no-element-overwrite', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('elementOverwrite');
+  });
+
+  it('reports the first of two consecutive writes to the same static property', () => {
+    const source = 'var obj = {};\nobj.x = 1;\nobj.x = 2;';
+    const reports = runRule('no-element-overwrite', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('elementOverwrite');
+  });
+
+  it('does not report writes to different indices', () => {
+    const source = 'var a = [];\na[0] = 1;\na[1] = 2;';
+    const reports = runRule('no-element-overwrite', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when an intervening statement separates the writes', () => {
+    const source = 'var a = [];\na[0] = 1;\nfoo();\na[0] = 2;';
+    const reports = runRule('no-element-overwrite', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a read-modify-write where the RHS references the element', () => {
+    const source = 'var a = [];\na[0] = 1;\na[0] = a[0] + 1;';
+    const reports = runRule('no-element-overwrite', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report writes to different static properties', () => {
+    const source = 'var obj = {};\nobj.x = 1;\nobj.y = 2;';
+    const reports = runRule('no-element-overwrite', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-element-overwrite through the CLI', () => {
+    const source = 'var a = [];\na[0] = 1;\na[0] = 2;';
+    const result = runOxlint('no-element-overwrite', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-element-overwrite)');
   });
 });
