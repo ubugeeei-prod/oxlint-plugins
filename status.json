@@ -10078,19 +10078,19 @@
       },
       {
         "name": "arguments-order",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule arguments-order (Sonar key S2234). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port from public RSPEC S2234. Detects transposed arguments (args are exactly the param names reordered). Conservative zero-FP: both paths use semantic resolution; multiset equality via sorted SmallVec comparison. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "arguments-usage",

@@ -6596,3 +6596,43 @@ fn does_not_report_usage_of_function_parameter() {
     let diagnostics = scan("no-variable-usage-before-declaration", source);
     assert!(diagnostics.is_empty());
 }
+
+// ---- arguments-order -------------------------------------------------------
+
+#[test]
+fn reports_swapped_arguments_matching_param_names() {
+    let source = "function f(a, b) {} const a = 1, b = 2; f(b, a);";
+    let diagnostics = scan("arguments-order", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "arguments-order");
+    assert_eq!(diagnostics[0].message_id, "argumentsOrder");
+}
+
+#[test]
+fn does_not_report_arguments_in_correct_order() {
+    let source = "function f(a, b) {} const a = 1, b = 2; f(a, b);";
+    let diagnostics = scan("arguments-order", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_when_arg_names_differ_from_param_names() {
+    let source = "function f(a, b) {} const x = 1, y = 2; f(x, y);";
+    let diagnostics = scan("arguments-order", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_fewer_args_than_params() {
+    // N=1 which is less than 2, so exits early before any transposition check.
+    let source = "function f(a, b) {} const a = 1; f(a);";
+    let diagnostics = scan("arguments-order", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_single_argument_call() {
+    let source = "function f(a) {} const a = 1; f(a);";
+    let diagnostics = scan("arguments-order", source);
+    assert!(diagnostics.is_empty());
+}

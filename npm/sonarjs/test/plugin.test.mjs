@@ -213,6 +213,7 @@ describe('sonarjs plugin shape', () => {
       'no-duplicated-branches',
       'block-scoped-var',
       'no-variable-usage-before-declaration',
+      'arguments-order',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -332,6 +333,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-duplicated-branches']).toBe('object');
     expect(typeof plugin.rules['block-scoped-var']).toBe('object');
     expect(typeof plugin.rules['no-variable-usage-before-declaration']).toBe('object');
+    expect(typeof plugin.rules['arguments-order']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -461,6 +463,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-variable-usage-before-declaration']).toBe(
       'error',
     );
+    expect(plugin.configs.recommended.rules['sonarjs/arguments-order']).toBe('error');
   });
 });
 
@@ -4219,5 +4222,41 @@ describe('no-variable-usage-before-declaration rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-variable-usage-before-declaration)');
+  });
+});
+
+describe('arguments-order rule', () => {
+  it('reports swapped arguments matching parameter names', () => {
+    const source = 'function f(a, b) {} const a = 1, b = 2; f(b, a);';
+    const reports = runRule('arguments-order', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('argumentsOrder');
+  });
+
+  it('does not report when arguments are in the correct order', () => {
+    const source = 'function f(a, b) {} const a = 1, b = 2; f(a, b);';
+    const reports = runRule('arguments-order', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when argument names do not match parameter names', () => {
+    const source = 'function f(a, b) {} const x = 1, y = 2; f(x, y);';
+    const reports = runRule('arguments-order', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a single-argument call', () => {
+    const source = 'function f(a) {} const a = 1; f(a);';
+    const reports = runRule('arguments-order', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports arguments-order through the CLI', () => {
+    const source = 'function f(a, b) {} const a = 1, b = 2; f(b, a);';
+    const result = runOxlint('arguments-order', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(arguments-order)');
   });
 });

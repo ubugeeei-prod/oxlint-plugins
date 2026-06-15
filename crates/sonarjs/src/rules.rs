@@ -2,6 +2,7 @@
 //! one `check_*` method to [`crate::scanner::Scanner`].
 
 mod anchor_precedence;
+mod arguments_order;
 mod arguments_usage;
 mod array_callback_without_return;
 mod array_constructor;

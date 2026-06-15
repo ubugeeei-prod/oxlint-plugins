@@ -122,6 +122,7 @@ const expectedRuleNames = [
   'no-duplicated-branches',
   'block-scoped-var',
   'no-variable-usage-before-declaration',
+  'arguments-order',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -2805,6 +2806,25 @@ describe('block-scoped-var rule', () => {
 
   it('does not report let or const even when used outside the block', () => {
     const diagnostics = scan('block-scoped-var', 'function f(c) { if (c) { let y = 1; } }');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('arguments-order rule', () => {
+  it('reports swapped arguments matching parameter names', () => {
+    const diagnostics = scan('arguments-order', 'function f(a, b) {} const a = 1, b = 2; f(b, a);');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('arguments-order');
+    expect(diagnostics[0].messageId).toBe('argumentsOrder');
+  });
+
+  it('does not report when arguments are in the correct order', () => {
+    const diagnostics = scan('arguments-order', 'function f(a, b) {} const a = 1, b = 2; f(a, b);');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when argument names do not match parameter names', () => {
+    const diagnostics = scan('arguments-order', 'function f(a, b) {} const x = 1, y = 2; f(x, y);');
     expect(diagnostics).toHaveLength(0);
   });
 });
