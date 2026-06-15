@@ -221,6 +221,7 @@ describe('sonarjs plugin shape', () => {
       'no-ignored-return',
       'file-name-differ-from-class',
       'no-unenclosed-multiline-block',
+      'inconsistent-function-call',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -348,6 +349,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-ignored-return']).toBe('object');
     expect(typeof plugin.rules['file-name-differ-from-class']).toBe('object');
     expect(typeof plugin.rules['no-unenclosed-multiline-block']).toBe('object');
+    expect(typeof plugin.rules['inconsistent-function-call']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -485,6 +487,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-ignored-return']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/file-name-differ-from-class']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-unenclosed-multiline-block']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/inconsistent-function-call']).toBe('error');
   });
 });
 
@@ -4499,5 +4502,35 @@ describe('no-unenclosed-multiline-block rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-unenclosed-multiline-block)');
+  });
+});
+
+describe('inconsistent-function-call rule', () => {
+  it('reports a function called both as plain call and constructor', () => {
+    const source = 'function f() {} f(); new f();';
+    const reports = runRule('inconsistent-function-call', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('inconsistentFunctionCall');
+  });
+
+  it('does not report a function called only as a plain call', () => {
+    const source = 'function f() {} f(); f();';
+    const reports = runRule('inconsistent-function-call', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a function called only as a constructor', () => {
+    const source = 'function f() {} new f(); new f();';
+    const reports = runRule('inconsistent-function-call', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports inconsistent-function-call through the CLI', () => {
+    const source = 'function f() {} f(); new f();';
+    const result = runOxlint('inconsistent-function-call', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(inconsistent-function-call)');
   });
 });

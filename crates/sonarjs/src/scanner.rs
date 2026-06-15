@@ -185,6 +185,12 @@ pub(crate) struct Scanner<'a> {
     /// depth in the stack), or whether the reference is inside a nested
     /// function/arrow (deeper depth) and therefore a safe closure.
     pub(crate) fn_span_stack: SmallVec<[Span; 8]>,
+    /// Records of `(symbol_id, was_called, was_newed, first_site_span)` for
+    /// every identifier callee resolved to a locally-declared function that has
+    /// been used in a call expression or a `new` expression. Populated during
+    /// `visit_call_expression` / `visit_new_expression`; consumed in
+    /// `finalize_inconsistent_function_call` after the walk completes.
+    pub(crate) fn_call_new_records: SmallVec<[(SymbolId, bool, bool, Span); 16]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -264,6 +270,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         walk::walk_program(self, it);
         self.finalize_no_duplicate_string();
         self.finalize_use_type_alias();
+        self.finalize_inconsistent_function_call();
         self.check_file_name_differ_from_class(it);
     }
 
@@ -565,6 +572,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_extra_arguments(it);
         self.check_arguments_order(it);
         self.record_iife_callee(&it.callee);
+        self.record_call_inconsistent_function_call(it);
         walk::walk_call_expression(self, it);
     }
 
@@ -608,6 +616,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_undefined_argument_new(it);
         self.check_code_eval_new(it);
         self.check_prefer_promise_shorthand(it);
+        self.record_new_inconsistent_function_call(it);
         walk::walk_new_expression(self, it);
     }
 

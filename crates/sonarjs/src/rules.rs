@@ -26,6 +26,7 @@ mod function_inside_loop;
 mod function_name;
 mod generator_without_yield;
 mod hashing;
+mod inconsistent_function_call;
 mod index_of_compare_to_positive_number;
 mod inverted_assertion_arguments;
 mod link_with_target_blank;
