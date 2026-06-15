@@ -414,6 +414,519 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-postgresql",
+    "directory": "npm/postgresql",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-postgresql",
+      "version": "0.22.1",
+      "repository": "https://github.com/baseballyama/eslint-plugin-postgresql",
+      "license": "MIT"
+    },
+    "status": "in-progress",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "consistent-identity-over-serial",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port; default and never-style option covered in native/plugin tests."
+      },
+      {
+        "name": "consistent-jsonb-over-json",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port; default and never-style option covered in native/plugin tests."
+      },
+      {
+        "name": "consistent-text-over-varchar",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port; varchar(n), text, and never-style option covered in native/plugin tests."
+      },
+      {
+        "name": "consistent-timestamptz",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port; timestamp and timestamptz defaults covered in native tests."
+      },
+      {
+        "name": "no-char-type",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for char(n)/bpchar tokens."
+      },
+      {
+        "name": "no-cluster",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for CLUSTER statements."
+      },
+      {
+        "name": "no-create-role",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for CREATE ROLE/USER statements."
+      },
+      {
+        "name": "no-cross-join",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for CROSS JOIN."
+      },
+      {
+        "name": "no-drop-database",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for DROP DATABASE; upstream fixture shape covered in native/plugin tests."
+      },
+      {
+        "name": "no-drop-schema-cascade",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for DROP SCHEMA ... CASCADE."
+      },
+      {
+        "name": "no-drop-table-cascade",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for DROP TABLE ... CASCADE."
+      },
+      {
+        "name": "no-equality-with-null",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for =/!=/<> NULL with diagnostic data."
+      },
+      {
+        "name": "no-grant-all",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for GRANT ALL."
+      },
+      {
+        "name": "no-grant-to-public",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for GRANT ... TO PUBLIC."
+      },
+      {
+        "name": "no-money-type",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for money column type."
+      },
+      {
+        "name": "no-natural-join",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for NATURAL JOIN."
+      },
+      {
+        "name": "no-not-in-subquery",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for NOT IN (SELECT ...)."
+      },
+      {
+        "name": "no-select-into",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for SELECT ... INTO before FROM."
+      },
+      {
+        "name": "no-select-star",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for SELECT * and qualified table.* while allowing count(*)."
+      },
+      {
+        "name": "no-set-search-path",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for SET search_path statements."
+      },
+      {
+        "name": "no-temporary-table",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for CREATE TEMP/TEMPORARY TABLE."
+      },
+      {
+        "name": "no-time-type",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for time/timetz column types."
+      },
+      {
+        "name": "no-truncate-cascade",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for TRUNCATE ... CASCADE."
+      },
+      {
+        "name": "no-unlogged-table",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for CREATE UNLOGGED TABLE."
+      },
+      {
+        "name": "no-vacuum-full",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for VACUUM FULL; upstream fixture shape covered in native tests."
+      },
+      {
+        "name": "prefer-cast-operator",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for CAST(...) vs :: style, including form option."
+      },
+      {
+        "name": "prefer-current-timestamp-over-now",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for now(), localtimestamp, and localtime."
+      },
+      {
+        "name": "prefer-not-equals-operator",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for <>/!= style, including operator option."
+      },
+      {
+        "name": "require-trailing-semicolon",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for the file-level trailing semicolon check."
+      },
+      {
+        "name": "require-where-in-delete",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for DELETE statements without WHERE."
+      },
+      {
+        "name": "require-where-in-update",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": false
+        },
+        "notes": "Token-based Rust SQL scanner port for UPDATE statements without WHERE."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-react-refresh",
     "directory": "npm/react-refresh",
     "version": "0.0.0",

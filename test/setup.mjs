@@ -41,6 +41,10 @@ const nativePackages = [
     binding: 'npm/react-refresh/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-postgresql',
+    binding: 'npm/postgresql/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-mocha',
     binding: 'npm/mocha/native.js',
   },

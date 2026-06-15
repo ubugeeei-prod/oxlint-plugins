@@ -821,6 +821,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugin-postgresql"
+version = "0.0.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "oxlint-plugins-postgresql",
+]
+
+[[package]]
 name = "oxlint-plugin-react-refresh"
 version = "0.0.0"
 dependencies = [
@@ -918,6 +928,14 @@ dependencies = [
  "oxc_span",
  "oxlint-plugins-_carton",
  "regex",
+]
+
+[[package]]
+name = "oxlint-plugins-postgresql"
+version = "0.0.0"
+dependencies = [
+ "oxc_span",
+ "oxlint-plugins-_carton",
 ]
 
 [[package]]
