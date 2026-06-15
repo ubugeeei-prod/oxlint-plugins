@@ -6725,3 +6725,66 @@ fn does_not_report_assignment_of_function_call() {
     let diagnostics = scan("no-undefined-assignment", source);
     assert!(diagnostics.is_empty());
 }
+
+// no-empty-after-reluctant tests
+
+#[test]
+fn reports_no_empty_after_reluctant_lazy_star_no_following() {
+    let source = "const r = /a*?/;";
+    let diagnostics = scan("no-empty-after-reluctant", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-empty-after-reluctant");
+    assert_eq!(diagnostics[0].message_id, "emptyAfterReluctant");
+}
+
+#[test]
+fn reports_no_empty_after_reluctant_lazy_star_followed_by_boundary() {
+    let source = "const r = /a*?$/;";
+    let diagnostics = scan("no-empty-after-reluctant", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyAfterReluctant");
+}
+
+#[test]
+fn reports_no_empty_after_reluctant_lazy_optional_no_following() {
+    let source = "const r = /a??/;";
+    let diagnostics = scan("no-empty-after-reluctant", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyAfterReluctant");
+}
+
+#[test]
+fn reports_no_empty_after_reluctant_lazy_star_followed_by_lookahead() {
+    let source = "const r = /a*?(?=b)/;";
+    let diagnostics = scan("no-empty-after-reluctant", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "emptyAfterReluctant");
+}
+
+#[test]
+fn does_not_report_no_empty_after_reluctant_lazy_star_followed_by_char() {
+    let source = "const r = /a*?b/;";
+    let diagnostics = scan("no-empty-after-reluctant", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_after_reluctant_lazy_plus_no_following() {
+    let source = "const r = /a+?/;";
+    let diagnostics = scan("no-empty-after-reluctant", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_after_reluctant_greedy_star() {
+    let source = "const r = /a*/;";
+    let diagnostics = scan("no-empty-after-reluctant", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn does_not_report_no_empty_after_reluctant_lazy_star_followed_by_non_empty_group() {
+    let source = "const r = /a*?(b+)/;";
+    let diagnostics = scan("no-empty-after-reluctant", source);
+    assert!(diagnostics.is_empty());
+}
