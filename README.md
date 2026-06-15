@@ -7,40 +7,41 @@ The public package shape is an Oxlint JS plugin. Hot rule logic lives in Rust an
 This is unofficial community work. It is not an official Oxlint project, and builtin migration should happen only through normal upstream review.
 
 <!-- BEGIN GENERATED: plugin-coverage -->
+
 ## Supported Plugins
 
 <!-- This section is generated from `status.json` by `tools/tasks/generate-readme-coverage.ts`. Do not edit by hand; run `pnpm run docs:readme`. -->
 
 **26** ESLint plugins are being ported · **655 / 1159** rules implemented (**57%**).
 
-| Plugin | Upstream | Implemented | Total | Coverage |
-| --- | --- | --- | --- | --- |
-| [`angular-eslint`](npm/angular-eslint) | [`@angular-eslint/eslint-plugin`](https://github.com/angular-eslint/angular-eslint) | 48 | 48 | 100% |
-| [`angular-eslint-template`](npm/angular-eslint-template) | [`@angular-eslint/eslint-plugin-template`](https://github.com/angular-eslint/angular-eslint) | 0 | 39 | 0% |
-| [`cypress`](npm/cypress) | [`eslint-plugin-cypress`](https://github.com/cypress-io/eslint-plugin-cypress) | 13 | 13 | 100% |
-| [`e18e`](npm/e18e) | [`@e18e/eslint-plugin`](https://github.com/e18e/eslint-plugin) | 25 | 25 | 100% |
-| [`eslint-comments`](npm/eslint-comments) | [`@eslint-community/eslint-plugin-eslint-comments`](https://github.com/eslint-community/eslint-plugin-eslint-comments) | 9 | 9 | 100% |
-| [`eslint-json`](npm/eslint-json) | [`@eslint/json`](https://github.com/eslint/json) | 6 | 6 | 100% |
-| [`eslint-markdown`](npm/eslint-markdown) | [`@eslint/markdown`](https://github.com/eslint/markdown) | 21 | 21 | 100% |
-| [`functional`](npm/functional) | [`eslint-plugin-functional`](https://github.com/eslint-functional/eslint-plugin-functional) | 20 | 20 | 100% |
-| [`mocha`](npm/mocha) | [`eslint-plugin-mocha`](https://github.com/lo1tuma/eslint-plugin-mocha) | 24 | 24 | 100% |
-| [`no-forbidden-identifiers`](npm/no-forbidden-identifiers) | — | 1 | 1 | 100% |
-| [`perfectionist`](npm/perfectionist) | [`eslint-plugin-perfectionist`](https://github.com/azat-io/eslint-plugin-perfectionist) | 23 | 23 | 100% |
-| [`playwright`](npm/playwright) | [`eslint-plugin-playwright`](https://github.com/mskelton/eslint-plugin-playwright) | 58 | 58 | 100% |
-| [`postgresql`](npm/postgresql) | [`eslint-plugin-postgresql`](https://github.com/baseballyama/eslint-plugin-postgresql) | 89 | 89 | 100% |
-| [`react`](npm/react) | [`eslint-plugin-react`](https://github.com/jsx-eslint/eslint-plugin-react) | 0 | 103 | 0% |
-| [`react-hooks`](npm/react-hooks) | [`eslint-plugin-react-hooks`](https://github.com/facebook/react) | 1 | 29 | 3% |
-| [`react-refresh`](npm/react-refresh) | [`eslint-plugin-react-refresh`](https://github.com/ArnaudBarre/eslint-plugin-react-refresh) | 1 | 1 | 100% |
-| [`regexp`](npm/regexp) | [`eslint-plugin-regexp`](https://github.com/ota-meshi/eslint-plugin-regexp) | 82 | 82 | 100% |
-| [`security`](npm/security) | [`eslint-plugin-security`](https://github.com/eslint-community/eslint-plugin-security) | 14 | 14 | 100% |
-| [`simple-import-sort`](npm/simple-import-sort) | [`eslint-plugin-simple-import-sort`](https://github.com/lydell/eslint-plugin-simple-import-sort) | 2 | 2 | 100% |
-| [`sonarjs`](npm/sonarjs) | [`eslint-plugin-sonarjs`](https://github.com/SonarSource/SonarJS) | 121 | 269 | 45% |
-| [`storybook`](npm/storybook) | [`eslint-plugin-storybook`](https://github.com/storybookjs/storybook) | 16 | 16 | 100% |
-| [`stylistic`](npm/stylistic) | [`corsa-oxlint/stylistic`](https://github.com/ubugeeei-prod/corsa-bind) | 46 | 98 | 47% |
-| [`testing-library`](npm/testing-library) | [`eslint-plugin-testing-library`](https://github.com/testing-library/eslint-plugin-testing-library) | 29 | 29 | 100% |
-| [`typescript-eslint`](npm/typescript-eslint) | [`@typescript-eslint/eslint-plugin`](https://github.com/typescript-eslint/typescript-eslint) | 0 | 134 | 0% |
-| [`unocss`](npm/unocss) | [`@unocss/eslint-plugin`](https://github.com/unocss/unocss) | 4 | 4 | 100% |
-| [`unused-imports`](npm/unused-imports) | [`eslint-plugin-unused-imports`](https://github.com/sweepline/eslint-plugin-unused-imports) | 2 | 2 | 100% |
+| Plugin                                                     | Upstream                                                                                                               | Implemented | Total | Coverage |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- | ----- | -------- |
+| [`angular-eslint`](npm/angular-eslint)                     | [`@angular-eslint/eslint-plugin`](https://github.com/angular-eslint/angular-eslint)                                    | 48          | 48    | 100%     |
+| [`angular-eslint-template`](npm/angular-eslint-template)   | [`@angular-eslint/eslint-plugin-template`](https://github.com/angular-eslint/angular-eslint)                           | 0           | 39    | 0%       |
+| [`cypress`](npm/cypress)                                   | [`eslint-plugin-cypress`](https://github.com/cypress-io/eslint-plugin-cypress)                                         | 13          | 13    | 100%     |
+| [`e18e`](npm/e18e)                                         | [`@e18e/eslint-plugin`](https://github.com/e18e/eslint-plugin)                                                         | 25          | 25    | 100%     |
+| [`eslint-comments`](npm/eslint-comments)                   | [`@eslint-community/eslint-plugin-eslint-comments`](https://github.com/eslint-community/eslint-plugin-eslint-comments) | 9           | 9     | 100%     |
+| [`eslint-json`](npm/eslint-json)                           | [`@eslint/json`](https://github.com/eslint/json)                                                                       | 6           | 6     | 100%     |
+| [`eslint-markdown`](npm/eslint-markdown)                   | [`@eslint/markdown`](https://github.com/eslint/markdown)                                                               | 21          | 21    | 100%     |
+| [`functional`](npm/functional)                             | [`eslint-plugin-functional`](https://github.com/eslint-functional/eslint-plugin-functional)                            | 20          | 20    | 100%     |
+| [`mocha`](npm/mocha)                                       | [`eslint-plugin-mocha`](https://github.com/lo1tuma/eslint-plugin-mocha)                                                | 24          | 24    | 100%     |
+| [`no-forbidden-identifiers`](npm/no-forbidden-identifiers) | —                                                                                                                      | 1           | 1     | 100%     |
+| [`perfectionist`](npm/perfectionist)                       | [`eslint-plugin-perfectionist`](https://github.com/azat-io/eslint-plugin-perfectionist)                                | 23          | 23    | 100%     |
+| [`playwright`](npm/playwright)                             | [`eslint-plugin-playwright`](https://github.com/mskelton/eslint-plugin-playwright)                                     | 58          | 58    | 100%     |
+| [`postgresql`](npm/postgresql)                             | [`eslint-plugin-postgresql`](https://github.com/baseballyama/eslint-plugin-postgresql)                                 | 89          | 89    | 100%     |
+| [`react`](npm/react)                                       | [`eslint-plugin-react`](https://github.com/jsx-eslint/eslint-plugin-react)                                             | 0           | 103   | 0%       |
+| [`react-hooks`](npm/react-hooks)                           | [`eslint-plugin-react-hooks`](https://github.com/facebook/react)                                                       | 1           | 29    | 3%       |
+| [`react-refresh`](npm/react-refresh)                       | [`eslint-plugin-react-refresh`](https://github.com/ArnaudBarre/eslint-plugin-react-refresh)                            | 1           | 1     | 100%     |
+| [`regexp`](npm/regexp)                                     | [`eslint-plugin-regexp`](https://github.com/ota-meshi/eslint-plugin-regexp)                                            | 82          | 82    | 100%     |
+| [`security`](npm/security)                                 | [`eslint-plugin-security`](https://github.com/eslint-community/eslint-plugin-security)                                 | 14          | 14    | 100%     |
+| [`simple-import-sort`](npm/simple-import-sort)             | [`eslint-plugin-simple-import-sort`](https://github.com/lydell/eslint-plugin-simple-import-sort)                       | 2           | 2     | 100%     |
+| [`sonarjs`](npm/sonarjs)                                   | [`eslint-plugin-sonarjs`](https://github.com/SonarSource/SonarJS)                                                      | 121         | 269   | 45%      |
+| [`storybook`](npm/storybook)                               | [`eslint-plugin-storybook`](https://github.com/storybookjs/storybook)                                                  | 16          | 16    | 100%     |
+| [`stylistic`](npm/stylistic)                               | [`corsa-oxlint/stylistic`](https://github.com/ubugeeei-prod/corsa-bind)                                                | 46          | 98    | 47%      |
+| [`testing-library`](npm/testing-library)                   | [`eslint-plugin-testing-library`](https://github.com/testing-library/eslint-plugin-testing-library)                    | 29          | 29    | 100%     |
+| [`typescript-eslint`](npm/typescript-eslint)               | [`@typescript-eslint/eslint-plugin`](https://github.com/typescript-eslint/typescript-eslint)                           | 0           | 134   | 0%       |
+| [`unocss`](npm/unocss)                                     | [`@unocss/eslint-plugin`](https://github.com/unocss/unocss)                                                            | 4           | 4     | 100%     |
+| [`unused-imports`](npm/unused-imports)                     | [`eslint-plugin-unused-imports`](https://github.com/sweepline/eslint-plugin-unused-imports)                            | 2           | 2     | 100%     |
 
 <details>
 <summary><code>angular-eslint</code> — 48/48 implemented</summary>
