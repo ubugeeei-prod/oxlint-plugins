@@ -249,6 +249,7 @@ describe('sonarjs plugin shape', () => {
       'no-hardcoded-secrets',
       'concise-regex',
       'no-misleading-character-class',
+      'slow-regex',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5773,5 +5774,41 @@ describe('no-misleading-character-class rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-misleading-character-class)');
+  });
+});
+
+describe('slow-regex rule', () => {
+  it('reports an unbounded quantifier over a group with an unbounded quantifier', () => {
+    const source = 'const r = /(a+)+/;';
+    const reports = runRule('slow-regex', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('slowRegex');
+  });
+
+  it('reports the (.*)+ shape', () => {
+    const source = 'const r = /(.*)+$/;';
+    const reports = runRule('slow-regex', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('slowRegex');
+  });
+
+  it('does not report a single quantifier', () => {
+    const source = 'const r = /a+/;';
+    const reports = runRule('slow-regex', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a bounded outer quantifier', () => {
+    const source = 'const r = /(a+){2,3}/;';
+    const reports = runRule('slow-regex', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports slow-regex through the CLI', () => {
+    const result = runOxlint('slow-regex', 'const r = /(a+)+/;');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(slow-regex)');
   });
 });

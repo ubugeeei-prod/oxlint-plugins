@@ -158,6 +158,7 @@ const expectedRuleNames = [
   'no-hardcoded-secrets',
   'concise-regex',
   'no-misleading-character-class',
+  'slow-regex',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
