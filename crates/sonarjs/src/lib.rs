@@ -24,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 149] = [
+pub const RULE_NAMES: [&str; 150] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -174,6 +174,7 @@ pub const RULE_NAMES: [&str; 149] = [
     "bool-param-default",
     "post-message",
     "in-operator-type-error",
+    "different-types-comparison",
 ];
 
 /// Returns the implemented rule names as a static slice.
