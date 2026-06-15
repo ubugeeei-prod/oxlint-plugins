@@ -24,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 129] = [
+pub const RULE_NAMES: [&str; 131] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -154,6 +154,8 @@ pub const RULE_NAMES: [&str; 129] = [
     "inconsistent-function-call",
     "new-operator-misuse",
     "no-empty-test-file",
+    "deprecation",
+    "cognitive-complexity",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -200,7 +202,8 @@ pub fn scan_sonarjs(
         || options.has_rule("no-variable-usage-before-declaration")
         || options.has_rule("arguments-order")
         || options.has_rule("inconsistent-function-call")
-        || options.has_rule("new-operator-misuse");
+        || options.has_rule("new-operator-misuse")
+        || options.has_rule("deprecation");
     let semantic = needs_semantic.then(|| {
         SemanticBuilder::new()
             .build(&parser_return.program)
@@ -243,6 +246,8 @@ pub fn scan_sonarjs(
         fn_span_stack: SmallVec::new(),
         fn_call_new_records: SmallVec::new(),
         saw_test_call: false,
+        deprecated_symbols: SmallVec::new(),
+        cognitive_complexity_fn_depth: 0,
     };
     scanner.visit_program(&parser_return.program);
     scanner.diagnostics

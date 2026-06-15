@@ -223,6 +223,8 @@ describe('sonarjs plugin shape', () => {
       'inconsistent-function-call',
       'new-operator-misuse',
       'no-empty-test-file',
+      'deprecation',
+      'cognitive-complexity',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -352,6 +354,8 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['inconsistent-function-call']).toBe('object');
     expect(typeof plugin.rules['new-operator-misuse']).toBe('object');
     expect(typeof plugin.rules['no-empty-test-file']).toBe('object');
+    expect(typeof plugin.rules['deprecation']).toBe('object');
+    expect(typeof plugin.rules['cognitive-complexity']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -491,6 +495,8 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/inconsistent-function-call']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/new-operator-misuse']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-test-file']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/deprecation']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/cognitive-complexity']).toBe('error');
   });
 });
 
@@ -4585,5 +4591,75 @@ describe('no-empty-test-file rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-test-file)');
+  });
+});
+
+describe('deprecation rule', () => {
+  it('reports a call to a locally-declared deprecated function', () => {
+    const source = '/** @deprecated */ function old() {} old();';
+    const reports = runRule('deprecation', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('deprecatedUse');
+  });
+
+  it('does not report a call to a function without a @deprecated block comment', () => {
+    const source = 'function modern() {} modern();';
+    const reports = runRule('deprecation', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the deprecated function is never called', () => {
+    const source = '/** @deprecated */ function old() {}';
+    const reports = runRule('deprecation', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports deprecation through the CLI', () => {
+    const source = '/** @deprecated */ function old() {} old();';
+    const result = runOxlint('deprecation', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(deprecation)');
+  });
+});
+
+describe('cognitive-complexity rule', () => {
+  it('reports cognitive-complexity through the adapter when score exceeds threshold', () => {
+    // if(a&&b){} → 2 > threshold 1 → report
+    const source = 'function f(a,b){ if(a&&b){} }';
+    const reports = runRule('cognitive-complexity', source, { options: [{ threshold: 1 }] });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('cognitiveComplexity');
+  });
+
+  it('does not report cognitive-complexity when score is within threshold', () => {
+    // if(a&&b){} → 2; threshold 2: 2 is not > 2 → no report
+    const source = 'function f(a,b){ if(a&&b){} }';
+    const reports = runRule('cognitive-complexity', source, { options: [{ threshold: 2 }] });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports cognitive-complexity through the CLI', () => {
+    // 16 if statements → 16 > default threshold 15 → reported
+    const src =
+      'function f(a,b,c,d,e,g,h,i,j,k,l,m,n,o,p,q)' +
+      '{if(a){}if(b){}if(c){}if(d){}if(e){}if(g){}if(h){}if(i){}' +
+      'if(j){}if(k){}if(l){}if(m){}if(n){}if(o){}if(p){}if(q){}}';
+    const result = runOxlint('cognitive-complexity', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(cognitive-complexity)');
+  });
+
+  it('exposes the cognitive-complexity threshold option in the rule schema', () => {
+    expect(plugin.rules['cognitive-complexity'].meta.schema).toEqual([
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ]);
   });
 });
