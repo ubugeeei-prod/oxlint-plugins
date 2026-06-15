@@ -53,6 +53,7 @@ mod no_for_in_iterable;
 mod no_function_declaration_in_block;
 mod no_global_this;
 mod no_hardcoded_ip;
+mod no_hardcoded_passwords;
 mod no_identical_conditions;
 mod no_identical_expressions;
 mod no_identical_functions;

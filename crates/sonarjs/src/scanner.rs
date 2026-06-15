@@ -11,11 +11,11 @@ use oxc_ast::ast::{
     ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
     ImportDeclaration, ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment,
     JSXOpeningElement, LabeledStatement, LogicalExpression, NewExpression, ObjectExpression,
-    Program, PropertyDefinition, RegExpLiteral, ReturnStatement, SimpleAssignmentTarget, Statement,
-    StaticBlock, StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement,
-    TSIntersectionType, TSPropertySignature, TSUnionType, TaggedTemplateExpression,
-    TemplateLiteral, ThisExpression, TryStatement, UnaryExpression, UpdateExpression,
-    VariableDeclarator, WhileStatement, YieldExpression,
+    ObjectProperty, Program, PropertyDefinition, RegExpLiteral, ReturnStatement,
+    SimpleAssignmentTarget, Statement, StaticBlock, StaticMemberExpression, StringLiteral,
+    SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType,
+    TaggedTemplateExpression, TemplateLiteral, ThisExpression, TryStatement, UnaryExpression,
+    UpdateExpression, VariableDeclarator, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_semantic::{AstNodes, Scoping, SymbolId};
@@ -418,6 +418,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_nested_assignment_chain(it);
         self.check_no_useless_increment(it);
         self.check_no_associative_arrays(it);
+        self.check_no_hardcoded_passwords_assignment(it);
         if matches!(it.operator, AssignmentOperator::Assign) {
             self.check_no_misleading_array_reverse(&it.right);
         }
@@ -440,6 +441,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         if let Some(init) = &it.init {
             self.check_no_misleading_array_reverse(init);
         }
+        self.check_no_hardcoded_passwords_declarator(it);
         walk::walk_variable_declarator(self, it);
     }
 
@@ -588,6 +590,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_object_expression(&mut self, it: &ObjectExpression<'a>) {
         self.check_shorthand_property_grouping(it);
         walk::walk_object_expression(self, it);
+    }
+
+    fn visit_object_property(&mut self, it: &ObjectProperty<'a>) {
+        self.check_no_hardcoded_passwords_object_property(it);
+        walk::walk_object_property(self, it);
     }
 
     fn visit_property_definition(&mut self, it: &PropertyDefinition<'a>) {

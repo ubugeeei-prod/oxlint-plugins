@@ -12206,19 +12206,19 @@
       },
       {
         "name": "no-hardcoded-passwords",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
-          "insta": false,
-          "vitest": false,
+          "insta": true,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-hardcoded-passwords (Sonar key S2068). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port from public RSPEC S2068. Detects hardcoded string literals assigned to password-named identifiers (VariableDeclarator, ObjectProperty, AssignmentExpression). Credential-word set: password/passwd/pwd/passphrase. Value guards: empty/short/placeholder-equal-to-name/well-known-placeholders. No semantic analysis needed."
       },
       {
         "name": "no-hardcoded-secrets",

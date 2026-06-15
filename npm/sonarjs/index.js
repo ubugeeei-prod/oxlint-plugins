@@ -388,6 +388,10 @@ const messages = Object.freeze({
     targetBlankNoOpener:
       "Add 'rel=\"noopener\"' (or 'noreferrer') to this link with target=\"_blank\" to prevent the opened page from accessing 'window.opener'.",
   },
+  'no-hardcoded-passwords': {
+    hardcodedPassword:
+      'Remove this hardcoded password; provide credentials via configuration or environment instead.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -600,6 +604,9 @@ const ruleDescriptions = Object.freeze({
     'Disallow calling a function with more arguments than the function declares parameters (conservative: only const/let/var-assigned function expressions and arrow functions are checked)',
   'link-with-target-blank':
     'Require <a> and <area> JSX elements with target="_blank" to also carry a rel attribute containing "noopener" or "noreferrer", to prevent the opened page from accessing window.opener (reverse-tabnabbing)',
+  'no-hardcoded-passwords':
+    'Disallow hardcoded password string literals assigned to a password-named identifier; ' +
+    'provide credentials via configuration or environment variables instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -710,6 +717,7 @@ const ruleTypes = Object.freeze({
   'no-invalid-regexp': 'problem',
   'no-extra-arguments': 'problem',
   'link-with-target-blank': 'problem',
+  'no-hardcoded-passwords': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -820,6 +828,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-invalid-regexp': 'error',
   'no-extra-arguments': 'error',
   'link-with-target-blank': 'error',
+  'no-hardcoded-passwords': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

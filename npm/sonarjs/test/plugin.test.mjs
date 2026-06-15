@@ -201,6 +201,7 @@ describe('sonarjs plugin shape', () => {
       'no-invalid-regexp',
       'no-extra-arguments',
       'link-with-target-blank',
+      'no-hardcoded-passwords',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -308,6 +309,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-invalid-regexp']).toBe('object');
     expect(typeof plugin.rules['no-extra-arguments']).toBe('object');
     expect(typeof plugin.rules['link-with-target-blank']).toBe('object');
+    expect(typeof plugin.rules['no-hardcoded-passwords']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -423,6 +425,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-invalid-regexp']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-extra-arguments']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/link-with-target-blank']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-passwords']).toBe('error');
   });
 });
 
@@ -3589,5 +3592,69 @@ describe('link-with-target-blank rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(link-with-target-blank)');
+  });
+});
+
+describe('no-hardcoded-passwords rule', () => {
+  it('reports a hardcoded password in a variable declaration', () => {
+    const reports = runRule('no-hardcoded-passwords', "const password = 's3cr3t-value';");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hardcodedPassword');
+  });
+
+  it('reports a hardcoded password in an object property', () => {
+    const reports = runRule('no-hardcoded-passwords', "const config = { password: 'hunter2abc' };");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hardcodedPassword');
+  });
+
+  it('reports a hardcoded password in a member assignment', () => {
+    const reports = runRule('no-hardcoded-passwords', "obj.passwd = 'realSecret123';");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hardcodedPassword');
+  });
+
+  it('reports a hardcoded passphrase in a variable declaration', () => {
+    const reports = runRule('no-hardcoded-passwords', "const passphrase = 'my-secret-phrase!';");
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hardcodedPassword');
+  });
+
+  it('does not report an empty string value', () => {
+    const reports = runRule('no-hardcoded-passwords', "const password = '';");
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the value equals the target name', () => {
+    const reports = runRule('no-hardcoded-passwords', "const password = 'password';");
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-credential identifier', () => {
+    const reports = runRule('no-hardcoded-passwords', "const username = 'admin';");
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the init is not a string literal', () => {
+    const reports = runRule('no-hardcoded-passwords', 'const password = getSecret();');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an identifier whose name only contains the word', () => {
+    const reports = runRule('no-hardcoded-passwords', "const passwordHint = 'some hint text';");
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a well-known placeholder value', () => {
+    const reports = runRule('no-hardcoded-passwords', "const pwd = 'changeit';");
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-hardcoded-passwords through the CLI', () => {
+    const result = runOxlint('no-hardcoded-passwords', "const password = 's3cr3t-value';");
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-hardcoded-passwords)');
   });
 });

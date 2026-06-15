@@ -5937,3 +5937,63 @@ fn link_with_target_blank_reports_area_without_rel() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "targetBlankNoOpener");
 }
+
+#[test]
+fn no_hardcoded_passwords_reports_variable_declarator() {
+    let source = "const password = \"s3cr3t-value\";";
+    let diagnostics = scan("no-hardcoded-passwords", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-hardcoded-passwords");
+    assert_eq!(diagnostics[0].message_id, "hardcodedPassword");
+}
+
+#[test]
+fn no_hardcoded_passwords_reports_object_property() {
+    let source = "const config = { password: \"hunter2abc\" };";
+    let diagnostics = scan("no-hardcoded-passwords", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "hardcodedPassword");
+}
+
+#[test]
+fn no_hardcoded_passwords_reports_member_assignment() {
+    let source = "obj.passwd = \"realSecret123\";";
+    let diagnostics = scan("no-hardcoded-passwords", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "hardcodedPassword");
+}
+
+#[test]
+fn no_hardcoded_passwords_does_not_report_empty_value() {
+    let source = "const password = \"\";";
+    let diagnostics = scan("no-hardcoded-passwords", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hardcoded_passwords_does_not_report_placeholder_equals_name() {
+    let source = "const password = \"password\";";
+    let diagnostics = scan("no-hardcoded-passwords", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hardcoded_passwords_does_not_report_non_credential_identifier() {
+    let source = "const username = \"admin\";";
+    let diagnostics = scan("no-hardcoded-passwords", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hardcoded_passwords_does_not_report_non_literal_init() {
+    let source = "const password = getSecret();";
+    let diagnostics = scan("no-hardcoded-passwords", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hardcoded_passwords_does_not_report_partial_name_match() {
+    let source = "const passwordHint = \"x\";";
+    let diagnostics = scan("no-hardcoded-passwords", source);
+    assert!(diagnostics.is_empty());
+}
