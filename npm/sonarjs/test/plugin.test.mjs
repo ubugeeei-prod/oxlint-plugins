@@ -217,6 +217,8 @@ describe('sonarjs plugin shape', () => {
       'unicode-aware-regex',
       'no-undefined-assignment',
       'no-empty-after-reluctant',
+      'no-ignored-return',
+      'file-name-differ-from-class',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -340,6 +342,8 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['unicode-aware-regex']).toBe('object');
     expect(typeof plugin.rules['no-undefined-assignment']).toBe('object');
     expect(typeof plugin.rules['no-empty-after-reluctant']).toBe('object');
+    expect(typeof plugin.rules['no-ignored-return']).toBe('object');
+    expect(typeof plugin.rules['file-name-differ-from-class']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -473,6 +477,8 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/unicode-aware-regex']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-undefined-assignment']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-empty-after-reluctant']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-ignored-return']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/file-name-differ-from-class']).toBe('error');
   });
 });
 
@@ -4361,5 +4367,71 @@ describe('no-empty-after-reluctant rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-after-reluctant)');
+  });
+});
+
+describe('no-ignored-return rule', () => {
+  it('reports a string literal trim() call whose result is discarded', () => {
+    const source = '"hello".trim();';
+    const reports = runRule('no-ignored-return', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('ignoredReturn');
+  });
+
+  it('does not report when the return value is used', () => {
+    const source = 'const s = "hello".trim();';
+    const reports = runRule('no-ignored-return', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal receiver', () => {
+    const source = 'foo.trim();';
+    const reports = runRule('no-ignored-return', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-ignored-return through the CLI', () => {
+    const source = '"hello".trim();';
+    const result = runOxlint('no-ignored-return', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-ignored-return)');
+  });
+});
+
+describe('file-name-differ-from-class rule', () => {
+  it('reports when the exported class name does not match the filename stem', () => {
+    const source = 'export class Foo {}';
+    const reports = runRule('file-name-differ-from-class', source, { filename: 'bar.ts' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('fileNameDifferFromClass');
+  });
+
+  it('does not report when the class name matches the stem', () => {
+    const source = 'export class Foo {}';
+    const reports = runRule('file-name-differ-from-class', source, { filename: 'foo.ts' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when PascalCase class matches a kebab-case stem', () => {
+    const source = 'export class MyClass {}';
+    const reports = runRule('file-name-differ-from-class', source, { filename: 'my-class.ts' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when there is no exported class', () => {
+    const source = 'class Foo {} export {};';
+    const reports = runRule('file-name-differ-from-class', source, { filename: 'bar.ts' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports file-name-differ-from-class through the CLI', () => {
+    const source = 'export class Foo {}';
+    const result = runOxlint('file-name-differ-from-class', source, 'bar.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(file-name-differ-from-class)');
   });
 });
