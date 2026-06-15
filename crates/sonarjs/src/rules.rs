@@ -89,6 +89,7 @@ mod no_tab;
 mod no_undefined_argument;
 mod no_unthrown_error;
 mod no_unused_function_argument;
+mod no_use_of_empty_return_value;
 mod no_useless_catch;
 mod no_useless_increment;
 mod no_useless_intersection;

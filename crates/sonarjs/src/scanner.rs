@@ -426,6 +426,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.check_no_parameter_reassignment_assignment(ident, it.span);
             self.check_updated_loop_counter(ident, it.span);
         }
+        self.check_no_use_of_empty_return_value_assign(it);
         walk::walk_assignment_expression(self, it);
     }
 
@@ -442,6 +443,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.check_no_misleading_array_reverse(init);
         }
         self.check_no_hardcoded_passwords_declarator(it);
+        self.check_no_use_of_empty_return_value_var(it);
         walk::walk_variable_declarator(self, it);
     }
 
@@ -640,6 +642,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_return_statement(&mut self, it: &ReturnStatement<'a>) {
         self.record_return(it.argument.is_some());
+        self.check_no_use_of_empty_return_value_return(it);
         walk::walk_return_statement(self, it);
     }
 
