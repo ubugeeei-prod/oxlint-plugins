@@ -146,6 +146,7 @@ const expectedRuleNames = [
   'destructuring-assignment-syntax',
   'no-element-overwrite',
   'no-redundant-assignments',
+  'no-unused-collection',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3118,6 +3119,42 @@ describe('no-redundant-assignments rule', () => {
 
   it('does not report when an intervening statement separates the assignments', () => {
     const diagnostics = scan('no-redundant-assignments', 'let x = 1;\nfoo();\nx = 2;');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-unused-collection rule', () => {
+  it('reports an array that is only written to via push', () => {
+    const source = 'const a = [];\na.push(1);\na.push(2);';
+    const diagnostics = scan('no-unused-collection', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-unused-collection');
+    expect(diagnostics[0].messageId).toBe('unusedCollection');
+  });
+
+  it('reports a Map that is only written to via set', () => {
+    const source = "const m = new Map();\nm.set('k', 1);";
+    const diagnostics = scan('no-unused-collection', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-unused-collection');
+    expect(diagnostics[0].messageId).toBe('unusedCollection');
+  });
+
+  it('does not report when the array is returned', () => {
+    const source = 'function f() { const a = [];\na.push(1);\nreturn a; }';
+    const diagnostics = scan('no-unused-collection', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the array is passed to a function', () => {
+    const source = 'const a = [];\na.push(1);\nconsole.log(a);';
+    const diagnostics = scan('no-unused-collection', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the length property is read', () => {
+    const source = 'const a = [];\na.push(1);\nconst b = a.length;';
+    const diagnostics = scan('no-unused-collection', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

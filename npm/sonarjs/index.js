@@ -522,6 +522,10 @@ const messages = Object.freeze({
     redundantAssignment:
       'This assignment is redundant; the value is never used before being overwritten.',
   },
+  'no-unused-collection': {
+    unusedCollection:
+      'The contents of this collection are never read; the collection is only ever written to.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -835,6 +839,9 @@ const ruleDescriptions = Object.freeze({
     'Disallow assignments whose value is never used before being overwritten; ' +
     'flags self-assignments (x = x) and consecutive assignments to the same plain identifier ' +
     'with no intervening statement where the first value is immediately replaced',
+  'no-unused-collection':
+    'Disallow const/let collection bindings (array, object, Map, Set, etc.) that are ' +
+    'populated via mutating operations but whose contents are never read',
 });
 
 const ruleTypes = Object.freeze({
@@ -981,6 +988,7 @@ const ruleTypes = Object.freeze({
   'destructuring-assignment-syntax': 'suggestion',
   'no-element-overwrite': 'problem',
   'no-redundant-assignments': 'suggestion',
+  'no-unused-collection': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1126,6 +1134,7 @@ const recommendedRuleConfig = Object.freeze({
   'destructuring-assignment-syntax': 'error',
   'no-element-overwrite': 'error',
   'no-redundant-assignments': 'error',
+  'no-unused-collection': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

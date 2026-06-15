@@ -7982,3 +7982,56 @@ fn no_redundant_assignments_works_in_function_body() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "redundantAssignment");
 }
+
+#[test]
+fn no_unused_collection_reports_array_only_written_via_push() {
+    let source = "const a = [];\na.push(1);\na.push(2);";
+    let diagnostics = scan("no-unused-collection", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-unused-collection");
+    assert_eq!(diagnostics[0].message_id, "unusedCollection");
+}
+
+#[test]
+fn no_unused_collection_reports_map_only_written_via_set() {
+    let source = "const m = new Map();\nm.set('k', 1);";
+    let diagnostics = scan("no-unused-collection", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-unused-collection");
+    assert_eq!(diagnostics[0].message_id, "unusedCollection");
+}
+
+#[test]
+fn no_unused_collection_does_not_report_when_array_is_returned() {
+    let source = "function f() { const a = [];\na.push(1);\nreturn a; }";
+    let diagnostics = scan("no-unused-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_collection_does_not_report_when_array_is_passed_to_function() {
+    let source = "const a = [];\na.push(1);\nconsole.log(a);";
+    let diagnostics = scan("no-unused-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_collection_does_not_report_when_length_is_read() {
+    let source = "const a = [];\na.push(1);\nconst b = a.length;";
+    let diagnostics = scan("no-unused-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_collection_does_not_report_when_array_has_initial_elements_and_is_passed() {
+    let source = "const a = [1, 2];\nfoo(a);";
+    let diagnostics = scan("no-unused-collection", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_collection_does_not_report_when_no_write_references() {
+    let source = "const a = [];";
+    let diagnostics = scan("no-unused-collection", source);
+    assert!(diagnostics.is_empty());
+}
