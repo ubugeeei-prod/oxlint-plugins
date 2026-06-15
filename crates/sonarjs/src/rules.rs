@@ -138,6 +138,7 @@ mod prefer_regexp_exec;
 mod prefer_single_boolean_return;
 mod prefer_while;
 mod process_argv;
+mod production_debug;
 mod pseudo_random;
 mod public_static_readonly;
 mod reduce_initial_value;

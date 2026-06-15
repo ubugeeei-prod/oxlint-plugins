@@ -154,6 +154,7 @@ const expectedRuleNames = [
   'in-operator-type-error',
   'different-types-comparison',
   'operation-returning-nan',
+  'production-debug',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

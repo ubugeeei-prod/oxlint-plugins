@@ -8514,3 +8514,43 @@ fn operation_returning_nan_does_not_report_numeric_operands() {
     let diagnostics = scan("operation-returning-nan", "const x = 1 + 2;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn production_debug_reports_debugger_in_function() {
+    let diagnostics = scan("production-debug", "function f(){ debugger; }");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "production-debug");
+    assert_eq!(diagnostics[0].message_id, "productionDebug");
+}
+
+#[test]
+fn production_debug_reports_debugger_in_if_block() {
+    let diagnostics = scan("production-debug", "if (x) { debugger; }");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "productionDebug");
+}
+
+#[test]
+fn production_debug_reports_top_level_debugger() {
+    let diagnostics = scan("production-debug", "debugger;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "productionDebug");
+}
+
+#[test]
+fn production_debug_does_not_report_console_log() {
+    let diagnostics = scan("production-debug", "console.log(1)");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn production_debug_does_not_report_alert() {
+    let diagnostics = scan("production-debug", "alert(1)");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn production_debug_does_not_report_ordinary_return() {
+    let diagnostics = scan("production-debug", "function f(){ return 1; }");
+    assert!(diagnostics.is_empty());
+}
