@@ -2,7 +2,7 @@
 
 Rust-backed Oxlint port of [`eslint-plugin-sonarjs`](https://github.com/SonarSource/SonarJS).
 
-> **Status: scaffold.** No rules ported yet. The 269 upstream rules whose `implementation === 'original'` (excluding three source-only assertion rules) are enumerated in [`status.json`](../../status.json) with `status: "pending"`. See [`docs/port-targets/eslint-plugin-sonarjs.md`](../../docs/port-targets/eslint-plugin-sonarjs.md) for the canonical inventory.
+> **Status: in progress.** 111 rules are currently exposed through the Rust-backed native API. The 269 upstream rules whose `implementation === 'original'` (excluding three source-only assertion rules) are tracked in [`status.json`](../../status.json). See [`docs/port-targets/eslint-plugin-sonarjs.md`](../../docs/port-targets/eslint-plugin-sonarjs.md) for the canonical inventory.
 
 ## Clean-room policy (LGPL-3.0)
 
