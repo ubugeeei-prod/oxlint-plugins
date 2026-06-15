@@ -258,6 +258,7 @@ describe('sonarjs plugin shape', () => {
       'cookie-no-httponly',
       'content-security-policy',
       'certificate-transparency',
+      'csrf',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6175,5 +6176,52 @@ describe('certificate-transparency rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(certificate-transparency)');
+  });
+});
+
+describe('csrf rule', () => {
+  it('reports an unsafe method listed alongside a safe one', () => {
+    const source = 'csrf({ ignoreMethods: ["POST", "GET"] });';
+    const reports = runRule('csrf', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('csrf');
+  });
+
+  it('reports a single unsafe method', () => {
+    const source = 'csrf({ ignoreMethods: ["PUT"] });';
+    const reports = runRule('csrf', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report when only safe methods are ignored', () => {
+    const source = 'csrf({ ignoreMethods: ["GET", "HEAD", "OPTIONS"] });';
+    const reports = runRule('csrf', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a bare csrf() call', () => {
+    const source = 'csrf();';
+    const reports = runRule('csrf', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when there is no ignoreMethods key', () => {
+    const source = 'csrf({ cookie: true });';
+    const reports = runRule('csrf', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-csrf callee', () => {
+    const source = 'foo({ ignoreMethods: ["POST"] });';
+    const reports = runRule('csrf', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports csrf through the CLI', () => {
+    const result = runOxlint('csrf', 'csrf({ ignoreMethods: ["POST", "GET"] });');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(csrf)');
   });
 });

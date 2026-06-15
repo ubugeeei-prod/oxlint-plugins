@@ -167,6 +167,7 @@ const expectedRuleNames = [
   'cookie-no-httponly',
   'content-security-policy',
   'certificate-transparency',
+  'csrf',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3368,6 +3369,46 @@ describe('certificate-transparency rule', () => {
   it('does not report a different key set to false', () => {
     const source = 'const x = { other: false };';
     const diagnostics = scan('certificate-transparency', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('csrf rule', () => {
+  it('reports an unsafe method listed alongside a safe one', () => {
+    const source = 'csrf({ ignoreMethods: ["POST", "GET"] });';
+    const diagnostics = scan('csrf', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('csrf');
+    expect(diagnostics[0].messageId).toBe('csrf');
+  });
+
+  it('reports a single unsafe method', () => {
+    const source = 'csrf({ ignoreMethods: ["PUT"] });';
+    const diagnostics = scan('csrf', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report when only safe methods are ignored', () => {
+    const source = 'csrf({ ignoreMethods: ["GET", "HEAD", "OPTIONS"] });';
+    const diagnostics = scan('csrf', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a bare csrf() call', () => {
+    const source = 'csrf();';
+    const diagnostics = scan('csrf', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when there is no ignoreMethods key', () => {
+    const source = 'csrf({ cookie: true });';
+    const diagnostics = scan('csrf', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-csrf callee', () => {
+    const source = 'foo({ ignoreMethods: ["POST"] });';
+    const diagnostics = scan('csrf', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
