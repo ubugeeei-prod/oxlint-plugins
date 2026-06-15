@@ -8117,3 +8117,56 @@ fn no_empty_collection_reports_iterated_via_for_of() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "emptyCollection");
 }
+
+#[test]
+fn no_redundant_parentheses_reports_nested_double_parentheses() {
+    let source = "const x = ((1));";
+    let diagnostics = scan("no-redundant-parentheses", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-redundant-parentheses");
+    assert_eq!(diagnostics[0].message_id, "redundantParentheses");
+}
+
+#[test]
+fn no_redundant_parentheses_reports_nested_around_identifier() {
+    let source = "const y = ((a));";
+    let diagnostics = scan("no-redundant-parentheses", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantParentheses");
+}
+
+#[test]
+fn no_redundant_parentheses_reports_twice_for_triple_nesting() {
+    let source = "const z = (((a)));";
+    let diagnostics = scan("no-redundant-parentheses", source);
+    assert_eq!(diagnostics.len(), 2);
+}
+
+#[test]
+fn no_redundant_parentheses_does_not_report_single_pair() {
+    let source = "const x = (1);";
+    let diagnostics = scan("no-redundant-parentheses", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_redundant_parentheses_does_not_report_precedence_grouping() {
+    let source = "const r = (a + b) * c;";
+    let diagnostics = scan("no-redundant-parentheses", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_redundant_parentheses_does_not_report_distinct_single_pairs() {
+    let source = "f((a), (b));";
+    let diagnostics = scan("no-redundant-parentheses", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_redundant_parentheses_reports_nested_inside_call_argument() {
+    let source = "f(((a)));";
+    let diagnostics = scan("no-redundant-parentheses", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "redundantParentheses");
+}

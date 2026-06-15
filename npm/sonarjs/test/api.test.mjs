@@ -148,6 +148,7 @@ const expectedRuleNames = [
   'no-redundant-assignments',
   'no-unused-collection',
   'no-empty-collection',
+  'no-redundant-parentheses',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3191,6 +3192,34 @@ describe('no-empty-collection rule', () => {
   it('does not report object literals', () => {
     const source = 'const o = {};\nfunction f() { return o.x; }';
     const diagnostics = scan('no-empty-collection', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-redundant-parentheses rule', () => {
+  it('reports nested double parentheses', () => {
+    const source = 'const x = ((1));';
+    const diagnostics = scan('no-redundant-parentheses', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-redundant-parentheses');
+    expect(diagnostics[0].messageId).toBe('redundantParentheses');
+  });
+
+  it('reports twice for triple nesting', () => {
+    const source = 'const z = (((a)));';
+    const diagnostics = scan('no-redundant-parentheses', source);
+    expect(diagnostics).toHaveLength(2);
+  });
+
+  it('does not report a single pair', () => {
+    const source = 'const x = (1);';
+    const diagnostics = scan('no-redundant-parentheses', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report precedence grouping', () => {
+    const source = 'const r = (a + b) * c;';
+    const diagnostics = scan('no-redundant-parentheses', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

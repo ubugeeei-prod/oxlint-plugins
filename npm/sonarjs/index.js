@@ -530,6 +530,9 @@ const messages = Object.freeze({
     emptyCollection:
       'This collection is empty and is never populated; reading from it has no effect.',
   },
+  'no-redundant-parentheses': {
+    redundantParentheses: 'Remove these redundant parentheses.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -849,6 +852,9 @@ const ruleDescriptions = Object.freeze({
   'no-empty-collection':
     'Disallow reading from const/let array-like collection bindings (array, Map, Set, ' +
     'WeakMap, WeakSet) that are initialised empty and are never populated with any element',
+  'no-redundant-parentheses':
+    'Disallow redundant parentheses; flags only the unambiguous nested ' +
+    'double-parenthesis subset ((x)) where the inner pair adds no grouping',
 });
 
 const ruleTypes = Object.freeze({
@@ -997,6 +1003,7 @@ const ruleTypes = Object.freeze({
   'no-redundant-assignments': 'suggestion',
   'no-unused-collection': 'problem',
   'no-empty-collection': 'problem',
+  'no-redundant-parentheses': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1144,6 +1151,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-redundant-assignments': 'error',
   'no-unused-collection': 'error',
   'no-empty-collection': 'error',
+  'no-redundant-parentheses': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

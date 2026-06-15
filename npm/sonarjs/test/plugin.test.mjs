@@ -239,6 +239,7 @@ describe('sonarjs plugin shape', () => {
       'no-redundant-assignments',
       'no-unused-collection',
       'no-empty-collection',
+      'no-redundant-parentheses',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5281,5 +5282,41 @@ describe('no-empty-collection rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-collection)');
+  });
+});
+
+describe('no-redundant-parentheses rule', () => {
+  it('reports nested double parentheses', () => {
+    const source = 'const x = ((1));';
+    const reports = runRule('no-redundant-parentheses', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('redundantParentheses');
+  });
+
+  it('reports twice for triple nesting', () => {
+    const source = 'const z = (((a)));';
+    const reports = runRule('no-redundant-parentheses', source);
+    expect(reports).toHaveLength(2);
+  });
+
+  it('does not report a single pair', () => {
+    const source = 'const x = (1);';
+    const reports = runRule('no-redundant-parentheses', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report precedence grouping', () => {
+    const source = 'const r = (a + b) * c;';
+    const reports = runRule('no-redundant-parentheses', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-redundant-parentheses through the CLI', () => {
+    const source = 'const x = ((1));';
+    const result = runOxlint('no-redundant-parentheses', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-redundant-parentheses)');
   });
 });

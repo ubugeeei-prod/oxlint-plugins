@@ -11,11 +11,12 @@ use oxc_ast::ast::{
     ForOfStatement, ForStatement, Function, FunctionBody, IdentifierReference, IfStatement,
     ImportDeclaration, ImportExpression, JSXAttribute, JSXAttributeValue, JSXElement, JSXFragment,
     JSXOpeningElement, LabeledStatement, LogicalExpression, NewExpression, ObjectExpression,
-    ObjectProperty, Program, PropertyDefinition, RegExpLiteral, ReturnStatement,
-    SimpleAssignmentTarget, Statement, StaticBlock, StaticMemberExpression, StringLiteral,
-    SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature, TSUnionType,
-    TaggedTemplateExpression, TemplateLiteral, ThisExpression, TryStatement, UnaryExpression,
-    UpdateExpression, VariableDeclaration, VariableDeclarator, WhileStatement, YieldExpression,
+    ObjectProperty, ParenthesizedExpression, Program, PropertyDefinition, RegExpLiteral,
+    ReturnStatement, SimpleAssignmentTarget, Statement, StaticBlock, StaticMemberExpression,
+    StringLiteral, SwitchCase, SwitchStatement, TSIntersectionType, TSPropertySignature,
+    TSUnionType, TaggedTemplateExpression, TemplateLiteral, ThisExpression, TryStatement,
+    UnaryExpression, UpdateExpression, VariableDeclaration, VariableDeclarator, WhileStatement,
+    YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_semantic::{AstNodes, Scoping, SymbolId};
@@ -385,6 +386,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_expression_complexity_op(it.span);
         walk::walk_logical_expression(self, it);
         self.leave_expression_complexity_op();
+    }
+
+    fn visit_parenthesized_expression(&mut self, it: &ParenthesizedExpression<'a>) {
+        self.check_redundant_parentheses(it);
+        walk::walk_parenthesized_expression(self, it);
     }
 
     fn visit_unary_expression(&mut self, it: &UnaryExpression<'a>) {
