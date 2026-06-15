@@ -207,6 +207,8 @@ describe('sonarjs plugin shape', () => {
       'no-hardcoded-passwords',
       'no-ignored-exceptions',
       'no-unused-function-argument',
+      'object-alt-content',
+      'no-use-of-empty-return-value',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -320,6 +322,8 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-hardcoded-passwords']).toBe('object');
     expect(typeof plugin.rules['no-ignored-exceptions']).toBe('object');
     expect(typeof plugin.rules['no-unused-function-argument']).toBe('object');
+    expect(typeof plugin.rules['object-alt-content']).toBe('object');
+    expect(typeof plugin.rules['no-use-of-empty-return-value']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -441,6 +445,8 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-passwords']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-ignored-exceptions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-unused-function-argument']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/object-alt-content']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-use-of-empty-return-value']).toBe('error');
   });
 });
 
@@ -3882,5 +3888,141 @@ describe('no-weak-cipher rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-weak-cipher)');
+  });
+});
+
+describe('object-alt-content rule', () => {
+  it('reports a self-closing <object> element with no attributes', () => {
+    const src = '<object data="video.swf" />';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('objectAltContent');
+  });
+
+  it('reports an <object> element with empty children', () => {
+    const src = '<object data="video.swf"></object>';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('objectAltContent');
+  });
+
+  it('reports an <object> element with whitespace-only text child', () => {
+    const src = '<object data="video.swf">   </object>';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('objectAltContent');
+  });
+
+  it('does not report an <object> element with meaningful text child', () => {
+    const src = '<object data="video.swf">Fallback text for assistive technologies.</object>';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an <object> element with a child element', () => {
+    const src = '<object data="video.swf"><img src="fallback.png" alt="Embedded video" /></object>';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an <object> element with a child expression', () => {
+    const src = '<object data={src}>{fallback}</object>';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an <object> element with aria-label', () => {
+    const src = '<object data="video.swf" aria-label="Embedded video" />';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an <object> element with aria-labelledby', () => {
+    const src = '<object data="video.swf" aria-labelledby="label-id" />';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an <object> element with a title attribute', () => {
+    const src = '<object data="video.swf" title="Embedded video" />';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an <object> element with aria-hidden="true"', () => {
+    const src = '<object data="video.swf" aria-hidden="true" />';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an <object> element with a spread attribute', () => {
+    const src = '<object {...props} />';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-object JSX element', () => {
+    const src = '<video src="clip.mp4" />';
+    const reports = runRule('object-alt-content', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports object-alt-content through the CLI', () => {
+    const src = '<object data="video.swf" />';
+    const result = runOxlint('object-alt-content', src, 'sample.tsx');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(object-alt-content)');
+  });
+});
+
+describe('no-use-of-empty-return-value rule', () => {
+  it('reports when a void function result is assigned to a variable', () => {
+    const src = 'function voidFn() { console.log("x"); } const x = voidFn();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useOfEmptyReturnValue');
+  });
+
+  it('reports when a void function result is assigned via plain assignment', () => {
+    const src = 'function voidFn() {} let x; x = voidFn();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useOfEmptyReturnValue');
+  });
+
+  it('reports when a void function result is returned from another function', () => {
+    const src = 'function voidFn() {} function outer() { return voidFn(); }';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useOfEmptyReturnValue');
+  });
+
+  it('does not report when the void function is called as a bare statement', () => {
+    const src = 'function voidFn() {} voidFn();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the called function does return a value', () => {
+    const src = 'function valued() { return 42; } const x = valued();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an async function whose result is assigned', () => {
+    const src = 'async function asyncFn() {} const p = asyncFn();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-use-of-empty-return-value through the CLI', () => {
+    const src = 'function voidFn() { console.log("x"); } const x = voidFn();';
+    const result = runOxlint('no-use-of-empty-return-value', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-use-of-empty-return-value)');
   });
 });

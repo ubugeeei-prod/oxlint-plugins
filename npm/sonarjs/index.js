@@ -408,6 +408,14 @@ const messages = Object.freeze({
     unusedFunctionArgument:
       'Remove this unused trailing function parameter or rename it with a leading underscore to mark it as intentional.',
   },
+  'object-alt-content': {
+    objectAltContent:
+      'Add an accessible text alternative to this <object> element (child content, aria-label, aria-labelledby, or title).',
+  },
+  'no-use-of-empty-return-value': {
+    useOfEmptyReturnValue:
+      'Remove this use of the return value of a function that does not return anything.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -634,6 +642,12 @@ const ruleDescriptions = Object.freeze({
   'no-unused-function-argument':
     'Disallow trailing function parameters that are never referenced; parameters that appear ' +
     'before a used parameter are exempt (they cannot be removed without changing call sites)',
+  'object-alt-content':
+    'Require <object> JSX elements to provide an accessible text alternative via child content, ' +
+    'aria-label, aria-labelledby, or title; elements explicitly hidden with aria-hidden="true" are exempt',
+  'no-use-of-empty-return-value':
+    'Disallow using the return value of a function that does not explicitly return a value; ' +
+    'such a function always returns undefined, so consuming its result is almost always a bug',
 });
 
 const ruleTypes = Object.freeze({
@@ -750,6 +764,8 @@ const ruleTypes = Object.freeze({
   'no-hardcoded-passwords': 'suggestion',
   'no-ignored-exceptions': 'problem',
   'no-unused-function-argument': 'suggestion',
+  'object-alt-content': 'problem',
+  'no-use-of-empty-return-value': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -866,6 +882,8 @@ const recommendedRuleConfig = Object.freeze({
   'no-hardcoded-passwords': 'error',
   'no-ignored-exceptions': 'error',
   'no-unused-function-argument': 'error',
+  'object-alt-content': 'error',
+  'no-use-of-empty-return-value': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

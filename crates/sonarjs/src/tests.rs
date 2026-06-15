@@ -6188,3 +6188,175 @@ fn no_unused_function_argument_does_not_report_destructuring_param() {
     let diagnostics = scan("no-unused-function-argument", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn object_alt_content_reports_self_closing_object_without_attributes() {
+    let source = r#"<object data="video.swf" />"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "object-alt-content");
+    assert_eq!(diagnostics[0].message_id, "objectAltContent");
+}
+
+#[test]
+fn object_alt_content_reports_object_with_empty_children() {
+    let source = r#"<object data="video.swf"></object>"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "objectAltContent");
+}
+
+#[test]
+fn object_alt_content_reports_object_with_whitespace_only_text_child() {
+    let source = r#"<object data="video.swf">   </object>"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "objectAltContent");
+}
+
+#[test]
+fn object_alt_content_does_not_report_object_with_text_child() {
+    let source = r#"<object data="video.swf">Fallback text for assistive technologies.</object>"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn object_alt_content_does_not_report_object_with_child_element() {
+    let source = r#"<object data="video.swf"><img src="fallback.png" alt="Embedded" /></object>"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn object_alt_content_does_not_report_object_with_child_expression() {
+    let source = r#"<object data={src}>{fallback}</object>"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn object_alt_content_does_not_report_object_with_aria_label() {
+    let source = r#"<object data="video.swf" aria-label="Embedded video" />"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn object_alt_content_does_not_report_object_with_aria_labelledby() {
+    let source = r#"<object data="video.swf" aria-labelledby="label-id" />"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn object_alt_content_does_not_report_object_with_title() {
+    let source = r#"<object data="video.swf" title="Embedded video" />"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn object_alt_content_does_not_report_object_with_aria_hidden_true() {
+    let source = r#"<object data="video.swf" aria-hidden="true" />"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn object_alt_content_does_not_report_object_with_spread_attribute() {
+    let source = r#"<object {...props} />"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn object_alt_content_does_not_report_non_object_element() {
+    let source = r#"<video src="clip.mp4" />"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn object_alt_content_does_not_report_object_with_aria_hidden_non_true() {
+    let source = r#"<object data="video.swf" aria-hidden="false" />"#;
+    let diagnostics = scan_jsx("object-alt-content", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "objectAltContent");
+}
+
+#[test]
+fn no_use_of_empty_return_value_reports_var_decl_with_void_fn_result() {
+    let source = "function voidFn() { console.log('x'); } const x = voidFn();";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-use-of-empty-return-value");
+    assert_eq!(diagnostics[0].message_id, "useOfEmptyReturnValue");
+}
+
+#[test]
+fn no_use_of_empty_return_value_reports_assignment_with_void_fn_result() {
+    let source = "function voidFn() {} let x; x = voidFn();";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "useOfEmptyReturnValue");
+}
+
+#[test]
+fn no_use_of_empty_return_value_reports_return_with_void_fn_result() {
+    let source = "function voidFn() {} function outer() { return voidFn(); }";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "useOfEmptyReturnValue");
+}
+
+#[test]
+fn no_use_of_empty_return_value_does_not_report_bare_call_statement() {
+    let source = "function voidFn() {} voidFn();";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_use_of_empty_return_value_does_not_report_valued_function() {
+    let source = "function valued() { return 42; } const x = valued();";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_use_of_empty_return_value_does_not_report_async_function() {
+    let source = "async function asyncFn() {} const p = asyncFn();";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_use_of_empty_return_value_does_not_report_generator_function() {
+    let source = "function* genFn() {} const g = genFn();";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_use_of_empty_return_value_reports_const_arrow_void() {
+    let source = "const f = () => { console.log('hi'); }; const x = f();";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "useOfEmptyReturnValue");
+}
+
+#[test]
+fn no_use_of_empty_return_value_does_not_report_expression_arrow() {
+    let source = "const f = () => 42; const x = f();";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_use_of_empty_return_value_does_not_flag_return_in_nested_fn() {
+    let source = "function outer() { function inner() { return 1; } } const x = outer();";
+    let diagnostics = scan("no-use-of-empty-return-value", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "useOfEmptyReturnValue");
+}
