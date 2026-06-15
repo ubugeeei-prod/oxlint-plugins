@@ -42,6 +42,8 @@ const NO_TABS_MESSAGES: &[(&str, &str)] = &[
     ("unexpectedTab", "Unexpected tab character."),
     ("replaceTab", "Replace tab with a space."),
 ];
+const NO_MIXED_SPACES_AND_TABS_MESSAGES: &[(&str, &str)] =
+    &[("mixedSpacesAndTabs", "Mixed spaces and tabs.")];
 const QUOTES_MESSAGES: &[(&str, &str)] = &[
     (
         "wrongQuote",
@@ -474,6 +476,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: NO_TABS_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "no-mixed-spaces-and-tabs",
+        docs_description: "Disallow mixed spaces and tabs for indentation.",
+        messages: NO_MIXED_SPACES_AND_TABS_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "no-trailing-spaces",
         docs_description: "Disallow whitespace at the end of lines.",
         messages: NO_TRAILING_SPACES_MESSAGES,
@@ -763,6 +770,7 @@ pub fn run_stylistic_lint(
         matches!(
             rule.name.as_str(),
             "linebreak-style"
+                | "no-mixed-spaces-and-tabs"
                 | "no-multiple-empty-lines"
                 | "no-tabs"
                 | "no-trailing-spaces"
@@ -798,6 +806,12 @@ pub fn run_stylistic_lint(
                 &mut diagnostics,
             ),
             "no-tabs" => tabs::check_no_tabs(
+                source_text,
+                lines.as_deref().unwrap_or(&[]),
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "no-mixed-spaces-and-tabs" => line_rules::check_no_mixed_spaces_and_tabs(
                 source_text,
                 lines.as_deref().unwrap_or(&[]),
                 &rule.options,

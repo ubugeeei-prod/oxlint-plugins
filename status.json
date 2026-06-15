@@ -16032,19 +16032,19 @@
       },
       {
         "name": "no-mixed-spaces-and-tabs",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-mixed-spaces-and-tabs."
+        "notes": "Rust source-wide line scan port of @stylistic/no-mixed-spaces-and-tabs, including smart-tabs support, block-comment continuation suppression, and literal/template-line suppression."
       },
       {
         "name": "nonblock-statement-body-position",

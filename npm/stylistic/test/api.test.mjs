@@ -10,21 +10,26 @@ describe('stylistic native API', () => {
   });
 
   it('runs multiple stylistic rules through one native call', () => {
-    const diagnostics = runNativeStylisticLint('\u{feff}const\tlabel = "value";  \r\n\n\n', {
-      rules: [
-        { name: 'unicode-bom', options: ['never'] },
-        { name: 'quotes', options: ['single'] },
-        { name: 'no-trailing-spaces', options: [] },
-        { name: 'no-tabs', options: [] },
-        { name: 'linebreak-style', options: ['unix'] },
-        { name: 'no-multiple-empty-lines', options: [{ max: 1 }] },
-      ],
-    });
+    const diagnostics = runNativeStylisticLint(
+      '\u{feff}const label = "value";  \r\n\t label;\n\n\n',
+      {
+        rules: [
+          { name: 'unicode-bom', options: ['never'] },
+          { name: 'quotes', options: ['single'] },
+          { name: 'no-trailing-spaces', options: [] },
+          { name: 'no-mixed-spaces-and-tabs', options: [] },
+          { name: 'no-tabs', options: [] },
+          { name: 'linebreak-style', options: ['unix'] },
+          { name: 'no-multiple-empty-lines', options: [{ max: 1 }] },
+        ],
+      },
+    );
 
     expect(diagnostics.map((diagnostic) => diagnostic.ruleName)).toEqual([
       'unicode-bom',
       'quotes',
       'no-trailing-spaces',
+      'no-mixed-spaces-and-tabs',
       'no-tabs',
       'linebreak-style',
       'no-multiple-empty-lines',
