@@ -138,6 +138,7 @@ const expectedRuleNames = [
   'no-empty-test-file',
   'deprecation',
   'cognitive-complexity',
+  'expression-complexity',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3044,6 +3045,22 @@ describe('file-name-differ-from-class', () => {
 
   it('does not report no-empty-test-file for a non-test filename', () => {
     const diagnostics = scan('no-empty-test-file', "import {x} from './x';", 'foo.ts');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('reports expression-complexity when expression has more than 3 operators', () => {
+    // 4 logical && operators: a&&b&&c&&d&&e → 4 > default threshold 3 → 1 diagnostic
+    const source = 'const x = a && b && c && d && e;';
+    const diagnostics = scan('expression-complexity', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('expression-complexity');
+    expect(diagnostics[0].messageId).toBe('expressionComplexity');
+  });
+
+  it('does not report expression-complexity when expression is at or below the threshold', () => {
+    // 3 logical && operators: a&&b&&c&&d → 3 is not > 3 → 0 diagnostics
+    const source = 'const x = a && b && c && d;';
+    const diagnostics = scan('expression-complexity', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

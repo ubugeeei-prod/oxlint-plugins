@@ -7526,3 +7526,62 @@ fn cognitive_complexity_nested_function_accrues_to_outer() {
     );
     assert_eq!(d.len(), 1, "nested fn complexity accrues to outer");
 }
+
+// expression-complexity
+
+#[test]
+fn expression_complexity_exceeds_default_threshold() {
+    // 4 logical && operators: a&&b&&c&&d&&e → 4 > default threshold 3 → 1 diagnostic
+    let source = "const x = a && b && c && d && e;";
+    let diagnostics = scan("expression-complexity", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "expression-complexity");
+    assert_eq!(diagnostics[0].message_id, "expressionComplexity");
+}
+
+#[test]
+fn expression_complexity_at_threshold_no_report() {
+    // 3 logical && operators: a&&b&&c&&d → 3 is not > default threshold 3 → 0 diagnostics
+    let source = "const x = a && b && c && d;";
+    let diagnostics = scan("expression-complexity", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn expression_complexity_custom_threshold_reports() {
+    // 3 operators, threshold 2: 3 > 2 → 1 diagnostic
+    let mut options = options_for("expression-complexity");
+    options.expression_complexity_threshold = 2;
+    let source = "const x = a && b && c && d;";
+    let diagnostics = scan_sonarjs(source, "sample.ts", &options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "expression-complexity");
+}
+
+#[test]
+fn expression_complexity_resets_at_function_boundary() {
+    // outer expression: "a && <fn_call>" → 1 operator ≤ 3 → no report for outer
+    // inner function body: "c && d && e && f && g" → 4 operators > 3 → 1 report
+    let source = "const x = a && function() { return c && d && e && f && g; }();";
+    let diagnostics = scan("expression-complexity", source);
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn expression_complexity_mixes_logical_and_ternary() {
+    // a || b && c ? d : e → the ternary (?:) wraps (a || b && c);
+    // outer context sees: ternary=1, then inner logical chain: ||=1 (nesting=2), &&=1 (nesting=3)
+    // actually the ternary is the outermost (nesting=1 when entered); the || and && push it to 3
+    // total count in one chain: 3 operators (ternary + || + &&) → 3 is not > 3 → no report
+    let source = "const x = a || b && c ? d : e;";
+    let diagnostics = scan("expression-complexity", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn expression_complexity_uses_default_threshold_when_unset() {
+    // default threshold is 3; a top-level expression with exactly 3 operators must not fire
+    let source = "const x = a && b || c && d;";
+    let diagnostics = scan("expression-complexity", source);
+    assert!(diagnostics.is_empty());
+}

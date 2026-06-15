@@ -29,6 +29,7 @@ mod napi_abi {
         pub no_nested_functions_threshold: Option<u32>,
         pub function_name_format: Option<String>,
         pub cognitive_complexity_threshold: Option<u32>,
+        pub expression_complexity_threshold: Option<u32>,
     }
 
     #[napi(object)]
@@ -114,6 +115,9 @@ mod napi_abi {
             cognitive_complexity_threshold: options
                 .cognitive_complexity_threshold
                 .unwrap_or(default_options.cognitive_complexity_threshold),
+            expression_complexity_threshold: options
+                .expression_complexity_threshold
+                .unwrap_or(default_options.expression_complexity_threshold),
         };
 
         core::scan_sonarjs(&source_text, &filename, &core_options)

@@ -491,6 +491,10 @@ const messages = Object.freeze({
   'cognitive-complexity': {
     cognitiveComplexity: 'Refactor this function to reduce its Cognitive Complexity.',
   },
+  'expression-complexity': {
+    expressionComplexity:
+      'Refactor this expression to reduce the number of logical and conditional operators.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -779,6 +783,10 @@ const ruleDescriptions = Object.freeze({
   'cognitive-complexity':
     'Disallow functions whose Cognitive Complexity exceeds the configured threshold (the "threshold" option; default 15); ' +
     'nesting depth is factored into the increment for each structural element',
+  'expression-complexity':
+    'Disallow expressions with more than the configured number of logical (&&, ||, ??) ' +
+    'and conditional (?:) operators (the "threshold" option; default 3); ' +
+    'operators inside nested function or arrow-function bodies are counted independently',
 });
 
 const ruleTypes = Object.freeze({
@@ -917,6 +925,7 @@ const ruleTypes = Object.freeze({
   'no-empty-test-file': 'problem',
   deprecation: 'suggestion',
   'cognitive-complexity': 'suggestion',
+  'expression-complexity': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1054,6 +1063,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-empty-test-file': 'error',
   deprecation: 'error',
   'cognitive-complexity': 'error',
+  'expression-complexity': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
@@ -1182,6 +1192,15 @@ function schemaForRule(ruleName) {
       },
     ];
   }
+  if (ruleName === 'expression-complexity') {
+    return [
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   return [];
 }
 
@@ -1218,6 +1237,9 @@ function scanOptionsForRule(context, ruleName) {
   }
   if (ruleName === 'cognitive-complexity' && Number.isInteger(raw.threshold)) {
     options.cognitiveComplexityThreshold = raw.threshold;
+  }
+  if (ruleName === 'expression-complexity' && Number.isInteger(raw.threshold)) {
+    options.expressionComplexityThreshold = raw.threshold;
   }
   return options;
 }
