@@ -12366,19 +12366,19 @@
       },
       {
         "name": "no-in-misuse",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-in-misuse (Sonar key S4619). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of SonarJS S4619. Flags 'value in array' expressions where the right operand is a provably-array expression and the left is a non-numeric, non-Array.prototype-member string literal. Conservative zero-false-positive design: only direct array literals or never-reassigned const identifiers resolved via semantic analysis are flagged. Numeric index strings and Array.prototype member names are exempt. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "no-incomplete-assertions",

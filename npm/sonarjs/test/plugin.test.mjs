@@ -196,6 +196,7 @@ describe('sonarjs plugin shape', () => {
       'prefer-object-literal',
       'no-undefined-argument',
       'no-identical-functions',
+      'no-in-misuse',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -298,6 +299,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['prefer-object-literal']).toBe('object');
     expect(typeof plugin.rules['no-undefined-argument']).toBe('object');
     expect(typeof plugin.rules['no-identical-functions']).toBe('object');
+    expect(typeof plugin.rules['no-in-misuse']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -408,6 +410,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/prefer-object-literal']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-undefined-argument']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-identical-functions']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-in-misuse']).toBe('error');
   });
 });
 
@@ -3316,5 +3319,54 @@ describe('no-identical-functions rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-identical-functions)');
+  });
+});
+
+describe('no-in-misuse rule', () => {
+  it('reports a string value used with in against a direct array literal', () => {
+    const src = 'const found = "apple" in ["apple", "banana"];';
+    const reports = runRule('no-in-misuse', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('inMisuse');
+  });
+
+  it('reports a string value used with in against a const array identifier', () => {
+    const src = 'const fruits = ["apple", "banana"]; const found = "apple" in fruits;';
+    const reports = runRule('no-in-misuse', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('inMisuse');
+  });
+
+  it('does not report when the left operand is a numeric index string', () => {
+    const src = 'const found = "0" in ["apple", "banana"];';
+    const reports = runRule('no-in-misuse', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the left operand is an Array.prototype member name', () => {
+    const src = 'const hasLength = "length" in ["apple"];';
+    const reports = runRule('no-in-misuse', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the left operand is not a string literal', () => {
+    const src = 'const k = "apple"; const found = k in ["apple", "banana"];';
+    const reports = runRule('no-in-misuse', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the right operand is not a provable array', () => {
+    const src = 'const found = "apple" in someObject;';
+    const reports = runRule('no-in-misuse', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-in-misuse through the CLI', () => {
+    const src = 'const found = "apple" in ["apple", "banana"];';
+    const result = runOxlint('no-in-misuse', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-in-misuse)');
   });
 });

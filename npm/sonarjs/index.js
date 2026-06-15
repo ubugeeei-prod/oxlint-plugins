@@ -370,6 +370,10 @@ const messages = Object.freeze({
     identicalFunctions:
       'Update this function so that its implementation is not identical to the one on line {{value}}.',
   },
+  'no-in-misuse': {
+    inMisuse:
+      "Use 'indexOf' or 'includes' to check for the presence of a value in this array; the 'in' operator only checks property keys.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -572,6 +576,8 @@ const ruleDescriptions = Object.freeze({
     "Disallow passing the literal 'undefined' as the last argument to a function or constructor call; omitting it is equivalent and avoids redundant noise",
   'no-identical-functions':
     'Disallow two functions in the same file whose parameter list and body are byte-for-byte identical; such duplication is almost always a copy-paste mistake or a missed abstraction (functions spanning fewer than 3 lines are exempt)',
+  'no-in-misuse':
+    "Disallow using the 'in' operator to test whether a value is an element of an array; use 'Array.prototype.includes' or 'Array.prototype.indexOf' instead, because 'in' checks property keys, not values",
 });
 
 const ruleTypes = Object.freeze({
@@ -677,6 +683,7 @@ const ruleTypes = Object.freeze({
   'prefer-object-literal': 'suggestion',
   'no-undefined-argument': 'suggestion',
   'no-identical-functions': 'suggestion',
+  'no-in-misuse': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -782,6 +789,7 @@ const recommendedRuleConfig = Object.freeze({
   'prefer-object-literal': 'error',
   'no-undefined-argument': 'error',
   'no-identical-functions': 'error',
+  'no-in-misuse': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

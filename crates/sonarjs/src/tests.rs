@@ -5631,3 +5631,72 @@ const g = (x) => {
     assert_eq!(diagnostics[0].rule_name, "no-identical-functions");
     assert_eq!(diagnostics[0].message_id, "identicalFunctions");
 }
+
+#[test]
+fn no_in_misuse_reports_string_value_in_array_literal() {
+    let diagnostics = scan(
+        "no-in-misuse",
+        r#"const found = "apple" in ["apple", "banana"];"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-in-misuse");
+    assert_eq!(diagnostics[0].message_id, "inMisuse");
+}
+
+#[test]
+fn no_in_misuse_reports_string_value_in_const_array_identifier() {
+    let diagnostics = scan(
+        "no-in-misuse",
+        r#"const fruits = ["apple", "banana"]; const found = "apple" in fruits;"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-in-misuse");
+    assert_eq!(diagnostics[0].message_id, "inMisuse");
+}
+
+#[test]
+fn no_in_misuse_does_not_report_numeric_index_string() {
+    // "0" is a valid array-index key — not a value-membership check.
+    let diagnostics = scan(
+        "no-in-misuse",
+        r#"const found = "0" in ["apple", "banana"];"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_in_misuse_does_not_report_array_prototype_member() {
+    // "length" is a legitimate property probe.
+    let diagnostics = scan("no-in-misuse", r#"const has = "length" in [1, 2, 3];"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_in_misuse_does_not_report_push_prototype_member() {
+    let diagnostics = scan("no-in-misuse", r#"const has = "push" in [1, 2, 3];"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_in_misuse_does_not_report_non_string_literal_left() {
+    // Left operand is a variable — not a string literal, conservatively skipped.
+    let diagnostics = scan(
+        "no-in-misuse",
+        r#"const k = "apple"; const found = k in [1, 2];"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_in_misuse_does_not_report_right_is_not_array() {
+    // Right operand is an identifier that doesn't resolve to an array literal.
+    let diagnostics = scan("no-in-misuse", r#"const found = "apple" in someObject;"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_in_misuse_does_not_report_object_right_operand() {
+    // Right operand is an object literal, not an array.
+    let diagnostics = scan("no-in-misuse", r#"const found = "apple" in { apple: 1 };"#);
+    assert!(diagnostics.is_empty());
+}
