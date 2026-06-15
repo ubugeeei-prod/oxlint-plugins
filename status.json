@@ -15872,19 +15872,19 @@
       },
       {
         "name": "line-comment-position",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule line-comment-position."
+        "notes": "Rust token-stream port of @stylistic/line-comment-position with default ignore patterns, deprecated applyDefaultPatterns support, custom ignorePattern coverage, and npm plugin/API tests."
       },
       {
         "name": "lines-around-comment",

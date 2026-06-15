@@ -79,6 +79,7 @@ const stylisticRuleFixtures = [
   ['implicit-arrow-linebreak', 'const f = (a) =>\n  a;\n', [], ['unexpectedLinebreak']],
   ['operator-linebreak', 'const x = 1\n  + 2;\n', [], ['operatorAtBeginning']],
   ['keyword-spacing', 'if(foo) {}\n', [], ['missingAfter']],
+  ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
 ];
 
 function runRule(ruleName, sourceText, options, settings) {
@@ -277,6 +278,49 @@ describe('stylistic plugin', () => {
         },
       }),
     ).toEqual([{ range: [insertAt, insertAt], replacementText: ',' }]);
+  });
+
+  it('honors line-comment-position options and ignore patterns', () => {
+    expect(
+      runRule('line-comment-position', '// jscs: disable\nvalue;\n', [
+        { position: 'beside', applyDefaultIgnorePatterns: false },
+      ]),
+    ).toMatchObject([
+      {
+        messageId: 'beside',
+        node: { range: [0, 16] },
+      },
+    ]);
+
+    expect(
+      messageIds(
+        runRule('line-comment-position', 'value; // linter\nvalue; // invalid\n', [
+          { position: 'above', ignorePattern: 'linter|pragma' },
+        ]),
+      ),
+    ).toEqual(['above']);
+
+    expect(
+      runRule(
+        'line-comment-position',
+        'value; // eslint-disable-line\nvalue; // global NAME\n',
+        [],
+      ),
+    ).toEqual([]);
+  });
+
+  it('runs line-comment-position through shared stylistic settings', () => {
+    expect(
+      messageIds(
+        runRule('line-comment-position', '// above\nvalue; // beside\n', [], {
+          corsaStylistic: {
+            rules: {
+              'line-comment-position': ['beside'],
+            },
+          },
+        }),
+      ),
+    ).toEqual(['beside']);
   });
 
   it('works through oxlint jsPlugins config', () => {

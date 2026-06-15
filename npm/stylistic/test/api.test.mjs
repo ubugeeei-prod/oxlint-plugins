@@ -7,6 +7,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-trailing-spaces');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('quote-props');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('line-comment-position');
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -66,5 +67,17 @@ describe('stylistic native API', () => {
       'missingPadBlock',
       'missingPadBlock',
     ]);
+  });
+
+  it('runs line-comment-position with upstream default ignores', () => {
+    const diagnostics = runNativeStylisticLint(
+      'value; // inline\nvalue; // eslint-disable-line\n// above\n',
+      {
+        rules: [{ name: 'line-comment-position', options: [] }],
+      },
+    );
+
+    expect(diagnostics.map((diagnostic) => diagnostic.messageId)).toEqual(['above']);
+    expect(diagnostics[0].range).toEqual({ start: 7, end: 16 });
   });
 });

@@ -1422,6 +1422,7 @@ dependencies = [
  "insta",
  "oxlint-plugins-_carton",
  "phf",
+ "regex",
  "serde",
  "serde_json",
 ]
