@@ -8933,3 +8933,41 @@ fn no_unsafe_unzip_does_not_report_bare_call() {
     let diagnostics = scan("no-unsafe-unzip", "foo();");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn disabled_timeout_reports_one_past_32_bit_max() {
+    let diagnostics = scan("disabled-timeout", "this.timeout(2147483648);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "disabled-timeout");
+    assert_eq!(diagnostics[0].message_id, "disabledTimeout");
+}
+
+#[test]
+fn disabled_timeout_reports_far_past_max() {
+    let diagnostics = scan("disabled-timeout", "this.timeout(9999999999);");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn disabled_timeout_does_not_report_zero() {
+    let diagnostics = scan("disabled-timeout", "this.timeout(0);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn disabled_timeout_does_not_report_value_within_range() {
+    let diagnostics = scan("disabled-timeout", "this.timeout(5000);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn disabled_timeout_does_not_report_non_this_receiver() {
+    let diagnostics = scan("disabled-timeout", "foo.timeout(2147483648);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn disabled_timeout_does_not_report_dynamic_argument() {
+    let diagnostics = scan("disabled-timeout", "this.timeout(x);");
+    assert!(diagnostics.is_empty());
+}
