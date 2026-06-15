@@ -202,6 +202,7 @@ describe('sonarjs plugin shape', () => {
       'no-extra-arguments',
       'link-with-target-blank',
       'no-hardcoded-passwords',
+      'no-ignored-exceptions',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -310,6 +311,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-extra-arguments']).toBe('object');
     expect(typeof plugin.rules['link-with-target-blank']).toBe('object');
     expect(typeof plugin.rules['no-hardcoded-passwords']).toBe('object');
+    expect(typeof plugin.rules['no-ignored-exceptions']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -426,6 +428,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-extra-arguments']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/link-with-target-blank']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-hardcoded-passwords']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-ignored-exceptions']).toBe('error');
   });
 });
 
@@ -3656,5 +3659,47 @@ describe('no-hardcoded-passwords rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-hardcoded-passwords)');
+  });
+});
+
+describe('no-ignored-exceptions rule', () => {
+  it('reports an empty catch block with a binding parameter', () => {
+    const src = 'try { foo(); } catch (e) {}';
+    const reports = runRule('no-ignored-exceptions', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('ignoredException');
+  });
+
+  it('reports an empty catch block with optional binding (no parameter)', () => {
+    const src = 'try { foo(); } catch {}';
+    const reports = runRule('no-ignored-exceptions', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('ignoredException');
+  });
+
+  it('does not report a catch block that logs the exception', () => {
+    const src = 'try { foo(); } catch (e) { log(e); }';
+    const reports = runRule('no-ignored-exceptions', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an empty catch block that contains a comment', () => {
+    const src = 'try { foo(); } catch (e) { /* ignore on purpose */ }';
+    const reports = runRule('no-ignored-exceptions', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a catch block that rethrows the exception', () => {
+    const src = 'try { foo(); } catch (e) { throw e; }';
+    const reports = runRule('no-ignored-exceptions', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-ignored-exceptions through the CLI', () => {
+    const result = runOxlint('no-ignored-exceptions', 'try { foo(); } catch (e) {}');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-ignored-exceptions)');
   });
 });

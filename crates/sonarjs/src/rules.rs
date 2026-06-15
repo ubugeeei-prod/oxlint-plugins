@@ -57,6 +57,7 @@ mod no_hardcoded_passwords;
 mod no_identical_conditions;
 mod no_identical_expressions;
 mod no_identical_functions;
+mod no_ignored_exceptions;
 mod no_in_misuse;
 mod no_inconsistent_returns;
 mod no_invalid_regexp;

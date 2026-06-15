@@ -5997,3 +5997,41 @@ fn no_hardcoded_passwords_does_not_report_partial_name_match() {
     let diagnostics = scan("no-hardcoded-passwords", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_ignored_exceptions_reports_empty_catch_with_binding() {
+    let source = "try { foo(); } catch (e) {}";
+    let diagnostics = scan("no-ignored-exceptions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-ignored-exceptions");
+    assert_eq!(diagnostics[0].message_id, "ignoredException");
+}
+
+#[test]
+fn no_ignored_exceptions_reports_empty_catch_without_binding() {
+    let source = "try { foo(); } catch {}";
+    let diagnostics = scan("no-ignored-exceptions", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "ignoredException");
+}
+
+#[test]
+fn no_ignored_exceptions_does_not_report_non_empty_catch() {
+    let source = "try { foo(); } catch (e) { log(e); }";
+    let diagnostics = scan("no-ignored-exceptions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_ignored_exceptions_does_not_report_catch_with_block_comment() {
+    let source = "try { foo(); } catch (e) { /* intentionally ignored */ }";
+    let diagnostics = scan("no-ignored-exceptions", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_ignored_exceptions_does_not_report_catch_with_line_comment() {
+    let source = "try { foo(); } catch (e) {\n// safe to ignore here\n}";
+    let diagnostics = scan("no-ignored-exceptions", source);
+    assert!(diagnostics.is_empty());
+}
