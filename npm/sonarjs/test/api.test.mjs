@@ -143,6 +143,7 @@ const expectedRuleNames = [
   'no-fallthrough',
   'no-commented-code',
   'no-incomplete-assertions',
+  'destructuring-assignment-syntax',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

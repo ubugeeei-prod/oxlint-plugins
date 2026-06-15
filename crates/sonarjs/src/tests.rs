@@ -7789,3 +7789,81 @@ fn no_commented_code_does_not_flag_url_comment() {
     let diagnostics = scan("no-commented-code", source);
     assert!(diagnostics.is_empty());
 }
+
+// destructuring-assignment-syntax
+
+#[test]
+fn destructuring_assignment_syntax_reports_second_consecutive_extraction() {
+    let source = "const a = obj.a;\nconst b = obj.b;";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "destructuring-assignment-syntax");
+    assert_eq!(diagnostics[0].message_id, "useDestructuring");
+}
+
+#[test]
+fn destructuring_assignment_syntax_reports_each_declaration_after_first_in_group() {
+    let source = "const a = obj.a;\nconst b = obj.b;\nconst c = obj.c;";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].message_id, "useDestructuring");
+    assert_eq!(diagnostics[1].message_id, "useDestructuring");
+}
+
+#[test]
+fn destructuring_assignment_syntax_does_not_report_lone_extraction() {
+    let source = "const a = obj.a;";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn destructuring_assignment_syntax_does_not_report_when_binding_differs_from_property() {
+    let source = "const x = obj.a;\nconst y = obj.b;";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn destructuring_assignment_syntax_does_not_report_chained_source() {
+    let source = "const a = foo.bar.a;\nconst b = foo.bar.b;";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn destructuring_assignment_syntax_does_not_report_different_base_objects() {
+    let source = "const a = foo.a;\nconst b = bar.b;";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn destructuring_assignment_syntax_does_not_report_non_consecutive_declarations() {
+    let source = "const a = obj.a;\ndoSomething();\nconst b = obj.b;";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn destructuring_assignment_syntax_does_not_report_computed_member_access() {
+    let source = "const a = obj['a'];\nconst b = obj['b'];";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn destructuring_assignment_syntax_works_in_function_body() {
+    let source = "function f() { const a = obj.a;\nconst b = obj.b; }";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "useDestructuring");
+}
+
+#[test]
+fn destructuring_assignment_syntax_works_with_let_keyword() {
+    let source = "let a = obj.a;\nlet b = obj.b;";
+    let diagnostics = scan("destructuring-assignment-syntax", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "useDestructuring");
+}

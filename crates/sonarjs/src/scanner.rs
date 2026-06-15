@@ -298,6 +298,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_same_line_conditional(&it.body);
         self.check_no_unenclosed_multiline_block(&it.body);
         self.check_prefer_object_literal(&it.body);
+        self.check_destructuring_assignment_syntax(&it.body);
         self.enter_expression_complexity_scope();
         walk::walk_program(self, it);
         self.leave_expression_complexity_scope();
@@ -313,6 +314,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_same_line_conditional(&it.body);
         self.check_no_unenclosed_multiline_block(&it.body);
         self.check_prefer_object_literal(&it.body);
+        self.check_destructuring_assignment_syntax(&it.body);
         walk::walk_block_statement(self, it);
     }
 
@@ -354,6 +356,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_same_line_conditional(&it.consequent);
         self.check_no_unenclosed_multiline_block(&it.consequent);
         self.check_prefer_object_literal(&it.consequent);
+        self.check_destructuring_assignment_syntax(&it.consequent);
         if it.test.is_some() {
             self.add_cyclomatic_complexity();
         }
@@ -866,6 +869,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_same_line_conditional(&it.statements);
         self.check_no_unenclosed_multiline_block(&it.statements);
         self.check_prefer_object_literal(&it.statements);
+        self.check_destructuring_assignment_syntax(&it.statements);
         walk::walk_function_body(self, it);
     }
 }
