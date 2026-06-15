@@ -237,6 +237,7 @@ describe('sonarjs plugin shape', () => {
       'destructuring-assignment-syntax',
       'no-element-overwrite',
       'no-redundant-assignments',
+      'no-unused-collection',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -379,6 +380,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['destructuring-assignment-syntax']).toBe('object');
     expect(typeof plugin.rules['no-element-overwrite']).toBe('object');
     expect(typeof plugin.rules['no-redundant-assignments']).toBe('object');
+    expect(typeof plugin.rules['no-unused-collection']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -533,6 +535,7 @@ describe('sonarjs plugin shape', () => {
     );
     expect(plugin.configs.recommended.rules['sonarjs/no-element-overwrite']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-redundant-assignments']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-unused-collection']).toBe('error');
   });
 });
 
@@ -5191,5 +5194,48 @@ describe('no-redundant-assignments rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-redundant-assignments)');
+  });
+});
+
+describe('no-unused-collection rule', () => {
+  it('reports an array that is only written to via push', () => {
+    const source = 'const a = [];\na.push(1);\na.push(2);';
+    const reports = runRule('no-unused-collection', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unusedCollection');
+  });
+
+  it('reports a Map that is only written to via set', () => {
+    const source = "const m = new Map();\nm.set('k', 1);";
+    const reports = runRule('no-unused-collection', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unusedCollection');
+  });
+
+  it('does not report when the array is returned', () => {
+    const source = 'function f() { const a = [];\na.push(1);\nreturn a; }';
+    const reports = runRule('no-unused-collection', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the array is passed to a function', () => {
+    const source = 'const a = [];\na.push(1);\nconsole.log(a);';
+    const reports = runRule('no-unused-collection', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the length property is read', () => {
+    const source = 'const a = [];\na.push(1);\nconst b = a.length;';
+    const reports = runRule('no-unused-collection', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-unused-collection through the CLI', () => {
+    const source = 'const a = [];\na.push(1);\na.push(2);';
+    const result = runOxlint('no-unused-collection', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-unused-collection)');
   });
 });
