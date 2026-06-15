@@ -439,6 +439,14 @@ const messages = Object.freeze({
     unicodeAwareRegex:
       "Add the 'u' flag to this regular expression so its Unicode property escape (\\p{...}) works correctly.",
   },
+  'no-undefined-assignment': {
+    noUndefinedAssignment:
+      "Do not explicitly assign 'undefined'; use 'null' or leave the variable uninitialized.",
+  },
+  'no-empty-after-reluctant': {
+    emptyAfterReluctant:
+      'This reluctant quantifier will always match the empty string because everything that follows it is optional or there is nothing after it; review the pattern.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -689,6 +697,12 @@ const ruleDescriptions = Object.freeze({
   'unicode-aware-regex':
     "Disallow Unicode property escapes (\\p{...} or \\P{...}) in regular expressions that lack the 'u' or 'v' flag, " +
     "since without those flags the engine treats \\p as a literal 'p'",
+  'no-undefined-assignment':
+    "Disallow explicitly assigning the bare identifier 'undefined' in an assignment expression; " +
+    "use 'null' to clear a value or leave the variable uninitialized instead",
+  'no-empty-after-reluctant':
+    'Disallow a reluctant (lazy) quantifier that can match the empty string when every following ' +
+    'term in the same alternative is also optional or absent, making the quantifier always match empty',
 });
 
 const ruleTypes = Object.freeze({
@@ -813,6 +827,8 @@ const ruleTypes = Object.freeze({
   'no-variable-usage-before-declaration': 'problem',
   'arguments-order': 'problem',
   'unicode-aware-regex': 'problem',
+  'no-undefined-assignment': 'suggestion',
+  'no-empty-after-reluctant': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -937,6 +953,8 @@ const recommendedRuleConfig = Object.freeze({
   'no-variable-usage-before-declaration': 'error',
   'arguments-order': 'error',
   'unicode-aware-regex': 'error',
+  'no-undefined-assignment': 'error',
+  'no-empty-after-reluctant': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
