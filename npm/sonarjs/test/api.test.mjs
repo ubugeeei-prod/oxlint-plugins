@@ -156,6 +156,7 @@ const expectedRuleNames = [
   'operation-returning-nan',
   'production-debug',
   'no-hardcoded-secrets',
+  'concise-regex',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

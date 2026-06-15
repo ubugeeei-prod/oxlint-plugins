@@ -8607,3 +8607,56 @@ fn no_hardcoded_secrets_does_not_report_placeholder_value() {
     let diagnostics = scan("no-hardcoded-secrets", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn concise_regex_reports_digit_class() {
+    let diagnostics = scan("concise-regex", "const r = /[0-9]/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "concise-regex");
+    assert_eq!(diagnostics[0].message_id, "conciseRegex");
+}
+
+#[test]
+fn concise_regex_reports_negated_digit_class() {
+    let diagnostics = scan("concise-regex", "const r = /[^0-9]/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "conciseRegex");
+}
+
+#[test]
+fn concise_regex_reports_word_class() {
+    let diagnostics = scan("concise-regex", "const r = /[A-Za-z0-9_]/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "conciseRegex");
+}
+
+#[test]
+fn concise_regex_reports_word_class_any_order() {
+    let diagnostics = scan("concise-regex", "const r = /[_0-9a-zA-Z]/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "conciseRegex");
+}
+
+#[test]
+fn concise_regex_does_not_report_extra_member() {
+    let diagnostics = scan("concise-regex", "const r = /[0-9a]/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn concise_regex_does_not_report_other_range() {
+    let diagnostics = scan("concise-regex", "const r = /[a-z]/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn concise_regex_does_not_report_word_class_missing_underscore() {
+    let diagnostics = scan("concise-regex", "const r = /[A-Za-z0-9]/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn concise_regex_does_not_report_already_concise() {
+    let diagnostics = scan("concise-regex", "const r = /\\d/;");
+    assert!(diagnostics.is_empty());
+}

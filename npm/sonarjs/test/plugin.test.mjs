@@ -247,6 +247,7 @@ describe('sonarjs plugin shape', () => {
       'operation-returning-nan',
       'production-debug',
       'no-hardcoded-secrets',
+      'concise-regex',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -5699,5 +5700,48 @@ describe('no-hardcoded-secrets rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-hardcoded-secrets)');
+  });
+});
+
+describe('concise-regex rule', () => {
+  it('reports a verbose [0-9] digit class', () => {
+    const reports = runRule('concise-regex', 'const r = /[0-9]/;');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('conciseRegex');
+  });
+
+  it('reports a negated [^0-9] digit class', () => {
+    const reports = runRule('concise-regex', 'const r = /[^0-9]/;');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('conciseRegex');
+  });
+
+  it('reports a verbose [A-Za-z0-9_] word class in any order', () => {
+    const reports = runRule('concise-regex', 'const r = /[_0-9a-zA-Z]/;');
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('conciseRegex');
+  });
+
+  it('does not report a class with an extra member', () => {
+    const reports = runRule('concise-regex', 'const r = /[0-9a]/;');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a word class missing the underscore', () => {
+    const reports = runRule('concise-regex', 'const r = /[A-Za-z0-9]/;');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an already concise shorthand', () => {
+    const reports = runRule('concise-regex', 'const r = /\\d/;');
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports concise-regex through the CLI', () => {
+    const result = runOxlint('concise-regex', 'const r = /[0-9]/;', 'sample.ts');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(concise-regex)');
   });
 });

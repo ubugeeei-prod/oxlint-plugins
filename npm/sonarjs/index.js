@@ -557,6 +557,10 @@ const messages = Object.freeze({
   'no-hardcoded-secrets': {
     hardcodedSecret: 'Revoke and change this secret, as it is compromised by being hardcoded here.',
   },
+  'concise-regex': {
+    conciseRegex:
+      'Use a concise character class shorthand (\\d, \\D, or \\w) instead of this verbose character class.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -902,6 +906,9 @@ const ruleDescriptions = Object.freeze({
     'Disallow hardcoded secret/credential string literals assigned to a secret-named identifier ' +
     '(secret, apiKey, token, access_token, private_key, etc.); ' +
     'provide secrets via configuration or environment variables instead',
+  'concise-regex':
+    'Prefer concise character class shorthands; flags only the exact verbose forms ' +
+    '[0-9] (\\d), [^0-9] (\\D), and [A-Za-z0-9_] (\\w)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1058,6 +1065,7 @@ const ruleTypes = Object.freeze({
   'operation-returning-nan': 'problem',
   'production-debug': 'problem',
   'no-hardcoded-secrets': 'problem',
+  'concise-regex': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1213,6 +1221,7 @@ const recommendedRuleConfig = Object.freeze({
   'operation-returning-nan': 'error',
   'production-debug': 'error',
   'no-hardcoded-secrets': 'error',
+  'concise-regex': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
