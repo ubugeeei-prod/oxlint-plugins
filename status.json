@@ -2212,7 +2212,7 @@
       },
       {
         "name": "no-unused-disable",
-        "status": "approximation",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
@@ -2221,10 +2221,10 @@
         "tests": {
           "insta": true,
           "vitest": true,
-          "lsp": false,
+          "lsp": true,
           "oxlintIntegration": true
         },
-        "notes": "Deprecated upstream (use reportUnusedDisableDirectives). Approximation built on sourceCode.getDisableDirectives().problems; the upstream RuleTester suite needs the ESLint runtime, so the rule is covered by a synthetic-problem mechanism test (insta + Vitest) instead of the espree replay harness."
+        "notes": "Deprecated upstream (use reportUnusedDisableDirectives). Rust/NAPI port built on sourceCode.getDisableDirectives().problems; the upstream RuleTester suite needs the ESLint runtime, so coverage uses synthetic-problem Rust/API/CLI/LSP tests instead of the espree replay harness."
       }
     ]
   },

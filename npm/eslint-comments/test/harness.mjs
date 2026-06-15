@@ -79,6 +79,12 @@ export function runRule(ruleName, testCase) {
     ast,
     getAllComments: () => comments,
   };
+  if (testCase.disableDirectiveProblems) {
+    sourceCode.getDisableDirectives = () => ({
+      directives: [],
+      problems: testCase.disableDirectiveProblems,
+    });
+  }
 
   const reports = [];
   const context = {
