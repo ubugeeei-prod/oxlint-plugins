@@ -231,6 +231,7 @@ describe('sonarjs plugin shape', () => {
       'cognitive-complexity',
       'expression-complexity',
       'prefer-regexp-exec',
+      'no-fallthrough',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -367,6 +368,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['deprecation']).toBe('object');
     expect(typeof plugin.rules['cognitive-complexity']).toBe('object');
     expect(typeof plugin.rules['expression-complexity']).toBe('object');
+    expect(typeof plugin.rules['no-fallthrough']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -513,6 +515,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/deprecation']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/cognitive-complexity']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/expression-complexity']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-fallthrough']).toBe('error');
   });
 });
 
@@ -4912,5 +4915,35 @@ describe('prefer-regexp-exec rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(prefer-regexp-exec)');
+  });
+});
+
+describe('no-fallthrough rule', () => {
+  it('reports a switch case that falls into the next case', () => {
+    const source = 'switch (x) { case 1: doWork(); case 2: done(); break; }';
+    const reports = runRule('no-fallthrough', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noFallthrough');
+  });
+
+  it('does not report a case that ends with break', () => {
+    const source = 'switch (x) { case 1: doWork(); break; case 2: done(); }';
+    const reports = runRule('no-fallthrough', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an intentional fallthrough comment', () => {
+    const source = 'switch (x) { case 1: doWork(); // fall through\ncase 2: done(); }';
+    const reports = runRule('no-fallthrough', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-fallthrough through the CLI', () => {
+    const source = 'switch (x) { case 1: doWork(); case 2: done(); break; }';
+    const result = runOxlint('no-fallthrough', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-fallthrough)');
   });
 });

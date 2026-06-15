@@ -65,6 +65,7 @@ mod no_empty_test_file;
 mod no_equals_in_for_termination;
 mod no_exclusive_tests;
 mod no_extra_arguments;
+mod no_fallthrough;
 mod no_for_in_iterable;
 mod no_function_declaration_in_block;
 mod no_global_this;
