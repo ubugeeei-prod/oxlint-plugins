@@ -208,6 +208,7 @@ describe('sonarjs plugin shape', () => {
       'no-ignored-exceptions',
       'no-unused-function-argument',
       'object-alt-content',
+      'no-use-of-empty-return-value',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -322,6 +323,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-ignored-exceptions']).toBe('object');
     expect(typeof plugin.rules['no-unused-function-argument']).toBe('object');
     expect(typeof plugin.rules['object-alt-content']).toBe('object');
+    expect(typeof plugin.rules['no-use-of-empty-return-value']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -444,6 +446,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-ignored-exceptions']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-unused-function-argument']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/object-alt-content']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-use-of-empty-return-value']).toBe('error');
   });
 });
 
@@ -3971,5 +3974,55 @@ describe('object-alt-content rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(object-alt-content)');
+  });
+});
+
+describe('no-use-of-empty-return-value rule', () => {
+  it('reports when a void function result is assigned to a variable', () => {
+    const src = 'function voidFn() { console.log("x"); } const x = voidFn();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useOfEmptyReturnValue');
+  });
+
+  it('reports when a void function result is assigned via plain assignment', () => {
+    const src = 'function voidFn() {} let x; x = voidFn();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useOfEmptyReturnValue');
+  });
+
+  it('reports when a void function result is returned from another function', () => {
+    const src = 'function voidFn() {} function outer() { return voidFn(); }';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('useOfEmptyReturnValue');
+  });
+
+  it('does not report when the void function is called as a bare statement', () => {
+    const src = 'function voidFn() {} voidFn();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the called function does return a value', () => {
+    const src = 'function valued() { return 42; } const x = valued();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an async function whose result is assigned', () => {
+    const src = 'async function asyncFn() {} const p = asyncFn();';
+    const reports = runRule('no-use-of-empty-return-value', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-use-of-empty-return-value through the CLI', () => {
+    const src = 'function voidFn() { console.log("x"); } const x = voidFn();';
+    const result = runOxlint('no-use-of-empty-return-value', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-use-of-empty-return-value)');
   });
 });
