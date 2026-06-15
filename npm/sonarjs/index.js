@@ -614,6 +614,10 @@ const messages = Object.freeze({
   cors: {
     cors: 'This permissive CORS policy allows any origin; restrict it to trusted origins.',
   },
+  'dns-prefetching': {
+    dnsPrefetching:
+      'Enabling DNS prefetching can leak information about the links a user is offered; disable it unless required.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1007,6 +1011,10 @@ const ruleDescriptions = Object.freeze({
     'Flag permissive CORS configurations that trust any origin with the wildcard "*"; ' +
     'matches setHeader("Access-Control-Allow-Origin", "*"), cors({ origin: "*" }), and ' +
     'a headers object literal with Access-Control-Allow-Origin set to "*"',
+  'dns-prefetching':
+    'Flag helmet configuration that re-enables DNS prefetching; matches a ' +
+    'dnsPrefetchControl({ allow: true }) call whose allow property is the boolean ' +
+    'literal true',
 });
 
 const ruleTypes = Object.freeze({
@@ -1178,6 +1186,7 @@ const ruleTypes = Object.freeze({
   'file-permissions': 'problem',
   'file-uploads': 'problem',
   cors: 'problem',
+  'dns-prefetching': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1348,6 +1357,7 @@ const recommendedRuleConfig = Object.freeze({
   'file-permissions': 'error',
   'file-uploads': 'error',
   cors: 'error',
+  'dns-prefetching': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

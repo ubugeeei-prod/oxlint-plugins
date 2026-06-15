@@ -171,6 +171,7 @@ const expectedRuleNames = [
   'file-permissions',
   'file-uploads',
   'cors',
+  'dns-prefetching',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3532,6 +3533,34 @@ describe('cors rule', () => {
   it('does not report an unrelated setHeader call', () => {
     const source = 'res.setHeader("Content-Type", "x");';
     const diagnostics = scan('cors', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('dns-prefetching rule', () => {
+  it('reports dnsPrefetchControl with allow: true', () => {
+    const source = 'helmet.dnsPrefetchControl({ allow: true });';
+    const diagnostics = scan('dns-prefetching', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('dns-prefetching');
+    expect(diagnostics[0].messageId).toBe('dnsPrefetching');
+  });
+
+  it('does not report dnsPrefetchControl with allow: false', () => {
+    const source = 'helmet.dnsPrefetchControl({ allow: false });';
+    const diagnostics = scan('dns-prefetching', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report dnsPrefetchControl with no arguments', () => {
+    const source = 'helmet.dnsPrefetchControl();';
+    const diagnostics = scan('dns-prefetching', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal allow value', () => {
+    const source = 'helmet.dnsPrefetchControl({ allow: x });';
+    const diagnostics = scan('dns-prefetching', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

@@ -643,6 +643,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_cors(it);
         self.check_file_permissions(it);
         self.check_file_uploads(it);
+        self.check_dns_prefetching(it);
         self.check_web_sql_database(it);
         self.check_no_intrusive_permissions(it);
         self.check_no_unsafe_unzip(it);

@@ -9288,3 +9288,55 @@ fn cors_does_not_report_dynamic_set_header_origin() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn dns_prefetching_reports_allow_true() {
+    let diagnostics = scan(
+        "dns-prefetching",
+        "helmet.dnsPrefetchControl({ allow: true });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "dns-prefetching");
+    assert_eq!(diagnostics[0].message_id, "dnsPrefetching");
+}
+
+#[test]
+fn dns_prefetching_does_not_report_allow_false() {
+    let diagnostics = scan(
+        "dns-prefetching",
+        "helmet.dnsPrefetchControl({ allow: false });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn dns_prefetching_does_not_report_no_args() {
+    let diagnostics = scan("dns-prefetching", "helmet.dnsPrefetchControl();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn dns_prefetching_reports_any_receiver() {
+    // The check keys off the distinctive `dnsPrefetchControl` method name only,
+    // so an unrelated receiver is still flagged (documented zero-FP trade-off).
+    let diagnostics = scan(
+        "dns-prefetching",
+        "foo.dnsPrefetchControl({ allow: true });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn dns_prefetching_does_not_report_non_literal_allow() {
+    let diagnostics = scan(
+        "dns-prefetching",
+        "helmet.dnsPrefetchControl({ allow: x });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn dns_prefetching_does_not_report_unrelated_callee() {
+    let diagnostics = scan("dns-prefetching", "bar();");
+    assert!(diagnostics.is_empty());
+}
