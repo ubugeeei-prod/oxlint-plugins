@@ -12478,19 +12478,19 @@
       },
       {
         "name": "no-invariant-returns",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
-          "insta": false,
-          "vitest": false,
+          "insta": true,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-invariant-returns (Sonar key S3516). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port from public RSPEC S3516. Flags functions where every explicit value return is byte-identical (at least two value returns, no bare return). Pure AST text comparison via self.text(span). No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "no-inverted-boolean-check",
@@ -14078,19 +14078,19 @@
       },
       {
         "name": "unicode-aware-regex",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
-          "lsp": false,
-          "oxlintIntegration": false
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule unicode-aware-regex (Sonar key S5867). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of SonarJS S5867. Flags regex literals without u/v flag that contain a Unicode property escape \\p{...} or \\P{...}; in non-unicode mode the engine treats \\p as a literal p, so this is almost certainly a bug. Known under-report: \\u{...} hex code-point escapes are not checked. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "unused-import",

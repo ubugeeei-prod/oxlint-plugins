@@ -110,6 +110,7 @@ const expectedRuleNames = [
   'no-in-misuse',
   'no-require-or-define',
   'no-invalid-regexp',
+  'no-invariant-returns',
   'no-extra-arguments',
   'link-with-target-blank',
   'no-weak-cipher',
@@ -122,6 +123,7 @@ const expectedRuleNames = [
   'block-scoped-var',
   'no-variable-usage-before-declaration',
   'arguments-order',
+  'unicode-aware-regex',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -1750,6 +1752,32 @@ describe('sonarjs native API', () => {
     expect(diagnostics).toHaveLength(1);
   });
 
+  it('reports no-invariant-returns for a function always returning the same value', () => {
+    const source = 'function f(x) {\n  if (x > 0) return 42;\n  return 42;\n}';
+    const diagnostics = scan('no-invariant-returns', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-invariant-returns');
+    expect(diagnostics[0].messageId).toBe('invariantReturn');
+  });
+
+  it('does not report no-invariant-returns when return values differ', () => {
+    const source = 'function f(x) {\n  if (x > 0) return 1;\n  return 2;\n}';
+    const diagnostics = scan('no-invariant-returns', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-invariant-returns with only one value return', () => {
+    const source = 'function f(x) {\n  if (x) return 42;\n}';
+    const diagnostics = scan('no-invariant-returns', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report no-invariant-returns when a bare return is present', () => {
+    const source = 'function f(x) {\n  if (!x) return;\n  return 42;\n}';
+    const diagnostics = scan('no-invariant-returns', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
   it('reports no-same-line-conditional for an if on the closing brace line', () => {
     const source = 'if (a) {\n  doA();\n} if (b) {\n  doB();\n}';
     const diagnostics = scan('no-same-line-conditional', source);
@@ -2795,6 +2823,37 @@ describe('arguments-order rule', () => {
 
   it('does not report when argument names do not match parameter names', () => {
     const diagnostics = scan('arguments-order', 'function f(a, b) {} const x = 1, y = 2; f(x, y);');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('unicode-aware-regex rule', () => {
+  it('reports a \\p{...} property escape without u flag', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /\\p{Letter}/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('unicode-aware-regex');
+    expect(diagnostics[0].messageId).toBe('unicodeAwareRegex');
+  });
+
+  it('reports a \\P{...} negative property escape without u flag', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /\\P{ASCII}/;');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('unicode-aware-regex');
+    expect(diagnostics[0].messageId).toBe('unicodeAwareRegex');
+  });
+
+  it('does not report when the u flag is present', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /\\p{Letter}/u;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the v flag is present', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /\\p{Letter}/v;');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a regex without a property escape', () => {
+    const diagnostics = scan('unicode-aware-regex', 'const r = /[a-z]/;');
     expect(diagnostics).toHaveLength(0);
   });
 });
