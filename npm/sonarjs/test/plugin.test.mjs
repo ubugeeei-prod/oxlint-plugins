@@ -233,6 +233,7 @@ describe('sonarjs plugin shape', () => {
       'prefer-regexp-exec',
       'no-fallthrough',
       'no-commented-code',
+      'no-incomplete-assertions',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -371,6 +372,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['expression-complexity']).toBe('object');
     expect(typeof plugin.rules['no-fallthrough']).toBe('object');
     expect(typeof plugin.rules['no-commented-code']).toBe('object');
+    expect(typeof plugin.rules['no-incomplete-assertions']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -519,6 +521,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/expression-complexity']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-fallthrough']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-commented-code']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-incomplete-assertions']).toBe('error');
   });
 });
 
@@ -4979,5 +4982,48 @@ describe('no-commented-code rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-commented-code)');
+  });
+});
+
+describe('no-incomplete-assertions rule', () => {
+  it('reports a bare expect(x) statement as incomplete', () => {
+    const source = 'expect(x);';
+    const reports = runRule('no-incomplete-assertions', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('incompleteAssertion');
+  });
+
+  it('reports expect(x).to as a statement (language chain, no terminal)', () => {
+    const source = 'expect(x).to;';
+    const reports = runRule('no-incomplete-assertions', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('incompleteAssertion');
+  });
+
+  it('does not report expect(x).to.be.true (complete assertion)', () => {
+    const source = 'expect(x).to.be.true;';
+    const reports = runRule('no-incomplete-assertions', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report expect(x).to.equal(42) (method call is terminal)', () => {
+    const source = 'expect(x).to.equal(42);';
+    const reports = runRule('no-incomplete-assertions', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-expect call', () => {
+    const source = 'foo(x);';
+    const reports = runRule('no-incomplete-assertions', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-incomplete-assertions through the CLI', () => {
+    const source = 'expect(x);';
+    const result = runOxlint('no-incomplete-assertions', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-incomplete-assertions)');
   });
 });

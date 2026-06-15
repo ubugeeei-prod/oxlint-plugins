@@ -142,6 +142,7 @@ const expectedRuleNames = [
   'prefer-regexp-exec',
   'no-fallthrough',
   'no-commented-code',
+  'no-incomplete-assertions',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
