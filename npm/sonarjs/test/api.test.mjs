@@ -102,6 +102,7 @@ const expectedRuleNames = [
   'use-type-alias',
   'public-static-readonly',
   'call-argument-line',
+  'prefer-object-literal',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

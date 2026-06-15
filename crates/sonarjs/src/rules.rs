@@ -84,6 +84,7 @@ mod no_wildcard_import;
 mod non_existent_operator;
 mod prefer_default_last;
 mod prefer_immediate_return;
+mod prefer_object_literal;
 mod prefer_promise_shorthand;
 mod prefer_single_boolean_return;
 mod prefer_while;
