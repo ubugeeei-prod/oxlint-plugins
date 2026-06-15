@@ -518,6 +518,10 @@ const messages = Object.freeze({
     elementOverwrite:
       'This collection element is overwritten before it is read; the earlier assignment is dead.',
   },
+  'no-redundant-assignments': {
+    redundantAssignment:
+      'This assignment is redundant; the value is never used before being overwritten.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -827,6 +831,10 @@ const ruleDescriptions = Object.freeze({
     'Disallow writing to the same collection element (array index or object property) twice in ' +
     'consecutive statements with no read in between; the first write is dead and is almost ' +
     'always a bug (wrong index or key)',
+  'no-redundant-assignments':
+    'Disallow assignments whose value is never used before being overwritten; ' +
+    'flags self-assignments (x = x) and consecutive assignments to the same plain identifier ' +
+    'with no intervening statement where the first value is immediately replaced',
 });
 
 const ruleTypes = Object.freeze({
@@ -972,6 +980,7 @@ const ruleTypes = Object.freeze({
   'no-commented-code': 'suggestion',
   'destructuring-assignment-syntax': 'suggestion',
   'no-element-overwrite': 'problem',
+  'no-redundant-assignments': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1116,6 +1125,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-commented-code': 'error',
   'destructuring-assignment-syntax': 'error',
   'no-element-overwrite': 'error',
+  'no-redundant-assignments': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

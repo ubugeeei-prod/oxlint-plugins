@@ -236,6 +236,7 @@ describe('sonarjs plugin shape', () => {
       'no-incomplete-assertions',
       'destructuring-assignment-syntax',
       'no-element-overwrite',
+      'no-redundant-assignments',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -377,6 +378,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-incomplete-assertions']).toBe('object');
     expect(typeof plugin.rules['destructuring-assignment-syntax']).toBe('object');
     expect(typeof plugin.rules['no-element-overwrite']).toBe('object');
+    expect(typeof plugin.rules['no-redundant-assignments']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -530,6 +532,7 @@ describe('sonarjs plugin shape', () => {
       'error',
     );
     expect(plugin.configs.recommended.rules['sonarjs/no-element-overwrite']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-redundant-assignments']).toBe('error');
   });
 });
 
@@ -5145,5 +5148,48 @@ describe('no-element-overwrite rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-element-overwrite)');
+  });
+});
+
+describe('no-redundant-assignments rule', () => {
+  it('reports a self-assignment', () => {
+    const source = 'x = x;';
+    const reports = runRule('no-redundant-assignments', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('redundantAssignment');
+  });
+
+  it('reports the first of two adjacent assignments to the same identifier', () => {
+    const source = 'let y = 0;\ny = 1;\ny = 2;';
+    const reports = runRule('no-redundant-assignments', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('redundantAssignment');
+  });
+
+  it('does not report a regular assignment to a different identifier', () => {
+    const source = 'x = y;';
+    const reports = runRule('no-redundant-assignments', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a read-modify-write', () => {
+    const source = 'let x = 1;\nx = x + 1;';
+    const reports = runRule('no-redundant-assignments', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when an intervening statement separates the assignments', () => {
+    const source = 'let x = 1;\nfoo();\nx = 2;';
+    const reports = runRule('no-redundant-assignments', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-redundant-assignments through the CLI', () => {
+    const source = 'x = x;';
+    const result = runOxlint('no-redundant-assignments', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-redundant-assignments)');
   });
 });
