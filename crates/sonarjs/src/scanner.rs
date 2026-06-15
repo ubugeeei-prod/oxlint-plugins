@@ -72,6 +72,10 @@ pub(crate) struct BreakableFrame<'a> {
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,
+    /// Path or name of the file being scanned. Used by rules that compare the
+    /// filename to identifiers in the source, such as
+    /// `file-name-differ-from-class`.
+    pub(crate) filename: &'a str,
     pub(crate) line_index: LineIndex,
     pub(crate) options: &'a SonarjsOptions,
     pub(crate) diagnostics: SmallVec<[Diagnostic; 32]>,
@@ -259,6 +263,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         walk::walk_program(self, it);
         self.finalize_no_duplicate_string();
         self.finalize_use_type_alias();
+        self.check_file_name_differ_from_class(it);
     }
 
     fn visit_block_statement(&mut self, it: &BlockStatement<'a>) {
