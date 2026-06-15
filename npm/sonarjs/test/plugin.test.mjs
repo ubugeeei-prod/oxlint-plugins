@@ -217,6 +217,7 @@ describe('sonarjs plugin shape', () => {
       'arguments-order',
       'unicode-aware-regex',
       'no-undefined-assignment',
+      'no-empty-after-reluctant',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -340,6 +341,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['arguments-order']).toBe('object');
     expect(typeof plugin.rules['unicode-aware-regex']).toBe('object');
     expect(typeof plugin.rules['no-undefined-assignment']).toBe('object');
+    expect(typeof plugin.rules['no-empty-after-reluctant']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -473,6 +475,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/arguments-order']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/unicode-aware-regex']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-undefined-assignment']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-empty-after-reluctant']).toBe('error');
   });
 });
 
@@ -4351,5 +4354,48 @@ describe('no-undefined-assignment rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-undefined-assignment)');
+  });
+});
+
+describe('no-empty-after-reluctant rule', () => {
+  it('reports a lazy star with nothing following', () => {
+    const source = 'const r = /a*?/;';
+    const reports = runRule('no-empty-after-reluctant', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyAfterReluctant');
+  });
+
+  it('reports a lazy star followed by an end-of-input boundary', () => {
+    const source = 'const r = /a*?$/;';
+    const reports = runRule('no-empty-after-reluctant', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('emptyAfterReluctant');
+  });
+
+  it('does not report a lazy star followed by a required character', () => {
+    const source = 'const r = /a*?b/;';
+    const reports = runRule('no-empty-after-reluctant', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a greedy star', () => {
+    const source = 'const r = /a*/;';
+    const reports = runRule('no-empty-after-reluctant', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a lazy plus (min == 1)', () => {
+    const source = 'const r = /a+?/;';
+    const reports = runRule('no-empty-after-reluctant', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-empty-after-reluctant through the CLI', () => {
+    const source = 'const r = /a*?/;';
+    const result = runOxlint('no-empty-after-reluctant', source);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-empty-after-reluctant)');
   });
 });
