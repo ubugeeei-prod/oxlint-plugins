@@ -13230,19 +13230,19 @@
       },
       {
         "name": "no-use-of-empty-return-value",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-use-of-empty-return-value (Sonar key S3699). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port from RSPEC S3699 public docs. No upstream source, fixtures, tests, or messages used. Flags use of void function return values in variable declarator, plain assignment, and return statement positions. Requires semantic analysis to resolve callee to function definition."
       },
       {
         "name": "no-useless-catch",
@@ -13438,19 +13438,19 @@
       },
       {
         "name": "object-alt-content",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
-          "insta": false,
-          "vitest": false,
-          "lsp": false,
-          "oxlintIntegration": false
+          "insta": true,
+          "vitest": true,
+          "lsp": true,
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule object-alt-content (Sonar key S5264). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of upstream rule object-alt-content (Sonar key S5264). Flags <object> JSX elements with no meaningful children and no labeling attribute (aria-label, aria-labelledby, title); skips spread-attributed elements and aria-hidden=\"true\" ones. SonarJS upstream is LGPL-3.0; no upstream source, fixtures, tests, or messages were consulted or copied."
       },
       {
         "name": "operation-returning-nan",
