@@ -185,6 +185,12 @@ pub(crate) struct Scanner<'a> {
     /// depth in the stack), or whether the reference is inside a nested
     /// function/arrow (deeper depth) and therefore a safe closure.
     pub(crate) fn_span_stack: SmallVec<[Span; 8]>,
+    /// Records of `(symbol_id, was_called, was_newed, first_site_span)` for
+    /// every identifier callee resolved to a locally-declared function that has
+    /// been used in a call expression or a `new` expression. Populated during
+    /// `visit_call_expression` / `visit_new_expression`; consumed in
+    /// `finalize_inconsistent_function_call` after the walk completes.
+    pub(crate) fn_call_new_records: SmallVec<[(SymbolId, bool, bool, Span); 16]>,
 }
 
 impl<'a> Scanner<'a> {
@@ -259,16 +265,19 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_todo_tag(&it.comments);
         self.check_no_sonar_comments(&it.comments);
         self.check_no_same_line_conditional(&it.body);
+        self.check_no_unenclosed_multiline_block(&it.body);
         self.check_prefer_object_literal(&it.body);
         walk::walk_program(self, it);
         self.finalize_no_duplicate_string();
         self.finalize_use_type_alias();
+        self.finalize_inconsistent_function_call();
         self.check_file_name_differ_from_class(it);
     }
 
     fn visit_block_statement(&mut self, it: &BlockStatement<'a>) {
         self.check_no_function_declaration_in_block(it);
         self.check_no_same_line_conditional(&it.body);
+        self.check_no_unenclosed_multiline_block(&it.body);
         self.check_prefer_object_literal(&it.body);
         walk::walk_block_statement(self, it);
     }
@@ -306,6 +315,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_switch_case(&mut self, it: &SwitchCase<'a>) {
         self.check_comma_or_logical_or_case(it);
         self.check_no_same_line_conditional(&it.consequent);
+        self.check_no_unenclosed_multiline_block(&it.consequent);
         self.check_prefer_object_literal(&it.consequent);
         if it.test.is_some() {
             self.add_cyclomatic_complexity();
@@ -560,6 +570,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_extra_arguments(it);
         self.check_arguments_order(it);
         self.record_iife_callee(&it.callee);
+        self.record_call_inconsistent_function_call(it);
         walk::walk_call_expression(self, it);
     }
 
@@ -603,6 +614,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_undefined_argument_new(it);
         self.check_code_eval_new(it);
         self.check_prefer_promise_shorthand(it);
+        self.record_new_inconsistent_function_call(it);
         walk::walk_new_expression(self, it);
     }
 
@@ -780,6 +792,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_prefer_immediate_return(it);
         self.check_redundant_return(it);
         self.check_no_same_line_conditional(&it.statements);
+        self.check_no_unenclosed_multiline_block(&it.statements);
         self.check_prefer_object_literal(&it.statements);
         walk::walk_function_body(self, it);
     }
