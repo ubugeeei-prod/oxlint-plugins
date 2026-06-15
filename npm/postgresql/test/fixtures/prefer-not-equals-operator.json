@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/prefer-not-equals-operator",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "angle-default",
+      "code": "SELECT id FROM users WHERE status <> 'inactive';"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "bang-not-equals",
+      "code": "SELECT id FROM users WHERE status != 'inactive';",
+      "errors": [
+        {
+          "messageId": "preferAngle",
+          "message": "Use `<>` instead of `!=`.",
+          "line": 1,
+          "column": 35,
+          "endLine": 1,
+          "endColumn": 37
+        }
+      ],
+      "output": "SELECT id FROM users WHERE status <> 'inactive';"
+    }
+  ]
+}

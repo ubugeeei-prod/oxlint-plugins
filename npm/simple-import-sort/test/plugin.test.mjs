@@ -29,7 +29,7 @@ const invalidCases = [
       '',
       "import fs from 'node:fs';",
       '',
-      "import { alpha as renamed, beta } from 'pkg';",
+      "import { alpha as renamed,beta } from 'pkg';",
       "import z from 'z';",
       '',
       "import local from './local';",
@@ -45,7 +45,7 @@ const invalidCases = [
     'exports',
     'sorts local export specifiers',
     'const d = 1, a = 1, b = 1;\nexport { d, a as c, b };',
-    'const d = 1, a = 1, b = 1;\nexport { b, a as c, d };',
+    'const d = 1, a = 1, b = 1;\nexport { b,a as c, d };',
   ],
 ];
 

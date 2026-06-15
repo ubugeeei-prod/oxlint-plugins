@@ -41,15 +41,35 @@ fn glob_match(pattern: &str, text: &str) -> bool {
     pi == p.len()
 }
 
-/// A single pattern matches a rule id. A pattern without `/` matches the rule
-/// id's last segment (gitignore "match at any level"); a pattern with `/` is
-/// matched against the whole rule id.
+/// A single (already non-negated) pattern matches a rule id, using the subset of
+/// gitignore semantics that rule ids exercise (upstream matches with the
+/// `ignore` package).
+///
+/// A pattern containing a non-trailing `/` is *anchored*: its slash-separated
+/// segments must glob-match the rule id's leading segments, so `foo/*` matches
+/// `foo/x` and — as a directory match — also `foo/x/y`. A pattern without a `/`
+/// matches if it glob-matches *any* segment of the rule id (gitignore's "match
+/// at any depth"), so a plugin name like `react` restricts every `react/*` rule
+/// and `*semi*` matches `no-extra-semi`.
 fn pattern_matches(pattern: &str, rule_id: &str) -> bool {
-    if pattern.contains('/') {
-        glob_match(pattern, rule_id)
+    // A purely trailing `/` (e.g. `foo/`) does not anchor; only an internal or
+    // leading slash does. A leading slash anchors but is not itself a segment.
+    let anchored = pattern.trim_end_matches('/').contains('/');
+    let body = pattern.strip_prefix('/').unwrap_or(pattern);
+
+    if anchored {
+        let mut rule_segments = rule_id.split('/');
+        for pattern_segment in body.split('/') {
+            match rule_segments.next() {
+                // A shorter anchored pattern is a directory match that covers
+                // every deeper segment, so leftover rule segments still match.
+                Some(rule_segment) if glob_match(pattern_segment, rule_segment) => {}
+                _ => return false,
+            }
+        }
+        true
     } else {
-        let basename = rule_id.rsplit('/').next().unwrap_or(rule_id);
-        glob_match(pattern, basename)
+        rule_id.split('/').any(|segment| glob_match(body, segment))
     }
 }
 
@@ -165,8 +185,38 @@ mod tests {
     fn wildcards_and_paths() {
         assert!(super::pattern_matches("*semi*", "semi-style"));
         assert!(super::pattern_matches("foo/*", "foo/bar"));
-        assert!(!super::pattern_matches("foo/*", "foo/bar/baz"));
+        // An anchored pattern is a directory match: `foo/*` also covers deeper
+        // segments (gitignore semantics, matching the upstream `ignore` package).
+        assert!(super::pattern_matches("foo/*", "foo/bar/baz"));
         assert!(super::pattern_matches("no-undef", "no-undef"));
         assert!(!super::pattern_matches("no-undef", "no-undefined"));
+    }
+
+    #[test]
+    fn slashless_pattern_matches_any_segment() {
+        // A plugin name restricts every rule of that plugin (the common case
+        // upstream supports via `ignore`'s match-at-any-depth behavior).
+        assert!(super::pattern_matches("react", "react/no-array-index-key"));
+        assert!(super::pattern_matches(
+            "@typescript-eslint",
+            "@typescript-eslint/no-unused-vars"
+        ));
+        // …but it must not match a different plugin whose name merely contains it.
+        assert!(!super::pattern_matches("react", "preact/no-foo"));
+    }
+
+    #[test]
+    fn anchored_pattern_stays_anchored() {
+        assert!(!super::pattern_matches("foo/bar", "foo/barbaz"));
+        assert!(super::pattern_matches("foo/bar", "foo/bar/deep"));
+    }
+
+    #[test]
+    fn restricts_plugin_scoped_rules() {
+        let comments = [block("eslint-disable react/no-foo, eqeqeq", 1)];
+        // Banning the `react` plugin restricts `react/no-foo` but not `eqeqeq`.
+        let diagnostics = no_restricted_disable(&comments, &["react"]);
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].data.rule_id.as_deref(), Some("react/no-foo"));
     }
 }

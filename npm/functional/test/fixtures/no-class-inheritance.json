@@ -1,0 +1,153 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-class-inheritance.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "class Foo {}",
+      "typeAware": false
+    },
+    {
+      "code": "class Foo extends Bar {}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^Foo$"
+        }
+      ]
+    },
+    {
+      "code": "class Foo extends Bar {}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreCodePattern": "class Foo"
+        }
+      ]
+    },
+    {
+      "code": "class Foo {}",
+      "typeAware": true
+    },
+    {
+      "code": "class Foo implements Bar {}",
+      "typeAware": true
+    },
+    {
+      "code": "interface Foo extends Bar {}",
+      "typeAware": true
+    },
+    {
+      "code": "abstract class Foo {}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^Foo$"
+        }
+      ]
+    },
+    {
+      "code": "abstract class Foo {}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCodePattern": "class Foo"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "class Foo extends Bar {}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "extends"
+        }
+      ]
+    },
+    {
+      "code": "class Bar extends Foo {}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^Foo$"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "extends"
+        }
+      ]
+    },
+    {
+      "code": "class Bar extends Foo {}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreCodePattern": "class Foo"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "extends"
+        }
+      ]
+    },
+    {
+      "code": "abstract class Foo {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "abstract"
+        }
+      ]
+    },
+    {
+      "code": "abstract class Foo extends Bar {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "abstract"
+        },
+        {
+          "messageId": "extends"
+        }
+      ]
+    },
+    {
+      "code": "abstract class Bar {}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^Foo$"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "abstract"
+        }
+      ]
+    },
+    {
+      "code": "abstract class Bar {}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCodePattern": "class Foo"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "abstract"
+        }
+      ]
+    }
+  ]
+}

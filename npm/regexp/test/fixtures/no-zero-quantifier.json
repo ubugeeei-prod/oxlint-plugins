@@ -1,0 +1,85 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-zero-quantifier.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-zero-quantifier.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a{0,1}/"
+    },
+    {
+      "code": "/a{0,}/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a{0}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected zero quantifier. The quantifier and its quantified element can be removed without affecting the pattern.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a{0}/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected zero quantifier. The quantifier and its quantified element can be removed without affecting the pattern.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a{0,0}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected zero quantifier. The quantifier and its quantified element can be removed without affecting the pattern.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a{0,0}?b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected zero quantifier. The quantifier and its quantified element can be removed without affecting the pattern.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(a){0}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected zero quantifier. The quantifier and its quantified element do not affecting the pattern. Try to remove the elements but be careful because it contains at least one capturing group.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    }
+  ]
+}

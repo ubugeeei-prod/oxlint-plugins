@@ -1,0 +1,27 @@
+[package]
+name = "oxlint-plugins-sonarjs"
+description = "Rust core for the sonarjs oxlint JavaScript plugin (clean-room port; upstream eslint-plugin-sonarjs is LGPL-3.0 and is never copied)."
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+compact_str.workspace = true
+oxc_allocator.workspace = true
+oxc_ast.workspace = true
+oxc_ast_visit.workspace = true
+oxc_parser.workspace = true
+oxc_regular_expression.workspace = true
+oxc_semantic.workspace = true
+oxc_span.workspace = true
+oxc_syntax.workspace = true
+oxlint-plugins-carton.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+
+[lints]
+workspace = true

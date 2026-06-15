@@ -1,0 +1,40 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-not-in-subquery",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "in-subquery",
+      "code": "SELECT 1 FROM users WHERE id IN (SELECT user_id FROM admins) LIMIT 100;"
+    },
+    {
+      "name": "not-exists",
+      "code": "SELECT id FROM users u WHERE NOT EXISTS (SELECT 1 FROM blocks b WHERE b.user_id = u.id) LIMIT 100;"
+    },
+    {
+      "name": "not-in-list",
+      "code": "SELECT 1 FROM users WHERE id NOT IN (1, 2, 3) LIMIT 100;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "not-in-subquery",
+      "code": "SELECT id FROM users WHERE id NOT IN (SELECT user_id FROM blocks) LIMIT 100;",
+      "errors": [
+        {
+          "messageId": "noNotInSubquery",
+          "message": "`NOT IN (subquery)` returns no rows if the subquery yields any NULL — almost certainly not what you want. Use `NOT EXISTS (SELECT 1 FROM ... WHERE ...)` instead; it handles NULL correctly.",
+          "line": 1,
+          "column": 31,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ],
+      "output": null
+    }
+  ]
+}

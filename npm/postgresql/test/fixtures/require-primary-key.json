@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/require-primary-key",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "inline-pk",
+      "code": "CREATE TABLE t (id INT PRIMARY KEY);"
+    },
+    {
+      "name": "table-level-pk",
+      "code": "CREATE TABLE t (id INT, name TEXT, PRIMARY KEY (id));"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "no-pk",
+      "code": "CREATE TABLE t (id INT, name TEXT);",
+      "errors": [
+        {
+          "messageId": "missingPrimaryKey",
+          "message": "Table `t` has no PRIMARY KEY. Tables without one cannot be replicated cleanly, cannot be sharded predictably, and break almost every ORM. Add one as either a column constraint or a table-level constraint.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ],
+      "output": null
+    }
+  ]
+}

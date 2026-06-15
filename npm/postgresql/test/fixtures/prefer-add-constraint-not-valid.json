@@ -1,0 +1,40 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/prefer-add-constraint-not-valid",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "with-not-valid",
+      "code": "ALTER TABLE t ADD CONSTRAINT c_check CHECK (x > 0) NOT VALID;\nALTER TABLE t ADD CONSTRAINT c_fk FOREIGN KEY (other_id) REFERENCES other(id) NOT VALID;\n-- NOT NULL and PRIMARY KEY do not benefit from NOT VALID.\nALTER TABLE t ADD CONSTRAINT c_pk PRIMARY KEY (id);\nALTER TABLE t ADD CONSTRAINT c_uq UNIQUE (email);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing-not-valid",
+      "code": "ALTER TABLE t ADD CONSTRAINT c_check CHECK (x > 0);\nALTER TABLE t ADD CONSTRAINT c_fk FOREIGN KEY (other_id) REFERENCES other(id);",
+      "errors": [
+        {
+          "messageId": "notValid",
+          "message": "Add this constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not hold `ACCESS EXCLUSIVE` on the table.",
+          "line": 1,
+          "column": 19,
+          "endLine": 1,
+          "endColumn": 50
+        },
+        {
+          "messageId": "notValid",
+          "message": "Add this constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not hold `ACCESS EXCLUSIVE` on the table.",
+          "line": 2,
+          "column": 19,
+          "endLine": 2,
+          "endColumn": 74
+        }
+      ],
+      "output": null
+    }
+  ]
+}

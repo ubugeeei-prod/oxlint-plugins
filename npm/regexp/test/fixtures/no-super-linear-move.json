@@ -1,0 +1,104 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-super-linear-move.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-super-linear-move.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/regexp/"
+    },
+    {
+      "code": "/\\ba*:/"
+    },
+    {
+      "code": "/a*/"
+    },
+    {
+      "code": "/[\\q{abc}]+/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a*:/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Any attack string /a+/ plus some rejecting suffix will cause quadratic runtime because of this quantifier.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/^\\s*(\\w+)\\s*[:=]/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Any attack string /[\\n\\r\\u2028\\u2029]+/ plus some rejecting suffix will cause quadratic runtime because of this quantifier.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/((?:\\\\{2})*)(\\\\?)\\|/g",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Any attack string /(?:\\\\{2})+/ plus some rejecting suffix will cause quadratic runtime because of this quantifier.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a-z_][A-Z_0-9]*(?=\\s*\\()/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Any attack string /[A-Z_]+/i plus some rejecting suffix will cause quadratic runtime because of this quantifier.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 18
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!\\d)\\w+(?=\\s*\\()/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Any attack string /[A-Z_]+/i plus some rejecting suffix will cause quadratic runtime because of this quantifier.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 11
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{abc}]+a/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Any attack string /(?:abc)+/ plus some rejecting suffix will cause quadratic runtime because of this quantifier.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    }
+  ]
+}

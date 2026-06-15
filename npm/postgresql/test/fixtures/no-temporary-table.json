@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-temporary-table",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "persistent",
+      "code": "CREATE TABLE staging (id int);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "temp",
+      "code": "CREATE TEMP TABLE staging (id int);",
+      "errors": [
+        {
+          "messageId": "noTemporaryTable",
+          "message": "`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ],
+      "output": null
+    }
+  ]
+}

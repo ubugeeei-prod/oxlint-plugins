@@ -1,0 +1,65 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-text-over-varchar",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "never-varchar",
+      "code": "CREATE TABLE t (name varchar(255));",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    },
+    {
+      "name": "text-column",
+      "code": "CREATE TABLE users (name TEXT);"
+    },
+    {
+      "name": "unlimited-varchar",
+      "code": "CREATE TABLE users (name VARCHAR);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "never-text",
+      "code": "CREATE TABLE t (name text);",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedText",
+          "message": "Use `varchar(n)` (or another bounded string type) instead of `text`. Useful for projects that intentionally cap every string column's length at the type level.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "varchar-n",
+      "code": "CREATE TABLE users (name VARCHAR(255));",
+      "errors": [
+        {
+          "messageId": "preferText",
+          "message": "Use `text` instead of `varchar(n)`. PostgreSQL stores both the same way; the length cap is enforced by a constraint that you cannot relax without a full table rewrite. Move the limit into a CHECK constraint.",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    }
+  ]
+}

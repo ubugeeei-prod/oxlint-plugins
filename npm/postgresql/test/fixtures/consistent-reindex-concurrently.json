@@ -1,0 +1,61 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-reindex-concurrently",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "never-no-concurrently",
+      "code": "REINDEX TABLE users;",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    },
+    {
+      "name": "reindex-concurrently",
+      "code": "REINDEX TABLE CONCURRENTLY users;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "never-concurrently",
+      "code": "REINDEX TABLE CONCURRENTLY users;",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedReindexConcurrently",
+          "message": "Avoid `REINDEX CONCURRENTLY`. Concurrent reindex cannot run inside a transaction; use plain `REINDEX` when the migration tool wraps each step in BEGIN/COMMIT.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "reindex-table",
+      "code": "REINDEX TABLE users;",
+      "errors": [
+        {
+          "messageId": "preferReindexConcurrently",
+          "message": "`REINDEX` without `CONCURRENTLY` takes a `SHARE` lock (table) or `ACCESS EXCLUSIVE` (index), blocking writers for the rebuild. Use `REINDEX (TABLE|INDEX) CONCURRENTLY ...` (PG ≥ 12) so writers keep working.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    }
+  ]
+}

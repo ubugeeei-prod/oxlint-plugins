@@ -1,0 +1,182 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-w.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-w.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\w/"
+    },
+    {
+      "code": "/[\\Da-zA-Z_#]/"
+    },
+    {
+      "code": "/\\w/v"
+    },
+    {
+      "code": "/[\\Da-zA-Z_#]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[0-9a-zA-Z_]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9a-zA-Z_]'. Use '\\w' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/\\w/"
+    },
+    {
+      "code": "/[0-9a-zA-Z_#]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class ranges '[0-9a-zA-Z_]'. Use '\\w' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 15
+        }
+      ],
+      "output": "/[\\w#]/"
+    },
+    {
+      "code": "/[\\da-zA-Z_#]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class ranges '[\\da-zA-Z_]'. Use '\\w' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[\\w#]/"
+    },
+    {
+      "code": "/[0-9a-z_[\\s&&\\p{ASCII}]]/iv",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class ranges '[0-9a-z_]'. Use '\\w' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 26
+        }
+      ],
+      "output": "/[\\w[\\s&&\\p{ASCII}]]/iv"
+    },
+    {
+      "code": "/[0-9a-z_]/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9a-z_]'. Use '\\w' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "/\\w/i"
+    },
+    {
+      "code": "/[^0-9a-zA-Z_]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[^0-9a-zA-Z_]'. Use '\\W' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 15
+        }
+      ],
+      "output": "/\\W/"
+    },
+    {
+      "code": "/[^0-9A-Z_]/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[^0-9A-Z_]'. Use '\\W' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 12
+        }
+      ],
+      "output": "/\\W/i"
+    },
+    {
+      "code": "\n            const s = \"[0-9A-Z_]\"\n            new RegExp(s, 'i')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9A-Z_]'. Use '\\w' instead.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 33
+        }
+      ],
+      "output": "\n            const s = \"\\\\w\"\n            new RegExp(s, 'i')\n            "
+    },
+    {
+      "code": "\n            const s = \"[0-9\"+\"A-Z_]\"\n            new RegExp(s, 'i')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9A-Z_]'. Use '\\w' instead.",
+          "line": 2,
+          "column": 23,
+          "endColumn": 37
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const s = \"[0-9A-Z_c]\"\n            new RegExp(s, 'i')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9A-Z_c]'. Use '\\w' instead.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 34
+        }
+      ],
+      "output": "\n            const s = \"\\\\w\"\n            new RegExp(s, 'i')\n            "
+    },
+    {
+      "code": "\n            const s = \"[0-9\"+\"A-Z_c]\"\n            new RegExp(s, 'i')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class '[0-9A-Z_c]'. Use '\\w' instead.",
+          "line": 2,
+          "column": 23,
+          "endColumn": 38
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const s = \"[0-9A-Z_-]\"\n            new RegExp(s, 'i')\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected character class ranges '[0-9A-Z_]'. Use '\\w' instead.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 34
+        }
+      ],
+      "output": "\n            const s = \"[\\\\w-]\"\n            new RegExp(s, 'i')\n            "
+    }
+  ]
+}

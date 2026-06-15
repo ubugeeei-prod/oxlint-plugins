@@ -1,0 +1,117 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-octal.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-octal.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\0/"
+    },
+    {
+      "code": "/[\\7]/"
+    },
+    {
+      "code": "/[\\1-\\4]/"
+    },
+    {
+      "code": "/[\\q{\\0}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/\\07/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected octal escape sequence '\\07'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\077/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected octal escape sequence '\\077'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\077]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected octal escape sequence '\\077'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\0777/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected octal escape sequence '\\077'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\7/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected octal escape sequence '\\7'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\1\\2/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected octal escape sequence '\\1'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/()\\1\\2/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected octal escape sequence '\\2'.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    }
+  ]
+}

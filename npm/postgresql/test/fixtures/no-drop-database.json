@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-drop-database",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "drop-table",
+      "code": "DROP TABLE archive;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "drop-database",
+      "code": "DROP DATABASE archive_2023;",
+      "errors": [
+        {
+          "messageId": "noDropDatabase",
+          "message": "`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    }
+  ]
+}

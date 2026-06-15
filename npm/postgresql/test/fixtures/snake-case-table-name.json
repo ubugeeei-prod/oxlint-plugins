@@ -1,0 +1,45 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/snake-case-table-name",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "allow-list",
+      "code": "CREATE TABLE LegacyOrders (id int);",
+      "options": [
+        {
+          "allow": ["LegacyOrders"]
+        }
+      ]
+    },
+    {
+      "name": "case-folded",
+      "code": "CREATE TABLE UserAccounts (id INT PRIMARY KEY);"
+    },
+    {
+      "name": "snake",
+      "code": "CREATE TABLE user_accounts (id INT PRIMARY KEY);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "quoted-camel",
+      "code": "CREATE TABLE \"UserAccounts\" (id INT PRIMARY KEY);",
+      "errors": [
+        {
+          "messageId": "notSnakeCase",
+          "message": "Table name `UserAccounts` is not snake_case. PostgreSQL folds unquoted identifiers to lower case but preserves the case of quoted identifiers; mixing the two leads to `relation \"BadName\" does not exist` errors that are confusing to debug.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 49
+        }
+      ],
+      "output": null
+    }
+  ]
+}

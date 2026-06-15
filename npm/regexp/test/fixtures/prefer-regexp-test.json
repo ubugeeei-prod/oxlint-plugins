@@ -1,0 +1,258 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-regexp-test.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-regexp-test.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n        const text = 'something';\n        const pattern = /thing/;\n        if (pattern.test(text)) {}\n        "
+    },
+    {
+      "code": "\n        const text = 'something';\n        const pattern = /thing/;\n        if (text.exec(pattern)) {}\n        if (pattern.match(text)) {}\n        "
+    },
+    {
+      "code": "\n        const text = 'something';\n        const pattern = /thing/;\n        if (pattern.execA(text)) {}\n        if (text.matchA(pattern)) {}\n        "
+    },
+    {
+      "code": "\n        const text = 'something';\n        const pattern = /thing/;\n        const a = pattern.exec(text)\n        const b = text.match(pattern)\n        "
+    },
+    {
+      "code": "\n        const text = 'something';\n        const pattern = /thin[[g]]/v;\n        if (pattern.test(text)) {}\n        "
+    },
+    {
+      "code": "\n        const text = 'something';\n        const pattern = /thing/;\n        const a = pattern.exec(test) instanceof null;\n        const b = pattern.exec(test) === maybeNull; \n        const c = pattern.exec(test).groups !== undefined;\n        const d = text.match(pattern) != null;\n        "
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n            const text = 'something';\n            const pattern = /thing/;\n            if (pattern.exec(text)) {}\n            if (text.match(pattern)) {}\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 4,
+          "column": 25,
+          "endColumn": 29
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 5,
+          "column": 17,
+          "endColumn": 36
+        }
+      ],
+      "output": "\n            const text = 'something';\n            const pattern = /thing/;\n            if (pattern.test(text)) {}\n            if (pattern.test(text)) {}\n            "
+    },
+    {
+      "code": "\n            const text = 'something';\n            const pattern = ()=>/thing/;\n            if (pattern().exec(text)) {}\n            if (text.match(pattern())) {}\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 4,
+          "column": 27,
+          "endColumn": 31
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 5,
+          "column": 17,
+          "endColumn": 38
+        }
+      ],
+      "output": "\n            const text = 'something';\n            const pattern = ()=>/thing/;\n            if (pattern().test(text)) {}\n            if (text.match(pattern())) {}\n            "
+    },
+    {
+      "code": "\n            const text = 'something';\n            const pattern = /thing/;\n            const b1 = Boolean(pattern.exec(text))\n            const b2 = Boolean(text.match(pattern))\n            const b3 = !pattern.exec(text)\n            const b4 = !text.match(pattern)\n            const b5 = !(foo && pattern.exec(text))\n            const b6 = !(foo || text.match(pattern))\n            ",
+      "errorCount": 6,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 4,
+          "column": 40,
+          "endColumn": 44
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 5,
+          "column": 32,
+          "endColumn": 51
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 6,
+          "column": 33,
+          "endColumn": 37
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 7,
+          "column": 25,
+          "endColumn": 44
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 8,
+          "column": 41,
+          "endColumn": 45
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 9,
+          "column": 33,
+          "endColumn": 52
+        }
+      ],
+      "output": "\n            const text = 'something';\n            const pattern = /thing/;\n            const b1 = Boolean(pattern.test(text))\n            const b2 = Boolean(pattern.test(text))\n            const b3 = !pattern.test(text)\n            const b4 = !pattern.test(text)\n            const b5 = !(foo && pattern.test(text))\n            const b6 = !(foo || pattern.test(text))"
+    },
+    {
+      "code": "\n            const re = /a/g;\n            const str = 'abc';\n\n            console.log(!!str.match(re)); // ignore\n            console.log(!!str.match(re)); // ignore\n            console.log(!!re.exec(str));\n            console.log(!!re.exec(str));\n            console.log(re.test(str));\n            console.log(re.test(str));\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 7,
+          "column": 30,
+          "endColumn": 34
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 8,
+          "column": 30,
+          "endColumn": 34
+        }
+      ],
+      "output": "\n            const re = /a/g;\n            const str = 'abc';\n\n            console.log(!!str.match(re)); // ignore\n            console.log(!!str.match(re)); // ignore\n            console.log(!!re.test(str));\n            console.log(!!re.test(str));\n            console.log(re.test(str));"
+    },
+    {
+      "code": "\n            const text = 'something';\n            if (text.match()) {}\n            const pattern1 = 'some';\n            if (text.match(pattern1)) {}\n            const pattern2 = Infinity;\n            if (text.match(pattern2)) {}\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 5,
+          "column": 17,
+          "endColumn": 37
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 7,
+          "column": 17,
+          "endColumn": 37
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const text = 'something';\n            const pattern = getPattern();\n            if (text.match(pattern)) {}\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 4,
+          "column": 17,
+          "endColumn": 36
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            const text = 'something';\n            /** @type {RegExp} */\n            const pattern = getPattern();\n            if (text.match(pattern)) {}\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 5,
+          "column": 17,
+          "endColumn": 36
+        }
+      ],
+      "output": "\n            const text = 'something';\n            /** @type {RegExp} */\n            const pattern = getPattern();\n            if (pattern.test(text)) {}\n            "
+    },
+    {
+      "code": "\n            const text = 'something';\n            const pattern = /thin[[g]]/v;\n            if (pattern.exec(text)) {}\n            if (text.match(pattern)) {}\n            ",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 4,
+          "column": 25,
+          "endColumn": 29
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 5,
+          "column": 17,
+          "endColumn": 36
+        }
+      ],
+      "output": "\n            const text = 'something';\n            const pattern = /thin[[g]]/v;\n            if (pattern.test(text)) {}\n            if (pattern.test(text)) {}\n            "
+    },
+    {
+      "code": "\n        const text = 'something';\n        const pattern = /thing/;\n        const a = pattern.exec(test) === null;\n        const b = pattern.exec(test) !== null;\n        const c = text.match(pattern) === null;\n        const d = text.match(pattern) !== null;\n            ",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 4,
+          "column": 27,
+          "endColumn": 31
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 5,
+          "column": 27,
+          "endColumn": 31
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 6,
+          "column": 19,
+          "endColumn": 38
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 7,
+          "column": 19,
+          "endColumn": 38
+        }
+      ],
+      "output": "\n        const text = 'something';\n        const pattern = /thing/;\n        const a = !pattern.test(test);\n        const b = pattern.test(test);\n        const c = !pattern.test(text);\n        const d = pattern.test(text);\n            "
+    },
+    {
+      "code": "\n        const text = 'something';\n        const pattern = /thing/;\n        const a = pattern.exec(test)=== null;\n        const b = pattern.exec(test) /* Comment */ !== null;\n        const c = text.match(pattern) === /** Comment */ null;\n        const d = (text.match(pattern)) !== null;\n            ",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 4,
+          "column": 27,
+          "endColumn": 31
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `RegExp#exec`, if you need a boolean.",
+          "line": 5,
+          "column": 27,
+          "endColumn": 31
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 6,
+          "column": 19,
+          "endColumn": 38
+        },
+        {
+          "message": "Use the `RegExp#test()` method instead of `String#match`, if you need a boolean.",
+          "line": 7,
+          "column": 20,
+          "endColumn": 39
+        }
+      ],
+      "output": "\n        const text = 'something';\n        const pattern = /thing/;\n        const a = !pattern.test(test);\n        const b = pattern.test(test) /* Comment */;\n        const c = !pattern.test(text);\n        const d = (pattern.test(text));\n            "
+    }
+  ]
+}

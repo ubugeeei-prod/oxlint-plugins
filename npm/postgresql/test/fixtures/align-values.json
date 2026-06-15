@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/align-values",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "already-aligned",
+      "code": "INSERT INTO t (a, b, c) VALUES\n  ('GPT-5',  1.25, CURRENT_TIMESTAMP),\n  ('Claude', 5,    CURRENT_TIMESTAMP);"
+    },
+    {
+      "name": "single-row",
+      "code": "-- Single-row VALUES: nothing to align against; rule is a no-op.\nINSERT INTO t (a, b) VALUES ('GPT-5', 1.25);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "over-padded",
+      "code": "INSERT INTO t (a, b, c) VALUES\n  ('GPT-5',                 1.25, CURRENT_TIMESTAMP),\n  ('Claude',                5,    CURRENT_TIMESTAMP),\n  ('Haiku',                 1,    CURRENT_TIMESTAMP);",
+      "errors": [
+        {
+          "messageId": "misaligned",
+          "message": "VALUES rows are not vertically aligned: column widths can shrink to fit the current rows.",
+          "line": 2,
+          "column": 4,
+          "endLine": 2,
+          "endColumn": 52
+        }
+      ],
+      "output": "INSERT INTO t (a, b, c) VALUES\n  ('GPT-5',  1.25, CURRENT_TIMESTAMP),\n  ('Claude', 5,    CURRENT_TIMESTAMP),\n  ('Haiku',  1,    CURRENT_TIMESTAMP);"
+    }
+  ]
+}

@@ -58,7 +58,11 @@ fn find_rule_id(line: &str, rule_id: &str) -> Option<usize> {
         if before_ok && after_ok {
             return Some(start);
         }
-        from = start + 1;
+        // Advance past the matched occurrence by a whole character. `start + 1`
+        // would land inside a multi-byte rule id (e.g. one starting with a
+        // non-ASCII char), and the next `line[from..]` slice would panic on the
+        // char boundary. `rule_id` is non-empty, so this always advances.
+        from = start + line[start..].chars().next().map_or(1, char::len_utf8);
     }
 
     None
@@ -110,4 +114,42 @@ pub fn to_rule_id_location(
     }
 
     comment_loc
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Location, Position, find_rule_id, to_rule_id_location};
+
+    #[test]
+    fn find_rule_id_matches_bounded_occurrence() {
+        // The bounded standalone token is found, not the substring inside `xfoo`.
+        assert_eq!(find_rule_id(" xfoo foo ", "foo"), Some(6));
+        assert_eq!(find_rule_id("foo,bar", "bar"), Some(4));
+        assert_eq!(find_rule_id("foobar", "foo"), None);
+    }
+
+    #[test]
+    fn find_rule_id_handles_multibyte_without_panicking() {
+        // A non-ASCII rule id that first appears inside a larger token used to
+        // panic: advancing by one byte landed mid-character. The bounded later
+        // occurrence must be found instead of crashing.
+        let line = " xαfoo αfoo ";
+        let found = find_rule_id(line, "αfoo");
+        // The bounded standalone occurrence is the second one in the line.
+        let expected = line.match_indices("αfoo").nth(1).map(|(index, _)| index);
+        assert_eq!(found, expected);
+        assert!(found.is_some());
+
+        let loc = Location {
+            start: Position { line: 1, column: 0 },
+            end: Position {
+                line: 1,
+                column: 40,
+            },
+        };
+        // Drives the full path; the assertion is mainly that it does not panic.
+        let result = to_rule_id_location(line, loc, Some("αfoo"));
+        assert_eq!(result.start.line, 1);
+        assert!(result.start.column > 0);
+    }
 }

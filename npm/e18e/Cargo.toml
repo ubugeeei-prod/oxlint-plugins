@@ -1,0 +1,24 @@
+[package]
+name = "oxlint-plugin-e18e"
+description = "NAPI package for the e18e oxlint plugin."
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi.workspace = true
+napi-derive.workspace = true
+oxlint-plugins-carton.workspace = true
+oxlint-plugins-e18e.workspace = true
+
+[build-dependencies]
+napi-build.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,46 @@
+{
+  "name": "@oxlint-plugins/oxlint-plugin-angular-eslint-template",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rust-backed oxlint plugin port of @angular-eslint/eslint-plugin-template (scaffold; rules listed as pending in status.json).",
+  "keywords": [
+    "angular",
+    "angular-eslint",
+    "angular-template",
+    "oxlint",
+    "oxlint-plugin",
+    "rust"
+  ],
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubugeeei-prod/oxlint-plugins.git",
+    "directory": "npm/angular-eslint-template"
+  },
+  "files": [
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

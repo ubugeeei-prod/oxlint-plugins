@@ -1,0 +1,413 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-buffer-noassert.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "a.readUInt8(0)"
+    },
+    {
+      "code": "a.readUInt16LE(0)"
+    },
+    {
+      "code": "a.readUInt16BE(0)"
+    },
+    {
+      "code": "a.readUInt32LE(0)"
+    },
+    {
+      "code": "a.readUInt32BE(0)"
+    },
+    {
+      "code": "a.readInt8(0)"
+    },
+    {
+      "code": "a.readInt16LE(0)"
+    },
+    {
+      "code": "a.readInt16BE(0)"
+    },
+    {
+      "code": "a.readInt32LE(0)"
+    },
+    {
+      "code": "a.readInt32BE(0)"
+    },
+    {
+      "code": "a.readFloatLE(0)"
+    },
+    {
+      "code": "a.readFloatBE(0)"
+    },
+    {
+      "code": "a.readDoubleLE(0)"
+    },
+    {
+      "code": "a.readDoubleBE(0)"
+    },
+    {
+      "code": "a.writeUInt8(0)"
+    },
+    {
+      "code": "a.writeUInt16LE(0)"
+    },
+    {
+      "code": "a.writeUInt16BE(0)"
+    },
+    {
+      "code": "a.writeUInt32LE(0)"
+    },
+    {
+      "code": "a.writeUInt32BE(0)"
+    },
+    {
+      "code": "a.writeInt8(0)"
+    },
+    {
+      "code": "a.writeInt16LE(0)"
+    },
+    {
+      "code": "a.writeInt16BE(0)"
+    },
+    {
+      "code": "a.writeInt32LE(0)"
+    },
+    {
+      "code": "a.writeInt32BE(0)"
+    },
+    {
+      "code": "a.writeFloatLE(0)"
+    },
+    {
+      "code": "a.writeFloatBE(0)"
+    },
+    {
+      "code": "a.writeDoubleLE(0)"
+    },
+    {
+      "code": "a.writeDoubleBE(0)"
+    },
+    {
+      "code": "a.readUInt8(0, false)"
+    },
+    {
+      "code": "a.readUInt16LE(0, false)"
+    },
+    {
+      "code": "a.readUInt16BE(0, false)"
+    },
+    {
+      "code": "a.readUInt32LE(0, false)"
+    },
+    {
+      "code": "a.readUInt32BE(0, false)"
+    },
+    {
+      "code": "a.readInt8(0, false)"
+    },
+    {
+      "code": "a.readInt16LE(0, false)"
+    },
+    {
+      "code": "a.readInt16BE(0, false)"
+    },
+    {
+      "code": "a.readInt32LE(0, false)"
+    },
+    {
+      "code": "a.readInt32BE(0, false)"
+    },
+    {
+      "code": "a.readFloatLE(0, false)"
+    },
+    {
+      "code": "a.readFloatBE(0, false)"
+    },
+    {
+      "code": "a.readDoubleLE(0, false)"
+    },
+    {
+      "code": "a.readDoubleBE(0, false)"
+    },
+    {
+      "code": "a.writeUInt8(0, false)"
+    },
+    {
+      "code": "a.writeUInt16LE(0, false)"
+    },
+    {
+      "code": "a.writeUInt16BE(0, false)"
+    },
+    {
+      "code": "a.writeUInt32LE(0, false)"
+    },
+    {
+      "code": "a.writeUInt32BE(0, false)"
+    },
+    {
+      "code": "a.writeInt8(0, false)"
+    },
+    {
+      "code": "a.writeInt16LE(0, false)"
+    },
+    {
+      "code": "a.writeInt16BE(0, false)"
+    },
+    {
+      "code": "a.writeInt32LE(0, false)"
+    },
+    {
+      "code": "a.writeInt32BE(0, false)"
+    },
+    {
+      "code": "a.writeFloatLE(0, false)"
+    },
+    {
+      "code": "a.writeFloatBE(0, false)"
+    },
+    {
+      "code": "a.writeDoubleLE(0, false)"
+    },
+    {
+      "code": "a.writeDoubleBE(0, false)"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "a.readUInt8(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readUInt8 with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readUInt16LE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readUInt16LE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readUInt16BE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readUInt16BE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readUInt32LE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readUInt32LE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readUInt32BE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readUInt32BE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readInt8(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readInt8 with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readInt16LE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readInt16LE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readInt16BE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readInt16BE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readInt32LE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readInt32LE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readInt32BE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readInt32BE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readFloatLE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readFloatLE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readFloatBE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readFloatBE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readDoubleLE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readDoubleLE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readDoubleBE(0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.readDoubleBE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeUInt8(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeUInt8 with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeUInt16LE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeUInt16LE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeUInt16BE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeUInt16BE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeUInt32LE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeUInt32LE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeUInt32BE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeUInt32BE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeInt8(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeInt8 with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeInt16LE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeInt16LE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeInt16BE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeInt16BE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeInt32LE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeInt32LE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeInt32BE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeInt32BE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeFloatLE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeFloatLE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeFloatBE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeFloatBE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeDoubleLE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeDoubleLE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.writeDoubleBE(0, 0, true)",
+      "errors": [
+        {
+          "message": "Found Buffer.writeDoubleBE with noAssert flag set true"
+        }
+      ]
+    },
+    {
+      "code": "a.readDoubleLE(0, true);",
+      "errors": [
+        {
+          "message": "Found Buffer.readDoubleLE with noAssert flag set true"
+        }
+      ]
+    }
+  ]
+}

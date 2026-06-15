@@ -1,0 +1,201 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-backreference.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-backreference.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/.(?=(b))\\1/"
+    },
+    {
+      "code": "/(?:(a)|b)\\1/"
+    },
+    {
+      "code": "/(a)?\\1/"
+    },
+    {
+      "code": "/(a)\\1/"
+    },
+    {
+      "code": "/(?=(a))\\w\\1/"
+    },
+    {
+      "code": "/(?!(a)\\1)/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(b)(\\2a)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\2' will be ignored. It references group '(\\2a)' from within that group.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(a\\1)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(a\\1)' from within that group.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(\\b)a\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(\\b)' which always captures zero characters.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/([\\q{}])a\\1/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '([\\q{}])' which always captures zero characters.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(\\b|a{0})a\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(\\b|a{0})' which always captures zero characters.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(a)b|\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(a)' which is in another alternative.",
+          "line": 1,
+          "column": 7,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:(a)b|\\1)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(a)' which is in another alternative.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<=(a)b|\\1)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(a)' which is in another alternative.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\1(a)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(a)' which appears later in the pattern.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:\\1(a))+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(a)' which appears later in the pattern.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?<=(a)\\1)b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(a)' which appears before in the same lookbehind.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 11
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!(a))\\w\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(a)' which is in a negative lookaround.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!(?!(a)))\\w\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Backreference '\\1' will be ignored. It references group '(a)' which is in a negative lookaround.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    }
+  ]
+}

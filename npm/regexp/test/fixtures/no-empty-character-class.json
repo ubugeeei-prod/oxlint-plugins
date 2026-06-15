@@ -1,0 +1,163 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-empty-character-class.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-empty-character-class.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[a]/"
+    },
+    {
+      "code": "/[a-z]/"
+    },
+    {
+      "code": "/[a]?/"
+    },
+    {
+      "code": "/[a]*/"
+    },
+    {
+      "code": "/[[]/"
+    },
+    {
+      "code": "/\\[]/"
+    },
+    {
+      "code": "/[^]/"
+    },
+    {
+      "code": "/[()]/"
+    },
+    {
+      "code": "/[ ]/"
+    },
+    {
+      "code": "/[\\s\\S]/"
+    },
+    {
+      "code": "/[\\da-zA-Z_\\W]/"
+    },
+    {
+      "code": "/a[[[ab]&&b]]/v"
+    },
+    {
+      "code": "/a[[ab]&&b]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class matches no characters because it is empty.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/abc[]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class matches no characters because it is empty.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/([])/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class matches no characters because it is empty.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "new RegExp(\"[]\");",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class matches no characters because it is empty.",
+          "line": 1,
+          "column": 13,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[^\\s\\S]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class cannot match any characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[^\\da-zA-Z_\\W]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class cannot match any characters.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a[[a&&b]]/v",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "This character class cannot match any characters.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 11
+        },
+        {
+          "message": "This character class cannot match any characters.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a[a&&b]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "This character class cannot match any characters.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    }
+  ]
+}

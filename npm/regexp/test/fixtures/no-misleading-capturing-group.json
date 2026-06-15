@@ -1,0 +1,139 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-misleading-capturing-group.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-misleading-capturing-group.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a+a+/"
+    },
+    {
+      "code": "/(a+a+)/"
+    },
+    {
+      "code": "/(a+a+)b+/"
+    },
+    {
+      "code": "/^(a*(?!a)).+/u"
+    },
+    {
+      "code": "/(^~~?)(?!~)[\\s\\S]+(?=\\1$)/m"
+    },
+    {
+      "code": "/(^~~?(?!~))[\\s\\S]+(?=\\1$)/m"
+    },
+    {
+      "code": "/(^~(?:~|(?!~)))[\\s\\S]+(?=\\1$)/m"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/\\d+(\\d*)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d*' can be removed because it is already included by '\\d+'. This makes the capturing group misleading, because it actually captures less text than its pattern suggests.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:!\\d+|%\\w+)(\\d*)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\d*' can be removed because it is already included by '\\d+' and '\\w+'. This makes the capturing group misleading, because it actually captures less text than its pattern suggests.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/^(a*).+/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier 'a*' can exchange characters (a) with '.+'. This makes the capturing group misleading, because the quantifier will capture fewer characters than its pattern suggests.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/^([\\t ]*).+/gmu",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier '[\\t ]*' can exchange characters ([\\t ]) with '.+'. This makes the capturing group misleading, because the quantifier will capture fewer characters than its pattern suggests.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/('{2,5}).+?\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier ''{2,5}' can exchange characters (') with '.+?'. This makes the capturing group misleading, because the quantifier will capture fewer characters than its pattern suggests.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/^(---.*(?:\\n|\\r\\n?))[\\s\\S]+?(?=(?:\\n|\\r\\n?)^---$)/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier '\\n?' can exchange characters (\\n) with '[\\s\\S]+?'. This makes the capturing group misleading, because the quantifier will capture fewer characters than its pattern suggests.",
+          "line": 1,
+          "column": 17,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(^~~?)[\\s\\S]+(?=\\1$)/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier '~?' can exchange characters (~) with '[\\s\\S]+'. This makes the capturing group misleading, because the quantifier will capture fewer characters than its pattern suggests.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/^([a\\q{abc}]*).+/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier '[a\\q{abc}]*' can exchange characters (a) with '.+'. This makes the capturing group misleading, because the quantifier will capture fewer characters than its pattern suggests.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    }
+  ]
+}

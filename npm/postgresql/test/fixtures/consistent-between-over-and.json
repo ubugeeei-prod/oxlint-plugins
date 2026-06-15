@@ -1,0 +1,76 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-between-over-and",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "already-between",
+      "code": "SELECT * FROM t WHERE x BETWEEN 1 AND 10;\n-- Strict inequalities are not equivalent to BETWEEN; do not flag.\nSELECT * FROM t WHERE x > 1 AND x < 10;\n-- Different lhs: not in scope.\nSELECT * FROM t WHERE x >= 1 AND y <= 10;\n-- More than two conjuncts: not in scope.\nSELECT * FROM t WHERE x >= 1 AND x <= 10 AND y > 0;"
+    },
+    {
+      "name": "never-and-pair",
+      "code": "SELECT 1 WHERE x >= 1 AND x <= 10;",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "and-pair",
+      "code": "SELECT * FROM t WHERE x >= 1 AND x <= 10;",
+      "errors": [
+        {
+          "messageId": "preferBetween",
+          "message": "Use `x BETWEEN 1 AND 10` instead of `>= ... AND <=`.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 41
+        }
+      ],
+      "output": "SELECT * FROM t WHERE x BETWEEN 1 AND 10;"
+    },
+    {
+      "name": "cast-bounds",
+      "code": "SELECT 1 WHERE x >= '1900-01-01'::TIMESTAMPTZ AND x <= '2299-12-31'::TIMESTAMPTZ;",
+      "errors": [
+        {
+          "messageId": "preferBetween",
+          "message": "Use `x BETWEEN '1900-01-01'::TIMESTAMPTZ AND '2299-12-31'::TIMESTAMPTZ` instead of `>= ... AND <=`.",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 81
+        }
+      ],
+      "output": "SELECT 1 WHERE x BETWEEN '1900-01-01'::TIMESTAMPTZ AND '2299-12-31'::TIMESTAMPTZ;"
+    },
+    {
+      "name": "never-between",
+      "code": "SELECT 1 WHERE x BETWEEN 1 AND 10;",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedBetween",
+          "message": "Use `x >= 1 AND x <= 10` instead of `BETWEEN`. Some teams prefer explicit comparisons so the inclusive bounds are obvious to readers.",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ],
+      "output": "SELECT 1 WHERE x >= 1 AND x <= 10;"
+    }
+  ]
+}

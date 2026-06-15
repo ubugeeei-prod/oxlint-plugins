@@ -102,12 +102,10 @@ fn divide_directive_comment(value: &str) -> (&str, Option<&str>) {
     };
 
     let text = value[..first.0].trim();
-    let rest = &value[first.1..];
     let description_end = find_separator(value, first.1)
         .map(|(start, _)| start)
         .unwrap_or(value.len());
     let description = value[first.1..description_end].trim();
-    let _ = rest;
 
     (text, Some(description))
 }

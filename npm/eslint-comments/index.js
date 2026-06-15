@@ -381,8 +381,9 @@ const rules = {
   'require-description': requireDescription,
 };
 
-// Mirror of upstream's `recommended` config, limited to the rules ported so far.
-// (no-use and require-description are not part of upstream's recommended set.)
+// Mirror of upstream's `recommended` config. Upstream recommends exactly these
+// five rules; no-restricted-disable, no-unused-disable (deprecated), no-use, and
+// require-description are intentionally excluded from upstream's recommended set.
 const recommendedRuleNames = [
   'disable-enable-pair',
   'no-aggregating-enable',

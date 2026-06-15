@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-rename-column",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "add-column",
+      "code": "ALTER TABLE users ADD COLUMN email text;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "rename-column",
+      "code": "ALTER TABLE users RENAME COLUMN email_address TO email;",
+      "errors": [
+        {
+          "messageId": "noRenameColumn",
+          "message": "`RENAME COLUMN` breaks every running app that still selects/inserts by the old name. The safer pattern is to add a new column, dual-write, backfill, and drop the old one across separate deploys.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 55
+        }
+      ],
+      "output": null
+    }
+  ]
+}

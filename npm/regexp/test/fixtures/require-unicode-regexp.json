@@ -1,0 +1,360 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/require-unicode-regexp.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/require-unicode-regexp.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/foo/u"
+    },
+    {
+      "code": "/foo/gimuy"
+    },
+    {
+      "code": "RegExp('', 'u')"
+    },
+    {
+      "code": "new RegExp('', 'u')"
+    },
+    {
+      "code": "RegExp('', 'gimuy')"
+    },
+    {
+      "code": "new RegExp('', 'gimuy')"
+    },
+    {
+      "code": "const flags = 'u'; new RegExp('', flags)"
+    },
+    {
+      "code": "const flags = 'g'; new RegExp('', flags + 'u')"
+    },
+    {
+      "code": "const flags = 'gimu'; new RegExp('foo', flags[3])"
+    },
+    {
+      "code": "new RegExp('', flags)"
+    },
+    {
+      "code": "function f(flags) { return new RegExp('', flags) }"
+    },
+    {
+      "code": "function f(RegExp) { return new RegExp('foo') }"
+    },
+    {
+      "code": "new globalThis.RegExp('foo')"
+    },
+    {
+      "code": "new globalThis.RegExp('foo', 'u')"
+    },
+    {
+      "code": "globalThis.RegExp('foo', 'u')"
+    },
+    {
+      "code": "const flags = 'u'; new globalThis.RegExp('', flags)"
+    },
+    {
+      "code": "const flags = 'g'; new globalThis.RegExp('', flags + 'u')"
+    },
+    {
+      "code": "const flags = 'gimu'; new globalThis.RegExp('foo', flags[3])"
+    },
+    {
+      "code": "/foo/v"
+    },
+    {
+      "code": "new RegExp('foo', 'v')"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/foo/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": "/foo/u"
+    },
+    {
+      "code": "/foo/gimy",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 10
+        }
+      ],
+      "output": "/foo/gimyu"
+    },
+    {
+      "code": "RegExp('foo')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 14
+        }
+      ],
+      "output": "RegExp('foo', \"u\")"
+    },
+    {
+      "code": "RegExp('foo', '')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 15,
+          "endColumn": 16
+        }
+      ],
+      "output": "RegExp('foo', 'u')"
+    },
+    {
+      "code": "RegExp('foo', 'gimy')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 20
+        }
+      ],
+      "output": "RegExp('foo', 'gimyu')"
+    },
+    {
+      "code": "new RegExp('foo')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 18
+        }
+      ],
+      "output": "new RegExp('foo', \"u\")"
+    },
+    {
+      "code": "new RegExp('foo', '')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 19,
+          "endColumn": 20
+        }
+      ],
+      "output": "new RegExp('foo', 'u')"
+    },
+    {
+      "code": "new RegExp('foo', 'gimy')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 20,
+          "endColumn": 24
+        }
+      ],
+      "output": "new RegExp('foo', 'gimyu')"
+    },
+    {
+      "code": "const flags = 'gi'; new RegExp('foo', flags)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 18
+        }
+      ],
+      "output": "const flags = 'giu'; new RegExp('foo', flags)"
+    },
+    {
+      "code": "const flags = 'gimu'; new RegExp('foo', flags[0])",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 41,
+          "endColumn": 49
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/❤️/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": "/❤️/u"
+    },
+    {
+      "code": "/foo/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/foo/iu"
+    },
+    {
+      "code": "/ab+c/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/ab+c/u"
+    },
+    {
+      "code": "/a.*b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/a.*b/u"
+    },
+    {
+      "code": "/<[^<>]+>/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 11
+        }
+      ],
+      "output": "/<[^<>]+>/u"
+    },
+    {
+      "code": "/k/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\w/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\bfoo/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[😃]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/😃+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\p{Ll}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/<[^<>]>/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Use the 'u' flag.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    }
+  ]
+}

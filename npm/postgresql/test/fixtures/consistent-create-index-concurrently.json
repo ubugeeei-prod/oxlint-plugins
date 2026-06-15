@@ -1,0 +1,69 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-create-index-concurrently",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "concurrent",
+      "code": "CREATE INDEX CONCURRENTLY idx_users_email ON users (email);"
+    },
+    {
+      "name": "never-without-concurrently",
+      "code": "CREATE INDEX idx_users_email ON users (email);\nCREATE UNIQUE INDEX idx_users_uid ON users (uid);",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing-concurrently",
+      "code": "CREATE INDEX idx_users_email ON users (email);",
+      "errors": [
+        {
+          "messageId": "preferConcurrently",
+          "message": "Use `CREATE INDEX CONCURRENTLY`. A plain `CREATE INDEX` takes a `SHARE` lock on the target table for the duration of the build — readers are unaffected, but every writer is blocked. Concurrent index builds cannot run inside a transaction, so a migration tool that wraps each step in BEGIN/COMMIT needs an explicit opt-out here.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 46
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "never-with-concurrently",
+      "code": "CREATE INDEX CONCURRENTLY idx_users_email ON users (email);\nCREATE UNIQUE INDEX CONCURRENTLY idx_users_uid ON users (uid);",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedConcurrently",
+          "message": "Avoid `CREATE INDEX CONCURRENTLY`. Concurrent index builds cannot run inside a transaction, so they conflict with migration tools that wrap each step in BEGIN/COMMIT; drop the keyword and use a plain `CREATE INDEX`.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 59
+        },
+        {
+          "messageId": "unexpectedConcurrently",
+          "message": "Avoid `CREATE INDEX CONCURRENTLY`. Concurrent index builds cannot run inside a transaction, so they conflict with migration tools that wrap each step in BEGIN/COMMIT; drop the keyword and use a plain `CREATE INDEX`.",
+          "line": 1,
+          "column": 60,
+          "endLine": 2,
+          "endColumn": 62
+        }
+      ],
+      "output": null
+    }
+  ]
+}

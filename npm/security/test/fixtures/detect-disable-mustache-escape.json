@@ -1,0 +1,24 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-disable-mustache-escape.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "escapeMarkup = false"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "a.escapeMarkup = false",
+      "errors": [
+        {
+          "message": "Markup escaping disabled."
+        }
+      ]
+    }
+  ]
+}

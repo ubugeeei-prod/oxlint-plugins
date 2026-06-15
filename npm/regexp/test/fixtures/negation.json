@@ -1,0 +1,352 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/negation.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/negation.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[\\d]/"
+    },
+    {
+      "code": "/[^\\d\\s]/"
+    },
+    {
+      "code": "/[^\\p{ASCII}]/iu"
+    },
+    {
+      "code": "/[^\\P{Ll}]/iu"
+    },
+    {
+      "code": "/[\\p{Basic_Emoji}]/v"
+    },
+    {
+      "code": "/[^\\P{Lowercase_Letter}]/iu"
+    },
+    {
+      "code": "/[^[^a][^b]]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[^\\d]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\D' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\D/"
+    },
+    {
+      "code": "/[^\\D]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\d' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\d/"
+    },
+    {
+      "code": "/[^\\w]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\W' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\W/"
+    },
+    {
+      "code": "/[^\\W]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\w' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\w/"
+    },
+    {
+      "code": "/[^\\s]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\S' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\S/"
+    },
+    {
+      "code": "/[^\\S]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\s' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\s/"
+    },
+    {
+      "code": "/[^\\p{ASCII}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\P{ASCII}' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/\\P{ASCII}/u"
+    },
+    {
+      "code": "/[^\\P{ASCII}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\p{ASCII}' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 14
+        }
+      ],
+      "output": "/\\p{ASCII}/u"
+    },
+    {
+      "code": "/[^\\p{Script=Hiragana}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\P{Script=Hiragana}' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 24
+        }
+      ],
+      "output": "/\\P{Script=Hiragana}/u"
+    },
+    {
+      "code": "/[^\\P{Script=Hiragana}]/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\p{Script=Hiragana}' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 24
+        }
+      ],
+      "output": "/\\p{Script=Hiragana}/u"
+    },
+    {
+      "code": "/[^\\P{Ll}]/u;",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\p{Ll}' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "/\\p{Ll}/u;"
+    },
+    {
+      "code": "/[^\\P{White_Space}]/iu;",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\p{White_Space}' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 20
+        }
+      ],
+      "output": "/\\p{White_Space}/iu;"
+    },
+    {
+      "code": "const s =\"[^\\\\w]\"\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\W' instead.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 17
+        }
+      ],
+      "output": "const s =\"\\\\W\"\n            new RegExp(s)"
+    },
+    {
+      "code": "const s =\"[^\\\\w]\"\n            new RegExp(s)\n            new RegExp(s)",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\W' instead.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 25
+        },
+        {
+          "message": "Unexpected negated character class. Use '\\W' instead.",
+          "line": 3,
+          "column": 24,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "const s =\"[^\\\\w]\"\n            new RegExp(s, \"i\")\n            new RegExp(s)",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\W' instead.",
+          "line": 2,
+          "column": 24,
+          "endColumn": 25
+        },
+        {
+          "message": "Unexpected negated character class. Use '\\W' instead.",
+          "line": 3,
+          "column": 24,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "const s =\"[^\\\\w]\"\n            Number(s)\n            new RegExp(s)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\W' instead.",
+          "line": 3,
+          "column": 24,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[^\\P{Lowercase_Letter}]/iv",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '\\p{Lowercase_Letter}' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 25
+        }
+      ],
+      "output": "/\\p{Lowercase_Letter}/iv"
+    },
+    {
+      "code": "/[^[^abc]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '[abc]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[abc]/v"
+    },
+    {
+      "code": "/[^[^\\q{a|1|A}&&\\w]]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '[\\q{a|1|A}&&\\w]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 21
+        }
+      ],
+      "output": "/[\\q{a|1|A}&&\\w]/v"
+    },
+    {
+      "code": "/[^[^a]]/iv",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '[a]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[a]/iv"
+    },
+    {
+      "code": "/[^[^\\P{Lowercase_Letter}]]/iv",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '[\\P{Lowercase_Letter}]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 28
+        },
+        {
+          "message": "Unexpected negated character class. Use '\\p{Lowercase_Letter}' instead.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 27
+        }
+      ],
+      "output": "/[\\P{Lowercase_Letter}]/iv"
+    },
+    {
+      "code": "/[^[^[\\p{Lowercase_Letter}&&[ABC]]]]/iv",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '[[\\p{Lowercase_Letter}&&[ABC]]]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 37
+        }
+      ],
+      "output": "/[[\\p{Lowercase_Letter}&&[ABC]]]/iv"
+    },
+    {
+      "code": "/[^[^[\\p{Lowercase_Letter}&&A]--B]]/iv",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected negated character class. Use '[[\\p{Lowercase_Letter}&&A]--B]' instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 36
+        }
+      ],
+      "output": "/[[\\p{Lowercase_Letter}&&A]--B]/iv"
+    }
+  ]
+}

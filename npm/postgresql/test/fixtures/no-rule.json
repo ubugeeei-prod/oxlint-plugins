@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-rule",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "no-rule",
+      "code": "CREATE TRIGGER t_trg BEFORE UPDATE ON t FOR EACH ROW EXECUTE FUNCTION t_trg_fn();\nCREATE VIEW v AS SELECT * FROM t;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "create-rule",
+      "code": "CREATE RULE noop AS ON UPDATE TO t DO INSTEAD NOTHING;",
+      "errors": [
+        {
+          "messageId": "noRule",
+          "message": "Avoid `CREATE RULE`. PostgreSQL's rule system has surprising semantics around row counts, RETURNING, and updatable views; use a trigger or an updatable view instead.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 54
+        }
+      ],
+      "output": null
+    }
+  ]
+}

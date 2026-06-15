@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/prefer-explicit-null-ordering",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "no-direction",
+      "code": "-- No explicit ASC/DESC: rule does not fire.\nSELECT id FROM users ORDER BY created_at;"
+    },
+    {
+      "name": "with-nulls-last",
+      "code": "SELECT id FROM users ORDER BY created_at DESC NULLS LAST;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "desc",
+      "code": "SELECT id FROM users ORDER BY created_at DESC;",
+      "errors": [
+        {
+          "messageId": "preferExplicitNullOrdering",
+          "message": "`ORDER BY ... ASC|DESC` without `NULLS FIRST` / `NULLS LAST` relies on PostgreSQL's implicit ordering (NULLS LAST for ASC, NULLS FIRST for DESC), which trips up cross-database readers. Add an explicit `NULLS FIRST` / `NULLS LAST`.",
+          "line": 1,
+          "column": 31,
+          "endLine": 1,
+          "endColumn": 41
+        }
+      ],
+      "output": null
+    }
+  ]
+}

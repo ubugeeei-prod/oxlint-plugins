@@ -1,0 +1,35 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-possible-timing-attacks.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "if (age === 5) {}"
+    },
+    {
+      "code": "if (age === 5) {}"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "if (password === 'mypass') {}",
+      "errors": [
+        {
+          "message": "Potential timing attack, left side: true"
+        }
+      ]
+    },
+    {
+      "code": "if ('mypass' === password) {}",
+      "errors": [
+        {
+          "message": "Potential timing attack, right side: true"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-update-without-from-binding",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "with-where",
+      "code": "UPDATE t SET x = u.x FROM u WHERE t.id = u.t_id;\n-- No FROM → out of scope.\nUPDATE t SET x = 1;\nUPDATE t SET x = 1 WHERE id = 5;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "cartesian",
+      "code": "UPDATE t SET x = u.x FROM u;",
+      "errors": [
+        {
+          "messageId": "missingJoin",
+          "message": "`UPDATE ... FROM` without a `WHERE` clause produces a Cartesian product with the target table; add a `WHERE t.x = other.x` condition to bind the rows.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ],
+      "output": null
+    }
+  ]
+}

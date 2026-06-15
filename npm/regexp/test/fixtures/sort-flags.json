@@ -1,0 +1,138 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/sort-flags.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/sort-flags.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\w/i"
+    },
+    {
+      "code": "/\\w/im"
+    },
+    {
+      "code": "/\\w/gi"
+    },
+    {
+      "code": "/\\w/gimsuy"
+    },
+    {
+      "code": "/\\w/gimsvy"
+    },
+    {
+      "code": "new RegExp(\"\\\\w\", \"i\")"
+    },
+    {
+      "code": "new RegExp(\"\\\\w\", \"gi\")"
+    },
+    {
+      "code": "new RegExp(\"\\\\w\", \"gimsuy\")"
+    },
+    {
+      "code": "new RegExp(\"\\\\w\", \"dgimsuy\")"
+    },
+    {
+      "code": "new RegExp(\"\\\\w\", \"dgimsvy\")"
+    },
+    {
+      "code": "\n        const flags = \"yusimg\"\n        new RegExp(\"\\\\w\", flags)\n        new RegExp(\"\\\\w\", flags)\n        "
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/\\w/yusimg",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The flags 'yusimg' should be in the order 'gimsuy'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 11
+        }
+      ],
+      "output": "/\\w/gimsuy"
+    },
+    {
+      "code": "/\\w/yvsimg",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The flags 'yvsimg' should be in the order 'gimsvy'.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 11
+        }
+      ],
+      "output": "/\\w/gimsvy"
+    },
+    {
+      "code": "new RegExp(\"\\\\w\", \"yusimg\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The flags 'yusimg' should be in the order 'gimsuy'.",
+          "line": 1,
+          "column": 20,
+          "endColumn": 26
+        }
+      ],
+      "output": "new RegExp(\"\\\\w\", \"gimsuy\")"
+    },
+    {
+      "code": "new RegExp(\"\\\\w\", \"yusimgd\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The flags 'yusimgd' should be in the order 'dgimsuy'.",
+          "line": 1,
+          "column": 20,
+          "endColumn": 27
+        }
+      ],
+      "output": "new RegExp(\"\\\\w\", \"dgimsuy\")"
+    },
+    {
+      "code": "new RegExp(\"\\\\w)\", \"ui\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The flags 'ui' should be in the order 'iu'.",
+          "line": 1,
+          "column": 21,
+          "endColumn": 23
+        }
+      ],
+      "output": "new RegExp(\"\\\\w)\", \"iu\")"
+    },
+    {
+      "code": "RegExp('a' + b, 'us');",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The flags 'us' should be in the order 'su'.",
+          "line": 1,
+          "column": 18,
+          "endColumn": 20
+        }
+      ],
+      "output": "RegExp('a' + b, 'su');"
+    },
+    {
+      "code": "var a = \"foo\"; RegExp(foo, 'us'); RegExp(foo, 'u');",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The flags 'us' should be in the order 'su'.",
+          "line": 1,
+          "column": 29,
+          "endColumn": 31
+        }
+      ],
+      "output": "var a = \"foo\"; RegExp(foo, 'su'); RegExp(foo, 'u');"
+    }
+  ]
+}

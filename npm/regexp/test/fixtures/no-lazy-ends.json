@@ -1,0 +1,152 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-lazy-ends.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-lazy-ends.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a+?b*/.test(str)"
+    },
+    {
+      "code": "/a??(?:ba+?|c)*/.test(str)"
+    },
+    {
+      "code": "/ba*?$/.test(str)"
+    },
+    {
+      "code": "/a??/"
+    },
+    {
+      "code": "/a{3}?/.test(str)"
+    },
+    {
+      "code": "\n            /* exported a */\n            const a = /a??/\n            a.test(str)"
+    },
+    {
+      "code": "/[\\q{ab}]?/v.test(str)"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a??/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier and the quantified element can be removed because the quantifier is lazy and has a minimum of 0.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a*?/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier and the quantified element can be removed because the quantifier is lazy and has a minimum of 0.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a+?/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier can be removed because the quantifier is lazy and has a minimum of 1.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a{3,7}?/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier can be replaced with '{3}' because the quantifier is lazy and has a minimum of 3.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a{3,}?/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier can be replaced with '{3}' because the quantifier is lazy and has a minimum of 3.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?:a|b(c+?))/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier can be removed because the quantifier is lazy and has a minimum of 1.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a(?:c|ab+?)?/.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier can be removed because the quantifier is lazy and has a minimum of 1.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n            /* ✓ GOOD */\n            const any = /[\\s\\S]*?/.source;\n            const pattern = RegExp(`<script(\\\\s${any})?>(${any})<\\/script>`, \"g\");\n\n            /* ✗ BAD */\n            const foo = /[\\s\\S]*?/\n            foo.exec(str)\n            ",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier and the quantified element can be removed because the quantifier is lazy and has a minimum of 0.",
+          "line": 7,
+          "column": 26,
+          "endColumn": 34
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{ab|}]??/v.test(str)",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier and the quantified element can be removed because the quantifier is lazy and has a minimum of 0.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    }
+  ]
+}

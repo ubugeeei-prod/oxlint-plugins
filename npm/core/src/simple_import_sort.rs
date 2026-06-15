@@ -63,7 +63,8 @@ mod napi_abi {
     ) -> Vec<Diagnostic> {
         let options = options.unwrap_or_default();
         let core_options = core::SimpleImportSortOptions {
-            import_groups: compact_groups(options.import_groups.unwrap_or_default()),
+            // None = use default 5 groups; Some([]) = explicit empty → single rest group
+            import_groups: options.import_groups.map(compact_groups),
         };
 
         core::scan_simple_import_sort(&source_text, &filename, &core_options)

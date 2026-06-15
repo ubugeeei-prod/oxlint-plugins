@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-rename-table",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "create-table",
+      "code": "CREATE TABLE users (id BIGINT PRIMARY KEY);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "rename-table",
+      "code": "ALTER TABLE legacy_users RENAME TO users;",
+      "errors": [
+        {
+          "messageId": "noRenameTable",
+          "message": "`RENAME TO` breaks every running app that still queries the old name. The safer pattern is `CREATE VIEW old AS SELECT * FROM new` so old callers keep working until they're migrated, then drop the view in a separate deploy.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 41
+        }
+      ],
+      "output": null
+    }
+  ]
+}

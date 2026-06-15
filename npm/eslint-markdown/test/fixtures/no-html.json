@@ -1,0 +1,684 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-html.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/commonmark"
+  },
+  "valid": [
+    {
+      "code": "Hello world!"
+    },
+    {
+      "code": " 1 < 5"
+    },
+    {
+      "code": "<!-- comment -->"
+    },
+    {
+      "code": "<!-- <h1> -->"
+    },
+    {
+      "code": "<!-- <div id=\"foo\"> -->"
+    },
+    {
+      "code": "<!-- abcdefg <abcdefg> -->"
+    },
+    {
+      "code": "```html\n<b>Hello world!</b>\n```"
+    },
+    {
+      "code": "<b>Hello world!</b>",
+      "options": [
+        {
+          "allowed": ["b"]
+        }
+      ]
+    },
+    {
+      "code": "<custom-element>Hello world!</custom-element>",
+      "options": [
+        {
+          "allowed": ["custom-element"]
+        }
+      ]
+    },
+    {
+      "code": "<div>Hello world!</div>",
+      "options": [
+        {
+          "allowed": ["div"]
+        }
+      ]
+    },
+    {
+      "code": "<DIV>Hello world!</DIV>",
+      "options": [
+        {
+          "allowed": ["DIV"]
+        }
+      ]
+    },
+    {
+      "code": "<div>Hello world!</div>",
+      "options": [
+        {
+          "allowed": ["DIV"],
+          "allowedIgnoreCase": true
+        }
+      ]
+    },
+    {
+      "code": "<DIV>Hello world!</DIV>",
+      "options": [
+        {
+          "allowed": ["div"],
+          "allowedIgnoreCase": true
+        }
+      ]
+    },
+    {
+      "code": "<DiV>Hello world!</DiV>",
+      "options": [
+        {
+          "allowed": ["div"],
+          "allowedIgnoreCase": true
+        }
+      ]
+    },
+    {
+      "code": "<custom-element>Hello world!</custom-element>",
+      "options": [
+        {
+          "allowed": ["CUSTOM-ELEMENT"],
+          "allowedIgnoreCase": true
+        }
+      ]
+    },
+    {
+      "code": "<CUSTOM-ELEMENT>Hello world!</CUSTOM-ELEMENT>",
+      "options": [
+        {
+          "allowed": ["custom-element"],
+          "allowedIgnoreCase": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "<img>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "img"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<img >",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "img"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "<img/>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "img"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "<img />",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "img"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "<hr>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "hr"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "<hr >",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "hr"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<hr/>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "hr"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<hr />",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "hr"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "<br>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "br"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "<br >",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "br"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<br/>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "br"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<br />",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "br"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "<b>Hello world!</b>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "b"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "code": "<b>Hello world!</b>",
+      "options": [
+        {
+          "allowed": ["em"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "b"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "code": "<b>Hello world!</b><i>Goodbye world!</i>",
+      "options": [
+        {
+          "allowed": ["em"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "b"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 4
+        },
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "i"
+          },
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ]
+    },
+    {
+      "code": "<!-- hi --><b>Hello world!</b>",
+      "options": [
+        {
+          "allowed": ["em"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "b"
+          },
+          "line": 1,
+          "column": 12,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ]
+    },
+    {
+      "code": "<custom-element>Hello world!</custom-element>",
+      "options": [
+        {
+          "allowed": ["em"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "custom-element"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ]
+    },
+    {
+      "code": "<div>Hello world!</div>",
+      "options": [
+        {
+          "allowed": ["DIV"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "div"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<DIV>Hello world!</DIV>",
+      "options": [
+        {
+          "allowed": ["div"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "DIV"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<div>Hello world!</div>",
+      "options": [
+        {
+          "allowed": ["span"],
+          "allowedIgnoreCase": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "div"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<DIV>Hello world!</DIV>",
+      "options": [
+        {
+          "allowed": ["span"],
+          "allowedIgnoreCase": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "DIV"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<span >Content</span>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "span"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "<div id=\"foo\">Some content</div>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "div"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ]
+    },
+    {
+      "code": "<p class=\"text-center\" data-attr=\"value\">Content</p>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "p"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 42
+        }
+      ]
+    },
+    {
+      "code": "<span\nclass=\"highlight\"\ndata-id=\"123\">Text</span>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "span"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<span\rclass=\"highlight\"\rdata-id=\"123\">Text</span>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "span"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<span\r\nclass=\"highlight\"\r\ndata-id=\"123\">Text</span>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "span"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<div   class=\"test\"   >Content</div>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "div"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "<input type=\"text\" placeholder=\"Enter text\" />",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "input"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 47
+        }
+      ]
+    },
+    {
+      "code": "<a href=\"#\"><span class=\"highlight\">Link</span></a>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "a"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 13
+        },
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "span"
+          },
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 37
+        }
+      ]
+    },
+    {
+      "code": "<input placeholder=\">\" />",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "input"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ]
+    },
+    {
+      "code": "<input placeholder='>'></input>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "input"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "<input\nplaceholder=\">\" />",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "input"
+          },
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "<!-- comment -->\n<input\n\tplaceholder=\"Enter name\"\n      \t\tname=\"First Name\"\n\t/>",
+      "errors": [
+        {
+          "messageId": "disallowedElement",
+          "data": {
+            "name": "input"
+          },
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 7
+        }
+      ]
+    }
+  ]
+}

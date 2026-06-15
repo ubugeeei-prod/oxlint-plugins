@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-add-unique-constraint-directly",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "with-using-index",
+      "code": "-- Build the index out-of-band, then promote it.\nCREATE UNIQUE INDEX CONCURRENTLY idx_t_email ON t (email);\nALTER TABLE t ADD CONSTRAINT uq_t_email UNIQUE USING INDEX idx_t_email;\n-- Non-UNIQUE constraints are out of scope.\nALTER TABLE t ADD CONSTRAINT c CHECK (x > 0);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "inline-unique",
+      "code": "ALTER TABLE t ADD CONSTRAINT uq_t_email UNIQUE (email);",
+      "errors": [
+        {
+          "messageId": "useIndexFirst",
+          "message": "Build this UNIQUE constraint's index with `CREATE UNIQUE INDEX CONCURRENTLY` first, then promote it via `ALTER TABLE ... ADD CONSTRAINT ... UNIQUE USING INDEX <name>`. The inline form blocks writers under `ACCESS EXCLUSIVE` for the entire index build.",
+          "line": 1,
+          "column": 19,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    }
+  ]
+}

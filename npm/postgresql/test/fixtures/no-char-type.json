@@ -1,0 +1,47 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-char-type",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "text",
+      "code": "CREATE TABLE t (code TEXT);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "bpchar",
+      "code": "CREATE TABLE t (code BPCHAR(3));",
+      "errors": [
+        {
+          "messageId": "noChar",
+          "message": "Avoid `char(n)`. PostgreSQL pads stored values to `n` with trailing spaces and trims on read, which surprises every comparison and round-trip. Use `text` instead.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "char-n",
+      "code": "CREATE TABLE t (code CHAR(3));",
+      "errors": [
+        {
+          "messageId": "noChar",
+          "message": "Avoid `char(n)`. PostgreSQL pads stored values to `n` with trailing spaces and trims on read, which surprises every comparison and round-trip. Use `text` instead.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "output": null
+    }
+  ]
+}

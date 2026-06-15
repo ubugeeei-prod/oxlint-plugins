@@ -1,0 +1,46 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-non-literal-require.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "var a = require('b')"
+    },
+    {
+      "code": "var a = require(`b`)"
+    },
+    {
+      "code": "\n  const d = 'debounce'\n  var a = require(`lodash/${d}`)"
+    },
+    {
+      "code": "const utils = require(__dirname + '/utils');",
+      "languageOptions": {
+        "globals": {
+          "__dirname": "readonly"
+        }
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "code": "var a = require(c)",
+      "errors": [
+        {
+          "message": "Found non-literal argument in require"
+        }
+      ]
+    },
+    {
+      "code": "var a = require(`${c}`)",
+      "errors": [
+        {
+          "message": "Found non-literal argument in require"
+        }
+      ]
+    }
+  ]
+}

@@ -11,7 +11,7 @@
 | Oxlint native support | none — port target |
 | Rules to port | 4 |
 
-> Pulled in via @unocss/eslint-config in flyle-nexus.
+> Pulled in via @unocss/eslint-config.
 
 ## Rules
 

@@ -1,0 +1,3464 @@
+//! Small string-level helpers for parsing regexp patterns and flags.
+
+use oxc_ast::ast::{ArrayExpressionElement, Expression};
+use oxc_span::Span;
+use oxlint_plugins_carton::{CompactString, SmallVec};
+
+pub(crate) fn array_element_expression<'a>(
+    element: &'a ArrayExpressionElement<'a>,
+) -> Option<&'a Expression<'a>> {
+    element.as_expression()
+}
+
+pub(crate) fn string_literal_value_with_span<'a>(
+    expression: &'a Expression<'a>,
+) -> Option<(&'a str, Span)> {
+    match expression.get_inner_expression() {
+        Expression::StringLiteral(literal) => Some((literal.value.as_str(), literal.span)),
+        _ => None,
+    }
+}
+
+pub(crate) fn duplicate_flag(flags: &str) -> Option<&str> {
+    let mut seen = [false; 128];
+    for (start, ch) in flags.char_indices() {
+        let code = ch as usize;
+        if code < seen.len() {
+            if seen[code] {
+                return Some(&flags[start..start + ch.len_utf8()]);
+            }
+            seen[code] = true;
+        }
+    }
+    None
+}
+
+pub(crate) fn sorted_flags(flags: &str) -> CompactString {
+    let mut chars = SmallVec::<[char; 8]>::new();
+    chars.extend(flags.chars());
+    chars.sort_unstable();
+    let mut out = CompactString::new("");
+    for ch in chars {
+        out.push(ch);
+    }
+    out
+}
+
+pub(crate) fn skip_escape(bytes: &[u8], index: usize) -> usize {
+    if index + 1 >= bytes.len() {
+        return index + 1;
+    }
+    match bytes[index + 1] {
+        b'u' if index + 2 < bytes.len() && bytes[index + 2] == b'{' => {
+            let mut cursor = index + 3;
+            while cursor < bytes.len() && bytes[cursor] != b'}' {
+                cursor += 1;
+            }
+            cursor.saturating_add(1).min(bytes.len())
+        }
+        b'u' => (index + 6).min(bytes.len()),
+        b'x' => (index + 4).min(bytes.len()),
+        // v-mode string disjunction: \q{...} — skip past the closing `}`.
+        b'q' if index + 2 < bytes.len() && bytes[index + 2] == b'{' => {
+            let mut cursor = index + 3;
+            while cursor < bytes.len() && bytes[cursor] != b'}' {
+                cursor += 1;
+            }
+            cursor.saturating_add(1).min(bytes.len())
+        }
+        _ => (index + 2).min(bytes.len()),
+    }
+}
+
+pub(crate) fn find_class_end(bytes: &[u8], open: usize) -> Option<usize> {
+    let mut index = open + 1;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b']' => return Some(index),
+            _ => index += 1,
+        }
+    }
+    None
+}
+
+/// Like `find_class_end`, but also tracks nested `[...]` brackets so that it
+/// correctly locates the closing `]` of a v-mode character class that contains
+/// set-operation operands such as `[\w--[ab]]` or `[\w&&b]`. In v-mode,
+/// `[...]` inside a character class is a nested class (a set operand), not a
+/// literal `[`; this variant accounts for that extra nesting depth.
+///
+/// For non-nested classes (the common case) the result is identical to
+/// `find_class_end`. Use this variant only when v-mode nesting is possible —
+/// in particular, in the top-level pattern scan loop and in helpers that are
+/// called on outer v-mode classes.
+pub(crate) fn find_class_end_nested(bytes: &[u8], open: usize) -> Option<usize> {
+    let mut index = open + 1;
+    let mut depth: usize = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                depth += 1;
+                index += 1;
+            }
+            b']' => {
+                if depth == 0 {
+                    return Some(index);
+                }
+                depth -= 1;
+                index += 1;
+            }
+            _ => index += 1,
+        }
+    }
+    None
+}
+
+/// Result of classifying the start of a `(` group: whether the body should be
+/// checked for emptiness, whether the group captures, whether the group is a
+/// named capture (`(?<name>...)`), and the byte index immediately after the
+/// group prefix. Lookarounds and `?:` do not capture; anonymous `(...)` and
+/// named `(?<name>...)` capture but only the latter is named.
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct GroupPrefix {
+    pub(crate) check_empty: bool,
+    pub(crate) capturing: bool,
+    pub(crate) named: bool,
+    pub(crate) is_lookaround: bool,
+    pub(crate) is_non_capturing: bool,
+    pub(crate) next: usize,
+}
+
+pub(crate) fn group_prefix(bytes: &[u8], open: usize) -> GroupPrefix {
+    if bytes.get(open + 1) != Some(&b'?') {
+        return GroupPrefix {
+            check_empty: true,
+            capturing: true,
+            named: false,
+            is_lookaround: false,
+            is_non_capturing: false,
+            next: open + 1,
+        };
+    }
+    match bytes.get(open + 2).copied() {
+        Some(b':') => GroupPrefix {
+            check_empty: true,
+            capturing: false,
+            named: false,
+            is_lookaround: false,
+            is_non_capturing: true,
+            next: open + 3,
+        },
+        Some(b'=') | Some(b'!') => GroupPrefix {
+            check_empty: false,
+            capturing: false,
+            named: false,
+            is_lookaround: true,
+            is_non_capturing: false,
+            next: open + 3,
+        },
+        Some(b'<') => {
+            if matches!(bytes.get(open + 3), Some(b'=') | Some(b'!')) {
+                GroupPrefix {
+                    check_empty: false,
+                    capturing: false,
+                    named: false,
+                    is_lookaround: true,
+                    is_non_capturing: false,
+                    next: open + 4,
+                }
+            } else {
+                let mut cursor = open + 3;
+                while cursor < bytes.len() && bytes[cursor] != b'>' {
+                    cursor += 1;
+                }
+                GroupPrefix {
+                    check_empty: true,
+                    capturing: true,
+                    named: true,
+                    is_lookaround: false,
+                    is_non_capturing: false,
+                    next: cursor.saturating_add(1).min(bytes.len()),
+                }
+            }
+        }
+        _ => GroupPrefix {
+            check_empty: false,
+            capturing: false,
+            named: false,
+            is_lookaround: false,
+            is_non_capturing: false,
+            next: open + 2,
+        },
+    }
+}
+
+/// Classification of a `[...]` character class for shorthand-equivalence
+/// rules (`prefer-d`, `prefer-w`). Carries whether the class is negated so
+/// callers can pick between the lower- and upper-case shorthand.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct ShorthandClass {
+    pub(crate) negated: bool,
+}
+
+/// Returns `Some(ShorthandClass)` when the class at `open` is exactly the
+/// range `0-9` (possibly negated): the bodies of `[0-9]`, `[^0-9]`. Any extra
+/// element, malformed range, or unrecognised content yields `None`. Reuses
+/// `find_class_end` so escaped `]` inside the class is handled.
+pub(crate) fn class_is_digit_range(bytes: &[u8], open: usize) -> Option<ShorthandClass> {
+    let (negated, start, end) = class_body_bounds(bytes, open)?;
+    let body = &bytes[start..end];
+    if body == b"0-9" {
+        Some(ShorthandClass { negated })
+    } else {
+        None
+    }
+}
+
+/// Returns `Some(ShorthandClass)` when the class at `open` is exactly the
+/// word-character set in any order: ranges `a-z`, `A-Z`, `0-9`, and literal
+/// `_`. Negated forms (`[^a-zA-Z0-9_]` etc.) are also recognised. Any extra
+/// element or unrecognised content yields `None`.
+pub(crate) fn class_is_word_char_set(bytes: &[u8], open: usize) -> Option<ShorthandClass> {
+    let (negated, start, end) = class_body_bounds(bytes, open)?;
+    let mut index = start;
+    let mut saw_lower = false;
+    let mut saw_upper = false;
+    let mut saw_digit = false;
+    let mut saw_underscore = false;
+    while index < end {
+        if index + 2 < end
+            && bytes[index] == b'a'
+            && bytes[index + 1] == b'-'
+            && bytes[index + 2] == b'z'
+            && !saw_lower
+        {
+            saw_lower = true;
+            index += 3;
+        } else if index + 2 < end
+            && bytes[index] == b'A'
+            && bytes[index + 1] == b'-'
+            && bytes[index + 2] == b'Z'
+            && !saw_upper
+        {
+            saw_upper = true;
+            index += 3;
+        } else if index + 2 < end
+            && bytes[index] == b'0'
+            && bytes[index + 1] == b'-'
+            && bytes[index + 2] == b'9'
+            && !saw_digit
+        {
+            saw_digit = true;
+            index += 3;
+        } else if bytes[index] == b'_' && !saw_underscore {
+            saw_underscore = true;
+            index += 1;
+        } else {
+            return None;
+        }
+    }
+    if saw_lower && saw_upper && saw_digit && saw_underscore {
+        Some(ShorthandClass { negated })
+    } else {
+        None
+    }
+}
+
+/// Returns `(negated, body_start, body_end_exclusive)` for the `[...]` class at
+/// `open`, where the body excludes the leading `[`, the optional negation `^`,
+/// and the trailing `]`. Returns `None` if the class is unclosed.
+fn class_body_bounds(bytes: &[u8], open: usize) -> Option<(bool, usize, usize)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut start = open + 1;
+    let mut negated = false;
+    if bytes.get(start) == Some(&b'^') {
+        negated = true;
+        start += 1;
+    }
+    Some((negated, start, end))
+}
+
+/// Returns the first hexadecimal escape sequence (`\xHH`, `\uHHHH`, or
+/// `\u{H+}`) in `pattern` whose hex digits contain at least one uppercase
+/// letter `A`-`F`. Used by `letter-case` (default config: lowercase hex digits).
+pub(crate) fn first_uppercase_hex_escape(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        let next = *bytes.get(index + 1)?;
+        match next {
+            b'x' => {
+                let end = (index + 4).min(bytes.len());
+                if end - index == 4 && hex_range_has_upper(&bytes[index + 2..end]) {
+                    return Some(&pattern[index..end]);
+                }
+                index = skip_escape(bytes, index);
+            }
+            b'u' if bytes.get(index + 2) == Some(&b'{') => {
+                let mut cursor = index + 3;
+                while cursor < bytes.len() && bytes[cursor] != b'}' {
+                    cursor += 1;
+                }
+                if cursor < bytes.len() && hex_range_has_upper(&bytes[index + 3..cursor]) {
+                    return Some(&pattern[index..cursor + 1]);
+                }
+                index = cursor.saturating_add(1).min(bytes.len());
+            }
+            b'u' => {
+                let end = (index + 6).min(bytes.len());
+                if end - index == 6 && hex_range_has_upper(&bytes[index + 2..end]) {
+                    return Some(&pattern[index..end]);
+                }
+                index = skip_escape(bytes, index);
+            }
+            _ => index = skip_escape(bytes, index),
+        }
+    }
+    None
+}
+
+fn hex_range_has_upper(bytes: &[u8]) -> bool {
+    bytes.iter().any(|&byte| matches!(byte, b'A'..=b'F'))
+}
+
+/// Returns `true` when the `[...]` character class at `open` consists of
+/// exactly an antipair of shorthand classes that together cover every
+/// character: `[\s\S]`, `[\d\D]`, or `[\w\W]` (in either order). Returns
+/// `false` for negated classes (`[^...]`), classes with extra elements, or
+/// any unrecognised content. The check stops at the matching `]`; `\]` inside
+/// the class is handled by reusing `find_class_end`.
+pub(crate) fn class_matches_anything(bytes: &[u8], open: usize) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let Some(end) = find_class_end(bytes, open) else {
+        return false;
+    };
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        return false;
+    }
+    // `[\s\S]` is the canonical form the rule itself recommends — treat it as valid.
+    let body = &bytes[open + 1..end];
+    if body == b"\\s\\S" {
+        return false;
+    }
+    let mut has_lower = [false; 3]; // s, d, w
+    let mut has_upper = [false; 3]; // S, D, W
+    let mut count = 0usize;
+    while index < end {
+        if count >= 2 {
+            return false;
+        }
+        if bytes[index] != b'\\' {
+            return false;
+        }
+        let Some(&kind) = bytes.get(index + 1) else {
+            return false;
+        };
+        match kind {
+            b's' => has_lower[0] = true,
+            b'S' => has_upper[0] = true,
+            b'd' => has_lower[1] = true,
+            b'D' => has_upper[1] = true,
+            b'w' => has_lower[2] = true,
+            b'W' => has_upper[2] = true,
+            _ => return false,
+        }
+        index += 2;
+        count += 1;
+    }
+    (0..3).any(|i| has_lower[i] && has_upper[i])
+}
+
+/// Shape of a `{...}` braced quantifier that can be rewritten as a shorter
+/// quantifier. `Plus` is `{1,}`, `Star` is `{0,}`, `Question` is `{0,1}`, and
+/// `EqualTwoNums(n)` is `{n,n}` with `n >= 1` (the `n == 0` case is reported by
+/// `no-zero-quantifier` instead).
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum BraceQuantifierShape {
+    Plus,
+    Star,
+    Question,
+    EqualTwoNums(u64),
+}
+
+/// Parse a `{n}`, `{n,}`, or `{n,m}` quantifier starting at `open` (the `{`
+/// byte). Returns `(end_exclusive, original_text, shape)` if the quantifier is
+/// well-formed and matches one of the four rewritable shapes; otherwise `None`.
+/// The decision is intentionally conservative: malformed inputs (e.g. trailing
+/// digits without a closing brace, non-digit characters) fall through to the
+/// caller's existing scan loop.
+pub(crate) fn parse_brace_quantifier(
+    bytes: &[u8],
+    open: usize,
+) -> Option<(usize, &str, BraceQuantifierShape)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'{'));
+
+    let mut cursor = open + 1;
+    let first_start = cursor;
+    while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+        cursor += 1;
+    }
+    if cursor == first_start {
+        return None;
+    }
+    let first = parse_u64(&bytes[first_start..cursor])?;
+
+    match bytes.get(cursor).copied() {
+        Some(b'}') => {
+            // `{n}` — never rewritable on its own (this is the canonical form).
+            let _ = first;
+            None
+        }
+        Some(b',') => {
+            cursor += 1;
+            let second_start = cursor;
+            while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+                cursor += 1;
+            }
+            if bytes.get(cursor) != Some(&b'}') {
+                return None;
+            }
+            let end = cursor + 1;
+            let original =
+                std::str::from_utf8(&bytes[open..end]).expect("ASCII slice is valid UTF-8");
+
+            if second_start == cursor {
+                // `{n,}` — open-ended.
+                let shape = match first {
+                    0 => BraceQuantifierShape::Star,
+                    1 => BraceQuantifierShape::Plus,
+                    _ => return None,
+                };
+                Some((end, original, shape))
+            } else {
+                // `{n,m}`.
+                let second = parse_u64(&bytes[second_start..cursor])?;
+                if first == 0 && second == 1 {
+                    Some((end, original, BraceQuantifierShape::Question))
+                } else if first == second && first >= 1 {
+                    Some((end, original, BraceQuantifierShape::EqualTwoNums(first)))
+                } else {
+                    None
+                }
+            }
+        }
+        _ => None,
+    }
+}
+
+fn parse_u64(digits: &[u8]) -> Option<u64> {
+    let mut value: u64 = 0;
+    for &byte in digits {
+        let digit = byte.checked_sub(b'0')?;
+        if digit > 9 {
+            return None;
+        }
+        value = value.checked_mul(10)?.checked_add(u64::from(digit))?;
+    }
+    Some(value)
+}
+
+/// Returns `true` when the character class starting at `open` (a `[` byte)
+/// contains at least one `\b` escape. The class is delimited by `find_class_end`
+/// semantics, so `\]` inside the class is correctly skipped.
+pub(crate) fn class_contains_backspace_escape(bytes: &[u8], open: usize) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let Some(end) = find_class_end(bytes, open) else {
+        return false;
+    };
+
+    let mut index = open + 1;
+    while index < end {
+        if bytes[index] == b'\\' {
+            if bytes.get(index + 1) == Some(&b'b') {
+                return true;
+            }
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    false
+}
+
+pub(crate) fn is_zero_quantifier(bytes: &[u8], open: usize) -> bool {
+    let mut cursor = open + 1;
+    while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+        cursor += 1;
+    }
+    if cursor == open + 1 {
+        return false;
+    }
+    let first = std::str::from_utf8(&bytes[open + 1..cursor]).unwrap_or("");
+    if first != "0" {
+        return false;
+    }
+    if bytes.get(cursor) == Some(&b'}') {
+        return true;
+    }
+    if bytes.get(cursor) != Some(&b',') {
+        return false;
+    }
+    cursor += 1;
+    let second_start = cursor;
+    while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+        cursor += 1;
+    }
+    if bytes.get(cursor) != Some(&b'}') {
+        return false;
+    }
+    if cursor == second_start {
+        return false;
+    }
+    std::str::from_utf8(&bytes[second_start..cursor]).unwrap_or("") == "0"
+}
+
+/// If the regex starting at `open` (which must be `{`) is a fixed-count
+/// brace quantifier `{n}` or `{n,n}` (n >= 0) immediately followed by a
+/// lazy `?` modifier, returns the position right after the `?`. Returns
+/// `None` otherwise (including for any well-formed but non-fixed-count
+/// brace and for malformed input).
+///
+/// A lazy modifier on a fixed-count quantifier is a no-op because the engine
+/// always matches exactly `n` repetitions; `no-useless-lazy` flags this
+/// shape. Other useless-lazy forms (lazy quantifier whose body matches the
+/// empty string, or lazy quantifier followed by a satisfied assertion) need a
+/// real regex AST and are intentionally deferred.
+pub(crate) fn fixed_count_lazy_brace_end(bytes: &[u8], open: usize) -> Option<usize> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'{'));
+    let mut cursor = open + 1;
+    let first_start = cursor;
+    while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+        cursor += 1;
+    }
+    if cursor == first_start {
+        return None;
+    }
+    let first = bytes.get(first_start..cursor)?;
+    let body_end = match bytes.get(cursor).copied()? {
+        b'}' => cursor + 1,
+        b',' => {
+            cursor += 1;
+            let second_start = cursor;
+            while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+                cursor += 1;
+            }
+            if bytes.get(cursor) != Some(&b'}') || cursor == second_start {
+                return None;
+            }
+            let second = bytes.get(second_start..cursor)?;
+            if second != first {
+                return None;
+            }
+            cursor + 1
+        }
+        _ => return None,
+    };
+    if bytes.get(body_end) == Some(&b'?') {
+        Some(body_end + 1)
+    } else {
+        None
+    }
+}
+
+pub(crate) fn first_octal_escape(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index + 2 < bytes.len() {
+        if bytes[index] == b'\\'
+            && bytes[index + 1] == b'0'
+            && matches!(bytes[index + 2], b'0'..=b'7')
+        {
+            let mut end = index + 3;
+            while end < bytes.len() && matches!(bytes[end], b'0'..=b'7') {
+                end += 1;
+            }
+            return Some(&pattern[index..end]);
+        }
+        index = if bytes[index] == b'\\' {
+            skip_escape(bytes, index)
+        } else {
+            index + 1
+        };
+    }
+    None
+}
+
+/// Returns the first non-standard flag character in `flags` (i.e. one that is
+/// not part of the canonical set `d`, `g`, `i`, `m`, `s`, `u`, `v`, `y`).
+/// Used by `no-non-standard-flag`. ASCII-only by design; non-ASCII bytes are
+/// also reported because they cannot be valid flags.
+pub(crate) fn first_non_standard_flag(flags: &str) -> Option<char> {
+    flags
+        .chars()
+        .find(|&ch| !matches!(ch, 'd' | 'g' | 'i' | 'm' | 's' | 'u' | 'v' | 'y'))
+}
+
+/// Returns the first literal invisible character in `pattern` that the
+/// `no-invisible-character` rule recognises. Escaped sequences (`\u00A0`,
+/// `\xA0`, `\u{1680}`) are intentionally skipped: the rule targets characters
+/// that look like whitespace to a reader but are not the ASCII space, not
+/// well-defined hex escapes.
+pub(crate) fn first_invisible_character(pattern: &str) -> Option<char> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        // Decode one UTF-8 scalar starting at `index`.
+        let ch = pattern[index..].chars().next()?;
+        if is_invisible_character(ch) {
+            return Some(ch);
+        }
+        index += ch.len_utf8();
+    }
+    None
+}
+
+/// Curated set of "invisible" characters reported by `no-invisible-character`.
+/// The set covers ECMAScript whitespace beyond U+0020 plus the zero-width
+/// joiners, the line/paragraph separators, BOM, and the most common space
+/// look-alikes that are commonly pasted accidentally.
+fn is_invisible_character(ch: char) -> bool {
+    matches!(
+        ch,
+        '\u{0009}'  // CHARACTER TABULATION (tab)
+        | '\u{000B}' // LINE TABULATION (vertical tab)
+        | '\u{000C}' // FORM FEED
+        | '\u{0085}' // NEXT LINE
+        | '\u{00A0}' // NO-BREAK SPACE
+        | '\u{1680}' // OGHAM SPACE MARK
+        | '\u{2000}'
+            ..='\u{200A}' // various spaces
+        | '\u{2028}' // LINE SEPARATOR
+        | '\u{2029}' // PARAGRAPH SEPARATOR
+        | '\u{202F}' // NARROW NO-BREAK SPACE
+        | '\u{205F}' // MEDIUM MATHEMATICAL SPACE
+        | '\u{3000}' // IDEOGRAPHIC SPACE
+        | '\u{200B}' // ZERO WIDTH SPACE
+        | '\u{200C}' // ZERO WIDTH NON-JOINER
+        | '\u{200D}' // ZERO WIDTH JOINER
+        | '\u{FEFF}' // ZERO WIDTH NO-BREAK SPACE (BOM)
+    )
+}
+
+/// Builds the lower-case `\xHH` escape for a code point in `0..=0xFF`. The
+/// nibble masks keep both indices within `HEX`, so no fallible conversion is
+/// needed.
+fn hex_escape_for(code_point: u32) -> CompactString {
+    const HEX: &[u8; 16] = b"0123456789abcdef";
+    let mut out = CompactString::new("\\x");
+    out.push(HEX[((code_point >> 4) & 0xF) as usize] as char);
+    out.push(HEX[(code_point & 0xF) as usize] as char);
+    out
+}
+
+/// Returns the first `\uHHHH` or `\u{H+}` escape sequence in `pattern` whose
+/// decoded code point is ≤ 0xFF, together with its `\xHH` replacement. Used by
+/// `hexadecimal-escape` (default `"always"` config: flag unicode escapes that
+/// can be written as `\xHH` and suggest the hexadecimal form). Code points
+/// above 0xFF are not representable as `\xHH` and are silently skipped.
+/// `\xHH` escapes (already in the correct form) are also skipped.
+pub(crate) fn first_unicode_escape_as_hex(pattern: &str) -> Option<(&str, CompactString)> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        if bytes.get(index + 1) == Some(&b'u') {
+            if bytes.get(index + 2) == Some(&b'{') {
+                // \u{H+} form
+                let mut cursor = index + 3;
+                while cursor < bytes.len() && bytes[cursor] != b'}' {
+                    cursor += 1;
+                }
+                if cursor < bytes.len() {
+                    let hex_str = &pattern[index + 3..cursor];
+                    if let Ok(code_point) = u32::from_str_radix(hex_str, 16)
+                        && code_point <= 0xFF
+                    {
+                        let original = &pattern[index..cursor + 1];
+                        return Some((original, hex_escape_for(code_point)));
+                    }
+                    index = cursor + 1;
+                    continue;
+                }
+                index = cursor.saturating_add(1).min(bytes.len());
+                continue;
+            }
+            // \uHHHH form (fixed 4 hex digits)
+            if index + 6 <= bytes.len()
+                && bytes[index + 2].is_ascii_hexdigit()
+                && bytes[index + 3].is_ascii_hexdigit()
+                && bytes[index + 4].is_ascii_hexdigit()
+                && bytes[index + 5].is_ascii_hexdigit()
+            {
+                let hex_str = &pattern[index + 2..index + 6];
+                if let Ok(code_point) = u32::from_str_radix(hex_str, 16)
+                    && code_point <= 0xFF
+                {
+                    let original = &pattern[index..index + 6];
+                    return Some((original, hex_escape_for(code_point)));
+                }
+            }
+        }
+        index = skip_escape(bytes, index);
+    }
+    None
+}
+
+/// Returns the first fixed-width `\uHHHH` escape (i.e. not the `\u{H+}`
+/// variant) in `pattern` together with its `\u{HHHH}` replacement. Used by
+/// `unicode-escape` (default config: prefer the unicode code-point escape).
+pub(crate) fn first_fixed_unicode_escape(pattern: &str) -> Option<(&str, CompactString)> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        if bytes.get(index + 1) == Some(&b'u')
+            && bytes.get(index + 2).copied() != Some(b'{')
+            && index + 6 <= bytes.len()
+            && bytes[index + 2].is_ascii_hexdigit()
+            && bytes[index + 3].is_ascii_hexdigit()
+            && bytes[index + 4].is_ascii_hexdigit()
+            && bytes[index + 5].is_ascii_hexdigit()
+        {
+            // Surrogate halves (U+D800..=U+DFFF) belong to surrogate pairs handled
+            // by `prefer-unicode-codepoint-escapes`; skip them here.
+            let value = read_fixed_hex4(&bytes[index + 2..index + 6]).unwrap_or(0);
+            if (0xD800..=0xDFFF).contains(&value) {
+                index = skip_escape(bytes, index);
+                continue;
+            }
+            let original = &pattern[index..index + 6];
+            let mut replacement = CompactString::new("\\u{");
+            for offset in 2..6 {
+                replacement.push(bytes[index + offset].to_ascii_lowercase() as char);
+            }
+            replacement.push('}');
+            return Some((original, replacement));
+        }
+        index = skip_escape(bytes, index);
+    }
+    None
+}
+
+/// Returns `Some((start, end))` when the `[...]` class at `open` contains at
+/// least one `X-Y` range whose endpoints cross ASCII character categories
+/// (digit/uppercase letter/lowercase letter/other). Such ranges almost always
+/// sweep up unexpected characters in the gaps between categories (the
+/// canonical example is `[A-z]`, which includes `[\]^_` and `` ` ``). Used by
+/// `no-obscure-range`. Escaped or compound endpoints are intentionally
+/// ignored so the check stays sound (no false positives).
+pub(crate) fn class_first_obscure_range(bytes: &[u8], open: usize) -> Option<(char, char)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    while index + 2 < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if bytes[index + 1] != b'-' {
+            index += 1;
+            continue;
+        }
+        if bytes[index + 2] == b'\\' || bytes[index + 2] == b']' {
+            // Skip escaped or end-of-class endpoints; equivalence is hard to
+            // judge without decoding the escape.
+            index += 1;
+            continue;
+        }
+        let start_byte = bytes[index];
+        let end_byte = bytes[index + 2];
+        if start_byte.is_ascii() && end_byte.is_ascii() && is_obscure_range(start_byte, end_byte) {
+            return Some((start_byte as char, end_byte as char));
+        }
+        index += 3;
+    }
+    None
+}
+
+fn is_obscure_range(start: u8, end: u8) -> bool {
+    if start > end {
+        return false;
+    }
+    let start_category = ascii_category(start);
+    let end_category = ascii_category(end);
+    // A range stays within one of the canonical categories (digits or
+    // lowercase letters or uppercase letters) — that is fine. Anything else
+    // crosses a boundary and is flagged.
+    !matches!(
+        (start_category, end_category),
+        (AsciiCategory::Digit, AsciiCategory::Digit)
+            | (AsciiCategory::Lowercase, AsciiCategory::Lowercase)
+            | (AsciiCategory::Uppercase, AsciiCategory::Uppercase)
+    ) && (start_category != AsciiCategory::Other || end_category != AsciiCategory::Other)
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum AsciiCategory {
+    Digit,
+    Lowercase,
+    Uppercase,
+    Other,
+}
+
+fn ascii_category(byte: u8) -> AsciiCategory {
+    match byte {
+        b'0'..=b'9' => AsciiCategory::Digit,
+        b'a'..=b'z' => AsciiCategory::Lowercase,
+        b'A'..=b'Z' => AsciiCategory::Uppercase,
+        _ => AsciiCategory::Other,
+    }
+}
+
+/// Returns the first surrogate-pair escape sequence `\uHHHH\uHHHH` in
+/// `pattern` together with its `\u{CODEPOINT}` replacement (hex digits in
+/// lower case). Used by `prefer-unicode-codepoint-escapes`. Unrelated
+/// adjacent `\uHHHH` escapes (where the pair is not a valid surrogate pair)
+/// are skipped.
+pub(crate) fn first_surrogate_pair_escape(pattern: &str) -> Option<(&str, CompactString)> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index + 12 <= bytes.len() {
+        if bytes[index] != b'\\' || bytes[index + 1] != b'u' {
+            index += 1;
+            continue;
+        }
+        let Some(high) = read_fixed_hex4(&bytes[index + 2..index + 6]) else {
+            index = skip_escape(bytes, index);
+            continue;
+        };
+        if !(0xD800..=0xDBFF).contains(&high) {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        if bytes[index + 6] != b'\\' || bytes[index + 7] != b'u' {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        let Some(low) = read_fixed_hex4(&bytes[index + 8..index + 12]) else {
+            index = skip_escape(bytes, index);
+            continue;
+        };
+        if !(0xDC00..=0xDFFF).contains(&low) {
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        let original = &pattern[index..index + 12];
+        let codepoint = ((high - 0xD800) << 10) + (low - 0xDC00) + 0x10000;
+        let mut replacement = CompactString::new("\\u{");
+        append_lower_hex(&mut replacement, codepoint);
+        replacement.push('}');
+        return Some((original, replacement));
+    }
+    None
+}
+
+fn read_fixed_hex4(bytes: &[u8]) -> Option<u32> {
+    if bytes.len() < 4 {
+        return None;
+    }
+    let mut value: u32 = 0;
+    for byte in bytes.iter().take(4) {
+        let digit = match byte {
+            b'0'..=b'9' => byte - b'0',
+            b'a'..=b'f' => byte - b'a' + 10,
+            b'A'..=b'F' => byte - b'A' + 10,
+            _ => return None,
+        };
+        value = value * 16 + u32::from(digit);
+    }
+    Some(value)
+}
+
+fn append_lower_hex(target: &mut CompactString, mut value: u32) {
+    if value == 0 {
+        target.push('0');
+        return;
+    }
+    let mut buf = [0u8; 8];
+    let mut cursor = buf.len();
+    while value > 0 {
+        cursor -= 1;
+        let digit = (value & 0xf) as u8;
+        buf[cursor] = if digit < 10 {
+            b'0' + digit
+        } else {
+            b'a' + digit - 10
+        };
+        value >>= 4;
+    }
+    if let Ok(text) = std::str::from_utf8(&buf[cursor..]) {
+        target.push_str(text);
+    }
+}
+
+/// Returns `Some(original)` when the pattern contains a literal `{1}` or
+/// `{1,1}` quantifier at the top level. Such quantifiers are no-ops; the
+/// referenced atom matches itself exactly once anyway. Class context is
+/// skipped because `{` and `1` are literal characters inside `[...]`. Used by
+/// `no-useless-quantifier`.
+pub(crate) fn first_useless_one_quantifier(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        if bytes[index] == b'{' && bytes.get(index + 1) == Some(&b'1') {
+            if bytes.get(index + 2) == Some(&b'}') {
+                return Some(&pattern[index..index + 3]);
+            }
+            if bytes.get(index + 2) == Some(&b',')
+                && bytes.get(index + 3) == Some(&b'1')
+                && bytes.get(index + 4) == Some(&b'}')
+            {
+                return Some(&pattern[index..index + 5]);
+            }
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `true` when the pattern ends with a lazy quantifier (`*?`, `+?`,
+/// `??`, or `{...}?`) and nothing after it. A lazy quantifier at the very end
+/// of a pattern always prefers to match as little as possible, which usually
+/// means matching nothing — the quantifier is effectively dead code. Used by
+/// `no-lazy-ends`. The check is purely textual to stay conservative; anchored
+/// patterns like `a*?$` where the `$` follows are excluded by definition.
+pub(crate) fn pattern_ends_with_lazy_quantifier(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let len = bytes.len();
+    if len < 2 {
+        return false;
+    }
+    // The last byte must be the lazy `?`.
+    if bytes[len - 1] != b'?' {
+        return false;
+    }
+    let preceding = bytes[len - 2];
+    if matches!(preceding, b'*' | b'+' | b'?') {
+        // Make sure the quantifier byte itself is not an escape (e.g. `\*?`).
+        if len >= 3 && bytes[len - 3] == b'\\' {
+            // Need to count backslashes to know whether the quantifier is escaped:
+            // `\\*?` (backslash escape of `\`, then `*?`) is a quantifier; `\*?`
+            // is an escaped `*` followed by `?`. Walk leading backslashes.
+            let mut count = 0;
+            let mut idx = len - 3;
+            while idx > 0 && bytes[idx] == b'\\' {
+                count += 1;
+                idx -= 1;
+            }
+            // Plus the one we already saw.
+            if count % 2 == 0 {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+    if preceding == b'}' {
+        // Walk back to find the matching `{` and verify it is a braced quantifier.
+        let mut idx = len - 3;
+        while idx > 0 && bytes[idx] != b'{' && bytes[idx] != b']' {
+            idx -= 1;
+        }
+        let content = &bytes[idx + 1..len - 2];
+        if bytes.get(idx) == Some(&b'{')
+            && (idx == 0 || bytes[idx - 1] != b'\\')
+            && content.iter().all(|&b| b.is_ascii_digit() || b == b',')
+        {
+            // `{n}` (no comma) means min == max — the lazy modifier `?` is
+            // "uselessly lazy" in a different sense but upstream's
+            // `extractLazyEndQuantifiers` only yields quantifiers where
+            // `min !== max`, so fixed-count braced quantifiers must be skipped.
+            if !content.contains(&b',') {
+                return false;
+            }
+            return true;
+        }
+    }
+    false
+}
+
+/// Returns `Some(text)` for the first numbered backreference `\N` (N in 1-9)
+/// inside `pattern` where capture group N is itself a named capture group
+/// `(?<name>...)`. Only named-group backreferences have a `\k<name>` alternative,
+/// so `\N` referring to an unnamed group must not be flagged. Backreferences
+/// inside character classes are skipped because they are literal characters there.
+pub(crate) fn first_numbered_backreference_with_named_group(pattern: &str) -> Option<&str> {
+    let bytes = pattern.as_bytes();
+    // Fast path: no named group syntax at all.
+    if !pattern.contains("(?<") {
+        return None;
+    }
+
+    // Pass 1: walk the pattern and record which 1-based capture group indices
+    // are named.  A `(` that is NOT `(?:`, `(?=`, `(?!`, `(?<=`, `(?<!`
+    // increments the group counter; `(?<name>...)` marks that index as named.
+    // We use a u32 bitmask (bits 1-9 = groups 1-9) because the rule only
+    // checks single-digit backreferences \1..\9.
+    let mut named_mask: u32 = 0;
+    {
+        let mut group_counter: u32 = 0;
+        let mut index = 0;
+        while index < bytes.len() {
+            if bytes[index] == b'[' {
+                if let Some(close) = find_class_end(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+                continue;
+            }
+            if bytes[index] == b'\\' {
+                index = skip_escape(bytes, index).max(index + 1);
+                continue;
+            }
+            if bytes[index] == b'(' {
+                // Classify the group via the existing helper.
+                let gp = group_prefix(bytes, index);
+                if gp.capturing {
+                    group_counter += 1;
+                    if gp.named && group_counter <= 9 {
+                        named_mask |= 1 << group_counter;
+                    }
+                }
+                // Advance past the group prefix (the helper already skipped
+                // the opening `(` plus any `?<name>` prefix).
+                index = gp.next;
+                continue;
+            }
+            index += 1;
+        }
+    }
+
+    if named_mask == 0 {
+        return None;
+    }
+
+    // Pass 2: find the first \N where group N is named.
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] == b'\\'
+            && let Some(&next) = bytes.get(index + 1)
+            && matches!(next, b'1'..=b'9')
+        {
+            let group_num = (next - b'0') as u32;
+            if named_mask & (1 << group_num) != 0 {
+                return Some(&pattern[index..index + 2]);
+            }
+            // Not a named group — skip past this escape and continue.
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some(byte)` for the first escape `\X` in `pattern` where `X` is
+/// a character that is never special in a regular expression (not in a
+/// character class either), so the `\` is useless. Stays narrow on purpose:
+/// only flags a curated list of punctuation that has no escape semantics
+/// (`:`, `;`, `,`, `=`, `!`, `#`, `@`, `<`, `>`, `&`, `_`, `%`, `~`, `'`,
+/// `"`, `/`). Walks the pattern with the existing class-skipping logic so
+/// escapes inside `[...]` (where `]` and `-` carry extra meaning) are not
+/// considered. Used by `no-useless-escape`.
+pub(crate) fn first_useless_escape(pattern: &str) -> Option<u8> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'[' {
+            // Skip the entire character class — the rules for "useless" inside
+            // a class differ, and we conservatively defer them.
+            if let Some(close) = find_class_end(bytes, index) {
+                index = close + 1;
+                continue;
+            }
+            return None;
+        }
+        if bytes[index] != b'\\' {
+            index += 1;
+            continue;
+        }
+        if let Some(&next) = bytes.get(index + 1)
+            && is_pointlessly_escaped(next)
+        {
+            return Some(next);
+        }
+        index = skip_escape(bytes, index).max(index + 1);
+    }
+    None
+}
+
+// Note: `/` is intentionally absent. Escaping the forward slash in a regex
+// literal (`/\//`) is necessary — an unescaped `/` would terminate the literal
+// — so upstream `no-useless-escape` treats `\/` as a required, non-useless
+// escape.
+fn is_pointlessly_escaped(byte: u8) -> bool {
+    matches!(
+        byte,
+        b':' | b';'
+            | b','
+            | b'='
+            | b'!'
+            | b'#'
+            | b'@'
+            | b'<'
+            | b'>'
+            | b'&'
+            | b'_'
+            | b'%'
+            | b'~'
+            | b'\''
+            | b'"'
+    )
+}
+
+/// Returns `true` when the `[...]` class at `open` contains both the lower-
+/// and upper-case form of at least one ASCII letter (e.g. `[aA]` or
+/// `[abcABC]`). Such pairs could be expressed more concisely with the `i`
+/// flag, which is what `use-ignore-case` recommends. Escaped contents and
+/// ranges are deliberately skipped so the check stays sound (no false
+/// positives on `[\w]` or `[a-z]`).
+pub(crate) fn class_has_case_pair(bytes: &[u8], open: usize) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let Some(end) = find_class_end(bytes, open) else {
+        return false;
+    };
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    let mut has_lower = [false; 26];
+    let mut has_upper = [false; 26];
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            index += 3;
+            continue;
+        }
+        let byte = bytes[index];
+        if byte.is_ascii_lowercase() {
+            has_lower[(byte - b'a') as usize] = true;
+        } else if byte.is_ascii_uppercase() {
+            has_upper[(byte - b'A') as usize] = true;
+        }
+        index += 1;
+    }
+    (0..26).any(|i| has_lower[i] && has_upper[i])
+}
+
+/// Returns `true` when adding the `i` flag to the pattern would be
+/// equivalent — i.e. every ASCII letter in the pattern is already covered
+/// by a case-pair inside a character class, so flipping to case-insensitive
+/// mode changes nothing outside those classes.
+///
+/// The check is intentionally conservative (may return `false` when it could
+/// theoretically return `true`) so it never produces false positives:
+///
+/// - A bare ASCII letter outside a class makes the pattern case-variant
+///   (`/[aA]a/` → the bare `a` would also match `A` with `i`).
+/// - A `\b`/`\B` escape when the `u` or `v` flag is active is case-variant:
+///   Unicode word-boundary matching depends on the case of adjacent
+///   characters, so adding `i` can change whether `\b` fires.
+/// - A character class whose literal ASCII letters are not fully case-paired
+///   (e.g. `[aAb]` — `b` has no `B`) is case-variant.
+/// - Ranges, non-ASCII chars, escape sequences, and non-letter literals are
+///   conservatively treated as non-case-variant and are ignored.
+///
+/// Used by `use-ignore-case` to suppress the diagnostic when adding `/i`
+/// would change the set of strings matched by the rest of the pattern.
+pub(crate) fn pattern_is_safe_to_add_i_flag(pattern: &str, flags: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let unicode = flags.contains('u') || flags.contains('v');
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => {
+                // \b and \B (word boundaries) are case-variant in Unicode mode.
+                if unicode && matches!(bytes.get(index + 1).copied(), Some(b'b') | Some(b'B')) {
+                    return false;
+                }
+                index = skip_escape(bytes, index);
+            }
+            b'[' => {
+                let Some(end) = find_class_end(bytes, index) else {
+                    return false;
+                };
+                // Check that every literal ASCII letter inside the class has
+                // its opposite-case counterpart also present literally.
+                // Ranges and escape sequences are skipped (conservative).
+                let mut inner = index + 1;
+                if bytes.get(inner) == Some(&b'^') {
+                    inner += 1;
+                }
+                let mut has_lower = [false; 26];
+                let mut has_upper = [false; 26];
+                let mut i2 = inner;
+                while i2 < end {
+                    if bytes[i2] == b'\\' {
+                        i2 = skip_escape(bytes, i2).min(end);
+                        continue;
+                    }
+                    if i2 + 2 < end && bytes[i2 + 1] == b'-' {
+                        // range: skip all three bytes; don't record endpoints
+                        i2 += 3;
+                        continue;
+                    }
+                    let byte = bytes[i2];
+                    if byte.is_ascii_lowercase() {
+                        has_lower[(byte - b'a') as usize] = true;
+                    } else if byte.is_ascii_uppercase() {
+                        has_upper[(byte - b'A') as usize] = true;
+                    }
+                    i2 += 1;
+                }
+                // If any literal letter is unpaired, adding `i` changes the class.
+                for k in 0..26usize {
+                    if (has_lower[k] || has_upper[k]) && !(has_lower[k] && has_upper[k]) {
+                        return false;
+                    }
+                }
+                index = end + 1;
+            }
+            b => {
+                // Bare ASCII letter outside a class → case-variant.
+                if b.is_ascii_alphabetic() {
+                    return false;
+                }
+                index += 1;
+            }
+        }
+    }
+    true
+}
+
+/// Returns `Some(byte)` when the `[...]` class at `open` contains a `\q{X}`
+/// string literal whose body is exactly one ASCII char. Such literals are
+/// equivalent to the bare character in v-mode, so the `\q{}` wrapper is
+/// useless. Used by `grapheme-string-literal`. Multi-character string
+/// literals (`\q{ab}`, `\q{}`) and non-ASCII bodies are deferred — the bare
+/// equivalent depends on grapheme analysis we have not implemented.
+///
+/// Returns `true` when the `[...]` class at `open` is composed exclusively of
+/// distinct ASCII alphanumeric byte literals AND those bytes appear out of
+/// sorted order. Classes containing escapes, ranges, the `^` negation, or
+/// non-alphanumeric literals are deferred (the sort order semantics get
+/// hairy across categories). Used by `sort-character-class-elements`.
+pub(crate) fn class_has_unsorted_literal_elements(bytes: &[u8], open: usize) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let Some(end) = find_class_end(bytes, open) else {
+        return false;
+    };
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        return false;
+    }
+    let mut prev: u8 = 0;
+    let mut unsorted = false;
+    while index < end {
+        let byte = bytes[index];
+        if byte == b'\\' {
+            return false;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            return false;
+        }
+        if !byte.is_ascii_alphanumeric() {
+            return false;
+        }
+        if byte < prev {
+            unsorted = true;
+        }
+        prev = byte;
+        index += 1;
+    }
+    unsorted
+}
+
+pub(crate) fn class_has_useless_string_literal(bytes: &[u8], open: usize) -> Option<u8> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    while index + 4 < end {
+        if bytes[index] == b'\\' && bytes[index + 1] == b'q' && bytes[index + 2] == b'{' {
+            let mut cursor = index + 3;
+            while cursor < end && bytes[cursor] != b'}' {
+                cursor += 1;
+            }
+            if cursor < end {
+                let inner = &bytes[index + 3..cursor];
+                if inner.len() == 1 {
+                    let ch = inner[0];
+                    if ch.is_ascii_alphanumeric() {
+                        return Some(ch);
+                    }
+                }
+                index = cursor + 1;
+                continue;
+            }
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some(byte)` for the first ASCII literal byte that appears more
+/// than once in the `[...]` class at `open`. Escapes, ranges, and nested
+/// classes are intentionally skipped — comparing them for equivalence needs
+/// decoding we have not implemented yet. Used by
+/// `no-dupe-characters-character-class`. Keeps a small fixed-size bitmap on
+/// the stack so the check has no allocation.
+///
+/// `v_mode` must be `true` when the regex has the `v` flag. Only in v-mode
+/// does an unescaped `[` inside a character class start a nested class (a
+/// set-operation operand such as `[\w--[ab]]`); in non-v mode every `[` is
+/// a literal character and nesting does not exist. Passing the wrong value
+/// leads to either false positives (non-v treated as v) or missed inner
+/// duplicates (v treated as non-v).
+pub(crate) fn class_first_duplicate_literal(bytes: &[u8], open: usize, v_mode: bool) -> Option<u8> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    // In v-mode, use the depth-aware variant so that nested classes such as
+    // `[\w--[ab]]` or `[\w&&b]` are correctly bounded: the closing `]` of the
+    // outermost class is returned, not the first `]` of an inner operand.
+    // In non-v mode, `[` inside a class is a literal character; use the flat
+    // variant so that `/[[]/` (pattern `[[]`) is not mistaken for an
+    // unterminated outer class.
+    let end = if v_mode {
+        find_class_end_nested(bytes, open)?
+    } else {
+        find_class_end(bytes, open)?
+    };
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    // 16 bytes covers all 128 ASCII bit slots.
+    let mut seen = [0u8; 16];
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        // In v-mode a `[` that is not the opening bracket of this class starts
+        // a nested class (a set-operation operand such as `[\w--[ab]]`).  Skip
+        // the entire nested class so that its inner bytes are not mistakenly
+        // counted as outer-class members — analogous to the existing `\q{...}`
+        // skip performed by `skip_escape`. In non-v mode `[` is a literal
+        // character and must be counted normally.
+        if v_mode && bytes[index] == b'[' {
+            if let Some(nested_end) = find_class_end_nested(bytes, index) {
+                index = nested_end + 1;
+            } else {
+                index += 1;
+            }
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            // Skip the entire range — `a-c` does not mean three repeats of
+            // any character, and the helper deliberately ignores ranges.
+            index += 3;
+            continue;
+        }
+        let byte = bytes[index];
+        if byte.is_ascii() {
+            let bit = byte as usize;
+            let slot = bit / 8;
+            let mask = 1u8 << (bit % 8);
+            if seen[slot] & mask != 0 {
+                return Some(byte);
+            }
+            seen[slot] |= mask;
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns `Some((start, end))` when the `[...]` class at `open` contains
+/// four or more consecutive ASCII characters (digits, lower-case, or
+/// upper-case letters) at the top level — these collapse into the equivalent
+/// range `start-end`. Used by `prefer-range`. A run of three (e.g. `[abc]`)
+/// is left alone to match upstream, which only collapses runs of four or
+/// more. Escapes and existing ranges are intentionally skipped to keep the
+/// check conservative.
+pub(crate) fn class_first_collapsible_run(bytes: &[u8], open: usize) -> Option<(char, char)> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end && bytes[index + 1] == b'-' {
+            index += 3;
+            continue;
+        }
+        if is_collapsible_run_byte(bytes[index]) {
+            let start = bytes[index];
+            let mut run_end = start;
+            let mut cursor = index + 1;
+            while cursor < end
+                && bytes[cursor] == run_end + 1
+                && is_collapsible_run_byte(bytes[cursor])
+            {
+                run_end = bytes[cursor];
+                cursor += 1;
+            }
+            if run_end >= start + 3 {
+                return Some((start as char, run_end as char));
+            }
+            index = cursor.max(index + 1);
+            continue;
+        }
+        index += 1;
+    }
+    None
+}
+
+fn is_collapsible_run_byte(byte: u8) -> bool {
+    matches!(byte, b'0'..=b'9' | b'a'..=b'z' | b'A'..=b'Z')
+}
+
+/// Returns `Some(ch)` when the `[...]` class at `open` is exactly `[X]` for a
+/// regular ASCII literal `X`. Negated classes, escaped contents, ranges,
+/// nested classes, and bodies of length other than one are intentionally
+/// ignored — they need more analysis to know the class is truly equivalent
+/// to the bare character. Used by `no-useless-character-class`.
+pub(crate) fn class_is_useless_single_literal(bytes: &[u8], open: usize) -> Option<char> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let start = open + 1;
+    if bytes.get(start) == Some(&b'^') {
+        return None;
+    }
+    if end - start != 1 {
+        return None;
+    }
+    let byte = bytes[start];
+    // Reject anything that would carry extra regex meaning by itself, anything
+    // non-ASCII (multi-byte chars are fine in principle but reading them as a
+    // single byte is incorrect), and anything that would change the surrounding
+    // pattern if extracted from the class context.
+    // `=` is also excluded: upstream exempts `[=]` because in some legacy regex
+    // flavours `[=X=]` is a POSIX equivalence class; keeping the brackets avoids
+    // accidental meaning changes and upstream explicitly allows it.
+    if !byte.is_ascii()
+        || matches!(
+            byte,
+            b'\\'
+                | b'-'
+                | b'['
+                | b']'
+                | b'^'
+                | b'$'
+                | b'.'
+                | b'|'
+                | b'('
+                | b')'
+                | b'*'
+                | b'+'
+                | b'?'
+                | b'{'
+                | b'}'
+                | b'='
+        )
+    {
+        return None;
+    }
+    Some(byte as char)
+}
+
+/// Returns `true` when removing the `[...]` brackets around the single
+/// character at `open` would change the meaning of the surrounding pattern.
+/// This guards `no-useless-character-class` from false positives in cases
+/// where the class character is syntactically significant in context:
+///
+/// - `\c[X]` — removing brackets produces `\cX` (a control-character escape).
+/// - `\xH[X]` — removing brackets completes a `\xHX` hex escape.
+/// - `\uH[X]` — removing brackets supplies the second digit of a `\uHXXX` unicode escape.
+/// - `\N[D]` (N = 1–9, D = digit) — removing brackets makes `\ND`, a multi-digit
+///   back-reference that refers to a different group.
+/// - `\0[D]` (D = octal digit 0–7) — removing brackets makes `\0D`, an octal escape.
+/// - `{digits[D]` — the bracket is inside a `{n}` quantifier body; removing
+///   brackets makes the quantifier literal (e.g. `a{[0]}` → `a{0}`).
+///
+/// `class_char` is the single byte inside `[...]` (already validated as ASCII
+/// and not inherently special by `class_is_useless_single_literal`).
+pub(crate) fn class_bracket_changes_meaning(bytes: &[u8], open: usize, class_char: u8) -> bool {
+    // \c[X] → \cX control-character escape (X must be an ASCII letter).
+    if open >= 2
+        && bytes[open - 1] == b'c'
+        && bytes[open - 2] == b'\\'
+        && class_char.is_ascii_alphabetic()
+    {
+        return true;
+    }
+    // \xH[X] → \xHX or \uH[X] → \uHX... — completing a hex/unicode escape.
+    if open >= 3
+        && bytes[open - 3] == b'\\'
+        && matches!(bytes[open - 2], b'x' | b'u')
+        && bytes[open - 1].is_ascii_hexdigit()
+        && class_char.is_ascii_hexdigit()
+    {
+        return true;
+    }
+    // \N[D] (N in 1–9, D a digit) → \ND multi-digit back-reference.
+    if open >= 2
+        && bytes[open - 2] == b'\\'
+        && matches!(bytes[open - 1], b'1'..=b'9')
+        && class_char.is_ascii_digit()
+    {
+        return true;
+    }
+    // \0[D] (D an octal digit 0–7) → \0D octal escape.
+    if open >= 2
+        && bytes[open - 2] == b'\\'
+        && bytes[open - 1] == b'0'
+        && matches!(class_char, b'0'..=b'7')
+    {
+        return true;
+    }
+    // {digits[D] — bracket is inside a `{n}` quantifier body.
+    // Walk backwards over ASCII digits; if we reach an unescaped `{` the
+    // bracket is inside a quantifier and removing it would change the meaning.
+    let mut p = open;
+    while p > 0 {
+        p -= 1;
+        if bytes[p].is_ascii_digit() {
+            continue;
+        }
+        if bytes[p] == b'{' && !(p > 0 && bytes[p - 1] == b'\\') {
+            return true;
+        }
+        break;
+    }
+    false
+}
+
+/// Returns `true` when `pattern` contains the literal sequence `\q{}` — an
+/// empty string literal inside a class. The `\q{...}` syntax is only valid in
+/// `v`-flag patterns, so its presence implies `v`-mode without us needing to
+/// inspect the flags here. Used by `no-empty-string-literal`.
+pub(crate) fn pattern_has_empty_string_literal(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index + 3 < bytes.len() {
+        if bytes[index] == b'\\'
+            && bytes[index + 1] == b'q'
+            && bytes[index + 2] == b'{'
+            && bytes[index + 3] == b'}'
+        {
+            return true;
+        }
+        index += 1;
+    }
+    false
+}
+
+/// Returns `true` when the `[...]` class at `open` contains at least one
+/// `X-X` range whose start and end byte are literal ASCII characters that
+/// match exactly. Used by `no-useless-range`. Escaped or compound ranges
+/// (`\d-\d`, `\xHH-\xHH`) are intentionally not handled — they need
+/// equivalence analysis that we defer.
+pub(crate) fn class_has_useless_range(bytes: &[u8], open: usize) -> Option<char> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let mut index = open + 1;
+    if bytes.get(index) == Some(&b'^') {
+        index += 1;
+    }
+    while index < end {
+        if bytes[index] == b'\\' {
+            index = skip_escape(bytes, index).min(end);
+            continue;
+        }
+        if index + 2 < end
+            && bytes[index + 1] == b'-'
+            && bytes[index + 2] != b'\\'
+            && bytes[index + 2] != b']'
+            && bytes[index] == bytes[index + 2]
+        {
+            return Some(bytes[index] as char);
+        }
+        index += 1;
+    }
+    None
+}
+
+/// Returns the first raw control character (`U+0000`-`U+001F` or `U+007F`)
+/// that appears literally in `pattern`. Unlike `first_control_character` this
+/// helper does NOT decode escape sequences — `\x01` as a four-character escape
+/// is returned `None` because the control character is not present in the
+/// pattern bytes themselves. Used by `control-character-escape`, which targets
+/// only the literal occurrences and asks the author to use an escape form.
+pub(crate) fn first_literal_control_character(pattern: &str) -> Option<char> {
+    for ch in pattern.chars() {
+        let code = ch as u32;
+        if code < 0x20 || code == 0x7f {
+            return Some(ch);
+        }
+    }
+    None
+}
+
+pub(crate) fn first_control_character(pattern: &str) -> Option<char> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'\\' {
+            if let Some(ch) = escaped_control_character(bytes, index) {
+                return Some(ch);
+            }
+            index = skip_escape(bytes, index);
+            continue;
+        }
+
+        let Some(ch) = pattern[index..].chars().next() else {
+            break;
+        };
+        if ch <= '\u{1f}' {
+            return Some(ch);
+        }
+        index += ch.len_utf8();
+    }
+    None
+}
+
+fn escaped_control_character(bytes: &[u8], index: usize) -> Option<char> {
+    let code = match bytes.get(index + 1).copied()? {
+        b'x' if index + 3 < bytes.len() => {
+            u32::from((hex_value(bytes[index + 2])? << 4) | hex_value(bytes[index + 3])?)
+        }
+        b'u' if index + 2 < bytes.len() && bytes[index + 2] == b'{' => {
+            let mut cursor = index + 3;
+            let mut value = 0u32;
+            let mut saw_digit = false;
+            while cursor < bytes.len() && bytes[cursor] != b'}' {
+                value = (value << 4) | u32::from(hex_value(bytes[cursor])?);
+                saw_digit = true;
+                cursor += 1;
+            }
+            if !saw_digit || bytes.get(cursor) != Some(&b'}') {
+                return None;
+            }
+            value
+        }
+        b'u' if index + 5 < bytes.len() => {
+            let mut value = 0u32;
+            for byte in &bytes[index + 2..index + 6] {
+                value = (value << 4) | u32::from(hex_value(*byte)?);
+            }
+            value
+        }
+        _ => return None,
+    };
+    if code <= 0x1f {
+        char::from_u32(code)
+    } else {
+        None
+    }
+}
+
+fn hex_value(byte: u8) -> Option<u8> {
+    match byte {
+        b'0'..=b'9' => Some(byte - b'0'),
+        b'a'..=b'f' => Some(byte - b'a' + 10),
+        b'A'..=b'F' => Some(byte - b'A' + 10),
+        _ => None,
+    }
+}
+
+/// When the character class at `open` is exactly `[^\X]` with `X` being one
+/// of the predefined character-class shorthand letters (`d`, `D`, `s`, `S`,
+/// `w`, `W`), returns that shorthand letter. Returns `None` otherwise.
+///
+/// The body must be exactly the three bytes `^`, `\\`, `X` between `[` and
+/// `]`. Anything else (extra escapes, ranges, multiple atoms, the unescaped
+/// form `[^d]`, etc.) is rejected so the rule stays sound. This is the
+/// narrow form of `negation`: each detected case has a single unambiguous
+/// shorthand replacement (`\\D`, `\\d`, `\\S`, `\\s`, `\\W`, `\\w`).
+pub(crate) fn class_negated_shorthand_letter(bytes: &[u8], open: usize) -> Option<u8> {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = find_class_end(bytes, open)?;
+    let start = open + 1;
+    // Body length must be exactly 3 (`^`, `\\`, letter).
+    if end != start + 3 {
+        return None;
+    }
+    if bytes[start] != b'^' || bytes[start + 1] != b'\\' {
+        return None;
+    }
+    let letter = bytes[start + 2];
+    if matches!(letter, b'd' | b'D' | b's' | b'S' | b'w' | b'W') {
+        Some(letter)
+    } else {
+        None
+    }
+}
+
+/// A combining mark or other code point that, in `Intl.Segmenter` terms,
+/// attaches to a preceding base code point to form one grapheme cluster
+/// instead of starting a new one. We approximate the (large) Unicode grapheme
+/// algorithm with the cases that matter for `no-misleading-unicode-character`:
+/// the joiners and modifiers that turn several code points into a single
+/// user-perceived character (combining marks, variation selectors, ZWJ, and
+/// emoji modifiers). This is intentionally conservative — when in doubt a code
+/// point is treated as its own grapheme, which can only *narrow* detection and
+/// therefore never produces a false positive.
+fn is_grapheme_extend(ch: char) -> bool {
+    matches!(ch as u32,
+        // Combining Diacritical Marks and related combining blocks.
+        0x0300..=0x036F   // Combining Diacritical Marks
+        | 0x0483..=0x0489 // Cyrillic combining
+        | 0x0591..=0x05BD | 0x05BF | 0x05C1 | 0x05C2 | 0x05C4 | 0x05C5 | 0x05C7 // Hebrew
+        | 0x0610..=0x061A | 0x064B..=0x065F | 0x0670 // Arabic combining
+        | 0x06D6..=0x06DC | 0x06DF..=0x06E4 | 0x06E7 | 0x06E8 | 0x06EA..=0x06ED
+        | 0x1AB0..=0x1AFF // Combining Diacritical Marks Extended
+        | 0x1DC0..=0x1DFF // Combining Diacritical Marks Supplement
+        | 0x20D0..=0x20FF // Combining Diacritical Marks for Symbols
+        | 0xFE00..=0xFE0F // Variation Selectors
+        | 0xFE20..=0xFE2F // Combining Half Marks
+        | 0x200D          // Zero Width Joiner
+        | 0xE0100..=0xE01EF // Variation Selectors Supplement
+        | 0x1F3FB..=0x1F3FF // Emoji modifiers (skin-tone)
+    )
+}
+
+/// Returns `true` for the regional-indicator symbols (U+1F1E6..=U+1F1FF) that
+/// combine in pairs to form flag emoji such as 🇯🇵.
+fn is_regional_indicator(ch: char) -> bool {
+    matches!(ch as u32, 0x1F1E6..=0x1F1FF)
+}
+
+/// Returns `true` when the character class at `open` contains an element that
+/// the regex engine actually matches as MULTIPLE code points — i.e. a genuine
+/// "misleading" character. This mirrors the upstream
+/// `no-misleading-unicode-character` rule, which flags a class element only
+/// when it is a multi-code-point grapheme (a combining / ZWJ / regional
+/// sequence, "Multi") or, in non-`u`/`v` mode, a single astral character that
+/// is seen as a surrogate pair ("Surrogate").
+///
+/// A class element consisting of a SINGLE code point — a lone ZWJ (U+200D),
+/// combining mark, variation selector, lone surrogate (only expressible via an
+/// escape, which we skip), or an astral character under the `u`/`v` flag — is
+/// never flagged.
+///
+/// Only LITERAL code points in the class body are considered. Escape sequences
+/// (`\uXXXX`, `\u{...}`, `\xHH`, etc.), v-mode string disjunctions (`\q{...}`),
+/// and nested classes (`[...]`/`[a--b]`) are skipped: their raw source text is
+/// ASCII and never forms a multi-code-point grapheme, exactly as upstream's
+/// segmentation of the raw class text behaves.
+pub(crate) fn class_has_misleading_unicode(
+    bytes: &[u8],
+    open: usize,
+    v_mode: bool,
+    unicode_mode: bool,
+) -> bool {
+    debug_assert_eq!(bytes.get(open).copied(), Some(b'['));
+    let end = if v_mode {
+        find_class_end_nested(bytes, open)
+    } else {
+        find_class_end(bytes, open)
+    };
+    let Some(end) = end else {
+        return false;
+    };
+
+    // Body bytes, skipping a leading `^` for a negated class.
+    let mut index = open + 1;
+    if bytes.get(index).copied() == Some(b'^') {
+        index += 1;
+    }
+
+    // We walk the body grouping consecutive literal code points into grapheme
+    // clusters. The cluster is flushed (and inspected) whenever a non-literal
+    // boundary is hit (escape, nested class, end of body) or a new base code
+    // point begins. A cluster is a "problem" when it spans >= 2 code points
+    // (a multi-code-point grapheme, "Multi") or is a single astral code point
+    // in non-`u`/`v` mode (matched as a surrogate pair, "Surrogate").
+    let mut cluster_code_points: u32 = 0;
+    let mut cluster_base_astral = false;
+    let mut prev_char: Option<char> = None;
+
+    let cluster_is_problem = |code_points: u32, base_astral: bool| -> bool {
+        code_points >= 2 || (code_points == 1 && base_astral && !unicode_mode)
+    };
+
+    while index < end {
+        let byte = bytes[index];
+        if byte == b'\\' || (v_mode && byte == b'[') {
+            // Escape sequence (ASCII in the raw) or a nested-class operand
+            // (ignored upstream): both end the current cluster.
+            if cluster_is_problem(cluster_code_points, cluster_base_astral) {
+                return true;
+            }
+            cluster_code_points = 0;
+            cluster_base_astral = false;
+            prev_char = None;
+            if byte == b'\\' {
+                index = skip_escape(bytes, index);
+            } else {
+                match find_class_end_nested(bytes, index) {
+                    Some(inner_end) => index = inner_end + 1,
+                    None => index += 1,
+                }
+            }
+            continue;
+        }
+
+        // Decode one literal code point from the UTF-8 body.
+        let Some(ch) = std::str::from_utf8(&bytes[index..end])
+            .ok()
+            .and_then(|s| s.chars().next())
+        else {
+            // Invalid UTF-8 (should not happen for valid source); bail.
+            return false;
+        };
+
+        let extends = cluster_code_points > 0
+            && (is_grapheme_extend(ch)
+                || (is_regional_indicator(ch)
+                    && cluster_code_points == 1
+                    && prev_char.is_some_and(is_regional_indicator)));
+
+        if extends {
+            cluster_code_points += 1;
+        } else {
+            // A new base code point: flush the previous cluster, start a new
+            // one.
+            if cluster_is_problem(cluster_code_points, cluster_base_astral) {
+                return true;
+            }
+            cluster_code_points = 1;
+            cluster_base_astral = (ch as u32) > 0xFFFF;
+        }
+
+        prev_char = Some(ch);
+        index += ch.len_utf8();
+    }
+
+    cluster_is_problem(cluster_code_points, cluster_base_astral)
+}
+
+/// Returns `true` when the pattern applies a quantifier (`*`, `+`, `?`, or a
+/// `{...}` brace) to the trailing code point of a multi-code-point grapheme,
+/// so the quantifier silently repeats only the last code point instead of the
+/// whole user-perceived character. This is the quantifier arm of
+/// `no-misleading-unicode-character` (upstream `quantifierMulti` /
+/// `quantifierSurrogate`).
+///
+/// The grapheme immediately to the left of the quantifier is flagged when it
+/// spans >= 2 literal code points ("Multi"), or is a single astral code point
+/// in non-`u`/`v` mode ("Surrogate"). A quantifier on a single non-astral code
+/// point — or on any astral code point under the `u`/`v` flag — is fine. Only
+/// LITERAL code points are considered; a quantifier directly after an escape
+/// (e.g. `\u{1F44D}+`) is never misleading because the escaped atom is the
+/// whole code point.
+pub(crate) fn has_misleading_quantifier_unicode(pattern: &str, unicode_mode: bool) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => match find_class_end(bytes, index) {
+                Some(end) => index = end + 1,
+                None => index += 1,
+            },
+            b'*' | b'+' | b'?' | b'{' => {
+                // A quantifier byte. (For `{` we conservatively treat it as a
+                // quantifier; a literal `{` only triggers a false *positive*
+                // when preceded by a multi-code-point grapheme, which is
+                // extremely unlikely and still describes a misleading intent.)
+                if quantifier_target_is_misleading(bytes, index, unicode_mode) {
+                    return true;
+                }
+                index += 1;
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Given the byte index of a quantifier, returns `true` when the immediately
+/// preceding atom is the trailing code point of a multi-code-point grapheme
+/// (or, in non-`u`/`v` mode, a single astral code point). Walks backward over
+/// the run of literal code points ending just before the quantifier and
+/// inspects the last grapheme cluster of that run.
+fn quantifier_target_is_misleading(bytes: &[u8], quant: usize, unicode_mode: bool) -> bool {
+    if quant == 0 {
+        return false;
+    }
+    // The atom the quantifier applies to ends at `quant`. We walk the prefix
+    // text right-to-left, one code point at a time.
+    let Ok(prefix_str) = std::str::from_utf8(&bytes[..quant]) else {
+        return false;
+    };
+
+    // The last char before the quantifier is the quantifier's target atom.
+    let Some(last_char) = prefix_str.chars().next_back() else {
+        return false;
+    };
+    // If the target atom is the close of a group/class, the quantifier applies
+    // to the whole group/class, not a single code point — never misleading.
+    if matches!(last_char, ')' | ']') {
+        return false;
+    }
+
+    // Walk backward from the target atom, accumulating the grapheme cluster it
+    // belongs to: the target code point plus any preceding base + combining /
+    // ZWJ / regional members. Clustering stops at the first char that does not
+    // extend the cluster. We also count the contiguous backslash run that
+    // begins immediately left of the cluster: an odd run escapes the leftmost
+    // (base) code point, meaning the quantifier's atom is an escape sequence
+    // and is therefore never misleading.
+    let mut cluster_code_points: u32 = 1;
+    let mut base_char = last_char;
+    let mut chars_left = prefix_str[..prefix_str.len() - last_char.len_utf8()].chars();
+
+    while let Some(ch) = chars_left.next_back() {
+        // `ch` (to the left) joins the cluster when the code point to its right
+        // is a grapheme-extend, or when both are regional indicators.
+        let right_extends = is_grapheme_extend(base_char)
+            || (is_regional_indicator(base_char) && is_regional_indicator(ch));
+        let is_boundary = matches!(
+            ch,
+            '(' | ')' | '[' | ']' | '|' | '*' | '+' | '?' | '{' | '}' | '\\'
+        ) || !right_extends;
+        if is_boundary {
+            // Cluster boundary. If `ch` is a backslash, count its run to learn
+            // whether the base code point is escaped (odd run => escape => the
+            // quantifier atom is an escape sequence, never misleading).
+            if ch == '\\' {
+                let mut backslashes = 1u32;
+                while chars_left.next_back() == Some('\\') {
+                    backslashes += 1;
+                }
+                if backslashes % 2 == 1 {
+                    return false;
+                }
+            }
+            break;
+        }
+        cluster_code_points += 1;
+        base_char = ch;
+    }
+
+    cluster_code_points >= 2
+        || (cluster_code_points == 1 && (base_char as u32) > 0xFFFF && !unicode_mode)
+}
+
+/// Returns `true` when the pattern contains a standalone backslash — a `\c`
+/// sequence where `c` is NOT an ASCII letter (so `\cX` would be a control
+/// character escape only when `X ∈ [A-Za-z]`).  In non-`u`/non-`v` mode the
+/// engine silently treats `\cX` (non-letter X) as a literal backslash, which
+/// is almost certainly unintentional.  The check covers both top-level patterns
+/// and the inside of character classes.  Used by `no-standalone-backslash`.
+pub(crate) fn has_standalone_backslash(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'[' => {
+                // Walk inside the character class. We still need to detect
+                // `\c[non-letter]` here (e.g. `/[\c]/` is invalid). Use the
+                // simple (non-nested) class scanner; v-mode nested classes will
+                // be handled conservatively — the outer `[` is processed here
+                // and any inner `[...]` content is also scanned via the
+                // recursive character loop.
+                index += 1;
+                while index < bytes.len() {
+                    match bytes[index] {
+                        b'\\' => {
+                            if let Some(&next) = bytes.get(index + 1) {
+                                if next == b'c' {
+                                    let after = bytes.get(index + 2).copied();
+                                    if !after.is_some_and(|b| b.is_ascii_alphabetic()) {
+                                        return true;
+                                    }
+                                }
+                                index = skip_escape(bytes, index);
+                            } else {
+                                index += 1;
+                            }
+                        }
+                        b']' => {
+                            index += 1;
+                            break;
+                        }
+                        _ => index += 1,
+                    }
+                }
+            }
+            b'\\' => {
+                if let Some(&next) = bytes.get(index + 1) {
+                    if next == b'c' {
+                        let after = bytes.get(index + 2).copied();
+                        if !after.is_some_and(|b| b.is_ascii_alphabetic()) {
+                            return true;
+                        }
+                    }
+                    index = skip_escape(bytes, index);
+                } else {
+                    index += 1;
+                }
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Returns the message ID of the first strict-mode violation found in
+/// `pattern`, or `None` when the pattern is strictly valid.
+///
+/// This function is ONLY called for patterns that do NOT carry the `u` or `v`
+/// flag — those flags force strict parsing automatically.
+///
+/// Narrow subset covered:
+/// 1. Unescaped `]` outside a character class (`unescapedSourceCharacter`).
+/// 2. `\c` not followed by an ASCII letter (`invalidControlEscape`).
+/// 3. `\u` not followed by exactly 4 hex digits (`incompleteEscapeSequence`).
+///    — catches both `\u{42}` (brace form, not valid in non-u mode) and
+///    — `\u000;` (fourth byte is not a hex digit).
+/// 4. `\x` not followed by exactly 2 hex digits (`incompleteEscapeSequence`).
+///    — catches `/\x4/` (only 1 hex digit).
+/// 5. `\p` or `\P` (Unicode property escapes, invalid in non-u mode)
+///    (`invalidPropertyEscape`).
+/// 6. A lookaround assertion (`(?=`, `(?!`, `(?<=`, `(?<!`) directly followed
+///    by `+`, `*`, `?`, or `{` (`quantifiedAssertion`).
+///
+/// The check intentionally skips `{` / `}` literal checks (would require
+/// quantifier-grammar parsing to stay sound) and the `\k` incomplete-
+/// backreference check (would require named-group tracking).
+pub(crate) fn first_strict_violation(pattern: &str) -> Option<&'static str> {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    // Track whether the previous `)` closed a lookaround, so we can detect a
+    // quantifier immediately after it. We record the position of the `)` so
+    // that the very next byte can be inspected.
+    let mut lookaround_close_pos: Option<usize> = None;
+    // Stack: each entry is `true` when the open `(` is a lookaround.
+    let mut group_is_lookaround: SmallVec<[bool; 8]> = SmallVec::new();
+
+    while index < bytes.len() {
+        // Check whether this byte is the quantifier that immediately follows a
+        // lookaround's closing `)`.
+        if let Some(close_pos) = lookaround_close_pos {
+            if index == close_pos + 1 && matches!(bytes[index], b'+' | b'*' | b'?' | b'{') {
+                return Some("quantifiedAssertion");
+            }
+            lookaround_close_pos = None;
+        }
+
+        match bytes[index] {
+            b'[' => {
+                // Skip the entire character class so its `]` is not flagged.
+                if let Some(close) = find_class_end(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            b']' => {
+                // Unescaped `]` outside a character class.
+                return Some("unescapedSourceCharacter");
+            }
+            b'(' => {
+                // Detect lookaround prefix: `(?=`, `(?!`, `(?<=`, `(?<!`.
+                let is_la = matches!(bytes.get(index + 1), Some(b'?'))
+                    && (matches!(bytes.get(index + 2), Some(b'=') | Some(b'!'))
+                        || (matches!(bytes.get(index + 2), Some(b'<'))
+                            && matches!(bytes.get(index + 3), Some(b'=') | Some(b'!'))));
+                group_is_lookaround.push(is_la);
+                index += 1;
+            }
+            b')' => {
+                let is_la = group_is_lookaround.pop().unwrap_or(false);
+                if is_la {
+                    lookaround_close_pos = Some(index);
+                }
+                index += 1;
+            }
+            b'\\' => {
+                let Some(&next) = bytes.get(index + 1) else {
+                    break;
+                };
+                match next {
+                    b'c' => {
+                        let after = bytes.get(index + 2).copied();
+                        if !after.is_some_and(|b| b.is_ascii_alphabetic()) {
+                            return Some("invalidControlEscape");
+                        }
+                        index = skip_escape(bytes, index);
+                    }
+                    b'u' => {
+                        // In non-u mode, `\u` must be followed by exactly 4 hex
+                        // digits. The `\u{...}` form is ONLY valid with the `u`
+                        // flag, so `\u{` is a violation here.
+                        let b2 = bytes.get(index + 2).copied();
+                        let b3 = bytes.get(index + 3).copied();
+                        let b4 = bytes.get(index + 4).copied();
+                        let b5 = bytes.get(index + 5).copied();
+                        let valid = b2.is_some_and(|b| b.is_ascii_hexdigit())
+                            && b3.is_some_and(|b| b.is_ascii_hexdigit())
+                            && b4.is_some_and(|b| b.is_ascii_hexdigit())
+                            && b5.is_some_and(|b| b.is_ascii_hexdigit());
+                        if !valid {
+                            return Some("incompleteEscapeSequence");
+                        }
+                        index = skip_escape(bytes, index);
+                    }
+                    b'x' => {
+                        let b2 = bytes.get(index + 2).copied();
+                        let b3 = bytes.get(index + 3).copied();
+                        let valid = b2.is_some_and(|b| b.is_ascii_hexdigit())
+                            && b3.is_some_and(|b| b.is_ascii_hexdigit());
+                        if !valid {
+                            return Some("incompleteEscapeSequence");
+                        }
+                        index = skip_escape(bytes, index);
+                    }
+                    b'p' | b'P' => {
+                        // Unicode property escapes are not valid in non-u mode.
+                        return Some("invalidPropertyEscape");
+                    }
+                    _ => {
+                        index = skip_escape(bytes, index);
+                    }
+                }
+            }
+            _ => {
+                index += 1;
+            }
+        }
+    }
+    None
+}
+
+/// Classifies a single literal pattern byte as a word character (`Some(true)`),
+/// a definitely-non-word character (`Some(false)`), or "unknown / unsafe to
+/// reason about" (`None`).
+///
+/// Word characters are the ASCII set matched by `\w`: `[A-Za-z0-9_]`.
+/// The non-word set is a deliberately small, unambiguous set of ASCII
+/// punctuation that can never be a word character in any flag mode
+/// (`,`, `:`, `;`, `-`, `/`, and the space character). Anything else returns
+/// `None` so the `\b`/`\B` useless-assertion check stays sound.
+fn word_class_of_literal_byte(byte: u8) -> Option<bool> {
+    if byte.is_ascii_alphanumeric() || byte == b'_' {
+        Some(true)
+    } else if matches!(byte, b',' | b':' | b';' | b'-' | b'/' | b' ') {
+        Some(false)
+    } else {
+        None
+    }
+}
+
+/// Narrow-form detector for `no-useless-assertions`.
+///
+/// Returns `true` when the pattern contains a `\b` or `\B` word-boundary
+/// assertion that is *provably* useless because the two characters on either
+/// side of it sit on the same side of the word/non-word divide:
+///
+/// * `\b` between two word chars (or two non-word chars) can never match — the
+///   boundary requires a word/non-word transition. e.g. `a\bb`, `,\b,`.
+/// * `\B` between two word chars (or two non-word chars) always matches — there
+///   is never a boundary there, so the negated assertion is vacuously true.
+///   e.g. `a\Bb`, `,\B,`.
+///
+/// To remain sound the check only fires when BOTH neighbours are *plain literal
+/// single-character atoms* whose word class is unambiguous
+/// (`word_class_of_literal_byte`), and only when the `\b`/`\B` is outside a
+/// character class. Adjacency to `.`, escapes, classes, groups, or quantifiers
+/// (e.g. the upstream-valid `\b.\b`, `\b(?:,|:)\b`) yields `None`/non-literal
+/// neighbours and is therefore never flagged.
+///
+/// The `m`, `s`, `i`, `u`, and `v` flags do not affect ASCII word-boundary
+/// semantics, so this check is flag-independent for the cases it covers.
+pub(crate) fn has_useless_word_boundary(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'[' => {
+                // Skip the whole character class; an inner `\b` is a backspace,
+                // not a word boundary.
+                if let Some(close) = find_class_end_nested(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            b'\\' => {
+                let next = bytes.get(index + 1).copied();
+                if matches!(next, Some(b'b') | Some(b'B')) {
+                    // Preceding literal: the byte directly before the `\`.
+                    // It must itself be a plain literal — i.e. NOT the second
+                    // byte of an escape (the byte two back is not a lone `\`).
+                    let prev_is_plain_literal =
+                        index >= 1 && !(index >= 2 && bytes[index - 2] == b'\\');
+                    // Following literal: the byte directly after `b`/`B`.
+                    // It must not start an escape, group, class, quantifier, or
+                    // alternation — only a bare literal byte qualifies.
+                    let after = bytes.get(index + 2).copied();
+
+                    if prev_is_plain_literal
+                        && let Some(prev) = bytes.get(index - 1).copied()
+                        && let Some(after_byte) = after
+                        && let Some(prev_class) = word_class_of_literal_byte(prev)
+                        && let Some(after_class) = word_class_of_literal_byte(after_byte)
+                        && prev_class == after_class
+                    {
+                        return true;
+                    }
+                }
+                index = skip_escape(bytes, index);
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Narrow-form detector for `no-contradiction-with-assertion`.
+///
+/// Returns `true` when a `\b` word-boundary assertion is immediately preceded
+/// by a literal character `P` and immediately followed by a quantified literal
+/// `Q<quant>` where:
+/// * `P` and `Q` are unambiguous single literal characters of the **same**
+///   word class (`word_class_of_literal_byte`), and
+/// * the quantifier on `Q` has minimum zero (`*`, `?`, or `{0..}`).
+///
+/// In that situation the quantifier can never be entered: `\b` after `P`
+/// forces the next consumed character to switch word class, but `Q` (same class
+/// as `P`) would not switch it. e.g. `/a\ba*-/` — the `a*` can only ever match
+/// the empty string. This is the upstream `cannotEnterQuantifier` case,
+/// restricted to the clearly-decidable literal/literal shape.
+///
+/// Soundness: only literal neighbours with a known word class are considered,
+/// and only min-zero quantifiers. Boundaries adjacent to groups, classes,
+/// escapes, or `.` (e.g. upstream-valid `/(^|[\s\S])\bfoo/`, `/(?:aa|a\b)-?a/`)
+/// never satisfy the literal/literal condition. Word-boundary semantics are
+/// ASCII-flag-independent.
+pub(crate) fn has_assertion_contradiction(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'[' => {
+                if let Some(close) = find_class_end_nested(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            b'\\' => {
+                if bytes.get(index + 1) == Some(&b'b') {
+                    // Preceding literal must be a plain literal (not the second
+                    // byte of an escape).
+                    let prev_is_plain_literal =
+                        index >= 1 && !(index >= 2 && bytes[index - 2] == b'\\');
+                    // Following element: `Q` then a min-zero quantifier.
+                    let q_pos = index + 2;
+                    let quant_pos = index + 3;
+                    if prev_is_plain_literal
+                        && let Some(prev) = bytes.get(index - 1).copied()
+                        && let Some(q) = bytes.get(q_pos).copied()
+                        && let Some(prev_class) = word_class_of_literal_byte(prev)
+                        && let Some(q_class) = word_class_of_literal_byte(q)
+                        && prev_class == q_class
+                        && quantifier_min_is_zero(bytes, quant_pos)
+                    {
+                        return true;
+                    }
+                }
+                index = skip_escape(bytes, index);
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Returns `true` when the bytes starting at `index` form a quantifier whose
+/// minimum repetition count is zero: `*`, `?`, or a brace quantifier `{0}`,
+/// `{0,}`, or `{0,m}` (the digit run before the first comma, or the whole body
+/// for `{0}`, is exactly `0`). `+` and `{n,...}` with `n >= 1` return `false`.
+fn quantifier_min_is_zero(bytes: &[u8], index: usize) -> bool {
+    match bytes.get(index).copied() {
+        Some(b'*') | Some(b'?') => true,
+        Some(b'{') => {
+            // Read the minimum digit run.
+            let mut cursor = index + 1;
+            let start = cursor;
+            while cursor < bytes.len() && bytes[cursor].is_ascii_digit() {
+                cursor += 1;
+            }
+            // No digits → not a real quantifier.
+            if cursor == start {
+                return false;
+            }
+            // Must terminate with `,` or `}`.
+            if !matches!(bytes.get(cursor).copied(), Some(b',') | Some(b'}')) {
+                return false;
+            }
+            // Min is zero iff the digit run is all `0`.
+            bytes[start..cursor].iter().all(|&b| b == b'0')
+        }
+        _ => false,
+    }
+}
+
+/// The set relationship between two non-negated predefined shorthands
+/// (`\d`, `\w`, `\s`), used by the narrow `no-useless-set-operand` and
+/// `simplify-set-operations` detectors.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(crate) enum ShorthandRelation {
+    /// The two sets have no characters in common.
+    Disjoint,
+    /// Left ⊆ Right (and not equal).
+    LeftSubsetRight,
+    /// Right ⊆ Left (and not equal).
+    RightSubsetLeft,
+    /// The two sets are equal.
+    Equal,
+}
+
+/// Returns the set relationship between two non-negated shorthand letters
+/// (`b'd'`, `b'w'`, `b's'`), or `None` when the pair is not one of the
+/// statically-known relationships.
+///
+/// Known facts (ASCII/Unicode-stable for these classes): `\d ⊆ \w`, and `\s`
+/// is disjoint from both `\d` and `\w`.
+pub(crate) fn shorthand_relation(left: u8, right: u8) -> Option<ShorthandRelation> {
+    match (left, right) {
+        (b'd', b'd') | (b'w', b'w') | (b's', b's') => Some(ShorthandRelation::Equal),
+        (b'd', b'w') => Some(ShorthandRelation::LeftSubsetRight),
+        (b'w', b'd') => Some(ShorthandRelation::RightSubsetLeft),
+        (b'd', b's') | (b's', b'd') | (b'w', b's') | (b's', b'w') => {
+            Some(ShorthandRelation::Disjoint)
+        }
+        _ => None,
+    }
+}
+
+/// A v-mode character class reduced to the narrow shape the set-operation
+/// detectors understand: exactly two operands joined by `&&` or `--`, where
+/// each operand is a single non-negated predefined shorthand `\d`/`\w`/`\s`.
+pub(crate) struct ShorthandSetOp {
+    pub(crate) left: u8,
+    pub(crate) right: u8,
+    /// `true` for intersection (`&&`), `false` for subtraction (`--`).
+    pub(crate) intersection: bool,
+}
+
+/// Parse a single character class body (the bytes strictly between `[` and `]`)
+/// as a two-operand shorthand set operation. A leading `^` negation is allowed
+/// and ignored (it does not change the operand-to-operand relationship). Any
+/// nested `[...]`, string literals `\q{...}`, extra operands, or non-shorthand
+/// operands yield `None` so the detectors stay sound.
+pub(crate) fn parse_shorthand_set_op(body: &[u8]) -> Option<ShorthandSetOp> {
+    let mut start = 0;
+    if body.first() == Some(&b'^') {
+        start = 1;
+    }
+    let body = &body[start..];
+    // Locate the operator: `&&` or `--`. The operands must each be exactly
+    // `\d`/`\w`/`\s`, i.e. two bytes, so the operator sits at offset 2.
+    if body.len() != 6 {
+        return None;
+    }
+    let left_shorthand = parse_single_shorthand(&body[0..2])?;
+    let right_shorthand = parse_single_shorthand(&body[4..6])?;
+    let intersection = match (body[2], body[3]) {
+        (b'&', b'&') => true,
+        (b'-', b'-') => false,
+        _ => return None,
+    };
+    Some(ShorthandSetOp {
+        left: left_shorthand,
+        right: right_shorthand,
+        intersection,
+    })
+}
+
+/// Returns the lowercase shorthand letter for a two-byte `\d`/`\w`/`\s`
+/// sequence, or `None` for anything else (including the negated `\D`/`\W`/`\S`).
+fn parse_single_shorthand(bytes: &[u8]) -> Option<u8> {
+    if bytes.len() == 2 && bytes[0] == b'\\' && matches!(bytes[1], b'd' | b'w' | b's') {
+        Some(bytes[1])
+    } else {
+        None
+    }
+}
+
+/// Narrow-form detector for `no-useless-set-operand`.
+///
+/// Scans a v-mode pattern for the first character class of the exact shape
+/// `[ ^? OP1 (&& | --) OP2 ]` where both operands are non-negated predefined
+/// shorthands (`\d`/`\w`/`\s`) and the operation has a redundant operand:
+///
+/// * `A && B` where `A` and `B` are disjoint — the intersection is empty.
+/// * `A && B` where one operand is a subset of (or equal to) the other — the
+///   superset operand is redundant.
+/// * `A -- B` where `A` and `B` are disjoint — subtracting `B` removes nothing.
+/// * `A -- B` where `A ⊆ B` — the subtraction yields the empty set.
+///
+/// The single upstream valid case `[\w--\d]` (`\d ⊂ \w`, a meaningful removal)
+/// does not match any of these conditions, so it is never flagged. Nested
+/// classes, string literals, and negated-shorthand operands are out of scope
+/// and yield no diagnostic.
+///
+/// `caller` must only invoke this for patterns carrying the `v` flag.
+pub(crate) fn has_useless_set_operand(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                if let Some(close) = find_class_end_nested(bytes, index) {
+                    let body = &bytes[index + 1..close];
+                    if let Some(op) = parse_shorthand_set_op(body)
+                        && let Some(relation) = shorthand_relation(op.left, op.right)
+                    {
+                        let useless = if op.intersection {
+                            // For `&&` every statically-known relation leaves a
+                            // useless operand: disjoint → empty result; subset
+                            // (either direction) or equal → the superset operand
+                            // is redundant.
+                            true
+                        } else {
+                            // For `--`: disjoint (removes nothing), `left ⊆ right`
+                            // (result empty), or equal (result empty). The
+                            // upstream-valid `[\w--\d]` is `right ⊂ left`, which
+                            // is intentionally NOT in this set.
+                            matches!(
+                                relation,
+                                ShorthandRelation::Disjoint
+                                    | ShorthandRelation::LeftSubsetRight
+                                    | ShorthandRelation::Equal
+                            )
+                        };
+                        if useless {
+                            return true;
+                        }
+                    }
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Recognises a single "char element" — one character-class-representable atom
+/// — starting at `index`, returning its byte length. Accepts a single plain
+/// ASCII literal byte (excluding regex metacharacters and quantifiers) or a
+/// predefined shorthand escape `\d \w \s \D \W \S`. Returns `None` for groups,
+/// nested classes, anchors, strings, multi-char escapes, and anything else.
+fn single_char_element_len(bytes: &[u8], index: usize) -> Option<usize> {
+    match bytes.get(index).copied()? {
+        b'\\' => match bytes.get(index + 1).copied()? {
+            b'd' | b'w' | b's' | b'D' | b'W' | b'S' => Some(2),
+            _ => None,
+        },
+        // Regex syntax characters are not plain char elements.
+        b'(' | b')' | b'[' | b']' | b'{' | b'}' | b'|' | b'*' | b'+' | b'?' | b'.' | b'^'
+        | b'$' => None,
+        // A plain ASCII literal byte.
+        byte if byte.is_ascii() => Some(1),
+        _ => None,
+    }
+}
+
+/// Recognises a *char lookaround* — a lookahead/lookbehind whose entire body is
+/// a single char element — starting at `index`. Returns
+/// `(kind, body_len_consumed_including_parens)` on success.
+///
+/// `kind` discriminates `(?=)` / `(?!)` / `(?<=)` / `(?<!)`. The body element
+/// must be a single char element AND immediately followed by the closing `)`,
+/// so quantified bodies, alternations, strings, and multi-element bodies are
+/// rejected (keeping the rewrite to a set operation sound).
+fn single_char_lookaround(bytes: &[u8], index: usize) -> Option<(CharLookaroundKind, usize)> {
+    if bytes.get(index) != Some(&b'(') || bytes.get(index + 1) != Some(&b'?') {
+        return None;
+    }
+    // Determine the prefix and where the body starts. The narrow detector only
+    // needs to distinguish lookahead vs lookbehind (both negated and positive
+    // forms map to a set operation), so the `=`/`!` polarity is not tracked.
+    let (kind, body_start) = match bytes.get(index + 2).copied()? {
+        b'=' | b'!' => (CharLookaroundKind::Lookahead, index + 3),
+        b'<' => match bytes.get(index + 3).copied()? {
+            b'=' | b'!' => (CharLookaroundKind::Lookbehind, index + 4),
+            _ => return None,
+        },
+        _ => return None,
+    };
+    let elem_len = single_char_element_len(bytes, body_start)?;
+    // The element must be immediately followed by the closing `)`.
+    if bytes.get(body_start + elem_len) != Some(&b')') {
+        return None;
+    }
+    Some((kind, body_start + elem_len + 1 - index))
+}
+
+/// Discriminates lookahead vs lookbehind char lookarounds (polarity is not
+/// tracked because the narrow detector treats both `(?=)`/`(?!)` and
+/// `(?<=)`/`(?<!)` as rewritable to a set operation).
+#[derive(Clone, Copy)]
+enum CharLookaroundKind {
+    Lookahead,
+    Lookbehind,
+}
+
+/// Narrow-form detector for `prefer-set-operation`.
+///
+/// In a **v-mode** pattern, returns `true` when a char element and an adjacent
+/// single-char lookaround can be rewritten as a v-mode set operation:
+///
+/// * `(?=X) Y` / `(?!X) Y` — a char lookahead immediately followed by a char
+///   element. Rewritable as `[Y && X]` (positive) or `[Y -- X]` (negative).
+/// * `Y (?<=X)` / `Y (?<!X)` — a char element immediately followed by a char
+///   lookbehind. Same rewrite.
+///
+/// Both `X` and `Y` must be single char elements (a plain ASCII literal or a
+/// `\d \w \s \D \W \S` shorthand). Bodies containing strings, alternations,
+/// quantifiers, groups, or multiple elements are rejected. Because the rule is
+/// gated on the `v` flag, the upstream non-v valid cases (`/(?!a)\w/`,
+/// `/(?!a)\w/u`) never fire, and `\b`-style assertions are not char lookarounds.
+///
+/// `caller` must only invoke this for patterns carrying the `v` flag.
+pub(crate) fn has_preferable_set_operation(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        // Case: a char element `Y` immediately followed by a char lookbehind.
+        // Handles both literal and `\X`-shorthand `Y` uniformly.
+        if let Some(elem_len) = single_char_element_len(bytes, index)
+            && let Some((CharLookaroundKind::Lookbehind, _)) =
+                single_char_lookaround(bytes, index + elem_len)
+        {
+            return true;
+        }
+
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                // Skip character classes entirely; their interior is not an
+                // alternative-level adjacency we rewrite.
+                index = find_class_end_nested(bytes, index).map_or(index + 1, |c| c + 1);
+            }
+            b'(' => {
+                if let Some((kind, consumed)) = single_char_lookaround(bytes, index) {
+                    // Case: a char lookahead immediately followed by a char
+                    // element `Y`.
+                    if matches!(kind, CharLookaroundKind::Lookahead)
+                        && single_char_element_len(bytes, index + consumed).is_some()
+                    {
+                        return true;
+                    }
+                    index += consumed;
+                } else {
+                    index += 1;
+                }
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Narrow-form detector for `simplify-set-operations`.
+///
+/// Returns `true` when a **v-mode** character class contains a top-level
+/// intersection (`&&`) where at least one operand is a *negated* nested class
+/// `[^...]`. Such an intersection can always be simplified:
+///
+/// * `A && [^B]` → `A -- B` (intersection with a complement is a subtraction).
+/// * `[^A] && [^B]` → `[^A B]` (De Morgan — negation of a disjunction).
+///
+/// Either way the presence of a negated operand inside a `&&` intersection
+/// means the expression is not in its simplest form.
+///
+/// Soundness: only fires for `&&` intersections that contain a top-level
+/// `[^...]` operand. Plain intersections (`[a&&b]`), subtractions (`[a--b]`),
+/// non-negated nested operands (`[a&&b&&[c]]`), and an outer class negation
+/// (`[^a&&b]`, whose operands are not themselves negated) are never flagged,
+/// matching every upstream valid case.
+///
+/// `caller` must only invoke this for patterns carrying the `v` flag.
+pub(crate) fn has_simplifiable_set_operation(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                if let Some(close) = find_class_end_nested(bytes, index) {
+                    // Inspect the body strictly between the outer brackets.
+                    let body = &bytes[index + 1..close];
+                    if class_body_has_intersection_with_negated_operand(body) {
+                        return true;
+                    }
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Scans a v-mode character-class body (the bytes strictly between the outer
+/// `[` and `]`) and returns `true` when it is a top-level intersection (`&&`)
+/// that has at least one top-level operand which is a negated nested class
+/// `[^...]`.
+///
+/// "Top level" means depth 0 with respect to nested `[...]` brackets: the `&&`
+/// operator and the opening `[^` of a negated operand must both sit at depth 0.
+/// A leading `^` (outer class negation) is skipped first and does not affect
+/// the result. Escapes are skipped so `\]`/`\[` are not mistaken for brackets.
+fn class_body_has_intersection_with_negated_operand(body: &[u8]) -> bool {
+    let mut start = 0;
+    if body.first() == Some(&b'^') {
+        start = 1;
+    }
+    let mut depth: usize = 0;
+    let mut has_top_level_intersection = false;
+    let mut has_top_level_negated_operand = false;
+    let mut i = start;
+    while i < body.len() {
+        match body[i] {
+            b'\\' => i = skip_escape(body, i),
+            b'[' => {
+                // A nested class opening at depth 0 is a top-level operand.
+                if depth == 0 && body.get(i + 1) == Some(&b'^') {
+                    has_top_level_negated_operand = true;
+                }
+                depth += 1;
+                i += 1;
+            }
+            b']' => {
+                depth = depth.saturating_sub(1);
+                i += 1;
+            }
+            b'&' if depth == 0 && body.get(i + 1) == Some(&b'&') => {
+                has_top_level_intersection = true;
+                i += 2;
+            }
+            _ => i += 1,
+        }
+    }
+    has_top_level_intersection && has_top_level_negated_operand
+}
+
+/// A single quantifiable atom recognised by the narrow
+/// `optimal-quantifier-concatenation` detector: an unambiguous single element
+/// whose matched-character set is independent of position.
+///
+/// * `Literal(byte)` — a plain ASCII literal character.
+/// * `Shorthand(byte)` — a predefined shorthand escape `\w \W \d \D \s \S`,
+///   identified by its letter byte.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum QuantAtomElement {
+    Literal(u8),
+    Shorthand(u8),
+}
+
+/// The quantifier applied to an atom, reduced to the two facts the narrow
+/// concatenation check needs: whether the maximum is unbounded (`*`, `+`, or
+/// `{n,}`) and whether it is lazy (`?` suffix).
+#[derive(Clone, Copy)]
+struct QuantAtomQuantifier {
+    unbounded: bool,
+    lazy: bool,
+}
+
+/// Parse an optional greedy/lazy quantifier starting at `index` (the byte just
+/// after an element). Returns the quantifier description and the index just
+/// past it. When no quantifier is present, returns a `{1}`-equivalent
+/// (`unbounded = false`, `lazy = false`) and the unchanged index.
+fn parse_atom_quantifier(bytes: &[u8], index: usize) -> (QuantAtomQuantifier, usize) {
+    match bytes.get(index).copied() {
+        Some(b'*') | Some(b'+') => {
+            let lazy = bytes.get(index + 1) == Some(&b'?');
+            (
+                QuantAtomQuantifier {
+                    unbounded: true,
+                    lazy,
+                },
+                index + 1 + usize::from(lazy),
+            )
+        }
+        Some(b'?') => {
+            let lazy = bytes.get(index + 1) == Some(&b'?');
+            (
+                QuantAtomQuantifier {
+                    unbounded: false,
+                    lazy,
+                },
+                index + 1 + usize::from(lazy),
+            )
+        }
+        Some(b'{') => {
+            // Find the closing `}`; the body must be `n`, `n,`, or `n,m`.
+            let mut cursor = index + 1;
+            while cursor < bytes.len() && bytes[cursor] != b'}' {
+                cursor += 1;
+            }
+            if cursor >= bytes.len() {
+                // Not a real quantifier; treat `{` as a literal element start.
+                return (
+                    QuantAtomQuantifier {
+                        unbounded: false,
+                        lazy: false,
+                    },
+                    index,
+                );
+            }
+            let body = &bytes[index + 1..cursor];
+            // `{n,}` (a digit run, a comma, nothing after) is unbounded.
+            let unbounded = body.last() == Some(&b',');
+            let lazy = bytes.get(cursor + 1) == Some(&b'?');
+            (
+                QuantAtomQuantifier { unbounded, lazy },
+                cursor + 1 + usize::from(lazy),
+            )
+        }
+        _ => (
+            QuantAtomQuantifier {
+                unbounded: false,
+                lazy: false,
+            },
+            index,
+        ),
+    }
+}
+
+/// Narrow-form detector for `optimal-quantifier-concatenation`.
+///
+/// Returns `true` when two *adjacent* quantified atoms target the **same**
+/// single element (same literal byte or same shorthand escape) and **at least
+/// one** of the two quantifiers is greedily unbounded (`*`, `+`, or `{n,}`).
+/// In that situation the two quantifiers can always be merged into one
+/// (e.g. `aa*` → `a+`, `\w*\w` → `\w+`, `a+a+` → `a{2,}`, `a*a*` → `a*`), so
+/// the concatenation is non-optimal.
+///
+/// Soundness boundaries:
+/// * Only fires when both atoms are unambiguous single elements; groups,
+///   character classes, ranges, backreferences, anchors, and `.` reset the
+///   adjacency tracker so they are never treated as a mergeable pair.
+/// * Requires at least one unbounded quantifier, so the purely-bounded cases
+///   that upstream leaves alone (`/aa?/`, `/\w?\w/`) are never flagged.
+/// * Requires identical greediness on both atoms; a greedy/lazy mix is not
+///   merged here (kept conservative).
+pub(crate) fn has_mergeable_quantifier_concatenation(pattern: &str, v_mode: bool) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    // The previously seen atom, eligible to pair with the next one.
+    let mut prev: Option<(QuantAtomElement, QuantAtomQuantifier)> = None;
+
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => {
+                // Shorthand escape `\w \W \d \D \s \S` is a comparable element.
+                let next = bytes.get(index + 1).copied();
+                let element = match next {
+                    Some(b @ (b'w' | b'W' | b'd' | b'D' | b's' | b'S')) => {
+                        Some(QuantAtomElement::Shorthand(b))
+                    }
+                    _ => None,
+                };
+                // Advance past the whole escape, then read any quantifier.
+                let after_escape = skip_escape(bytes, index);
+                if let Some(element) = element {
+                    let (quant, after_quant) = parse_atom_quantifier(bytes, after_escape);
+                    if try_pair(&mut prev, element, quant) {
+                        return true;
+                    }
+                    index = after_quant;
+                } else {
+                    // Non-shorthand escape: not comparable; reset adjacency.
+                    prev = None;
+                    index = after_escape;
+                }
+            }
+            b'[' => {
+                // Character class: not a single comparable element.
+                prev = None;
+                let close = if v_mode {
+                    find_class_end_nested(bytes, index)
+                } else {
+                    find_class_end(bytes, index)
+                };
+                index = close.map_or(index + 1, |c| c + 1);
+            }
+            b'(' | b')' | b'|' | b'^' | b'$' | b'.' => {
+                // Group boundaries, alternation, anchors, and `.` are not
+                // mergeable single elements; reset adjacency across them.
+                prev = None;
+                index += 1;
+            }
+            b'*' | b'+' | b'?' | b'{' | b'}' => {
+                // A stray quantifier byte with no preceding tracked atom.
+                prev = None;
+                index += 1;
+            }
+            byte => {
+                let element = QuantAtomElement::Literal(byte);
+                let (quant, after_quant) = parse_atom_quantifier(bytes, index + 1);
+                if try_pair(&mut prev, element, quant) {
+                    return true;
+                }
+                index = after_quant;
+            }
+        }
+    }
+    false
+}
+
+/// Compare the incoming atom against `prev`. Returns `true` when they form a
+/// mergeable same-element pair (per the rule in
+/// `has_mergeable_quantifier_concatenation`). Always stores the incoming atom
+/// as the new `prev` for the next comparison.
+fn try_pair(
+    prev: &mut Option<(QuantAtomElement, QuantAtomQuantifier)>,
+    element: QuantAtomElement,
+    quant: QuantAtomQuantifier,
+) -> bool {
+    let mut mergeable = false;
+    if let Some((prev_element, prev_quant)) = *prev
+        && prev_element == element
+        && prev_quant.lazy == quant.lazy
+        && !prev_quant.lazy
+        && (prev_quant.unbounded || quant.unbounded)
+    {
+        mergeable = true;
+    }
+    *prev = Some((element, quant));
+    mergeable
+}
+
+/// Narrow-form detector for `unicode-property`.
+///
+/// Returns `true` when the pattern contains a Unicode-property escape
+/// `\p{key=value}` / `\P{key=value}` whose `key` is the General_Category key
+/// written explicitly (`gc` or `General_Category`). Under the upstream default
+/// configuration (`generalCategory: "never"`) such an explicit GC key is
+/// redundant — `\p{gc=L}` is equivalent to `\p{L}` — and upstream reports it
+/// with the `unnecessaryGc` message.
+///
+/// Soundness: only the key-value form (`\p{key=value}`) with an exact `gc` or
+/// `General_Category` key is flagged. The keyless form `\p{L}` (no `=`),
+/// `\p{Script=...}`, `\p{scx=...}`, binary properties, and any other key are
+/// never flagged, so every non-option upstream valid shape stays clean. The
+/// key comparison is exact (case-sensitive), matching the canonical aliases
+/// the upstream alias map recognises for the General_Category key.
+pub(crate) fn has_unnecessary_general_category_key(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'\\' {
+            // `\p{...}` / `\P{...}` property escape (works the same inside or
+            // outside a character class, so no special class handling needed).
+            if matches!(bytes.get(index + 1), Some(b'p') | Some(b'P'))
+                && bytes.get(index + 2) == Some(&b'{')
+            {
+                let body_start = index + 3;
+                if let Some(rel_close) = bytes[body_start..].iter().position(|&b| b == b'}') {
+                    let body = &bytes[body_start..body_start + rel_close];
+                    if let Some(eq) = body.iter().position(|&b| b == b'=') {
+                        let key = &body[..eq];
+                        if key == b"gc" || key == b"General_Category" {
+                            return true;
+                        }
+                    }
+                    index = body_start + rel_close + 1;
+                    continue;
+                }
+                index += 3;
+                continue;
+            }
+            index = skip_escape(bytes, index);
+            continue;
+        }
+        index += 1;
+    }
+    false
+}
+
+/// Narrow-form detector for `no-super-linear-move`.
+///
+/// Returns `true` when the pattern *begins* with an atom immediately followed
+/// by an unbounded greedy quantifier (`*`, `+`, or `{n,}`) and there is a
+/// non-empty "rejecting" suffix after that quantifier — e.g. `/a*:/`,
+/// `/\w+x/`. Because the leading greedy quantifier is not anchored to the
+/// absolute start of input, a non-matching suffix forces the engine to retry
+/// the quantifier from every successive start position, giving quadratic
+/// scanning time.
+///
+/// Soundness constraints:
+/// * The quantified atom must be at byte offset 0, so any leading `^` anchor or
+///   `\b`/lookbehind assertion (which would bound the start) precludes a match
+///   — `/^a*:/`, `/\ba*:/` are never flagged.
+/// * There must be at least one byte after the quantifier (a potential
+///   rejecting suffix); `/a*/`, `/[\q{abc}]+/` with nothing after are never
+///   flagged.
+///
+/// The caller additionally excludes the sticky (`y`) flag, matching upstream's
+/// default `ignoreSticky: true`. Broader cases (`^…` under the `m` flag,
+/// quantifiers after a leading assertion) are deferred to stay valid-sound.
+pub(crate) fn has_super_linear_move(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    // The quantified atom must start at offset 0.
+    let Some((_, atom_end)) = misleading_atom_at(bytes, 0) else {
+        return false;
+    };
+    let Some(after_quant) = greedy_quantifier_end(bytes, atom_end) else {
+        return false;
+    };
+    // A non-empty suffix must follow the quantifier.
+    if after_quant >= bytes.len() {
+        return false;
+    }
+    // The suffix must begin with a *required* element so it can actually
+    // reject. The first suffix atom must not itself be optional (`?`) or
+    // zero-or-more (`*`) — those can match empty, leaving nothing to reject and
+    // making the pattern equivalent to a bare `/a*/` (an upstream valid shape).
+    let Some((_, suffix_atom_end)) = misleading_atom_at(bytes, after_quant) else {
+        // A non-atom suffix (group/anchor/etc.) is conservatively treated as a
+        // potential rejecting suffix; the clearest invalid cases all have a
+        // literal/class suffix, so requiring an atom keeps us sound.
+        return false;
+    };
+    !matches!(bytes.get(suffix_atom_end), Some(b'?') | Some(b'*'))
+}
+
+/// Narrow-form detector for `no-super-linear-backtracking`.
+///
+/// Returns `true` for the canonical nested-unbounded-quantifier shape
+/// `(<atom><unbounded>)<unbounded>` — a group whose body is exactly a single
+/// atom followed by an unbounded greedy quantifier (`+`, `*`, or `{n,}`), and
+/// the group itself is immediately followed by another unbounded greedy
+/// quantifier. Examples: `(?:a+)+`, `(a*)*`, `(?:\w+){2,}`.
+///
+/// Such a shape lets the inner quantifier reach itself through the outer loop,
+/// producing (at least) exponential backtracking on a non-matching suffix.
+///
+/// Deliberately narrow: the group body must be *exactly* one quantified atom
+/// (so anchored shapes like `(a+b)+`, whose required `b` bounds the
+/// backtracking, are never flagged) and both quantifiers must be unbounded and
+/// greedy. Other super-linear shapes (`a+a+`, alternation loops) are deferred
+/// to keep the detector valid-sound.
+pub(crate) fn has_super_linear_backtracking(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'(' {
+            // Locate the body start (skip a non-capturing / named prefix).
+            let body_start = group_body_start_any(bytes, index);
+            // Body must be exactly `<atom><unbounded-quant>` then `)`.
+            if let Some((_, atom_end)) = misleading_atom_at(bytes, body_start)
+                && let Some(after_inner) = greedy_quantifier_end(bytes, atom_end)
+                && bytes.get(after_inner) == Some(&b')')
+                // …and the group is itself followed by an unbounded greedy quant.
+                && greedy_quantifier_end(bytes, after_inner + 1).is_some()
+            {
+                return true;
+            }
+            index += 1;
+            continue;
+        }
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                index = find_class_end(bytes, index).map_or(index + 1, |close| close + 1);
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Returns the index of the first body byte of the group whose `(` is at
+/// `open`, skipping a `(?:` / `(?=` / `(?!` / `(?<=` / `(?<!` / `(?<name>`
+/// prefix. For a bare `(` it returns `open + 1`.
+fn group_body_start_any(bytes: &[u8], open: usize) -> usize {
+    if bytes.get(open + 1) == Some(&b'?') {
+        match bytes.get(open + 2) {
+            Some(b':') | Some(b'=') | Some(b'!') => return open + 3,
+            Some(b'<') => {
+                // `(?<=` / `(?<!` (lookbehind) or `(?<name>` (named capture).
+                if matches!(bytes.get(open + 3), Some(b'=') | Some(b'!')) {
+                    return open + 4;
+                }
+                if let Some(rel) = bytes[open + 3..].iter().position(|&b| b == b'>') {
+                    return open + 3 + rel + 1;
+                }
+            }
+            _ => {}
+        }
+    }
+    open + 1
+}
+
+/// Narrow-form detector for `no-misleading-capturing-group`.
+///
+/// Returns `true` when the pattern contains the canonical "already included"
+/// shape `A<greedy>(A*)`: an atom `A` quantified greedily (`+`, `*`, or
+/// `{n,}` — never lazy) immediately followed by a capturing group whose body is
+/// exactly `A*` (the same atom with a `*`). Because the preceding greedy
+/// quantifier consumes every `A`, the group's `*` is always satisfied by the
+/// empty match, so the capturing group misleadingly captures less than its
+/// pattern suggests (upstream's `removeQuant` case, e.g. `\d+(\d*)`).
+///
+/// `A` is one of: a shorthand escape (`\d`, `\w`, `\s`, …), a character class
+/// `[...]`, or a single literal byte. The atom before the quantifier and the
+/// atom inside the group must be byte-for-byte identical, which guarantees the
+/// "same set" relationship soundly without a full character-set analysis.
+///
+/// Deliberately narrow: only the directly-adjacent `A+(A*)` / `A*(A*)` /
+/// `A{n,}(A*)` shape is detected. Backtracking-ends cases (`^(a*).+`),
+/// disjunction-prefixed groups, and non-identical-but-overlapping atoms are
+/// left to a future pass to keep the detector valid-sound.
+pub(crate) fn has_misleading_capturing_group(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        // Try to parse an atom at `index`.
+        if let Some((atom_start, atom_end)) = misleading_atom_at(bytes, index) {
+            // The atom must be followed by a greedy quantifier.
+            if let Some(after_quant) = greedy_quantifier_end(bytes, atom_end) {
+                // …then immediately a capturing group open.
+                if let Some(body_start) = capturing_group_body_start(bytes, after_quant) {
+                    // …whose body is exactly the same atom followed by `*` then `)`.
+                    // The group body must be exactly `A*` then `)`. The `*`
+                    // being immediately followed by `)` also rules out the lazy
+                    // form `*?` (which would have `?` before `)`).
+                    if let Some((inner_start, inner_end)) = misleading_atom_at(bytes, body_start)
+                        && bytes.get(inner_end) == Some(&b'*')
+                        && bytes.get(inner_end + 1) == Some(&b')')
+                        && bytes[atom_start..atom_end] == bytes[inner_start..inner_end]
+                    {
+                        return true;
+                    }
+                }
+            }
+            index = atom_end;
+            continue;
+        }
+        // Skip classes/escapes wholesale so their internals are not misparsed.
+        match bytes[index] {
+            b'\\' => index = skip_escape(bytes, index),
+            b'[' => {
+                index = find_class_end(bytes, index).map_or(index + 1, |close| close + 1);
+            }
+            _ => index += 1,
+        }
+    }
+    false
+}
+
+/// Parses a single quantifiable atom at `index`: a shorthand escape (`\d` etc.),
+/// a character class `[...]`, or a single literal byte that is not a regex
+/// metacharacter. Returns the `[start, end)` byte range of the atom (without
+/// any quantifier), or `None` when `index` is not the start of such an atom.
+fn misleading_atom_at(bytes: &[u8], index: usize) -> Option<(usize, usize)> {
+    match bytes.get(index)? {
+        b'\\' => {
+            let end = skip_escape(bytes, index);
+            Some((index, end))
+        }
+        b'[' => {
+            let close = find_class_end(bytes, index)?;
+            Some((index, close + 1))
+        }
+        // A literal byte: exclude regex metacharacters and group/quantifier
+        // punctuation so we only treat plain characters as atoms.
+        b if !matches!(
+            b,
+            b'(' | b')'
+                | b'['
+                | b']'
+                | b'{'
+                | b'}'
+                | b'*'
+                | b'+'
+                | b'?'
+                | b'.'
+                | b'|'
+                | b'^'
+                | b'$'
+                | b'\\'
+        ) =>
+        {
+            Some((index, index + 1))
+        }
+        _ => None,
+    }
+}
+
+/// If a *greedy* quantifier (`+`, `*`, or `{n,}` — never followed by a lazy
+/// `?`) begins at `index`, returns the index just past it; otherwise `None`.
+fn greedy_quantifier_end(bytes: &[u8], index: usize) -> Option<usize> {
+    match bytes.get(index)? {
+        b'+' | b'*' => {
+            // Reject the lazy form `+?` / `*?`.
+            if bytes.get(index + 1) == Some(&b'?') {
+                return None;
+            }
+            Some(index + 1)
+        }
+        b'{' => {
+            // `{n,}` (open upper bound) — find the `}` and require a trailing
+            // comma form. Reject lazy `{n,}?`.
+            let mut i = index + 1;
+            let mut saw_comma = false;
+            let mut saw_digit = false;
+            while i < bytes.len() && bytes[i] != b'}' {
+                match bytes[i] {
+                    b',' => saw_comma = true,
+                    d if d.is_ascii_digit() => saw_digit = true,
+                    _ => return None,
+                }
+                i += 1;
+            }
+            if bytes.get(i) != Some(&b'}') || !saw_comma || !saw_digit {
+                return None;
+            }
+            // `{n,m}` (with an explicit upper bound) is not "open"; only `{n,}`
+            // qualifies. Detect an upper bound by a digit after the comma.
+            // Reconstruct: scan again for a digit after the comma.
+            let body = &bytes[index + 1..i];
+            if let Some(comma_pos) = body.iter().position(|&b| b == b',')
+                && body[comma_pos + 1..].iter().any(u8::is_ascii_digit)
+            {
+                return None;
+            }
+            // Reject lazy `{n,}?`.
+            if bytes.get(i + 1) == Some(&b'?') {
+                return None;
+            }
+            Some(i + 1)
+        }
+        _ => None,
+    }
+}
+
+/// If a capturing group opens at `index` (anonymous `(` or named `(?<name>`,
+/// but not `(?:`, `(?=`, `(?!`, `(?<=`, `(?<!`), returns the index of the first
+/// byte of its body; otherwise `None`.
+fn capturing_group_body_start(bytes: &[u8], index: usize) -> Option<usize> {
+    if bytes.get(index) != Some(&b'(') {
+        return None;
+    }
+    if bytes.get(index + 1) == Some(&b'?') {
+        // Named capture `(?<name>` is capturing; everything else with `?` is not.
+        if bytes.get(index + 2) == Some(&b'<')
+            && !matches!(bytes.get(index + 3), Some(b'=') | Some(b'!'))
+        {
+            let rel = bytes[index + 3..].iter().position(|&b| b == b'>')?;
+            return Some(index + 3 + rel + 1);
+        }
+        return None;
+    }
+    Some(index + 1)
+}
+
+/// Reference token that a capturing group expects in a replacement string:
+/// either a numbered backreference (`$N`) or a named one (`$<name>`).
+#[derive(Clone)]
+pub(crate) enum GroupReplacementRef {
+    Numbered(u32),
+    Named(CompactString),
+}
+
+/// Narrow-form structural parse for `prefer-lookaround` (both-ends case).
+///
+/// Recognises a pattern of the exact shape `(B1)MID(B2)` where:
+/// * `(B1)` is a leading capturing group (numbered or `(?<name>...)`),
+/// * `MID` is a non-empty run of "plain" literal bytes,
+/// * `(B2)` is a trailing capturing group (numbered or named),
+/// * there is nothing before `(B1)` and nothing after `(B2)`,
+/// * there are exactly two capturing groups total.
+///
+/// To keep the lookaround conversion provably safe (no overlapping-match
+/// hazards) every byte of `B1`, `MID`, and `B2` must be a *plain* literal —
+/// ASCII alphanumeric, space, or one of a small punctuation set — with no
+/// regex metacharacters, escapes, quantifiers, alternation, anchors,
+/// assertions, classes, or nested groups. In addition the boundary bytes must
+/// differ (`last(B1) != first(MID)` and `last(MID) != first(B2)`) so the
+/// captured text cannot overlap the consumed middle. Under these constraints
+/// `(B1)MID(B2)` with a replacement that re-emits `$1` at the start and `$2`
+/// at the end is equivalent to `(?<=B1)MID(?=B2)`.
+///
+/// Returns the expected replacement reference tokens for the two groups when
+/// the shape matches, else `None`.
+pub(crate) fn prefer_lookaround_groups(
+    pattern: &str,
+) -> Option<(GroupReplacementRef, GroupReplacementRef)> {
+    let bytes = pattern.as_bytes();
+    if bytes.first() != Some(&b'(') {
+        return None;
+    }
+    let mut number = 0u32;
+    // Parse the leading group.
+    let (ref1, after1) = parse_plain_capturing_group(bytes, 0, &mut number)?;
+    // Parse the middle plain run (non-empty), stopping at the next `(`.
+    let mid_start = after1;
+    let mut i = mid_start;
+    while i < bytes.len() && bytes[i] != b'(' {
+        if !is_plain_literal_byte(bytes[i]) {
+            return None;
+        }
+        i += 1;
+    }
+    let mid_end = i;
+    if mid_end == mid_start || mid_end >= bytes.len() {
+        // Empty middle, or no trailing group.
+        return None;
+    }
+    // Parse the trailing group.
+    let (ref2, after2) = parse_plain_capturing_group(bytes, mid_end, &mut number)?;
+    // Nothing may follow the trailing group, and there must be exactly two groups.
+    if after2 != bytes.len() || number != 2 {
+        return None;
+    }
+    // Boundary bytes must differ to rule out overlap.
+    let b1_last = bytes[after1 - 2]; // byte before the closing `)` of group 1
+    let mid_first = bytes[mid_start];
+    let mid_last = bytes[mid_end - 1];
+    let b2_first = bytes[mid_end + group_open_prefix_len(bytes, mid_end)];
+    if b1_last == mid_first || mid_last == b2_first {
+        return None;
+    }
+    Some((ref1, ref2))
+}
+
+/// Length of the opening prefix of a capturing group at `open` (the `(`):
+/// `1` for an anonymous `(`, or `1 + len("?<name>")` for a named group.
+fn group_open_prefix_len(bytes: &[u8], open: usize) -> usize {
+    if bytes.get(open + 1) == Some(&b'?') && bytes.get(open + 2) == Some(&b'<') {
+        // `(?<name>` — find the `>`.
+        if let Some(rel) = bytes[open + 3..].iter().position(|&b| b == b'>') {
+            return 3 + rel + 1;
+        }
+    }
+    1
+}
+
+/// Parses a *plain* capturing group beginning at `open` (which must be `(`).
+/// Increments `*number`. Returns the expected replacement reference and the
+/// index just past the closing `)`, or `None` when the group is not a plain
+/// capturing group (e.g. non-capturing, lookaround, or a body containing any
+/// non-plain byte).
+fn parse_plain_capturing_group(
+    bytes: &[u8],
+    open: usize,
+    number: &mut u32,
+) -> Option<(GroupReplacementRef, usize)> {
+    if bytes.get(open) != Some(&b'(') {
+        return None;
+    }
+    // Reject non-capturing / lookaround / lookbehind prefixes.
+    if bytes.get(open + 1) == Some(&b'?') {
+        // Only `(?<name>` (named capture) is allowed; `(?:`, `(?=`, `(?!`,
+        // `(?<=`, `(?<!` are not capturing in the way we need.
+        if bytes.get(open + 2) != Some(&b'<') {
+            return None;
+        }
+        // `(?<=` / `(?<!` are lookbehind, not capture.
+        if matches!(bytes.get(open + 3), Some(b'=') | Some(b'!')) {
+            return None;
+        }
+    }
+    let prefix = group_open_prefix_len(bytes, open);
+    let name = if prefix > 1 {
+        // Extract the name between `(?<` and `>`.
+        let name_bytes = &bytes[open + 3..open + prefix - 1];
+        Some(CompactString::from(std::str::from_utf8(name_bytes).ok()?))
+    } else {
+        None
+    };
+    let body_start = open + prefix;
+    // Body must be a non-empty run of plain literal bytes terminated by `)`.
+    let mut i = body_start;
+    while i < bytes.len() && bytes[i] != b')' {
+        if !is_plain_literal_byte(bytes[i]) {
+            return None;
+        }
+        i += 1;
+    }
+    if i >= bytes.len() || i == body_start {
+        return None;
+    }
+    *number += 1;
+    let reference = match name {
+        Some(n) => GroupReplacementRef::Named(n),
+        None => GroupReplacementRef::Numbered(*number),
+    };
+    Some((reference, i + 1))
+}
+
+/// A "plain" literal byte that carries no regex special meaning: ASCII
+/// alphanumeric, space, or a member of a small safe punctuation set. Notably
+/// excludes every regex metacharacter (`. * + ? ( ) [ ] { } | ^ $ \`) so a run
+/// of these bytes matches itself verbatim with fixed length.
+fn is_plain_literal_byte(byte: u8) -> bool {
+    byte.is_ascii_alphanumeric()
+        || matches!(
+            byte,
+            b' ' | b'!'
+                | b'@'
+                | b'#'
+                | b'%'
+                | b'&'
+                | b'~'
+                | b'`'
+                | b'\''
+                | b'"'
+                | b':'
+                | b';'
+                | b','
+                | b'/'
+                | b'_'
+                | b'-'
+                | b'='
+        )
+}
+
+/// Narrow-form support for `no-unused-capturing-group`.
+///
+/// Returns `true` when `pattern` contains at least one capturing group (named
+/// or anonymous) AND contains no in-pattern backreference (`\1`..`\9` or
+/// `\k<name>`). Such a pattern's capturing groups can only ever be observed
+/// through the match *result*; in a context that never reads the result (e.g.
+/// `RegExp#test`, which returns only a boolean) every capturing group is
+/// provably unused.
+///
+/// The backreference exclusion is required for soundness: a group referenced
+/// by a backref inside the same pattern is "used" even when the result is
+/// discarded.
+pub(crate) fn pattern_has_capturing_group_and_no_backreference(pattern: &str) -> bool {
+    let bytes = pattern.as_bytes();
+    let mut index = 0;
+    let mut has_capturing = false;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => {
+                // `\1`..`\9` numbered backreference.
+                if matches!(bytes.get(index + 1), Some(b'1'..=b'9')) {
+                    return false;
+                }
+                // `\k<name>` named backreference.
+                if bytes.get(index + 1) == Some(&b'k') && bytes.get(index + 2) == Some(&b'<') {
+                    return false;
+                }
+                index = skip_escape(bytes, index);
+            }
+            b'[' => {
+                if let Some(close) = find_class_end(bytes, index) {
+                    index = close + 1;
+                } else {
+                    index += 1;
+                }
+            }
+            b'(' => {
+                let prefix = group_prefix(bytes, index);
+                if prefix.capturing {
+                    has_capturing = true;
+                }
+                index = prefix.next;
+            }
+            _ => index += 1,
+        }
+    }
+    has_capturing
+}
+
+pub(crate) fn mention_char(ch: char) -> CompactString {
+    let mut text = CompactString::new("U+");
+    let code = ch as u32;
+    let mut buf = [0u8; 6];
+    let mut value = code;
+    let mut cursor = buf.len();
+    if value == 0 {
+        cursor -= 1;
+        buf[cursor] = b'0';
+    } else {
+        while value > 0 {
+            cursor -= 1;
+            let digit = (value & 0xf) as u8;
+            buf[cursor] = if digit < 10 {
+                b'0' + digit
+            } else {
+                b'A' + (digit - 10)
+            };
+            value >>= 4;
+        }
+    }
+    for _ in 0..(4usize.saturating_sub(buf.len() - cursor)) {
+        text.push('0');
+    }
+    if let Ok(hex) = std::str::from_utf8(&buf[cursor..]) {
+        text.push_str(hex);
+    }
+    text
+}

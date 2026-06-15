@@ -1,0 +1,27 @@
+{
+  "$comment": "Upstream parity ratchet for the @unocss/eslint-plugin port. Fixtures under test/fixtures/*.json are captured verbatim from upstream by `pnpm run port:tests:unocss`; upstream.test.mjs replays them. Vue- and Svelte-parser blocks are quarantined structurally by the harness (oxc parses JS/TS/JSX only). This file additionally quarantines individual js/jsx cases the syntax-only port cannot reproduce without the live UnoCSS engine. Each quarantine is a tracked ratchet item: a future PR that closes the gap removes the entry. quarantine[blockName][valid|invalid] is an array of { index, reason }.",
+  "quarantine": {
+    "order-unoFunctions": {
+      "valid": [
+        {
+          "index": 5,
+          "reason": "`bg-[var(--x)] pl1 pr1`: the heuristic ranks `bg-` after spacing utilities and would reorder, but presetUno treats this order as already valid. Engine-dependent."
+        }
+      ],
+      "invalid": [
+        {
+          "index": 9,
+          "reason": "interpolated quasi mixes UnoCSS and non-UnoCSS tokens. Upstream `sortRules` emits unrecognized tokens first (in original order) then recognized tokens sorted by engine order; recognition is `uno.parseToken`. The heuristic's `is_unocss_token` is intentionally over-broad (e.g. `m-class` looks like a margin utility but `parseToken` rejects it), so it cannot safely reproduce unknowns-first without the engine and instead bails when any token is unrecognized. Engine-dependent."
+        }
+      ]
+    },
+    "order-unoVariables": {
+      "invalid": [
+        {
+          "index": 2,
+          "reason": "interpolated quasi mixes UnoCSS and non-UnoCSS tokens; reproducing upstream `sortRules` (unrecognized tokens first, then recognized tokens by engine order) needs precise `uno.parseToken` recognition the heuristic lacks, so it bails when any token is unrecognized. Engine-dependent."
+        }
+      ]
+    }
+  }
+}

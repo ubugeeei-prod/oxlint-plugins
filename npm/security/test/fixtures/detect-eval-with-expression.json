@@ -1,0 +1,30 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-eval-with-expression.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "eval('alert()')"
+    },
+    {
+      "code": "eval(\"some nefarious code\");"
+    },
+    {
+      "code": "eval()"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "eval(a);",
+      "errors": [
+        {
+          "message": "eval with argument of type Identifier"
+        }
+      ]
+    }
+  ]
+}

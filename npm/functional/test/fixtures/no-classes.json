@@ -1,0 +1,83 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/no-classes.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function Foo() {}",
+      "typeAware": false
+    },
+    {
+      "code": "class Foo {}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^Foo$"
+        }
+      ]
+    },
+    {
+      "code": "class Foo {}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreCodePattern": "class Foo"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "class Foo {}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "const klass = class {}",
+      "typeAware": false,
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "class Bar {}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreIdentifierPattern": "^Foo$"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "class Bar {}",
+      "typeAware": false,
+      "options": [
+        {
+          "ignoreCodePattern": "class Foo"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,341 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/strict.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/strict.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/regexp/"
+    },
+    {
+      "code": "/\\{\\}\\]/"
+    },
+    {
+      "code": "/[-\\w-]/"
+    },
+    {
+      "code": "/[a-b-\\w]/"
+    },
+    {
+      "code": "/\\0/"
+    },
+    {
+      "code": "/()\\1/"
+    },
+    {
+      "code": "/(?<foo>)\\k<foo>/"
+    },
+    {
+      "code": "/\\p{L}/u"
+    },
+    {
+      "code": "/ \\( \\) \\[ \\] \\{ \\} \\| \\* \\+ \\? \\^ \\$ \\\\ \\/ \\./"
+    },
+    {
+      "code": "/[\\( \\) \\[ \\] \\{ \\} \\| \\* \\+ \\? \\^ \\$ \\\\ \\/ \\. \\-]/"
+    },
+    {
+      "code": "/\\u000f/"
+    },
+    {
+      "code": "/\\x000f/"
+    },
+    {
+      "code": "/[A--B]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unescaped source character ']'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": "/\\]/"
+    },
+    {
+      "code": "/{/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unescaped source character '{'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": "/\\{/"
+    },
+    {
+      "code": "/}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unescaped source character '}'.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": "/\\}/"
+    },
+    {
+      "code": "/\\u{42}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Incomplete escape sequence '\\u'. Either use a valid escape sequence or remove the useless escaping.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\u000;/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Incomplete escape sequence '\\u'. Either use a valid escape sequence or remove the useless escaping.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\x4/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Incomplete escape sequence '\\x'. Either use a valid escape sequence or remove the useless escaping.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\c;/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Invalid or incomplete control escape sequence. Either use a valid control escape sequence or escaping the standalone backslash.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\p/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Invalid property escape sequence '\\p'. Either use a valid property escape sequence or remove the useless escaping.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\p{H}/",
+      "errorCount": 3,
+      "errors": [
+        {
+          "message": "Invalid property escape sequence '\\p'. Either use a valid property escape sequence or remove the useless escaping.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        },
+        {
+          "message": "Unescaped source character '{'.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        },
+        {
+          "message": "Unescaped source character '}'.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\p\\{H\\}/"
+    },
+    {
+      "code": "/\\012/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Invalid legacy octal escape sequence '\\012'. Use a hexadecimal escape instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\12/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Invalid legacy octal escape sequence '\\12'. Use a hexadecimal escape instead.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\k<foo/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Incomplete backreference '\\k'. Either use a valid backreference or remove the useless escaping.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\k<foo>/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Incomplete backreference '\\k'. Either use a valid backreference or remove the useless escaping.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\; \\_ \\a \\- \\'/",
+      "errorCount": 5,
+      "errors": [
+        {
+          "message": "Useless identity escapes with non-syntax characters are forbidden.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        },
+        {
+          "message": "Useless identity escapes with non-syntax characters are forbidden.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        },
+        {
+          "message": "Useless identity escapes with non-syntax characters are forbidden.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 10
+        },
+        {
+          "message": "Useless identity escapes with non-syntax characters are forbidden.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        },
+        {
+          "message": "Useless identity escapes with non-syntax characters are forbidden.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 16
+        }
+      ],
+      "output": "/; _ a - '/"
+    },
+    {
+      "code": "/[\\; \\_ \\a \\']/",
+      "errorCount": 4,
+      "errors": [
+        {
+          "message": "Useless identity escapes with non-syntax characters are forbidden.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        },
+        {
+          "message": "Useless identity escapes with non-syntax characters are forbidden.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 8
+        },
+        {
+          "message": "Useless identity escapes with non-syntax characters are forbidden.",
+          "line": 1,
+          "column": 9,
+          "endColumn": 11
+        },
+        {
+          "message": "Useless identity escapes with non-syntax characters are forbidden.",
+          "line": 1,
+          "column": 12,
+          "endColumn": 14
+        }
+      ],
+      "output": "/[; _ a ']/"
+    },
+    {
+      "code": "/[\\w-a]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Invalid character class range. A character set cannot be the minimum or maximum of a character class range. Either escape the `-` or fix the character class range.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a-\\w]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Invalid character class range. A character set cannot be the minimum or maximum of a character class range. Either escape the `-` or fix the character class range.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!a)+/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Assertion are not allowed to be quantified directly.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/(?:(?!a))+/"
+    }
+  ]
+}

@@ -1,0 +1,826 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-assertions.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-assertions.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\b(?:aaa|\\w|\\d)\\b/"
+    },
+    {
+      "code": "/\\b(?:,|:)\\b/"
+    },
+    {
+      "code": "/\\b.\\b/"
+    },
+    {
+      "code": "/\\B(?:aaa|\\w|\\d)\\B/"
+    },
+    {
+      "code": "/\\B(?:,|:)\\B/"
+    },
+    {
+      "code": "/\\B.\\B/"
+    },
+    {
+      "code": "/^foo$/"
+    },
+    {
+      "code": "/\\s^foo$\\s/m"
+    },
+    {
+      "code": "/.\\s*^foo$\\s*./m"
+    },
+    {
+      "code": "/\\w+(?=\\s*;)/"
+    },
+    {
+      "code": "/\\w+(?=a)/"
+    },
+    {
+      "code": "/\\w+(?!a)/"
+    },
+    {
+      "code": "/(?<=;\\s*)\\w+/"
+    },
+    {
+      "code": "/(?<=a)\\w+/"
+    },
+    {
+      "code": "/(?<!a)\\w+/"
+    },
+    {
+      "code": "/(?=\\w)\\d?/"
+    },
+    {
+      "code": "/(?!\\d)\\w+/"
+    },
+    {
+      "code": "/(?=\\d)\\w+/"
+    },
+    {
+      "code": "/(?=hello)\\w+/"
+    },
+    {
+      "code": "/(?=\\w)[\\d:]/"
+    },
+    {
+      "code": "/(?!\\w)[\\d:]/"
+    },
+    {
+      "code": "/([\"'])(?:\\\\(?:\\r\\n|[\\s\\S])|(?!\\1)[^\\\\\\r\\n])*\\1/"
+    },
+    {
+      "code": "/(\\w)(?=\\1)\\w+/"
+    },
+    {
+      "code": "/(?:-|\\w(?!b))*a/"
+    },
+    {
+      "code": "/(?:-|\\w(?!b))+a/"
+    },
+    {
+      "code": "/(?:-|\\w(?!b)){2}a/"
+    },
+    {
+      "code": "/((((((((((((((((((((((((((((((((((((((((((((((((\\b)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+/"
+    },
+    {
+      "code": "\n        const orig = /^https?:\\/\\//i;\n        const clone = new RegExp(orig);\n        "
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a\\bb/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always reject because it is preceded by a word character and followed by a word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a\\b[\\q{foo}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always reject because it is preceded by a word character and followed by a word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/,\\b,/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always reject because it is preceded by a non-word character and followed by a non-word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/,\\bb/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always accept because it is preceded by a non-word character and followed by a word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a\\b,/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always accept because it is preceded by a word character and followed by a non-word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a\\Bb/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\B' will always accept because it is preceded by a word character and followed by a word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/,\\B,/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\B' will always accept because it is preceded by a non-word character and followed by a non-word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/,\\Bb/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\B' will always reject because it is preceded by a non-word character and followed by a word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a\\B,/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\B' will always reject because it is preceded by a word character and followed by a non-word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\w^foo/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'^' will always reject because it is preceded by a non-line-terminator character.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\n^foo/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'^' will always accept because it is preceded by a line-terminator character.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\w^foo/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'^' will always reject because it is preceded by a character.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\n^foo/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'^' will always reject because it is preceded by a character.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/foo$\\w/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$' will always reject because it is followed by a non-line-terminator character.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/foo$\\n/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$' will always accept because it is followed by a line-terminator character.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/foo$\\w/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$' will always reject because it is followed by a character.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/foo$\\n/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$' will always reject because it is followed by a character.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=\\w)hello/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=\\w)' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=\\w)\\d/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=\\w)' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=\\w)\\w/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=\\w)' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=\\w)(?:a+|b*c?|\\d)d/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=\\w)' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!\\w)hello/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!\\w)' will always reject.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!\\w)\\d/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!\\w)' will always reject.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!\\w)\\w/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!\\w)' will always reject.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!\\w)(?:a+|b*c?|\\d)d/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!\\w)' will always reject.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=\\w),/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=\\w)' will always reject.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=a)(,|b|c|(da)+)a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=a)' will always reject.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!\\w),/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!\\w)' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!a)(,|b|c|(da)+)a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!a)' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(\\d)(?=\\w)\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=\\w)' will always accept.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(\\d)(?!\\w)\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!\\w)' will always reject.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 12
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a-z_]\\w*\\b(?=\\s*;)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always accept because it is preceded by a word character and followed by a non-word character.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a-z_]\\w*(?!\\\\)(?=\\s*;)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!\\\\)' will always accept.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a-z_]\\w*(?!\\\\)\\b(?=\\s*;)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!\\\\)' will always accept.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[a-z_]\\w*\\b(?!\\\\)(?=\\s*;)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always accept because it is preceded by a word character and followed by a non-word character.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=a|$)b/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=a|$)' will always reject.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/^^a$$/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'^' will always accept because it is never preceded by a character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/^^a$$/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'^' will always accept because it is preceded by a line-terminator character or the start of the input string.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\b^a\\b$/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always accept because it is preceded by a non-word character and followed by a word character.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/^\\ba$\\b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always accept because it is preceded by a non-word character and followed by a word character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/\\b\\ba\\b\\b/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always accept because it is preceded by a non-word character and followed by a word character.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/Java(?=Script)$/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=Script)' will always reject.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/Java$(?=Script)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$' will always reject because it is followed by a character.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a$(?!.)/s",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'$' will always accept because it is never followed by a character.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 4
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a(?!.)$/s",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!.)' will always accept.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/^(\\b|\\B-[a-z]{1,10}-)((?:repeating-)?(?:linear|radial)-gradient)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always accept because it is preceded by a non-word character and followed by a word character.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!$)$/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!$)' will always reject.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=a|$)a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=a|$)' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=(?=[a-f])(?=a|A)[\\w%])a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=(?=[a-f])(?=a|A)[\\w%])' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=(?=[a-f])(?=[aA])\\w(?<=[aA])(?<=[a-f]))a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=(?=[a-f])(?=[aA])\\w(?<=[aA])(?<=[a-f]))' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 44
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/foo(?:\\.(?!$)|$)$/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!$)' will always reject.",
+          "line": 1,
+          "column": 10,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?=a)+a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The lookahead '(?=a)' will always accept.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(?!a)*a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The negative lookahead '(?!a)' will always reject.",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a(\\B)b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\B' will always accept because it is preceded by a word character and followed by a word character.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a(\\b)b/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always reject because it is preceded by a word character and followed by a word character.",
+          "line": 1,
+          "column": 4,
+          "endColumn": 6
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/foo|b(?:a(?:\\br)|oo)|baz/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\b' will always reject because it is preceded by a word character and followed by a word character.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    }
+  ]
+}

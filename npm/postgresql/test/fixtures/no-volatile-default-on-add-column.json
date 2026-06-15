@@ -1,0 +1,40 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-volatile-default-on-add-column",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "stable-defaults",
+      "code": "-- Literals and STABLE defaults qualify for the PG10+ stable-default\n-- short-cut and do NOT trigger a table rewrite.\nALTER TABLE t ADD COLUMN x integer DEFAULT 1;\nALTER TABLE t ADD COLUMN y text DEFAULT 'literal';\nALTER TABLE t ADD COLUMN z timestamptz DEFAULT now();\nALTER TABLE t ADD COLUMN w timestamptz DEFAULT current_timestamp;\n-- ADD COLUMN with no default is also fine.\nALTER TABLE t ADD COLUMN id integer;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "random-default",
+      "code": "ALTER TABLE t ADD COLUMN x integer DEFAULT random();\nALTER TABLE t ADD COLUMN id uuid DEFAULT gen_random_uuid();",
+      "errors": [
+        {
+          "messageId": "noVolatileDefault",
+          "message": "`random()` is VOLATILE — using it as a column DEFAULT on `ADD COLUMN` forces PostgreSQL to rewrite the entire table under `ACCESS EXCLUSIVE`. Add the column without a default, then `UPDATE` rows in batches.",
+          "line": 1,
+          "column": 36,
+          "endLine": 1,
+          "endColumn": 43
+        },
+        {
+          "messageId": "noVolatileDefault",
+          "message": "`gen_random_uuid()` is VOLATILE — using it as a column DEFAULT on `ADD COLUMN` forces PostgreSQL to rewrite the entire table under `ACCESS EXCLUSIVE`. Add the column without a default, then `UPDATE` rows in batches.",
+          "line": 2,
+          "column": 34,
+          "endLine": 2,
+          "endColumn": 41
+        }
+      ],
+      "output": null
+    }
+  ]
+}

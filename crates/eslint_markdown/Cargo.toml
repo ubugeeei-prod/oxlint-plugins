@@ -1,0 +1,26 @@
+[package]
+name = "oxlint-plugins-eslint-markdown"
+description = "Rust core for the @eslint/markdown oxlint JavaScript plugin."
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+markdown.workspace = true
+oxlint-plugins-carton.workspace = true
+regex.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+
+[lints.rust]
+unused_must_use = "deny"
+
+[lints.clippy]
+dbg_macro = "deny"
+disallowed_types = "warn"
+todo = "deny"
+unwrap_used = "deny"

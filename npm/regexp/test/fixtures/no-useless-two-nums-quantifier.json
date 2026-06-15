@@ -1,0 +1,104 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-useless-two-nums-quantifier.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-useless-two-nums-quantifier.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a{1,2}/"
+    },
+    {
+      "code": "/a{1,}/"
+    },
+    {
+      "code": "/a{1}/"
+    },
+    {
+      "code": "/a?/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a{1,1}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{1,1}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": "/a{1}/"
+    },
+    {
+      "code": "/a{42,42}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{42,42}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 10
+        }
+      ],
+      "output": "/a{42}/"
+    },
+    {
+      "code": "/a{042,42}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{042,42}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 11
+        }
+      ],
+      "output": "/a{42}/"
+    },
+    {
+      "code": "/a{042,042}/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{042,042}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 12
+        }
+      ],
+      "output": "/a{42}/"
+    },
+    {
+      "code": "/a{100,100}?/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{100,100}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 12
+        }
+      ],
+      "output": "/a{100}?/"
+    },
+    {
+      "code": "/a{100,100}?/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected quantifier '{100,100}'.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 12
+        }
+      ],
+      "output": "/a{100}?/v"
+    }
+  ]
+}

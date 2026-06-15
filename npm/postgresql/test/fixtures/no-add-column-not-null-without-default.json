@@ -1,0 +1,40 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-add-column-not-null-without-default",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "add-identity",
+      "code": "ALTER TABLE users ADD COLUMN id bigint GENERATED ALWAYS AS IDENTITY NOT NULL;"
+    },
+    {
+      "name": "add-not-null-with-default",
+      "code": "ALTER TABLE users ADD COLUMN status text NOT NULL DEFAULT 'active';"
+    },
+    {
+      "name": "add-nullable",
+      "code": "ALTER TABLE users ADD COLUMN status text;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "add-not-null",
+      "code": "ALTER TABLE users ADD COLUMN status text NOT NULL;",
+      "errors": [
+        {
+          "messageId": "noAddColumnNotNullWithoutDefault",
+          "message": "`ADD COLUMN ... NOT NULL` without a `DEFAULT` aborts the migration on any table that already has rows. Either supply a `DEFAULT`, or add the column nullable first, backfill, and then `ALTER COLUMN ... SET NOT NULL` in a follow-up.",
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 45
+        }
+      ],
+      "output": null
+    }
+  ]
+}

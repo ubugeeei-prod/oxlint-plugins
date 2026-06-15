@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-unlogged-table",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "persistent",
+      "code": "CREATE TABLE session_cache (id text PRIMARY KEY);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "unlogged",
+      "code": "CREATE UNLOGGED TABLE session_cache (id text PRIMARY KEY);",
+      "errors": [
+        {
+          "messageId": "noUnloggedTable",
+          "message": "`UNLOGGED` tables skip WAL: they are truncated on crash, not replicated to standbys, and not restored from base backups. If a cache table is what you want, document it explicitly and disable this rule for that file.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 58
+        }
+      ],
+      "output": null
+    }
+  ]
+}

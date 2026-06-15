@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-vacuum-full",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "analyze",
+      "code": "VACUUM ANALYZE users;"
+    },
+    {
+      "name": "plain-vacuum",
+      "code": "VACUUM users;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "full",
+      "code": "VACUUM FULL users;",
+      "errors": [
+        {
+          "messageId": "noVacuumFull",
+          "message": "`VACUUM FULL` takes `ACCESS EXCLUSIVE` and rewrites the whole table; the table is unavailable for the duration. For shrinking a bloated table on a live database, use `pg_repack` or `pg_squeeze`. A plain `VACUUM` (no `FULL`) is fine.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "output": null
+    }
+  ]
+}

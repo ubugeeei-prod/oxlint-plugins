@@ -1,15 +1,44 @@
 [workspace]
 members = [
   "crates/_carton",
+  "crates/angular_eslint",
   "crates/cypress",
+  "crates/e18e",
   "crates/eslint_comments",
+  "crates/eslint_json",
+  "crates/eslint_markdown",
+  "crates/functional",
   "crates/mocha",
+  "crates/perfectionist",
+  "crates/playwright",
+  "crates/postgresql",
+  "crates/react_hooks",
   "crates/react_refresh",
+  "crates/regexp",
   "crates/security",
   "crates/simple_import_sort",
+  "crates/sonarjs",
+  "crates/storybook",
   "crates/stylistic",
+  "crates/testing_library",
+  "crates/unocss",
   "crates/unused_imports",
+  "npm/angular-eslint",
   "npm/core",
+  "npm/e18e",
+  "npm/eslint-json",
+  "npm/eslint-markdown",
+  "npm/functional",
+  "npm/perfectionist",
+  "npm/playwright",
+  "npm/postgresql",
+  "npm/postgresql-eslint-parser",
+  "npm/react-hooks",
+  "npm/regexp",
+  "npm/sonarjs",
+  "npm/storybook",
+  "npm/testing-library",
+  "npm/unocss",
 ]
 resolver = "3"
 
@@ -26,30 +55,49 @@ compact_str = "0.9.1"
 divan = "0.1.21"
 ghost-cell = "0.2.6"
 insta = "1.47.2"
+markdown = "1.0.0"
 napi = { version = "3.9.0", default-features = false, features = ["napi9", "serde-json"] }
 napi-build = "2.3.2"
 napi-derive = "3.5.6"
 oxc_allocator = "0.135.0"
 oxc_ast = "0.135.0"
+oxc_ast_visit = "0.135.0"
 oxc_parser = "0.135.0"
+oxc_regular_expression = "0.135.0"
 oxc_semantic = "0.135.0"
 oxc_span = "0.135.0"
 oxc_syntax = "0.135.0"
 oxlint-plugins-carton = { package = "oxlint-plugins-_carton", path = "crates/_carton", version = "0.0.0" }
+oxlint-plugins-angular-eslint = { path = "crates/angular_eslint", version = "0.0.0" }
 oxlint-plugins-cypress = { path = "crates/cypress", version = "0.0.0" }
+oxlint-plugins-e18e = { path = "crates/e18e", version = "0.0.0" }
 oxlint-plugins-eslint-comments = { path = "crates/eslint_comments", version = "0.0.0" }
+oxlint-plugins-eslint-json = { path = "crates/eslint_json", version = "0.0.0" }
+oxlint-plugins-eslint-markdown = { path = "crates/eslint_markdown", version = "0.0.0" }
+oxlint-plugins-functional = { path = "crates/functional", version = "0.0.0" }
 oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
+oxlint-plugins-perfectionist = { path = "crates/perfectionist", version = "0.0.0" }
+oxlint-plugins-playwright = { path = "crates/playwright", version = "0.0.0" }
+oxlint-plugins-postgresql = { path = "crates/postgresql", version = "0.0.0" }
+oxlint-plugins-react-hooks = { path = "crates/react_hooks", version = "0.0.0" }
 oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
+oxlint-plugins-regexp = { path = "crates/regexp", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
 oxlint-plugins-simple-import-sort = { path = "crates/simple_import_sort", version = "0.0.0" }
+oxlint-plugins-sonarjs = { path = "crates/sonarjs", version = "0.0.0" }
+oxlint-plugins-storybook = { path = "crates/storybook", version = "0.0.0" }
 oxlint-plugins-stylistic = { path = "crates/stylistic", version = "0.0.0" }
+oxlint-plugins-testing-library = { path = "crates/testing_library", version = "0.0.0" }
+oxlint-plugins-unocss = { path = "crates/unocss", version = "0.0.0" }
 oxlint-plugins-unused-imports = { path = "crates/unused_imports", version = "0.0.0" }
 regex = "1.12.2"
 phf = { version = "0.13.1", features = ["macros"] }
+pg_query = "6.1.1"
 rustc-hash = "2.1.1"
 serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.145"
+serde_json = { version = "1.0.145", features = ["preserve_order"] }
 smallvec = "1.15.1"
+unicode-normalization = "0.1.24"
 
 [workspace.lints.rust]
 unsafe_code = "deny"

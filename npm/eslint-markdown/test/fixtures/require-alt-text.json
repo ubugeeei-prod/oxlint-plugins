@@ -1,0 +1,512 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/require-alt-text.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/commonmark"
+  },
+  "valid": [
+    {
+      "code": ""
+    },
+    {
+      "code": "  "
+    },
+    {
+      "code": "![Alternative text](image.jpg)"
+    },
+    {
+      "code": "![Alternative text](image.jpg \"Title\")"
+    },
+    {
+      "code": "![Alternative text][notitle]\n\n[notitle]: image.jpg"
+    },
+    {
+      "code": "![Alternative text][title]\n\n[title]: image.jpg \"Title\""
+    },
+    {
+      "code": "[![Alternative text](image.jpg)](image.jpg)"
+    },
+    {
+      "code": "<img src=\"image.png\" alt=\"Descriptive text\">"
+    },
+    {
+      "code": "<img src=\"image.png\" alt=\"Descriptive text\" >"
+    },
+    {
+      "code": "<img src=\"image.png\" alt=\"Descriptive text\"/>"
+    },
+    {
+      "code": "<img src=\"image.png\" alt=\"Descriptive text\" />"
+    },
+    {
+      "code": "<img src=\"image.png\" alt>"
+    },
+    {
+      "code": "<img src=\"image.png\" alt >"
+    },
+    {
+      "code": "<img src=\"image.png\" alt/>"
+    },
+    {
+      "code": "<img src=\"image.png\" alt />"
+    },
+    {
+      "code": "<img src=\"image.png\" alt=\"\" />"
+    },
+    {
+      "code": "<img src=\"image.png>\" alt=\"alt text\">"
+    },
+    {
+      "code": "<img src=\"image.png\" alt=\"alt text\" data-custom=\"custom>\">"
+    },
+    {
+      "code": "<img src=\"image.png\" data-custom=\"custom>\" alt=\"alt text\">"
+    },
+    {
+      "code": "<img src=\"image.png>\" data-custom=\"custom\" alt=\"alt text\">"
+    },
+    {
+      "code": "<img src=\"image.png>\" alt='alt text'>"
+    },
+    {
+      "code": "<img\r\nsrc=\"image.png>\" alt=\"alt text\">"
+    },
+    {
+      "code": "<img\r\nsrc=\"image.png>\" alt='alt text'>"
+    },
+    {
+      "code": "<img\rsrc=\"image.png>\" alt=\"alt text\">"
+    },
+    {
+      "code": "<img\rsrc=\"image.png>\" alt='alt text'>"
+    },
+    {
+      "code": "<img\nsrc=\"image.png>\" alt=\"alt text\">"
+    },
+    {
+      "code": "<img\nsrc=\"image.png>\" alt='alt text'>"
+    },
+    {
+      "code": "<img src=\"image.png\" alt='' />"
+    },
+    {
+      "code": "<IMG SRC=\"image.png\" ALT=\"Descriptive text\"/>"
+    },
+    {
+      "code": "<img src=\"image.png\" aria-hidden alt=\"alt\">"
+    },
+    {
+      "code": "<img src=\"image.png\" aria-hidden=\"true\"/>"
+    },
+    {
+      "code": "<img src=\"image.png\" ARIA-HIDDEN=\"TRUE\" />"
+    },
+    {
+      "code": "<p><img src=\"image.png\" alt=\"Descriptive text\" /></p>"
+    },
+    {
+      "code": "<!-- <img src=\"image.png\" /> -->"
+    },
+    {
+      "code": "Some text <!-- <img src=\"image.png\" /> --> more text."
+    },
+    {
+      "code": "<div>\n    <img src=\"https://example.com/image.jpg\" alt=\"alt text\">\"\n</div>"
+    },
+    {
+      "code": "<!--\n<img src=\"image.png\" />\n<p>Some text</p>\n-->"
+    },
+    {
+      "code": "<!--<img src=\"image.png\" />-->\n<!--    <img src=\"image.png\" />    -->"
+    },
+    {
+      "code": "```html\n<img src=\"image.png\" />\n```"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "![ ](image.jpg)",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ]
+    },
+    {
+      "code": "![](image.jpg)",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ]
+    },
+    {
+      "code": "![](image.jpg \"Title\")",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ]
+    },
+    {
+      "code": "Image without an alternative text ![](image.jpg) in a sentence.",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 35,
+          "endLine": 1,
+          "endColumn": 49
+        }
+      ]
+    },
+    {
+      "code": "![][notitle]\n\n[notitle]: image.jpg",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ]
+    },
+    {
+      "code": "![][title]\n\n[title]: image.jpg \"Title\"",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "[![](image.jpg)](image.jpg)",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ]
+    },
+    {
+      "code": "<img>",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "<img >",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "<img/>",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "<img />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 8
+        }
+      ]
+    },
+    {
+      "code": "<img src=\"image.png\">",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<img src=\"image.png\" >",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ]
+    },
+    {
+      "code": "<img src=\"image.png\"/>",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ]
+    },
+    {
+      "code": "<img src=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "<IMG SRC=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "<img src=\"image.png\" alt=\" \" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 32
+        }
+      ]
+    },
+    {
+      "code": "<img src=\"image.png\" data-custom1=\"custom>\" data-custom2=\"custom\">",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 67
+        }
+      ]
+    },
+    {
+      "code": "<p>\n<img src=\"image.png\" />\n</p>",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "<p>\n<img src=\"image.png\" />\n<img src=\"image2.png\" />\n</p>",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 24
+        },
+        {
+          "messageId": "altTextRequired",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "<div>\n<img src=\"image.png\" />\n<a href=\"#\">Link</a><br>\n<img src=\"image2.png\" />\n</div>",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 24
+        },
+        {
+          "messageId": "altTextRequired",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 25
+        }
+      ]
+    },
+    {
+      "code": "<img src=\"image.png\" aria-hidden=\"false\"/>",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 43
+        }
+      ]
+    },
+    {
+      "code": "<img\nsrc=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 19
+        }
+      ]
+    },
+    {
+      "code": "<img\n src=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 20
+        }
+      ]
+    },
+    {
+      "code": "<img\n  src=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 21
+        }
+      ]
+    },
+    {
+      "code": "<img\n   src=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "<!-- <img src=\"image.png\" /> -->\n<img src=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "<!- Not a valid comment ->\n<img src=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "code": "<img src=\"image.png\" />\n<!-- comment --> <img src=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 24
+        },
+        {
+          "messageId": "altTextRequired",
+          "line": 2,
+          "column": 18,
+          "endLine": 2,
+          "endColumn": 41
+        }
+      ]
+    },
+    {
+      "code": "<!-- comment with surrogate pairs: 👍🚀 --> <img src=\"image.png\" />",
+      "errors": [
+        {
+          "messageId": "altTextRequired",
+          "line": 1,
+          "column": 45,
+          "endLine": 1,
+          "endColumn": 68
+        }
+      ]
+    }
+  ]
+}

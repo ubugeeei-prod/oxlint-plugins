@@ -1,0 +1,73 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-timestamptz",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "always-timestamp-with-time-zone",
+      "code": "CREATE TABLE t (created_at TIMESTAMP WITH TIME ZONE);"
+    },
+    {
+      "name": "always-timestamptz",
+      "code": "CREATE TABLE t (created_at TIMESTAMPTZ);"
+    },
+    {
+      "name": "never-timestamp",
+      "code": "CREATE TABLE t (created_at TIMESTAMP);",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "always-timestamp",
+      "code": "CREATE TABLE t (created_at TIMESTAMP);",
+      "errors": [
+        {
+          "messageId": "preferTimestamptz",
+          "message": "Use `timestamptz` (or `TIMESTAMP WITH TIME ZONE`) instead of `timestamp`. `timestamp` is timezone-naive: it stores the wall-clock value you handed in and assumes every reader and writer share the same convention, so two clients on different `TimeZone` settings will disagree on which instant the row represents.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "never-timestamptz",
+      "code": "CREATE TABLE t (created_at TIMESTAMPTZ);\nCREATE TABLE u (created_at TIMESTAMP WITH TIME ZONE);",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedTimestamptz",
+          "message": "Use `timestamp` instead of `timestamptz` (or `TIMESTAMP WITH TIME ZONE`). When the project treats every timestamp as UTC at the application layer, `timestamp` avoids the implicit conversions `timestamptz` performs against each session's `TimeZone` setting.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 27
+        },
+        {
+          "messageId": "unexpectedTimestamptz",
+          "message": "Use `timestamp` instead of `timestamptz` (or `TIMESTAMP WITH TIME ZONE`). When the project treats every timestamp as UTC at the application layer, `timestamp` avoids the implicit conversions `timestamptz` performs against each session's `TimeZone` setting.",
+          "line": 2,
+          "column": 17,
+          "endLine": 2,
+          "endColumn": 27
+        }
+      ],
+      "output": null
+    }
+  ]
+}

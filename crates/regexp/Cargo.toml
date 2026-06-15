@@ -1,0 +1,27 @@
+[package]
+name = "oxlint-plugins-regexp"
+description = "Rust core for the regexp oxlint JavaScript plugin."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+oxc_allocator.workspace = true
+oxc_ast.workspace = true
+oxc_parser.workspace = true
+oxc_regular_expression.workspace = true
+oxc_semantic.workspace = true
+oxc_span.workspace = true
+oxlint-plugins-carton.workspace = true
+
+[lints.rust]
+unused_must_use = "deny"
+
+[lints.clippy]
+dbg_macro = "deny"
+disallowed_types = "warn"
+todo = "deny"
+unwrap_used = "deny"

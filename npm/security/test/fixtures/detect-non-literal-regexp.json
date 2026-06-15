@@ -1,0 +1,27 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-non-literal-regexp.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "var a = new RegExp('ab+c', 'i')"
+    },
+    {
+      "code": "\n            var source = 'ab+c'\n            var a = new RegExp(source, 'i')"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "var a = new RegExp(c, 'i')",
+      "errors": [
+        {
+          "message": "Found non-literal argument to RegExp Constructor"
+        }
+      ]
+    }
+  ]
+}

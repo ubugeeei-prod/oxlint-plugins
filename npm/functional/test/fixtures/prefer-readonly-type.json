@@ -1,0 +1,506 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/prefer-readonly-type.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "function foo(...a: ReadonlyArray<number>) {\n  console.log(a);\n}",
+      "typeAware": true
+    },
+    {
+      "code": "const foo = (...a: readonly number[]) => {\n  console.log(a);\n}",
+      "typeAware": true
+    },
+    {
+      "code": "const foo = (tuple: readonly [number, string, readonly [number, string]]) => {\n  console.log(a);\n}",
+      "typeAware": true
+    },
+    {
+      "code": "function foo(): ReadonlyArray<number> {\n  return [1, 2, 3];\n}",
+      "typeAware": true
+    },
+    {
+      "code": "const foo = (): readonly number[] => {\n  return [1, 2, 3];\n}",
+      "typeAware": true
+    },
+    {
+      "code": "const foo = [1, 2, 3];\nfunction bar(param = [1, 2, 3]) {}",
+      "typeAware": true
+    },
+    {
+      "code": "function foo() {\n  type Foo = ReadonlyArray<string>;\n}",
+      "typeAware": true
+    },
+    {
+      "code": "const foo: ReadonlyArray<string> = [];",
+      "typeAware": true
+    },
+    {
+      "code": "interface Foo {\n  readonly a: number,\n  readonly b: ReadonlyArray<string>,\n  readonly c: () => string,\n  readonly d: { readonly [key: string]: string },\n  readonly [key: string]: string,\n}",
+      "typeAware": true
+    },
+    {
+      "code": "interface Foo {\n  readonly a: number,\n  readonly b: ReadonlyArray<string>,\n  readonly c: () => string,\n  readonly d: { readonly [key: string]: string },\n  readonly [key: string]: string,\n  readonly e: {\n    readonly a: number,\n    readonly b: ReadonlyArray<string>,\n    readonly c: () => string,\n    readonly d: { readonly [key: string]: string },\n    readonly [key: string]: string,\n  }\n}",
+      "typeAware": true
+    },
+    {
+      "code": "interface Foo {\n  (): void\n  foo(): void\n}",
+      "typeAware": true
+    },
+    {
+      "code": "let foo: { readonly [key: string]: number };",
+      "typeAware": true
+    },
+    {
+      "code": "type foo = ReadonlyArray<{ readonly type: string, readonly code: string }>;",
+      "typeAware": true
+    },
+    {
+      "code": "let foo: {\n  readonly a: number,\n  readonly b: ReadonlyArray<string>,\n  readonly c: () => string,\n  readonly d: { readonly [key: string]: string }\n  readonly [key: string]: string\n};",
+      "typeAware": true
+    },
+    {
+      "code": "class Klass {\n  constructor (\n    nonParameterProp: string,\n    readonly readonlyProp: string,\n    public readonly publicReadonlyProp: string,\n    protected readonly protectedReadonlyProp: string,\n    private readonly privateReadonlyProp: string,\n  ) { }\n}",
+      "typeAware": true
+    },
+    {
+      "code": "const func = (x: { readonly [key in string]: number }) => {}",
+      "typeAware": true
+    },
+    {
+      "code": "function foo(...numbers: ReadonlyArray<number>): Array<number> {}\nfunction bar(...numbers: readonly number[]): number[] {}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "const foo = (...numbers: ReadonlyArray<number>): Array<number> =>  {}\nconst bar = (...numbers: readonly number[]): number[] =>  {}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n  foo(...numbers: ReadonlyArray<number>): Array<number> {\n  }\n}\nclass Bar {\n  foo(...numbers: readonly number[]): number[] {\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(...numbers: ReadonlyArray<number>): Promise<Array<number>> {}\nfunction foo(...numbers: ReadonlyArray<number>): Promise<number[]> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(...numbers: ReadonlyArray<number>): Promise<Foo<Array<number>>> {}\nfunction foo(...numbers: ReadonlyArray<number>): Promise<Foo<number[]>> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(...numbers: ReadonlyArray<number>): { readonly a: Array<number> } | { readonly b: string[] } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { readonly x: T; };\nfunction foo(...numbers: ReadonlyArray<number>): Promise<Foo<Array<number>>> {}\nfunction foo(...numbers: ReadonlyArray<number>): Promise<Foo<number[]>> {}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(...numbers: ReadonlyArray<number>): { readonly a: Array<number> } & { readonly b: string[] } {}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "function foo<T>(x: T): T extends Array<number> ? string : number[] {}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(bar: string): { baz: number } {\n  return 1 as any;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "allowMutableReturnType": true
+        }
+      ]
+    },
+    {
+      "code": "const numbers = [1, 2, 3] as const;",
+      "typeAware": true,
+      "options": [
+        {
+          "checkImplicit": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  return [1, 2, 3] as const;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "checkImplicit": true
+        }
+      ]
+    },
+    {
+      "code": "const foo = async () => {\n  return [1, 2, 3] as const;\n};",
+      "typeAware": true,
+      "options": [
+        {
+          "checkImplicit": true
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  foo: number;\n  private bar: number;\n  static baz: number;\n  private static qux: number;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreClass": true
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  foo: number;\n  private bar: number;\n  static baz: number;\n  private static qux: number;\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreClass": "fieldsOnly"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  foo: number,\n  bar: ReadonlyArray<string>,\n  baz: () => string,\n  qux: { [key: string]: string }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreInterface": true
+        }
+      ]
+    },
+    {
+      "code": "let mutableFoo: string[] = [];",
+      "typeAware": true,
+      "options": [
+        {
+          "ignorePattern": "^mutable"
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n  let foo: {\n    a: number,\n    b: ReadonlyArray<string>,\n    c: () => string,\n    d: { [key: string]: string },\n    [key: string]: string,\n    readonly d: {\n      a: number,\n      b: ReadonlyArray<string>,\n      c: () => string,\n      d: { [key: string]: string },\n      [key: string]: string,\n    }\n  }\n};",
+      "typeAware": true,
+      "options": [
+        {
+          "allowLocalMutation": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = Array<string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true
+        }
+      ]
+    },
+    {
+      "code": "const foo: number[] = [];",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true
+        }
+      ]
+    },
+    {
+      "code": "const foo = [];",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true,
+          "checkImplicit": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = [string, string];",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true
+        }
+      ]
+    },
+    {
+      "code": "const foo: [string, string] = ['foo', 'bar'];",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true
+        }
+      ]
+    },
+    {
+      "code": "const foo = ['foo', 'bar'];",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true,
+          "checkImplicit": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = Set<string, string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true
+        }
+      ]
+    },
+    {
+      "code": "const foo: Set<string, string> = new Set();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = Map<string, string>;",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true
+        }
+      ]
+    },
+    {
+      "code": "const foo: Map<string, string> = new Map();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreCollections": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "function foo(a: number[], b: Promise<number[]>) {\n  console.log(a, b);\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        }
+      ]
+    },
+    {
+      "code": "function foo(a: Array<number>, b: Promise<Array<number>>) {\n  console.log(a, b);\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "type"
+        },
+        {
+          "messageId": "type"
+        }
+      ]
+    },
+    {
+      "code": "function foo(a: Set<number>, b: Promise<Set<number>>) {\n  console.log(a, b);\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "type"
+        },
+        {
+          "messageId": "type"
+        }
+      ]
+    },
+    {
+      "code": "function foo(a: Map<number>, b: Promise<Map<number>>) {\n  console.log(a, b);\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "type"
+        },
+        {
+          "messageId": "type"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  readonly bar: Array<string>;\n  readonly baz: Promise<Array<string>>;\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "type"
+        },
+        {
+          "messageId": "type"
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  readonly [key: string]: {\n    readonly a: Array<string>;\n    readonly b: Promise<Array<string>>;\n  };\n}\ninterface Bar {\n  [key: string]: string\n}\ninterface Baz {\n  [key: string]: { prop: string }\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "type"
+        },
+        {
+          "messageId": "type"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  foo: number;\n  private bar: number;\n  static baz: number;\n  private static qux: number;\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  constructor (\n    public publicProp: string,\n    protected protectedProp: string,\n    private privateProp: string,\n  ) { }\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        }
+      ]
+    },
+    {
+      "code": "let foo: {\n  a: number,\n  b: ReadonlyArray<string>,\n  c: () => string,\n  d: { readonly [key: string]: string },\n  [key: string]: string,\n  readonly e: {\n    a: number,\n    b: ReadonlyArray<string>,\n    c: () => string,\n    d: { readonly [key: string]: string },\n    [key: string]: string,\n  }\n};",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        },
+        {
+          "messageId": "property"
+        }
+      ]
+    },
+    {
+      "code": "const func = (x: { [key in string]: number }) => {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "property"
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  foo: number;\n  private bar: number;\n  static baz: number;\n  private static qux: number;\n\n  foo() {\n    let bar: {\n      foo: number;\n    };\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreClass": "fieldsOnly"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "property"
+        }
+      ]
+    }
+  ]
+}

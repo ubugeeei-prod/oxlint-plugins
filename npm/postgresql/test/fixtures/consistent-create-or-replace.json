@@ -1,0 +1,93 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-create-or-replace",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "never-without-or-replace",
+      "code": "CREATE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE VIEW v AS SELECT 1;\n-- Other CREATE statements are out of scope.\nCREATE TABLE t (id integer);\nCREATE INDEX idx ON t (id);",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    },
+    {
+      "name": "with-or-replace",
+      "code": "CREATE OR REPLACE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE OR REPLACE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE OR REPLACE VIEW v AS SELECT 1;\n-- Other CREATE statements are out of scope (TABLE doesn't support OR REPLACE).\nCREATE TABLE t (id integer);\nCREATE INDEX idx ON t (id);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing-or-replace",
+      "code": "CREATE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE VIEW v AS SELECT 1;",
+      "errors": [
+        {
+          "messageId": "preferOrReplace",
+          "message": "Use `CREATE OR REPLACE FUNCTION` so re-running this migration does not abort with `relation already exists`.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        },
+        {
+          "messageId": "preferOrReplace",
+          "message": "Use `CREATE OR REPLACE PROCEDURE` so re-running this migration does not abort with `relation already exists`.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 7
+        },
+        {
+          "messageId": "preferOrReplace",
+          "message": "Use `CREATE OR REPLACE VIEW` so re-running this migration does not abort with `relation already exists`.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "never-with-or-replace",
+      "code": "CREATE OR REPLACE FUNCTION fn() RETURNS void LANGUAGE SQL AS '';\nCREATE OR REPLACE PROCEDURE p() LANGUAGE SQL AS '';\nCREATE OR REPLACE VIEW v AS SELECT 1;",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedOrReplace",
+          "message": "Avoid `CREATE OR REPLACE FUNCTION`; drop and re-create the object explicitly so unintended overwrites are surfaced.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 7
+        },
+        {
+          "messageId": "unexpectedOrReplace",
+          "message": "Avoid `CREATE OR REPLACE PROCEDURE`; drop and re-create the object explicitly so unintended overwrites are surfaced.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 7
+        },
+        {
+          "messageId": "unexpectedOrReplace",
+          "message": "Avoid `CREATE OR REPLACE VIEW`; drop and re-create the object explicitly so unintended overwrites are surfaced.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    }
+  ]
+}

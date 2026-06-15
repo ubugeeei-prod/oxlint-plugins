@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-cluster",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "vacuum",
+      "code": "VACUUM users;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "cluster",
+      "code": "CLUSTER users USING users_pkey;",
+      "errors": [
+        {
+          "messageId": "noCluster",
+          "message": "`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 31
+        }
+      ],
+      "output": null
+    }
+  ]
+}

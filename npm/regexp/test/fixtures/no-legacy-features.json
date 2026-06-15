@@ -1,0 +1,495 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-legacy-features.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-legacy-features.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "RegExp"
+    },
+    {
+      "code": "new RegExp()"
+    },
+    {
+      "code": "RegExp.unknown"
+    },
+    {
+      "code": "\n            import log from 'loglevel';\n            export as namespace log;\n            export = log;\n            ",
+      "filename": "loglevel.d.ts"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "RegExp[\"input\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.input' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 16
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$_\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$_' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"lastMatch\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.lastMatch' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$&\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$&' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"lastParen\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.lastParen' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$+\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$+' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"leftContext\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.leftContext' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$`\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$`' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"rightContext\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.rightContext' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 23
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$'\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$'' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$1\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$1' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$2\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$2' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$3\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$3' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$4\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$4' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$5\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$5' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$6\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$6' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$7\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$7' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$8\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$8' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp[\"$9\"]",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$9' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.input",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.input' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 13
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$_",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$_' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.lastMatch",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.lastMatch' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.lastParen",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.lastParen' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.leftContext",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.leftContext' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.rightContext",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.rightContext' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$1",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$1' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$2",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$2' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$3",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$3' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$4",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$4' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$5",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$5' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$6",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$6' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$7",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$7' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$8",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$8' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp.$9",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'RegExp.$9' static property is forbidden.",
+          "line": 1,
+          "column": 1,
+          "endColumn": 10
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "const regexObj = new RegExp('foo', 'gi');\nregexObj.compile",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "RegExp.prototype.compile method is forbidden.",
+          "line": 2,
+          "column": 1,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "const regexObj = /foo/;\nregexObj.compile('new foo', 'g')",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "RegExp.prototype.compile method is forbidden.",
+          "line": 2,
+          "column": 1,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    }
+  ]
+}

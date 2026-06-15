@@ -1,0 +1,30 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/no-stories-of.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\n      import Button from '../components/Button';\n      export default {\n        title: 'Button',\n        component: Button\n      }\n\n      export const Primary = () => <Button primary />\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      import Button from '../components/Button';\n      export default {\n        title: 'Button',\n        component: Button\n      } as ComponentMeta<typeof Button>\n\n      export const Primary: Story = () => <Button primary />\n    ",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n        import { storiesOf } from '@storybook/react';\n        import Button from '../components/Button';\n\n        storiesOf('Button', module)\n          .add('primary', () => <Button primary />)\n      ",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "doNotUseStoriesOf"
+        }
+      ]
+    }
+  ]
+}

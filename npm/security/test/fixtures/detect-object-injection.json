@@ -1,0 +1,24 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-security",
+    "version": "4.0.0",
+    "sourceFile": "test/rules/detect-object-injection.js",
+    "license": "Apache-2.0",
+    "tool": "tools/tasks/sync-eslint-security-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "var a = {};"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "var a = {}; a[b] = 4",
+      "errors": [
+        {
+          "message": "Generic Object Injection Sink"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+[package]
+name = "oxlint-plugins-eslint-json"
+description = "Rust core for the @eslint/json oxlint JavaScript plugin."
+edition.workspace = true
+license = "Apache-2.0"
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+oxlint-plugins-carton.workspace = true
+unicode-normalization.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+
+[lints.rust]
+unused_must_use = "deny"
+
+[lints.clippy]
+dbg_macro = "deny"
+disallowed_types = "warn"
+todo = "deny"
+unwrap_used = "deny"

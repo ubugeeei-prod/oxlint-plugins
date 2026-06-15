@@ -1,0 +1,26 @@
+{
+  "$comment": "Upstream parity ratchet for the eslint-plugin-simple-import-sort port. Fixtures under test/fixtures/*.json are captured verbatim from upstream by `pnpm run port:tests:simple-import-sort`; this file controls how strictly upstream.test.mjs replays them so parity can be ratcheted up without silently dropping coverage. Per-rule `level`: `off` quarantines the rule, `valid` asserts only that upstream-valid code produces no diagnostics, `count` additionally asserts the diagnostic count on invalid cases, `full` additionally asserts the applied autofix output matches upstream exactly. `skipParsers` lists parser kinds whose cases are counted but not asserted — Oxc does not parse Flow syntax. `eslint-disable` directive cases are always skipped (the linter core, not the rule, suppresses those). `quarantine.{valid,invalid}` lists individual cases (by index into the fixture array, with a reason) that the Rust port does not yet reproduce byte-for-byte; they remain captured and are reported in the suite's parity summary, so coverage is never silently truncated. Both rules enforce `full` (byte-exact autofix) on all valid cases and every invalid case; the only quarantined case is one imports fixture that exercises syntactically-invalid TypeScript Oxc cannot parse.",
+  "rules": {
+    "imports": {
+      "level": "full",
+      "skipParsers": ["flow"],
+      "quarantine": {
+        "valid": [],
+        "invalid": [
+          {
+            "index": 70,
+            "reason": "exercises syntactically-invalid TypeScript (`import type X, {} from \"…\"` / `import type X, {Y} from \"…\"`, which TypeScript itself rejects); Oxc reports a parse error, so the port declines to autofix unparseable source rather than act on a partial AST"
+          }
+        ]
+      }
+    },
+    "exports": {
+      "level": "full",
+      "skipParsers": ["flow"],
+      "quarantine": {
+        "valid": [],
+        "invalid": []
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/require-where-in-delete",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "delete-with-returning",
+      "code": "DELETE FROM users WHERE created_at < now() - interval '30 days' RETURNING id;"
+    },
+    {
+      "name": "delete-with-where",
+      "code": "DELETE FROM users WHERE id = 1;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "delete-without-where",
+      "code": "DELETE FROM users;",
+      "errors": [
+        {
+          "messageId": "missingWhere",
+          "message": "DELETE without WHERE removes every row in the table. Add a WHERE clause, or use TRUNCATE if you really mean to empty the table.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "output": null
+    }
+  ]
+}

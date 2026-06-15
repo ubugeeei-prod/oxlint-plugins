@@ -1,0 +1,96 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-named-replacement.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-named-replacement.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "\"str\".replace(/regexp/, \"foo\")"
+    },
+    {
+      "code": "\"str\".replace(/a(b)c/, \"_$1_\")"
+    },
+    {
+      "code": "\"str\".replaceAll(/a(b)c/, \"_$1_\")"
+    },
+    {
+      "code": "\"str\".replace(/a(?<foo>b)c/, \"_$<foo>_\")"
+    },
+    {
+      "code": "\"str\".replaceAll(/a(?<foo>b)c/, \"_$<foo>_\")"
+    },
+    {
+      "code": "\"str\".replace(/a(?<foo>b)c/, \"_$0_\")"
+    },
+    {
+      "code": "\"str\".replace(/(a)(?<foo>b)c/, \"_$1_\")"
+    },
+    {
+      "code": "\"str\".replace(/a(b)c/, \"_$2_\")"
+    },
+    {
+      "code": "unknown.replace(/a(?<foo>b)c/, \"_$1_\")"
+    },
+    {
+      "code": "unknown.replaceAll(/a(?<foo>b)c/, \"_$1_\")"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\"str\".replace(/a(?<foo>b)c/, \"_$1_\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected indexed reference in replacement string.",
+          "line": 1,
+          "column": 32,
+          "endColumn": 34
+        }
+      ],
+      "output": "\"str\".replace(/a(?<foo>b)c/, \"_$<foo>_\")"
+    },
+    {
+      "code": "\"str\".replace(/a(?<foo>b)c/v, \"_$1_\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected indexed reference in replacement string.",
+          "line": 1,
+          "column": 33,
+          "endColumn": 35
+        }
+      ],
+      "output": "\"str\".replace(/a(?<foo>b)c/v, \"_$<foo>_\")"
+    },
+    {
+      "code": "\"str\".replaceAll(/a(?<foo>b)c/, \"_$1_\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected indexed reference in replacement string.",
+          "line": 1,
+          "column": 35,
+          "endColumn": 37
+        }
+      ],
+      "output": "\"str\".replaceAll(/a(?<foo>b)c/, \"_$<foo>_\")"
+    },
+    {
+      "code": "\"str\".replace(/(a)(?<foo>b)c/, \"_$1$2_\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected indexed reference in replacement string.",
+          "line": 1,
+          "column": 36,
+          "endColumn": 38
+        }
+      ],
+      "output": "\"str\".replace(/(a)(?<foo>b)c/, \"_$1$<foo>_\")"
+    }
+  ]
+}

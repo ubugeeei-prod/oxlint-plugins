@@ -1,0 +1,238 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-identifier-too-long",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "anonymous-index",
+      "code": "-- `CREATE INDEX ON foo (bar)` lets PostgreSQL pick the name — `idxname` is\n-- unset on the IndexStmt, so there is nothing for this rule to flag.\nCREATE INDEX ON aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (bar);"
+    },
+    {
+      "name": "at-limit",
+      "code": "-- Identifier at the exact 63-byte boundary is fine.\nCREATE TABLE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (\n  id BIGSERIAL PRIMARY KEY\n);"
+    },
+    {
+      "name": "custom-max",
+      "code": "-- A user who compiled PostgreSQL with a larger NAMEDATALEN can raise `max`.\n-- This identifier is 64 bytes — over the default 63 but under the override.\nCREATE TABLE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (\n  id BIGSERIAL PRIMARY KEY\n);",
+      "options": [
+        {
+          "max": 128
+        }
+      ]
+    },
+    {
+      "name": "short-names",
+      "code": "CREATE TABLE users (\n  id BIGSERIAL PRIMARY KEY,\n  email TEXT NOT NULL,\n  CONSTRAINT users_email_uniq UNIQUE (email)\n);\n\nCREATE INDEX idx_users_email ON users (email);\n\nCREATE SCHEMA app;\n\nCREATE SEQUENCE app.order_seq;\n\nCREATE OR REPLACE FUNCTION app.touch_updated_at() RETURNS trigger AS $$ BEGIN RETURN new; END; $$ LANGUAGE plpgsql;\n\nCREATE VIEW active_users AS SELECT id FROM users;\n\nCREATE TRIGGER trg_users_touch BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION app.touch_updated_at();\n\nALTER TABLE users RENAME TO accounts;"
+    },
+    {
+      "name": "unnamed-constraint",
+      "code": "-- An unnamed constraint has no user-supplied name to compare against the limit;\n-- PostgreSQL will generate one, separately covered by `require-named-constraint`.\nALTER TABLE items ADD CHECK (length(code) > 0);\n\nCREATE TABLE items2 (\n  id BIGSERIAL PRIMARY KEY,\n  code TEXT,\n  CHECK (length(code) > 0)\n);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "column-name",
+      "code": "CREATE TABLE users (\n  id BIGSERIAL PRIMARY KEY,\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa TEXT\n);",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 3,
+          "column": 3,
+          "endLine": 3,
+          "endColumn": 67
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "constraint-alter-add",
+      "code": "ALTER TABLE items\n  ADD CONSTRAINT aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n    CHECK (length(code) > 0);",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 2,
+          "column": 18,
+          "endLine": 2,
+          "endColumn": 82
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "constraint-table-level",
+      "code": "CREATE TABLE items (\n  id BIGSERIAL PRIMARY KEY,\n  code TEXT,\n  CONSTRAINT aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa CHECK (length(code) > 0)\n);",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 4,
+          "column": 14,
+          "endLine": 4,
+          "endColumn": 78
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "custom-max-stricter",
+      "code": "-- With `max: 10`, the 11-byte table name `looong_table` exceeds the limit.\nCREATE TABLE looong_table (\n  id BIGSERIAL PRIMARY KEY\n);",
+      "options": [
+        {
+          "max": 10
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `looong_table` is 12 bytes, which exceeds the 10-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 2,
+          "column": 14,
+          "endLine": 2,
+          "endColumn": 26
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "function-name",
+      "code": "CREATE OR REPLACE FUNCTION aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa()\n  RETURNS void AS $$ BEGIN END; $$ LANGUAGE plpgsql;",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 1,
+          "column": 28,
+          "endLine": 1,
+          "endColumn": 92
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "index-name",
+      "code": "CREATE INDEX aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n  ON items (code);",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 78
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "multibyte-overflow",
+      "code": "-- 22 instances of the 3-byte character '長' = 66 bytes, which is over the\n-- 63-byte limit even though it is only 22 characters long. The rule must\n-- count bytes, not characters.\nCREATE TABLE \"長長長長長長長長長長長長長長長長長長長長長長\" (\n  id BIGSERIAL PRIMARY KEY\n);",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `長長長長長長長長長長長長長長長長長長長長長長` is 66 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 4,
+          "column": 14,
+          "endLine": 4,
+          "endColumn": 38
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "rename-to",
+      "code": "ALTER TABLE users\n  RENAME TO aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 2,
+          "column": 13,
+          "endLine": 2,
+          "endColumn": 77
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "schema-name",
+      "code": "CREATE SCHEMA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 79
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "sequence-name",
+      "code": "CREATE SEQUENCE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 81
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "table-name",
+      "code": "-- 64-byte table name — one over the default 63-byte limit.\nCREATE TABLE aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (\n  id BIGSERIAL PRIMARY KEY\n);",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 2,
+          "column": 14,
+          "endLine": 2,
+          "endColumn": 78
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "trigger-name",
+      "code": "CREATE TRIGGER aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n  BEFORE INSERT ON items\n  FOR EACH ROW EXECUTE FUNCTION noop();",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 80
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "view-name",
+      "code": "CREATE VIEW aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS SELECT 1;",
+      "errors": [
+        {
+          "messageId": "identifierTooLong",
+          "message": "Identifier `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` is 64 bytes, which exceeds the 63-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 77
+        }
+      ],
+      "output": null
+    }
+  ]
+}

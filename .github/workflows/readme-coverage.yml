@@ -1,0 +1,66 @@
+name: README coverage
+
+# Keeps the "Supported Plugins" coverage table in README.md in sync with
+# status.json. On pushes to main that touch status.json (or the generator
+# itself), it regenerates the section and commits the result back. On pull
+# requests it only verifies the section is up to date.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - status.json
+      - tools/tasks/generate-readme-coverage.ts
+      - .github/workflows/readme-coverage.yml
+  pull_request:
+    paths:
+      - status.json
+      - README.md
+      - tools/tasks/generate-readme-coverage.ts
+      - .github/workflows/readme-coverage.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: readme-coverage-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync README coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      # The generator runs `vp fmt` on its output, so it needs the workspace
+      # dev dependencies (oxfmt via Vite+) installed.
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+
+      # On pull requests, fail if the section is stale instead of committing.
+      - if: github.event_name == 'pull_request'
+        run: node tools/tasks/generate-readme-coverage.ts --check
+
+      - if: github.event_name != 'pull_request'
+        run: node tools/tasks/generate-readme-coverage.ts
+
+      - if: github.event_name != 'pull_request'
+        name: Commit regenerated README
+        run: |
+          if git diff --quiet -- README.md; then
+            echo "README.md already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "docs: sync README plugin-coverage table [skip ci]"
+          git push

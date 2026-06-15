@@ -1,0 +1,103 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-contradiction-with-assertion.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-contradiction-with-assertion.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/a\\ba/"
+    },
+    {
+      "code": "/(?!)a/"
+    },
+    {
+      "code": "/(?=)a/"
+    },
+    {
+      "code": "/$a/"
+    },
+    {
+      "code": "/$a/v"
+    },
+    {
+      "code": "/(^|[\\s\\S])\\bfoo/"
+    },
+    {
+      "code": "/(?:aa|a\\b)-?a/"
+    },
+    {
+      "code": "/(?:aa|a\\b)-?a/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/a\\b-?a/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier '-?' is always entered despite having a minimum of 0. This is because the assertion '\\b' contradicts with the element(s) after the quantifier. Either set the minimum to 1 ({1}) or change the assertion.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a\\b(a|-)/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The alternative 'a' can never be entered because it contradicts with the assertion '\\b'. Either change the alternative or assertion to resolve the contradiction.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a\\ba*-/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier 'a*' can never be entered because its element contradicts with the assertion '\\b'. Change or remove the quantifier or change the assertion to resolve the contradiction.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/a\\b[a\\q{foo|bar}]*-/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier '[a\\q{foo|bar}]*' can never be entered because its element contradicts with the assertion '\\b'. Change or remove the quantifier or change the assertion to resolve the contradiction.",
+          "line": 1,
+          "column": 5,
+          "endColumn": 20
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/(^[\\t ]*)#(?:comments-start|cs)[\\s\\S]*?^[ \\t]*#(?:comments-end|ce)/m",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "The quantifier '[\\s\\S]*?' is always entered despite having a minimum of 0. This is because the assertion '^' contradicts with the element(s) after the quantifier. Either set the minimum to 1 (+?) or change the assertion.",
+          "line": 1,
+          "column": 33,
+          "endColumn": 41
+        }
+      ],
+      "output": null
+    }
+  ]
+}

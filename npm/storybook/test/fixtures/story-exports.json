@@ -1,0 +1,89 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-storybook",
+    "ref": "v10.4.2",
+    "sourceFile": "src/rules/story-exports.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-storybook-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "export const Primary = {}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default {}\nexport const Primary = {}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default {} as ComponentMeta<typeof RestaurantDetailPage>\nexport const Primary = {}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "import { storiesOf } from '@storybook/react'\nstoriesOf('MyComponent', module)",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "const Primary = {}\nconst Secondary = {}\nexport default {}\nexport { Primary, Secondary }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "\n      export default {\n        title: 'MyComponent',\n        component: MyComponent,\n        includeStories: [MyComponent.name],\n      };\n\n      export const SimpleStory = () => <MyComponent />;\n    ",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default {\n  excludeStories: /.*Data$/,\n}\n\nconst mockData = {}\nconst Primary = {}\n\nexport { mockData, Primary }",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export function Primary() {}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default {}\nexport function Primary() {}",
+      "filename": "MyComponent.stories.js"
+    },
+    {
+      "code": "export default {} as ComponentMeta<typeof RestaurantDetailPage>\nexport function Primary() {}",
+      "filename": "MyComponent.stories.js"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "export default {\n  component: Button\n} as ComponentMeta<typeof RestaurantDetailPage>",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "shouldHaveStoryExport"
+        }
+      ]
+    },
+    {
+      "code": "export default {\n  excludeStories: /.*Data$/,\n}\n\nexport const mockData = {}",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "shouldHaveStoryExportWithFilters"
+        }
+      ]
+    },
+    {
+      "code": "export default {\n  excludeStories: /.*Data$/,\n}\n\nconst mockData = {}\nconst Primary = {}\n\nexport { mockData }",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "shouldHaveStoryExportWithFilters"
+        }
+      ]
+    },
+    {
+      "code": "export default {\n  excludeStories: /.*Data$/,\n}\n\nexport function generateMockData() {}",
+      "filename": "MyComponent.stories.js",
+      "errors": [
+        {
+          "messageId": "shouldHaveStoryExportWithFilters"
+        }
+      ]
+    }
+  ]
+}

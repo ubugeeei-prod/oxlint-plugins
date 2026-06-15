@@ -1,0 +1,77 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/consistent-explicit-outer-join",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "explicit-outer",
+      "code": "SELECT u.id FROM users u LEFT OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u RIGHT OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u FULL OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u INNER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u CROSS JOIN regions r;"
+    },
+    {
+      "name": "never-bare-side-join",
+      "code": "SELECT a.id FROM a LEFT JOIN b ON a.id = b.id;",
+      "options": [
+        {
+          "style": "never"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "left-join",
+      "code": "SELECT u.id FROM users u LEFT JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u RIGHT JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u FULL JOIN orders o ON o.user_id = u.id;",
+      "errors": [
+        {
+          "messageId": "preferOuterJoin",
+          "message": "Write `LEFT OUTER JOIN` explicitly instead of `LEFT JOIN`.",
+          "line": 1,
+          "column": 26,
+          "endLine": 1,
+          "endColumn": 35
+        },
+        {
+          "messageId": "preferOuterJoin",
+          "message": "Write `RIGHT OUTER JOIN` explicitly instead of `RIGHT JOIN`.",
+          "line": 2,
+          "column": 26,
+          "endLine": 2,
+          "endColumn": 36
+        },
+        {
+          "messageId": "preferOuterJoin",
+          "message": "Write `FULL OUTER JOIN` explicitly instead of `FULL JOIN`.",
+          "line": 3,
+          "column": 26,
+          "endLine": 3,
+          "endColumn": 35
+        }
+      ],
+      "output": "SELECT u.id FROM users u LEFT OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u RIGHT OUTER JOIN orders o ON o.user_id = u.id;\nSELECT u.id FROM users u FULL OUTER JOIN orders o ON o.user_id = u.id;"
+    },
+    {
+      "name": "never-side-outer-join",
+      "code": "SELECT a.id FROM a LEFT OUTER JOIN b ON a.id = b.id;",
+      "options": [
+        {
+          "style": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedOuterJoin",
+          "message": "Omit the redundant `OUTER`; use `LEFT JOIN` instead of `LEFT OUTER JOIN`.",
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ],
+      "output": "SELECT a.id FROM a LEFT JOIN b ON a.id = b.id;"
+    }
+  ]
+}

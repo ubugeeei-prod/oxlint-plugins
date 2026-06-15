@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-create-role",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "grant",
+      "code": "GRANT SELECT ON users TO app_reader;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "create-role",
+      "code": "CREATE ROLE app_writer LOGIN PASSWORD 'redacted';",
+      "errors": [
+        {
+          "messageId": "noCreateRole",
+          "message": "`CREATE ROLE` / `CREATE USER` belongs in an operator-managed bootstrap (Terraform, Pulumi, a runbook), not in application migrations. Migration files run with whichever role the deploy uses and are not the right place to manage permissions.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 49
+        }
+      ],
+      "output": null
+    }
+  ]
+}

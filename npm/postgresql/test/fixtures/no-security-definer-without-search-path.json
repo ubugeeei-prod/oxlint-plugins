@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-security-definer-without-search-path",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "with-set",
+      "code": "CREATE FUNCTION fn() RETURNS void\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = pg_catalog, pg_temp\nAS $$ BEGIN END $$;\n\n-- SECURITY INVOKER (the default) is fine.\nCREATE FUNCTION fn2() RETURNS void\nLANGUAGE plpgsql\nSECURITY INVOKER\nAS $$ BEGIN END $$;\n\n-- No SECURITY DEFINER → out of scope.\nCREATE FUNCTION fn3() RETURNS void\nLANGUAGE plpgsql\nAS $$ BEGIN END $$;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing-set",
+      "code": "CREATE FUNCTION fn() RETURNS void\nLANGUAGE plpgsql\nSECURITY DEFINER\nAS $$ BEGIN END $$;",
+      "errors": [
+        {
+          "messageId": "missingSearchPath",
+          "message": "`SECURITY DEFINER` function must `SET search_path = ...` (e.g. `pg_catalog, pg_temp`) so an attacker-controlled schema in the caller's `search_path` cannot shadow built-in objects called from inside the function body.",
+          "line": 1,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 19
+        }
+      ],
+      "output": null
+    }
+  ]
+}

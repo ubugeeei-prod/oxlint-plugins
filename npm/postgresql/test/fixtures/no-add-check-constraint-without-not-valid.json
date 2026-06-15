@@ -1,0 +1,32 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-add-check-constraint-without-not-valid",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "with-not-valid",
+      "code": "ALTER TABLE t ADD CONSTRAINT c CHECK (x > 0) NOT VALID;\n-- Non-CHECK constraints are out of scope.\nALTER TABLE t ADD CONSTRAINT pk PRIMARY KEY (id);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "synchronous-check",
+      "code": "ALTER TABLE t ADD CONSTRAINT c CHECK (x > 0);",
+      "errors": [
+        {
+          "messageId": "checkNotValid",
+          "message": "Add this CHECK constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not block writers under `ACCESS EXCLUSIVE`.",
+          "line": 1,
+          "column": 19,
+          "endLine": 1,
+          "endColumn": 44
+        }
+      ],
+      "output": null
+    }
+  ]
+}

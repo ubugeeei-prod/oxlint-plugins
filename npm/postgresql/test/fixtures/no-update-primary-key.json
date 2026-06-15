@@ -1,0 +1,60 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-update-primary-key",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "no-pk-update",
+      "code": "UPDATE users SET name = 'foo' WHERE id = 1;\nUPDATE orders SET total = 100, status = 'paid' WHERE id = 2;\n-- non-PK column happens to share a name with another table's PK pattern\n-- (orders.user_id is a foreign key, not the orders PK by the heuristic)\nUPDATE orders SET user_id = 5 WHERE id = 3;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "custom-pk-name",
+      "code": "UPDATE users SET uuid = '...' WHERE name = 'a';",
+      "options": [
+        {
+          "pkColumnNames": ["uuid"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noUpdatePk",
+          "message": "Avoid `UPDATE` on the primary-key column `uuid`. Primary keys are intended to be immutable; FK references and external systems can hold the old value.",
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "update-id",
+      "code": "UPDATE users SET id = 99 WHERE id = 1;\nUPDATE orders SET orders_id = 99 WHERE orders_id = 1;",
+      "errors": [
+        {
+          "messageId": "noUpdatePk",
+          "message": "Avoid `UPDATE` on the primary-key column `id`. Primary keys are intended to be immutable; FK references and external systems can hold the old value.",
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 20
+        },
+        {
+          "messageId": "noUpdatePk",
+          "message": "Avoid `UPDATE` on the primary-key column `orders_id`. Primary keys are intended to be immutable; FK references and external systems can hold the old value.",
+          "line": 2,
+          "column": 19,
+          "endLine": 2,
+          "endColumn": 28
+        }
+      ],
+      "output": null
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/prefer-cast-operator",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "operator-default",
+      "code": "SELECT x::integer FROM t;\nSELECT x::public.my_type FROM t;\nSELECT x::numeric(10, 2) FROM t;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "cast-to-operator",
+      "code": "SELECT CAST(x AS integer) FROM t;\nSELECT CAST(x AS public.my_type) FROM t;\nSELECT CAST(x AS varchar(255)) FROM t;",
+      "errors": [
+        {
+          "messageId": "preferOperator",
+          "message": "Use `<expr>::type` operator form instead of `CAST(...)`.",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 26
+        },
+        {
+          "messageId": "preferOperator",
+          "message": "Use `<expr>::type` operator form instead of `CAST(...)`.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 33
+        },
+        {
+          "messageId": "preferOperator",
+          "message": "Use `<expr>::type` operator form instead of `CAST(...)`.",
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ],
+      "output": "SELECT x::integer FROM t;\nSELECT x::public.my_type FROM t;\nSELECT x::varchar(255) FROM t;"
+    },
+    {
+      "name": "operator-to-cast",
+      "code": "SELECT x::integer FROM t;\nSELECT x::numeric(10, 2) FROM t;",
+      "options": [
+        {
+          "form": "function"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "preferFunction",
+          "message": "Use `CAST(<expr> AS type)` instead of the `::` operator.",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 18
+        },
+        {
+          "messageId": "preferFunction",
+          "message": "Use `CAST(<expr> AS type)` instead of the `::` operator.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 25
+        }
+      ],
+      "output": "SELECT CAST(x AS integer) FROM t;\nSELECT CAST(x AS numeric(10, 2)) FROM t;"
+    }
+  ]
+}

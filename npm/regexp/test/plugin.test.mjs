@@ -1,0 +1,1026 @@
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+import { describe, expect, it } from 'vitest';
+
+import plugin from '../index.js';
+
+const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
+const workspaceRoot = resolve(packageRoot, '../..');
+
+const validCases = [
+  // no-invalid-regexp
+  ['no-invalid-regexp', 'valid constructor', "new RegExp('a+', 'u');\n"],
+  ['no-invalid-regexp', 'all valid flags', "new RegExp('a', 'gimsu');\n"],
+  ['no-invalid-regexp', 'unicode set flag', "new RegExp('[a]', 'v');\n"],
+  // no-empty-character-class
+  ['no-empty-character-class', 'single-char class', 'const re = /[a]/u;\n'],
+  ['no-empty-character-class', 'negated empty-looking class', 'const re = /[^]/u;\n'],
+  ['no-empty-character-class', 'class containing escaped bracket', 'const re = /[\\]]/u;\n'],
+  // no-empty-group
+  ['no-empty-group', 'non-capturing group with content', 'const re = /(?:a)/u;\n'],
+  ['no-empty-group', 'empty lookahead is allowed', 'const re = /(?=a)/u;\n'],
+  ['no-empty-group', 'empty negative lookahead is allowed', 'const re = /(?!a)/u;\n'],
+  // no-empty-capturing-group
+  ['no-empty-capturing-group', 'capture with content', 'const re = /(a)/u;\n'],
+  ['no-empty-capturing-group', 'named capture with content', 'const re = /(?<name>a)/u;\n'],
+  // no-empty-alternative
+  ['no-empty-alternative', 'simple alternation', 'const re = /a|b/u;\n'],
+  ['no-empty-alternative', 'alternation inside group', 'const re = /(?:a|b|c)/u;\n'],
+  // no-zero-quantifier
+  ['no-zero-quantifier', 'positive quantifier', 'const re = /a{1}/u;\n'],
+  ['no-zero-quantifier', 'open upper bound', 'const re = /a{0,}/u;\n'],
+  ['no-zero-quantifier', 'positive range', 'const re = /a{2,5}/u;\n'],
+  // no-octal
+  ['no-octal', 'nul escape only', 'const re = /\\0/u;\n'],
+  ['no-octal', 'nul followed by 8 (not octal)', 'const re = /\\08/u;\n'],
+  // no-control-character
+  ['no-control-character', 'named tab escape', 'const re = /\\t/u;\n'],
+  ['no-control-character', 'named newline escape', 'const re = /\\n/u;\n'],
+  ['no-control-character', 'printable hex escape', "const re = new RegExp('\\\\u0041', 'u');\n"],
+  [
+    'no-control-character',
+    'constructor named newline escape',
+    "const re = new RegExp('\\n', 'u');\n",
+  ],
+  // control-character-escape
+  ['control-character-escape', 'named tab in constructor arg', "new RegExp('\\t');\n"],
+  // sort-flags
+  ['sort-flags', 'sorted flags', 'const re = /a/im;\n'],
+  ['sort-flags', 'no flags', 'const re = /a/;\n'],
+  ['sort-flags', 'single flag', 'const re = /a/u;\n'],
+  // require-unicode-regexp
+  ['require-unicode-regexp', 'unicode flag', 'const re = /a/u;\n'],
+  ['require-unicode-regexp', 'unicode set flag', 'const re = /a/v;\n'],
+  ['require-unicode-regexp', 'unicode with other flags', 'const re = /a/gu;\n'],
+  ['require-unicode-regexp', 'non-literal flags variable', 'new RegExp("a", flags);\n'],
+  ['require-unicode-regexp', 'non-literal flags binary expr', "new RegExp('a', flags + 'u');\n"],
+  ['require-unicode-regexp', 'non-literal flags member expr', "new RegExp('foo', flags[3]);\n"],
+  // no-escape-backspace
+  ['no-escape-backspace', 'plain word boundary', 'const re = /\\bword/u;\n'],
+  ['no-escape-backspace', 'character class without \\b', 'const re = /[a-z]/u;\n'],
+  // prefer-plus-quantifier
+  ['prefer-plus-quantifier', 'plus quantifier', 'const re = /a+/u;\n'],
+  ['prefer-plus-quantifier', 'two-or-more braced quantifier', 'const re = /a{2,}/u;\n'],
+  // prefer-star-quantifier
+  ['prefer-star-quantifier', 'star quantifier', 'const re = /a*/u;\n'],
+  ['prefer-star-quantifier', 'open-upper-bound greater than zero', 'const re = /a{1,}/u;\n'],
+  // prefer-question-quantifier
+  ['prefer-question-quantifier', 'question quantifier', 'const re = /a?/u;\n'],
+  ['prefer-question-quantifier', 'distinct range bounds', 'const re = /a{1,2}/u;\n'],
+  // no-useless-two-nums-quantifier
+  ['no-useless-two-nums-quantifier', 'single-bound quantifier', 'const re = /a{3}/u;\n'],
+  ['no-useless-two-nums-quantifier', 'asymmetric range quantifier', 'const re = /a{2,5}/u;\n'],
+  // prefer-named-capture-group
+  ['prefer-named-capture-group', 'named capture', 'const re = /(?<name>a)/u;\n'],
+  ['prefer-named-capture-group', 'non-capturing group', 'const re = /(?:a)/u;\n'],
+  ['prefer-named-capture-group', 'lookahead', 'const re = /(?=a)/u;\n'],
+  ['prefer-named-capture-group', 'no group', 'const re = /a/u;\n'],
+  // match-any
+  ['match-any', 'plain character class', 'const re = /[a-z]/u;\n'],
+  ['match-any', 'half anti-pair', 'const re = /[\\s]/u;\n'],
+  ['match-any', 'mixed family', 'const re = /[\\s\\D]/u;\n'],
+  ['match-any', 'negated anti-pair', 'const re = /[^\\s\\S]/u;\n'],
+  ['match-any', 'canonical \\s\\S form', 'const re = /[\\s\\S]/u;\n'],
+  // no-legacy-features
+  ['no-legacy-features', 'unrelated identifier', 'Foo.$1;\n'],
+  ['no-legacy-features', 'lowercase regexp', 'regexp.lastMatch;\n'],
+  ['no-legacy-features', 'modern prototype access', 'RegExp.prototype;\n'],
+  ['no-legacy-features', '$10 out of legacy range', 'RegExp.$10;\n'],
+  // prefer-d
+  ['prefer-d', 'shorthand already used', 'const re = /\\d/u;\n'],
+  ['prefer-d', 'subset range', 'const re = /[1-9]/u;\n'],
+  ['prefer-d', 'extra element', 'const re = /[0-9a]/u;\n'],
+  // prefer-w
+  ['prefer-w', 'shorthand already used', 'const re = /\\w/u;\n'],
+  ['prefer-w', 'missing element', 'const re = /[a-zA-Z0-9]/u;\n'],
+  // letter-case
+  ['letter-case', 'lowercase hex escape', 'const re = /\\xab/u;\n'],
+  ['letter-case', 'lowercase unicode escape', 'const re = /\\uabcd/u;\n'],
+  ['letter-case', 'decimal-only unicode escape', "const re = new RegExp('\\\\u0041', 'u');\n"],
+  // no-non-standard-flag
+  ['no-non-standard-flag', 'canonical flags', "const re = new RegExp('a', 'gimsuy');\n"],
+  ['no-non-standard-flag', 'no flags', 'const re = /a/;\n'],
+  // no-invisible-character
+  ['no-invisible-character', 'plain pattern', 'const re = /ab/u;\n'],
+  ['no-invisible-character', 'ascii space', 'const re = /a b/u;\n'],
+  ['no-invisible-character', 'escaped hex NBSP', "const re = new RegExp('a\\\\xa0b', 'u');\n"],
+  [
+    'no-invisible-character',
+    'constructor named tab escape',
+    "const re = new RegExp('\\t', 'u');\n",
+  ],
+  // no-useless-string-literal
+  ['no-useless-string-literal', 'empty literal', 'const re = /[\\q{}]/v;\n'],
+  ['no-useless-string-literal', 'multi-char literal', 'const re = /[\\q{ab}]/v;\n'],
+  // sort-character-class-elements
+  ['sort-character-class-elements', 'sorted class', 'const re = /[ab]/u;\n'],
+  ['sort-character-class-elements', 'class with escape', 'const re = /[a\\d]/u;\n'],
+  ['sort-character-class-elements', 'class with range', 'const re = /[a-z]/u;\n'],
+  // no-trivially-nested-assertion
+  ['no-trivially-nested-assertion', 'non-cap with literal body', 'const re = /(?:a)/u;\n'],
+  ['no-trivially-nested-assertion', 'lookaround at top level', 'const re = /(?=a)/u;\n'],
+  // no-extra-lookaround-assertions
+  ['no-extra-lookaround-assertions', 'lookaround with literal body', 'const re = /(?=a)/u;\n'],
+  ['no-extra-lookaround-assertions', 'non-cap wrapping lookaround', 'const re = /(?:(?=a))/u;\n'],
+  // no-trivially-nested-quantifier
+  ['no-trivially-nested-quantifier', 'no outer quantifier', 'const re = /(?:a+)/u;\n'],
+  ['no-trivially-nested-quantifier', 'no inner quantifier', 'const re = /(?:a)+/u;\n'],
+  ['no-trivially-nested-quantifier', 'multi-byte body', 'const re = /(?:ab+)+/u;\n'],
+  // prefer-character-class
+  ['prefer-character-class', 'multi-byte alt', 'const re = /(?:a|bc)/u;\n'],
+  ['prefer-character-class', 'escape alt', 'const re = /(?:a|\\d)/u;\n'],
+  ['prefer-character-class', 'no alternation', 'const re = /(?:a)/u;\n'],
+  ['prefer-character-class', 'two alternatives below threshold', 'const re = /(?:a|b)/u;\n'],
+  // sort-alternatives
+  ['sort-alternatives', 'already sorted', 'const re = /(?:a|b|c)/u;\n'],
+  ['sort-alternatives', 'multi-byte alt', 'const re = /(?:bc|a)/u;\n'],
+  ['sort-alternatives', 'no alternation', 'const re = /(?:a)/u;\n'],
+  // prefer-predefined-assertion
+  ['prefer-predefined-assertion', 'lookaround with literal body', 'const re = /(?=a)/u;\n'],
+  ['prefer-predefined-assertion', 'bare anchor', 'const re = /^abc$/u;\n'],
+  // optimal-lookaround-quantifier
+  ['optimal-lookaround-quantifier', 'required match plus', 'const re = /(?=a+)/u;\n'],
+  ['optimal-lookaround-quantifier', 'bare atom', 'const re = /(?=a)/u;\n'],
+  ['optimal-lookaround-quantifier', 'non-cap group', 'const re = /(?:a*)/u;\n'],
+  // no-dupe-disjunctions
+  ['no-dupe-disjunctions', 'distinct alts', 'const re = /(?:a|b)/u;\n'],
+  ['no-dupe-disjunctions', 'multi-byte alt', 'const re = /(?:abc|abc)/u;\n'],
+  ['no-dupe-disjunctions', 'no alternation', 'const re = /(?:a)/u;\n'],
+  // no-useless-backreference
+  ['no-useless-backreference', 'valid backreference', 'const re = /(a)\\1/u;\n'],
+  ['no-useless-backreference', 'no backref', 'const re = /abc/u;\n'],
+  // negation
+  ['negation', 'non-negated shorthand class', 'const re = /[\\d]/u;\n'],
+  ['negation', 'plain negated literal', 'const re = /[^a]/u;\n'],
+  ['negation', 'multi-element negated class', 'const re = /[^\\d\\s]/u;\n'],
+  ['negation', 'unrelated escape inside negated class', 'const re = /[^\\b]/u;\n'],
+  // no-useless-lazy
+  ['no-useless-lazy', 'open range lazy', 'const re = /a{2,5}?/u;\n'],
+  ['no-useless-lazy', 'lazy star via brace', 'const re = /a{0,}?/u;\n'],
+  ['no-useless-lazy', 'plain greedy fixed count', 'const re = /a{3}/u;\n'],
+  ['no-useless-lazy', 'star lazy (deferred)', 'const re = /a*?/u;\n'],
+  ['no-useless-lazy', 'plus lazy (deferred)', 'const re = /a+?/u;\n'],
+  // no-misleading-unicode-character
+  ['no-misleading-unicode-character', 'ascii class', 'const re = /[abc]/u;\n'],
+  ['no-misleading-unicode-character', 'bmp emoji single', 'const re = /[😀]/u;\n'],
+  ['no-misleading-unicode-character', 'zwj outside class', 'const re = /a‍b/u;\n'],
+  ['no-misleading-unicode-character', 'lone zwj in class', 'const re = /[‍]/u;\n'],
+  ['no-misleading-unicode-character', 'single astral in u class', 'const re = /[👍]/u;\n'],
+  ['no-misleading-unicode-character', 'quantifier on astral in u', 'const re = /👍+/u;\n'],
+  // prefer-unicode-codepoint-escapes
+  [
+    'prefer-unicode-codepoint-escapes',
+    'surrogate pair without u flag',
+    "const re = new RegExp('\\\\uD83D\\\\uDE00');\n",
+  ],
+  // unicode-escape
+  [
+    'unicode-escape',
+    'surrogate half \\uHHHH',
+    "const re = new RegExp('\\\\ud83d\\\\ude00', 'u');\n",
+  ],
+  // no-standalone-backslash
+  ['no-standalone-backslash', 'valid control escape \\cX', 'const re = /\\cX/;\n'],
+  [
+    'no-standalone-backslash',
+    'v-mode valid control escapes',
+    'const re = /[[\\cA-\\cZ]--\\cX]/v;\n',
+  ],
+  // no-potentially-useless-backreference
+  ['no-potentially-useless-backreference', 'group without quantifier', 'const re = /()\\1/;\n'],
+  ['no-potentially-useless-backreference', 'group with plus quantifier', 'const re = /(a)+\\1/;\n'],
+  // strict
+  ['strict', 'u-flag bypasses strict check', 'const re = /\\p{L}/u;\n'],
+  ['strict', 'v-flag bypasses strict check', 'const re = /[A--B]/v;\n'],
+  ['strict', 'escaped source characters are valid', 'const re = /\\{\\}\\]/;\n'],
+  ['strict', 'valid 4-hex unicode escape', 'const re = /\\u000f/;\n'],
+  ['strict', 'valid 2-hex hex escape', 'const re = /\\x00/;\n'],
+  ['strict', 'valid control escape', 'const re = /\\cA/;\n'],
+  // no-useless-assertions
+  ['no-useless-assertions', 'meaningful boundary . neighbour', 'const re = /\\b.\\b/u;\n'],
+  [
+    'no-useless-assertions',
+    'meaningful boundary group neighbour',
+    'const re = /\\b(?:,|:)\\b/u;\n',
+  ],
+  ['no-useless-assertions', 'real word/non-word transition', 'const re = /a\\b,/u;\n'],
+  // optimal-quantifier-concatenation
+  ['optimal-quantifier-concatenation', 'bounded optional pair', 'const re = /aa?/u;\n'],
+  ['optimal-quantifier-concatenation', 'distinct shorthands', 'const re = /\\w+\\d{4}/u;\n'],
+  ['optimal-quantifier-concatenation', 'group then shorthand', 'const re = /(\\d)\\d+/u;\n'],
+  // no-contradiction-with-assertion
+  ['no-contradiction-with-assertion', 'plain char after boundary', 'const re = /a\\ba/u;\n'],
+  ['no-contradiction-with-assertion', 'consistent quantifier', 'const re = /a\\b-*a/u;\n'],
+  ['no-contradiction-with-assertion', 'boundary after group', 'const re = /(?:aa|a\\b)-?a/u;\n'],
+  // no-useless-set-operand
+  ['no-useless-set-operand', 'meaningful subset removal', 'const re = /[\\w--\\d]/v;\n'],
+  ['no-useless-set-operand', 'not v-mode', 'const re = /[\\w&&\\d]/u;\n'],
+  ['no-useless-set-operand', 'nested-class operand', 'const re = /[\\w&&[\\d\\s]]/v;\n'],
+  // prefer-set-operation
+  ['prefer-set-operation', 'not v-mode lookahead', 'const re = /(?!a)\\w/u;\n'],
+  ['prefer-set-operation', 'word boundary not lookaround', 'const re = /a\\b/v;\n'],
+  ['prefer-set-operation', 'multi-element lookaround body', 'const re = /(?!ab)c/v;\n'],
+  // simplify-set-operations
+  ['simplify-set-operations', 'plain intersection', 'const re = /[a&&b]/v;\n'],
+  ['simplify-set-operations', 'non-negated nested operand', 'const re = /[a&&b&&[c]]/v;\n'],
+  ['simplify-set-operations', 'subtraction not intersection', 'const re = /[a--b--[c]]/v;\n'],
+  ['simplify-set-operations', 'not v-mode', 'const re = /[a&&[^b]]/u;\n'],
+  // unicode-property
+  ['unicode-property', 'keyless property', 'const re = /\\p{L}/u;\n'],
+  ['unicode-property', 'long keyless property', 'const re = /\\p{Letter}/u;\n'],
+  ['unicode-property', 'script key', 'const re = /\\p{Script=Greek}/u;\n'],
+  ['unicode-property', 'binary property', 'const re = /\\p{ASCII}/u;\n'],
+  // no-unused-capturing-group
+  ['no-unused-capturing-group', 'non-capturing in test', '/(?:\\d{4})/.test(foo);\n'],
+  ['no-unused-capturing-group', 'backreference uses group', '/(\\d)\\1/.test(foo);\n'],
+  ['no-unused-capturing-group', 'variable receiver', 'const re = /(\\d)/;\nre.test(foo);\n'],
+  ['no-unused-capturing-group', 'replace reads $1', "'a'.replace(/(\\d)/, '$1');\n"],
+  ['no-unused-capturing-group', 'match indexed', "const m = 'a'.match(/(\\d)/);\nm[1];\n"],
+  // prefer-result-array-groups
+  [
+    'prefer-result-array-groups',
+    'unnamed group indexed',
+    "const arr = 'str'.match(/a(b)c/);\nconst p1 = arr[1];\n",
+  ],
+  [
+    'prefer-result-array-groups',
+    'already uses groups',
+    "const arr = 'str'.match(/a(?<foo>b)c/);\nconst p1 = arr.groups.foo;\n",
+  ],
+  [
+    'prefer-result-array-groups',
+    'g flag match',
+    "const arr = 'str'.match(/a(?<foo>b)c/g);\nconst p1 = arr[1];\n",
+  ],
+  [
+    'prefer-result-array-groups',
+    'unknown receiver match',
+    'const arr = unknown.match(/a(?<foo>b)c/);\nconst p1 = arr[1];\n',
+  ],
+  // prefer-lookaround
+  ['prefer-lookaround', 'g flag overlapping', "'x'.replace(/(a)b(a)/g, '$1c$2');\n"],
+  ['prefer-lookaround', 'adjacent groups empty middle', "'x'.replace(/(Java)(Script)/, '$1$2');\n"],
+  ['prefer-lookaround', 'single group not both-ends', "'x'.replace(/(Java)Script/, '$1');\n"],
+  ['prefer-lookaround', 'quantifier body not plain', "'x'.replace(/(a+)bc(d)/, '$1x$2');\n"],
+  // no-misleading-capturing-group
+  ['no-misleading-capturing-group', 'quantifiers inside group', 'const re = /(a+a+)/;\n'],
+  ['no-misleading-capturing-group', 'no capturing group', 'const re = /a+a+/;\n'],
+  ['no-misleading-capturing-group', 'different atoms', 'const re = /\\d+(\\w*)/u;\n'],
+  ['no-misleading-capturing-group', 'group body is plus', 'const re = /\\d+(\\d+)/u;\n'],
+  // no-super-linear-backtracking
+  ['no-super-linear-backtracking', 'top-level quantifiers', 'const re = /a+b+a+b+/u;\n'],
+  ['no-super-linear-backtracking', 'anchored inner', 'const re = /(?:a+b)+/u;\n'],
+  ['no-super-linear-backtracking', 'outer not quantified', 'const re = /(?:a+)b/u;\n'],
+  ['no-super-linear-backtracking', 'inner not quantified', 'const re = /(?:a)+/u;\n'],
+  // no-super-linear-move
+  ['no-super-linear-move', 'no leading quantifier', 'const re = /regexp/u;\n'],
+  ['no-super-linear-move', 'leading word boundary', 'const re = /\\ba*:/u;\n'],
+  ['no-super-linear-move', 'caret anchor', 'const re = /^a*:/u;\n'],
+  ['no-super-linear-move', 'no rejecting suffix', 'const re = /a*/u;\n'],
+  ['no-super-linear-move', 'optional suffix', 'const re = /a*b*/u;\n'],
+  ['no-super-linear-move', 'sticky flag', 'const re = /a*b/y;\n'],
+];
+
+const invalidCases = [
+  // no-invalid-regexp
+  ['no-invalid-regexp', 'unclosed character class', "new RegExp('[', 'u');\n", ['error']],
+  ['no-invalid-regexp', 'unclosed group', "new RegExp('(?:', 'u');\n", ['error']],
+  ['no-invalid-regexp', 'duplicate flags', "new RegExp('a', 'gg');\n", ['duplicateFlag']],
+  ['no-invalid-regexp', 'duplicate i flags', "new RegExp('a', 'ii');\n", ['duplicateFlag']],
+  ['no-invalid-regexp', 'u and v flags together', "new RegExp('a', 'uv');\n", ['uvFlag']],
+  ['no-invalid-regexp', 'v and u flags together', "new RegExp('a', 'vu');\n", ['uvFlag']],
+  // no-empty-character-class
+  ['no-empty-character-class', 'standalone empty class', 'const re = /[]/u;\n', ['empty']],
+  ['no-empty-character-class', 'empty class between chars', 'const re = /abc[]def/u;\n', ['empty']],
+  ['no-invisible-character', 'zwsp in pattern', 'const re = /a\u200Bb/u;\n', ['unexpected']],
+  // hexadecimal-escape
+  [
+    'hexadecimal-escape',
+    '\\uHHHH with code point ≤ 0xFF',
+    "const re = new RegExp('\\\\u000a', 'u');\n",
+    ['unexpected'],
+  ],
+  [
+    'hexadecimal-escape',
+    '\\u{H+} with code point ≤ 0xFF',
+    "const re = new RegExp('\\\\u{ab}', 'u');\n",
+    ['unexpected'],
+  ],
+  // unicode-escape
+  [
+    'unicode-escape',
+    'fixed-width \\uHHHH',
+    "const re = new RegExp('\\\\uabcd', 'u');\n",
+    ['unexpected'],
+  ],
+  // no-useless-range
+  ['no-useless-range', 'literal a-a range', 'const re = /[a-a]/u;\n', ['unexpected']],
+  ['no-useless-range', 'literal 0-0 range', 'const re = /[0-0]/u;\n', ['unexpected']],
+  // no-empty-lookarounds-assertion
+  [
+    'no-empty-lookarounds-assertion',
+    'empty positive lookahead',
+    'const re = /(?=)/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-empty-lookarounds-assertion',
+    'empty negative lookbehind',
+    'const re = /(?<!)/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-regexp-exec
+  ['prefer-regexp-exec', 'match with non-global literal', 'str.match(/foo/u);\n', ['unexpected']],
+  ['prefer-regexp-exec', 'member-chained receiver', 'obj.prop.match(/bar/);\n', ['unexpected']],
+  // prefer-regexp-test
+  [
+    'prefer-regexp-test',
+    'exec in if test',
+    "const re = /a/; const s = 'abc'; if (re.exec(s)) {}\n",
+    ['disallow'],
+  ],
+  [
+    'prefer-regexp-test',
+    'match with regexp literal in if test (string receiver)',
+    "const text = 'something'; if (text.match(/thing/)) {}\n",
+    ['disallow'],
+  ],
+  [
+    'prefer-regexp-test',
+    'exec under negation',
+    "const re = /a/; const s = 'abc'; const b = !re.exec(s);\n",
+    ['disallow'],
+  ],
+  // no-missing-g-flag
+  ['no-missing-g-flag', 'matchAll without g', "'abc'.matchAll(/foo/u);\n", ['unexpected']],
+  [
+    'no-missing-g-flag',
+    'replaceAll regex without g',
+    "'abc'.replaceAll(/foo/, 'bar');\n",
+    ['unexpected'],
+  ],
+  // no-useless-character-class
+  ['no-useless-character-class', 'single literal class', 'const re = /[a]/u;\n', ['unexpected']],
+  ['no-useless-character-class', 'single digit class', 'const re = /[5]/u;\n', ['unexpected']],
+  // no-empty-string-literal
+  ['no-empty-string-literal', 'empty v literal', 'const re = /[\\q{}]/v;\n', ['unexpected']],
+  // no-optional-assertion
+  [
+    'no-optional-assertion',
+    'optional positive lookahead',
+    'const re = /(?=a)?/u;\n',
+    ['unexpected'],
+  ],
+  ['no-optional-assertion', 'optional lookbehind', 'const re = /(?<=a)?/u;\n', ['unexpected']],
+  // require-unicode-sets-regexp
+  ['require-unicode-sets-regexp', 'u flag only', 'const re = /a/u;\n', ['require']],
+  ['require-unicode-sets-regexp', 'no flags', 'const re = /a/;\n', ['require']],
+  // confusing-quantifier
+  ['confusing-quantifier', 'lazy star', 'const re = /a*?/u;\n', ['unexpected']],
+  ['confusing-quantifier', 'lazy optional', 'const re = /a??/u;\n', ['unexpected']],
+  ['confusing-quantifier', 'lazy zero-or-more brace', 'const re = /a{0,}?/u;\n', ['unexpected']],
+  // prefer-named-replacement
+  [
+    'prefer-named-replacement',
+    'numbered backref with named regex',
+    "'s'.replace(/(?<year>\\d{4})/u, '$1');\n",
+    ['unexpected'],
+  ],
+  [
+    'prefer-named-replacement',
+    'replaceAll variant',
+    "'s'.replaceAll(/(?<year>\\d{4})/gu, 'year: $1');\n",
+    ['unexpected'],
+  ],
+  // no-obscure-range
+  ['no-obscure-range', 'A-z range', 'const re = /[A-z]/u;\n', ['unexpected']],
+  ['no-obscure-range', '0-A range', 'const re = /[0-A]/u;\n', ['unexpected']],
+  // prefer-unicode-codepoint-escapes
+  [
+    'prefer-unicode-codepoint-escapes',
+    'surrogate pair',
+    "const re = new RegExp('\\\\uD83D\\\\uDE00', 'u');\n",
+    ['unexpected'],
+  ],
+  // no-dupe-characters-character-class
+  [
+    'no-dupe-characters-character-class',
+    'literal duplicate',
+    'const re = /[aab]/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-range
+  ['prefer-range', 'four consecutive letters', 'const re = /[abcd]/u;\n', ['unexpected']],
+  ['prefer-range', 'five consecutive digits', 'const re = /[12345]/u;\n', ['unexpected']],
+  // no-useless-escape
+  ['no-useless-escape', 'escaped colon', 'const re = /\\:/u;\n', ['unexpected']],
+  ['no-useless-escape', 'escaped at sign', 'const re = /a\\@b/u;\n', ['unexpected']],
+  // no-useless-quantifier
+  ['no-useless-quantifier', 'a{1}', 'const re = /a{1}/u;\n', ['unexpected']],
+  ['no-useless-quantifier', 'a{1,1}', 'const re = /a{1,1}/u;\n', ['unexpected']],
+  // prefer-named-backreference
+  [
+    'prefer-named-backreference',
+    'mixed numbered backref',
+    'const re = /(?<year>\\d{4})-\\1/u;\n',
+    ['unexpected'],
+  ],
+  // no-useless-flag
+  ['no-useless-flag', 's without dot', "const re = new RegExp('abc', 's');\n", ['unexpected']],
+  ['no-useless-flag', 'm without anchor', "const re = new RegExp('abc', 'm');\n", ['unexpected']],
+  // no-lazy-ends (only fires when the regex is used as a whole pattern)
+  ['no-lazy-ends', 'star lazy at end', '/a*?/u.test(str)\n', ['unexpected']],
+  ['no-lazy-ends', 'plus lazy at end', '/a+?/u.test(str)\n', ['unexpected']],
+  ['no-lazy-ends', 'braced lazy at end', '/a{2,}?/u.test(str)\n', ['unexpected']],
+  // no-useless-dollar-replacements
+  [
+    'no-useless-dollar-replacements',
+    'dollar zero three in two-group pattern',
+    "str.replace(/(\\w+)\\s(\\w+)/u, '$03');\n",
+    ['unexpected'],
+  ],
+  [
+    'no-useless-dollar-replacements',
+    'replaceAll variant dollar zero nine in eight-group pattern',
+    '"abc".replaceAll(/()()(()())()()(.)/gu, \'$09\');\n',
+    ['unexpected'],
+  ],
+  // prefer-escape-replacement-dollar-char
+  [
+    'prefer-escape-replacement-dollar-char',
+    'dollar followed by space',
+    "'str'.replace(/a/u, 'pre $ post');\n",
+    ['unexpected'],
+  ],
+  [
+    'prefer-escape-replacement-dollar-char',
+    'trailing dollar',
+    "'str'.replace(/a/u, 'price$');\n",
+    ['unexpected'],
+  ],
+  // use-ignore-case
+  ['use-ignore-case', 'lower and upper of a', 'const re = /[aA]/u;\n', ['unexpected']],
+  ['use-ignore-case', 'multi case pair', 'const re = /[aAbB]/u;\n', ['unexpected']],
+  // control-character-escape
+  [
+    'control-character-escape',
+    'literal SOH',
+    "const re = new RegExp('\\x01', 'u');\n",
+    ['unexpected'],
+  ],
+  // grapheme-string-literal
+  [
+    'grapheme-string-literal',
+    'single-char string literal',
+    'const re = /[\\q{a}]/v;\n',
+    ['unexpected'],
+  ],
+  // no-useless-non-capturing-group
+  ['no-useless-non-capturing-group', 'single-char body', 'const re = /(?:a)/u;\n', ['unexpected']],
+  [
+    'no-useless-non-capturing-group',
+    'inline context',
+    'const re = /pre(?:b)post/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-quantifier
+  ['prefer-quantifier', 'braced quantifier', 'const re = /(?:a){3}/u;\n', ['unexpected']],
+  ['prefer-quantifier', 'plus quantifier', 'const re = /(?:a)+/u;\n', ['unexpected']],
+  // no-useless-string-literal
+  ['no-useless-string-literal', 'single-char body', 'const re = /[\\q{a}]/v;\n', ['unexpected']],
+  // sort-character-class-elements
+  ['sort-character-class-elements', 'reversed letters', 'const re = /[ba]/u;\n', ['unexpected']],
+  [
+    'sort-character-class-elements',
+    'mixed digits and letters',
+    'const re = /[b1a]/u;\n',
+    ['unexpected'],
+  ],
+  // no-trivially-nested-assertion
+  [
+    'no-trivially-nested-assertion',
+    'non-cap wrapping lookahead',
+    'const re = /(?:(?=a))/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-trivially-nested-assertion',
+    'non-cap wrapping lookbehind',
+    'const re = /(?:(?<=a))/u;\n',
+    ['unexpected'],
+  ],
+  // no-extra-lookaround-assertions
+  [
+    'no-extra-lookaround-assertions',
+    'nested positive lookahead',
+    'const re = /(?=(?=a))/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-extra-lookaround-assertions',
+    'nested negative lookbehind',
+    'const re = /(?<!(?!b))/u;\n',
+    ['unexpected'],
+  ],
+  // no-trivially-nested-quantifier
+  [
+    'no-trivially-nested-quantifier',
+    'plus inside plus',
+    'const re = /(?:a+)+/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-trivially-nested-quantifier',
+    'star inside star',
+    'const re = /(?:b*)*/u;\n',
+    ['unexpected'],
+  ],
+  // prefer-character-class
+  [
+    'prefer-character-class',
+    'mixed letters and digits',
+    'const re = /(?:a|1|b)/u;\n',
+    ['unexpected'],
+  ],
+  // sort-alternatives
+  ['sort-alternatives', 'two-letter unsorted', 'const re = /(?:b|a)/u;\n', ['unexpected']],
+  ['sort-alternatives', 'three-letter unsorted', 'const re = /(?:c|a|b)/u;\n', ['unexpected']],
+  // prefer-predefined-assertion
+  ['prefer-predefined-assertion', 'lookahead end anchor', 'const re = /(?=$)/u;\n', ['unexpected']],
+  [
+    'prefer-predefined-assertion',
+    'lookbehind start anchor',
+    'const re = /(?<=^)/u;\n',
+    ['unexpected'],
+  ],
+  // optimal-lookaround-quantifier
+  [
+    'optimal-lookaround-quantifier',
+    'star inside lookahead',
+    'const re = /(?=a*)/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'optimal-lookaround-quantifier',
+    'question inside lookbehind',
+    'const re = /(?<=b?)/u;\n',
+    ['unexpected'],
+  ],
+  // no-dupe-disjunctions
+  ['no-dupe-disjunctions', 'two-letter duplicate', 'const re = /(?:a|a)/u;\n', ['unexpected']],
+  [
+    'no-dupe-disjunctions',
+    'three-letter duplicate at end',
+    'const re = /(?:a|b|b)/u;\n',
+    ['unexpected'],
+  ],
+  // no-useless-backreference
+  ['no-useless-backreference', 'forward reference', 'const re = /\\1(a)/u;\n', ['unexpected']],
+  ['no-useless-backreference', 'undefined group number', 'const re = /(a)\\2/u;\n', ['unexpected']],
+  // negation
+  ['negation', 'negated \\d', 'const re = /[^\\d]/u;\n', ['unexpected']],
+  ['negation', 'negated \\w', 'const re = /[^\\w]/u;\n', ['unexpected']],
+  ['negation', 'negated \\S', 'const re = /[^\\S]/u;\n', ['unexpected']],
+  // no-useless-lazy
+  ['no-useless-lazy', 'fixed count {n}?', 'const re = /a{3}?/u;\n', ['unexpected']],
+  ['no-useless-lazy', 'fixed count {n,n}?', 'const re = /a{2,2}?/u;\n', ['unexpected']],
+  // no-misleading-unicode-character
+  [
+    'no-misleading-unicode-character',
+    'zwj-joined family in class',
+    'const re = /[👨‍👩‍👦]/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-misleading-unicode-character',
+    'astral as surrogate pair in non-u class',
+    'const re = /[👍]foo/;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-misleading-unicode-character',
+    'quantifier on surrogate pair in non-u',
+    'const re = /👍+/;\n',
+    ['unexpected'],
+  ],
+  // no-standalone-backslash
+  ['no-standalone-backslash', '\\c at end of pattern', 'const re = /\\c/;\n', ['unexpected']],
+  ['no-standalone-backslash', '\\c followed by digit', 'const re = /\\c1/;\n', ['unexpected']],
+  ['no-standalone-backslash', '\\c inside class', 'const re = /[\\c]/;\n', ['unexpected']],
+  // no-potentially-useless-backreference
+  [
+    'no-potentially-useless-backreference',
+    'group with ? quantifier',
+    'const re = /(a)?\\1/;\n',
+    ['potentiallyUselessBackreference'],
+  ],
+  [
+    'no-potentially-useless-backreference',
+    'group with * quantifier',
+    'const re = /(a)*\\1/;\n',
+    ['potentiallyUselessBackreference'],
+  ],
+  // strict
+  ['strict', 'unescaped ] outside class', 'const re = /]/;\n', ['unescapedSourceCharacter']],
+  ['strict', 'incomplete \\c escape', 'const re = /\\c;/;\n', ['invalidControlEscape']],
+  [
+    'strict',
+    '\\u followed by brace (non-u mode)',
+    'const re = /\\u{42}/;\n',
+    ['incompleteEscapeSequence'],
+  ],
+  ['strict', '\\x with only 1 hex digit', 'const re = /\\x4/;\n', ['incompleteEscapeSequence']],
+  ['strict', '\\p in non-u mode', 'const re = /\\p/;\n', ['invalidPropertyEscape']],
+  ['strict', 'quantified assertion', 'const re = /(?!a)+/;\n', ['quantifiedAssertion']],
+  // no-useless-assertions
+  [
+    'no-useless-assertions',
+    'boundary between word chars',
+    'const re = /a\\bb/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-useless-assertions',
+    'non-boundary between word chars',
+    'const re = /a\\Bb/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-useless-assertions',
+    'boundary between non-word chars',
+    'const re = /,\\b,/u;\n',
+    ['unexpected'],
+  ],
+  // optimal-quantifier-concatenation
+  [
+    'optimal-quantifier-concatenation',
+    'literal then star of same char',
+    'const re = /aa*/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'optimal-quantifier-concatenation',
+    'star then star of same shorthand',
+    'const re = /\\w*\\w*/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'optimal-quantifier-concatenation',
+    'plus then plus of same char',
+    'const re = /a+a+/u;\n',
+    ['unexpected'],
+  ],
+  // no-contradiction-with-assertion
+  [
+    'no-contradiction-with-assertion',
+    'star quantifier on same-class char after boundary',
+    'const re = /a\\ba*-/u;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-contradiction-with-assertion',
+    'brace min-zero quantifier after boundary',
+    'const re = /a\\ba{0,3}-/u;\n',
+    ['unexpected'],
+  ],
+  // no-useless-set-operand
+  [
+    'no-useless-set-operand',
+    'intersection subset operand',
+    'const re = /[\\w&&\\d]/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-useless-set-operand',
+    'intersection disjoint operands',
+    'const re = /[\\w&&\\s]/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'no-useless-set-operand',
+    'subtraction left subset of right',
+    'const re = /[\\d--\\w]/v;\n',
+    ['unexpected'],
+  ],
+  // prefer-set-operation
+  [
+    'prefer-set-operation',
+    'negative lookahead then shorthand',
+    'const re = /(?!a)\\w/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'prefer-set-operation',
+    'shorthand then positive lookbehind',
+    'const re = /\\w(?<=\\d)/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'prefer-set-operation',
+    'negative lookahead then literal',
+    'const re = /(?!-)&/v;\n',
+    ['unexpected'],
+  ],
+  // simplify-set-operations
+  [
+    'simplify-set-operations',
+    'intersection with negated operand',
+    'const re = /[a&&[^b]]/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'simplify-set-operations',
+    'negated operand on the left',
+    'const re = /[[^a]&&b&&c]/v;\n',
+    ['unexpected'],
+  ],
+  [
+    'simplify-set-operations',
+    'both operands negated',
+    'const re = /[[^a]&&[^b]]/v;\n',
+    ['unexpected'],
+  ],
+  // unicode-property
+  ['unicode-property', 'gc short key', 'const re = /\\p{gc=L}/u;\n', ['unnecessaryGc']],
+  [
+    'unicode-property',
+    'General_Category long key',
+    'const re = /\\p{General_Category=Letter}/u;\n',
+    ['unnecessaryGc'],
+  ],
+  ['unicode-property', 'negated gc key', 'const re = /\\P{gc=L}/u;\n', ['unnecessaryGc']],
+  // no-unused-capturing-group
+  [
+    'no-unused-capturing-group',
+    'capturing group in test literal',
+    "/(\\d{4})-(\\d{2})-(\\d{2})/.test('2000-12-31');\n",
+    ['unusedCapturingGroup'],
+  ],
+  [
+    'no-unused-capturing-group',
+    'named capturing group in test literal',
+    '/(?<y>\\d{4})/.test(foo);\n',
+    ['unusedCapturingGroup'],
+  ],
+  // prefer-result-array-groups
+  [
+    'prefer-result-array-groups',
+    'match result numeric index to named group',
+    "const arr = 'str'.match(/a(?<foo>b)c/);\nconst p1 = arr[1];\n",
+    ['unexpected'],
+  ],
+  [
+    'prefer-result-array-groups',
+    'inline exec numeric index to named group',
+    '/(?<foo>foo)/u.exec(str)[1];\n',
+    ['unexpected'],
+  ],
+  // prefer-lookaround
+  [
+    'prefer-lookaround',
+    'numbered both-ends capture',
+    "'I love unicorn!'.replace(/(love )unicorn(!)/, '$1u$2');\n",
+    ['preferLookarounds'],
+  ],
+  [
+    'prefer-lookaround',
+    'named both-ends capture',
+    "'x'.replace(/(?<before>love )unicorn(?<after>!)/, '$<before>u$<after>');\n",
+    ['preferLookarounds'],
+  ],
+  // no-misleading-capturing-group
+  [
+    'no-misleading-capturing-group',
+    'shorthand already included',
+    'const re = /\\d+(\\d*)/u;\n',
+    ['removeQuant'],
+  ],
+  [
+    'no-misleading-capturing-group',
+    'literal atom already included',
+    'const re = /a+(a*)/u;\n',
+    ['removeQuant'],
+  ],
+  // no-super-linear-backtracking
+  [
+    'no-super-linear-backtracking',
+    'non-capturing nested unbounded',
+    'const re = /b(?:a+)+b/u;\n',
+    ['self'],
+  ],
+  [
+    'no-super-linear-backtracking',
+    'capturing nested unbounded',
+    'const re = /(a*)*/u;\n',
+    ['self'],
+  ],
+  // no-super-linear-move
+  ['no-super-linear-move', 'leading star with suffix', 'const re = /a*:/u;\n', ['unexpected']],
+  ['no-super-linear-move', 'leading plus shorthand', 'const re = /\\w+x/u;\n', ['unexpected']],
+];
+
+function runRule(ruleName, sourceText, filename = 'fixture.js') {
+  const reports = [];
+  const sourceCode = {
+    text: sourceText,
+    getText() {
+      return this.text;
+    },
+  };
+  const rule = plugin.rules[ruleName];
+  const visitor = rule.createOnce({
+    filename,
+    options: [],
+    sourceCode,
+    report(descriptor) {
+      reports.push(descriptor);
+    },
+  });
+
+  visitor.Program({ type: 'Program', range: [0, sourceText.length] });
+  return reports;
+}
+
+function renderMessage(ruleName, report) {
+  const template = plugin.rules[ruleName].meta.messages[report.messageId];
+  return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key) => report.data?.[key] ?? '');
+}
+
+function findOxlintCli() {
+  const store = join(workspaceRoot, 'node_modules/.pnpm');
+  const candidates = readdirSync(store)
+    .filter((entry) => entry.startsWith('oxlint@'))
+    .map((entry) => join(store, entry, 'node_modules/oxlint/bin/oxlint'))
+    .filter((candidate) => existsSync(candidate))
+    .sort((a, b) => a.localeCompare(b));
+
+  if (candidates.length === 0) {
+    throw new Error('Could not find oxlint CLI in node_modules/.pnpm.');
+  }
+
+  return candidates[candidates.length - 1];
+}
+
+function runOxlint(ruleName, code) {
+  const oxlint = findOxlintCli();
+  const temp = mkdtempSync(join(tmpdir(), 'regexp-plugin-'));
+
+  try {
+    const sourcePath = join(temp, 'fixture.js');
+    const configPath = join(temp, 'oxlint.config.jsonc');
+
+    writeFileSync(sourcePath, code);
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        jsPlugins: [
+          {
+            name: 'regexp',
+            specifier: join(packageRoot, 'index.js'),
+          },
+        ],
+        rules: {
+          [`regexp/${ruleName}`]: 'error',
+        },
+      }),
+    );
+
+    const result = spawnSync(
+      oxlint,
+      ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+      {
+        encoding: 'utf8',
+      },
+    );
+    const payload = result.stdout.trim() === '' ? { diagnostics: [] } : JSON.parse(result.stdout);
+
+    return {
+      diagnostics: payload.diagnostics ?? [],
+      status: result.status,
+      stderr: result.stderr,
+    };
+  } finally {
+    rmSync(temp, { recursive: true, force: true });
+  }
+}
+
+describe('regexp plugin shape', () => {
+  it('exports the regexp plugin surface', () => {
+    expect(plugin.meta?.name).toBe('regexp');
+    expect(plugin.implementedRegexpRuleNames).toEqual(Object.keys(plugin.rules));
+    expect(plugin.rules['sort-flags'].meta.messages.sortFlags).toContain('{{sortedFlags}}');
+  });
+
+  it('ships upstream-compatible implemented configs', () => {
+    expect(plugin.configs.recommended.rules['regexp/no-empty-alternative']).toBe('warn');
+    expect(plugin.configs.recommended.rules['regexp/no-octal']).toBeUndefined();
+    expect(plugin.configs.all.rules['regexp/no-octal']).toBe('error');
+    expect(plugin.configs['flat/recommended']).toBe(plugin.configs.recommended);
+  });
+});
+
+describe('regexp rules through direct Oxlint plugin adapter', () => {
+  it.each(validCases)('accepts %s: %s', (ruleName, _name, code) => {
+    expect(runRule(ruleName, code)).toEqual([]);
+  });
+
+  it.each(invalidCases)('reports %s: %s', (ruleName, _name, code, expectedMessageIds) => {
+    const reports = runRule(ruleName, code);
+
+    expect(reports.map((report) => report.messageId)).toEqual(expectedMessageIds);
+  });
+
+  it('renders data-bearing upstream messages', () => {
+    expect(renderMessage('sort-flags', runRule('sort-flags', 'const re = /a/mi;\n')[0])).toBe(
+      "The flags 'mi' should be in the order 'im'.",
+    );
+    expect(renderMessage('no-octal', runRule('no-octal', 'const re = /\\07/u;\n')[0])).toBe(
+      "Unexpected octal escape sequence '\\07'.",
+    );
+    expect(
+      renderMessage(
+        'no-control-character',
+        runRule('no-control-character', "const re = new RegExp('\\\\x01', 'u');\n")[0],
+      ),
+    ).toBe('Unexpected control character U+0001.');
+    expect(
+      renderMessage(
+        'no-invalid-regexp',
+        runRule('no-invalid-regexp', "new RegExp('a', 'gg');\n")[0],
+      ),
+    ).toBe('Duplicate g flag.');
+    expect(
+      renderMessage(
+        'prefer-plus-quantifier',
+        runRule('prefer-plus-quantifier', 'const re = /a{1,}/u;\n')[0],
+      ),
+    ).toBe("Unexpected quantifier '{1,}'. Use '+' instead.");
+    expect(
+      renderMessage(
+        'prefer-star-quantifier',
+        runRule('prefer-star-quantifier', 'const re = /a{0,}/u;\n')[0],
+      ),
+    ).toBe("Unexpected quantifier '{0,}'. Use '*' instead.");
+    expect(
+      renderMessage(
+        'prefer-question-quantifier',
+        runRule('prefer-question-quantifier', 'const re = /a{0,1}/u;\n')[0],
+      ),
+    ).toBe("Unexpected quantifier '{0,1}'. Use '?' instead.");
+    expect(
+      renderMessage(
+        'no-useless-two-nums-quantifier',
+        runRule('no-useless-two-nums-quantifier', 'const re = /a{3,3}/u;\n')[0],
+      ),
+    ).toBe("Unexpected quantifier '{3,3}'. Use '{3}' instead.");
+    expect(
+      renderMessage(
+        'prefer-named-capture-group',
+        runRule('prefer-named-capture-group', 'const re = /(a)/u;\n')[0],
+      ),
+    ).toBe('Capturing group should be converted to a named or non-capturing group.');
+    expect(renderMessage('match-any', runRule('match-any', 'const re = /[\\S\\s]/u;\n')[0])).toBe(
+      'Unexpected any character class. Use `.` with the `s` flag instead.',
+    );
+    expect(
+      renderMessage('no-legacy-features', runRule('no-legacy-features', 'RegExp.$1;\n')[0]),
+    ).toBe(
+      "Unexpected use of the legacy 'RegExp.$1' static property; it is non-standard and not safe to rely on.",
+    );
+  });
+
+  it('ignores non-RegExp callees with the same shape', () => {
+    expect(runRule('no-empty-character-class', "new Foo('[]', 'u');\n")).toEqual([]);
+    expect(runRule('no-invalid-regexp', "Bar('[', 'u');\n")).toEqual([]);
+  });
+
+  it('does not crash when constructor arguments are non-literal', () => {
+    expect(runRule('no-empty-character-class', "new RegExp(pattern, 'u');\n")).toEqual([]);
+    expect(runRule('no-invalid-regexp', 'new RegExp();\n')).toEqual([]);
+  });
+
+  it('reports each literal in a source independently', () => {
+    const reports = runRule('no-empty-character-class', 'const a = /[]/u; const b = /[]/u;\n');
+    expect(reports).toHaveLength(2);
+    expect(reports.every((report) => report.messageId === 'empty')).toBe(true);
+  });
+});
+
+describe('regexp rules through oxlint jsPlugins', () => {
+  it('reports a native diagnostic through the CLI', () => {
+    const result = runOxlint('sort-flags', 'const re = /a/mi;\n');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toMatchObject([
+      {
+        code: 'regexp(sort-flags)',
+        message: "The flags 'mi' should be in the order 'im'.",
+      },
+    ]);
+  });
+});

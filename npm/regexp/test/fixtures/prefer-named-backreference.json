@@ -1,0 +1,49 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/prefer-named-backreference.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/prefer-named-backreference.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/(a)\\1/"
+    },
+    {
+      "code": "/(?<foo>a)\\k<foo>/"
+    },
+    {
+      "code": "/(a)\\1 (?<foo>a)\\k<foo>/"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/(?<foo>a)\\1/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnamed backreference.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": "/(?<foo>a)\\k<foo>/"
+    },
+    {
+      "code": "/(?<foo>a)\\1/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected unnamed backreference.",
+          "line": 1,
+          "column": 11,
+          "endColumn": 13
+        }
+      ],
+      "output": "/(?<foo>a)\\k<foo>/v"
+    }
+  ]
+}

@@ -1,0 +1,749 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-functional",
+    "ref": "v10.0.0",
+    "sourceFiles": [
+      "tests/rules/immutable-data/array.test.ts",
+      "tests/rules/immutable-data/map.test.ts",
+      "tests/rules/immutable-data/object.test.ts",
+      "tests/rules/immutable-data/set.test.ts"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-functional-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "var x = [5, 6];\nvar y = [{ z: [3, 7] }];\n\nx.concat([3, 4]);\nx.includes(2);\nx.indexOf(1);\nx.join(', ');\nx.lastIndexOf(0);\nx.slice(1, 2);\nx.toString();\nx.toLocaleString(\"en\", {timeZone: \"UTC\"});\n\ny[0].z.concat([3, 4]);\ny[0].z.includes(2);\ny[0].z.indexOf(1);\ny[0].z.join(', ');\ny[0].z.lastIndexOf(0);\ny[0].z.slice(1, 2);\ny[0].z.toString();\ny[0].z.toLocaleString(\"en\", {timeZone: \"UTC\"});",
+      "typeAware": true
+    },
+    {
+      "code": "x.slice().copyWithin(0, 1, 2);\nx.slice().fill(3);\nx.slice().pop();\nx.slice().push(3);\nx.slice().reverse();\nx.slice().shift();\nx.slice().sort();\nx.slice().splice(0, 1, 9);\nx.slice().unshift(6);\n\nx.concat([1, 2, 3]).copyWithin(0, 1, 2);\nx.concat([1, 2, 3]).fill(3);\nx.concat([1, 2, 3]).pop();\nx.concat([1, 2, 3]).push(3);\nx.concat([1, 2, 3]).reverse();\nx.concat([1, 2, 3]).shift();\nx.concat([1, 2, 3]).sort();\nx.concat([1, 2, 3]).splice(0, 1, 9);\nx.concat([1, 2, 3]).unshift(6);\n\nx.filter(function (v) { return v > 1; }).copyWithin(0, 1, 2);\nx.filter(function (v) { return v > 1; }).fill(3);\nx.filter(function (v) { return v > 1; }).pop();\nx.filter(function (v) { return v > 1; }).push(3);\nx.filter(function (v) { return v > 1; }).reverse();\nx.filter(function (v) { return v > 1; }).shift();\nx.filter(function (v) { return v > 1; }).sort();\nx.filter(function (v) { return v > 1; }).splice(0, 1, 9);\nx.filter(function (v) { return v > 1; }).unshift(6);\n\nx.map(function (v) { return v * 2; }).copyWithin(0, 1, 2);\nx.map(function (v) { return v * 2; }).fill(3);\nx.map(function (v) { return v * 2; }).pop();\nx.map(function (v) { return v * 2; }).push(3);\nx.map(function (v) { return v * 2; }).reverse();\nx.map(function (v) { return v * 2; }).shift();\nx.map(function (v) { return v * 2; }).sort();\nx.map(function (v) { return v * 2; }).splice(0, 1, 9);\nx.map(function (v) { return v * 2; }).unshift(6);\n\nx.reduce(function (r, v) { return r.concat([v + 1]); }, []).copyWithin(0, 1, 2);\nx.reduce(function (r, v) { return r.concat([v + 1]); }, []).fill(3);\nx.reduce(function (r, v) { return r.concat([v + 1]); }, []).pop();\nx.reduce(function (r, v) { return r.concat([v + 1]); }, []).push(3);\nx.reduce(function (r, v) { return r.concat([v + 1]); }, []).reverse();\nx.reduce(function (r, v) { return r.concat([v + 1]); }, []).shift();\nx.reduce(function (r, v) { return r.concat([v + 1]); }, []).sort();\nx.reduce(function (r, v) { return r.concat([v + 1]); }, []).splice(0, 1, 9);\nx.reduce(function (r, v) { return r.concat([v + 1]); }, []).unshift(6);\n\nx.reduceRight(function (r, v) { return r.concat([v + 1]); }, []).copyWithin(0, 1, 2);\nx.reduceRight(function (r, v) { return r.concat([v + 1]); }, []).fill(3);\nx.reduceRight(function (r, v) { return r.concat([v + 1]); }, []).pop();\nx.reduceRight(function (r, v) { return r.concat([v + 1]); }, []).push(3);\nx.reduceRight(function (r, v) { return r.concat([v + 1]); }, []).reverse();\nx.reduceRight(function (r, v) { return r.concat([v + 1]); }, []).shift();\nx.reduceRight(function (r, v) { return r.concat([v + 1]); }, []).sort();\nx.reduceRight(function (r, v) { return r.concat([v + 1]); }, []).splice(0, 1, 9);\nx.reduceRight(function (r, v) { return r.concat([v + 1]); }, []).unshift(6);",
+      "typeAware": true
+    },
+    {
+      "code": "var z = {\n  copyWithin: function () {},\n  fill: function () {},\n  pop: function () {},\n  push: function () {},\n  reverse: function () {},\n  shift: function () {},\n  sort: function () {},\n  splice: function () {},\n  unshift: function () {}\n};\n\nz.copyWithin();\nz.fill();\nz.pop();\nz.push();\nz.reverse();\nz.shift();\nz.sort();\nz.splice();\nz.unshift();",
+      "typeAware": true
+    },
+    {
+      "code": "let arr = [0, 1];\narr[0] += 1;\narr[1]++;\ndelete arr[0];\narr.copyWithin(0, 1, 2);\narr.fill(3);\narr.pop();\narr.push(3);\narr.reverse();\narr.shift();\narr.sort();\narr.splice(0, 1, 9);\narr.unshift(6);",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ]
+    },
+    {
+      "code": "let arr = [0];\nfor (const x of [1, 2]) {\n  for (const y of [3, 4]) {\n    arr[x][y] += 1;\n    arr[x][y]++;\n    delete arr[x][y];\n    arr[x].copyWithin(x, 1, 2);\n    arr[x].fill(x);\n    arr[x].pop();\n    arr[x].push(x);\n    arr[x].reverse();\n    arr[x].shift();\n    arr[x].sort();\n    arr[x].splice(x, 1, 9);\n    arr[x].unshift(x);\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ]
+    },
+    {
+      "code": "const constArr = [[0, 1], [2, 3]];\nlet arr = constArr[0];\narr[0] += 1;\narr[1]++;\ndelete arr[0];\narr.copyWithin(0, 1, 2);\narr.fill(3);\narr.pop();\narr.push(3);\narr.reverse();\narr.shift();\narr.sort();\narr.splice(0, 1, 9);\narr.unshift(6);",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ]
+    },
+    {
+      "code": "[0, 1, 2].copyWithin(0, 1, 2);\n[0, 1, 2].fill(3);\n[0, 1, 2].pop();\n[0, 1, 2].push(3);\n[0, 1, 2].reverse();\n[0, 1, 2].shift();\n[0, 1, 2].sort();\n[0, 1, 2].splice(0, 1, 9);\n[0, 1, 2].unshift(6);\n\nnew Array(5).copyWithin(0, 1, 2);\nnew Array(5).fill(3);\nnew Array(5).pop();\nnew Array(5).push(3);\nnew Array(5).reverse();\nnew Array(5).shift();\nnew Array(5).sort();\nnew Array(5).splice(0, 1, 9);\nnew Array(5).unshift(6);\n\nArray.of(0, 1, 2).copyWithin(0, 1, 2);\nArray.of(0, 1, 2).fill(3);\nArray.of(0, 1, 2).pop();\nArray.of(0, 1, 2).push(3);\nArray.of(0, 1, 2).reverse();\nArray.of(0, 1, 2).shift();\nArray.of(0, 1, 2).sort();\nArray.of(0, 1, 2).splice(0, 1, 9);\nArray.of(0, 1, 2).unshift(6);\n\nArray.from({ length: 10 }).copyWithin(0, 1, 2);\nArray.from({ length: 10 }).fill(3);\nArray.from({ length: 10 }).pop();\nArray.from({ length: 10 }).push(3);\nArray.from({ length: 10 }).reverse();\nArray.from({ length: 10 }).shift();\nArray.from({ length: 10 }).sort();\nArray.from({ length: 10 }).splice(0, 1, 9);\nArray.from({ length: 10 }).unshift(6);",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreImmediateMutation": true
+        }
+      ]
+    },
+    {
+      "code": "Object.entries({}).sort();\nObject.keys({}).sort();\nObject.values({}).sort();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreImmediateMutation": true
+        }
+      ]
+    },
+    {
+      "code": "\"foo\".split(\"\").sort();\nconst bar = \"bar\";\nbar.split(\"\").sort();\n([a, b, c] as string[]).sort();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreImmediateMutation": true
+        }
+      ]
+    },
+    {
+      "code": "const x = new Map([[5, 6]]);\nx.set(4, 8);\nx.delete(4);\nx.clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreMapsAndSets": true
+        }
+      ]
+    },
+    {
+      "code": "const x = new Map([[5, 6]]);\nx.size;\nx.has(4);\nx.values();\nx.entries();\nx.keys();",
+      "typeAware": true
+    },
+    {
+      "code": "const z = {\n  set: function () {},\n  delete: function () {},\n  clear: function () {},\n};\n\nz.set();\nz.delete();\nz.clear();",
+      "typeAware": true
+    },
+    {
+      "code": "let x = new Map([[5, 6]]);\nx.set(4, 8);\nx.delete(4);\nx.clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ]
+    },
+    {
+      "code": "new Map([[5, 6]]).set(4, 8);\nnew Map([[5, 6]]).delete(4);\nnew Map([[5, 6]]).clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreImmediateMutation": true
+        }
+      ]
+    },
+    {
+      "code": "var foo = function () {};\nvar bar = {\n  x: 1,\n  y: foo\n};\nvar x = 0;\nx = 4;\nx += 1;\nx -= 1;\nx++;\nx--;\n++x;\n--x;\nif (x = 2) {}\nif (x++) {}\nvar y = x.a;\nvar z = x[\"a\"];\nif (x.a && y.a) {}\nvar w = ~x.a;\nif (!x.a) {}",
+      "typeAware": true
+    },
+    {
+      "code": "var x = { msg1: \"hello\", obj: { a: 1, b: 2}, func: function() {} };\nvar bar = function(a, b, c) { return { a: a, b: b, c: c }; };\n\nvar a = Object.assign({}, { msg: \"hello world\" });\nvar b = Object.assign(bar(1, 2, 3), { d: 4 });\nvar c = Object.assign(x.func(), { d: 4 });",
+      "typeAware": true
+    },
+    {
+      "code": "class Klass {\n  bar = 1;\n  constructor() {\n    this.baz = \"hello\";\n  }\n}",
+      "typeAware": true
+    },
+    {
+      "code": "let x = {a: 1, b:{}};\nx.foo = \"bar\";\nx[\"foo\"] = \"bar\";\nx.a += 1;\nx.a -= 1;\nx.a *= 1;\nx.a /= 1;\nx.a %= 1;\nx.a <<= 1;\nx.a >>= 1;\nx.a >>>= 1;\nx.a &= 1;\nx.a |= 1;\nx.a ^= 1;\nx.a **= 1;\ndelete x.a;\ndelete x[\"a\"];\nx.a++;\nx.a--;\n++x.a;\n--x.a;\nif (x.a = 2) {}\nif (x.a++) {}\nObject.assign(x, { c: \"world\" });\nObject.assign(x.b, { c: \"world\" });\nObject.defineProperties(x, { d: { value: 2, writable: false }});\nObject.defineProperty(x, \"e\", { value: 3, writable: false });\nObject.setPrototypeOf(x, null);",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ]
+    },
+    {
+      "code": "function y(x: {a: 1, b: object}) {\n  x.foo = \"bar\";\n  x[\"foo\"] = \"bar\";\n  x.a += 1;\n  x.a -= 1;\n  x.a *= 1;\n  x.a /= 1;\n  x.a %= 1;\n  x.a <<= 1;\n  x.a >>= 1;\n  x.a >>>= 1;\n  x.a &= 1;\n  x.a |= 1;\n  x.a ^= 1;\n  x.a **= 1;\n  delete x.a;\n  delete x[\"a\"];\n  x.a++;\n  x.a--;\n  ++x.a;\n  --x.a;\n  if (x.a = 2) {}\n  if (x.a++) {}\n  Object.assign(x, { c: \"world\" });\n  Object.assign(x.b, { c: \"world\" });\n  Object.defineProperties(x, { d: { value: 2, writable: false }});\n  Object.defineProperty(x, \"e\", { value: 3, writable: false });\n  Object.setPrototypeOf(x, null);\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": {
+            "treatParametersAsConst": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "var mutableVar = { a: 1 };\ndelete mutableVar.a;\nObject.assign(mutableVar, { b: 2 });",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreIdentifierPattern": [
+            "^mutable"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "function y(mutable_x: {a: 1, b: object}) {\n  mutable_x.foo = \"bar\";\n  mutable_x[\"foo\"] = \"bar\";\n  mutable_x.a += 1;\n  mutable_x.a -= 1;\n  mutable_x.a *= 1;\n  mutable_x.a /= 1;\n  mutable_x.a %= 1;\n  mutable_x.a <<= 1;\n  mutable_x.a >>= 1;\n  mutable_x.a >>>= 1;\n  mutable_x.a &= 1;\n  mutable_x.a |= 1;\n  mutable_x.a ^= 1;\n  mutable_x.a **= 1;\n  delete mutable_x.a;\n  delete mutable_x[\"a\"];\n  mutable_x.a++;\n  mutable_x.a--;\n  ++mutable_x.a;\n  --mutable_x.a;\n  if (mutable_x.a = 2) {}\n  if (mutable_x.a++) {}\n  Object.assign(mutable_x, { c: \"world\" });\n  Object.assign(mutable_x.b, { c: \"world\" });\n  Object.defineProperties(mutable_x, { d: { value: 2, writable: false }});\n  Object.defineProperty(mutable_x, \"e\", { value: 3, writable: false });\n  Object.setPrototypeOf(mutable_x, null);\n  (mutable_x as Bar).foo = \"bar\";\n  mutable_x!.foo = \"bar\";\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": {
+            "treatParametersAsConst": true
+          },
+          "ignoreAccessorPattern": "mutable*.**"
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  mutate() {\n    this.mutableField = 0;\n  }\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreAccessorPattern": [
+            "this.*.**"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "const x = new Set([5, 6]);\nx.add(4);\nx.delete(4);\nx.clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreMapsAndSets": true
+        }
+      ]
+    },
+    {
+      "code": "const x = new Set([5, 6]);\nx.size;\nx.has(4);\nx.values();\nx.entries();\nx.keys();\nx.difference(new Set([1, 2, 3]));\nx.intersection(new Set([1, 2, 3]));\nx.symmetricDifference(new Set([1, 2, 3]));\nx.union(new Set([1, 2, 3]));",
+      "typeAware": true
+    },
+    {
+      "code": "const x = new Set([5, 6]);\n\nx.difference(new Set([1, 2, 3])).add(4);\nx.difference(new Set([1, 2, 3])).add(4);\nx.difference(new Set([1, 2, 3])).add(4);\nx.difference(new Set([1, 2, 3])).add(4);\nx.difference(new Set([1, 2, 3])).add(4);\nx.difference(new Set([1, 2, 3])).add(4);\nx.difference(new Set([1, 2, 3])).add(4);\nx.difference(new Set([1, 2, 3])).add(4);\nx.difference(new Set([1, 2, 3])).add(4);\n\nx.intersection(new Set([1, 2, 3])).add(4);\nx.intersection(new Set([1, 2, 3])).add(4);\nx.intersection(new Set([1, 2, 3])).add(4);\nx.intersection(new Set([1, 2, 3])).add(4);\nx.intersection(new Set([1, 2, 3])).add(4);\nx.intersection(new Set([1, 2, 3])).add(4);\nx.intersection(new Set([1, 2, 3])).add(4);\nx.intersection(new Set([1, 2, 3])).add(4);\nx.intersection(new Set([1, 2, 3])).add(4);\n\nx.symmetricDifference(new Set([1, 2, 3])).add(4);\nx.symmetricDifference(new Set([1, 2, 3])).add(4);\nx.symmetricDifference(new Set([1, 2, 3])).add(4);\nx.symmetricDifference(new Set([1, 2, 3])).add(4);\nx.symmetricDifference(new Set([1, 2, 3])).add(4);\nx.symmetricDifference(new Set([1, 2, 3])).add(4);\nx.symmetricDifference(new Set([1, 2, 3])).add(4);\nx.symmetricDifference(new Set([1, 2, 3])).add(4);\nx.symmetricDifference(new Set([1, 2, 3])).add(4);\n\nx.union(new Set([1, 2, 3])).add(4);\nx.union(new Set([1, 2, 3])).add(4);\nx.union(new Set([1, 2, 3])).add(4);\nx.union(new Set([1, 2, 3])).add(4);\nx.union(new Set([1, 2, 3])).add(4);\nx.union(new Set([1, 2, 3])).add(4);\nx.union(new Set([1, 2, 3])).add(4);\nx.union(new Set([1, 2, 3])).add(4);\nx.union(new Set([1, 2, 3])).add(4);",
+      "typeAware": true
+    },
+    {
+      "code": "const z = {\n  add: function () {},\n  delete: function () {},\n  clear: function () {},\n};\n\nz.add();\nz.delete();\nz.clear();",
+      "typeAware": true
+    },
+    {
+      "code": "let x = new Set([5, 6]);\nx.add(4);\nx.delete(4);\nx.clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ]
+    },
+    {
+      "code": "new Set([5, 6]).add(4);\nnew Set([5, 6]).delete(4);\nnew Set([5, 6]).clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreImmediateMutation": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "var x = [5, 6];\nvar y = [{ z: [3, 7] }];\nx[0] = 4;\ny[0].z[0] = 4;\nx[0] += 1;\ny[0].z[0] += 1;\ndelete x[0];\ndelete y[0].z[0];\nx[0]++;\ny[0].z[0]++;\n--x[0];\n--y[0].z[0];\nif (x[0] = 2) {}\nif (y[0].z[0] = 2) {}\nx.length = 5;\ny[0].z.length = 1;",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "var x = [5, 6];\nx.copyWithin(0, 1, 2);\nx.fill(3);\nx.pop();\nx.push(3);\nx.reverse();\nx.shift();\nx.sort();\nx.splice(0, 1, 9);\nx.unshift(6);\nvar y = [{ z: [3, 7] }];\ny[0].z.copyWithin(0, 1, 2);\ny[0].z.fill(3);\ny[0].z.pop();\ny[0].z.push(3);\ny[0].z.reverse();\ny[0].z.shift();\ny[0].z.sort();\ny[0].z.splice(0, 1, 9);\ny[0].z.unshift(6);",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        },
+        {
+          "messageId": "array"
+        }
+      ]
+    },
+    {
+      "code": "const arr = [0, 1];\narr[0] += 1;\narr[1]++;\ndelete arr[0];\narr.copyWithin(0, 1, 2);\narr.fill(3);\narr.pop();\narr.push(3);\narr.reverse();\narr.shift();\narr.sort();\narr.splice(0, 1, 9);\narr.unshift(6);",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        }
+      ]
+    },
+    {
+      "code": "[0, 1, 2].sort();\nnew Array(5).sort();\nArray.of(0, 1, 2).sort();\nArray.from({ length: 10 }).sort();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreImmediateMutation": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        }
+      ]
+    },
+    {
+      "code": "const x = new Map([[5, 6]]);\nx.set(4, 8);\nx.delete(4);\nx.clear();",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "map"
+        },
+        {
+          "messageId": "map"
+        },
+        {
+          "messageId": "map"
+        }
+      ]
+    },
+    {
+      "code": "const x = new Map([[5, 6]]);\nx.set(4, 8);\nx.delete(4);\nx.clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        }
+      ]
+    },
+    {
+      "code": "new Map([[5, 6]]).set(4, 8);\nnew Map([[5, 6]]).delete(4);\nnew Map([[5, 6]]).clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreImmediateMutation": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        }
+      ]
+    },
+    {
+      "code": "var x = {a: 1};\nx.foo = \"bar\";\nx[\"foo\"] = \"bar\";\nx.a += 1;\nx.a -= 1;\nx.a *= 1;\nx.a /= 1;\nx.a %= 1;\nx.a <<= 1;\nx.a >>= 1;\nx.a >>>= 1;\nx.a &= 1;\nx.a |= 1;\nx.a ^= 1;\nx.a **= 1;\ndelete x.a;\ndelete x[\"a\"];\nx.a++;\nx.a--;\n++x.a;\n--x.a;\nif (x.a = 2) {}\nif (x.a++) {}\nvar y = x.a;\nvar z = x[\"a\"];\nif (x.a && y.a) {}\nvar w = ~x.a;\nif (!x.a) {}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "var x = { msg1: \"hello\", obj: { a: 1, b: 2} };\n\nvar a = Object.assign(x, { msg2: \"world\" });\nvar b = Object.assign(x.obj, { msg2: \"world\" });",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "object"
+        },
+        {
+          "messageId": "object"
+        }
+      ]
+    },
+    {
+      "code": "var foo = { a: 1 };\nObject.defineProperties(foo, { b: { value: 2, writable: false }});\nObject.defineProperty(foo, \"c\", { value: 3, writable: false });\nObject.setPrototypeOf(foo, null);",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "object"
+        },
+        {
+          "messageId": "object"
+        },
+        {
+          "messageId": "object"
+        }
+      ]
+    },
+    {
+      "code": "class Klass {\n  bar = 1;\n\n  constructor() {\n    this.baz = \"hello\";\n  }\n\n  zoo() {\n    this.bar = 2;\n    this.baz = 3;\n  }\n}",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "const x = {a: 1, b:{}};\nx.foo = \"bar\";\nx[\"foo\"] = \"bar\";\nx.a += 1;\nx.a -= 1;\nx.a *= 1;\nx.a /= 1;\nx.a %= 1;\nx.a <<= 1;\nx.a >>= 1;\nx.a >>>= 1;\nx.a &= 1;\nx.a |= 1;\nx.a ^= 1;\nx.a **= 1;\ndelete x.a;\ndelete x[\"a\"];\nx.a++;\nx.a--;\n++x.a;\n--x.a;\nif (x.a = 2) {}\nif (x.a++) {}\nObject.assign(x, { c: \"world\" });\nObject.assign(x.b, { c: \"world\" });\nObject.defineProperties(x, { d: { value: 2, writable: false }});\nObject.defineProperty(x, \"e\", { value: 3, writable: false });\nObject.setPrototypeOf(x, null);",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "function y(x: {a: 1, b: object}) {\n  x.foo = \"bar\";\n  x[\"foo\"] = \"bar\";\n  x.a += 1;\n  x.a -= 1;\n  x.a *= 1;\n  x.a /= 1;\n  x.a %= 1;\n  x.a <<= 1;\n  x.a >>= 1;\n  x.a >>>= 1;\n  x.a &= 1;\n  x.a |= 1;\n  x.a ^= 1;\n  x.a **= 1;\n  delete x.a;\n  delete x[\"a\"];\n  x.a++;\n  x.a--;\n  ++x.a;\n  --x.a;\n  if (x.a = 2) {}\n  if (x.a++) {}\n  Object.assign(x, { c: \"world\" });\n  Object.assign(x.b, { c: \"world\" });\n  Object.defineProperties(x, { d: { value: 2, writable: false }});\n  Object.defineProperty(x, \"e\", { value: 3, writable: false });\n  Object.setPrototypeOf(x, null);\n}",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": {
+            "treatParametersAsConst": true
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        },
+        {
+          "messageId": "generic"
+        }
+      ]
+    },
+    {
+      "code": "const x = new Set([5, 6]);\nx.add(4);\nx.delete(4);\nx.clear();",
+      "typeAware": true,
+      "errors": [
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        }
+      ]
+    },
+    {
+      "code": "const x = new Set([5, 6]);\nx.add(4);\nx.delete(4);\nx.clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreNonConstDeclarations": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        }
+      ]
+    },
+    {
+      "code": "new Set([5, 6]).add(4);\nnew Set([5, 6]).delete(4);\nnew Set([5, 6]).clear();",
+      "typeAware": true,
+      "options": [
+        {
+          "ignoreImmediateMutation": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        },
+        {
+          "messageId": "set"
+        }
+      ]
+    }
+  ]
+}

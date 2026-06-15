@@ -1,0 +1,130 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/align-column-definitions",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "already-aligned",
+      "code": "CREATE TABLE document_ingest_stage_executions (\n  document_ingest_stage_execution_id  ulid                            PRIMARY KEY,\n  tenant_id                           ulid                            NOT NULL,\n  agent_id                            ulid                            NOT NULL,\n  status                              flygate_document_ingest_status  NOT NULL\n);"
+    },
+    {
+      "name": "inline-comment-skipped-on-block-inside",
+      "code": "-- Block comment INSIDE a column definition would be clobbered by the\n-- realign; the rule must skip the whole table in that case.\nCREATE TABLE foo (\n  id /* see ticket */ ulid PRIMARY KEY,\n  name text NOT NULL\n);"
+    },
+    {
+      "name": "single-column",
+      "code": "CREATE TABLE only_one (\n  id ulid PRIMARY KEY\n);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "array-type",
+      "code": "CREATE TABLE t (\n  a TEXT NOT NULL,\n  b non_blank_text_64[] NOT NULL,\n  c INTEGER NOT NULL\n);",
+      "errors": [
+        {
+          "messageId": "misaligned",
+          "message": "Column definitions in this CREATE TABLE are not vertically aligned.",
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 13
+        }
+      ],
+      "output": "CREATE TABLE t (\n  a  TEXT                 NOT NULL,\n  b  non_blank_text_64[]  NOT NULL,\n  c  INTEGER              NOT NULL\n);"
+    },
+    {
+      "name": "inline-comment",
+      "code": "CREATE TABLE foo (\n  id ulid PRIMARY KEY, -- the surrogate key\n  name text NOT NULL\n);",
+      "errors": [
+        {
+          "messageId": "misaligned",
+          "message": "Column definitions in this CREATE TABLE are not vertically aligned.",
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 18
+        }
+      ],
+      "output": "CREATE TABLE foo (\n  id    ulid  PRIMARY KEY, -- the surrogate key\n  name  text  NOT NULL\n);"
+    },
+    {
+      "name": "misaligned",
+      "code": "CREATE TABLE document_ingest_stage_executions (\n  document_ingest_stage_execution_id ulid PRIMARY KEY,\n  tenant_id ulid NOT NULL,\n  agent_id ulid NOT NULL,\n  status flygate_document_ingest_status NOT NULL\n);",
+      "errors": [
+        {
+          "messageId": "misaligned",
+          "message": "Column definitions in this CREATE TABLE are not vertically aligned.",
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 50
+        }
+      ],
+      "output": "CREATE TABLE document_ingest_stage_executions (\n  document_ingest_stage_execution_id  ulid                            PRIMARY KEY,\n  tenant_id                           ulid                            NOT NULL,\n  agent_id                            ulid                            NOT NULL,\n  status                              flygate_document_ingest_status  NOT NULL\n);"
+    },
+    {
+      "name": "mixed-constraints",
+      "code": "CREATE TABLE foo (\n  id ulid PRIMARY KEY,\n  description text,\n  created_at flygate_datetime NOT NULL\n);",
+      "errors": [
+        {
+          "messageId": "misaligned",
+          "message": "Column definitions in this CREATE TABLE are not vertically aligned.",
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 18
+        }
+      ],
+      "output": "CREATE TABLE foo (\n  id           ulid              PRIMARY KEY,\n  description  text,\n  created_at   flygate_datetime  NOT NULL\n);"
+    },
+    {
+      "name": "multi-keyword-constraint",
+      "code": "CREATE TABLE t (\n  id bigint GENERATED ALWAYS AS IDENTITY                     PRIMARY KEY,\n  name text NOT NULL\n);",
+      "errors": [
+        {
+          "messageId": "misaligned",
+          "message": "Column definitions in this CREATE TABLE are not vertically aligned.",
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 69
+        }
+      ],
+      "output": "CREATE TABLE t (\n  id    bigint  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name  text    NOT NULL\n);"
+    },
+    {
+      "name": "type-with-precision",
+      "code": "CREATE TABLE pgmigration_triggers (\n  id BIGSERIAL PRIMARY KEY,\n  name TEXT NOT NULL,\n  file_hash TEXT NOT NULL,\n  run_on TIMESTAMP(3) NOT NULL\n);",
+      "errors": [
+        {
+          "messageId": "misaligned",
+          "message": "Column definitions in this CREATE TABLE are not vertically aligned.",
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 23
+        }
+      ],
+      "output": "CREATE TABLE pgmigration_triggers (\n  id         BIGSERIAL     PRIMARY KEY,\n  name       TEXT          NOT NULL,\n  file_hash  TEXT          NOT NULL,\n  run_on     TIMESTAMP(3)  NOT NULL\n);"
+    },
+    {
+      "name": "with-table-constraint",
+      "code": "CREATE TABLE foo (\n  id ulid,\n  name text,\n  email text,\n  PRIMARY KEY (id, email)\n);",
+      "errors": [
+        {
+          "messageId": "misaligned",
+          "message": "Column definitions in this CREATE TABLE are not vertically aligned.",
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 10
+        }
+      ],
+      "output": "CREATE TABLE foo (\n  id     ulid,\n  name   text,\n  email  text,\n  PRIMARY KEY (id, email)\n);"
+    }
+  ]
+}

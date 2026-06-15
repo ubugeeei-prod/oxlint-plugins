@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-set-search-path",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "other-set",
+      "code": "SET TIME ZONE 'UTC';"
+    },
+    {
+      "name": "qualified",
+      "code": "SELECT id FROM audit.events;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "set-search-path",
+      "code": "SET search_path TO audit, public;",
+      "errors": [
+        {
+          "messageId": "noSetSearchPath",
+          "message": "`SET search_path` makes name resolution depend on session state and is a known foot-gun for security-definer functions and CREATE statements. Qualify identifiers with their schema (`audit.events`, `public.users`) instead.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ],
+      "output": null
+    }
+  ]
+}

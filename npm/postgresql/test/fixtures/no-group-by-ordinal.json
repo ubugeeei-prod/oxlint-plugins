@@ -1,0 +1,59 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-group-by-ordinal",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "group-by-name",
+      "code": "SELECT category, count(*) FROM items GROUP BY category;"
+    },
+    {
+      "name": "no-group-by",
+      "code": "SELECT id, name FROM users;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "group-by-multiple-positions",
+      "code": "SELECT region, category, sum(amount) FROM sales GROUP BY 1, 2;",
+      "errors": [
+        {
+          "messageId": "noGroupByOrdinal",
+          "message": "`GROUP BY <position>` silently breaks when the SELECT list changes. Use the column name or the expression itself.",
+          "line": 1,
+          "column": 58,
+          "endLine": 1,
+          "endColumn": 59
+        },
+        {
+          "messageId": "noGroupByOrdinal",
+          "message": "`GROUP BY <position>` silently breaks when the SELECT list changes. Use the column name or the expression itself.",
+          "line": 1,
+          "column": 61,
+          "endLine": 1,
+          "endColumn": 62
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "group-by-position",
+      "code": "SELECT category, count(*) FROM items GROUP BY 1;",
+      "errors": [
+        {
+          "messageId": "noGroupByOrdinal",
+          "message": "`GROUP BY <position>` silently breaks when the SELECT list changes. Use the column name or the expression itself.",
+          "line": 1,
+          "column": 47,
+          "endLine": 1,
+          "endColumn": 48
+        }
+      ],
+      "output": null
+    }
+  ]
+}

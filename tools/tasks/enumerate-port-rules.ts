@@ -374,7 +374,7 @@ function renderIndex(
   lines.push('# Port targets');
   lines.push('');
   lines.push(
-    'ESLint plugins and adjacent packages used by [flyle-nexus], collected here as port targets or upstream references. ' +
+    'ESLint plugins and adjacent packages collected here as port targets or upstream references. ' +
       '`eslint-plugin-svelte` is intentionally excluded — it is handled by [rsvelte](https://github.com/baseballyama/rsvelte). ' +
       '`eslint-plugin-vue` is intentionally excluded — it is handled by [vize](https://vizejs.dev/). ' +
       'Oxlint-supported plugins (`eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-unicorn`) are used directly via Oxlint and are not listed here.',
@@ -393,8 +393,6 @@ function renderIndex(
     );
   }
   lines.push(`| **Total** | **${total}** | | |`);
-  lines.push('');
-  lines.push('[flyle-nexus]: internal');
   lines.push('');
   return lines.join('\n');
 }

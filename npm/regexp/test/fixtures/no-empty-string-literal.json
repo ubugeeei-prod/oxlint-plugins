@@ -1,0 +1,58 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-empty-string-literal.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-empty-string-literal.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/[\\q{a}]/v"
+    },
+    {
+      "code": "/[\\q{abc}]/v"
+    },
+    {
+      "code": "/[\\q{a|}]/v"
+    },
+    {
+      "code": "/[\\q{abc|}]/v"
+    },
+    {
+      "code": "/[\\q{|a}]/v"
+    },
+    {
+      "code": "/[\\q{|abc}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[\\q{}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty string literal.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 7
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{|}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected empty string literal.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    }
+  ]
+}

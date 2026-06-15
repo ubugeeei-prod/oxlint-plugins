@@ -1,0 +1,51 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-numeric-without-precision",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "int-column",
+      "code": "CREATE TABLE products (id bigint PRIMARY KEY);"
+    },
+    {
+      "name": "with-precision",
+      "code": "CREATE TABLE products (price numeric(10,2));"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "bare-decimal",
+      "code": "CREATE TABLE products (price decimal);",
+      "errors": [
+        {
+          "messageId": "noNumericWithoutPrecision",
+          "message": "`NUMERIC` / `DECIMAL` without precision accepts unbounded magnitude and rejects nothing — it's a missed opportunity to encode the column's domain. Declare `NUMERIC(precision, scale)`.",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "bare-numeric",
+      "code": "CREATE TABLE products (price numeric);",
+      "errors": [
+        {
+          "messageId": "noNumericWithoutPrecision",
+          "message": "`NUMERIC` / `DECIMAL` without precision accepts unbounded magnitude and rejects nothing — it's a missed opportunity to encode the column's domain. Declare `NUMERIC(precision, scale)`.",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "output": null
+    }
+  ]
+}

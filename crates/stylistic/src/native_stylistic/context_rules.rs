@@ -10,6 +10,7 @@ use super::context::{
     BraceKind, BracketKind, ParenUse, Scan, has_newline, is_whitespace, option_keyword,
     option_object_bool, punct_is, report_missing_space, report_replace, report_unexpected_space,
 };
+use super::helpers::{is_identifier_continue, is_identifier_start, option_usize, push_diagnostic};
 use super::lexer::TokenKind;
 
 /// Spacing check shared by the `{ }` / `[ ]` bracket-spacing rules: enforces
@@ -81,6 +82,156 @@ fn check_inner_spacing(
             );
         }
     }
+}
+
+fn report_plain(
+    diagnostics: &mut Vec<LintDiagnostic>,
+    rule_name: &'static str,
+    message_id: &'static str,
+    message: &'static str,
+    start: usize,
+    end: usize,
+) {
+    push_diagnostic(
+        diagnostics,
+        rule_name,
+        message_id,
+        message,
+        start,
+        end,
+        None::<(
+            &'static str,
+            &'static str,
+            fn(crate::TextRange) -> crate::LintFix,
+        )>,
+    );
+}
+
+fn line_starts(source: &str) -> Vec<usize> {
+    let mut starts = Vec::with_capacity(source.bytes().filter(|&byte| byte == b'\n').count() + 1);
+    starts.push(0);
+    for (index, byte) in source.bytes().enumerate() {
+        if byte == b'\n' {
+            starts.push(index + 1);
+        }
+    }
+    starts
+}
+
+fn line_number(starts: &[usize], offset: usize) -> usize {
+    starts.partition_point(|&start| start <= offset)
+}
+
+fn object_property_colons(scan: &Scan) -> Vec<usize> {
+    let tokens = scan.tokens();
+    let mut colons = Vec::new();
+
+    for open in 0..tokens.len() {
+        if !punct_is(&tokens[open], scan.source(), "{")
+            || scan.brace_kind(open) != BraceKind::ObjectLike
+        {
+            continue;
+        }
+        let Some(close) = scan.partner(open) else {
+            continue;
+        };
+
+        let mut index = open + 1;
+        while index < close {
+            if tokens[index].kind.is_comment() || punct_is(&tokens[index], scan.source(), ",") {
+                index += 1;
+                continue;
+            }
+
+            let mut cursor = index;
+            let mut found_colon = false;
+            while cursor < close {
+                if tokens[cursor].kind == TokenKind::Punctuator {
+                    match scan.token_text(cursor) {
+                        "{" | "(" | "[" => {
+                            if let Some(partner) = scan.partner(cursor) {
+                                cursor = partner + 1;
+                                continue;
+                            }
+                        }
+                        "," => {
+                            index = cursor + 1;
+                            found_colon = true;
+                            break;
+                        }
+                        ":" => {
+                            colons.push(cursor);
+                            cursor += 1;
+                            while cursor < close {
+                                if tokens[cursor].kind == TokenKind::Punctuator {
+                                    match scan.token_text(cursor) {
+                                        "{" | "(" | "[" => {
+                                            if let Some(partner) = scan.partner(cursor) {
+                                                cursor = partner + 1;
+                                                continue;
+                                            }
+                                        }
+                                        "," => {
+                                            cursor += 1;
+                                            break;
+                                        }
+                                        _ => {}
+                                    }
+                                }
+                                cursor += 1;
+                            }
+                            index = cursor;
+                            found_colon = true;
+                            break;
+                        }
+                        _ => {}
+                    }
+                }
+                cursor += 1;
+            }
+
+            if !found_colon {
+                break;
+            }
+        }
+    }
+
+    colons
+}
+
+fn first_options_object(options: &Value) -> Option<&serde_json::Map<String, Value>> {
+    match options {
+        Value::Array(items) => items.first().and_then(Value::as_object),
+        Value::Object(object) => Some(object),
+        _ => None,
+    }
+}
+
+fn key_spacing_bool(options: &Value, key: &str, default: bool) -> bool {
+    first_options_object(options)
+        .and_then(|object| object.get(key))
+        .and_then(Value::as_bool)
+        .unwrap_or(default)
+}
+
+fn is_simple_identifier(text: &str) -> bool {
+    let mut bytes = text.bytes();
+    let Some(first) = bytes.next() else {
+        return false;
+    };
+    is_identifier_start(first) && bytes.all(is_identifier_continue)
+}
+
+fn string_key_value(text: &str) -> Option<&str> {
+    let quote = text.as_bytes().first().copied()?;
+    if !matches!(quote, b'\'' | b'"') || text.as_bytes().last().copied()? != quote {
+        return None;
+    }
+    let inner = &text[1..text.len().checked_sub(1)?];
+    if inner.contains('\\') {
+        return None;
+    }
+    Some(inner)
 }
 
 // ---------------------------------------------------------------------------
@@ -229,6 +380,100 @@ pub(crate) fn check_block_spacing(
             "extra",
             diagnostics,
         );
+    }
+}
+
+// ---------------------------------------------------------------------------
+// padded-blocks
+// ---------------------------------------------------------------------------
+
+pub(crate) fn check_padded_blocks(
+    scan: &Scan,
+    options: &Value,
+    diagnostics: &mut Vec<LintDiagnostic>,
+) {
+    const RULE: &str = "padded-blocks";
+    let mode = option_keyword(options, "always");
+    let allow_single_line_blocks = match options {
+        Value::Array(items) => items
+            .get(1)
+            .and_then(|value| value.get("allowSingleLineBlocks"))
+            .and_then(Value::as_bool)
+            .unwrap_or(false),
+        _ => false,
+    };
+
+    let require_start = matches!(mode, "always" | "start");
+    let require_end = matches!(mode, "always" | "end");
+    let disallow_start = matches!(mode, "never" | "end");
+    let disallow_end = matches!(mode, "never" | "start");
+    let starts = line_starts(scan.source());
+    let tokens = scan.tokens();
+
+    for open in 0..tokens.len() {
+        if !punct_is(&tokens[open], scan.source(), "{") || scan.brace_kind(open) != BraceKind::Block
+        {
+            continue;
+        }
+        let Some(close) = scan.partner(open) else {
+            continue;
+        };
+        if open + 1 == close {
+            continue;
+        }
+
+        let open_line = line_number(&starts, tokens[open].end);
+        let close_line = line_number(&starts, tokens[close].start);
+        if allow_single_line_blocks && open_line == close_line {
+            continue;
+        }
+
+        let first_inner = open + 1;
+        let last_inner = close - 1;
+        let first_line = line_number(&starts, tokens[first_inner].start);
+        let last_line = line_number(&starts, tokens[last_inner].end);
+        let has_start_padding = first_line.saturating_sub(open_line) >= 2;
+        let has_end_padding = close_line.saturating_sub(last_line) >= 2;
+
+        if require_start && !has_start_padding {
+            report_plain(
+                diagnostics,
+                RULE,
+                "missingPadBlock",
+                "Block must be padded by blank lines.",
+                tokens[open].end,
+                tokens[open].end,
+            );
+        } else if disallow_start && has_start_padding {
+            report_plain(
+                diagnostics,
+                RULE,
+                "extraPadBlock",
+                "Block must not be padded by blank lines.",
+                tokens[open].end,
+                tokens[first_inner].start,
+            );
+        }
+
+        if require_end && !has_end_padding {
+            report_plain(
+                diagnostics,
+                RULE,
+                "missingPadBlock",
+                "Block must be padded by blank lines.",
+                tokens[close].start,
+                tokens[close].start,
+            );
+        } else if disallow_end && has_end_padding {
+            report_plain(
+                diagnostics,
+                RULE,
+                "extraPadBlock",
+                "Block must not be padded by blank lines.",
+                tokens[last_inner].end,
+                tokens[close].start,
+            );
+        }
     }
 }
 
@@ -1165,6 +1410,272 @@ fn find_case_colon(scan: &Scan, label_index: usize) -> Option<usize> {
 }
 
 // ---------------------------------------------------------------------------
+// key-spacing
+// ---------------------------------------------------------------------------
+
+pub(crate) fn check_key_spacing(
+    scan: &Scan,
+    options: &Value,
+    diagnostics: &mut Vec<LintDiagnostic>,
+) {
+    const RULE: &str = "key-spacing";
+    let before_colon = key_spacing_bool(options, "beforeColon", false);
+    let after_colon = key_spacing_bool(options, "afterColon", true);
+    let tokens = scan.tokens();
+
+    for colon in object_property_colons(scan) {
+        if let Some(prev) = scan.prev_significant(colon) {
+            let gap = scan.gap(&tokens[prev], &tokens[colon]);
+            if !has_newline(gap) {
+                if before_colon && gap.is_empty() {
+                    report_missing_space(
+                        diagnostics,
+                        RULE,
+                        "missingKey",
+                        "Missing space after key.",
+                        tokens[colon].start,
+                    );
+                } else if !before_colon && is_whitespace(gap) {
+                    report_unexpected_space(
+                        diagnostics,
+                        RULE,
+                        "extraKey",
+                        "Extra space after key.",
+                        tokens[prev].end,
+                        tokens[colon].start,
+                    );
+                }
+            }
+        }
+
+        if let Some(next) = scan.next_significant(colon) {
+            let gap = scan.gap(&tokens[colon], &tokens[next]);
+            if !has_newline(gap) {
+                if after_colon && gap.is_empty() {
+                    report_missing_space(
+                        diagnostics,
+                        RULE,
+                        "missingValue",
+                        "Missing space before value.",
+                        tokens[colon].end,
+                    );
+                } else if !after_colon && is_whitespace(gap) {
+                    report_unexpected_space(
+                        diagnostics,
+                        RULE,
+                        "extraValue",
+                        "Extra space before value.",
+                        tokens[colon].end,
+                        tokens[next].start,
+                    );
+                }
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// quote-props
+// ---------------------------------------------------------------------------
+
+pub(crate) fn check_quote_props(
+    scan: &Scan,
+    options: &Value,
+    diagnostics: &mut Vec<LintDiagnostic>,
+) {
+    const RULE: &str = "quote-props";
+    let mode = option_keyword(options, "always");
+    let tokens = scan.tokens();
+
+    match mode {
+        "as-needed" => {
+            for colon in object_property_colons(scan) {
+                let Some(key) = scan.prev_significant(colon) else {
+                    continue;
+                };
+                if tokens[key].kind != TokenKind::String {
+                    continue;
+                }
+                let raw = scan.token_text(key);
+                let Some(unquoted) = string_key_value(raw) else {
+                    continue;
+                };
+                if is_simple_identifier(unquoted) || unquoted.parse::<f64>().is_ok() {
+                    report_replace(
+                        diagnostics,
+                        RULE,
+                        "unnecessarilyQuotedProperty",
+                        "Unnecessarily quoted property found.",
+                        tokens[key].start,
+                        tokens[key].end,
+                        "unquoteKey",
+                        "Remove quotes from property key.",
+                        unquoted,
+                    );
+                }
+            }
+        }
+        "consistent" | "consistent-as-needed" => {
+            check_quote_props_consistency(scan, mode == "consistent-as-needed", diagnostics)
+        }
+        _ => {
+            for colon in object_property_colons(scan) {
+                let Some(key) = scan.prev_significant(colon) else {
+                    continue;
+                };
+                if !matches!(tokens[key].kind, TokenKind::Identifier | TokenKind::Number) {
+                    continue;
+                }
+                let key_text = scan.token_text(key);
+                let replacement = quoted_key_text(key_text);
+                report_replace(
+                    diagnostics,
+                    RULE,
+                    "unquotedPropertyFound",
+                    "Unquoted property found.",
+                    tokens[key].start,
+                    tokens[key].end,
+                    "quoteKey",
+                    "Quote property key.",
+                    &replacement,
+                );
+            }
+        }
+    }
+}
+
+fn check_quote_props_consistency(
+    scan: &Scan,
+    as_needed: bool,
+    diagnostics: &mut Vec<LintDiagnostic>,
+) {
+    const RULE: &str = "quote-props";
+    let tokens = scan.tokens();
+
+    for open in 0..tokens.len() {
+        if !punct_is(&tokens[open], scan.source(), "{")
+            || scan.brace_kind(open) != BraceKind::ObjectLike
+        {
+            continue;
+        }
+        let Some(close) = scan.partner(open) else {
+            continue;
+        };
+
+        let mut quoted = Vec::new();
+        let mut unquoted = Vec::new();
+        for colon in object_property_colons(scan)
+            .into_iter()
+            .filter(|&colon| open < colon && colon < close)
+        {
+            let Some(key) = scan.prev_significant(colon) else {
+                continue;
+            };
+            match tokens[key].kind {
+                TokenKind::String => quoted.push(key),
+                TokenKind::Identifier | TokenKind::Number => unquoted.push(key),
+                _ => {}
+            }
+        }
+
+        if quoted.is_empty() || unquoted.is_empty() {
+            continue;
+        }
+
+        if as_needed
+            && quoted.iter().all(|&key| {
+                string_key_value(scan.token_text(key))
+                    .map(|value| is_simple_identifier(value) || value.parse::<f64>().is_ok())
+                    .unwrap_or(false)
+            })
+        {
+            for key in quoted {
+                let Some(unquoted_key) = string_key_value(scan.token_text(key)) else {
+                    continue;
+                };
+                report_replace(
+                    diagnostics,
+                    RULE,
+                    "redundantQuoting",
+                    "Properties should not be quoted as all quotes are redundant.",
+                    tokens[key].start,
+                    tokens[key].end,
+                    "unquoteKey",
+                    "Remove quotes from property key.",
+                    unquoted_key,
+                );
+            }
+        } else {
+            for key in unquoted {
+                let key_text = scan.token_text(key);
+                let replacement = quoted_key_text(key_text);
+                report_replace(
+                    diagnostics,
+                    RULE,
+                    "inconsistentlyQuotedProperty",
+                    "Inconsistently quoted property found.",
+                    tokens[key].start,
+                    tokens[key].end,
+                    "quoteKey",
+                    "Quote property key.",
+                    &replacement,
+                );
+            }
+        }
+    }
+}
+
+fn quoted_key_text(key_text: &str) -> String {
+    let mut replacement = String::with_capacity(key_text.len() + 2);
+    replacement.push('"');
+    replacement.push_str(key_text);
+    replacement.push('"');
+    replacement
+}
+
+// ---------------------------------------------------------------------------
+// max-statements-per-line
+// ---------------------------------------------------------------------------
+
+pub(crate) fn check_max_statements_per_line(
+    scan: &Scan,
+    options: &Value,
+    diagnostics: &mut Vec<LintDiagnostic>,
+) {
+    const RULE: &str = "max-statements-per-line";
+    let max = option_usize(options, 0, "max", 1).max(1);
+    let starts = line_starts(scan.source());
+    let tokens = scan.tokens();
+    let for_semis = for_header_semis(scan);
+    let mut current_line = 0usize;
+    let mut statements_on_line = 0usize;
+    let mut reported_line = 0usize;
+
+    for index in 0..tokens.len() {
+        if !punct_is(&tokens[index], scan.source(), ";") || for_semis[index] {
+            continue;
+        }
+        let line = line_number(&starts, tokens[index].start);
+        if line != current_line {
+            current_line = line;
+            statements_on_line = 0;
+        }
+        statements_on_line += 1;
+        if statements_on_line == max + 1 && reported_line != line {
+            report_plain(
+                diagnostics,
+                RULE,
+                "exceed",
+                "This line has too many statements.",
+                tokens[index].start,
+                tokens[index].end,
+            );
+            reported_line = line;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
 // no-extra-semi
 // ---------------------------------------------------------------------------
 
@@ -1692,8 +2203,21 @@ mod tests {
         diagnostics
     }
 
+    fn ids(diagnostics: &[LintDiagnostic]) -> Vec<&str> {
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.message_id.as_str())
+            .collect()
+    }
+
     fn always(value: &str) -> Value {
         Value::Array(std::iter::once(Value::String(value.into())).collect())
+    }
+
+    fn object_option(key: &str, value: Value) -> Value {
+        let mut object = serde_json::Map::new();
+        object.insert(key.to_owned(), value);
+        Value::Array(std::iter::once(Value::Object(object)).collect())
     }
 
     #[test]
@@ -1840,6 +2364,35 @@ mod tests {
         // Empty block exempt.
         assert_eq!(
             run(check_block_spacing, "function f() {}", Value::Null).len(),
+            0
+        );
+    }
+
+    #[test]
+    fn padded_blocks_always_default() {
+        assert_eq!(
+            ids(&run(
+                check_padded_blocks,
+                "if (x) {\n  y();\n}",
+                Value::Null
+            )),
+            ["missingPadBlock", "missingPadBlock"]
+        );
+        assert_eq!(
+            run(check_padded_blocks, "if (x) {\n\n  y();\n\n}", Value::Null).len(),
+            0
+        );
+        assert_eq!(
+            ids(&run(
+                check_padded_blocks,
+                "if (x) {\n\n  y();\n\n}",
+                always("never")
+            )),
+            ["extraPadBlock", "extraPadBlock"]
+        );
+        // Object literals are not block statements for this rule.
+        assert_eq!(
+            run(check_padded_blocks, "const o = {\n  a: 1\n};", Value::Null).len(),
             0
         );
     }
@@ -2143,6 +2696,93 @@ mod tests {
             run(
                 check_switch_colon_spacing,
                 "switch (x) { case a ? b : c: foo(); }",
+                Value::Null
+            )
+            .len(),
+            0
+        );
+    }
+
+    #[test]
+    fn key_spacing_default_and_options() {
+        assert_eq!(
+            ids(&run(check_key_spacing, "const o = {foo :1};", Value::Null)),
+            ["extraKey", "missingValue"]
+        );
+        assert_eq!(
+            run(check_key_spacing, "const o = {foo: 1};", Value::Null).len(),
+            0
+        );
+        let no_after = object_option("afterColon", Value::Bool(false));
+        assert_eq!(
+            ids(&run(check_key_spacing, "const o = {foo: 1};", no_after)),
+            ["extraValue"]
+        );
+        // Ternary colons inside values are not property separators.
+        assert_eq!(
+            run(
+                check_key_spacing,
+                "const o = {foo: a ? b : c};",
+                Value::Null
+            )
+            .len(),
+            0
+        );
+    }
+
+    #[test]
+    fn quote_props_modes() {
+        assert_eq!(
+            ids(&run(check_quote_props, "const o = {foo: 1};", Value::Null)),
+            ["unquotedPropertyFound"]
+        );
+        assert_eq!(
+            run(check_quote_props, "const o = {\"foo\": 1};", Value::Null).len(),
+            0
+        );
+        assert_eq!(
+            ids(&run(
+                check_quote_props,
+                "const o = {\"foo\": 1};",
+                always("as-needed")
+            )),
+            ["unnecessarilyQuotedProperty"]
+        );
+        assert_eq!(
+            ids(&run(
+                check_quote_props,
+                "const o = {\"foo\": 1, bar: 2};",
+                always("consistent")
+            )),
+            ["inconsistentlyQuotedProperty"]
+        );
+    }
+
+    #[test]
+    fn max_statements_per_line_counts_semicolon_statements() {
+        assert_eq!(
+            ids(&run(
+                check_max_statements_per_line,
+                "const a = 1; const b = 2;",
+                Value::Null
+            )),
+            ["exceed"]
+        );
+        let two = object_option("max", Value::from(2));
+        assert_eq!(
+            run(
+                check_max_statements_per_line,
+                "const a = 1; const b = 2;",
+                two
+            )
+            .len(),
+            0
+        );
+        // For-header semicolons are syntax, not separate statements.
+        assert_eq!(
+            run(
+                check_max_statements_per_line,
+                "for (let i = 0; i < 2; i++) {}",
                 Value::Null
             )
             .len(),

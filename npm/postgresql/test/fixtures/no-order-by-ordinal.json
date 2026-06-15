@@ -1,0 +1,59 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-order-by-ordinal",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "no-order-by",
+      "code": "SELECT id, name FROM users;"
+    },
+    {
+      "name": "order-by-name",
+      "code": "SELECT id, name FROM users ORDER BY name;"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "order-by-multiple-positions",
+      "code": "SELECT id, name, email FROM users ORDER BY 1, 2 DESC;",
+      "errors": [
+        {
+          "messageId": "noOrderByOrdinal",
+          "message": "`ORDER BY <position>` silently breaks when the SELECT list changes. Use the column name or alias instead.",
+          "line": 1,
+          "column": 44,
+          "endLine": 1,
+          "endColumn": 45
+        },
+        {
+          "messageId": "noOrderByOrdinal",
+          "message": "`ORDER BY <position>` silently breaks when the SELECT list changes. Use the column name or alias instead.",
+          "line": 1,
+          "column": 47,
+          "endLine": 1,
+          "endColumn": 48
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "order-by-position",
+      "code": "SELECT id, name FROM users ORDER BY 1;",
+      "errors": [
+        {
+          "messageId": "noOrderByOrdinal",
+          "message": "`ORDER BY <position>` silently breaks when the SELECT list changes. Use the column name or alias instead.",
+          "line": 1,
+          "column": 37,
+          "endLine": 1,
+          "endColumn": 38
+        }
+      ],
+      "output": null
+    }
+  ]
+}

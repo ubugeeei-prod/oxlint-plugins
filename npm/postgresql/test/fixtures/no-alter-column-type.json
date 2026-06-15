@@ -1,0 +1,36 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-alter-column-type",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "add-column",
+      "code": "ALTER TABLE users ADD COLUMN id_new bigint;"
+    },
+    {
+      "name": "alter-default",
+      "code": "ALTER TABLE users ALTER COLUMN status SET DEFAULT 'active';"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "alter-type",
+      "code": "ALTER TABLE users ALTER COLUMN id TYPE bigint;",
+      "errors": [
+        {
+          "messageId": "noAlterColumnType",
+          "message": "`ALTER COLUMN ... TYPE` can rewrite the entire table under an ACCESS EXCLUSIVE lock. For non-trivial tables, add a new column, dual-write, backfill, and swap — or use `USING` only for known-safe conversions in a separate migration.",
+          "line": 1,
+          "column": 32,
+          "endLine": 1,
+          "endColumn": 46
+        }
+      ],
+      "output": null
+    }
+  ]
+}

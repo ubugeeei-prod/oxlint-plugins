@@ -1,0 +1,174 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/letter-case.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/letter-case.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/regexp/i"
+    },
+    {
+      "code": "/Regexp/"
+    },
+    {
+      "code": "/[A-z]/i"
+    },
+    {
+      "code": "/[\\q{ab}]/iv"
+    },
+    {
+      "code": "/\\u000a/"
+    },
+    {
+      "code": "/\\u{a}/u"
+    },
+    {
+      "code": "/\\x0a/"
+    },
+    {
+      "code": "/\\cA/u"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/Regexp/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'R' is not in lowercase",
+          "line": 1,
+          "column": 2,
+          "endColumn": 3
+        }
+      ],
+      "output": "/regexp/i"
+    },
+    {
+      "code": "/[A-Z]/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'A-Z' is not in lowercase",
+          "line": 1,
+          "column": 3,
+          "endColumn": 6
+        }
+      ],
+      "output": "/[a-z]/i"
+    },
+    {
+      "code": "/[\\u0041-Z]/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\u0041-Z' is not in lowercase",
+          "line": 1,
+          "column": 3,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[a-z]/i"
+    },
+    {
+      "code": "/[\\u004A-Z]/i",
+      "errorCount": 2,
+      "errors": [
+        {
+          "message": "'\\u004A-Z' is not in lowercase",
+          "line": 1,
+          "column": 3,
+          "endColumn": 11
+        },
+        {
+          "message": "'\\u004A' is not in lowercase",
+          "line": 1,
+          "column": 3,
+          "endColumn": 9
+        }
+      ],
+      "output": "/[j-z]/i"
+    },
+    {
+      "code": "/[\\u004a-Z]/i",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\u004a-Z' is not in lowercase",
+          "line": 1,
+          "column": 3,
+          "endColumn": 11
+        }
+      ],
+      "output": "/[j-z]/i"
+    },
+    {
+      "code": "/\\u000A/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\u000A' is not in lowercase",
+          "line": 1,
+          "column": 2,
+          "endColumn": 8
+        }
+      ],
+      "output": "/\\u000a/"
+    },
+    {
+      "code": "/\\u{A}/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\u{A}' is not in lowercase",
+          "line": 1,
+          "column": 2,
+          "endColumn": 7
+        }
+      ],
+      "output": "/\\u{a}/u"
+    },
+    {
+      "code": "/\\x0A/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\x0A' is not in lowercase",
+          "line": 1,
+          "column": 2,
+          "endColumn": 6
+        }
+      ],
+      "output": "/\\x0a/"
+    },
+    {
+      "code": "/\\ca/u",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'\\ca' is not in uppercase",
+          "line": 1,
+          "column": 2,
+          "endColumn": 5
+        }
+      ],
+      "output": "/\\cA/u"
+    },
+    {
+      "code": "/[\\q{Ab}]/iv",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "'A' is not in lowercase",
+          "line": 1,
+          "column": 6,
+          "endColumn": 7
+        }
+      ],
+      "output": "/[\\q{ab}]/iv"
+    }
+  ]
+}

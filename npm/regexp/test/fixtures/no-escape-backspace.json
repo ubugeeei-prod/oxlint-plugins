@@ -1,0 +1,55 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-escape-backspace.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-escape-backspace.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/\\b/"
+    },
+    {
+      "code": "/\\u0008/"
+    },
+    {
+      "code": "/\\ch/"
+    },
+    {
+      "code": "/\\cH/"
+    },
+    {
+      "code": "/[\\q{\\u0008}]/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/[\\b]/",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected '[\\b]'. Use '\\u0008' instead.",
+          "line": 1,
+          "column": 3,
+          "endColumn": 5
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "/[\\q{\\b}]/v",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected '[\\b]'. Use '\\u0008' instead.",
+          "line": 1,
+          "column": 6,
+          "endColumn": 8
+        }
+      ],
+      "output": null
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-postgresql",
+    "ref": "v0.22.1",
+    "sourceDir": "tests/fixtures/no-time-type",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-postgresql-tests.ts"
+  },
+  "valid": [
+    {
+      "name": "interval",
+      "code": "CREATE TABLE jobs (id int, duration interval);"
+    },
+    {
+      "name": "timestamptz",
+      "code": "CREATE TABLE shifts (id int, start_at timestamptz);"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "time",
+      "code": "CREATE TABLE shifts (id int, start_at time);",
+      "errors": [
+        {
+          "messageId": "noTimeType",
+          "message": "`TIME` and `TIME WITH TIME ZONE` rarely model anything correctly: `time` has no date so cannot disambiguate around DST, and `timetz` stores an offset that is meaningless without a date. Use `timestamptz` for points in time, `interval` for durations, or store an opaque `text` if all you need is a display value.",
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 38
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "timetz",
+      "code": "CREATE TABLE shifts (id int, start_at timetz);",
+      "errors": [
+        {
+          "messageId": "noTimeType",
+          "message": "`TIME` and `TIME WITH TIME ZONE` rarely model anything correctly: `time` has no date so cannot disambiguate around DST, and `timetz` stores an offset that is meaningless without a date. Use `timestamptz` for points in time, `interval` for durations, or store an opaque `text` if all you need is a display value.",
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 38
+        }
+      ],
+      "output": null
+    }
+  ]
+}

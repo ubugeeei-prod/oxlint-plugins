@@ -1,0 +1,950 @@
+{
+  "__generated": {
+    "source": "@eslint/markdown",
+    "ref": "v8.0.2",
+    "sourceFile": "tests/rules/no-missing-label-refs.test.js",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-eslint-markdown-tests.ts",
+    "language": "markdown/commonmark"
+  },
+  "valid": [
+    {
+      "code": "[*foo*]"
+    },
+    {
+      "code": "[foo]\n\n[foo]: http://bar.com"
+    },
+    {
+      "code": "[foo][foo]\n\n[foo]: http://bar.com"
+    },
+    {
+      "code": "[foo][foo]\n\n[ foo ]: http://bar.com"
+    },
+    {
+      "code": "[foo][ foo ]\n\n[ foo ]: http://bar.com"
+    },
+    {
+      "code": "![foo][foo]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "[foo][]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "![foo][]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "[  foo ][]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "[foo][ ]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "[\nfoo\n][\n]\n\n[foo]: http://bar.com/image.jpg"
+    },
+    {
+      "code": "[]"
+    },
+    {
+      "code": "][]"
+    },
+    {
+      "code": "[][]"
+    },
+    {
+      "code": "[] []"
+    },
+    {
+      "code": "[foo"
+    },
+    {
+      "code": "foo]"
+    },
+    {
+      "code": "foo][bar]\n\n[bar]: http://bar.com"
+    },
+    {
+      "code": "foo][bar][baz]\n\n[baz]: http://baz.com"
+    },
+    {
+      "code": "[][foo]\n\n[foo]: http://foo.com"
+    },
+    {
+      "code": "[foo][bar\\]\n\n[foo]: http://foo.com"
+    },
+    {
+      "code": "\\[\\]"
+    },
+    {
+      "code": "\\\\\\[\\\\\\]"
+    },
+    {
+      "code": "\\\\\\\\\\[\\\\\\\\\\]"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\[\\\\\\\\\\\\\\]"
+    },
+    {
+      "code": "[\\]"
+    },
+    {
+      "code": "[\\\\\\]"
+    },
+    {
+      "code": "[\\\\\\\\\\]"
+    },
+    {
+      "code": "[\\\\\\\\\\\\\\]"
+    },
+    {
+      "code": "\\[]"
+    },
+    {
+      "code": "\\\\\\[]"
+    },
+    {
+      "code": "\\\\\\\\\\[]"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\[]"
+    },
+    {
+      "code": "\\[escaped\\]"
+    },
+    {
+      "code": "\\\\\\[escaped\\\\\\]"
+    },
+    {
+      "code": "\\\\\\\\\\[escaped\\\\\\\\\\]"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\[escaped\\\\\\\\\\\\\\]"
+    },
+    {
+      "code": "\\[escaped]"
+    },
+    {
+      "code": "\\\\\\[escaped]"
+    },
+    {
+      "code": "\\\\\\\\\\[escaped]"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\[escaped]"
+    },
+    {
+      "code": "[escaped\\]"
+    },
+    {
+      "code": "[escaped\\\\\\]"
+    },
+    {
+      "code": "[escaped\\\\\\\\\\]"
+    },
+    {
+      "code": "[escaped\\\\\\\\\\\\\\]"
+    },
+    {
+      "code": "\\[escaped\\]\\[escaped\\]"
+    },
+    {
+      "code": "\\\\\\[escaped\\\\\\]\\\\\\[escaped\\\\\\]"
+    },
+    {
+      "code": "\\\\\\\\\\[escaped\\\\\\\\\\]\\\\\\\\\\[escaped\\\\\\\\\\]"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\[escaped\\\\\\\\\\\\\\]\\\\\\\\\\\\\\[escaped\\\\\\\\\\\\\\]"
+    },
+    {
+      "code": "\\[escaped\\]\\[escaped]"
+    },
+    {
+      "code": "\\\\\\[escaped\\\\\\]\\\\\\[escaped]"
+    },
+    {
+      "code": "\\\\\\\\\\[escaped\\\\\\\\\\]\\\\\\\\\\[escaped]"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\[escaped\\\\\\\\\\\\\\]\\\\\\\\\\\\\\[escaped]"
+    },
+    {
+      "code": "[escaped\\]\\[escaped\\]"
+    },
+    {
+      "code": "[escaped\\\\\\]\\\\\\[escaped\\\\\\]"
+    },
+    {
+      "code": "[escaped\\\\\\\\\\]\\\\\\\\\\[escaped\\\\\\\\\\]"
+    },
+    {
+      "code": "[escaped\\\\\\\\\\\\\\]\\\\\\\\\\\\\\[escaped\\\\\\\\\\\\\\]"
+    },
+    {
+      "code": "\\[escaped]\\[escaped]"
+    },
+    {
+      "code": "\\\\\\[escaped]\\\\\\[escaped]"
+    },
+    {
+      "code": "\\\\\\\\\\[escaped]\\\\\\\\\\[escaped]"
+    },
+    {
+      "code": "\\\\\\\\\\\\\\[escaped]\\\\\\\\\\\\\\[escaped]"
+    },
+    {
+      "code": "[escaped\\][escaped\\]"
+    },
+    {
+      "code": "[escaped\\\\\\][escaped\\\\\\]"
+    },
+    {
+      "code": "[escaped\\\\\\\\\\][escaped\\\\\\\\\\]"
+    },
+    {
+      "code": "[escaped\\\\\\\\\\\\\\][escaped\\\\\\\\\\\\\\]"
+    },
+    {
+      "code": "[foo][bar]",
+      "options": [
+        {
+          "allowLabels": ["bar"]
+        }
+      ]
+    },
+    {
+      "code": "![foo][bar]",
+      "options": [
+        {
+          "allowLabels": ["bar"]
+        }
+      ]
+    },
+    {
+      "code": "[foo][]",
+      "options": [
+        {
+          "allowLabels": ["foo"]
+        }
+      ]
+    },
+    {
+      "code": "![foo][]",
+      "options": [
+        {
+          "allowLabels": ["foo"]
+        }
+      ]
+    },
+    {
+      "code": "[foo]",
+      "options": [
+        {
+          "allowLabels": ["foo"]
+        }
+      ]
+    },
+    {
+      "code": "![foo]",
+      "options": [
+        {
+          "allowLabels": ["foo"]
+        }
+      ]
+    },
+    {
+      "code": "[foo]\n[bar]",
+      "options": [
+        {
+          "allowLabels": ["foo", "bar"]
+        }
+      ]
+    },
+    {
+      "code": "[Foo][]\n[Bar][]",
+      "options": [
+        {
+          "allowLabels": ["Foo", "Bar"]
+        }
+      ]
+    },
+    {
+      "code": "- [x] Checked\n- [-] In progress",
+      "options": [
+        {
+          "allowLabels": ["-"]
+        }
+      ],
+      "language": "markdown/gfm"
+    },
+    {
+      "code": "$(A \\\\cdot x)[i] = \\\\sum_{j=1}^{n} A[i][j] , x[j]$",
+      "languageOptions": {
+        "math": true
+      }
+    },
+    {
+      "code": "$[1, 2, 3, 4]$",
+      "languageOptions": {
+        "math": true
+      }
+    },
+    {
+      "code": "$$\n[1, 2, 3, 4]\n$$",
+      "languageOptions": {
+        "math": true
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "code": "[foo][bar]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "![foo][bar]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "[foo][]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "![foo][]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "[foo]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "![foo]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 3,
+          "endLine": 1,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "[foo]\n[bar]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        },
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 2,
+          "column": 2,
+          "endLine": 2,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "- - - [foo]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "foo][bar]\n\n[baz]: http://baz.com",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "foo][bar][baz]\n\n[bar]: http://bar.com",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "baz"
+          },
+          "line": 1,
+          "column": 11,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ]
+    },
+    {
+      "code": "[foo]\n[foo][bar]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        },
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "[Foo][foo]\n[Bar][]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 10
+        },
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "Bar"
+          },
+          "line": 2,
+          "column": 2,
+          "endLine": 2,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "[Foo][]\n[Bar][]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "Foo"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        },
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "Bar"
+          },
+          "line": 2,
+          "column": 2,
+          "endLine": 2,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "[Foo][foo]\n[Bar][bar]\n[Hoge][]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 10
+        },
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 10
+        },
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "Hoge"
+          },
+          "line": 3,
+          "column": 2,
+          "endLine": 3,
+          "endColumn": 6
+        }
+      ]
+    },
+    {
+      "code": "[Foo][]\n[Bar][bar]\n[Hoge][hoge]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "Foo"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        },
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 10
+        },
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "hoge"
+          },
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 12
+        }
+      ]
+    },
+    {
+      "code": "[][foo]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": " foo\n  [bar]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 2,
+          "column": 4,
+          "endLine": 2,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "\\\\[foo]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "\\\\[foo\\\\][bar\\\\]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar\\\\"
+          },
+          "line": 1,
+          "column": 11,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ]
+    },
+    {
+      "code": "\\\\\\\\[foo\\\\\\\\][bar\\\\\\\\]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar\\\\\\\\"
+          },
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "code": "\\\\\\\\\\\\[foo\\\\\\\\\\\\][bar\\\\\\\\\\\\]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar\\\\\\\\\\\\"
+          },
+          "line": 1,
+          "column": 19,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ]
+    },
+    {
+      "code": "\\[[foo]\\]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ]
+    },
+    {
+      "code": "\\\\\\[[foo]\\\\\\]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "\\\\\\\\\\[[foo]\\\\\\\\\\]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "\\\\\\\\\\\\\\[[foo]\\\\\\\\\\\\\\]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ]
+    },
+    {
+      "code": "[\\[foo\\]]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "\\[foo\\]"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ]
+    },
+    {
+      "code": "[\\\\\\[foo\\\\\\]]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "\\\\\\[foo\\\\\\]"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ]
+    },
+    {
+      "code": "[\\\\\\\\\\[foo\\\\\\\\\\]]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "\\\\\\\\\\[foo\\\\\\\\\\]"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ]
+    },
+    {
+      "code": "[\\\\\\\\\\\\\\[foo\\\\\\\\\\\\\\]]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "\\\\\\\\\\\\\\[foo\\\\\\\\\\\\\\]"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ]
+    },
+    {
+      "code": "[\\[\\[foo\\]\\]]",
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "\\[\\[foo\\]\\]"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ]
+    },
+    {
+      "code": "[foo][bar]",
+      "options": [
+        {
+          "allowLabels": ["baz"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "code": "![foo][bar]",
+      "options": [
+        {
+          "allowLabels": ["foo"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ]
+    },
+    {
+      "code": "[foo][]",
+      "options": [
+        {
+          "allowLabels": ["bar"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "[foo]\n[bar]",
+      "options": [
+        {
+          "allowLabels": ["foo"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "bar"
+          },
+          "line": 2,
+          "column": 2,
+          "endLine": 2,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "[Foo][]",
+      "options": [
+        {
+          "allowLabels": ["foo"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "Foo"
+          },
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 5
+        }
+      ]
+    },
+    {
+      "code": "[Foo][foo]\n[Bar][]",
+      "options": [
+        {
+          "allowLabels": ["Bar"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "notFound",
+          "data": {
+            "label": "foo"
+          },
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ]
+    }
+  ]
+}

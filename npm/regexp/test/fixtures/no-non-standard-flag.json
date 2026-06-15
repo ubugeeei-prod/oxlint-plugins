@@ -1,0 +1,72 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-regexp",
+    "version": "3.1.0",
+    "sourceFile": "tests/lib/rules/no-non-standard-flag.ts",
+    "snapshotFile": "tests/lib/rules/__snapshots__/no-non-standard-flag.ts.eslintsnap",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-regexp-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "/foo/gimsuy"
+    },
+    {
+      "code": "/foo/v"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "/fo*o*/l",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-standard flag 'l'.",
+          "line": 1,
+          "column": 8,
+          "endColumn": 9
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp(\"foo\", \"l\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-standard flag 'l'.",
+          "line": 1,
+          "column": 16,
+          "endColumn": 17
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp(someVariable, \"l\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-standard flag 'l'.",
+          "line": 1,
+          "column": 23,
+          "endColumn": 24
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "RegExp(\"(\", \"l\")",
+      "errorCount": 1,
+      "errors": [
+        {
+          "message": "Unexpected non-standard flag 'l'.",
+          "line": 1,
+          "column": 14,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    }
+  ]
+}
