@@ -199,6 +199,7 @@ describe('sonarjs plugin shape', () => {
       'no-in-misuse',
       'no-require-or-define',
       'no-invalid-regexp',
+      'no-extra-arguments',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -304,6 +305,7 @@ describe('sonarjs plugin shape', () => {
     expect(typeof plugin.rules['no-in-misuse']).toBe('object');
     expect(typeof plugin.rules['no-require-or-define']).toBe('object');
     expect(typeof plugin.rules['no-invalid-regexp']).toBe('object');
+    expect(typeof plugin.rules['no-extra-arguments']).toBe('object');
     expect(Object.keys(plugin.configs)).toEqual(['recommended']);
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-template-literals']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-nested-switch']).toBe('error');
@@ -417,6 +419,7 @@ describe('sonarjs plugin shape', () => {
     expect(plugin.configs.recommended.rules['sonarjs/no-in-misuse']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-require-or-define']).toBe('error');
     expect(plugin.configs.recommended.rules['sonarjs/no-invalid-regexp']).toBe('error');
+    expect(plugin.configs.recommended.rules['sonarjs/no-extra-arguments']).toBe('error');
   });
 });
 
@@ -3461,5 +3464,66 @@ describe('no-invalid-regexp rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-invalid-regexp)');
+  });
+});
+
+describe('no-extra-arguments rule', () => {
+  it('reports when a const-assigned function expression is called with too many arguments', () => {
+    const src = 'const f = function(a){}; f(1, 2);';
+    const reports = runRule('no-extra-arguments', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('extraArguments');
+  });
+
+  it('reports when a const-assigned arrow function is called with too many arguments', () => {
+    const src = 'const g = (a) => a; g(1, 2, 3);';
+    const reports = runRule('no-extra-arguments', src);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('extraArguments');
+  });
+
+  it('does not report when the argument count exactly matches the parameter count', () => {
+    const src = 'const f = (a, b) => {}; f(1, 2);';
+    const reports = runRule('no-extra-arguments', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when fewer arguments than parameters are passed', () => {
+    const src = 'const f = (a) => {}; f();';
+    const reports = runRule('no-extra-arguments', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the function has a rest parameter', () => {
+    const src = 'const f = (...args) => {}; f(1, 2, 3);';
+    const reports = runRule('no-extra-arguments', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the call contains a spread argument', () => {
+    const src = 'const f = (a) => {}; f(...arr);';
+    const reports = runRule('no-extra-arguments', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the function body references the arguments object', () => {
+    const src = 'const f = function(a){ return arguments.length; }; f(1, 2);';
+    const reports = runRule('no-extra-arguments', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the callee is an unresolved identifier', () => {
+    const src = 'g(1, 2);';
+    const reports = runRule('no-extra-arguments', src);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-extra-arguments through the CLI', () => {
+    const src = 'const f = function(a){}; f(1, 2);';
+    const result = runOxlint('no-extra-arguments', src);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-extra-arguments)');
   });
 });

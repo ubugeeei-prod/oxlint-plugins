@@ -5802,3 +5802,63 @@ fn no_invalid_regexp_does_not_report_valid_quantifier() {
     let diagnostics = scan("no-invalid-regexp", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_extra_arguments_reports_function_expression_with_extra_args() {
+    let source = "const f = function(a){}; f(1, 2);";
+    let diagnostics = scan("no-extra-arguments", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-extra-arguments");
+    assert_eq!(diagnostics[0].message_id, "extraArguments");
+}
+
+#[test]
+fn no_extra_arguments_reports_arrow_function_with_extra_args() {
+    let source = "const g = (a) => a; g(1, 2, 3);";
+    let diagnostics = scan("no-extra-arguments", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-extra-arguments");
+    assert_eq!(diagnostics[0].message_id, "extraArguments");
+}
+
+#[test]
+fn no_extra_arguments_does_not_report_exact_arg_count() {
+    let source = "const f = (a, b) => {}; f(1, 2);";
+    let diagnostics = scan("no-extra-arguments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_extra_arguments_does_not_report_fewer_args_than_params() {
+    let source = "const f = (a) => {}; f();";
+    let diagnostics = scan("no-extra-arguments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_extra_arguments_does_not_report_rest_parameter() {
+    let source = "const f = (...args) => {}; f(1, 2, 3);";
+    let diagnostics = scan("no-extra-arguments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_extra_arguments_does_not_report_arguments_usage() {
+    let source = "const f = function(){ return arguments.length; }; f(1, 2);";
+    let diagnostics = scan("no-extra-arguments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_extra_arguments_does_not_report_unresolved_callee() {
+    let source = "g(1, 2);";
+    let diagnostics = scan("no-extra-arguments", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_extra_arguments_does_not_report_spread_argument() {
+    let source = "const f = (a) => {}; f(...arr);";
+    let diagnostics = scan("no-extra-arguments", source);
+    assert!(diagnostics.is_empty());
+}
