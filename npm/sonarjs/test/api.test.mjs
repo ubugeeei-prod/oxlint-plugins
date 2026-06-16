@@ -229,6 +229,7 @@ const expectedRuleNames = [
   'aws-sns-unencrypted-topics',
   'no-globals-shadowing',
   'no-unused-vars',
+  'strings-comparison',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
