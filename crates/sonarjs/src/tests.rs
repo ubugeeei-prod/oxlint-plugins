@@ -11354,3 +11354,47 @@ fn cookies_does_not_report_other_header() {
     let diagnostics = scan("cookies", "res.setHeader('Content-Type', 'text/html');");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn xpath_reports_document_evaluate() {
+    let diagnostics = scan(
+        "xpath",
+        "var nodes = document.evaluate(userinput, xmlDoc, null, XPathResult.ANY_TYPE, null);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "xpath");
+    assert_eq!(diagnostics[0].message_id, "xpath");
+}
+
+#[test]
+fn xpath_reports_select_nodes() {
+    let diagnostics = scan("xpath", "var nodes = xmlDoc.selectNodes(userinput);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "xpath");
+}
+
+#[test]
+fn xpath_reports_select_single_node() {
+    let diagnostics = scan("xpath", "var node = xmlDoc.SelectSingleNode(userinput);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "xpath");
+}
+
+#[test]
+fn xpath_reports_xpath_select() {
+    let diagnostics = scan("xpath", "var nodes = xpath.select(userinput, doc);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "xpath");
+}
+
+#[test]
+fn xpath_does_not_report_generic_select() {
+    let diagnostics = scan("xpath", "var rows = db.select(columns);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn xpath_does_not_report_generic_evaluate() {
+    let diagnostics = scan("xpath", "var result = expr.evaluate(scope);");
+    assert!(diagnostics.is_empty());
+}
