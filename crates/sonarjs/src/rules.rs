@@ -229,6 +229,7 @@ mod updated_const_var;
 mod updated_loop_counter;
 mod use_type_alias;
 mod useless_string_operation;
+mod values_not_convertible_to_numbers;
 mod void_use;
 mod weak_ssl;
 mod web_sql_database;
