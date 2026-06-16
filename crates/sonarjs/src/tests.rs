@@ -11836,3 +11836,51 @@ fn chai_determinate_assertion_does_not_report_non_expect_rooted_members() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_async_constructor_reports_promise_then() {
+    let source = "class MyClass {\n  constructor() {\n    Promise.resolve().then(() => this.data = fetchData());\n  }\n}";
+    let diagnostics = scan("no-async-constructor", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-async-constructor");
+    assert_eq!(diagnostics[0].message_id, "noAsyncConstructor");
+}
+
+#[test]
+fn no_async_constructor_reports_promise_all_statement() {
+    let source =
+        "class MyClass {\n  constructor() {\n    Promise.all([fetchA(), fetchB()]);\n  }\n}";
+    let diagnostics = scan("no-async-constructor", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noAsyncConstructor");
+}
+
+#[test]
+fn no_async_constructor_reports_var_init_then() {
+    let source =
+        "class MyClass {\n  constructor() {\n    const p = fetchData().then(() => {});\n  }\n}";
+    let diagnostics = scan("no-async-constructor", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noAsyncConstructor");
+}
+
+#[test]
+fn no_async_constructor_does_not_report_nested_callback_handler() {
+    let source = "class MyClass {\n  constructor() {\n    this.handler = () => fetch().then(() => {});\n  }\n}";
+    let diagnostics = scan("no-async-constructor", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_async_constructor_does_not_report_sync_constructor() {
+    let source = "class MyClass {\n  constructor() {\n    this.data = null;\n  }\n}";
+    let diagnostics = scan("no-async-constructor", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_async_constructor_does_not_report_async_method() {
+    let source = "class MyClass {\n  constructor() {\n    this.data = null;\n  }\n  async initialize() {\n    this.data = await fetchData();\n  }\n}";
+    let diagnostics = scan("no-async-constructor", source);
+    assert!(diagnostics.is_empty());
+}
