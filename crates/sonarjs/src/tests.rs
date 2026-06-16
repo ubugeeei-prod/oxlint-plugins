@@ -11178,3 +11178,39 @@ fn argument_type_does_not_report_multi_arg_method() {
     let diagnostics = scan("argument-type", "Math.max(a < b, c);");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_s3_bucket_insecure_http_reports_enforce_ssl_false() {
+    let diagnostics = scan(
+        "aws-s3-bucket-insecure-http",
+        "new Bucket(this, 'b', { enforceSSL: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn aws_s3_bucket_insecure_http_does_not_report_enforce_ssl_true() {
+    let diagnostics = scan(
+        "aws-s3-bucket-insecure-http",
+        "const x = { enforceSSL: true };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_insecure_http_does_not_report_non_literal() {
+    let diagnostics = scan(
+        "aws-s3-bucket-insecure-http",
+        "const x = { enforceSSL: flag };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_insecure_http_does_not_report_other_key() {
+    let diagnostics = scan(
+        "aws-s3-bucket-insecure-http",
+        "const x = { encryption: false };",
+    );
+    assert!(diagnostics.is_empty());
+}

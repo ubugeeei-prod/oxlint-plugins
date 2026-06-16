@@ -762,6 +762,10 @@ const messages = Object.freeze({
   'argument-type': {
     argumentType: 'Pass a number to this Math function; this argument evaluates to a boolean.',
   },
+  'aws-s3-bucket-insecure-http': {
+    s3BucketInsecureHttp:
+      'Enforce HTTPS-only access on this S3 bucket (set enforceSSL: true) instead of allowing insecure HTTP.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1321,6 +1325,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a child_process spawn/spawnSync/execFile/execFileSync call passed an options object with shell:true (the shell-interpreter form of S4721), which risks OS command injection; exec/execSync are intentionally excluded to avoid colliding with RegExp.exec, keeping this zero-false-positive',
   'argument-type':
     'Flag a single-argument Math.* numeric call (abs, floor, sqrt, ...) whose argument is a boolean-producing expression — a comparison, a logical &&/||, or a logical-not — which is the documented type-mismatch bug of S3782 (e.g. Math.abs(x < 0.0042)); requiring a boolean-producing argument to a numeric Math method keeps this zero-false-positive',
+  'aws-s3-bucket-insecure-http':
+    'Flag an AWS CDK S3 bucket property enforceSSL:false (the explicit insecure-HTTP form of S6249), which authorizes cleartext HTTP access. The distinctive enforceSSL key keeps this zero-false-positive; omission is intentionally not flagged',
 });
 
 const ruleTypes = Object.freeze({
@@ -1532,6 +1538,7 @@ const ruleTypes = Object.freeze({
   'no-vue-bypass-sanitization': 'problem',
   'os-command': 'problem',
   'argument-type': 'problem',
+  'aws-s3-bucket-insecure-http': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1742,6 +1749,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-vue-bypass-sanitization': 'error',
   'os-command': 'error',
   'argument-type': 'error',
+  'aws-s3-bucket-insecure-http': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
