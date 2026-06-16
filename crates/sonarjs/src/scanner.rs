@@ -783,6 +783,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_unverified_certificate_object_property(it);
         self.check_content_length_object_property(it);
         self.check_content_security_policy_object_property(it);
+        self.check_no_mime_sniff_object_property(it);
         self.check_certificate_transparency_object_property(it);
         self.check_disabled_auto_escaping_object_property(it);
         self.check_aws_s3_bucket_granted_access_object_property(it);

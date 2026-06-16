@@ -703,6 +703,9 @@ const messages = Object.freeze({
     unverifiedCertificate:
       'Enable server certificate validation (do not set rejectUnauthorized to false).',
   },
+  'no-mime-sniff': {
+    noMimeSniff: 'Do not disable the X-Content-Type-Options: nosniff protection (noSniff: false).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1196,6 +1199,11 @@ const ruleDescriptions = Object.freeze({
     'disables TLS server-certificate validation in Node.js https/tls/request options and exposes ' +
     'the connection to man-in-the-middle attacks; only the distinctive rejectUnauthorized key with ' +
     'a literal false value is reported (zero-false-positive subset of S4830)',
+  'no-mime-sniff':
+    'Flag an object property whose key is exactly "noSniff" set to the boolean literal false, ' +
+    "which disables helmet's X-Content-Type-Options: nosniff protection and exposes the app " +
+    'to MIME confusion attacks; the distinctive helmet key makes this a zero-false-positive ' +
+    'subset of S5734',
 });
 
 const ruleTypes = Object.freeze({
@@ -1391,6 +1399,7 @@ const ruleTypes = Object.freeze({
   'no-hook-setter-in-body': 'problem',
   'content-length': 'problem',
   'unverified-certificate': 'problem',
+  'no-mime-sniff': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1585,6 +1594,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-hook-setter-in-body': 'error',
   'content-length': 'error',
   'unverified-certificate': 'error',
+  'no-mime-sniff': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
