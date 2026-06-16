@@ -775,6 +775,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_hidden_files_object_property(it);
         self.check_aws_sqs_unencrypted_queue_object_property(it);
         self.check_aws_apigateway_public_api_object_property(it);
+        self.check_aws_iam_all_privileges_object_property(it);
         walk::walk_object_property(self, it);
     }
 

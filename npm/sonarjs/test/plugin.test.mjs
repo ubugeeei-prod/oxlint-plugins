@@ -270,6 +270,7 @@ describe('sonarjs plugin shape', () => {
       'hidden-files',
       'aws-sqs-unencrypted-queue',
       'aws-apigateway-public-api',
+      'aws-iam-all-privileges',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6692,5 +6693,43 @@ describe('aws-apigateway-public-api rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-apigateway-public-api)');
+  });
+});
+
+describe('aws-iam-all-privileges rule', () => {
+  it('reports actions granting all privileges via "*"', () => {
+    const source = 'new PolicyStatement({ actions: ["*"], resources: [bucket] });';
+    const reports = runRule('aws-iam-all-privileges', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('iamAllPrivileges');
+  });
+
+  it('does not report specific actions', () => {
+    const source = 'new PolicyStatement({ actions: ["s3:GetObject"] });';
+    const reports = runRule('aws-iam-all-privileges', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an empty actions array', () => {
+    const source = 'new PolicyStatement({ actions: [] });';
+    const reports = runRule('aws-iam-all-privileges', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-array actions value', () => {
+    const source = 'new PolicyStatement({ actions: x });';
+    const reports = runRule('aws-iam-all-privileges', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-iam-all-privileges through the CLI', () => {
+    const result = runOxlint(
+      'aws-iam-all-privileges',
+      'new PolicyStatement({ actions: ["*"], resources: [bucket] });',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-iam-all-privileges)');
   });
 });

@@ -643,6 +643,10 @@ const messages = Object.freeze({
     apigatewayPublicApi:
       'This API method has no authorization (authorizationType: NONE); require authorization or confirm public access is intended.',
   },
+  'aws-iam-all-privileges': {
+    iamAllPrivileges:
+      'This policy grants all actions ("*"); grant only the specific actions required.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1066,6 +1070,9 @@ const ruleDescriptions = Object.freeze({
     'Flag an AWS API Gateway method created without authorization; matches an object ' +
     'property "authorizationType" whose value is AuthorizationType.NONE (any member ' +
     'expression ending in NONE) or the string literal "NONE"',
+  'aws-iam-all-privileges':
+    'Flag AWS IAM policy statements that grant all privileges; matches an object property ' +
+    '"actions" whose array literal value contains the wildcard string "*"',
 });
 
 const ruleTypes = Object.freeze({
@@ -1245,6 +1252,7 @@ const ruleTypes = Object.freeze({
   'hidden-files': 'problem',
   'aws-sqs-unencrypted-queue': 'problem',
   'aws-apigateway-public-api': 'problem',
+  'aws-iam-all-privileges': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1423,6 +1431,7 @@ const recommendedRuleConfig = Object.freeze({
   'hidden-files': 'error',
   'aws-sqs-unencrypted-queue': 'error',
   'aws-apigateway-public-api': 'error',
+  'aws-iam-all-privileges': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

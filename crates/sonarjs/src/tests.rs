@@ -9665,3 +9665,49 @@ fn aws_apigateway_public_api_does_not_report_other_key() {
     let diagnostics = scan("aws-apigateway-public-api", "x = { other: \"NONE\" };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_iam_all_privileges_reports_wildcard_actions() {
+    let diagnostics = scan(
+        "aws-iam-all-privileges",
+        r#"new PolicyStatement({ actions: ["*"], resources: [bucket] });"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-iam-all-privileges");
+}
+
+#[test]
+fn aws_iam_all_privileges_does_not_report_specific_actions() {
+    let diagnostics = scan(
+        "aws-iam-all-privileges",
+        r#"new PolicyStatement({ actions: ["s3:GetObject"] });"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_iam_all_privileges_does_not_report_empty_actions() {
+    let diagnostics = scan(
+        "aws-iam-all-privileges",
+        "new PolicyStatement({ actions: [] });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_iam_all_privileges_does_not_report_non_array_value() {
+    let diagnostics = scan(
+        "aws-iam-all-privileges",
+        "new PolicyStatement({ actions: x });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_iam_all_privileges_does_not_report_other_key() {
+    let diagnostics = scan(
+        "aws-iam-all-privileges",
+        r#"new PolicyStatement({ other: ["*"] });"#,
+    );
+    assert!(diagnostics.is_empty());
+}
