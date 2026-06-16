@@ -626,6 +626,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.record_string_literal(it);
         self.check_no_clear_text_protocols(it);
         self.check_no_hardcoded_ip(it);
+        self.check_publicly_writable_directories_string(it);
         walk::walk_string_literal(self, it);
     }
 
@@ -634,6 +635,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_skipped_tests_member(it);
         self.check_process_argv(it);
         self.check_standard_input(it);
+        self.check_publicly_writable_directories_member(it);
         walk::walk_static_member_expression(self, it);
     }
 

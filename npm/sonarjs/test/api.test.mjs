@@ -221,6 +221,7 @@ const expectedRuleNames = [
   'encryption',
   'regular-expr',
   'no-os-command-from-path',
+  'publicly-writable-directories',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
