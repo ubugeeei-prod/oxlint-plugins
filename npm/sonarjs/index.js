@@ -847,6 +847,10 @@ const messages = Object.freeze({
     tableHeader:
       'Add a <th> header cell to this table so assistive technologies can describe its columns/rows.',
   },
+  'table-header-reference': {
+    tableHeaderReference:
+      'This headers attribute references a header id that does not exist in the table.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1452,6 +1456,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a + expression concatenating a string literal with an object, array, or function literal (S3402) — an unambiguous coercion bug. The general string+number/variable case needs type inference and is deliberately not flagged, keeping this zero-false-positive',
   'table-header':
     'Flag a static JSX <table> that contains <td> cells but no <th> header cell (S5256). Tables with any dynamic {…} content are skipped to stay zero-false-positive',
+  'table-header-reference':
+    'Flag a static JSX table cell whose headers attribute references an id that is absent from the table (S5260). Tables with dynamic {…} content or non-literal id/headers values are skipped, and the row/column-correctness check is out of scope, to stay zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1686,6 +1692,7 @@ const ruleTypes = Object.freeze({
   'useless-string-operation': 'problem',
   'no-incorrect-string-concat': 'problem',
   'table-header': 'suggestion',
+  'table-header-reference': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1919,6 +1926,7 @@ const recommendedRuleConfig = Object.freeze({
   'useless-string-operation': 'error',
   'no-incorrect-string-concat': 'error',
   'table-header': 'error',
+  'table-header-reference': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

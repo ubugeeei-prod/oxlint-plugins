@@ -943,6 +943,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.mark_jsx();
         self.check_object_alt_content(it);
         self.check_table_header(it);
+        self.check_table_header_reference(it);
         walk::walk_jsx_element(self, it);
     }
 
