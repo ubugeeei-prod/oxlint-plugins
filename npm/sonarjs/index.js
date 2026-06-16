@@ -651,6 +651,9 @@ const messages = Object.freeze({
     s3BucketVersioning:
       'Versioning is disabled on this S3 bucket; enable it to protect against accidental or malicious data loss.',
   },
+  'aws-ec2-rds-dms-public': {
+    ec2RdsDmsPublic: 'Make sure allowing public network access to this resource is safe.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1081,6 +1084,10 @@ const ruleDescriptions = Object.freeze({
     'Flag AWS CDK S3 bucket configuration that explicitly disables versioning; matches an ' +
     'object property "versioned" set to the boolean literal false (omission is deliberately ' +
     'not flagged to stay zero-false-positive)',
+  'aws-ec2-rds-dms-public':
+    'Flag AWS resources (EC2 / RDS / DMS) made publicly accessible; matches an object ' +
+    'property "publiclyAccessible" or "associatePublicIpAddress" whose value is the ' +
+    'boolean literal true',
 });
 
 const ruleTypes = Object.freeze({
@@ -1262,6 +1269,7 @@ const ruleTypes = Object.freeze({
   'aws-apigateway-public-api': 'problem',
   'aws-iam-all-privileges': 'problem',
   'aws-s3-bucket-versioning': 'problem',
+  'aws-ec2-rds-dms-public': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1442,6 +1450,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-apigateway-public-api': 'error',
   'aws-iam-all-privileges': 'error',
   'aws-s3-bucket-versioning': 'error',
+  'aws-ec2-rds-dms-public': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

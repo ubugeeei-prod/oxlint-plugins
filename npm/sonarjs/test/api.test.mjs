@@ -181,6 +181,7 @@ const expectedRuleNames = [
   'aws-apigateway-public-api',
   'aws-iam-all-privileges',
   'aws-s3-bucket-versioning',
+  'aws-ec2-rds-dms-public',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3866,6 +3867,42 @@ describe('aws-s3-bucket-versioning rule', () => {
   it('does not report a different key', () => {
     const source = 'const x = { other: false };';
     const diagnostics = scan('aws-s3-bucket-versioning', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-ec2-rds-dms-public rule', () => {
+  it('reports publiclyAccessible set to true', () => {
+    const source = "new ec2.Instance(this,'i',{ publiclyAccessible: true })";
+    const diagnostics = scan('aws-ec2-rds-dms-public', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-ec2-rds-dms-public');
+    expect(diagnostics[0].messageId).toBe('ec2RdsDmsPublic');
+  });
+
+  it('reports associatePublicIpAddress set to true', () => {
+    const source =
+      "new ec2.CfnInstance(this,'i',{ networkInterfaces: [{ associatePublicIpAddress: true }] })";
+    const diagnostics = scan('aws-ec2-rds-dms-public', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('ec2RdsDmsPublic');
+  });
+
+  it('does not report publiclyAccessible set to false', () => {
+    const source = "new ec2.Instance(this,'i',{ publiclyAccessible: false })";
+    const diagnostics = scan('aws-ec2-rds-dms-public', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal value', () => {
+    const source = "new ec2.Instance(this,'i',{ publiclyAccessible: x })";
+    const diagnostics = scan('aws-ec2-rds-dms-public', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a true value under a different key', () => {
+    const source = "new ec2.Instance(this,'i',{ other: true })";
+    const diagnostics = scan('aws-ec2-rds-dms-public', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
