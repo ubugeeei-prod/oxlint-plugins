@@ -772,6 +772,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_function(&mut self, it: &Function<'a>, flags: ScopeFlags) {
         self.check_function_name_declaration(it);
         self.check_deprecation_function(it);
+        self.check_no_return_type_any_function(it);
         if let Some(body) = &it.body {
             self.check_no_identical_functions(it.params.span.start, body.span.end, it.span);
             // Only concrete functions (those with a body) can carry a default
@@ -874,6 +875,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_arrow_function_expression(&mut self, it: &ArrowFunctionExpression<'a>) {
+        self.check_no_return_type_any_arrow(it);
         if !it.expression {
             self.check_no_identical_functions(it.params.span.start, it.body.span.end, it.span);
             self.check_no_hook_setter_in_body(&it.body.statements);

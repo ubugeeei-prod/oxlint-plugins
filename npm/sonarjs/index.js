@@ -851,6 +851,9 @@ const messages = Object.freeze({
     tableHeaderReference:
       'This headers attribute references a header id that does not exist in the table.',
   },
+  'no-return-type-any': {
+    noReturnTypeAny: 'Use a more specific return type than any.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1458,6 +1461,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a static JSX <table> that contains <td> cells but no <th> header cell (S5256). Tables with any dynamic {…} content are skipped to stay zero-false-positive',
   'table-header-reference':
     'Flag a static JSX table cell whose headers attribute references an id that is absent from the table (S5260). Tables with dynamic {…} content or non-literal id/headers values are skipped, and the row/column-correctness check is out of scope, to stay zero-false-positive',
+  'no-return-type-any':
+    'Flag a function or method whose explicit return type annotation is the bare any type (S4324), which discards type safety for callers. Composite types like any[] or Promise<any> and functions without a return annotation are not flagged, keeping this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1693,6 +1698,7 @@ const ruleTypes = Object.freeze({
   'no-incorrect-string-concat': 'problem',
   'table-header': 'suggestion',
   'table-header-reference': 'suggestion',
+  'no-return-type-any': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1927,6 +1933,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-incorrect-string-concat': 'error',
   'table-header': 'error',
   'table-header-reference': 'error',
+  'no-return-type-any': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
