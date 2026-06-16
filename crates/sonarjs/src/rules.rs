@@ -9,6 +9,7 @@ mod array_constructor;
 mod aws_apigateway_public_api;
 mod aws_ec2_rds_dms_public;
 mod aws_ec2_unencrypted_ebs_volume;
+mod aws_efs_unencrypted;
 mod aws_iam_all_privileges;
 mod aws_iam_all_resources_accessible;
 mod aws_iam_public_access;
