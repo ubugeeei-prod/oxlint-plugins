@@ -287,6 +287,7 @@ describe('sonarjs plugin shape', () => {
       'content-length',
       'unverified-certificate',
       'no-mime-sniff',
+      'no-ip-forward',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7472,5 +7473,47 @@ describe('no-mime-sniff rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-mime-sniff)');
+  });
+});
+
+describe('no-ip-forward rule', () => {
+  it('reports a createProxyServer config with xfwd: true', () => {
+    const source = 'createProxyServer({ target: t, xfwd: true });';
+    const reports = runRule('no-ip-forward', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noIpForward');
+  });
+
+  it('reports a direct xfwd: true property', () => {
+    const source = 'const o = { xfwd: true };';
+    const reports = runRule('no-ip-forward', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noIpForward');
+  });
+
+  it('does not report xfwd: false', () => {
+    const source = 'const o = { xfwd: false };';
+    const reports = runRule('no-ip-forward', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal xfwd value', () => {
+    const source = 'const o = { xfwd: x };';
+    const reports = runRule('no-ip-forward', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = 'const o = { other: true };';
+    const reports = runRule('no-ip-forward', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-ip-forward through the CLI', () => {
+    const result = runOxlint('no-ip-forward', 'createProxyServer({ target: t, xfwd: true });');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-ip-forward)');
   });
 });

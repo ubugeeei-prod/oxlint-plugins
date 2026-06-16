@@ -196,6 +196,7 @@ const expectedRuleNames = [
   'content-length',
   'unverified-certificate',
   'no-mime-sniff',
+  'no-ip-forward',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4427,6 +4428,41 @@ describe('no-mime-sniff rule', () => {
   it('does not report a different key set to false', () => {
     const source = 'const o = { other: false };';
     const diagnostics = scan('no-mime-sniff', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-ip-forward rule', () => {
+  it('reports a createProxyServer config with xfwd: true', () => {
+    const source = 'createProxyServer({ target: t, xfwd: true });';
+    const diagnostics = scan('no-ip-forward', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-ip-forward');
+    expect(diagnostics[0].messageId).toBe('noIpForward');
+  });
+
+  it('reports a direct xfwd: true property', () => {
+    const source = 'const o = { xfwd: true };';
+    const diagnostics = scan('no-ip-forward', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noIpForward');
+  });
+
+  it('does not report xfwd: false', () => {
+    const source = 'const o = { xfwd: false };';
+    const diagnostics = scan('no-ip-forward', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal xfwd value', () => {
+    const source = 'const o = { xfwd: x };';
+    const diagnostics = scan('no-ip-forward', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = 'const o = { other: true };';
+    const diagnostics = scan('no-ip-forward', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

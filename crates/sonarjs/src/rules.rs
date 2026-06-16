@@ -122,6 +122,7 @@ mod no_intrusive_permissions;
 mod no_invalid_regexp;
 mod no_invariant_returns;
 mod no_inverted_boolean_check;
+mod no_ip_forward;
 mod no_labels;
 mod no_literal_call;
 mod no_mime_sniff;

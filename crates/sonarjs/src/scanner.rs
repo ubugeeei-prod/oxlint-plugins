@@ -796,6 +796,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_aws_ec2_rds_dms_public_object_property(it);
         self.check_aws_s3_bucket_public_access_object_property(it);
         self.check_aws_iam_all_resources_accessible_object_property(it);
+        self.check_no_ip_forward_object_property(it);
         walk::walk_object_property(self, it);
     }
 

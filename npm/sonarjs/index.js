@@ -706,6 +706,10 @@ const messages = Object.freeze({
   'no-mime-sniff': {
     noMimeSniff: 'Do not disable the X-Content-Type-Options: nosniff protection (noSniff: false).',
   },
+  'no-ip-forward': {
+    noIpForward:
+      'Forwarding the client IP (xfwd: true) can enable IP-based access-control bypass; ensure this is safe.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1204,6 +1208,12 @@ const ruleDescriptions = Object.freeze({
     "which disables helmet's X-Content-Type-Options: nosniff protection and exposes the app " +
     'to MIME confusion attacks; the distinctive helmet key makes this a zero-false-positive ' +
     'subset of S5734',
+  'no-ip-forward':
+    'Flag an http-proxy / http-proxy-middleware configuration that enables client-IP ' +
+    'forwarding, expressed as an object property whose key is exactly xfwd and whose value ' +
+    'is the boolean literal true; forwarding the client IP can leak personal information and ' +
+    'enable IP-based access-control bypass (zero-false-positive subset of S5759 keyed on the ' +
+    'distinctive xfwd option)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1400,6 +1410,7 @@ const ruleTypes = Object.freeze({
   'content-length': 'problem',
   'unverified-certificate': 'problem',
   'no-mime-sniff': 'problem',
+  'no-ip-forward': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1595,6 +1606,7 @@ const recommendedRuleConfig = Object.freeze({
   'content-length': 'error',
   'unverified-certificate': 'error',
   'no-mime-sniff': 'error',
+  'no-ip-forward': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
