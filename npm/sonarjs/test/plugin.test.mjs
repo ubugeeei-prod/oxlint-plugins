@@ -269,6 +269,7 @@ describe('sonarjs plugin shape', () => {
       'aws-iam-public-access',
       'hidden-files',
       'aws-sqs-unencrypted-queue',
+      'aws-apigateway-public-api',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6651,5 +6652,45 @@ describe('aws-sqs-unencrypted-queue rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-sqs-unencrypted-queue)');
+  });
+});
+
+describe('aws-apigateway-public-api rule', () => {
+  it('reports authorizationType: AuthorizationType.NONE', () => {
+    const source =
+      "resource.addMethod('GET', i, { authorizationType: apigateway.AuthorizationType.NONE });";
+    const reports = runRule('aws-apigateway-public-api', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('apigatewayPublicApi');
+  });
+
+  it('reports authorizationType: "NONE"', () => {
+    const source = "new apigateway.CfnRoute(this, 'r', { authorizationType: 'NONE' });";
+    const reports = runRule('aws-apigateway-public-api', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('apigatewayPublicApi');
+  });
+
+  it('does not report authorizationType: AuthorizationType.IAM', () => {
+    const source = 'x = { authorizationType: AuthorizationType.IAM };';
+    const reports = runRule('aws-apigateway-public-api', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report "NONE" on a different key', () => {
+    const source = "x = { other: 'NONE' };";
+    const reports = runRule('aws-apigateway-public-api', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-apigateway-public-api through the CLI', () => {
+    const result = runOxlint(
+      'aws-apigateway-public-api',
+      "resource.addMethod('GET', i, { authorizationType: apigateway.AuthorizationType.NONE });",
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-apigateway-public-api)');
   });
 });

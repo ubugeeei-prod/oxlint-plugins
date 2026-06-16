@@ -10174,19 +10174,19 @@
       },
       {
         "name": "aws-apigateway-public-api",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-apigateway-public-api (Sonar key S6333). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6333. Flags an AWS API Gateway method created without authorization: an object property \"authorizationType\" whose value is either a member expression ending in NONE (apigateway.AuthorizationType.NONE) or the string literal \"NONE\" (the CfnRoute escape hatch). Authenticated values (AuthorizationType.IAM/COGNITO_USER_POOLS/CUSTOM, \"AWS_IAM\"), non-literal values, other keys, and omission of the property are deliberately NOT flagged to stay zero-false-positive. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-ec2-rds-dms-public",

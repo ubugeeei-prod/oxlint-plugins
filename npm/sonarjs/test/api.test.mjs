@@ -178,6 +178,7 @@ const expectedRuleNames = [
   'aws-iam-public-access',
   'hidden-files',
   'aws-sqs-unencrypted-queue',
+  'aws-apigateway-public-api',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3752,6 +3753,48 @@ describe('hidden-files rule', () => {
   it('does not report a different key', () => {
     const source = "const x = { other: 'allow' };";
     const diagnostics = scan('hidden-files', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-apigateway-public-api rule', () => {
+  it('reports authorizationType: AuthorizationType.NONE', () => {
+    const source =
+      "resource.addMethod('GET', i, { authorizationType: apigateway.AuthorizationType.NONE });";
+    const diagnostics = scan('aws-apigateway-public-api', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-apigateway-public-api');
+    expect(diagnostics[0].messageId).toBe('apigatewayPublicApi');
+  });
+
+  it('reports authorizationType: "NONE"', () => {
+    const source = "new apigateway.CfnRoute(this, 'r', { authorizationType: 'NONE' });";
+    const diagnostics = scan('aws-apigateway-public-api', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('apigatewayPublicApi');
+  });
+
+  it('does not report authorizationType: AuthorizationType.IAM', () => {
+    const source = 'x = { authorizationType: AuthorizationType.IAM };';
+    const diagnostics = scan('aws-apigateway-public-api', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report authorizationType: "AWS_IAM"', () => {
+    const source = "x = { authorizationType: 'AWS_IAM' };";
+    const diagnostics = scan('aws-apigateway-public-api', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal authorizationType value', () => {
+    const source = 'x = { authorizationType: authType };';
+    const diagnostics = scan('aws-apigateway-public-api', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report "NONE" on a different key', () => {
+    const source = "x = { other: 'NONE' };";
+    const diagnostics = scan('aws-apigateway-public-api', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
