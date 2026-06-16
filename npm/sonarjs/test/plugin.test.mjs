@@ -266,6 +266,7 @@ describe('sonarjs plugin shape', () => {
       'disabled-auto-escaping',
       'aws-s3-bucket-granted-access',
       'aws-rds-unencrypted-databases',
+      'aws-iam-public-access',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6519,5 +6520,47 @@ describe('aws-rds-unencrypted-databases rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-rds-unencrypted-databases)');
+  });
+});
+
+describe('aws-iam-public-access rule', () => {
+  it('reports new iam.AnyPrincipal()', () => {
+    const source = 'new iam.AnyPrincipal();';
+    const reports = runRule('aws-iam-public-access', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('iamPublicAccess');
+  });
+
+  it('reports a bare new AnyPrincipal()', () => {
+    const source = 'new AnyPrincipal();';
+    const reports = runRule('aws-iam-public-access', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('iamPublicAccess');
+  });
+
+  it('does not report new iam.AccountRootPrincipal()', () => {
+    const source = 'new iam.AccountRootPrincipal();';
+    const reports = runRule('aws-iam-public-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report new ArnPrincipal(arn)', () => {
+    const source = 'new ArnPrincipal(arn);';
+    const reports = runRule('aws-iam-public-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an AnyPrincipal reference without new', () => {
+    const source = 'const p = iam.AnyPrincipal;';
+    const reports = runRule('aws-iam-public-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-iam-public-access through the CLI', () => {
+    const result = runOxlint('aws-iam-public-access', 'new iam.AnyPrincipal();');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-iam-public-access)');
   });
 });

@@ -628,6 +628,10 @@ const messages = Object.freeze({
   'aws-rds-unencrypted-databases': {
     rdsUnencrypted: 'Enable encryption at rest for this database (storageEncrypted: true).',
   },
+  'aws-iam-public-access': {
+    iamPublicAccess:
+      'This policy grants public access to all AWS accounts; restrict the principal.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1035,6 +1039,10 @@ const ruleDescriptions = Object.freeze({
   'aws-rds-unencrypted-databases':
     'Flag an AWS CDK RDS database or cluster created with encryption at rest disabled; ' +
     'matches an object property "storageEncrypted" set to the boolean literal false',
+  'aws-iam-public-access':
+    'Flag AWS CDK IAM policies that grant public access to all AWS accounts; matches a ' +
+    'new-expression whose callee is the AnyPrincipal class (a bare AnyPrincipal identifier ' +
+    'or a member expression such as iam.AnyPrincipal)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1210,6 +1218,7 @@ const ruleTypes = Object.freeze({
   'disabled-auto-escaping': 'problem',
   'aws-s3-bucket-granted-access': 'problem',
   'aws-rds-unencrypted-databases': 'problem',
+  'aws-iam-public-access': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1384,6 +1393,7 @@ const recommendedRuleConfig = Object.freeze({
   'disabled-auto-escaping': 'error',
   'aws-s3-bucket-granted-access': 'error',
   'aws-rds-unencrypted-databases': 'error',
+  'aws-iam-public-access': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
