@@ -778,6 +778,10 @@ const messages = Object.freeze({
     cookies:
       'Make sure writing this cookie is safe; cookies are client-accessible and should not carry sensitive data.',
   },
+  xpath: {
+    xpath:
+      'Make sure executing this XPath expression is safe; validate or sanitize any user-controlled input.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1345,6 +1349,8 @@ const ruleDescriptions = Object.freeze({
     'Flag an AWS CDK OpenSearch domain whose encryptionAtRest or encryptionAtRestOptions sets enabled:false — the explicit disable-encryption form of S6308. The distinctive nested shape keeps this zero-false-positive; omission is intentionally not flagged',
   cookies:
     'Flag cookie-write operations (the security hotspot S2255): a document.cookie assignment, a .cookie(name, value) call, or a setHeader("Set-Cookie", ...) call. The distinctive cookie-write shapes keep this zero-false-positive; cookie reads are not flagged',
+  xpath:
+    'Flag XPath-execution calls (the security hotspot S4817): document.evaluate(...), .selectNodes(...), .SelectSingleNode(...), or xpath.select/select1(...). Generic method names are receiver-gated (document/xpath) to keep this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1560,6 +1566,7 @@ const ruleTypes = Object.freeze({
   'aws-s3-bucket-server-encryption': 'problem',
   'aws-opensearchservice-domain': 'problem',
   cookies: 'problem',
+  xpath: 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1774,6 +1781,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-s3-bucket-server-encryption': 'error',
   'aws-opensearchservice-domain': 'error',
   cookies: 'error',
+  xpath: 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

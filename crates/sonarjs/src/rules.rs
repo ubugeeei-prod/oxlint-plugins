@@ -213,3 +213,4 @@ mod void_use;
 mod weak_ssl;
 mod web_sql_database;
 mod xml_parser_xxe;
+mod xpath;

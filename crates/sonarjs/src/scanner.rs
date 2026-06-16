@@ -679,6 +679,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.record_iife_callee(&it.callee);
         self.record_call_inconsistent_function_call(it);
         self.check_cookies_call(it);
+        self.check_xpath(it);
         walk::walk_call_expression(self, it);
     }
 
