@@ -13294,19 +13294,19 @@
       },
       {
         "name": "no-useless-react-setstate",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-useless-react-setstate (Sonar key S6443). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6443). Collects React useState (state, setter) pairs from a function body's direct const [state, setter] = useState(...) destructurings, then scans every descendant CallExpression in that body — including event handlers, effects, and JSX — for a no-op setter(state) call: callee is the plain setter identifier and the single argument is the plain paired state identifier. The state binding is const and both names come from the same destructuring, so an exact setter(state) match is zero-false-positive. Derived values (setV(v+1)), other variables, missing or extra arguments, and state from a different pair are not flagged. No upstream source, fixtures, tests, or messages were consulted."
       },
       {
         "name": "no-variable-usage-before-declaration",

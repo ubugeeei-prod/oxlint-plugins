@@ -10612,3 +10612,69 @@ fn xml_parser_xxe_does_not_report_other_key() {
     let diagnostics = scan("xml-parser-xxe", "const o = { other: true };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_useless_react_setstate_reports_setter_with_current_state_in_handler() {
+    let diagnostics = scan_jsx(
+        "no-useless-react-setstate",
+        "function C(){ const [v,setV]=useState(0); const h=()=>setV(v); return null; }",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-useless-react-setstate");
+    assert_eq!(diagnostics[0].message_id, "noUselessReactSetstate");
+}
+
+#[test]
+fn no_useless_react_setstate_reports_setter_in_jsx_event_handler() {
+    let diagnostics = scan_jsx(
+        "no-useless-react-setstate",
+        "function C(){ const [v,setV]=React.useState(0); return <button onClick={()=>setV(v)}/>; }",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noUselessReactSetstate");
+}
+
+#[test]
+fn no_useless_react_setstate_does_not_report_derived_value() {
+    let diagnostics = scan_jsx(
+        "no-useless-react-setstate",
+        "function C(){ const [v,setV]=useState(0); setV(v+1); return null; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_useless_react_setstate_does_not_report_other_variable() {
+    let diagnostics = scan_jsx(
+        "no-useless-react-setstate",
+        "function C(){ const [v,setV]=useState(0); setV(other); return null; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_useless_react_setstate_does_not_report_no_argument() {
+    let diagnostics = scan_jsx(
+        "no-useless-react-setstate",
+        "function C(){ const [v,setV]=useState(0); setV(); return null; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_useless_react_setstate_does_not_report_extra_argument() {
+    let diagnostics = scan_jsx(
+        "no-useless-react-setstate",
+        "function C(){ const [v,setV]=useState(0); setV(v, x); return null; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_useless_react_setstate_does_not_report_state_from_other_pair() {
+    let diagnostics = scan_jsx(
+        "no-useless-react-setstate",
+        "function C(){ const [a,setA]=useState(0); const [b,setB]=useState(1); setA(b); return null; }",
+    );
+    assert!(diagnostics.is_empty());
+}

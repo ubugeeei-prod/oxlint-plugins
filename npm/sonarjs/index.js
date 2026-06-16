@@ -722,6 +722,9 @@ const messages = Object.freeze({
     xmlParserXxe:
       'Disable external entity expansion (do not set noent: true) to prevent XXE attacks.',
   },
+  'no-useless-react-setstate': {
+    noUselessReactSetstate: 'This setState call passes the current state value and has no effect.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1242,6 +1245,12 @@ const ruleDescriptions = Object.freeze({
     'boolean literal true; libxmljs parseXmlString enables external entity expansion when ' +
     'noent: true is set, exposing the application to XML External Entity (XXE) attacks (zero-' +
     'false-positive subset of S2755 keyed on the distinctive noent option)',
+  'no-useless-react-setstate':
+    'Flag a React useState setter called with its own paired state variable ' +
+    '(setV(v) where const [v, setV] = useState(...)); React bails out of the ' +
+    're-render because the next value is identical, so the call is a no-op. The ' +
+    'state binding is const and the pair is collected from the same destructuring, ' +
+    'making an exact setter(state) match zero-false-positive (S6443)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1442,6 +1451,7 @@ const ruleTypes = Object.freeze({
   'no-angular-bypass-sanitization': 'problem',
   'insecure-jwt-token': 'problem',
   'xml-parser-xxe': 'problem',
+  'no-useless-react-setstate': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1641,6 +1651,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-angular-bypass-sanitization': 'error',
   'insecure-jwt-token': 'error',
   'xml-parser-xxe': 'error',
+  'no-useless-react-setstate': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
