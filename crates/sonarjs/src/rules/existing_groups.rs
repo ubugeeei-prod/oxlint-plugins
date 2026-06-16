@@ -47,15 +47,21 @@
 //!   NOT a reference.
 //! - `$&` (whole match), `` $` `` (text before match), `$'` (text after match)
 //!   are specials, NOT group references.
-//! - `$<name>` is a NAMED group reference; flagged when `name` is not one of
-//!   the regex's named groups.
+//! - `$<name>` is a NAMED group reference. It is only ever a reference when the
+//!   search regex actually has named capture groups: if the regex has NO named
+//!   groups, JS emits `$<name>` literally, so it is never flagged. When named
+//!   groups are present, `$<name>` is flagged if `name` is not one of them.
 //! - `$` followed by a digit is a NUMERIC group reference (see below).
 //! - any other `$x` is not a reference and is skipped.
 //!
 //! ## Conservative numeric rule (two-digit under-reporting)
 //!
-//! For `$` followed by digits we look only at the FIRST digit `d`:
-//! - `d == 0` (`$0`) -> always invalid, groups are 1-based -> flag.
+//! JS `GetSubstitution` reads up to TWO digits after `$`. We inspect the FIRST
+//! digit `d`:
+//! - `d == 0`: if another ASCII digit follows (`$0D`, e.g. `$01`) the pair can
+//!   resolve to a valid two-digit group, so it is conservatively treated as
+//!   valid and NOT flagged (this under-reports the impossible `$00`). A bare
+//!   `$0` with no following digit can never resolve (groups are 1-based) -> flag.
 //! - else if `d` (as a single-digit value) is greater than the total
 //!   capturing-group count -> no valid one-digit interpretation -> flag.
 //! - otherwise NOT flagged.
@@ -151,7 +157,12 @@ fn replacement_has_dangling_reference(replacement: &str, info: &GroupInfo<'_>) -
             }
             // Named reference `$<name>`.
             b'<' => {
-                if let Some(close) = replacement[i + 2..].find('>') {
+                // Per JS spec, if the search regex has NO named capture groups,
+                // `$<name>` is emitted literally and is not a dangling
+                // reference; skip the `$` and continue.
+                if info.names.is_empty() {
+                    i += 1;
+                } else if let Some(close) = replacement[i + 2..].find('>') {
                     let name = &replacement[i + 2..i + 2 + close];
                     if !info.names.contains(&name) {
                         return true;
@@ -162,13 +173,28 @@ fn replacement_has_dangling_reference(replacement: &str, info: &GroupInfo<'_>) -
                     i += 1;
                 }
             }
-            // Numeric reference; inspect only the first digit (conservative).
+            // Numeric reference; JS `GetSubstitution` reads up to two digits.
             b'0'..=b'9' => {
-                let d = u32::from(next - b'0');
-                if d == 0 || d > info.count {
-                    return true;
+                if next == b'0' {
+                    // Leading zero. If another ASCII digit follows (`$0D`), the
+                    // pair can resolve to a valid two-digit group such as `$01`
+                    // (= group 1); conservatively treat it as valid. A bare `$0`
+                    // (no following digit) can never resolve: groups are 1-based.
+                    if bytes.get(i + 2).is_some_and(u8::is_ascii_digit) {
+                        i += 2;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    // First digit `1..=9`: flag only when the single-digit value
+                    // exceeds the capturing-group count. The two-digit form (e.g.
+                    // `$12`) is left to the conservative under-report.
+                    let d = u32::from(next - b'0');
+                    if d > info.count {
+                        return true;
+                    }
+                    i += 2;
                 }
-                i += 2;
             }
             // Any other `$x` is not a reference.
             _ => {
