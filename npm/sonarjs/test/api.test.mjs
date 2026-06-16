@@ -222,6 +222,7 @@ const expectedRuleNames = [
   'regular-expr',
   'no-os-command-from-path',
   'publicly-writable-directories',
+  'chai-determinate-assertion',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
