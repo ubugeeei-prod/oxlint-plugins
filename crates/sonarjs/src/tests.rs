@@ -11984,3 +11984,45 @@ fn no_async_constructor_does_not_report_async_method() {
     let diagnostics = scan("no-async-constructor", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_sagemaker_unencrypted_notebook_reports_missing_kms_key() {
+    let diagnostics = scan(
+        "aws-sagemaker-unencrypted-notebook",
+        "new CfnNotebookInstance(this, 'x', { instanceType: 't', roleArn: 'r' })",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "aws-sagemaker-unencrypted-notebook"
+    );
+    assert_eq!(diagnostics[0].message_id, "sagemakerUnencryptedNotebook");
+}
+
+#[test]
+fn aws_sagemaker_unencrypted_notebook_reports_member_callee() {
+    let diagnostics = scan(
+        "aws-sagemaker-unencrypted-notebook",
+        "new sagemaker.CfnNotebookInstance(this, 'x', {})",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "sagemakerUnencryptedNotebook");
+}
+
+#[test]
+fn aws_sagemaker_unencrypted_notebook_does_not_report_with_kms_key() {
+    let diagnostics = scan(
+        "aws-sagemaker-unencrypted-notebook",
+        "new CfnNotebookInstance(this, 'x', { kmsKeyId: key.keyId })",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_sagemaker_unencrypted_notebook_does_not_report_other_construct() {
+    let diagnostics = scan(
+        "aws-sagemaker-unencrypted-notebook",
+        "new Foo(this, 'x', {})",
+    );
+    assert!(diagnostics.is_empty());
+}

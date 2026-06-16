@@ -814,6 +814,10 @@ const messages = Object.freeze({
   'unused-import': {
     unusedImport: 'Remove this unused import.',
   },
+  'aws-sagemaker-unencrypted-notebook': {
+    sagemakerUnencryptedNotebook:
+      'Set a KMS key (kmsKeyId) on this SageMaker notebook instance to encrypt its data at rest.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1401,6 +1405,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a class constructor whose top-level body starts an asynchronous operation (a .then/.catch/.finally call or a Promise.resolve/all/... call), per S7059. Only direct statements are inspected (nested callbacks are not), keeping this zero-false-positive',
   'unused-import':
     'Flag an import specifier whose binding is never referenced in the module (S1128), using semantic scope analysis; side-effect imports (import "x") are never flagged',
+  'aws-sagemaker-unencrypted-notebook':
+    'Flag an AWS CDK CfnNotebookInstance constructed without a kmsKeyId property (the security hotspot S6319), leaving the notebook unencrypted. Gated on the distinctive CfnNotebookInstance construct name to stay zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1626,6 +1632,7 @@ const ruleTypes = Object.freeze({
   'chai-determinate-assertion': 'problem',
   'no-async-constructor': 'problem',
   'unused-import': 'suggestion',
+  'aws-sagemaker-unencrypted-notebook': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1850,6 +1857,7 @@ const recommendedRuleConfig = Object.freeze({
   'chai-determinate-assertion': 'error',
   'no-async-constructor': 'error',
   'unused-import': 'error',
+  'aws-sagemaker-unencrypted-notebook': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

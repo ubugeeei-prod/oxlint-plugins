@@ -225,6 +225,7 @@ const expectedRuleNames = [
   'chai-determinate-assertion',
   'no-async-constructor',
   'unused-import',
+  'aws-sagemaker-unencrypted-notebook',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
