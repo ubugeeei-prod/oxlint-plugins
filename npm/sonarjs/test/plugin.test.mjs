@@ -283,6 +283,7 @@ describe('sonarjs plugin shape', () => {
       'jsx-no-leaked-render',
       'no-uniq-key',
       'insecure-cookie',
+      'no-hook-setter-in-body',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7273,5 +7274,59 @@ describe('insecure-cookie rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(insecure-cookie)');
+  });
+});
+
+describe('no-hook-setter-in-body rule', () => {
+  it('reports a useState setter called directly in the component body', () => {
+    const source = 'function C(){ const [v,setV]=useState(0); setV(1); return null; }';
+    const reports = runRule('no-hook-setter-in-body', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noHookSetterInBody');
+  });
+
+  it('reports a React.useState setter called directly in the body', () => {
+    const source = 'function C(){ const [v,setV]=React.useState(0); setV(1); return null; }';
+    const reports = runRule('no-hook-setter-in-body', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noHookSetterInBody');
+  });
+
+  it('does not report a setter called inside an event handler', () => {
+    const source =
+      'function C(){ const [v,setV]=useState(0); const onClick=()=>setV(1); return null; }';
+    const reports = runRule('no-hook-setter-in-body', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a setter called inside a conditional', () => {
+    const source = 'function C(){ const [v,setV]=useState(0); if(x) setV(1); return null; }';
+    const reports = runRule('no-hook-setter-in-body', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a setter called inside an effect callback', () => {
+    const source =
+      'function C(){ const [v,setV]=useState(0); useEffect(()=>setV(1)); return null; }';
+    const reports = runRule('no-hook-setter-in-body', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a call that is not a useState setter', () => {
+    const source = 'function C(){ foo(); return null; }';
+    const reports = runRule('no-hook-setter-in-body', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-hook-setter-in-body through the CLI', () => {
+    const result = runOxlint(
+      'no-hook-setter-in-body',
+      'function C(){ const [v,setV]=useState(0); setV(1); return null; }',
+      'sample.tsx',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-hook-setter-in-body)');
   });
 });

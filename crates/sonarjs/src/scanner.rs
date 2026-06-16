@@ -734,6 +734,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
             // value; overload/abstract/ambient signatures (`body == None`) and
             // type-only signature nodes must not be flagged.
             self.check_bool_param_default(&it.params);
+            self.check_no_hook_setter_in_body(&body.statements);
         }
         self.check_cognitive_complexity_fn(it);
         let track = self.enter_generator(it);
@@ -816,6 +817,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_arrow_function_expression(&mut self, it: &ArrowFunctionExpression<'a>) {
         if !it.expression {
             self.check_no_identical_functions(it.params.span.start, it.body.span.end, it.span);
+            self.check_no_hook_setter_in_body(&it.body.statements);
         }
         // Arrow functions always have a body (block or expression), so their
         // parameters can always carry a default value.

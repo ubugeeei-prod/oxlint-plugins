@@ -10264,3 +10264,59 @@ fn insecure_cookie_does_not_report_non_literal_value() {
     let diagnostics = scan("insecure-cookie", "const c = { secure: x, maxAge: 1 };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_hook_setter_in_body_reports_direct_call_in_body() {
+    let diagnostics = scan_jsx(
+        "no-hook-setter-in-body",
+        "function C(){ const [v,setV]=useState(0); setV(1); return null; }",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-hook-setter-in-body");
+    assert_eq!(diagnostics[0].message_id, "noHookSetterInBody");
+}
+
+#[test]
+fn no_hook_setter_in_body_reports_react_use_state() {
+    let diagnostics = scan_jsx(
+        "no-hook-setter-in-body",
+        "function C(){ const [v,setV]=React.useState(0); setV(1); return null; }",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn no_hook_setter_in_body_does_not_report_call_in_handler() {
+    let diagnostics = scan_jsx(
+        "no-hook-setter-in-body",
+        "function C(){ const [v,setV]=useState(0); const onClick=()=>setV(1); return null; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hook_setter_in_body_does_not_report_conditional_call() {
+    let diagnostics = scan_jsx(
+        "no-hook-setter-in-body",
+        "function C(){ const [v,setV]=useState(0); if(x) setV(1); return null; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hook_setter_in_body_does_not_report_call_in_effect() {
+    let diagnostics = scan_jsx(
+        "no-hook-setter-in-body",
+        "function C(){ const [v,setV]=useState(0); useEffect(()=>setV(1)); return null; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_hook_setter_in_body_does_not_report_non_setter_call() {
+    let diagnostics = scan_jsx(
+        "no-hook-setter-in-body",
+        "function C(){ foo(); return null; }",
+    );
+    assert!(diagnostics.is_empty());
+}

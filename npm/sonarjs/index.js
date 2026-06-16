@@ -691,6 +691,10 @@ const messages = Object.freeze({
   'insecure-cookie': {
     insecureCookie: 'Set this cookie\'s "secure" flag to true so it is only sent over HTTPS.',
   },
+  'no-hook-setter-in-body': {
+    noHookSetterInBody:
+      'Do not call a useState setter directly in the component body; it triggers an infinite re-render. Move it into an event handler or effect.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1168,6 +1172,12 @@ const ruleDescriptions = Object.freeze({
     'which lets the cookie be sent over unencrypted HTTP; gated to stay zero-false-positive ' +
     'by requiring a distinctive cookie-marker sibling key (httpOnly, sameSite, maxAge, domain, ' +
     'path, or signed) in the same object literal',
+  'no-hook-setter-in-body':
+    'Flag a React useState setter that is called directly in a component body (a direct ' +
+    'top-level expression statement of the same function), which schedules a state update ' +
+    'on every render and causes an infinite re-render loop; function-local detection scans ' +
+    'only the direct statements of one body, so calls inside handlers, effects, callbacks, ' +
+    'conditionals, loops, or JSX are not flagged (zero-false-positive subset of S6442)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1360,6 +1370,7 @@ const ruleTypes = Object.freeze({
   'jsx-no-leaked-render': 'problem',
   'no-uniq-key': 'problem',
   'insecure-cookie': 'problem',
+  'no-hook-setter-in-body': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1551,6 +1562,7 @@ const recommendedRuleConfig = Object.freeze({
   'jsx-no-leaked-render': 'error',
   'no-uniq-key': 'error',
   'insecure-cookie': 'error',
+  'no-hook-setter-in-body': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
