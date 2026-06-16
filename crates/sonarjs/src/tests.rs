@@ -9711,3 +9711,42 @@ fn aws_iam_all_privileges_does_not_report_other_key() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_s3_bucket_versioning_reports_cdk_bucket_versioned_false() {
+    let diagnostics = scan(
+        "aws-s3-bucket-versioning",
+        "new s3.Bucket(this, 'b', { versioned: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-s3-bucket-versioning");
+    assert_eq!(diagnostics[0].message_id, "s3BucketVersioning");
+}
+
+#[test]
+fn aws_s3_bucket_versioning_reports_plain_object_versioned_false() {
+    let diagnostics = scan(
+        "aws-s3-bucket-versioning",
+        "const x = { versioned: false };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "s3BucketVersioning");
+}
+
+#[test]
+fn aws_s3_bucket_versioning_does_not_report_versioned_true() {
+    let diagnostics = scan("aws-s3-bucket-versioning", "const x = { versioned: true };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_versioning_does_not_report_non_literal_value() {
+    let diagnostics = scan("aws-s3-bucket-versioning", "const x = { versioned: flag };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_versioning_does_not_report_other_key() {
+    let diagnostics = scan("aws-s3-bucket-versioning", "const x = { other: false };");
+    assert!(diagnostics.is_empty());
+}

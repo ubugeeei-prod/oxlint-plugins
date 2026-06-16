@@ -180,6 +180,7 @@ const expectedRuleNames = [
   'aws-sqs-unencrypted-queue',
   'aws-apigateway-public-api',
   'aws-iam-all-privileges',
+  'aws-s3-bucket-versioning',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3830,6 +3831,41 @@ describe('aws-iam-all-privileges rule', () => {
   it('does not report a wildcard under a different key', () => {
     const source = 'new PolicyStatement({ other: ["*"] });';
     const diagnostics = scan('aws-iam-all-privileges', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-s3-bucket-versioning rule', () => {
+  it('reports a CDK S3 bucket with versioned: false', () => {
+    const source = "new s3.Bucket(this, 'b', { versioned: false });";
+    const diagnostics = scan('aws-s3-bucket-versioning', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-s3-bucket-versioning');
+    expect(diagnostics[0].messageId).toBe('s3BucketVersioning');
+  });
+
+  it('reports a plain object with versioned: false', () => {
+    const source = 'const x = { versioned: false };';
+    const diagnostics = scan('aws-s3-bucket-versioning', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('s3BucketVersioning');
+  });
+
+  it('does not report versioned: true', () => {
+    const source = 'const x = { versioned: true };';
+    const diagnostics = scan('aws-s3-bucket-versioning', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal versioned value', () => {
+    const source = 'const x = { versioned: flag };';
+    const diagnostics = scan('aws-s3-bucket-versioning', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = 'const x = { other: false };';
+    const diagnostics = scan('aws-s3-bucket-versioning', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
