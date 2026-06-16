@@ -182,6 +182,7 @@ const expectedRuleNames = [
   'aws-iam-all-privileges',
   'aws-s3-bucket-versioning',
   'aws-ec2-rds-dms-public',
+  'aws-s3-bucket-public-access',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3903,6 +3904,41 @@ describe('aws-ec2-rds-dms-public rule', () => {
   it('does not report a true value under a different key', () => {
     const source = "new ec2.Instance(this,'i',{ other: true })";
     const diagnostics = scan('aws-ec2-rds-dms-public', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-s3-bucket-public-access rule', () => {
+  it('reports blockPublicAcls set to false', () => {
+    const source = 'new s3.BlockPublicAccess({ blockPublicAcls: false });';
+    const diagnostics = scan('aws-s3-bucket-public-access', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-s3-bucket-public-access');
+    expect(diagnostics[0].messageId).toBe('s3BucketPublicAccess');
+  });
+
+  it('reports restrictPublicBuckets set to false', () => {
+    const source = 'new s3.BlockPublicAccess({ restrictPublicBuckets: false });';
+    const diagnostics = scan('aws-s3-bucket-public-access', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('s3BucketPublicAccess');
+  });
+
+  it('does not report a sub-key set to true', () => {
+    const source = 'new s3.BlockPublicAccess({ blockPublicAcls: true });';
+    const diagnostics = scan('aws-s3-bucket-public-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal value', () => {
+    const source = 'new s3.BlockPublicAccess({ blockPublicAcls: x });';
+    const diagnostics = scan('aws-s3-bucket-public-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report false under a different key', () => {
+    const source = 'new s3.BlockPublicAccess({ other: false });';
+    const diagnostics = scan('aws-s3-bucket-public-access', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

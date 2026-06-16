@@ -9797,3 +9797,50 @@ fn aws_ec2_rds_dms_public_does_not_report_other_key() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_s3_bucket_public_access_reports_block_public_acls_false() {
+    let diagnostics = scan(
+        "aws-s3-bucket-public-access",
+        "new s3.BlockPublicAccess({ blockPublicAcls: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-s3-bucket-public-access");
+}
+
+#[test]
+fn aws_s3_bucket_public_access_reports_restrict_public_buckets_false() {
+    let diagnostics = scan(
+        "aws-s3-bucket-public-access",
+        "new s3.BlockPublicAccess({ restrictPublicBuckets: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-s3-bucket-public-access");
+}
+
+#[test]
+fn aws_s3_bucket_public_access_does_not_report_true() {
+    let diagnostics = scan(
+        "aws-s3-bucket-public-access",
+        "new s3.BlockPublicAccess({ blockPublicAcls: true });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_public_access_does_not_report_non_literal_value() {
+    let diagnostics = scan(
+        "aws-s3-bucket-public-access",
+        "new s3.BlockPublicAccess({ blockPublicAcls: x });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_public_access_does_not_report_other_key() {
+    let diagnostics = scan(
+        "aws-s3-bucket-public-access",
+        "new s3.BlockPublicAccess({ other: false });",
+    );
+    assert!(diagnostics.is_empty());
+}

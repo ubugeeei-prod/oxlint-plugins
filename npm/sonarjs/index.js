@@ -654,6 +654,10 @@ const messages = Object.freeze({
   'aws-ec2-rds-dms-public': {
     ec2RdsDmsPublic: 'Make sure allowing public network access to this resource is safe.',
   },
+  'aws-s3-bucket-public-access': {
+    s3BucketPublicAccess:
+      'This S3 bucket does not block public access; ensure public exposure is intended.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1088,6 +1092,10 @@ const ruleDescriptions = Object.freeze({
     'Flag AWS resources (EC2 / RDS / DMS) made publicly accessible; matches an object ' +
     'property "publiclyAccessible" or "associatePublicIpAddress" whose value is the ' +
     'boolean literal true',
+  'aws-s3-bucket-public-access':
+    'Flag an AWS CDK S3 BlockPublicAccess configuration that disables public-access ' +
+    'protection; matches an object property "blockPublicAcls", "blockPublicPolicy", ' +
+    '"ignorePublicAcls", or "restrictPublicBuckets" whose value is the boolean literal false',
 });
 
 const ruleTypes = Object.freeze({
@@ -1270,6 +1278,7 @@ const ruleTypes = Object.freeze({
   'aws-iam-all-privileges': 'problem',
   'aws-s3-bucket-versioning': 'problem',
   'aws-ec2-rds-dms-public': 'problem',
+  'aws-s3-bucket-public-access': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1451,6 +1460,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-iam-all-privileges': 'error',
   'aws-s3-bucket-versioning': 'error',
   'aws-ec2-rds-dms-public': 'error',
+  'aws-s3-bucket-public-access': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
