@@ -13742,19 +13742,19 @@
       },
       {
         "name": "redundant-type-aliases",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule redundant-type-aliases (Sonar key S6564). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6564. Flags a TypeScript type alias declaration whose right-hand side merely renames an existing type and adds no value. An alias is reported when it declares no type parameters and its declared type is EITHER a primitive/built-in keyword type (string, number, boolean, bigint, symbol, object, any, unknown, never, void, null, undefined) OR a bare type reference with no type arguments (type X = Y). To stay zero-false-positive, generic aliases that declare their own type parameters (type Box<T> = T), unions/intersections, object/tuple/function/array/literal types, and type references that carry type arguments (Array<string>, Foo<T>) are never flagged. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "regex-complexity",
