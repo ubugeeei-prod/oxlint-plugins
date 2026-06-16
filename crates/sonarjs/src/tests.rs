@@ -9394,3 +9394,60 @@ fn disabled_auto_escaping_does_not_report_other_escape_assignment() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_s3_bucket_granted_access_reports_public_read_write() {
+    let diagnostics = scan(
+        "aws-s3-bucket-granted-access",
+        "new s3.Bucket(this, 'b', { accessControl: s3.BucketAccessControl.PUBLIC_READ_WRITE });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-s3-bucket-granted-access");
+}
+
+#[test]
+fn aws_s3_bucket_granted_access_reports_public_read() {
+    let diagnostics = scan(
+        "aws-s3-bucket-granted-access",
+        "new s3.Bucket(this, 'b', { accessControl: s3.BucketAccessControl.PUBLIC_READ });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-s3-bucket-granted-access");
+}
+
+#[test]
+fn aws_s3_bucket_granted_access_reports_authenticated_read() {
+    let diagnostics = scan(
+        "aws-s3-bucket-granted-access",
+        "new s3.Bucket(this, 'b', { accessControl: BucketAccessControl.AUTHENTICATED_READ });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-s3-bucket-granted-access");
+}
+
+#[test]
+fn aws_s3_bucket_granted_access_does_not_report_private() {
+    let diagnostics = scan(
+        "aws-s3-bucket-granted-access",
+        "new s3.Bucket(this, 'b', { accessControl: s3.BucketAccessControl.PRIVATE });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_granted_access_does_not_report_non_member_value() {
+    let diagnostics = scan(
+        "aws-s3-bucket-granted-access",
+        "new s3.Bucket(this, 'b', { accessControl: x });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_granted_access_does_not_report_other_key() {
+    let diagnostics = scan(
+        "aws-s3-bucket-granted-access",
+        "new s3.Bucket(this, 'b', { other: BucketAccessControl.PUBLIC_READ });",
+    );
+    assert!(diagnostics.is_empty());
+}

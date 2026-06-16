@@ -173,6 +173,7 @@ const expectedRuleNames = [
   'cors',
   'dns-prefetching',
   'disabled-auto-escaping',
+  'aws-s3-bucket-granted-access',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3597,6 +3598,51 @@ describe('disabled-auto-escaping rule', () => {
   it('does not report a generic html: true option', () => {
     const source = 'md({ html: true });';
     const diagnostics = scan('disabled-auto-escaping', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-s3-bucket-granted-access rule', () => {
+  it('reports a PUBLIC_READ_WRITE access control', () => {
+    const source =
+      "new s3.Bucket(this, 'b', { accessControl: s3.BucketAccessControl.PUBLIC_READ_WRITE });";
+    const diagnostics = scan('aws-s3-bucket-granted-access', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-s3-bucket-granted-access');
+    expect(diagnostics[0].messageId).toBe('s3PublicAccess');
+  });
+
+  it('reports a PUBLIC_READ access control', () => {
+    const source =
+      "new s3.Bucket(this, 'b', { accessControl: s3.BucketAccessControl.PUBLIC_READ });";
+    const diagnostics = scan('aws-s3-bucket-granted-access', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('s3PublicAccess');
+  });
+
+  it('reports an AUTHENTICATED_READ access control', () => {
+    const source =
+      "new s3.Bucket(this, 'b', { accessControl: BucketAccessControl.AUTHENTICATED_READ });";
+    const diagnostics = scan('aws-s3-bucket-granted-access', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('s3PublicAccess');
+  });
+
+  it('does not report a PRIVATE access control', () => {
+    const source = "new s3.Bucket(this, 'b', { accessControl: s3.BucketAccessControl.PRIVATE });";
+    const diagnostics = scan('aws-s3-bucket-granted-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-member access control value', () => {
+    const source = "new s3.Bucket(this, 'b', { accessControl: x });";
+    const diagnostics = scan('aws-s3-bucket-granted-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a granting member under a different key', () => {
+    const source = "new s3.Bucket(this, 'b', { other: BucketAccessControl.PUBLIC_READ });";
+    const diagnostics = scan('aws-s3-bucket-granted-access', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

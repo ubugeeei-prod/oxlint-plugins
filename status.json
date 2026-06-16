@@ -10350,19 +10350,19 @@
       },
       {
         "name": "aws-s3-bucket-granted-access",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-s3-bucket-granted-access (Sonar key S6265). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6265. Flags an AWS CDK S3 bucket whose \"accessControl\" object property is set to a BucketAccessControl member that grants access beyond the owner: a static member expression whose terminal property name is PUBLIC_READ, PUBLIC_READ_WRITE, or AUTHENTICATED_READ. The distinctive accessControl key combined with those specific enum member names keeps this zero-false-positive; PRIVATE, non-member values, and other keys are not flagged. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-s3-bucket-insecure-http",

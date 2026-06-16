@@ -621,6 +621,10 @@ const messages = Object.freeze({
   'disabled-auto-escaping': {
     disabledAutoEscaping: 'Do not disable template auto-escaping; it is a key defense against XSS.',
   },
+  'aws-s3-bucket-granted-access': {
+    s3PublicAccess:
+      'This S3 bucket access control grants access beyond the owner; use a private access control.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1021,6 +1025,10 @@ const ruleDescriptions = Object.freeze({
   'disabled-auto-escaping':
     "Flag disabling a template engine's HTML auto-escaping; matches an object property " +
     '"noEscape" set to the boolean literal true (Handlebars) and assigning to Mustache.escape',
+  'aws-s3-bucket-granted-access':
+    'Flag an AWS CDK S3 bucket configured with an access control that grants access beyond ' +
+    'the owner; matches an "accessControl" property whose value is a BucketAccessControl member ' +
+    'named PUBLIC_READ, PUBLIC_READ_WRITE, or AUTHENTICATED_READ',
 });
 
 const ruleTypes = Object.freeze({
@@ -1194,6 +1202,7 @@ const ruleTypes = Object.freeze({
   cors: 'problem',
   'dns-prefetching': 'problem',
   'disabled-auto-escaping': 'problem',
+  'aws-s3-bucket-granted-access': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1366,6 +1375,7 @@ const recommendedRuleConfig = Object.freeze({
   cors: 'error',
   'dns-prefetching': 'error',
   'disabled-auto-escaping': 'error',
+  'aws-s3-bucket-granted-access': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

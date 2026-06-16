@@ -6,6 +6,7 @@ mod arguments_order;
 mod arguments_usage;
 mod array_callback_without_return;
 mod array_constructor;
+mod aws_s3_bucket_granted_access;
 mod bitwise_operators;
 mod block_scoped_var;
 mod bool_param_default;
