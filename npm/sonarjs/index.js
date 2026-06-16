@@ -662,6 +662,10 @@ const messages = Object.freeze({
     confidentialLogging:
       'Configure secret-masking patterns for this logger so confidential information is not logged.',
   },
+  'aws-iam-all-resources-accessible': {
+    iamAllResources:
+      'This policy grants access to all resources ("*"); scope it to the specific resources required.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1104,6 +1108,9 @@ const ruleDescriptions = Object.freeze({
     'Flag a Signale logger configured without secret masking; matches a new-expression ' +
     'whose callee is Signale and whose first argument is an object literal with a "secrets" ' +
     'property set to an empty array literal',
+  'aws-iam-all-resources-accessible':
+    'Flag AWS IAM policy statements that grant access to all resources; matches an object ' +
+    'property "resources" whose array literal value contains the wildcard string "*"',
 });
 
 const ruleTypes = Object.freeze({
@@ -1288,6 +1295,7 @@ const ruleTypes = Object.freeze({
   'aws-ec2-rds-dms-public': 'problem',
   'aws-s3-bucket-public-access': 'problem',
   'confidential-information-logging': 'problem',
+  'aws-iam-all-resources-accessible': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1471,6 +1479,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-ec2-rds-dms-public': 'error',
   'aws-s3-bucket-public-access': 'error',
   'confidential-information-logging': 'error',
+  'aws-iam-all-resources-accessible': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

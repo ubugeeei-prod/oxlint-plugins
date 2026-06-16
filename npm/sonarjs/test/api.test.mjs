@@ -184,6 +184,7 @@ const expectedRuleNames = [
   'aws-ec2-rds-dms-public',
   'aws-s3-bucket-public-access',
   'confidential-information-logging',
+  'aws-iam-all-resources-accessible',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3968,6 +3969,40 @@ describe('confidential-information-logging rule', () => {
   it('does not report a different callee', () => {
     const source = 'new Other({ secrets: [] });';
     const diagnostics = scan('confidential-information-logging', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-iam-all-resources-accessible rule', () => {
+  it('reports resources granting access to all via "*"', () => {
+    const source = 'new PolicyStatement({ resources: ["*"] });';
+    const diagnostics = scan('aws-iam-all-resources-accessible', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-iam-all-resources-accessible');
+    expect(diagnostics[0].messageId).toBe('iamAllResources');
+  });
+
+  it('does not report a specific resource', () => {
+    const source = 'new PolicyStatement({ resources: ["arn:aws:s3:::x"] });';
+    const diagnostics = scan('aws-iam-all-resources-accessible', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an empty resources array', () => {
+    const source = 'new PolicyStatement({ resources: [] });';
+    const diagnostics = scan('aws-iam-all-resources-accessible', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-array resources value', () => {
+    const source = 'new PolicyStatement({ resources: x });';
+    const diagnostics = scan('aws-iam-all-resources-accessible', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a wildcard under a different key', () => {
+    const source = 'new PolicyStatement({ other: ["*"] });';
+    const diagnostics = scan('aws-iam-all-resources-accessible', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
