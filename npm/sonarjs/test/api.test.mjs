@@ -220,6 +220,7 @@ const expectedRuleNames = [
   'existing-groups',
   'encryption',
   'regular-expr',
+  'no-os-command-from-path',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
