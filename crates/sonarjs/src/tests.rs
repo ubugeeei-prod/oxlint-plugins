@@ -8485,6 +8485,45 @@ fn different_types_comparison_does_not_report_loose_equality() {
 }
 
 #[test]
+fn strings_comparison_reports_string_literals_lt() {
+    let diagnostics = scan("strings-comparison", r#""123" < "45";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "strings-comparison");
+    assert_eq!(diagnostics[0].message_id, "stringsComparison");
+}
+
+#[test]
+fn strings_comparison_reports_gte() {
+    let diagnostics = scan("strings-comparison", r#""a" >= "b";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "stringsComparison");
+}
+
+#[test]
+fn strings_comparison_does_not_report_equality() {
+    let diagnostics = scan("strings-comparison", r#""a" === "b";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn strings_comparison_does_not_report_numbers() {
+    let diagnostics = scan("strings-comparison", "1 < 2;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn strings_comparison_does_not_report_mixed() {
+    let diagnostics = scan("strings-comparison", r#""a" < x;"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn strings_comparison_does_not_report_plus() {
+    let diagnostics = scan("strings-comparison", r#""a" + "b";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn operation_returning_nan_reports_arrow_function_operand() {
     let diagnostics = scan("operation-returning-nan", "const x = (() => {}) * 2;");
     assert_eq!(diagnostics.len(), 1);

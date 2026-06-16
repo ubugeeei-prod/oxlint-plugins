@@ -213,6 +213,7 @@ mod slow_regex;
 mod sockets;
 mod standard_input;
 mod strict_transport_security;
+mod strings_comparison;
 mod todo_tag;
 mod too_many_break_or_continue_in_loop;
 mod unicode_aware_regex;

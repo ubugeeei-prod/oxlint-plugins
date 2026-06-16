@@ -381,6 +381,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_in_operator_type_error(it);
         self.check_different_types_comparison(it);
         self.check_operation_returning_nan(it);
+        self.check_strings_comparison(it);
         walk::walk_binary_expression(self, it);
     }
 

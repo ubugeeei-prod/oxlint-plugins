@@ -827,6 +827,10 @@ const messages = Object.freeze({
   'no-unused-vars': {
     unusedVariable: 'Remove this unused variable.',
   },
+  'strings-comparison': {
+    stringsComparison:
+      'Do not compare strings with </>/<=/>=; this is a lexicographic comparison. Convert to numbers (Number(...)) if a numeric comparison is intended.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1422,6 +1426,8 @@ const ruleDescriptions = Object.freeze({
     'Flag binding or assigning the special identifiers eval, arguments, undefined, NaN, or Infinity (S2137). Reads are not flagged; only bind/assign/update targets are. Matching this fixed name set keeps it zero-false-positive',
   'no-unused-vars':
     'Flag a function-local variable declared with a plain identifier binding that is never read (S1481), using semantic analysis. Top-level/exported declarations, destructuring patterns, and underscore-prefixed names are deliberately not flagged to stay zero-false-positive',
+  'strings-comparison':
+    'Flag a relational comparison (</>/<=/>=) where both operands are string literals (S3003), which performs a surprising lexicographic comparison. Only the literal form is flagged (the typed-variable form needs type inference), keeping this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1651,6 +1657,7 @@ const ruleTypes = Object.freeze({
   'aws-sns-unencrypted-topics': 'problem',
   'no-globals-shadowing': 'problem',
   'no-unused-vars': 'suggestion',
+  'strings-comparison': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1879,6 +1886,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-sns-unencrypted-topics': 'error',
   'no-globals-shadowing': 'error',
   'no-unused-vars': 'error',
+  'strings-comparison': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
