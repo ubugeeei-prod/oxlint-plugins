@@ -11438,19 +11438,19 @@
       },
       {
         "name": "insecure-jwt-token",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule insecure-jwt-token (Sonar key S5659). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S5659). Flags an ObjectProperty in a JWT options object that disables signature protection: a key (static identifier or string literal) of \"algorithm\" whose value is the string literal \"none\", or a key of \"algorithms\" whose array value contains the string literal \"none\" (both compared case-insensitively). The algorithm/algorithms option keys combined with the literal none algorithm are distinctive to JWT configuration, so flagging only these shapes is zero-false-positive. Strong algorithms (HS256/RS256), non-literal values, and other keys are not flagged. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "inverted-assertion-arguments",
