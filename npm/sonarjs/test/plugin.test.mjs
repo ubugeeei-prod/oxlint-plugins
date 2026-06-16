@@ -278,6 +278,7 @@ describe('sonarjs plugin shape', () => {
       'aws-iam-all-resources-accessible',
       'aws-ec2-unencrypted-ebs-volume',
       'aws-efs-unencrypted',
+      'aws-restricted-ip-admin-access',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7018,5 +7019,56 @@ describe('aws-efs-unencrypted rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-efs-unencrypted)');
+  });
+});
+
+describe('aws-restricted-ip-admin-access rule', () => {
+  it('reports anyIpv4() with SSH port 22', () => {
+    const source = 'sg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));';
+    const reports = runRule('aws-restricted-ip-admin-access', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('restrictedIpAdminAccess');
+  });
+
+  it('reports anyIpv6() with RDP port 3389', () => {
+    const source = 'sg.addIngressRule(Peer.anyIpv6(), Port.tcp(3389));';
+    const reports = runRule('aws-restricted-ip-admin-access', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('restrictedIpAdminAccess');
+  });
+
+  it('does not report a specific CIDR peer', () => {
+    const source = 'sg.addIngressRule(Peer.ipv4("10.0.0.0/16"), Port.tcp(22));';
+    const reports = runRule('aws-restricted-ip-admin-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-administration port', () => {
+    const source = 'sg.addIngressRule(Peer.anyIpv4(), Port.tcp(443));';
+    const reports = runRule('aws-restricted-ip-admin-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a single-argument call', () => {
+    const source = 'sg.addIngressRule(Peer.anyIpv4());';
+    const reports = runRule('aws-restricted-ip-admin-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an unrelated call', () => {
+    const source = 'foo(a, b);';
+    const reports = runRule('aws-restricted-ip-admin-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-restricted-ip-admin-access through the CLI', () => {
+    const result = runOxlint(
+      'aws-restricted-ip-admin-access',
+      'sg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-restricted-ip-admin-access)');
   });
 });

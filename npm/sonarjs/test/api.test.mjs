@@ -187,6 +187,7 @@ const expectedRuleNames = [
   'aws-iam-all-resources-accessible',
   'aws-ec2-unencrypted-ebs-volume',
   'aws-efs-unencrypted',
+  'aws-restricted-ip-admin-access',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4087,6 +4088,47 @@ describe('aws-efs-unencrypted rule', () => {
   it('does not report a FileSystem without an options object', () => {
     const source = "new FileSystem(this, 'f');";
     const diagnostics = scan('aws-efs-unencrypted', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-restricted-ip-admin-access rule', () => {
+  it('reports anyIpv4() with SSH port 22', () => {
+    const source = 'sg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));';
+    const diagnostics = scan('aws-restricted-ip-admin-access', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-restricted-ip-admin-access');
+    expect(diagnostics[0].messageId).toBe('restrictedIpAdminAccess');
+  });
+
+  it('reports anyIpv6() with RDP port 3389', () => {
+    const source = 'sg.addIngressRule(Peer.anyIpv6(), Port.tcp(3389));';
+    const diagnostics = scan('aws-restricted-ip-admin-access', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('restrictedIpAdminAccess');
+  });
+
+  it('does not report a specific CIDR peer', () => {
+    const source = 'sg.addIngressRule(Peer.ipv4("10.0.0.0/16"), Port.tcp(22));';
+    const diagnostics = scan('aws-restricted-ip-admin-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-administration port', () => {
+    const source = 'sg.addIngressRule(Peer.anyIpv4(), Port.tcp(443));';
+    const diagnostics = scan('aws-restricted-ip-admin-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a single-argument call', () => {
+    const source = 'sg.addIngressRule(Peer.anyIpv4());';
+    const diagnostics = scan('aws-restricted-ip-admin-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an unrelated call', () => {
+    const source = 'foo(a, b);';
+    const diagnostics = scan('aws-restricted-ip-admin-access', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

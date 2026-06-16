@@ -10334,19 +10334,19 @@
       },
       {
         "name": "aws-restricted-ip-admin-access",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-restricted-ip-admin-access (Sonar key S6321). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6321. Flags an AWS CDK security-group ingress rule that opens an administration port to all IP addresses: a call whose callee is a static member expression named addIngressRule, with at least two arguments, where argument 0 (the peer) is a call whose terminal callee name is anyIpv4 or anyIpv6 (Peer.anyIpv4()/ec2.Peer.anyIpv4()) AND argument 1 (the port) is a call whose terminal callee name is tcp (Port.tcp(...)) whose first argument is the numeric literal 22 (SSH) or 3389 (RDP). Requiring both the any-IP peer and an admin Port.tcp together is distinctive to this insecure pattern, keeping it zero-false-positive. Specific CIDR peers, non-admin ports (e.g. Port.tcp(443), Port.allTraffic()), fewer than two arguments and non-addIngressRule callees are not flagged. The Cfn-level form (cidrIp \"0.0.0.0/0\" with fromPort/toPort), connections.allowFrom and Port.tcpRange variants are intentionally not detected to stay zero-false-positive, so this port deliberately under-reports. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-s3-bucket-granted-access",
