@@ -280,6 +280,7 @@ describe('sonarjs plugin shape', () => {
       'aws-efs-unencrypted',
       'aws-restricted-ip-admin-access',
       'redundant-type-aliases',
+      'jsx-no-leaked-render',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7125,5 +7126,54 @@ describe('redundant-type-aliases rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(redundant-type-aliases)');
+  });
+});
+
+describe('jsx-no-leaked-render rule', () => {
+  it('reports {items.length && <List/>}', () => {
+    const src = 'const x = <div>{items.length && <List/>}</div>;';
+    const reports = runRule('jsx-no-leaked-render', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('jsxNoLeakedRender');
+  });
+
+  it('reports {0 && <X/>}', () => {
+    const src = 'const x = <div>{0 && <X/>}</div>;';
+    const reports = runRule('jsx-no-leaked-render', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('jsxNoLeakedRender');
+  });
+
+  it('does not report {items.length > 0 && <List/>}', () => {
+    const src = 'const x = <div>{items.length > 0 && <List/>}</div>;';
+    const reports = runRule('jsx-no-leaked-render', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a plain identifier {show && <X/>}', () => {
+    const src = 'const x = <div>{show && <X/>}</div>;';
+    const reports = runRule('jsx-no-leaked-render', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report the || operator {a.length || <X/>}', () => {
+    const src = 'const x = <div>{a.length || <X/>}</div>;';
+    const reports = runRule('jsx-no-leaked-render', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-JSX right operand cond && doThing()', () => {
+    const src = 'cond && doThing();';
+    const reports = runRule('jsx-no-leaked-render', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports jsx-no-leaked-render through the CLI', () => {
+    const src = 'const x = <div>{items.length && <List/>}</div>;';
+    const result = runOxlint('jsx-no-leaked-render', src, 'sample.tsx');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(jsx-no-leaked-render)');
   });
 });

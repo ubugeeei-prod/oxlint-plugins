@@ -10130,3 +10130,48 @@ fn redundant_type_aliases_does_not_report_object_type() {
     let diagnostics = scan("redundant-type-aliases", "type O = { a: number };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn jsx_no_leaked_render_reports_length_member_before_jsx() {
+    let source = "const x = <div>{items.length && <List/>}</div>";
+    let diagnostics = scan_jsx("jsx-no-leaked-render", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "jsx-no-leaked-render");
+    assert_eq!(diagnostics[0].message_id, "jsxNoLeakedRender");
+}
+
+#[test]
+fn jsx_no_leaked_render_reports_numeric_literal_before_jsx() {
+    let source = "const x = <div>{0 && <X/>}</div>";
+    let diagnostics = scan_jsx("jsx-no-leaked-render", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "jsxNoLeakedRender");
+}
+
+#[test]
+fn jsx_no_leaked_render_does_not_report_boolean_comparison() {
+    let source = "const x = <div>{items.length > 0 && <List/>}</div>";
+    let diagnostics = scan_jsx("jsx-no-leaked-render", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn jsx_no_leaked_render_does_not_report_plain_identifier() {
+    let source = "const x = <div>{show && <X/>}</div>";
+    let diagnostics = scan_jsx("jsx-no-leaked-render", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn jsx_no_leaked_render_does_not_report_or_operator() {
+    let source = "const x = <div>{a.length || <X/>}</div>";
+    let diagnostics = scan_jsx("jsx-no-leaked-render", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn jsx_no_leaked_render_does_not_report_non_jsx_right() {
+    let source = "cond && doThing()";
+    let diagnostics = scan_jsx("jsx-no-leaked-render", source);
+    assert!(diagnostics.is_empty());
+}
