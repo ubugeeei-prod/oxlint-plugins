@@ -30,8 +30,8 @@
 //! ### Three flagged shapes (hardcoded patterns only)
 //! - a regex literal: `/(a+)+b/`
 //! - `new RegExp("(a+)+b")` — constructor with a string-literal pattern
-//! - `str.search("(a+)+b")`, `str.match("(a+)+b")`, `str.split("(a+)+b")` — a
-//!   `.search`/`.match`/`.split` call with a string-literal first argument
+//! - `str.search("(a+)+b")`, `str.match("(a+)+b")` — a `.search`/`.match` call
+//!   with a string-literal first argument
 //!
 //! Dynamic values (variables, template literals, computed expressions) are
 //! never analyzed: only literals can be tallied statically, and reporting
@@ -48,6 +48,8 @@
 //! - `/*/` — fewer than 3 characters
 //! - `new RegExp(pattern)` — dynamic argument, skipped
 //! - `str.replace("(a+)+b", "")` — `.replace` is not one of the targeted methods
+//! - `markdown.split("***")` — `String.split(string)` treats its argument as a
+//!   literal delimiter, not a regex, so it is never coerced to a pattern
 //!
 //! [`slow-regex`]: crate::rules::slow_regex
 
@@ -100,14 +102,14 @@ impl Scanner<'_> {
         }
     }
 
-    /// Flags `str.search/match/split("<sensitive>")` with a hardcoded
+    /// Flags `str.search/match("<sensitive>")` with a hardcoded
     /// string-literal first argument.
     pub(crate) fn check_regular_expr_call(&mut self, it: &CallExpression<'_>) {
         let Expression::StaticMemberExpression(member) = it.callee.get_inner_expression() else {
             return;
         };
         let property = member.property.name.as_str();
-        if !matches!(property, "search" | "match" | "split") {
+        if !matches!(property, "search" | "match") {
             return;
         }
         if first_string_arg(&it.arguments).is_some_and(pattern_is_sensitive) {

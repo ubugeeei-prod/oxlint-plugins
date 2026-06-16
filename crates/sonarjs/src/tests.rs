@@ -11615,6 +11615,14 @@ fn regular_expr_does_not_report_dynamic_arg() {
 }
 
 #[test]
+fn regular_expr_does_not_report_split_string() {
+    // `String.split(string)` uses a literal delimiter, not a regex, so a
+    // sensitive-looking string argument must NOT be flagged.
+    let diagnostics = scan("regular-expr", "markdown.split(\"***\");");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn no_os_command_from_path_reports_bare_command() {
     let diagnostics = scan("no-os-command-from-path", "cp.spawn('file.exe');");
     assert_eq!(diagnostics.len(), 1);
