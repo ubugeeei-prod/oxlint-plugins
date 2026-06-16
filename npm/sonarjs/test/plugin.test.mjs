@@ -298,6 +298,7 @@ describe('sonarjs plugin shape', () => {
       'strict-transport-security',
       'unverified-hostname',
       'frame-ancestors',
+      'no-table-as-layout',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');

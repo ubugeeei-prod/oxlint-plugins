@@ -153,6 +153,7 @@ mod no_skipped_tests;
 mod no_small_switch;
 mod no_sonar_comments;
 mod no_tab;
+mod no_table_as_layout;
 mod no_undefined_argument;
 mod no_undefined_assignment;
 mod no_unenclosed_multiline_block;

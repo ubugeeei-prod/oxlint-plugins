@@ -903,6 +903,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_jsx_opening_element(&mut self, it: &JSXOpeningElement<'a>) {
         self.check_link_with_target_blank(it);
+        self.check_no_table_as_layout(it);
         walk::walk_jsx_opening_element(self, it);
     }
 
