@@ -133,6 +133,7 @@ mod no_ignored_return;
 mod no_in_misuse;
 mod no_incomplete_assertions;
 mod no_inconsistent_returns;
+mod no_incorrect_string_concat;
 mod no_intrusive_permissions;
 mod no_invalid_regexp;
 mod no_invariant_returns;
