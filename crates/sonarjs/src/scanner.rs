@@ -781,6 +781,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_hardcoded_secrets_object_property(it);
         self.check_function_name_object_property(it);
         self.check_cookie_no_httponly_object_property(it);
+        self.check_xml_parser_xxe_object_property(it);
         self.check_unverified_certificate_object_property(it);
         self.check_content_length_object_property(it);
         self.check_content_security_policy_object_property(it);

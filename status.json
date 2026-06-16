@@ -14318,19 +14318,19 @@
       },
       {
         "name": "xml-parser-xxe",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule xml-parser-xxe (Sonar key S2755). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S2755). Flags an ObjectProperty whose key (static identifier or string literal) is exactly noent and whose value is the boolean literal true. libxmljs parseXmlString enables external entity substitution when noent: true is set, exposing the application to XML External Entity (XXE) attacks. The noent option key is distinctive to libxmljs XML parsing, so flagging only noent: true is effectively zero-false-positive (S2755). noent: false, non-literal values, and other keys are not flagged. No upstream source, fixtures, tests, or messages were consulted."
       },
       {
         "name": "xpath",

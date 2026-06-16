@@ -197,3 +197,4 @@ mod updated_loop_counter;
 mod use_type_alias;
 mod void_use;
 mod web_sql_database;
+mod xml_parser_xxe;

@@ -199,6 +199,7 @@ const expectedRuleNames = [
   'no-ip-forward',
   'no-angular-bypass-sanitization',
   'insecure-jwt-token',
+  'xml-parser-xxe',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
