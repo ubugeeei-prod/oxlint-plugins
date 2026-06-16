@@ -235,6 +235,7 @@ const expectedRuleNames = [
   'no-incorrect-string-concat',
   'table-header',
   'table-header-reference',
+  'no-return-type-any',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

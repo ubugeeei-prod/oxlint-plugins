@@ -161,6 +161,7 @@ mod no_redundant_parentheses;
 mod no_referrer_policy;
 mod no_regex_spaces;
 mod no_require_or_define;
+mod no_return_type_any;
 mod no_same_argument_assert;
 mod no_same_line_conditional;
 mod no_skipped_tests;

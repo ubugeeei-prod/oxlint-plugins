@@ -12417,3 +12417,37 @@ fn table_header_reference_does_not_report_outside_table() {
     let diagnostics = scan_jsx("table-header-reference", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_return_type_any_reports_function() {
+    let diagnostics = scan("no-return-type-any", "function f(): any { return x; }");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-return-type-any");
+    assert_eq!(diagnostics[0].message_id, "noReturnTypeAny");
+}
+
+#[test]
+fn no_return_type_any_reports_arrow() {
+    let diagnostics = scan("no-return-type-any", "const f = (): any => x;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-return-type-any");
+    assert_eq!(diagnostics[0].message_id, "noReturnTypeAny");
+}
+
+#[test]
+fn no_return_type_any_does_not_report_specific_type() {
+    let diagnostics = scan("no-return-type-any", "function f(): number { return 1; }");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_return_type_any_does_not_report_any_array() {
+    let diagnostics = scan("no-return-type-any", "function f(): any[] { return []; }");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_return_type_any_does_not_report_no_annotation() {
+    let diagnostics = scan("no-return-type-any", "function f() { return x; }");
+    assert!(diagnostics.is_empty());
+}
