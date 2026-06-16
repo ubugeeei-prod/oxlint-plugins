@@ -11306,3 +11306,51 @@ fn aws_opensearchservice_domain_does_not_report_other_key() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn cookies_reports_document_cookie_assignment() {
+    let diagnostics = scan("cookies", "document.cookie = \"name=John\";");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "cookies");
+    assert_eq!(diagnostics[0].message_id, "cookies");
+}
+
+#[test]
+fn cookies_reports_cookie_call() {
+    let diagnostics = scan("cookies", "res.cookie('name', 'John');");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "cookies");
+    assert_eq!(diagnostics[0].message_id, "cookies");
+}
+
+#[test]
+fn cookies_reports_set_cookie_header() {
+    let diagnostics = scan(
+        "cookies",
+        "res.setHeader('Set-Cookie', ['type=ninja', 'lang=js']);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "cookies");
+    assert_eq!(diagnostics[0].message_id, "cookies");
+}
+
+#[test]
+fn cookies_does_not_report_cookie_read() {
+    let diagnostics = scan(
+        "cookies",
+        "const c = document.cookie;\nconst all = req.cookies;",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cookies_does_not_report_zero_arg_cookie() {
+    let diagnostics = scan("cookies", "res.cookie();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn cookies_does_not_report_other_header() {
+    let diagnostics = scan("cookies", "res.setHeader('Content-Type', 'text/html');");
+    assert!(diagnostics.is_empty());
+}

@@ -10782,19 +10782,19 @@
       },
       {
         "name": "cookies",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule cookies (Sonar key S2255). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S2255 (cookies, deprecated security hotspot). Flags cookie writes in three distinctive shapes: a document.cookie assignment, a .cookie(name, value) call with at least one argument, and a setHeader('Set-Cookie', ...) call (header name matched case-insensitively). Cookie reads, zero-argument .cookie() calls, and other header names are not flagged, keeping the rule false-positive free. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "cors",

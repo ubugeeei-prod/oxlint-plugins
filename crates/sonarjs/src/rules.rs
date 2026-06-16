@@ -39,6 +39,7 @@ mod constructor_for_side_effects;
 mod content_length;
 mod content_security_policy;
 mod cookie_no_httponly;
+mod cookies;
 mod cors;
 mod csrf;
 mod cyclomatic_complexity;

@@ -214,6 +214,7 @@ const expectedRuleNames = [
   'aws-s3-bucket-insecure-http',
   'aws-s3-bucket-server-encryption',
   'aws-opensearchservice-domain',
+  'cookies',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
