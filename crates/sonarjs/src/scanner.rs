@@ -385,6 +385,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_logical_expression(&mut self, it: &LogicalExpression<'a>) {
         self.check_no_identical_expressions_logical(it);
+        self.check_jsx_no_leaked_render(it);
         self.add_cyclomatic_complexity();
         self.enter_expression_complexity_op(it.span);
         walk::walk_logical_expression(self, it);

@@ -11470,19 +11470,19 @@
       },
       {
         "name": "jsx-no-leaked-render",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-no-leaked-render (Sonar key S6439). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6439. Flags a logical-AND expression that conditionally renders JSX where the left operand is provably numeric: a static member access whose property name is length (the classic `{items.length && <JSX/>}` leak) or a numeric literal, AND whose right operand (after unwrapping parentheses/non-null assertions) is a JSXElement or JSXFragment. A falsy numeric 0 is rendered by React as the text \"0\" instead of nothing. Boolean comparisons (`> 0`, `!== 0`), Boolean(...), plain identifiers, non-length member accesses, the `||` operator, ternaries and non-JSX right operands are intentionally not flagged to stay zero-false-positive, so this port deliberately under-reports. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "label-position",

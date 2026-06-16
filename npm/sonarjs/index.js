@@ -680,6 +680,10 @@ const messages = Object.freeze({
     redundantTypeAlias:
       'This type alias only renames an existing type and adds no value; use the underlying type directly.',
   },
+  'jsx-no-leaked-render': {
+    jsxNoLeakedRender:
+      'Convert this `&&` to a boolean condition (e.g. `x.length > 0`); a numeric left operand can leak 0 into the rendered output.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1142,6 +1146,12 @@ const ruleDescriptions = Object.freeze({
     'Flag a TypeScript type alias whose right-hand side merely renames an existing type; ' +
     'matches an alias with no type parameters whose declared type is a primitive/built-in ' +
     'keyword type or a bare type reference with no type arguments',
+  'jsx-no-leaked-render':
+    'Flag a logical-AND expression that conditionally renders JSX where the left operand is ' +
+    'numeric (a `.length` member access or a numeric literal), e.g. `{items.length && <List/>}`; ' +
+    'a falsy numeric `0` is rendered as the text "0" instead of nothing. Boolean comparisons ' +
+    '(`> 0`, `!== 0`), plain identifiers, non-`length` members, the `||` operator and non-JSX ' +
+    'right operands are not flagged to stay zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1331,6 +1341,7 @@ const ruleTypes = Object.freeze({
   'aws-efs-unencrypted': 'problem',
   'aws-restricted-ip-admin-access': 'problem',
   'redundant-type-aliases': 'suggestion',
+  'jsx-no-leaked-render': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1519,6 +1530,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-efs-unencrypted': 'error',
   'aws-restricted-ip-admin-access': 'error',
   'redundant-type-aliases': 'error',
+  'jsx-no-leaked-render': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -189,6 +189,7 @@ const expectedRuleNames = [
   'aws-efs-unencrypted',
   'aws-restricted-ip-admin-access',
   'redundant-type-aliases',
+  'jsx-no-leaked-render',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4178,6 +4179,47 @@ describe('redundant-type-aliases rule', () => {
   it('does not report an object type', () => {
     const source = 'type O = { a: number };';
     const diagnostics = scan('redundant-type-aliases', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('jsx-no-leaked-render rule', () => {
+  it('reports a .length numeric leak before JSX', () => {
+    const source = 'const x = <div>{items.length && <List/>}</div>;';
+    const diagnostics = scan('jsx-no-leaked-render', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('jsx-no-leaked-render');
+    expect(diagnostics[0].messageId).toBe('jsxNoLeakedRender');
+  });
+
+  it('reports a numeric literal before JSX', () => {
+    const source = 'const x = <div>{0 && <X/>}</div>;';
+    const diagnostics = scan('jsx-no-leaked-render', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('jsxNoLeakedRender');
+  });
+
+  it('does not report an explicit boolean comparison', () => {
+    const source = 'const x = <div>{items.length > 0 && <List/>}</div>;';
+    const diagnostics = scan('jsx-no-leaked-render', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a plain identifier', () => {
+    const source = 'const x = <div>{show && <X/>}</div>;';
+    const diagnostics = scan('jsx-no-leaked-render', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report the || operator', () => {
+    const source = 'const x = <div>{a.length || <X/>}</div>;';
+    const diagnostics = scan('jsx-no-leaked-render', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-JSX right operand', () => {
+    const source = 'cond && doThing();';
+    const diagnostics = scan('jsx-no-leaked-render', source, 'sample.tsx');
     expect(diagnostics).toHaveLength(0);
   });
 });

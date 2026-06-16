@@ -64,6 +64,7 @@ mod in_operator_type_error;
 mod inconsistent_function_call;
 mod index_of_compare_to_positive_number;
 mod inverted_assertion_arguments;
+mod jsx_no_leaked_render;
 mod label_position;
 mod link_with_target_blank;
 mod max_lines;
