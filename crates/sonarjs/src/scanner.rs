@@ -806,6 +806,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_referrer_policy_object_property(it);
         self.check_weak_ssl_object_property(it);
         self.check_unverified_hostname_object_property(it);
+        self.check_frame_ancestors_object_property(it);
         walk::walk_object_property(self, it);
     }
 

@@ -10959,3 +10959,47 @@ fn unverified_hostname_does_not_report_other_key() {
     let diagnostics = scan("unverified-hostname", "const o = { other: function() {} };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn frame_ancestors_reports_none_array() {
+    let diagnostics = scan(
+        "frame-ancestors",
+        "helmet.contentSecurityPolicy({ directives: { frameAncestors: [\"'none'\"] } });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "frame-ancestors");
+    assert_eq!(diagnostics[0].message_id, "frameAncestors");
+}
+
+#[test]
+fn frame_ancestors_reports_none_among_others() {
+    let diagnostics = scan(
+        "frame-ancestors",
+        "const o = { frameAncestors: [\"'self'\", \"'none'\"] };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn frame_ancestors_does_not_report_specific_origin() {
+    let diagnostics = scan(
+        "frame-ancestors",
+        "const o = { frameAncestors: [\"'example.com'\"] };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn frame_ancestors_does_not_report_other_key() {
+    let diagnostics = scan("frame-ancestors", "const o = { defaultSrc: [\"'none'\"] };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn frame_ancestors_does_not_report_non_array() {
+    let diagnostics = scan(
+        "frame-ancestors",
+        "const o = { frameAncestors: \"'none'\" };",
+    );
+    assert!(diagnostics.is_empty());
+}

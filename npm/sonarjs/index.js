@@ -744,6 +744,10 @@ const messages = Object.freeze({
     unverifiedHostname:
       'This checkServerIdentity override disables TLS hostname verification; validate the server hostname.',
   },
+  'frame-ancestors': {
+    frameAncestors:
+      'Make sure this Content Security Policy frame-ancestors directive is safe here.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1293,6 +1297,8 @@ const ruleDescriptions = Object.freeze({
     '(an empty block, a bare return / return true / return undefined, or an arrow expression body of true), ' +
     'which disables TLS hostname verification; the distinctive key plus empty override is a zero-false-positive ' +
     'subset of S5527',
+  'frame-ancestors':
+    "Flag a helmet contentSecurityPolicy frameAncestors directive set to the array value \"'none'\" (the documented Noncompliant pattern of S5732); the distinctive frameAncestors key plus the CSP 'none' keyword keeps this a zero-false-positive subset",
 });
 
 const ruleTypes = Object.freeze({
@@ -1499,6 +1505,7 @@ const ruleTypes = Object.freeze({
   'no-weak-keys': 'problem',
   'strict-transport-security': 'problem',
   'unverified-hostname': 'problem',
+  'frame-ancestors': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1704,6 +1711,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-weak-keys': 'error',
   'strict-transport-security': 'error',
   'unverified-hostname': 'error',
+  'frame-ancestors': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
