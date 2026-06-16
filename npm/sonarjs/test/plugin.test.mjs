@@ -294,6 +294,7 @@ describe('sonarjs plugin shape', () => {
       'no-useless-react-setstate',
       'no-referrer-policy',
       'weak-ssl',
+      'no-weak-keys',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');

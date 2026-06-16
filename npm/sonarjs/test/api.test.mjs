@@ -203,6 +203,7 @@ const expectedRuleNames = [
   'no-useless-react-setstate',
   'no-referrer-policy',
   'weak-ssl',
+  'no-weak-keys',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

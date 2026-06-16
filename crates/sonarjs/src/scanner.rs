@@ -659,6 +659,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_unsafe_unzip(it);
         self.check_hashing(it);
         self.check_no_weak_cipher(it);
+        self.check_no_weak_keys(it);
         self.check_encryption_secure_mode(it);
         self.check_no_same_argument_assert(it);
         self.check_inverted_assertion_arguments(it);
