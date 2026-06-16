@@ -9750,3 +9750,50 @@ fn aws_s3_bucket_versioning_does_not_report_other_key() {
     let diagnostics = scan("aws-s3-bucket-versioning", "const x = { other: false };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_ec2_rds_dms_public_reports_publicly_accessible_true() {
+    let diagnostics = scan(
+        "aws-ec2-rds-dms-public",
+        "new ec2.Instance(this,'i',{ publiclyAccessible: true })",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-ec2-rds-dms-public");
+}
+
+#[test]
+fn aws_ec2_rds_dms_public_reports_associate_public_ip_true() {
+    let diagnostics = scan(
+        "aws-ec2-rds-dms-public",
+        "new ec2.CfnInstance(this,'i',{ networkInterfaces: [{ associatePublicIpAddress: true }] })",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-ec2-rds-dms-public");
+}
+
+#[test]
+fn aws_ec2_rds_dms_public_does_not_report_false() {
+    let diagnostics = scan(
+        "aws-ec2-rds-dms-public",
+        "new ec2.Instance(this,'i',{ publiclyAccessible: false })",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_ec2_rds_dms_public_does_not_report_non_literal() {
+    let diagnostics = scan(
+        "aws-ec2-rds-dms-public",
+        "new ec2.Instance(this,'i',{ publiclyAccessible: x })",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_ec2_rds_dms_public_does_not_report_other_key() {
+    let diagnostics = scan(
+        "aws-ec2-rds-dms-public",
+        "new ec2.Instance(this,'i',{ other: true })",
+    );
+    assert!(diagnostics.is_empty());
+}

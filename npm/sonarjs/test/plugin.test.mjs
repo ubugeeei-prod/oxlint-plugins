@@ -272,6 +272,7 @@ describe('sonarjs plugin shape', () => {
       'aws-apigateway-public-api',
       'aws-iam-all-privileges',
       'aws-s3-bucket-versioning',
+      'aws-ec2-rds-dms-public',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6771,5 +6772,45 @@ describe('aws-s3-bucket-versioning rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-s3-bucket-versioning)');
+  });
+});
+
+describe('aws-ec2-rds-dms-public rule', () => {
+  it('reports publiclyAccessible set to true', () => {
+    const source = "new ec2.Instance(this,'i',{ publiclyAccessible: true })";
+    const reports = runRule('aws-ec2-rds-dms-public', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('ec2RdsDmsPublic');
+  });
+
+  it('reports associatePublicIpAddress set to true', () => {
+    const source =
+      "new ec2.CfnInstance(this,'i',{ networkInterfaces: [{ associatePublicIpAddress: true }] })";
+    const reports = runRule('aws-ec2-rds-dms-public', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('ec2RdsDmsPublic');
+  });
+
+  it('does not report publiclyAccessible set to false', () => {
+    const source = "new ec2.Instance(this,'i',{ publiclyAccessible: false })";
+    const reports = runRule('aws-ec2-rds-dms-public', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal value', () => {
+    const source = "new ec2.Instance(this,'i',{ publiclyAccessible: x })";
+    const reports = runRule('aws-ec2-rds-dms-public', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-ec2-rds-dms-public through the CLI', () => {
+    const result = runOxlint(
+      'aws-ec2-rds-dms-public',
+      "new ec2.Instance(this,'i',{ publiclyAccessible: true })",
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-ec2-rds-dms-public)');
   });
 });

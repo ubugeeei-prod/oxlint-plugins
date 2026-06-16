@@ -10190,19 +10190,19 @@
       },
       {
         "name": "aws-ec2-rds-dms-public",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-ec2-rds-dms-public (Sonar key S6329). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6329. Flags AWS resources (EC2 / RDS / DMS) made publicly accessible: an object property \"publiclyAccessible\" or \"associatePublicIpAddress\" whose value is the boolean literal true. Both camelCase keys are distinctive to AWS CDK networking configuration, so this exact shape stays zero-false-positive. The false form (publiclyAccessible: false), non-literal values, other keys, and the subnet-type form (vpcSubnets.subnetType: PUBLIC) are deliberately NOT flagged. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-ec2-unencrypted-ebs-volume",
