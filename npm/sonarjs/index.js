@@ -740,6 +740,10 @@ const messages = Object.freeze({
     strictTransportSecurity:
       'Strengthen this HSTS policy (enable includeSubDomains and use a long max-age).',
   },
+  'unverified-hostname': {
+    unverifiedHostname:
+      'This checkServerIdentity override disables TLS hostname verification; validate the server hostname.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1284,6 +1288,11 @@ const ruleDescriptions = Object.freeze({
     'Flag a weak helmet hsts configuration: an hsts call whose first object argument either disables ' +
     'includeSubDomains (set to false) or sets maxAge to a numeric literal below the recommended six-month ' +
     'minimum of 15552000 seconds; the distinctive hsts method name keeps this zero-false-positive (S5739)',
+  'unverified-hostname':
+    'Flag a checkServerIdentity option whose value is a function literal with a trivial always-pass body ' +
+    '(an empty block, a bare return / return true / return undefined, or an arrow expression body of true), ' +
+    'which disables TLS hostname verification; the distinctive key plus empty override is a zero-false-positive ' +
+    'subset of S5527',
 });
 
 const ruleTypes = Object.freeze({
@@ -1489,6 +1498,7 @@ const ruleTypes = Object.freeze({
   'weak-ssl': 'problem',
   'no-weak-keys': 'problem',
   'strict-transport-security': 'problem',
+  'unverified-hostname': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1693,6 +1703,7 @@ const recommendedRuleConfig = Object.freeze({
   'weak-ssl': 'error',
   'no-weak-keys': 'error',
   'strict-transport-security': 'error',
+  'unverified-hostname': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

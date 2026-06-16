@@ -205,6 +205,7 @@ const expectedRuleNames = [
   'weak-ssl',
   'no-weak-keys',
   'strict-transport-security',
+  'unverified-hostname',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

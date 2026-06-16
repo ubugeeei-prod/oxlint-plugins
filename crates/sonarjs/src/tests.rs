@@ -10897,3 +10897,65 @@ fn strict_transport_security_does_not_report_unrelated_callee() {
     let diagnostics = scan("strict-transport-security", "bar();");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn unverified_hostname_reports_empty_function_expression() {
+    let diagnostics = scan(
+        "unverified-hostname",
+        "const o = { checkServerIdentity: function() {} };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unverified-hostname");
+    assert_eq!(diagnostics[0].message_id, "unverifiedHostname");
+}
+
+#[test]
+fn unverified_hostname_reports_empty_arrow_block() {
+    let diagnostics = scan(
+        "unverified-hostname",
+        "const o = { checkServerIdentity: () => {} };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn unverified_hostname_reports_arrow_returns_true() {
+    let diagnostics = scan(
+        "unverified-hostname",
+        "const o = { checkServerIdentity: () => true };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn unverified_hostname_reports_bare_return() {
+    let diagnostics = scan(
+        "unverified-hostname",
+        "const o = { checkServerIdentity: function() { return; } };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn unverified_hostname_does_not_report_real_logic() {
+    let diagnostics = scan(
+        "unverified-hostname",
+        "const o = { checkServerIdentity: (h, c) => { if (h !== expected) throw new Error(); } };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn unverified_hostname_does_not_report_named_function_reference() {
+    let diagnostics = scan(
+        "unverified-hostname",
+        "const o = { checkServerIdentity: someFn };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn unverified_hostname_does_not_report_other_key() {
+    let diagnostics = scan("unverified-hostname", "const o = { other: function() {} };");
+    assert!(diagnostics.is_empty());
+}
