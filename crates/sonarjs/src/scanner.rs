@@ -536,6 +536,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         }
         self.check_no_use_of_empty_return_value_assign(it);
         self.check_disabled_auto_escaping_assignment(it);
+        self.check_content_length_assignment(it);
         walk::walk_assignment_expression(self, it);
     }
 
@@ -779,6 +780,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_hardcoded_secrets_object_property(it);
         self.check_function_name_object_property(it);
         self.check_cookie_no_httponly_object_property(it);
+        self.check_content_length_object_property(it);
         self.check_content_security_policy_object_property(it);
         self.check_certificate_transparency_object_property(it);
         self.check_disabled_auto_escaping_object_property(it);

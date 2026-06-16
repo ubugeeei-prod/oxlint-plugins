@@ -284,6 +284,7 @@ describe('sonarjs plugin shape', () => {
       'no-uniq-key',
       'insecure-cookie',
       'no-hook-setter-in-body',
+      'content-length',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7328,5 +7329,60 @@ describe('no-hook-setter-in-body rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-hook-setter-in-body)');
+  });
+});
+
+describe('content-length rule', () => {
+  it('reports a multer fileSize limit over 8MB', () => {
+    const source = 'multer({ limits: { fileSize: 10000000 } });';
+    const reports = runRule('content-length', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('contentLength');
+  });
+
+  it('reports a maxFileSize object property over 8MB', () => {
+    const source = 'const cfg = { maxFileSize: 9000000 };';
+    const reports = runRule('content-length', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('contentLength');
+  });
+
+  it('reports a maxFileSize member assignment over 8MB', () => {
+    const source = 'form.maxFileSize = 10000000;';
+    const reports = runRule('content-length', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('contentLength');
+  });
+
+  it('does not report a fileSize value within the 8MB limit', () => {
+    const source = 'const cfg = { fileSize: 1000000 };';
+    const reports = runRule('content-length', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a string fileSize value', () => {
+    const source = 'const cfg = { fileSize: "4mb" };';
+    const reports = runRule('content-length', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a generic limit key', () => {
+    const source = 'const cfg = { limit: 10000000 };';
+    const reports = runRule('content-length', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal fileSize value', () => {
+    const source = 'const cfg = { fileSize: x };';
+    const reports = runRule('content-length', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports content-length through the CLI', () => {
+    const result = runOxlint('content-length', 'multer({ limits: { fileSize: 10000000 } });');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(content-length)');
   });
 });

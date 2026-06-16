@@ -10320,3 +10320,58 @@ fn no_hook_setter_in_body_does_not_report_non_setter_call() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn content_length_reports_multer_file_size_over_limit() {
+    let diagnostics = scan(
+        "content-length",
+        "multer({ limits: { fileSize: 10000000 } });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "content-length");
+    assert_eq!(diagnostics[0].message_id, "contentLength");
+}
+
+#[test]
+fn content_length_reports_max_file_size_object_property() {
+    let diagnostics = scan("content-length", "const cfg = { maxFileSize: 9000000 };");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "contentLength");
+}
+
+#[test]
+fn content_length_reports_max_file_size_assignment() {
+    let diagnostics = scan("content-length", "form.maxFileSize = 10000000;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "contentLength");
+}
+
+#[test]
+fn content_length_does_not_report_value_within_limit() {
+    let diagnostics = scan("content-length", "const cfg = { fileSize: 1000000 };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn content_length_does_not_report_value_at_limit() {
+    let diagnostics = scan("content-length", "const cfg = { fileSize: 8000000 };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn content_length_does_not_report_string_value() {
+    let diagnostics = scan("content-length", "const cfg = { fileSize: \"4mb\" };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn content_length_does_not_report_generic_key() {
+    let diagnostics = scan("content-length", "const cfg = { limit: 10000000 };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn content_length_does_not_report_non_literal_value() {
+    let diagnostics = scan("content-length", "const cfg = { fileSize: x };");
+    assert!(diagnostics.is_empty());
+}

@@ -193,6 +193,7 @@ const expectedRuleNames = [
   'no-uniq-key',
   'insecure-cookie',
   'no-hook-setter-in-body',
+  'content-length',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4307,6 +4308,54 @@ describe('no-hook-setter-in-body rule', () => {
   it('does not report a call that is not a useState setter', () => {
     const source = 'function C(){ foo(); return null; }';
     const diagnostics = scan('no-hook-setter-in-body', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('content-length rule', () => {
+  it('reports a multer fileSize limit over 8MB', () => {
+    const source = 'multer({ limits: { fileSize: 10000000 } });';
+    const diagnostics = scan('content-length', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('content-length');
+    expect(diagnostics[0].messageId).toBe('contentLength');
+  });
+
+  it('reports a maxFileSize object property over 8MB', () => {
+    const source = 'const cfg = { maxFileSize: 9000000 };';
+    const diagnostics = scan('content-length', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('contentLength');
+  });
+
+  it('reports a maxFileSize member assignment over 8MB', () => {
+    const source = 'form.maxFileSize = 10000000;';
+    const diagnostics = scan('content-length', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('contentLength');
+  });
+
+  it('does not report a fileSize value within the 8MB limit', () => {
+    const source = 'const cfg = { fileSize: 1000000 };';
+    const diagnostics = scan('content-length', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a string fileSize value', () => {
+    const source = 'const cfg = { fileSize: "4mb" };';
+    const diagnostics = scan('content-length', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a generic limit key', () => {
+    const source = 'const cfg = { limit: 10000000 };';
+    const diagnostics = scan('content-length', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal fileSize value', () => {
+    const source = 'const cfg = { fileSize: x };';
+    const diagnostics = scan('content-length', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
