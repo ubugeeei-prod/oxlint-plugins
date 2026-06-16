@@ -807,6 +807,10 @@ const messages = Object.freeze({
     chaiDeterminateAssertion:
       'This Chai assertion can succeed for more than one reason; make it assert a single deterministic condition.',
   },
+  'no-async-constructor': {
+    noAsyncConstructor:
+      'Do not start asynchronous operations in a constructor; move the async work to an async method or a static factory method.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1390,6 +1394,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a hardcoded publicly-writable directory (the security hotspot S5443): a string literal under /tmp, /var/tmp, /usr/tmp or /dev/shm, or a process.env.TMPDIR/TMP/TEMP access. The distinctive temp-directory paths keep this zero-false-positive',
   'chai-determinate-assertion':
     'Flag non-deterministic Chai assertions in an expect(...) chain (S6092): negated .throw(arg)/.include(obj)/.property(2+)/.ownPropertyDescriptor(2+)/.members/.increase/.decrease/.by, the .not.finite property, and .change(...).by(...). Gated on an expect-rooted chain to stay zero-false-positive',
+  'no-async-constructor':
+    'Flag a class constructor whose top-level body starts an asynchronous operation (a .then/.catch/.finally call or a Promise.resolve/all/... call), per S7059. Only direct statements are inspected (nested callbacks are not), keeping this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1613,6 +1619,7 @@ const ruleTypes = Object.freeze({
   'no-os-command-from-path': 'problem',
   'publicly-writable-directories': 'problem',
   'chai-determinate-assertion': 'problem',
+  'no-async-constructor': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1835,6 +1842,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-os-command-from-path': 'error',
   'publicly-writable-directories': 'error',
   'chai-determinate-assertion': 'error',
+  'no-async-constructor': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

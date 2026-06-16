@@ -327,6 +327,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_class_name(it);
         self.check_function_name_class(it);
         self.check_deprecation_class(it);
+        self.check_no_async_constructor(it);
         walk::walk_class(self, it);
     }
 

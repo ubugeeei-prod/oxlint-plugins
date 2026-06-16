@@ -91,6 +91,7 @@ mod no_alphabetical_sort;
 mod no_angular_bypass_sanitization;
 mod no_array_delete;
 mod no_associative_arrays;
+mod no_async_constructor;
 mod no_built_in_override;
 mod no_case_label_in_switch;
 mod no_clear_text_protocols;
