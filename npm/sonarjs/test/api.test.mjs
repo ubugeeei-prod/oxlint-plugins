@@ -179,6 +179,7 @@ const expectedRuleNames = [
   'hidden-files',
   'aws-sqs-unencrypted-queue',
   'aws-apigateway-public-api',
+  'aws-iam-all-privileges',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3795,6 +3796,40 @@ describe('aws-apigateway-public-api rule', () => {
   it('does not report "NONE" on a different key', () => {
     const source = "x = { other: 'NONE' };";
     const diagnostics = scan('aws-apigateway-public-api', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-iam-all-privileges rule', () => {
+  it('reports actions granting all privileges via "*"', () => {
+    const source = 'new PolicyStatement({ actions: ["*"], resources: [bucket] });';
+    const diagnostics = scan('aws-iam-all-privileges', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-iam-all-privileges');
+    expect(diagnostics[0].messageId).toBe('iamAllPrivileges');
+  });
+
+  it('does not report specific actions', () => {
+    const source = 'new PolicyStatement({ actions: ["s3:GetObject"] });';
+    const diagnostics = scan('aws-iam-all-privileges', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an empty actions array', () => {
+    const source = 'new PolicyStatement({ actions: [] });';
+    const diagnostics = scan('aws-iam-all-privileges', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-array actions value', () => {
+    const source = 'new PolicyStatement({ actions: x });';
+    const diagnostics = scan('aws-iam-all-privileges', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a wildcard under a different key', () => {
+    const source = 'new PolicyStatement({ other: ["*"] });';
+    const diagnostics = scan('aws-iam-all-privileges', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

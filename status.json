@@ -10238,19 +10238,19 @@
       },
       {
         "name": "aws-iam-all-privileges",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-iam-all-privileges (Sonar key S6302). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6302. Flags an AWS IAM policy statement that grants all privileges via the wildcard \"*\": an object property \"actions\" whose array literal value contains a string-literal element exactly equal to \"*\". The actions: [\"*\"] shape is distinctive to IAM PolicyStatement configuration objects, so this exact shape stays zero-false-positive. Specific actions (actions: [\"s3:GetObject\"]), empty arrays (actions: []), non-array values, and wildcards under other keys are deliberately NOT flagged. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-iam-all-resources-accessible",

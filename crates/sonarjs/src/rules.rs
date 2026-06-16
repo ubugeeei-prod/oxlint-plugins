@@ -7,6 +7,7 @@ mod arguments_usage;
 mod array_callback_without_return;
 mod array_constructor;
 mod aws_apigateway_public_api;
+mod aws_iam_all_privileges;
 mod aws_iam_public_access;
 mod aws_rds_unencrypted_databases;
 mod aws_s3_bucket_granted_access;
