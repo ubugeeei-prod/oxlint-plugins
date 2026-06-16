@@ -265,6 +265,7 @@ describe('sonarjs plugin shape', () => {
       'dns-prefetching',
       'disabled-auto-escaping',
       'aws-s3-bucket-granted-access',
+      'aws-rds-unencrypted-databases',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6473,5 +6474,50 @@ describe('aws-s3-bucket-granted-access rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-s3-bucket-granted-access)');
+  });
+});
+
+describe('aws-rds-unencrypted-databases rule', () => {
+  it('reports a CDK construct created with storageEncrypted: false', () => {
+    const source = "new DatabaseInstance(this, 'db', { storageEncrypted: false });";
+    const reports = runRule('aws-rds-unencrypted-databases', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('rdsUnencrypted');
+  });
+
+  it('reports a direct storageEncrypted: false literal', () => {
+    const source = 'const x = { storageEncrypted: false };';
+    const reports = runRule('aws-rds-unencrypted-databases', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('rdsUnencrypted');
+  });
+
+  it('does not report storageEncrypted: true', () => {
+    const source = 'const x = { storageEncrypted: true };';
+    const reports = runRule('aws-rds-unencrypted-databases', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal storageEncrypted value', () => {
+    const source = 'const x = { storageEncrypted: flag };';
+    const reports = runRule('aws-rds-unencrypted-databases', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = 'const x = { encrypted: false };';
+    const reports = runRule('aws-rds-unencrypted-databases', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-rds-unencrypted-databases through the CLI', () => {
+    const result = runOxlint(
+      'aws-rds-unencrypted-databases',
+      'const x = { storageEncrypted: false };',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-rds-unencrypted-databases)');
   });
 });
