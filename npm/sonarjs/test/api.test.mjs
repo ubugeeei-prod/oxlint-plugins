@@ -198,6 +198,7 @@ const expectedRuleNames = [
   'no-mime-sniff',
   'no-ip-forward',
   'no-angular-bypass-sanitization',
+  'insecure-jwt-token',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4499,6 +4500,47 @@ describe('no-angular-bypass-sanitization rule', () => {
   it('does not report a property access without a call', () => {
     const source = 'const f = this.sanitizer.bypassSecurityTrustHtml;';
     const diagnostics = scan('no-angular-bypass-sanitization', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('insecure-jwt-token rule', () => {
+  it('reports algorithm: none in a sign options object', () => {
+    const source = "jwt.sign(p, k, { algorithm: 'none' });";
+    const diagnostics = scan('insecure-jwt-token', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('insecure-jwt-token');
+    expect(diagnostics[0].messageId).toBe('insecureJwtToken');
+  });
+
+  it('reports algorithms: ["none"] in a verify options object', () => {
+    const source = "jwt.verify(t, k, { algorithms: ['none'] });";
+    const diagnostics = scan('insecure-jwt-token', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('insecureJwtToken');
+  });
+
+  it('reports the none algorithm case-insensitively', () => {
+    const source = "const o = { algorithm: 'NONE' };";
+    const diagnostics = scan('insecure-jwt-token', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report a strong algorithm', () => {
+    const source = "const o = { algorithm: 'HS256' };";
+    const diagnostics = scan('insecure-jwt-token', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a strong algorithms array', () => {
+    const source = "const o = { algorithms: ['RS256'] };";
+    const diagnostics = scan('insecure-jwt-token', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an unrelated key', () => {
+    const source = "const o = { other: 'none' };";
+    const diagnostics = scan('insecure-jwt-token', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

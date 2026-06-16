@@ -289,6 +289,7 @@ describe('sonarjs plugin shape', () => {
       'no-mime-sniff',
       'no-ip-forward',
       'no-angular-bypass-sanitization',
+      'insecure-jwt-token',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7561,5 +7562,53 @@ describe('no-angular-bypass-sanitization rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-angular-bypass-sanitization)');
+  });
+});
+
+describe('insecure-jwt-token rule', () => {
+  it('reports algorithm: none in a sign options object', () => {
+    const source = "jwt.sign(p, k, { algorithm: 'none' });";
+    const reports = runRule('insecure-jwt-token', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('insecureJwtToken');
+  });
+
+  it('reports algorithms: ["none"] in a verify options object', () => {
+    const source = "jwt.verify(t, k, { algorithms: ['none'] });";
+    const reports = runRule('insecure-jwt-token', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('insecureJwtToken');
+  });
+
+  it('reports the none algorithm case-insensitively', () => {
+    const source = "const o = { algorithm: 'NONE' };";
+    const reports = runRule('insecure-jwt-token', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report a strong algorithm', () => {
+    const source = "const o = { algorithm: 'HS256' };";
+    const reports = runRule('insecure-jwt-token', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a strong algorithms array', () => {
+    const source = "const o = { algorithms: ['RS256'] };";
+    const reports = runRule('insecure-jwt-token', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an unrelated key', () => {
+    const source = "const o = { other: 'none' };";
+    const reports = runRule('insecure-jwt-token', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports insecure-jwt-token through the CLI', () => {
+    const result = runOxlint('insecure-jwt-token', "jwt.sign(p, k, { algorithm: 'none' });");
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(insecure-jwt-token)');
   });
 });

@@ -10532,3 +10532,47 @@ fn no_angular_bypass_sanitization_does_not_report_property_access_without_call()
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn insecure_jwt_token_reports_sign_algorithm_none() {
+    let diagnostics = scan(
+        "insecure-jwt-token",
+        "jwt.sign(p, k, { algorithm: 'none' });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "insecureJwtToken");
+}
+
+#[test]
+fn insecure_jwt_token_reports_verify_algorithms_none() {
+    let diagnostics = scan(
+        "insecure-jwt-token",
+        "jwt.verify(t, k, { algorithms: ['none'] });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "insecureJwtToken");
+}
+
+#[test]
+fn insecure_jwt_token_reports_case_insensitive_none() {
+    let diagnostics = scan("insecure-jwt-token", "const o = { algorithm: 'NONE' };");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn insecure_jwt_token_does_not_report_strong_algorithm() {
+    let diagnostics = scan("insecure-jwt-token", "const o = { algorithm: 'HS256' };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn insecure_jwt_token_does_not_report_strong_algorithms_array() {
+    let diagnostics = scan("insecure-jwt-token", "const o = { algorithms: ['RS256'] };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn insecure_jwt_token_does_not_report_other_key() {
+    let diagnostics = scan("insecure-jwt-token", "const o = { other: 'none' };");
+    assert!(diagnostics.is_empty());
+}

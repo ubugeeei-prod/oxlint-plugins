@@ -714,6 +714,10 @@ const messages = Object.freeze({
     angularBypassSanitization:
       "Bypassing Angular's built-in sanitization is security-sensitive; ensure the value is trusted.",
   },
+  'insecure-jwt-token': {
+    insecureJwtToken:
+      'Do not use the "none" algorithm for JWTs; it disables signature verification.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1223,6 +1227,12 @@ const ruleDescriptions = Object.freeze({
     'bypassSecurityTrustStyle, bypassSecurityTrustScript, bypassSecurityTrustUrl, ' +
     "bypassSecurityTrustResourceUrl), which disable Angular's built-in XSS sanitization; the " +
     'method names are essentially unique to DomSanitizer so any such call is reported (S6268)',
+  'insecure-jwt-token':
+    'Flag a JWT options object property that disables signature protection: a key of algorithm ' +
+    "whose value is the string literal 'none', or a key of algorithms whose array value contains " +
+    "the string literal 'none' (both compared case-insensitively); the 'none' JWT algorithm " +
+    'disables signature verification and lets tokens be forged (zero-false-positive subset of ' +
+    'S5659 keyed on the distinctive algorithm/algorithms options)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1421,6 +1431,7 @@ const ruleTypes = Object.freeze({
   'no-mime-sniff': 'problem',
   'no-ip-forward': 'problem',
   'no-angular-bypass-sanitization': 'problem',
+  'insecure-jwt-token': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1618,6 +1629,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-mime-sniff': 'error',
   'no-ip-forward': 'error',
   'no-angular-bypass-sanitization': 'error',
+  'insecure-jwt-token': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
