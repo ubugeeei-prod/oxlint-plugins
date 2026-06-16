@@ -10910,19 +10910,19 @@
       },
       {
         "name": "disabled-auto-escaping",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule disabled-auto-escaping (Sonar key S5247). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S5247. Flags disabling a template engine's HTML auto-escaping via two distinctive zero-false-positive signals: an object property \"noEscape\" set to the boolean literal true (Handlebars compile option) and an assignment to the static member Mustache.escape (overriding mustache.js's built-in escaper). The spec's generic markdown-it/marked/kramed signals (html: true, sanitize: false) are deliberately NOT flagged because those key names are too common across unrelated APIs to stay zero-false-positive. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "disabled-resource-integrity",
