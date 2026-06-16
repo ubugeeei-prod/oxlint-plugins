@@ -11142,10 +11142,17 @@ fn argument_type_reports_math_abs_comparison() {
 }
 
 #[test]
-fn argument_type_reports_math_floor_logical() {
-    let diagnostics = scan("argument-type", "Math.floor(a && b);");
-    assert_eq!(diagnostics.len(), 1);
-    assert_eq!(diagnostics[0].message_id, "argumentType");
+fn argument_type_does_not_report_logical_or() {
+    // `||` evaluates to one of its operands (a number here), not a boolean.
+    let diagnostics = scan("argument-type", "Math.floor(width || 100);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn argument_type_does_not_report_logical_and() {
+    // `&&` evaluates to one of its operands (a number here), not a boolean.
+    let diagnostics = scan("argument-type", "Math.abs(a && b);");
+    assert!(diagnostics.is_empty());
 }
 
 #[test]
