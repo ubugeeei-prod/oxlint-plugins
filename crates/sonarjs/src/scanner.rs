@@ -537,6 +537,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_use_of_empty_return_value_assign(it);
         self.check_disabled_auto_escaping_assignment(it);
         self.check_content_length_assignment(it);
+        self.check_cookies_assignment(it);
         walk::walk_assignment_expression(self, it);
     }
 
@@ -677,6 +678,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_argument_type(it);
         self.record_iife_callee(&it.callee);
         self.record_call_inconsistent_function_call(it);
+        self.check_cookies_call(it);
         walk::walk_call_expression(self, it);
     }
 
