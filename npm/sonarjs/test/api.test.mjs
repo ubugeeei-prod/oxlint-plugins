@@ -234,6 +234,7 @@ const expectedRuleNames = [
   'useless-string-operation',
   'no-incorrect-string-concat',
   'table-header',
+  'table-header-reference',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

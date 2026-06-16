@@ -12380,3 +12380,40 @@ fn table_header_does_not_report_non_table() {
     let diagnostics = scan_jsx("table-header", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn table_header_reference_reports_missing_id() {
+    let source = r#"<table><tr><th id="a">A</th></tr><tr><td headers="b">x</td></tr></table>"#;
+    let diagnostics = scan_jsx("table-header-reference", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "table-header-reference");
+    assert_eq!(diagnostics[0].message_id, "tableHeaderReference");
+}
+
+#[test]
+fn table_header_reference_does_not_report_existing_id() {
+    let source = r#"<table><tr><th id="a">A</th></tr><tr><td headers="a">x</td></tr></table>"#;
+    let diagnostics = scan_jsx("table-header-reference", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn table_header_reference_does_not_report_dynamic() {
+    let source = r#"<table><tr><th id="a">A</th></tr>{rows.map(r => <tr><td headers="b">{r}</td></tr>)}</table>"#;
+    let diagnostics = scan_jsx("table-header-reference", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn table_header_reference_does_not_report_non_literal_headers() {
+    let source = r#"<table><tr><th id="a">A</th></tr><tr><td headers={dyn}>x</td></tr></table>"#;
+    let diagnostics = scan_jsx("table-header-reference", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn table_header_reference_does_not_report_outside_table() {
+    let source = r#"<div><td headers="x">y</td></div>"#;
+    let diagnostics = scan_jsx("table-header-reference", source);
+    assert!(diagnostics.is_empty());
+}
