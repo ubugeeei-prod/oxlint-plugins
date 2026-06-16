@@ -218,6 +218,7 @@ const expectedRuleNames = [
   'xpath',
   'sockets',
   'existing-groups',
+  'encryption',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

@@ -789,6 +789,10 @@ const messages = Object.freeze({
     existingGroups:
       'This replacement references a regular expression group that does not exist; use a valid group reference.',
   },
+  encryption: {
+    encryption:
+      'Make sure that encrypting data is safe here (review the algorithm, key, IV, and padding).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1362,6 +1366,8 @@ const ruleDescriptions = Object.freeze({
     'Flag raw socket usage on the Node net module (the security hotspot S4818): new net.Socket(), net.createConnection(...), or net.connect(...). Gating on the net receiver keeps the generic connect/createConnection names zero-false-positive',
   'existing-groups':
     'Flag a String.replace/replaceAll call whose literal replacement string references a regex group that does not exist (S6328): a $<name> with no such named group, $0, or a $N greater than the capturing-group count. Only literal regex + literal replacement are analyzed, keeping this zero-false-positive',
+  encryption:
+    'Flag data-encryption calls (the security hotspot S4787): the Node crypto createCipher/createCipheriv/createDecipher/createDecipheriv/publicEncrypt/privateDecrypt/privateEncrypt/publicDecrypt functions, and crypto.subtle.encrypt/decrypt. Generic encrypt/decrypt are gated on a .subtle receiver to keep this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1580,6 +1586,7 @@ const ruleTypes = Object.freeze({
   xpath: 'problem',
   sockets: 'problem',
   'existing-groups': 'problem',
+  encryption: 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1797,6 +1804,7 @@ const recommendedRuleConfig = Object.freeze({
   xpath: 'error',
   sockets: 'error',
   'existing-groups': 'error',
+  encryption: 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

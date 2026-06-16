@@ -11494,3 +11494,37 @@ fn existing_groups_does_not_report_dynamic_args() {
     let diagnostics = scan("existing-groups", "'a'.replace(/(a)/, repl);");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn encryption_reports_create_cipheriv() {
+    let diagnostics = scan("encryption", "crypto.createCipheriv(algo, key, iv);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "encryption");
+    assert_eq!(diagnostics[0].message_id, "encryption");
+}
+
+#[test]
+fn encryption_reports_public_encrypt() {
+    let diagnostics = scan("encryption", "crypto.publicEncrypt(key, buf);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "encryption");
+}
+
+#[test]
+fn encryption_reports_subtle_encrypt() {
+    let diagnostics = scan("encryption", "crypto.subtle.encrypt(algo, key, plainData);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "encryption");
+}
+
+#[test]
+fn encryption_does_not_report_generic_encrypt() {
+    let diagnostics = scan("encryption", "obj.encrypt(x); service.decrypt(y);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn encryption_does_not_report_unrelated_method() {
+    let diagnostics = scan("encryption", "crypto.randomBytes(16);");
+    assert!(diagnostics.is_empty());
+}
