@@ -770,6 +770,10 @@ const messages = Object.freeze({
     s3BucketServerEncryption:
       'Do not disable server-side encryption on this S3 bucket; use a managed or KMS encryption mode instead of UNENCRYPTED.',
   },
+  'aws-opensearchservice-domain': {
+    opensearchUnencrypted:
+      'Enable encryption at rest on this OpenSearch/Elasticsearch domain (set enabled: true).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1333,6 +1337,8 @@ const ruleDescriptions = Object.freeze({
     'Flag an AWS CDK S3 bucket property enforceSSL:false (the explicit insecure-HTTP form of S6249), which authorizes cleartext HTTP access. The distinctive enforceSSL key keeps this zero-false-positive; omission is intentionally not flagged',
   'aws-s3-bucket-server-encryption':
     'Flag an AWS CDK S3 bucket encryption property set to BucketEncryption.UNENCRYPTED (or the string "UNENCRYPTED") — the explicit disable-encryption form of S6245. The distinctive encryption key plus UNENCRYPTED value keeps this zero-false-positive; omission is intentionally not flagged',
+  'aws-opensearchservice-domain':
+    'Flag an AWS CDK OpenSearch domain whose encryptionAtRest or encryptionAtRestOptions sets enabled:false — the explicit disable-encryption form of S6308. The distinctive nested shape keeps this zero-false-positive; omission is intentionally not flagged',
 });
 
 const ruleTypes = Object.freeze({
@@ -1546,6 +1552,7 @@ const ruleTypes = Object.freeze({
   'argument-type': 'problem',
   'aws-s3-bucket-insecure-http': 'problem',
   'aws-s3-bucket-server-encryption': 'problem',
+  'aws-opensearchservice-domain': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1758,6 +1765,7 @@ const recommendedRuleConfig = Object.freeze({
   'argument-type': 'error',
   'aws-s3-bucket-insecure-http': 'error',
   'aws-s3-bucket-server-encryption': 'error',
+  'aws-opensearchservice-domain': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
