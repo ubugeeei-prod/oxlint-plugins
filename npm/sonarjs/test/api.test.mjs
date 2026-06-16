@@ -175,6 +175,7 @@ const expectedRuleNames = [
   'disabled-auto-escaping',
   'aws-s3-bucket-granted-access',
   'aws-rds-unencrypted-databases',
+  'aws-iam-public-access',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3679,6 +3680,41 @@ describe('aws-rds-unencrypted-databases rule', () => {
   it('does not report a different key', () => {
     const source = 'const x = { encrypted: false };';
     const diagnostics = scan('aws-rds-unencrypted-databases', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-iam-public-access rule', () => {
+  it('reports new iam.AnyPrincipal()', () => {
+    const source = 'new iam.AnyPrincipal();';
+    const diagnostics = scan('aws-iam-public-access', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-iam-public-access');
+    expect(diagnostics[0].messageId).toBe('iamPublicAccess');
+  });
+
+  it('reports a bare new AnyPrincipal()', () => {
+    const source = 'new AnyPrincipal();';
+    const diagnostics = scan('aws-iam-public-access', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('iamPublicAccess');
+  });
+
+  it('does not report new iam.AccountRootPrincipal()', () => {
+    const source = 'new iam.AccountRootPrincipal();';
+    const diagnostics = scan('aws-iam-public-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report new ArnPrincipal(arn)', () => {
+    const source = 'new ArnPrincipal(arn);';
+    const diagnostics = scan('aws-iam-public-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an AnyPrincipal reference without new', () => {
+    const source = 'const p = iam.AnyPrincipal;';
+    const diagnostics = scan('aws-iam-public-access', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

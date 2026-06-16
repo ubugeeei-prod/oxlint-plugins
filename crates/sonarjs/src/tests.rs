@@ -9496,3 +9496,36 @@ fn aws_rds_unencrypted_databases_does_not_report_other_key() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_iam_public_access_reports_member_any_principal() {
+    let diagnostics = scan("aws-iam-public-access", "new iam.AnyPrincipal()");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-iam-public-access");
+    assert_eq!(diagnostics[0].message_id, "iamPublicAccess");
+}
+
+#[test]
+fn aws_iam_public_access_reports_bare_any_principal() {
+    let diagnostics = scan("aws-iam-public-access", "new AnyPrincipal()");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "iamPublicAccess");
+}
+
+#[test]
+fn aws_iam_public_access_does_not_report_account_root_principal() {
+    let diagnostics = scan("aws-iam-public-access", "new iam.AccountRootPrincipal()");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_iam_public_access_does_not_report_arn_principal() {
+    let diagnostics = scan("aws-iam-public-access", "new ArnPrincipal(arn)");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_iam_public_access_does_not_report_reference_without_new() {
+    let diagnostics = scan("aws-iam-public-access", "const p = iam.AnyPrincipal;");
+    assert!(diagnostics.is_empty());
+}

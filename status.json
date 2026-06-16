@@ -10286,19 +10286,19 @@
       },
       {
         "name": "aws-iam-public-access",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-iam-public-access (Sonar key S6270). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6270. Flags AWS CDK IAM policies that grant public access to all AWS accounts by instantiating the AnyPrincipal class: a new-expression whose callee (after get_inner_expression) is either a bare AnyPrincipal identifier or a static member expression ending in .AnyPrincipal (e.g. iam.AnyPrincipal). The AnyPrincipal name is distinctive to the IAM CDK API, keeping the rule false-positive free. Other principal classes (AccountRootPrincipal, ArnPrincipal, ...) and non-new references to AnyPrincipal are not flagged. The public RSPEC shows only AnyPrincipal (no StarPrincipal), so only that name is matched. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-opensearchservice-domain",
