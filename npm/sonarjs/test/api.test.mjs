@@ -211,6 +211,7 @@ const expectedRuleNames = [
   'no-vue-bypass-sanitization',
   'os-command',
   'argument-type',
+  'aws-s3-bucket-insecure-http',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

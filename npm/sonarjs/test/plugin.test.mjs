@@ -302,6 +302,7 @@ describe('sonarjs plugin shape', () => {
       'no-vue-bypass-sanitization',
       'os-command',
       'argument-type',
+      'aws-s3-bucket-insecure-http',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
