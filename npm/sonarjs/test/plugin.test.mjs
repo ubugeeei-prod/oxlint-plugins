@@ -273,6 +273,7 @@ describe('sonarjs plugin shape', () => {
       'aws-iam-all-privileges',
       'aws-s3-bucket-versioning',
       'aws-ec2-rds-dms-public',
+      'aws-s3-bucket-public-access',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6812,5 +6813,44 @@ describe('aws-ec2-rds-dms-public rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-ec2-rds-dms-public)');
+  });
+});
+
+describe('aws-s3-bucket-public-access rule', () => {
+  it('reports blockPublicAcls set to false', () => {
+    const source = 'new s3.BlockPublicAccess({ blockPublicAcls: false });';
+    const reports = runRule('aws-s3-bucket-public-access', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('s3BucketPublicAccess');
+  });
+
+  it('reports restrictPublicBuckets set to false', () => {
+    const source = 'new s3.BlockPublicAccess({ restrictPublicBuckets: false });';
+    const reports = runRule('aws-s3-bucket-public-access', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('s3BucketPublicAccess');
+  });
+
+  it('does not report a sub-key set to true', () => {
+    const source = 'new s3.BlockPublicAccess({ blockPublicAcls: true });';
+    const reports = runRule('aws-s3-bucket-public-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal value', () => {
+    const source = 'new s3.BlockPublicAccess({ blockPublicAcls: x });';
+    const reports = runRule('aws-s3-bucket-public-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-s3-bucket-public-access through the CLI', () => {
+    const result = runOxlint(
+      'aws-s3-bucket-public-access',
+      'new s3.BlockPublicAccess({ blockPublicAcls: false });',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-s3-bucket-public-access)');
   });
 });
