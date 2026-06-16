@@ -10451,3 +10451,39 @@ fn no_mime_sniff_does_not_report_other_key() {
     let diagnostics = scan("no-mime-sniff", "const o = { other: false };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_ip_forward_reports_create_proxy_server_xfwd_true() {
+    let diagnostics = scan(
+        "no-ip-forward",
+        "createProxyServer({ target: t, xfwd: true });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-ip-forward");
+    assert_eq!(diagnostics[0].message_id, "noIpForward");
+}
+
+#[test]
+fn no_ip_forward_reports_direct_xfwd_true() {
+    let diagnostics = scan("no-ip-forward", "const o = { xfwd: true };");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noIpForward");
+}
+
+#[test]
+fn no_ip_forward_does_not_report_xfwd_false() {
+    let diagnostics = scan("no-ip-forward", "const o = { xfwd: false };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_ip_forward_does_not_report_non_literal_value() {
+    let diagnostics = scan("no-ip-forward", "const o = { xfwd: x };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_ip_forward_does_not_report_other_key() {
+    let diagnostics = scan("no-ip-forward", "const o = { other: true };");
+    assert!(diagnostics.is_empty());
+}

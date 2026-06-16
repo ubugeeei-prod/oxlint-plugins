@@ -12510,19 +12510,19 @@
       },
       {
         "name": "no-ip-forward",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-ip-forward (Sonar key S5759). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S5759. Flags an object property whose key is exactly xfwd and whose value is the boolean literal true, the http-proxy / http-proxy-middleware option that forwards the client IP via X-Forwarded-For. The distinctive xfwd key makes this a zero-false-positive subset. No upstream source, tests, fixtures, or messages were consulted."
       },
       {
         "name": "no-labels",
