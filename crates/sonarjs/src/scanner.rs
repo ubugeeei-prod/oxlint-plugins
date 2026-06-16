@@ -647,6 +647,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_code_eval_call(it);
         self.check_pseudo_random(it);
         self.check_post_message(it);
+        self.check_no_angular_bypass_sanitization(it);
         self.check_aws_restricted_ip_admin_access(it);
         self.check_csrf(it);
         self.check_cors(it);

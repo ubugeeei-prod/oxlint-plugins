@@ -710,6 +710,10 @@ const messages = Object.freeze({
     noIpForward:
       'Forwarding the client IP (xfwd: true) can enable IP-based access-control bypass; ensure this is safe.',
   },
+  'no-angular-bypass-sanitization': {
+    angularBypassSanitization:
+      "Bypassing Angular's built-in sanitization is security-sensitive; ensure the value is trusted.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1214,6 +1218,11 @@ const ruleDescriptions = Object.freeze({
     'is the boolean literal true; forwarding the client IP can leak personal information and ' +
     'enable IP-based access-control bypass (zero-false-positive subset of S5759 keyed on the ' +
     'distinctive xfwd option)',
+  'no-angular-bypass-sanitization':
+    'Flag calls to Angular DomSanitizer bypassSecurityTrust* methods (bypassSecurityTrustHtml, ' +
+    'bypassSecurityTrustStyle, bypassSecurityTrustScript, bypassSecurityTrustUrl, ' +
+    "bypassSecurityTrustResourceUrl), which disable Angular's built-in XSS sanitization; the " +
+    'method names are essentially unique to DomSanitizer so any such call is reported (S6268)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1411,6 +1420,7 @@ const ruleTypes = Object.freeze({
   'unverified-certificate': 'problem',
   'no-mime-sniff': 'problem',
   'no-ip-forward': 'problem',
+  'no-angular-bypass-sanitization': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1607,6 +1617,7 @@ const recommendedRuleConfig = Object.freeze({
   'unverified-certificate': 'error',
   'no-mime-sniff': 'error',
   'no-ip-forward': 'error',
+  'no-angular-bypass-sanitization': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

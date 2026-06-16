@@ -288,6 +288,7 @@ describe('sonarjs plugin shape', () => {
       'unverified-certificate',
       'no-mime-sniff',
       'no-ip-forward',
+      'no-angular-bypass-sanitization',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7515,5 +7516,50 @@ describe('no-ip-forward rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-ip-forward)');
+  });
+});
+
+describe('no-angular-bypass-sanitization rule', () => {
+  it('reports a bypassSecurityTrustHtml call', () => {
+    const source = 'this.sanitizer.bypassSecurityTrustHtml(x);';
+    const reports = runRule('no-angular-bypass-sanitization', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('angularBypassSanitization');
+  });
+
+  it('reports a bypassSecurityTrustResourceUrl call regardless of receiver', () => {
+    const source = 'ds.bypassSecurityTrustResourceUrl(u);';
+    const reports = runRule('no-angular-bypass-sanitization', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('angularBypassSanitization');
+  });
+
+  it('does not report an unrelated DomSanitizer method', () => {
+    const source = 'this.sanitizer.sanitize(x);';
+    const reports = runRule('no-angular-bypass-sanitization', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a method outside the bypass set', () => {
+    const source = 'foo.bypassOther(x);';
+    const reports = runRule('no-angular-bypass-sanitization', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a property access without a call', () => {
+    const source = 'const f = this.sanitizer.bypassSecurityTrustHtml;';
+    const reports = runRule('no-angular-bypass-sanitization', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-angular-bypass-sanitization through the CLI', () => {
+    const result = runOxlint(
+      'no-angular-bypass-sanitization',
+      'this.sanitizer.bypassSecurityTrustHtml(x);',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-angular-bypass-sanitization)');
   });
 });

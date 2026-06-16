@@ -197,6 +197,7 @@ const expectedRuleNames = [
   'unverified-certificate',
   'no-mime-sniff',
   'no-ip-forward',
+  'no-angular-bypass-sanitization',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4463,6 +4464,41 @@ describe('no-ip-forward rule', () => {
   it('does not report a different key', () => {
     const source = 'const o = { other: true };';
     const diagnostics = scan('no-ip-forward', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-angular-bypass-sanitization rule', () => {
+  it('reports a bypassSecurityTrustHtml call', () => {
+    const source = 'this.sanitizer.bypassSecurityTrustHtml(x);';
+    const diagnostics = scan('no-angular-bypass-sanitization', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-angular-bypass-sanitization');
+    expect(diagnostics[0].messageId).toBe('angularBypassSanitization');
+  });
+
+  it('reports a bypassSecurityTrustResourceUrl call regardless of receiver', () => {
+    const source = 'ds.bypassSecurityTrustResourceUrl(u);';
+    const diagnostics = scan('no-angular-bypass-sanitization', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('angularBypassSanitization');
+  });
+
+  it('does not report an unrelated DomSanitizer method', () => {
+    const source = 'this.sanitizer.sanitize(x);';
+    const diagnostics = scan('no-angular-bypass-sanitization', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a method outside the bypass set', () => {
+    const source = 'foo.bypassOther(x);';
+    const diagnostics = scan('no-angular-bypass-sanitization', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a property access without a call', () => {
+    const source = 'const f = this.sanitizer.bypassSecurityTrustHtml;';
+    const diagnostics = scan('no-angular-bypass-sanitization', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
