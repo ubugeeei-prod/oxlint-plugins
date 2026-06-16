@@ -1,13 +1,14 @@
 //! Rust unit tests for the sonarjs core. All test inputs are independently
 //! authored (clean-room); no upstream SonarJS fixtures or expectations are used.
 
-use oxlint_plugins_carton::{CompactString, SmallVec};
+use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
 
 use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
 
 fn scan(rule_name: &str, source: &str) -> SmallVec<[Diagnostic; 32]> {
     let options = SonarjsOptions {
         rule_names: [CompactString::from(rule_name)].into_iter().collect(),
+        rule_name_set: [CompactString::from(rule_name)].into_iter().collect(),
         ..SonarjsOptions::default()
     };
     scan_sonarjs(source, "sample.ts", &options)
@@ -16,6 +17,7 @@ fn scan(rule_name: &str, source: &str) -> SmallVec<[Diagnostic; 32]> {
 fn scan_with_file(rule_name: &str, source: &str, filename: &str) -> SmallVec<[Diagnostic; 32]> {
     let options = SonarjsOptions {
         rule_names: [CompactString::from(rule_name)].into_iter().collect(),
+        rule_name_set: [CompactString::from(rule_name)].into_iter().collect(),
         ..SonarjsOptions::default()
     };
     scan_sonarjs(source, filename, &options)
@@ -124,6 +126,7 @@ fn reports_two_diagnostics_for_doubly_nested_conditional() {
 fn disabled_rule_reports_nothing() {
     let options = SonarjsOptions {
         rule_names: SmallVec::new(),
+        rule_name_set: FastHashSet::default(),
         ..SonarjsOptions::default()
     };
     let diagnostics = scan_sonarjs("const x = `outer ${`inner`}`;", "sample.ts", &options);
@@ -2426,6 +2429,7 @@ fn function_name_respects_custom_format() {
 fn options_for(rule_name: &str) -> SonarjsOptions {
     SonarjsOptions {
         rule_names: [CompactString::from(rule_name)].into_iter().collect(),
+        rule_name_set: [CompactString::from(rule_name)].into_iter().collect(),
         ..SonarjsOptions::default()
     }
 }
@@ -6096,6 +6100,7 @@ fn no_extra_arguments_does_not_report_spread_argument() {
 fn scan_jsx(rule_name: &str, source: &str) -> SmallVec<[Diagnostic; 32]> {
     let options = SonarjsOptions {
         rule_names: [CompactString::from(rule_name)].into_iter().collect(),
+        rule_name_set: [CompactString::from(rule_name)].into_iter().collect(),
         ..SonarjsOptions::default()
     };
     scan_sonarjs(source, "sample.tsx", &options)

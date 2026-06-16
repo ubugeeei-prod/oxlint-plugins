@@ -604,22 +604,34 @@ impl<'a> Visit<'a> for Scanner<'a> {
     }
 
     fn visit_reg_exp_literal(&mut self, it: &RegExpLiteral<'a>) {
+        // Non-parsing checks: these read `lit.regex.pattern.text`/flags directly
+        // and never parse the regex AST, so they are called as before.
         self.check_no_empty_character_class(it);
-        self.check_no_empty_group(it);
-        self.check_no_empty_alternatives(it);
-        self.check_no_empty_after_reluctant(it);
-        self.check_no_regex_spaces(it);
-        self.check_no_control_regex(it);
-        self.check_single_char_in_character_classes(it);
-        self.check_duplicates_in_character_class(it);
-        self.check_concise_regex(it);
-        self.check_anchor_precedence(it);
-        self.check_single_character_alternation(it);
-        self.check_empty_string_repetition(it);
         self.check_unicode_aware_regex(it);
-        self.check_no_misleading_character_class(it);
-        self.check_slow_regex(it);
         self.check_regular_expr_literal(it);
+
+        // Parsing checks: parse the literal exactly ONCE and share the resulting
+        // `&Pattern` with every check that needs the regex AST. On a parse error
+        // `with_parsed_regex_literal` runs nothing (closure returns `()`),
+        // preserving the previous "report nothing on parse error" behavior for
+        // each of these checks.
+        let source_text = self.source_text; // &'a str is Copy; avoids a borrow conflict.
+        crate::regex_ast::with_parsed_regex_literal(it, source_text, |pattern| {
+            self.check_no_empty_group_with_pattern(it, pattern);
+            self.check_no_empty_alternatives_with_pattern(it, pattern);
+            self.check_no_empty_after_reluctant_with_pattern(it, pattern);
+            self.check_no_regex_spaces_with_pattern(it, pattern);
+            self.check_no_control_regex_with_pattern(it, pattern);
+            self.check_single_char_in_character_classes_with_pattern(it, pattern);
+            self.check_duplicates_in_character_class_with_pattern(it, pattern);
+            self.check_concise_regex_with_pattern(it, pattern);
+            self.check_anchor_precedence_with_pattern(it, pattern);
+            self.check_single_character_alternation_with_pattern(it, pattern);
+            self.check_empty_string_repetition_with_pattern(it, pattern);
+            self.check_no_misleading_character_class_with_pattern(it, pattern);
+            self.check_slow_regex_with_pattern(it, pattern);
+        });
+
         walk::walk_reg_exp_literal(self, it);
     }
 

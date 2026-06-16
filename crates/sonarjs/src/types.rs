@@ -1,7 +1,7 @@
 //! Public-facing diagnostic and option types for the sonarjs port.
 
 use oxc_span::Span;
-use oxlint_plugins_carton::{CompactString, SmallVec};
+use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
 
 use crate::RULE_NAMES;
 
@@ -45,6 +45,10 @@ pub struct Diagnostic {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SonarjsOptions {
     pub rule_names: SmallVec<[CompactString; 32]>,
+    /// O(1) membership set mirroring [`Self::rule_names`]. Built once at
+    /// construction so the per-node `has_rule` guard avoids a linear scan.
+    /// Keep in sync with `rule_names`; use [`Self::rule_name_set`] to derive it.
+    pub rule_name_set: FastHashSet<CompactString>,
     /// Threshold for `max-lines` (S104); the SonarJS default is 1000.
     pub max_lines_threshold: u32,
     /// Threshold for `max-lines-per-function` (S138); the SonarJS default is 200.
@@ -77,11 +81,13 @@ pub struct SonarjsOptions {
 
 impl Default for SonarjsOptions {
     fn default() -> Self {
+        let rule_names: SmallVec<[CompactString; 32]> = RULE_NAMES
+            .iter()
+            .map(|rule_name| CompactString::from(*rule_name))
+            .collect();
         Self {
-            rule_names: RULE_NAMES
-                .iter()
-                .map(|rule_name| CompactString::from(*rule_name))
-                .collect(),
+            rule_name_set: SonarjsOptions::build_rule_name_set(&rule_names),
+            rule_names,
             max_lines_threshold: 1000,
             max_lines_per_function_threshold: 200,
             max_switch_cases_threshold: 30,
@@ -98,8 +104,15 @@ impl Default for SonarjsOptions {
 }
 
 impl SonarjsOptions {
+    /// Builds the O(1) membership set from a list of rule names. Construction
+    /// sites must populate [`Self::rule_name_set`] with this so it stays in sync
+    /// with [`Self::rule_names`].
+    pub fn build_rule_name_set(rule_names: &[CompactString]) -> FastHashSet<CompactString> {
+        rule_names.iter().cloned().collect()
+    }
+
     pub(crate) fn has_rule(&self, rule_name: &str) -> bool {
-        self.rule_names.iter().any(|name| name == rule_name)
+        self.rule_name_set.contains(rule_name)
     }
 }
 

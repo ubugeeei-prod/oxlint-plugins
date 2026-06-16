@@ -97,13 +97,14 @@ fn collect_single_char_alternations<'a>(disj: &Disjunction<'a>, out: &mut SmallV
 }
 
 impl Scanner<'_> {
-    pub(crate) fn check_single_character_alternation(&mut self, lit: &RegExpLiteral<'_>) {
-        let spans = crate::regex_ast::with_parsed_regex_literal(lit, self.source_text, |pattern| {
-            let mut out: SmallVec<[Span; 8]> = SmallVec::new();
-            collect_single_char_alternations(&pattern.body, &mut out);
-            out
-        });
-        for span in spans {
+    pub(crate) fn check_single_character_alternation_with_pattern(
+        &mut self,
+        _lit: &RegExpLiteral<'_>,
+        pattern: &oxc_regular_expression::ast::Pattern<'_>,
+    ) {
+        let mut out: SmallVec<[Span; 8]> = SmallVec::new();
+        collect_single_char_alternations(&pattern.body, &mut out);
+        for span in out {
             self.report(RULE_NAME, "singleCharAlternation", span);
         }
     }
