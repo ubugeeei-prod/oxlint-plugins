@@ -10206,19 +10206,19 @@
       },
       {
         "name": "aws-ec2-unencrypted-ebs-volume",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-ec2-unencrypted-ebs-volume (Sonar key S6275). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6275. Construct-gated: flags a new-expression whose callee (after get_inner_expression) is the Volume construct — a bare identifier Volume or a static member expression ending in .Volume (e.g. ec2.Volume) — AND one of whose arguments is an object literal with an \"encrypted\" property set to the boolean literal false. Gating on the Volume construct name keeps this distinct from aws-efs-unencrypted (which also keys off encrypted: false). The implicit/absent form (no encrypted property), encrypted: true, non-Volume callees, and encrypted: false outside a new Volume(...) are deliberately NOT flagged to stay zero-false-positive. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-efs-unencrypted",

@@ -276,6 +276,7 @@ describe('sonarjs plugin shape', () => {
       'aws-s3-bucket-public-access',
       'confidential-information-logging',
       'aws-iam-all-resources-accessible',
+      'aws-ec2-unencrypted-ebs-volume',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6927,5 +6928,49 @@ describe('aws-iam-all-resources-accessible rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-iam-all-resources-accessible)');
+  });
+});
+
+describe('aws-ec2-unencrypted-ebs-volume rule', () => {
+  it('reports an EBS Volume created with encrypted: false', () => {
+    const source = "new ec2.Volume(this, 'v', { encrypted: false });";
+    const reports = runRule('aws-ec2-unencrypted-ebs-volume', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('ebsUnencrypted');
+  });
+
+  it('reports a bare Volume callee with an extra property', () => {
+    const source = "new Volume(this, 'v', { encrypted: false, size: x });";
+    const reports = runRule('aws-ec2-unencrypted-ebs-volume', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report encrypted: true', () => {
+    const source = "new ec2.Volume(this, 'v', { encrypted: true });";
+    const reports = runRule('aws-ec2-unencrypted-ebs-volume', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an absent encrypted property', () => {
+    const source = "new Volume(this, 'v', {});";
+    const reports = runRule('aws-ec2-unencrypted-ebs-volume', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different construct (EFS FileSystem)', () => {
+    const source = "new FileSystem(this, 'f', { encrypted: false });";
+    const reports = runRule('aws-ec2-unencrypted-ebs-volume', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-ec2-unencrypted-ebs-volume through the CLI', () => {
+    const result = runOxlint(
+      'aws-ec2-unencrypted-ebs-volume',
+      "new ec2.Volume(this, 'v', { encrypted: false });",
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-ec2-unencrypted-ebs-volume)');
   });
 });
