@@ -11259,3 +11259,50 @@ fn aws_s3_bucket_server_encryption_does_not_report_non_literal() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_opensearchservice_domain_reports_encryption_at_rest_disabled() {
+    let diagnostics = scan(
+        "aws-opensearchservice-domain",
+        "new Domain(this, 'd', { encryptionAtRest: { enabled: false } });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "opensearchUnencrypted");
+}
+
+#[test]
+fn aws_opensearchservice_domain_reports_options_disabled() {
+    let diagnostics = scan(
+        "aws-opensearchservice-domain",
+        "new CfnDomain(this, 'd', { encryptionAtRestOptions: { enabled: false } });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "opensearchUnencrypted");
+}
+
+#[test]
+fn aws_opensearchservice_domain_does_not_report_enabled_true() {
+    let diagnostics = scan(
+        "aws-opensearchservice-domain",
+        "new Domain(this, 'd', { encryptionAtRest: { enabled: true } });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_opensearchservice_domain_does_not_report_bare_enabled_false() {
+    let diagnostics = scan(
+        "aws-opensearchservice-domain",
+        "const x = { enabled: false };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_opensearchservice_domain_does_not_report_other_key() {
+    let diagnostics = scan(
+        "aws-opensearchservice-domain",
+        "const x = { otherOption: { enabled: false } };",
+    );
+    assert!(diagnostics.is_empty());
+}

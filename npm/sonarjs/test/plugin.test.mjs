@@ -304,6 +304,7 @@ describe('sonarjs plugin shape', () => {
       'argument-type',
       'aws-s3-bucket-insecure-http',
       'aws-s3-bucket-server-encryption',
+      'aws-opensearchservice-domain',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
