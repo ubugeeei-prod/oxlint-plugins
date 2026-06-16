@@ -233,6 +233,7 @@ const expectedRuleNames = [
   'non-number-in-arithmetic-expression',
   'useless-string-operation',
   'no-incorrect-string-concat',
+  'table-header',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

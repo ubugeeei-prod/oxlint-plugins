@@ -843,6 +843,10 @@ const messages = Object.freeze({
     incorrectStringConcat:
       'Do not concatenate a string with an object, array, or function; this relies on an unintended string coercion.',
   },
+  'table-header': {
+    tableHeader:
+      'Add a <th> header cell to this table so assistive technologies can describe its columns/rows.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1446,6 +1450,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a statement-level call to a string-specific immutable method (toUpperCase, trim, padStart, ...) whose returned value is discarded (S1154). Methods shared with arrays or commonly user-defined are excluded to stay zero-false-positive',
   'no-incorrect-string-concat':
     'Flag a + expression concatenating a string literal with an object, array, or function literal (S3402) — an unambiguous coercion bug. The general string+number/variable case needs type inference and is deliberately not flagged, keeping this zero-false-positive',
+  'table-header':
+    'Flag a static JSX <table> that contains <td> cells but no <th> header cell (S5256). Tables with any dynamic {…} content are skipped to stay zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1679,6 +1685,7 @@ const ruleTypes = Object.freeze({
   'non-number-in-arithmetic-expression': 'problem',
   'useless-string-operation': 'problem',
   'no-incorrect-string-concat': 'problem',
+  'table-header': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1911,6 +1918,7 @@ const recommendedRuleConfig = Object.freeze({
   'non-number-in-arithmetic-expression': 'error',
   'useless-string-operation': 'error',
   'no-incorrect-string-concat': 'error',
+  'table-header': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
