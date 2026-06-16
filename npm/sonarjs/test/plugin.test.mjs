@@ -292,6 +292,7 @@ describe('sonarjs plugin shape', () => {
       'insecure-jwt-token',
       'xml-parser-xxe',
       'no-useless-react-setstate',
+      'no-referrer-policy',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7695,5 +7696,56 @@ describe('no-useless-react-setstate rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-useless-react-setstate)');
+  });
+});
+
+describe('no-referrer-policy rule', () => {
+  it('reports a no-referrer-when-downgrade policy', () => {
+    const source = "helmet.referrerPolicy({ policy: 'no-referrer-when-downgrade' });";
+    const reports = runRule('no-referrer-policy', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noReferrerPolicy');
+  });
+
+  it('reports an unsafe-url policy', () => {
+    const source = "helmet.referrerPolicy({ policy: 'unsafe-url' });";
+    const reports = runRule('no-referrer-policy', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noReferrerPolicy');
+  });
+
+  it('does not report a no-referrer policy', () => {
+    const source = "helmet.referrerPolicy({ policy: 'no-referrer' });";
+    const reports = runRule('no-referrer-policy', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a same-origin policy', () => {
+    const source = "helmet.referrerPolicy({ policy: 'same-origin' });";
+    const reports = runRule('no-referrer-policy', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal value', () => {
+    const source = 'const o = { policy: x };';
+    const reports = runRule('no-referrer-policy', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a leaky value under a different key', () => {
+    const source = "const o = { other: 'unsafe-url' };";
+    const reports = runRule('no-referrer-policy', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-referrer-policy through the CLI', () => {
+    const result = runOxlint(
+      'no-referrer-policy',
+      "helmet.referrerPolicy({ policy: 'no-referrer-when-downgrade' });",
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-referrer-policy)');
   });
 });

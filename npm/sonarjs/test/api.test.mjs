@@ -201,6 +201,7 @@ const expectedRuleNames = [
   'insecure-jwt-token',
   'xml-parser-xxe',
   'no-useless-react-setstate',
+  'no-referrer-policy',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4579,6 +4580,47 @@ describe('no-useless-react-setstate rule', () => {
   it('does not report a setter call with no argument', () => {
     const source = 'function C(){ const [v,setV]=useState(0); setV(); return null; }';
     const diagnostics = scan('no-useless-react-setstate', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-referrer-policy rule', () => {
+  it('reports a no-referrer-when-downgrade policy', () => {
+    const source = "helmet.referrerPolicy({ policy: 'no-referrer-when-downgrade' });";
+    const diagnostics = scan('no-referrer-policy', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-referrer-policy');
+    expect(diagnostics[0].messageId).toBe('noReferrerPolicy');
+  });
+
+  it('reports an unsafe-url policy', () => {
+    const source = "helmet.referrerPolicy({ policy: 'unsafe-url' });";
+    const diagnostics = scan('no-referrer-policy', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noReferrerPolicy');
+  });
+
+  it('does not report a no-referrer policy', () => {
+    const source = "helmet.referrerPolicy({ policy: 'no-referrer' });";
+    const diagnostics = scan('no-referrer-policy', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a same-origin policy', () => {
+    const source = "helmet.referrerPolicy({ policy: 'same-origin' });";
+    const diagnostics = scan('no-referrer-policy', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal value', () => {
+    const source = 'const o = { policy: x };';
+    const diagnostics = scan('no-referrer-policy', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a leaky value under a different key', () => {
+    const source = "const o = { other: 'unsafe-url' };";
+    const diagnostics = scan('no-referrer-policy', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

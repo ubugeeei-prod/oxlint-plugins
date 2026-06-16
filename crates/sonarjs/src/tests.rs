@@ -10678,3 +10678,54 @@ fn no_useless_react_setstate_does_not_report_state_from_other_pair() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_referrer_policy_reports_no_referrer_when_downgrade() {
+    let diagnostics = scan(
+        "no-referrer-policy",
+        "helmet.referrerPolicy({ policy: 'no-referrer-when-downgrade' });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-referrer-policy");
+    assert_eq!(diagnostics[0].message_id, "noReferrerPolicy");
+}
+
+#[test]
+fn no_referrer_policy_reports_unsafe_url() {
+    let diagnostics = scan(
+        "no-referrer-policy",
+        "helmet.referrerPolicy({ policy: 'unsafe-url' });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noReferrerPolicy");
+}
+
+#[test]
+fn no_referrer_policy_does_not_report_no_referrer() {
+    let diagnostics = scan(
+        "no-referrer-policy",
+        "helmet.referrerPolicy({ policy: 'no-referrer' });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_referrer_policy_does_not_report_same_origin() {
+    let diagnostics = scan(
+        "no-referrer-policy",
+        "helmet.referrerPolicy({ policy: 'same-origin' });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_referrer_policy_does_not_report_non_literal_value() {
+    let diagnostics = scan("no-referrer-policy", "const o = { policy: x };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_referrer_policy_does_not_report_other_key() {
+    let diagnostics = scan("no-referrer-policy", "const o = { other: 'unsafe-url' };");
+    assert!(diagnostics.is_empty());
+}

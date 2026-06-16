@@ -725,6 +725,10 @@ const messages = Object.freeze({
   'no-useless-react-setstate': {
     noUselessReactSetstate: 'This setState call passes the current state value and has no effect.',
   },
+  'no-referrer-policy': {
+    noReferrerPolicy:
+      "This Referrer-Policy value leaks the full URL to other origins; use a stricter policy like 'no-referrer' or 'same-origin'.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1251,6 +1255,10 @@ const ruleDescriptions = Object.freeze({
     're-render because the next value is identical, so the call is a no-op. The ' +
     'state binding is const and the pair is collected from the same destructuring, ' +
     'making an exact setter(state) match zero-false-positive (S6443)',
+  'no-referrer-policy':
+    "Flag a helmet referrerPolicy option set to a leaky Referrer-Policy value ('no-referrer-when-downgrade' " +
+    "or 'unsafe-url'), which sends the full URL to other origins and can expose confidential data; flags a " +
+    'policy property whose string value is one of those distinctive tokens (zero-false-positive subset of S5736)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1452,6 +1460,7 @@ const ruleTypes = Object.freeze({
   'insecure-jwt-token': 'problem',
   'xml-parser-xxe': 'problem',
   'no-useless-react-setstate': 'problem',
+  'no-referrer-policy': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1652,6 +1661,7 @@ const recommendedRuleConfig = Object.freeze({
   'insecure-jwt-token': 'error',
   'xml-parser-xxe': 'error',
   'no-useless-react-setstate': 'error',
+  'no-referrer-policy': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
