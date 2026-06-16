@@ -231,6 +231,7 @@ const expectedRuleNames = [
   'no-unused-vars',
   'strings-comparison',
   'non-number-in-arithmetic-expression',
+  'useless-string-operation',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

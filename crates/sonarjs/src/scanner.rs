@@ -743,6 +743,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_unthrown_error(it);
         self.check_no_ignored_return(it);
         self.check_no_incomplete_assertions(it);
+        self.check_useless_string_operation(it);
         walk::walk_expression_statement(self, it);
     }
 

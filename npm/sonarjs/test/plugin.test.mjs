@@ -322,6 +322,7 @@ describe('sonarjs plugin shape', () => {
       'no-unused-vars',
       'strings-comparison',
       'non-number-in-arithmetic-expression',
+      'useless-string-operation',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');

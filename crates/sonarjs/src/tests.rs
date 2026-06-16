@@ -12260,3 +12260,46 @@ fn non_number_in_arithmetic_does_not_report_variable() {
     let diagnostics = scan("non-number-in-arithmetic-expression", "const y = x / 4;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn useless_string_operation_reports_to_upper_case() {
+    let diagnostics = scan("useless-string-operation", "str.toUpperCase();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "useless-string-operation");
+    assert_eq!(diagnostics[0].message_id, "uselessStringOperation");
+}
+
+#[test]
+fn useless_string_operation_reports_trim() {
+    let diagnostics = scan("useless-string-operation", "s.trim();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "uselessStringOperation");
+}
+
+#[test]
+fn useless_string_operation_does_not_report_assigned() {
+    let diagnostics = scan("useless-string-operation", "str = str.toUpperCase();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn useless_string_operation_does_not_report_returned() {
+    let diagnostics = scan(
+        "useless-string-operation",
+        "function f(s){ return s.trim(); }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn useless_string_operation_does_not_report_excluded_method() {
+    // `slice` is shared with arrays and deliberately excluded.
+    let diagnostics = scan("useless-string-operation", "arr.slice();");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn useless_string_operation_does_not_report_used_as_arg() {
+    let diagnostics = scan("useless-string-operation", "console.log(s.trim());");
+    assert!(diagnostics.is_empty());
+}

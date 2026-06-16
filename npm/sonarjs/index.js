@@ -835,6 +835,10 @@ const messages = Object.freeze({
     nonNumberInArithmetic:
       'Use only numeric operands with this arithmetic operator; a string or boolean operand relies on implicit conversion.',
   },
+  'useless-string-operation': {
+    uselessStringOperation:
+      'The result of this string operation is ignored; strings are immutable, so assign or use the returned value.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1434,6 +1438,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a relational comparison (</>/<=/>=) where both operands are string literals (S3003), which performs a surprising lexicographic comparison. Only the literal form is flagged (the typed-variable form needs type inference), keeping this zero-false-positive',
   'non-number-in-arithmetic-expression':
     'Flag an arithmetic operator (- * / % **) with a string-literal or boolean-literal operand (S3760), which relies on implicit type conversion. Binary + (concatenation) is excluded; only the literal form is flagged (the typed-variable form needs type inference), keeping this zero-false-positive',
+  'useless-string-operation':
+    'Flag a statement-level call to a string-specific immutable method (toUpperCase, trim, padStart, ...) whose returned value is discarded (S1154). Methods shared with arrays or commonly user-defined are excluded to stay zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1665,6 +1671,7 @@ const ruleTypes = Object.freeze({
   'no-unused-vars': 'suggestion',
   'strings-comparison': 'problem',
   'non-number-in-arithmetic-expression': 'problem',
+  'useless-string-operation': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1895,6 +1902,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-unused-vars': 'error',
   'strings-comparison': 'error',
   'non-number-in-arithmetic-expression': 'error',
+  'useless-string-operation': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
