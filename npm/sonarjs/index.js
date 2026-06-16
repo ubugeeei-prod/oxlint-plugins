@@ -831,6 +831,10 @@ const messages = Object.freeze({
     stringsComparison:
       'Do not compare strings with </>/<=/>=; this is a lexicographic comparison. Convert to numbers (Number(...)) if a numeric comparison is intended.',
   },
+  'non-number-in-arithmetic-expression': {
+    nonNumberInArithmetic:
+      'Use only numeric operands with this arithmetic operator; a string or boolean operand relies on implicit conversion.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1428,6 +1432,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a function-local variable declared with a plain identifier binding that is never read (S1481), using semantic analysis. Top-level/exported declarations, destructuring patterns, and underscore-prefixed names are deliberately not flagged to stay zero-false-positive',
   'strings-comparison':
     'Flag a relational comparison (</>/<=/>=) where both operands are string literals (S3003), which performs a surprising lexicographic comparison. Only the literal form is flagged (the typed-variable form needs type inference), keeping this zero-false-positive',
+  'non-number-in-arithmetic-expression':
+    'Flag an arithmetic operator (- * / % **) with a string-literal or boolean-literal operand (S3760), which relies on implicit type conversion. Binary + (concatenation) is excluded; only the literal form is flagged (the typed-variable form needs type inference), keeping this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1658,6 +1664,7 @@ const ruleTypes = Object.freeze({
   'no-globals-shadowing': 'problem',
   'no-unused-vars': 'suggestion',
   'strings-comparison': 'problem',
+  'non-number-in-arithmetic-expression': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1887,6 +1894,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-globals-shadowing': 'error',
   'no-unused-vars': 'error',
   'strings-comparison': 'error',
+  'non-number-in-arithmetic-expression': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

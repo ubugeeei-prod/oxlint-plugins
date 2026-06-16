@@ -12216,3 +12216,47 @@ fn no_unused_vars_does_not_report_used_in_closure() {
     let diagnostics = scan("no-unused-vars", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn non_number_in_arithmetic_reports_string_division() {
+    let diagnostics = scan(
+        "non-number-in-arithmetic-expression",
+        r#"const x = "80" / 4;"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "non-number-in-arithmetic-expression"
+    );
+    assert_eq!(diagnostics[0].message_id, "nonNumberInArithmetic");
+}
+
+#[test]
+fn non_number_in_arithmetic_reports_boolean_mult() {
+    let diagnostics = scan("non-number-in-arithmetic-expression", "const x = true * 2;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "nonNumberInArithmetic");
+}
+
+#[test]
+fn non_number_in_arithmetic_does_not_report_plus() {
+    // Binary + is string concatenation, not arithmetic; never flagged.
+    let diagnostics = scan(
+        "non-number-in-arithmetic-expression",
+        r#"const x = "a" + "b";"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn non_number_in_arithmetic_does_not_report_numbers() {
+    let diagnostics = scan("non-number-in-arithmetic-expression", "const x = 5 / 4;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn non_number_in_arithmetic_does_not_report_variable() {
+    // The typed-variable form needs type inference; identifiers are not flagged.
+    let diagnostics = scan("non-number-in-arithmetic-expression", "const y = x / 4;");
+    assert!(diagnostics.is_empty());
+}

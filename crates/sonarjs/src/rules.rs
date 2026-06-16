@@ -187,6 +187,7 @@ mod no_weak_cipher;
 mod no_weak_keys;
 mod no_wildcard_import;
 mod non_existent_operator;
+mod non_number_in_arithmetic_expression;
 mod object_alt_content;
 mod operation_returning_nan;
 mod os_command;
