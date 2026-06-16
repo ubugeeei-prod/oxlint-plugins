@@ -12133,3 +12133,47 @@ fn no_globals_shadowing_does_not_report_other_name() {
     let diagnostics = scan("no-globals-shadowing", "let result;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_unused_vars_reports_unused_local() {
+    let source = "function f() { var seconds = 0; return 60; }";
+    let diagnostics = scan("no-unused-vars", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-unused-vars");
+    assert_eq!(diagnostics[0].message_id, "unusedVariable");
+}
+
+#[test]
+fn no_unused_vars_does_not_report_used_local() {
+    let source = "function f() { var x = 1; return x; }";
+    let diagnostics = scan("no-unused-vars", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_vars_does_not_report_underscore() {
+    let source = "function f() { var _ignored = 1; return 60; }";
+    let diagnostics = scan("no-unused-vars", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_vars_does_not_report_top_level() {
+    let source = "const topLevelUnused = 1;";
+    let diagnostics = scan("no-unused-vars", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_vars_does_not_report_destructuring() {
+    let source = "function f() { const { a } = obj; return 60; }";
+    let diagnostics = scan("no-unused-vars", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_unused_vars_does_not_report_used_in_closure() {
+    let source = "function f() { var x = 1; return () => x; }";
+    let diagnostics = scan("no-unused-vars", source);
+    assert!(diagnostics.is_empty());
+}

@@ -228,6 +228,7 @@ const expectedRuleNames = [
   'aws-sagemaker-unencrypted-notebook',
   'aws-sns-unencrypted-topics',
   'no-globals-shadowing',
+  'no-unused-vars',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

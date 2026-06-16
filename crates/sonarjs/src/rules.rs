@@ -175,6 +175,7 @@ mod no_unsafe_unzip;
 mod no_unthrown_error;
 mod no_unused_collection;
 mod no_unused_function_argument;
+mod no_unused_vars;
 mod no_use_of_empty_return_value;
 mod no_useless_catch;
 mod no_useless_increment;
