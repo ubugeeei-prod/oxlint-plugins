@@ -11496,6 +11496,41 @@ fn existing_groups_does_not_report_dynamic_args() {
 }
 
 #[test]
+fn existing_groups_does_not_report_leading_zero_numeric() {
+    let diagnostics = scan("existing-groups", r#"'foo'.replace(/(o)/, '$01');"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn existing_groups_reports_bare_dollar_zero() {
+    let diagnostics = scan("existing-groups", r#"'foo'.replace(/(o)/, '$0');"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "existingGroups");
+}
+
+#[test]
+fn existing_groups_does_not_report_named_ref_without_named_groups() {
+    let diagnostics = scan("existing-groups", r#"'x'.replace(/(\w+)/, 'id=$<id>');"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn existing_groups_reports_missing_named_ref_with_named_groups() {
+    let diagnostics = scan(
+        "existing-groups",
+        r#"'John'.replace(/(?<first>\w+)/, '$<surname>');"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "existingGroups");
+}
+
+#[test]
+fn existing_groups_does_not_report_unicode_replacement() {
+    let diagnostics = scan("existing-groups", r#"'x'.replace(/(x)/, 'café $1');"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn encryption_reports_create_cipheriv() {
     let diagnostics = scan("encryption", "crypto.createCipheriv(algo, key, iv);");
     assert_eq!(diagnostics.len(), 1);
