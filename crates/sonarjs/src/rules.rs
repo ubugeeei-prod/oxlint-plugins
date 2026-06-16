@@ -191,6 +191,7 @@ mod single_char_in_character_classes;
 mod single_character_alternation;
 mod slow_regex;
 mod standard_input;
+mod strict_transport_security;
 mod todo_tag;
 mod too_many_break_or_continue_in_loop;
 mod unicode_aware_regex;
