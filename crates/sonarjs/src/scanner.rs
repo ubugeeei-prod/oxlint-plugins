@@ -514,12 +514,14 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_binding_identifier(&mut self, it: &BindingIdentifier<'a>) {
         self.check_no_built_in_override_binding(it);
+        self.check_no_globals_shadowing_binding(it);
         walk::walk_binding_identifier(self, it);
     }
 
     fn visit_assignment_expression(&mut self, it: &AssignmentExpression<'a>) {
         self.check_non_existent_operator(it);
         self.check_no_built_in_override_assignment(it);
+        self.check_no_globals_shadowing_assignment(it);
         self.check_class_prototype(it);
         self.check_no_nested_assignment_chain(it);
         self.check_no_useless_increment(it);
@@ -548,6 +550,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.check_updated_loop_counter(ident, it.span);
         }
         self.check_updated_const_var_update(&it.argument);
+        self.check_no_globals_shadowing_update(it);
         walk::walk_update_expression(self, it);
     }
 

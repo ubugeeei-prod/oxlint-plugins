@@ -12072,3 +12072,64 @@ fn aws_sns_unencrypted_topics_does_not_report_bare_topic() {
     let diagnostics = scan("aws-sns-unencrypted-topics", "new Topic(this, 'x');");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_globals_shadowing_reports_let_undefined() {
+    let diagnostics = scan("no-globals-shadowing", "let undefined;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-globals-shadowing");
+    assert_eq!(diagnostics[0].message_id, "noGlobalsShadowing");
+}
+
+#[test]
+fn no_globals_shadowing_reports_function_name_nan() {
+    let diagnostics = scan("no-globals-shadowing", "function NaN() {}");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noGlobalsShadowing");
+}
+
+#[test]
+fn no_globals_shadowing_reports_assignment_infinity() {
+    let diagnostics = scan("no-globals-shadowing", "Infinity = 1;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noGlobalsShadowing");
+}
+
+#[test]
+fn no_globals_shadowing_reports_update_infinity() {
+    let diagnostics = scan("no-globals-shadowing", "Infinity++;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noGlobalsShadowing");
+}
+
+#[test]
+fn no_globals_shadowing_reports_param_undefined() {
+    let diagnostics = scan("no-globals-shadowing", "function f(undefined) {}");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noGlobalsShadowing");
+}
+
+#[test]
+fn no_globals_shadowing_reports_catch_param_nan() {
+    let diagnostics = scan("no-globals-shadowing", "try {} catch (NaN) {}");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noGlobalsShadowing");
+}
+
+#[test]
+fn no_globals_shadowing_does_not_report_read() {
+    // Bare reference and member access are reads, not bindings/assignments.
+    let diagnostics = scan("no-globals-shadowing", "var x = undefined;");
+    assert!(diagnostics.is_empty());
+    let diagnostics = scan(
+        "no-globals-shadowing",
+        "function f() { return arguments.length; }",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_globals_shadowing_does_not_report_other_name() {
+    let diagnostics = scan("no-globals-shadowing", "let result;");
+    assert!(diagnostics.is_empty());
+}

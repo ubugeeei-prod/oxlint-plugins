@@ -318,6 +318,7 @@ describe('sonarjs plugin shape', () => {
       'unused-import',
       'aws-sagemaker-unencrypted-notebook',
       'aws-sns-unencrypted-topics',
+      'no-globals-shadowing',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
