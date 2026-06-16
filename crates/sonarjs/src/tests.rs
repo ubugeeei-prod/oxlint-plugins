@@ -11132,3 +11132,49 @@ fn os_command_does_not_report_non_literal_shell() {
     let diagnostics = scan("os-command", "cp.spawn(cmd, { shell: someVar });");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn argument_type_reports_math_abs_comparison() {
+    let diagnostics = scan("argument-type", "const t = Math.abs(x < 0.0042);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "argument-type");
+    assert_eq!(diagnostics[0].message_id, "argumentType");
+}
+
+#[test]
+fn argument_type_reports_math_floor_logical() {
+    let diagnostics = scan("argument-type", "Math.floor(a && b);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "argumentType");
+}
+
+#[test]
+fn argument_type_reports_logical_not() {
+    let diagnostics = scan("argument-type", "Math.sqrt(!ready);");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "argumentType");
+}
+
+#[test]
+fn argument_type_does_not_report_numeric_arg() {
+    let diagnostics = scan("argument-type", "Math.floor(1.5);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn argument_type_does_not_report_identifier_arg() {
+    let diagnostics = scan("argument-type", "Math.abs(x);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn argument_type_does_not_report_non_math_callee() {
+    let diagnostics = scan("argument-type", "foo.abs(x < 1);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn argument_type_does_not_report_multi_arg_method() {
+    let diagnostics = scan("argument-type", "Math.max(a < b, c);");
+    assert!(diagnostics.is_empty());
+}

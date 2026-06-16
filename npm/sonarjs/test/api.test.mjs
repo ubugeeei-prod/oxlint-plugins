@@ -210,6 +210,7 @@ const expectedRuleNames = [
   'no-table-as-layout',
   'no-vue-bypass-sanitization',
   'os-command',
+  'argument-type',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
