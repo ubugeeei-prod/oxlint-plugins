@@ -187,6 +187,7 @@ mod standard_input;
 mod todo_tag;
 mod too_many_break_or_continue_in_loop;
 mod unicode_aware_regex;
+mod unverified_certificate;
 mod updated_const_var;
 mod updated_loop_counter;
 mod use_type_alias;

@@ -285,6 +285,7 @@ describe('sonarjs plugin shape', () => {
       'insecure-cookie',
       'no-hook-setter-in-body',
       'content-length',
+      'unverified-certificate',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7384,5 +7385,50 @@ describe('content-length rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(content-length)');
+  });
+});
+
+describe('unverified-certificate rule', () => {
+  it('reports rejectUnauthorized:false in https.request options', () => {
+    const source = 'https.request({ rejectUnauthorized: false });';
+    const reports = runRule('unverified-certificate', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unverifiedCertificate');
+  });
+
+  it('reports rejectUnauthorized:false in a direct options literal', () => {
+    const source = 'const o = { rejectUnauthorized: false };';
+    const reports = runRule('unverified-certificate', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('unverifiedCertificate');
+  });
+
+  it('does not report rejectUnauthorized:true', () => {
+    const source = 'const o = { rejectUnauthorized: true };';
+    const reports = runRule('unverified-certificate', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal rejectUnauthorized value', () => {
+    const source = 'const o = { rejectUnauthorized: x };';
+    const reports = runRule('unverified-certificate', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = 'const o = { other: false };';
+    const reports = runRule('unverified-certificate', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports unverified-certificate through the CLI', () => {
+    const result = runOxlint(
+      'unverified-certificate',
+      'https.request({ rejectUnauthorized: false });',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(unverified-certificate)');
   });
 });

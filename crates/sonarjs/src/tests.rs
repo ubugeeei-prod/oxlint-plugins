@@ -10375,3 +10375,46 @@ fn content_length_does_not_report_non_literal_value() {
     let diagnostics = scan("content-length", "const cfg = { fileSize: x };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn unverified_certificate_reports_https_request_options() {
+    let diagnostics = scan(
+        "unverified-certificate",
+        "https.request({ rejectUnauthorized: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unverified-certificate");
+}
+
+#[test]
+fn unverified_certificate_reports_direct_false() {
+    let diagnostics = scan(
+        "unverified-certificate",
+        "const o = { rejectUnauthorized: false };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn unverified_certificate_does_not_report_true() {
+    let diagnostics = scan(
+        "unverified-certificate",
+        "const o = { rejectUnauthorized: true };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn unverified_certificate_does_not_report_dynamic_value() {
+    let diagnostics = scan(
+        "unverified-certificate",
+        "const o = { rejectUnauthorized: x };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn unverified_certificate_does_not_report_other_key() {
+    let diagnostics = scan("unverified-certificate", "const o = { other: false };");
+    assert!(diagnostics.is_empty());
+}
