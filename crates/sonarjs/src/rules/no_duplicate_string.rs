@@ -31,6 +31,9 @@ fn qualifies(value: &str) -> bool {
 
 impl<'a> Scanner<'a> {
     pub(crate) fn record_string_literal(&mut self, lit: &StringLiteral<'a>) {
+        if !self.options.has_rule(RULE_NAME) {
+            return;
+        }
         self.string_literals.push((lit.value.as_str(), lit.span));
     }
 

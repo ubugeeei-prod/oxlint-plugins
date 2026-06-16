@@ -109,18 +109,19 @@ fn collect_in_disjunction(disj: &Disjunction<'_>, out: &mut SmallVec<[Span; 8]>)
 }
 
 impl Scanner<'_> {
-    pub(crate) fn check_no_misleading_character_class(&mut self, lit: &RegExpLiteral<'_>) {
+    pub(crate) fn check_no_misleading_character_class_with_pattern(
+        &mut self,
+        lit: &RegExpLiteral<'_>,
+        pattern: &oxc_regular_expression::ast::Pattern<'_>,
+    ) {
         // With the `u`/`v` flag the engine treats an astral code point as a
         // single unit, so the class is not misleading.
         if lit.regex.flags.intersects(RegExpFlags::U | RegExpFlags::V) {
             return;
         }
-        let spans = crate::regex_ast::with_parsed_regex_literal(lit, self.source_text, |pattern| {
-            let mut out: SmallVec<[Span; 8]> = SmallVec::new();
-            collect_in_disjunction(&pattern.body, &mut out);
-            out
-        });
-        for span in spans {
+        let mut out: SmallVec<[Span; 8]> = SmallVec::new();
+        collect_in_disjunction(&pattern.body, &mut out);
+        for span in out {
             self.report(RULE_NAME, "misleadingCharacterClass", span);
         }
     }

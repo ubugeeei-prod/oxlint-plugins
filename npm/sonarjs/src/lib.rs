@@ -82,8 +82,10 @@ mod napi_abi {
     ) -> Vec<Diagnostic> {
         let options = options.unwrap_or_default();
         let default_options = core::SonarjsOptions::default();
+        let rule_names = compact_rule_names(options.rule_names);
         let core_options = core::SonarjsOptions {
-            rule_names: compact_rule_names(options.rule_names),
+            rule_name_set: core::SonarjsOptions::build_rule_name_set(&rule_names),
+            rule_names,
             max_lines_threshold: options
                 .max_lines_threshold
                 .unwrap_or(default_options.max_lines_threshold),

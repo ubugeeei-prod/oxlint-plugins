@@ -110,13 +110,14 @@ fn check_top_level_disjunction(disj: &Disjunction<'_>, out: &mut SmallVec<[Span;
 }
 
 impl Scanner<'_> {
-    pub(crate) fn check_anchor_precedence(&mut self, lit: &RegExpLiteral<'_>) {
-        let spans = crate::regex_ast::with_parsed_regex_literal(lit, self.source_text, |pattern| {
-            let mut out: SmallVec<[Span; 8]> = SmallVec::new();
-            check_top_level_disjunction(&pattern.body, &mut out);
-            out
-        });
-        for span in spans {
+    pub(crate) fn check_anchor_precedence_with_pattern(
+        &mut self,
+        _lit: &RegExpLiteral<'_>,
+        pattern: &oxc_regular_expression::ast::Pattern<'_>,
+    ) {
+        let mut out: SmallVec<[Span; 8]> = SmallVec::new();
+        check_top_level_disjunction(&pattern.body, &mut out);
+        for span in out {
             self.report(RULE_NAME, "anchorPrecedence", span);
         }
     }

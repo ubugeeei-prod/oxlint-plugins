@@ -129,6 +129,9 @@ fn contains_flagged_ipv6(s: &str) -> bool {
 
 impl Scanner<'_> {
     pub(crate) fn check_no_hardcoded_ip(&mut self, it: &StringLiteral<'_>) {
+        if !self.options.has_rule(RULE_NAME) {
+            return;
+        }
         let value = it.value.as_str();
         if contains_flagged_ipv4(value) || contains_flagged_ipv6(value) {
             self.report(RULE_NAME, "hardcodedIp", it.span);
