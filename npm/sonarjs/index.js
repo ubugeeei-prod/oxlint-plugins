@@ -821,6 +821,9 @@ const messages = Object.freeze({
   'aws-sns-unencrypted-topics': {
     snsUnencryptedTopic: 'Encrypt this SNS topic by setting a KMS master key.',
   },
+  'no-globals-shadowing': {
+    noGlobalsShadowing: 'Do not bind or assign this special identifier; rename it.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1412,6 +1415,8 @@ const ruleDescriptions = Object.freeze({
     'Flag an AWS CDK CfnNotebookInstance constructed without a kmsKeyId property (the security hotspot S6319), leaving the notebook unencrypted. Gated on the distinctive CfnNotebookInstance construct name to stay zero-false-positive',
   'aws-sns-unencrypted-topics':
     'Flag an AWS CDK SNS topic constructed without encryption (the security hotspot S6327): a CfnTopic without kmsMasterKeyId, or an sns.Topic without masterKey. Gated on the distinctive CfnTopic name and the sns.Topic receiver to stay zero-false-positive (a bare new Topic() is not flagged)',
+  'no-globals-shadowing':
+    'Flag binding or assigning the special identifiers eval, arguments, undefined, NaN, or Infinity (S2137). Reads are not flagged; only bind/assign/update targets are. Matching this fixed name set keeps it zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1639,6 +1644,7 @@ const ruleTypes = Object.freeze({
   'unused-import': 'suggestion',
   'aws-sagemaker-unencrypted-notebook': 'problem',
   'aws-sns-unencrypted-topics': 'problem',
+  'no-globals-shadowing': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1865,6 +1871,7 @@ const recommendedRuleConfig = Object.freeze({
   'unused-import': 'error',
   'aws-sagemaker-unencrypted-notebook': 'error',
   'aws-sns-unencrypted-topics': 'error',
+  'no-globals-shadowing': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
