@@ -78,6 +78,7 @@ mod nested_control_flow;
 mod new_operator_misuse;
 mod no_all_duplicated_branches;
 mod no_alphabetical_sort;
+mod no_angular_bypass_sanitization;
 mod no_array_delete;
 mod no_associative_arrays;
 mod no_built_in_override;

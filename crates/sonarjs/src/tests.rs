@@ -10487,3 +10487,48 @@ fn no_ip_forward_does_not_report_other_key() {
     let diagnostics = scan("no-ip-forward", "const o = { other: true };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_angular_bypass_sanitization_reports_bypass_security_trust_html() {
+    let diagnostics = scan(
+        "no-angular-bypass-sanitization",
+        "this.sanitizer.bypassSecurityTrustHtml(x);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-angular-bypass-sanitization");
+    assert_eq!(diagnostics[0].message_id, "angularBypassSanitization");
+}
+
+#[test]
+fn no_angular_bypass_sanitization_reports_bypass_security_trust_resource_url() {
+    let diagnostics = scan(
+        "no-angular-bypass-sanitization",
+        "ds.bypassSecurityTrustResourceUrl(u);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "angularBypassSanitization");
+}
+
+#[test]
+fn no_angular_bypass_sanitization_does_not_report_unrelated_method() {
+    let diagnostics = scan(
+        "no-angular-bypass-sanitization",
+        "this.sanitizer.sanitize(x);",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_angular_bypass_sanitization_does_not_report_other_bypass_method() {
+    let diagnostics = scan("no-angular-bypass-sanitization", "foo.bypassOther(x);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_angular_bypass_sanitization_does_not_report_property_access_without_call() {
+    let diagnostics = scan(
+        "no-angular-bypass-sanitization",
+        "const f = this.sanitizer.bypassSecurityTrustHtml;",
+    );
+    assert!(diagnostics.is_empty());
+}
