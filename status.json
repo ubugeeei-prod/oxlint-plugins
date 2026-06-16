@@ -10318,19 +10318,19 @@
       },
       {
         "name": "aws-rds-unencrypted-databases",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-rds-unencrypted-databases (Sonar key S6303). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6303. Flags an AWS CDK RDS database or cluster created with encryption at rest disabled, via the distinctive zero-false-positive signal of an object property \"storageEncrypted\" set to the boolean literal false (applies to CfnDBCluster, CfnDBInstance, DatabaseCluster, DatabaseClusterFromSnapshot, DatabaseInstance and DatabaseInstanceReadReplica). The camelCase storageEncrypted key is distinctive to RDS construct props, so no construct gating is needed. storageEncrypted: true, non-literal values and other keys are not flagged. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-restricted-ip-admin-access",

@@ -174,6 +174,7 @@ const expectedRuleNames = [
   'dns-prefetching',
   'disabled-auto-escaping',
   'aws-s3-bucket-granted-access',
+  'aws-rds-unencrypted-databases',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3643,6 +3644,41 @@ describe('aws-s3-bucket-granted-access rule', () => {
   it('does not report a granting member under a different key', () => {
     const source = "new s3.Bucket(this, 'b', { other: BucketAccessControl.PUBLIC_READ });";
     const diagnostics = scan('aws-s3-bucket-granted-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-rds-unencrypted-databases rule', () => {
+  it('reports a CDK construct created with storageEncrypted: false', () => {
+    const source = "new DatabaseInstance(this, 'db', { storageEncrypted: false });";
+    const diagnostics = scan('aws-rds-unencrypted-databases', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-rds-unencrypted-databases');
+    expect(diagnostics[0].messageId).toBe('rdsUnencrypted');
+  });
+
+  it('reports a direct storageEncrypted: false literal', () => {
+    const source = 'const x = { storageEncrypted: false };';
+    const diagnostics = scan('aws-rds-unencrypted-databases', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('rdsUnencrypted');
+  });
+
+  it('does not report storageEncrypted: true', () => {
+    const source = 'const x = { storageEncrypted: true };';
+    const diagnostics = scan('aws-rds-unencrypted-databases', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal storageEncrypted value', () => {
+    const source = 'const x = { storageEncrypted: flag };';
+    const diagnostics = scan('aws-rds-unencrypted-databases', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = 'const x = { encrypted: false };';
+    const diagnostics = scan('aws-rds-unencrypted-databases', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

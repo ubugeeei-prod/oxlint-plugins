@@ -9451,3 +9451,48 @@ fn aws_s3_bucket_granted_access_does_not_report_other_key() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_rds_unencrypted_databases_reports_cdk_construct_false() {
+    let diagnostics = scan(
+        "aws-rds-unencrypted-databases",
+        "new DatabaseInstance(this, 'db', { storageEncrypted: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn aws_rds_unencrypted_databases_reports_direct_false() {
+    let diagnostics = scan(
+        "aws-rds-unencrypted-databases",
+        "const x = { storageEncrypted: false };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn aws_rds_unencrypted_databases_does_not_report_true() {
+    let diagnostics = scan(
+        "aws-rds-unencrypted-databases",
+        "const x = { storageEncrypted: true };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_rds_unencrypted_databases_does_not_report_dynamic_value() {
+    let diagnostics = scan(
+        "aws-rds-unencrypted-databases",
+        "const x = { storageEncrypted: flag };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_rds_unencrypted_databases_does_not_report_other_key() {
+    let diagnostics = scan(
+        "aws-rds-unencrypted-databases",
+        "const x = { encrypted: false };",
+    );
+    assert!(diagnostics.is_empty());
+}

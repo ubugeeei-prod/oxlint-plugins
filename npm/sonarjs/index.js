@@ -625,6 +625,9 @@ const messages = Object.freeze({
     s3PublicAccess:
       'This S3 bucket access control grants access beyond the owner; use a private access control.',
   },
+  'aws-rds-unencrypted-databases': {
+    rdsUnencrypted: 'Enable encryption at rest for this database (storageEncrypted: true).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1029,6 +1032,9 @@ const ruleDescriptions = Object.freeze({
     'Flag an AWS CDK S3 bucket configured with an access control that grants access beyond ' +
     'the owner; matches an "accessControl" property whose value is a BucketAccessControl member ' +
     'named PUBLIC_READ, PUBLIC_READ_WRITE, or AUTHENTICATED_READ',
+  'aws-rds-unencrypted-databases':
+    'Flag an AWS CDK RDS database or cluster created with encryption at rest disabled; ' +
+    'matches an object property "storageEncrypted" set to the boolean literal false',
 });
 
 const ruleTypes = Object.freeze({
@@ -1203,6 +1209,7 @@ const ruleTypes = Object.freeze({
   'dns-prefetching': 'problem',
   'disabled-auto-escaping': 'problem',
   'aws-s3-bucket-granted-access': 'problem',
+  'aws-rds-unencrypted-databases': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1376,6 +1383,7 @@ const recommendedRuleConfig = Object.freeze({
   'dns-prefetching': 'error',
   'disabled-auto-escaping': 'error',
   'aws-s3-bucket-granted-access': 'error',
+  'aws-rds-unencrypted-databases': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
