@@ -684,6 +684,10 @@ const messages = Object.freeze({
     jsxNoLeakedRender:
       'Convert this `&&` to a boolean condition (e.g. `x.length > 0`); a numeric left operand can leak 0 into the rendered output.',
   },
+  'no-uniq-key': {
+    noUniqKey:
+      'Do not use a random or time-based value as a React key; it changes every render and defeats reconciliation.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1152,6 +1156,10 @@ const ruleDescriptions = Object.freeze({
     'a falsy numeric `0` is rendered as the text "0" instead of nothing. Boolean comparisons ' +
     '(`> 0`, `!== 0`), plain identifiers, non-`length` members, the `||` operator and non-JSX ' +
     'right operands are not flagged to stay zero-false-positive',
+  'no-uniq-key':
+    'Flag a JSX key attribute whose value is a Math.random() or Date.now() call; ' +
+    'such a value differs on every render, so React keys never match up between renders ' +
+    'and the DOM is needlessly recreated (zero-false-positive syntactic subset of S6486)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1342,6 +1350,7 @@ const ruleTypes = Object.freeze({
   'aws-restricted-ip-admin-access': 'problem',
   'redundant-type-aliases': 'suggestion',
   'jsx-no-leaked-render': 'problem',
+  'no-uniq-key': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1531,6 +1540,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-restricted-ip-admin-access': 'error',
   'redundant-type-aliases': 'error',
   'jsx-no-leaked-render': 'error',
+  'no-uniq-key': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

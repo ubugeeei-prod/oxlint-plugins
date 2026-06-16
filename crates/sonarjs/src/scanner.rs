@@ -896,6 +896,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         if let Some(JSXAttributeValue::StringLiteral(lit)) = &it.value {
             self.exclude_string(lit);
         }
+        self.check_no_uniq_key_jsx_attribute(it);
         walk::walk_jsx_attribute(self, it);
     }
 

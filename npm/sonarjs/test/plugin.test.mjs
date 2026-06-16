@@ -281,6 +281,7 @@ describe('sonarjs plugin shape', () => {
       'aws-restricted-ip-admin-access',
       'redundant-type-aliases',
       'jsx-no-leaked-render',
+      'no-uniq-key',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7175,5 +7176,53 @@ describe('jsx-no-leaked-render rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(jsx-no-leaked-render)');
+  });
+});
+
+describe('no-uniq-key rule', () => {
+  it('reports key={Math.random()}', () => {
+    const src = '<li key={Math.random()}>x</li>';
+    const reports = runRule('no-uniq-key', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noUniqKey');
+  });
+
+  it('reports key={Date.now()}', () => {
+    const src = '<li key={Date.now()}>x</li>';
+    const reports = runRule('no-uniq-key', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noUniqKey');
+  });
+
+  it('does not report key={item.id}', () => {
+    const src = '<li key={item.id}>x</li>';
+    const reports = runRule('no-uniq-key', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report key={i}', () => {
+    const src = '<li key={i}>x</li>';
+    const reports = runRule('no-uniq-key', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report key="static"', () => {
+    const src = '<li key="static">x</li>';
+    const reports = runRule('no-uniq-key', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report id={Math.random()} (not the key attribute)', () => {
+    const src = '<li id={Math.random()}>x</li>';
+    const reports = runRule('no-uniq-key', src, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-uniq-key through the CLI', () => {
+    const result = runOxlint('no-uniq-key', '<li key={Math.random()}>x</li>', 'sample.tsx');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-uniq-key)');
   });
 });

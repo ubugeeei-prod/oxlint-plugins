@@ -147,6 +147,7 @@ mod no_tab;
 mod no_undefined_argument;
 mod no_undefined_assignment;
 mod no_unenclosed_multiline_block;
+mod no_uniq_key;
 mod no_unsafe_unzip;
 mod no_unthrown_error;
 mod no_unused_collection;
