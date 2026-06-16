@@ -666,6 +666,9 @@ const messages = Object.freeze({
     iamAllResources:
       'This policy grants access to all resources ("*"); scope it to the specific resources required.',
   },
+  'aws-ec2-unencrypted-ebs-volume': {
+    ebsUnencrypted: 'Enable encryption for this EBS volume (encrypted: true).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1111,6 +1114,11 @@ const ruleDescriptions = Object.freeze({
   'aws-iam-all-resources-accessible':
     'Flag AWS IAM policy statements that grant access to all resources; matches an object ' +
     'property "resources" whose array literal value contains the wildcard string "*"',
+  'aws-ec2-unencrypted-ebs-volume':
+    'Flag an AWS CDK EBS Volume created without encryption; matches a new-expression whose ' +
+    'callee is the Volume construct and one of whose arguments is an object literal with an ' +
+    '"encrypted" property set to the boolean literal false (the implicit/absent form is ' +
+    'deliberately not flagged to stay zero-false-positive)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1296,6 +1304,7 @@ const ruleTypes = Object.freeze({
   'aws-s3-bucket-public-access': 'problem',
   'confidential-information-logging': 'problem',
   'aws-iam-all-resources-accessible': 'problem',
+  'aws-ec2-unencrypted-ebs-volume': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1480,6 +1489,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-s3-bucket-public-access': 'error',
   'confidential-information-logging': 'error',
   'aws-iam-all-resources-accessible': 'error',
+  'aws-ec2-unencrypted-ebs-volume': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

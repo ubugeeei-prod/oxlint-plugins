@@ -9924,3 +9924,60 @@ fn aws_iam_all_resources_accessible_does_not_report_other_key() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_ec2_unencrypted_ebs_volume_reports_member_callee_encrypted_false() {
+    let diagnostics = scan(
+        "aws-ec2-unencrypted-ebs-volume",
+        "new ec2.Volume(this, 'v', { encrypted: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-ec2-unencrypted-ebs-volume");
+    assert_eq!(diagnostics[0].message_id, "ebsUnencrypted");
+}
+
+#[test]
+fn aws_ec2_unencrypted_ebs_volume_reports_identifier_callee_with_extra_prop() {
+    let diagnostics = scan(
+        "aws-ec2-unencrypted-ebs-volume",
+        "new Volume(this, 'v', { encrypted: false, size: x });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-ec2-unencrypted-ebs-volume");
+}
+
+#[test]
+fn aws_ec2_unencrypted_ebs_volume_does_not_report_encrypted_true() {
+    let diagnostics = scan(
+        "aws-ec2-unencrypted-ebs-volume",
+        "new ec2.Volume(this, 'v', { encrypted: true });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_ec2_unencrypted_ebs_volume_does_not_report_absent_encrypted() {
+    let diagnostics = scan(
+        "aws-ec2-unencrypted-ebs-volume",
+        "new Volume(this, 'v', {});",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_ec2_unencrypted_ebs_volume_does_not_report_wrong_construct() {
+    let diagnostics = scan(
+        "aws-ec2-unencrypted-ebs-volume",
+        "new FileSystem(this, 'f', { encrypted: false });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_ec2_unencrypted_ebs_volume_does_not_report_volume_without_options() {
+    let diagnostics = scan(
+        "aws-ec2-unencrypted-ebs-volume",
+        "new ec2.Volume(this, 'v');",
+    );
+    assert!(diagnostics.is_empty());
+}

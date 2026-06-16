@@ -185,6 +185,7 @@ const expectedRuleNames = [
   'aws-s3-bucket-public-access',
   'confidential-information-logging',
   'aws-iam-all-resources-accessible',
+  'aws-ec2-unencrypted-ebs-volume',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4003,6 +4004,47 @@ describe('aws-iam-all-resources-accessible rule', () => {
   it('does not report a wildcard under a different key', () => {
     const source = 'new PolicyStatement({ other: ["*"] });';
     const diagnostics = scan('aws-iam-all-resources-accessible', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-ec2-unencrypted-ebs-volume rule', () => {
+  it('reports an EBS Volume created with encrypted: false', () => {
+    const source = "new ec2.Volume(this, 'v', { encrypted: false });";
+    const diagnostics = scan('aws-ec2-unencrypted-ebs-volume', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-ec2-unencrypted-ebs-volume');
+    expect(diagnostics[0].messageId).toBe('ebsUnencrypted');
+  });
+
+  it('reports a bare Volume callee with an extra property', () => {
+    const source = "new Volume(this, 'v', { encrypted: false, size: x });";
+    const diagnostics = scan('aws-ec2-unencrypted-ebs-volume', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-ec2-unencrypted-ebs-volume');
+  });
+
+  it('does not report encrypted: true', () => {
+    const source = "new ec2.Volume(this, 'v', { encrypted: true });";
+    const diagnostics = scan('aws-ec2-unencrypted-ebs-volume', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an absent encrypted property', () => {
+    const source = "new Volume(this, 'v', {});";
+    const diagnostics = scan('aws-ec2-unencrypted-ebs-volume', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different construct (EFS FileSystem)', () => {
+    const source = "new FileSystem(this, 'f', { encrypted: false });";
+    const diagnostics = scan('aws-ec2-unencrypted-ebs-volume', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a Volume without an options object', () => {
+    const source = "new ec2.Volume(this, 'v');";
+    const diagnostics = scan('aws-ec2-unencrypted-ebs-volume', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
