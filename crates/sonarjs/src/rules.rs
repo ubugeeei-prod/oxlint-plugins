@@ -56,6 +56,7 @@ mod file_uploads;
 mod fixme_tag;
 mod for_in;
 mod for_loop_increment_sign;
+mod frame_ancestors;
 mod function_inside_loop;
 mod function_name;
 mod generator_without_yield;
