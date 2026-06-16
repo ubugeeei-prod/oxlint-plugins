@@ -766,6 +766,10 @@ const messages = Object.freeze({
     s3BucketInsecureHttp:
       'Enforce HTTPS-only access on this S3 bucket (set enforceSSL: true) instead of allowing insecure HTTP.',
   },
+  'aws-s3-bucket-server-encryption': {
+    s3BucketServerEncryption:
+      'Do not disable server-side encryption on this S3 bucket; use a managed or KMS encryption mode instead of UNENCRYPTED.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1327,6 +1331,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a single-argument Math.* numeric call (abs, floor, sqrt, ...) whose argument is a boolean-producing expression — a comparison, a logical &&/||, or a logical-not — which is the documented type-mismatch bug of S3782 (e.g. Math.abs(x < 0.0042)); requiring a boolean-producing argument to a numeric Math method keeps this zero-false-positive',
   'aws-s3-bucket-insecure-http':
     'Flag an AWS CDK S3 bucket property enforceSSL:false (the explicit insecure-HTTP form of S6249), which authorizes cleartext HTTP access. The distinctive enforceSSL key keeps this zero-false-positive; omission is intentionally not flagged',
+  'aws-s3-bucket-server-encryption':
+    'Flag an AWS CDK S3 bucket encryption property set to BucketEncryption.UNENCRYPTED (or the string "UNENCRYPTED") — the explicit disable-encryption form of S6245. The distinctive encryption key plus UNENCRYPTED value keeps this zero-false-positive; omission is intentionally not flagged',
 });
 
 const ruleTypes = Object.freeze({
@@ -1539,6 +1545,7 @@ const ruleTypes = Object.freeze({
   'os-command': 'problem',
   'argument-type': 'problem',
   'aws-s3-bucket-insecure-http': 'problem',
+  'aws-s3-bucket-server-encryption': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1750,6 +1757,7 @@ const recommendedRuleConfig = Object.freeze({
   'os-command': 'error',
   'argument-type': 'error',
   'aws-s3-bucket-insecure-http': 'error',
+  'aws-s3-bucket-server-encryption': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

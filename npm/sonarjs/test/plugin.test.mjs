@@ -303,6 +303,7 @@ describe('sonarjs plugin shape', () => {
       'os-command',
       'argument-type',
       'aws-s3-bucket-insecure-http',
+      'aws-s3-bucket-server-encryption',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');

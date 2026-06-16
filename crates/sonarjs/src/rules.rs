@@ -19,6 +19,7 @@ mod aws_restricted_ip_admin_access;
 mod aws_s3_bucket_granted_access;
 mod aws_s3_bucket_insecure_http;
 mod aws_s3_bucket_public_access;
+mod aws_s3_bucket_server_encryption;
 mod aws_s3_bucket_versioning;
 mod aws_sqs_unencrypted_queue;
 mod bitwise_operators;

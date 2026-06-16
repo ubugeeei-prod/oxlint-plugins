@@ -811,6 +811,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_frame_ancestors_object_property(it);
         self.check_no_vue_bypass_sanitization_object_property(it);
         self.check_aws_s3_bucket_insecure_http_object_property(it);
+        self.check_aws_s3_bucket_server_encryption_object_property(it);
         walk::walk_object_property(self, it);
     }
 
