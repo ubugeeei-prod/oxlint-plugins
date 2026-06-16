@@ -12262,6 +12262,57 @@ fn non_number_in_arithmetic_does_not_report_variable() {
 }
 
 #[test]
+fn values_not_convertible_reports_object_gt() {
+    let diagnostics = scan(
+        "values-not-convertible-to-numbers",
+        "const r = ({a: 1}) > 24;",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].rule_name,
+        "values-not-convertible-to-numbers"
+    );
+    assert_eq!(diagnostics[0].message_id, "valuesNotConvertibleToNumbers");
+}
+
+#[test]
+fn values_not_convertible_reports_arrow_compare() {
+    let diagnostics = scan(
+        "values-not-convertible-to-numbers",
+        "const r = (() => {}) > 1;",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "valuesNotConvertibleToNumbers");
+}
+
+#[test]
+fn values_not_convertible_does_not_report_array() {
+    // Arrays coerce to a defined number ([] -> 0), so the comparison is valid.
+    let diagnostics = scan("values-not-convertible-to-numbers", "const r = [] > 0;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn values_not_convertible_does_not_report_numbers() {
+    let diagnostics = scan("values-not-convertible-to-numbers", "const r = 1 < 2;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn values_not_convertible_does_not_report_identifier() {
+    // The variable form needs type inference; identifiers are not flagged.
+    let diagnostics = scan("values-not-convertible-to-numbers", "const r = x > 1;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn values_not_convertible_does_not_report_equality() {
+    // Equality is not a relational numeric comparison; not flagged.
+    let diagnostics = scan("values-not-convertible-to-numbers", "const r = ({}) === x;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn useless_string_operation_reports_to_upper_case() {
     let diagnostics = scan("useless-string-operation", "str.toUpperCase();");
     assert_eq!(diagnostics.len(), 1);

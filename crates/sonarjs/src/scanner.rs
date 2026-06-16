@@ -383,6 +383,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_operation_returning_nan(it);
         self.check_strings_comparison(it);
         self.check_non_number_in_arithmetic_expression(it);
+        self.check_values_not_convertible_to_numbers(it);
         self.check_no_incorrect_string_concat(it);
         walk::walk_binary_expression(self, it);
     }

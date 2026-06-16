@@ -854,6 +854,10 @@ const messages = Object.freeze({
   'no-return-type-any': {
     noReturnTypeAny: 'Use a more specific return type than any.',
   },
+  'values-not-convertible-to-numbers': {
+    valuesNotConvertibleToNumbers:
+      'This operand does not convert to a number, so the comparison is always false.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1463,6 +1467,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a static JSX table cell whose headers attribute references an id that is absent from the table (S5260). Tables with dynamic {…} content or non-literal id/headers values are skipped, and the row/column-correctness check is out of scope, to stay zero-false-positive',
   'no-return-type-any':
     'Flag a function or method whose explicit return type annotation is the bare any type (S4324), which discards type safety for callers. Composite types like any[] or Promise<any> and functions without a return annotation are not flagged, keeping this zero-false-positive',
+  'values-not-convertible-to-numbers':
+    'Flag a relational comparison (< > <= >=) where an operand is an object, function, or arrow literal (S3758) — it coerces to NaN, so the comparison is always false. Arrays/strings/variables are excluded (coercion ambiguity, other rules, or type inference needed), keeping this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1699,6 +1705,7 @@ const ruleTypes = Object.freeze({
   'table-header': 'suggestion',
   'table-header-reference': 'suggestion',
   'no-return-type-any': 'suggestion',
+  'values-not-convertible-to-numbers': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1934,6 +1941,7 @@ const recommendedRuleConfig = Object.freeze({
   'table-header': 'error',
   'table-header-reference': 'error',
   'no-return-type-any': 'error',
+  'values-not-convertible-to-numbers': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

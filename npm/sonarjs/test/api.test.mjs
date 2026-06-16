@@ -236,6 +236,7 @@ const expectedRuleNames = [
   'table-header',
   'table-header-reference',
   'no-return-type-any',
+  'values-not-convertible-to-numbers',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

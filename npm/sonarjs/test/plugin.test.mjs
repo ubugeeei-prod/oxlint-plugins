@@ -327,6 +327,7 @@ describe('sonarjs plugin shape', () => {
       'table-header',
       'table-header-reference',
       'no-return-type-any',
+      'values-not-convertible-to-numbers',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
