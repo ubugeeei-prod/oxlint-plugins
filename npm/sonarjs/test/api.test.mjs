@@ -183,6 +183,7 @@ const expectedRuleNames = [
   'aws-s3-bucket-versioning',
   'aws-ec2-rds-dms-public',
   'aws-s3-bucket-public-access',
+  'confidential-information-logging',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3939,6 +3940,34 @@ describe('aws-s3-bucket-public-access rule', () => {
   it('does not report false under a different key', () => {
     const source = 'new s3.BlockPublicAccess({ other: false });';
     const diagnostics = scan('aws-s3-bucket-public-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('confidential-information-logging rule', () => {
+  it('reports a Signale logger with an empty secrets list', () => {
+    const source = 'new Signale({ secrets: [] });';
+    const diagnostics = scan('confidential-information-logging', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('confidential-information-logging');
+    expect(diagnostics[0].messageId).toBe('confidentialLogging');
+  });
+
+  it('does not report a non-empty secrets list', () => {
+    const source = 'new Signale({ secrets: ["password"] });';
+    const diagnostics = scan('confidential-information-logging', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when there is no secrets key', () => {
+    const source = 'new Signale({});';
+    const diagnostics = scan('confidential-information-logging', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different callee', () => {
+    const source = 'new Other({ secrets: [] });';
+    const diagnostics = scan('confidential-information-logging', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
