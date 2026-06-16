@@ -12238,19 +12238,19 @@
       },
       {
         "name": "no-hook-setter-in-body",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-hook-setter-in-body (Sonar key S6442). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6442. Flags a React useState setter called directly in a component body. Function-local detection scoped to one function/arrow body: pass 1 records setter names from a VariableDeclarator whose init is a call to useState or React.useState and whose id is an array pattern with at least two elements where the second is a binding identifier; pass 2 flags a direct top-level ExpressionStatement whose expression is a call to a plain identifier matching a recorded setter. Only direct statements of the same body are inspected, so setter calls nested in inner functions/arrows (event handlers, useEffect callbacks, .map), conditionals, loops, try, or JSX are not flagged. Setters are recorded per body, so a setter from one component cannot flag a call in another. No semantic analysis needed. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "no-identical-conditions",

@@ -108,6 +108,7 @@ mod no_global_this;
 mod no_hardcoded_ip;
 mod no_hardcoded_passwords;
 mod no_hardcoded_secrets;
+mod no_hook_setter_in_body;
 mod no_identical_conditions;
 mod no_identical_expressions;
 mod no_identical_functions;
