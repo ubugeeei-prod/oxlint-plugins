@@ -785,6 +785,10 @@ const messages = Object.freeze({
   sockets: {
     sockets: 'Make sure that using this socket is safe here.',
   },
+  'existing-groups': {
+    existingGroups:
+      'This replacement references a regular expression group that does not exist; use a valid group reference.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1356,6 +1360,8 @@ const ruleDescriptions = Object.freeze({
     'Flag XPath-execution calls (the security hotspot S4817): document.evaluate(...), .selectNodes(...), .SelectSingleNode(...), or xpath.select/select1(...). Generic method names are receiver-gated (document/xpath) to keep this zero-false-positive',
   sockets:
     'Flag raw socket usage on the Node net module (the security hotspot S4818): new net.Socket(), net.createConnection(...), or net.connect(...). Gating on the net receiver keeps the generic connect/createConnection names zero-false-positive',
+  'existing-groups':
+    'Flag a String.replace/replaceAll call whose literal replacement string references a regex group that does not exist (S6328): a $<name> with no such named group, $0, or a $N greater than the capturing-group count. Only literal regex + literal replacement are analyzed, keeping this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1573,6 +1579,7 @@ const ruleTypes = Object.freeze({
   cookies: 'problem',
   xpath: 'problem',
   sockets: 'problem',
+  'existing-groups': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1789,6 +1796,7 @@ const recommendedRuleConfig = Object.freeze({
   cookies: 'error',
   xpath: 'error',
   sockets: 'error',
+  'existing-groups': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
