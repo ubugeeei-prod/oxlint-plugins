@@ -24,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 225] = [
+pub const RULE_NAMES: [&str; 226] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -250,6 +250,7 @@ pub const RULE_NAMES: [&str; 225] = [
     "aws-sagemaker-unencrypted-notebook",
     "aws-sns-unencrypted-topics",
     "no-globals-shadowing",
+    "no-unused-vars",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -301,7 +302,8 @@ pub fn scan_sonarjs(
         || options.has_rule("deprecation")
         || options.has_rule("no-unused-collection")
         || options.has_rule("no-empty-collection")
-        || options.has_rule("unused-import");
+        || options.has_rule("unused-import")
+        || options.has_rule("no-unused-vars");
     let semantic = needs_semantic.then(|| {
         SemanticBuilder::new()
             .build(&parser_return.program)

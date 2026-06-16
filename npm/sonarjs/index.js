@@ -824,6 +824,9 @@ const messages = Object.freeze({
   'no-globals-shadowing': {
     noGlobalsShadowing: 'Do not bind or assign this special identifier; rename it.',
   },
+  'no-unused-vars': {
+    unusedVariable: 'Remove this unused variable.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1417,6 +1420,8 @@ const ruleDescriptions = Object.freeze({
     'Flag an AWS CDK SNS topic constructed without encryption (the security hotspot S6327): a CfnTopic without kmsMasterKeyId, or an sns.Topic without masterKey. Gated on the distinctive CfnTopic name and the sns.Topic receiver to stay zero-false-positive (a bare new Topic() is not flagged)',
   'no-globals-shadowing':
     'Flag binding or assigning the special identifiers eval, arguments, undefined, NaN, or Infinity (S2137). Reads are not flagged; only bind/assign/update targets are. Matching this fixed name set keeps it zero-false-positive',
+  'no-unused-vars':
+    'Flag a function-local variable declared with a plain identifier binding that is never read (S1481), using semantic analysis. Top-level/exported declarations, destructuring patterns, and underscore-prefixed names are deliberately not flagged to stay zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1645,6 +1650,7 @@ const ruleTypes = Object.freeze({
   'aws-sagemaker-unencrypted-notebook': 'problem',
   'aws-sns-unencrypted-topics': 'problem',
   'no-globals-shadowing': 'problem',
+  'no-unused-vars': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1872,6 +1878,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-sagemaker-unencrypted-notebook': 'error',
   'aws-sns-unencrypted-topics': 'error',
   'no-globals-shadowing': 'error',
+  'no-unused-vars': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
