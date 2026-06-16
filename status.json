@@ -12862,19 +12862,19 @@
       },
       {
         "name": "no-referrer-policy",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-referrer-policy (Sonar key S5736). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S5736. Flags an object property whose key is exactly policy and whose value is a string literal equal to a leaky Referrer-Policy token ('no-referrer-when-downgrade' or 'unsafe-url'), the helmet referrerPolicy options that send the full URL to other origins. Those distinctive string values make this a zero-false-positive subset. No upstream source, tests, fixtures, or messages were consulted."
       },
       {
         "name": "no-regex-spaces",
