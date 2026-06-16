@@ -695,6 +695,10 @@ const messages = Object.freeze({
     noHookSetterInBody:
       'Do not call a useState setter directly in the component body; it triggers an infinite re-render. Move it into an event handler or effect.',
   },
+  'content-length': {
+    contentLength:
+      'This file-size limit is very large; cap upload size to mitigate denial-of-service risk.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1178,6 +1182,11 @@ const ruleDescriptions = Object.freeze({
     'on every render and causes an infinite re-render loop; function-local detection scans ' +
     'only the direct statements of one body, so calls inside handlers, effects, callbacks, ' +
     'conditionals, loops, or JSX are not flagged (zero-false-positive subset of S6442)',
+  'content-length':
+    'Flag an upload-size limit larger than 8MB, expressed as a fileSize/maxFileSize object ' +
+    'property or a .fileSize/.maxFileSize member assignment whose value is a numeric literal ' +
+    'greater than 8000000; an excessive limit enables denial-of-service attacks (zero-false-' +
+    'positive subset of S5693 that skips string limits and generic keys)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1371,6 +1380,7 @@ const ruleTypes = Object.freeze({
   'no-uniq-key': 'problem',
   'insecure-cookie': 'problem',
   'no-hook-setter-in-body': 'problem',
+  'content-length': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1563,6 +1573,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-uniq-key': 'error',
   'insecure-cookie': 'error',
   'no-hook-setter-in-body': 'error',
+  'content-length': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
