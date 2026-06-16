@@ -769,6 +769,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_object_expression(&mut self, it: &ObjectExpression<'a>) {
         self.check_shorthand_property_grouping(it);
+        self.check_insecure_cookie(it);
         walk::walk_object_expression(self, it);
     }
 

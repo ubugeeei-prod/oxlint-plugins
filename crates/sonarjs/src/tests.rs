@@ -10214,3 +10214,53 @@ fn no_uniq_key_does_not_report_non_key_attribute() {
     let diagnostics = scan_jsx("no-uniq-key", "<li id={Math.random()}>x</li>");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn insecure_cookie_reports_secure_false_with_httponly_sibling() {
+    let diagnostics = scan(
+        "insecure-cookie",
+        "const c = { secure: false, httpOnly: true };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "insecure-cookie");
+}
+
+#[test]
+fn insecure_cookie_reports_nested_cookie_config() {
+    let diagnostics = scan(
+        "insecure-cookie",
+        "session({ cookie: { secure: false, sameSite: 'lax' } })",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "insecure-cookie");
+}
+
+#[test]
+fn insecure_cookie_does_not_report_without_cookie_marker_sibling() {
+    let diagnostics = scan("insecure-cookie", "const c = { secure: false };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn insecure_cookie_does_not_report_secure_true() {
+    let diagnostics = scan(
+        "insecure-cookie",
+        "const c = { secure: true, httpOnly: true };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn insecure_cookie_does_not_report_tls_config() {
+    let diagnostics = scan(
+        "insecure-cookie",
+        "const tls = { secure: false, rejectUnauthorized: false };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn insecure_cookie_does_not_report_non_literal_value() {
+    let diagnostics = scan("insecure-cookie", "const c = { secure: x, maxAge: 1 };");
+    assert!(diagnostics.is_empty());
+}

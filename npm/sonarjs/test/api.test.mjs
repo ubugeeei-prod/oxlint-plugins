@@ -191,6 +191,7 @@ const expectedRuleNames = [
   'redundant-type-aliases',
   'jsx-no-leaked-render',
   'no-uniq-key',
+  'insecure-cookie',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4221,6 +4222,47 @@ describe('jsx-no-leaked-render rule', () => {
   it('does not report a non-JSX right operand', () => {
     const source = 'cond && doThing();';
     const diagnostics = scan('jsx-no-leaked-render', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('insecure-cookie rule', () => {
+  it('reports secure: false with an httpOnly cookie-marker sibling', () => {
+    const source = 'const c = { secure: false, httpOnly: true };';
+    const diagnostics = scan('insecure-cookie', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('insecure-cookie');
+    expect(diagnostics[0].messageId).toBe('insecureCookie');
+  });
+
+  it('reports secure: false in a nested cookie config', () => {
+    const source = "session({ cookie: { secure: false, sameSite: 'lax' } });";
+    const diagnostics = scan('insecure-cookie', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('insecureCookie');
+  });
+
+  it('does not report secure: false without a cookie-marker sibling', () => {
+    const source = 'const c = { secure: false };';
+    const diagnostics = scan('insecure-cookie', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report secure: true', () => {
+    const source = 'const c = { secure: true, httpOnly: true };';
+    const diagnostics = scan('insecure-cookie', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a TLS config without a cookie marker', () => {
+    const source = 'const tls = { secure: false, rejectUnauthorized: false };';
+    const diagnostics = scan('insecure-cookie', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal secure value', () => {
+    const source = 'const c = { secure: x, maxAge: 1 };';
+    const diagnostics = scan('insecure-cookie', source);
     expect(diagnostics).toHaveLength(0);
   });
 });
