@@ -658,6 +658,10 @@ const messages = Object.freeze({
     s3BucketPublicAccess:
       'This S3 bucket does not block public access; ensure public exposure is intended.',
   },
+  'confidential-information-logging': {
+    confidentialLogging:
+      'Configure secret-masking patterns for this logger so confidential information is not logged.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1096,6 +1100,10 @@ const ruleDescriptions = Object.freeze({
     'Flag an AWS CDK S3 BlockPublicAccess configuration that disables public-access ' +
     'protection; matches an object property "blockPublicAcls", "blockPublicPolicy", ' +
     '"ignorePublicAcls", or "restrictPublicBuckets" whose value is the boolean literal false',
+  'confidential-information-logging':
+    'Flag a Signale logger configured without secret masking; matches a new-expression ' +
+    'whose callee is Signale and whose first argument is an object literal with a "secrets" ' +
+    'property set to an empty array literal',
 });
 
 const ruleTypes = Object.freeze({
@@ -1279,6 +1287,7 @@ const ruleTypes = Object.freeze({
   'aws-s3-bucket-versioning': 'problem',
   'aws-ec2-rds-dms-public': 'problem',
   'aws-s3-bucket-public-access': 'problem',
+  'confidential-information-logging': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1461,6 +1470,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-s3-bucket-versioning': 'error',
   'aws-ec2-rds-dms-public': 'error',
   'aws-s3-bucket-public-access': 'error',
+  'confidential-information-logging': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

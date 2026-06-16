@@ -9844,3 +9844,37 @@ fn aws_s3_bucket_public_access_does_not_report_other_key() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn confidential_information_logging_reports_empty_secrets() {
+    let diagnostics = scan(
+        "confidential-information-logging",
+        "new Signale({ secrets: [] })",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "confidential-information-logging");
+}
+
+#[test]
+fn confidential_information_logging_does_not_report_non_empty_secrets() {
+    let diagnostics = scan(
+        "confidential-information-logging",
+        r#"new Signale({ secrets: ["pw"] })"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn confidential_information_logging_does_not_report_missing_secrets() {
+    let diagnostics = scan("confidential-information-logging", "new Signale({})");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn confidential_information_logging_does_not_report_other_callee() {
+    let diagnostics = scan(
+        "confidential-information-logging",
+        "new Other({ secrets: [] })",
+    );
+    assert!(diagnostics.is_empty());
+}

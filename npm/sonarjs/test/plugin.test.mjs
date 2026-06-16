@@ -274,6 +274,7 @@ describe('sonarjs plugin shape', () => {
       'aws-s3-bucket-versioning',
       'aws-ec2-rds-dms-public',
       'aws-s3-bucket-public-access',
+      'confidential-information-logging',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6852,5 +6853,40 @@ describe('aws-s3-bucket-public-access rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-s3-bucket-public-access)');
+  });
+});
+
+describe('confidential-information-logging rule', () => {
+  it('reports a Signale logger with an empty secrets list', () => {
+    const source = 'new Signale({ secrets: [] });';
+    const reports = runRule('confidential-information-logging', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('confidentialLogging');
+  });
+
+  it('does not report a non-empty secrets list', () => {
+    const source = 'new Signale({ secrets: ["password"] });';
+    const reports = runRule('confidential-information-logging', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when there is no secrets key', () => {
+    const source = 'new Signale({});';
+    const reports = runRule('confidential-information-logging', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different callee', () => {
+    const source = 'new Other({ secrets: [] });';
+    const reports = runRule('confidential-information-logging', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports confidential-information-logging through the CLI', () => {
+    const result = runOxlint('confidential-information-logging', 'new Signale({ secrets: [] });');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(confidential-information-logging)');
   });
 });
