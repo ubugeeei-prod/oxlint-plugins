@@ -10175,3 +10175,42 @@ fn jsx_no_leaked_render_does_not_report_non_jsx_right() {
     let diagnostics = scan_jsx("jsx-no-leaked-render", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_uniq_key_reports_math_random() {
+    let diagnostics = scan_jsx("no-uniq-key", "<li key={Math.random()}>x</li>");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-uniq-key");
+    assert_eq!(diagnostics[0].message_id, "noUniqKey");
+}
+
+#[test]
+fn no_uniq_key_reports_date_now() {
+    let diagnostics = scan_jsx("no-uniq-key", "<li key={Date.now()}>x</li>");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noUniqKey");
+}
+
+#[test]
+fn no_uniq_key_does_not_report_stable_identifier() {
+    let diagnostics = scan_jsx("no-uniq-key", "<li key={item.id}>x</li>");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_uniq_key_does_not_report_index() {
+    let diagnostics = scan_jsx("no-uniq-key", "<li key={i}>x</li>");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_uniq_key_does_not_report_string_literal() {
+    let diagnostics = scan_jsx("no-uniq-key", "<li key=\"static\">x</li>");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_uniq_key_does_not_report_non_key_attribute() {
+    let diagnostics = scan_jsx("no-uniq-key", "<li id={Math.random()}>x</li>");
+    assert!(diagnostics.is_empty());
+}

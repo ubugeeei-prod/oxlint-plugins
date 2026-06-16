@@ -190,6 +190,7 @@ const expectedRuleNames = [
   'aws-restricted-ip-admin-access',
   'redundant-type-aliases',
   'jsx-no-leaked-render',
+  'no-uniq-key',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

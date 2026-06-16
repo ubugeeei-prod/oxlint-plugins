@@ -13134,19 +13134,19 @@
       },
       {
         "name": "no-uniq-key",
-        "status": "pending",
-        "published": false,
+        "status": "ported",
+        "published": true,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-uniq-key (Sonar key S6486). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port from public RSPEC S6486 (zero-false-positive subset): flags a JSX key attribute whose value is a Math.random() or Date.now() call, which produces a different key every render and defeats React reconciliation. Index-as-key and cross-render mismatch cases need data-flow analysis and are an intentional under-report. No upstream source, tests, fixtures, or message strings were consulted or copied."
       },
       {
         "name": "no-unsafe-unzip",
