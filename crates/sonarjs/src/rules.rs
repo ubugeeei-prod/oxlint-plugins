@@ -14,6 +14,7 @@ mod aws_iam_all_privileges;
 mod aws_iam_all_resources_accessible;
 mod aws_iam_public_access;
 mod aws_rds_unencrypted_databases;
+mod aws_restricted_ip_admin_access;
 mod aws_s3_bucket_granted_access;
 mod aws_s3_bucket_public_access;
 mod aws_s3_bucket_versioning;

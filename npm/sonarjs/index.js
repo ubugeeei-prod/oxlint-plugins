@@ -672,6 +672,10 @@ const messages = Object.freeze({
   'aws-efs-unencrypted': {
     efsUnencrypted: 'Enable encryption at rest for this EFS file system (encrypted: true).',
   },
+  'aws-restricted-ip-admin-access': {
+    restrictedIpAdminAccess:
+      'Restrict access to administration ports (SSH/RDP) to specific trusted IP ranges instead of all addresses.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1126,6 +1130,10 @@ const ruleDescriptions = Object.freeze({
     'Flag an AWS CDK EFS FileSystem created without encryption at rest; matches a ' +
     'new-expression whose callee names the FileSystem construct and one of whose arguments ' +
     'is an object literal with an "encrypted" property set to the boolean literal false',
+  'aws-restricted-ip-admin-access':
+    'Flag an AWS CDK security group ingress rule that opens an administration port (SSH 22 ' +
+    'or RDP 3389) to all IP addresses; matches an addIngressRule call whose peer argument is ' +
+    'anyIpv4()/anyIpv6() and whose port argument is Port.tcp(22) or Port.tcp(3389)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1313,6 +1321,7 @@ const ruleTypes = Object.freeze({
   'aws-iam-all-resources-accessible': 'problem',
   'aws-ec2-unencrypted-ebs-volume': 'problem',
   'aws-efs-unencrypted': 'problem',
+  'aws-restricted-ip-admin-access': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1499,6 +1508,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-iam-all-resources-accessible': 'error',
   'aws-ec2-unencrypted-ebs-volume': 'error',
   'aws-efs-unencrypted': 'error',
+  'aws-restricted-ip-admin-access': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -10031,3 +10031,56 @@ fn aws_efs_unencrypted_does_not_report_without_options_object() {
     let diagnostics = scan("aws-efs-unencrypted", "new FileSystem(this, 'f');");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_restricted_ip_admin_access_reports_any_ipv4_ssh() {
+    let diagnostics = scan(
+        "aws-restricted-ip-admin-access",
+        "sg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22))",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-restricted-ip-admin-access");
+}
+
+#[test]
+fn aws_restricted_ip_admin_access_reports_any_ipv6_rdp() {
+    let diagnostics = scan(
+        "aws-restricted-ip-admin-access",
+        "sg.addIngressRule(Peer.anyIpv6(), Port.tcp(3389))",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-restricted-ip-admin-access");
+}
+
+#[test]
+fn aws_restricted_ip_admin_access_does_not_report_specific_cidr() {
+    let diagnostics = scan(
+        "aws-restricted-ip-admin-access",
+        "sg.addIngressRule(Peer.ipv4(\"10.0.0.0/16\"), Port.tcp(22))",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_restricted_ip_admin_access_does_not_report_non_admin_port() {
+    let diagnostics = scan(
+        "aws-restricted-ip-admin-access",
+        "sg.addIngressRule(Peer.anyIpv4(), Port.tcp(443))",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_restricted_ip_admin_access_does_not_report_single_argument() {
+    let diagnostics = scan(
+        "aws-restricted-ip-admin-access",
+        "sg.addIngressRule(Peer.anyIpv4())",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_restricted_ip_admin_access_does_not_report_unrelated_call() {
+    let diagnostics = scan("aws-restricted-ip-admin-access", "foo(a, b)");
+    assert!(diagnostics.is_empty());
+}
