@@ -10462,19 +10462,19 @@
       },
       {
         "name": "aws-sqs-unencrypted-queue",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-sqs-unencrypted-queue (Sonar key S6330). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S6330). Flags AWS CDK SQS queues created with server-side encryption disabled; matches an object property \"encryption\" set to a member expression ending in UNENCRYPTED (QueueEncryption.UNENCRYPTED) or \"sqsManagedSseEnabled\" set to the boolean literal false. Encrypted values, non-literal values, and other keys are intentionally skipped. No upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "bitwise-operators",

@@ -9562,3 +9562,53 @@ fn aws_iam_public_access_does_not_report_reference_without_new() {
     let diagnostics = scan("aws-iam-public-access", "const p = iam.AnyPrincipal;");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_sqs_unencrypted_queue_reports_queue_encryption_unencrypted() {
+    let diagnostics = scan(
+        "aws-sqs-unencrypted-queue",
+        "new Queue(this, 'q', { encryption: sqs.QueueEncryption.UNENCRYPTED });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "sqsUnencrypted");
+}
+
+#[test]
+fn aws_sqs_unencrypted_queue_reports_sqs_managed_sse_disabled() {
+    let diagnostics = scan(
+        "aws-sqs-unencrypted-queue",
+        "const x = { sqsManagedSseEnabled: false };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "sqsUnencrypted");
+}
+
+#[test]
+fn aws_sqs_unencrypted_queue_does_not_report_kms_encryption() {
+    let diagnostics = scan(
+        "aws-sqs-unencrypted-queue",
+        "const x = { encryption: QueueEncryption.KMS };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_sqs_unencrypted_queue_does_not_report_sqs_managed_sse_enabled() {
+    let diagnostics = scan(
+        "aws-sqs-unencrypted-queue",
+        "const x = { sqsManagedSseEnabled: true };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_sqs_unencrypted_queue_does_not_report_non_literal_encryption() {
+    let diagnostics = scan("aws-sqs-unencrypted-queue", "const x = { encryption: e };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_sqs_unencrypted_queue_does_not_report_other_key() {
+    let diagnostics = scan("aws-sqs-unencrypted-queue", "const x = { other: false };");
+    assert!(diagnostics.is_empty());
+}

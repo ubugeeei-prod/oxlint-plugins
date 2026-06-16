@@ -636,6 +636,9 @@ const messages = Object.freeze({
     hiddenFiles:
       "Serving hidden files (dotfiles: 'allow') can expose sensitive files like .env or .git; use 'ignore' or 'deny'.",
   },
+  'aws-sqs-unencrypted-queue': {
+    sqsUnencrypted: 'Enable server-side encryption for this SQS queue.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1051,6 +1054,10 @@ const ruleDescriptions = Object.freeze({
     'Flag static file servers configured to serve dotfiles; matches an object ' +
     'property "dotfiles" set to the string literal "allow" (the distinctive ' +
     'serve-static / express.static option that exposes hidden files like .env or .git)',
+  'aws-sqs-unencrypted-queue':
+    'Flag AWS CDK SQS queues created with server-side encryption disabled; matches an ' +
+    'object property "encryption" set to a member expression ending in UNENCRYPTED ' +
+    '(QueueEncryption.UNENCRYPTED) or "sqsManagedSseEnabled" set to the boolean literal false',
 });
 
 const ruleTypes = Object.freeze({
@@ -1228,6 +1235,7 @@ const ruleTypes = Object.freeze({
   'aws-rds-unencrypted-databases': 'problem',
   'aws-iam-public-access': 'problem',
   'hidden-files': 'problem',
+  'aws-sqs-unencrypted-queue': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1404,6 +1412,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-rds-unencrypted-databases': 'error',
   'aws-iam-public-access': 'error',
   'hidden-files': 'error',
+  'aws-sqs-unencrypted-queue': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
