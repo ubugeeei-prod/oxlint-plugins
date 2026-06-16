@@ -310,6 +310,7 @@ describe('sonarjs plugin shape', () => {
       'sockets',
       'existing-groups',
       'encryption',
+      'regular-expr',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');

@@ -793,6 +793,9 @@ const messages = Object.freeze({
     encryption:
       'Make sure that encrypting data is safe here (review the algorithm, key, IV, and padding).',
   },
+  'regular-expr': {
+    regularExpr: 'Make sure that using this hardcoded regular expression is safe here.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1368,6 +1371,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a String.replace/replaceAll call whose literal replacement string references a regex group that does not exist (S6328): a $<name> with no such named group, $0, or a $N greater than the capturing-group count. Only literal regex + literal replacement are analyzed, keeping this zero-false-positive',
   encryption:
     'Flag data-encryption calls (the security hotspot S4787): the Node crypto createCipher/createCipheriv/createDecipher/createDecipheriv/publicEncrypt/privateDecrypt/privateEncrypt/publicDecrypt functions, and crypto.subtle.encrypt/decrypt. Generic encrypt/decrypt are gated on a .subtle receiver to keep this zero-false-positive',
+  'regular-expr':
+    'Flag a hardcoded regular expression with at least 3 characters and at least 2 of the characters *, +, or { (the documented heuristic of the security hotspot S4784): a regex literal, new RegExp("..."), or a .search/.match/.split("...") string argument. Deprecated upstream in favor of slow-regex (S5852)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1587,6 +1592,7 @@ const ruleTypes = Object.freeze({
   sockets: 'problem',
   'existing-groups': 'problem',
   encryption: 'problem',
+  'regular-expr': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1805,6 +1811,7 @@ const recommendedRuleConfig = Object.freeze({
   sockets: 'error',
   'existing-groups': 'error',
   encryption: 'error',
+  'regular-expr': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

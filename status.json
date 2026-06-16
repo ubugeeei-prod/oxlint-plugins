@@ -13774,19 +13774,19 @@
       },
       {
         "name": "regular-expr",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule regular-expr (Sonar key S4784). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S4784, deprecated security hotspot; successor slow-regex/S5852 already ported). Flags a hardcoded regular expression with at least 3 characters and at least 2 of the characters *, +, or { combined, in three shapes: a regex literal, new RegExp(\"...\"), or a .search/.match/.split(\"...\") string-literal argument. Dynamic values are skipped. Faithful to the documented heuristic; no upstream source, tests, fixtures, or messages were consulted or copied."
       },
       {
         "name": "review-blockchain-mnemonic",

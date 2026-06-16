@@ -618,6 +618,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_unicode_aware_regex(it);
         self.check_no_misleading_character_class(it);
         self.check_slow_regex(it);
+        self.check_regular_expr_literal(it);
         walk::walk_reg_exp_literal(self, it);
     }
 
@@ -683,6 +684,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_sockets_call(it);
         self.check_existing_groups(it);
         self.check_encryption(it);
+        self.check_regular_expr_call(it);
         walk::walk_call_expression(self, it);
     }
 
@@ -735,6 +737,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_prefer_promise_shorthand(it);
         self.record_new_inconsistent_function_call(it);
         self.check_sockets_new(it);
+        self.check_regular_expr_new(it);
         walk::walk_new_expression(self, it);
     }
 

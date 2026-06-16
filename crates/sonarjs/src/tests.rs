@@ -11528,3 +11528,46 @@ fn encryption_does_not_report_unrelated_method() {
     let diagnostics = scan("encryption", "crypto.randomBytes(16);");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn regular_expr_reports_sensitive_literal() {
+    let diagnostics = scan("regular-expr", "const regex = /(a+)+b/;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "regular-expr");
+    assert_eq!(diagnostics[0].message_id, "regularExpr");
+}
+
+#[test]
+fn regular_expr_reports_new_regexp_string() {
+    let diagnostics = scan("regular-expr", "const r = new RegExp(\"(a+)+b\");");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "regular-expr");
+    assert_eq!(diagnostics[0].message_id, "regularExpr");
+}
+
+#[test]
+fn regular_expr_reports_search_string() {
+    let diagnostics = scan("regular-expr", "str.search(\"(a+)+b\");");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "regular-expr");
+    assert_eq!(diagnostics[0].message_id, "regularExpr");
+}
+
+#[test]
+fn regular_expr_does_not_report_simple_literal() {
+    let diagnostics = scan("regular-expr", "const regex = /ab/;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn regular_expr_does_not_report_short_pattern() {
+    // Two quantifier chars but only 2 characters total, below the >=3 threshold.
+    let diagnostics = scan("regular-expr", "const r = new RegExp(\"*+\");");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn regular_expr_does_not_report_dynamic_arg() {
+    let diagnostics = scan("regular-expr", "const r = new RegExp(pattern);");
+    assert!(diagnostics.is_empty());
+}

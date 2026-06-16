@@ -219,6 +219,7 @@ const expectedRuleNames = [
   'sockets',
   'existing-groups',
   'encryption',
+  'regular-expr',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
