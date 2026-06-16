@@ -264,6 +264,7 @@ describe('sonarjs plugin shape', () => {
       'cors',
       'dns-prefetching',
       'disabled-auto-escaping',
+      'aws-s3-bucket-granted-access',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6431,5 +6432,46 @@ describe('disabled-auto-escaping rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(disabled-auto-escaping)');
+  });
+});
+
+describe('aws-s3-bucket-granted-access rule', () => {
+  it('reports a PUBLIC_READ_WRITE access control', () => {
+    const source =
+      "new s3.Bucket(this, 'b', { accessControl: s3.BucketAccessControl.PUBLIC_READ_WRITE });";
+    const reports = runRule('aws-s3-bucket-granted-access', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('s3PublicAccess');
+  });
+
+  it('reports an AUTHENTICATED_READ access control', () => {
+    const source =
+      "new s3.Bucket(this, 'b', { accessControl: BucketAccessControl.AUTHENTICATED_READ });";
+    const reports = runRule('aws-s3-bucket-granted-access', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('s3PublicAccess');
+  });
+
+  it('does not report a PRIVATE access control', () => {
+    const source = "new s3.Bucket(this, 'b', { accessControl: s3.BucketAccessControl.PRIVATE });";
+    const reports = runRule('aws-s3-bucket-granted-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a granting member under a different key', () => {
+    const source = "new s3.Bucket(this, 'b', { other: BucketAccessControl.PUBLIC_READ });";
+    const reports = runRule('aws-s3-bucket-granted-access', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-s3-bucket-granted-access through the CLI', () => {
+    const result = runOxlint(
+      'aws-s3-bucket-granted-access',
+      "new s3.Bucket(this, 'b', { accessControl: s3.BucketAccessControl.PUBLIC_READ_WRITE });",
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-s3-bucket-granted-access)');
   });
 });
