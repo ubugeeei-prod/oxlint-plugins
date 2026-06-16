@@ -807,6 +807,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_weak_ssl_object_property(it);
         self.check_unverified_hostname_object_property(it);
         self.check_frame_ancestors_object_property(it);
+        self.check_no_vue_bypass_sanitization_object_property(it);
         walk::walk_object_property(self, it);
     }
 
@@ -917,6 +918,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.exclude_string(lit);
         }
         self.check_no_uniq_key_jsx_attribute(it);
+        self.check_no_vue_bypass_sanitization_jsx_attribute(it);
         walk::walk_jsx_attribute(self, it);
     }
 

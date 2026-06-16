@@ -11043,3 +11043,46 @@ fn no_table_as_layout_does_not_report_non_string_role() {
     let diagnostics = scan_jsx("no-table-as-layout", source);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_vue_bypass_sanitization_reports_jsx_dom_props_inner_html() {
+    let diagnostics = scan_jsx(
+        "no-vue-bypass-sanitization",
+        "<div domPropsInnerHTML={this.htmlContent}></div>",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-vue-bypass-sanitization");
+    assert_eq!(diagnostics[0].message_id, "noVueBypassSanitization");
+}
+
+#[test]
+fn no_vue_bypass_sanitization_reports_dom_props_inner_html_object() {
+    let diagnostics = scan(
+        "no-vue-bypass-sanitization",
+        "createElement('div', { domProps: { innerHTML: this.htmlContent } });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-vue-bypass-sanitization");
+    assert_eq!(diagnostics[0].message_id, "noVueBypassSanitization");
+}
+
+#[test]
+fn no_vue_bypass_sanitization_does_not_report_plain_inner_html() {
+    let diagnostics = scan("no-vue-bypass-sanitization", "const o = { innerHTML: x };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_vue_bypass_sanitization_does_not_report_other_jsx_attr() {
+    let diagnostics = scan_jsx("no-vue-bypass-sanitization", "<div innerHTML={x}></div>");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_vue_bypass_sanitization_does_not_report_dom_props_without_inner_html() {
+    let diagnostics = scan(
+        "no-vue-bypass-sanitization",
+        "createElement('div', { domProps: { id: x } });",
+    );
+    assert!(diagnostics.is_empty());
+}

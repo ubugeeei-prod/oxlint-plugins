@@ -208,6 +208,7 @@ const expectedRuleNames = [
   'unverified-hostname',
   'frame-ancestors',
   'no-table-as-layout',
+  'no-vue-bypass-sanitization',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
