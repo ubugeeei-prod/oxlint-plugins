@@ -275,6 +275,7 @@ describe('sonarjs plugin shape', () => {
       'aws-ec2-rds-dms-public',
       'aws-s3-bucket-public-access',
       'confidential-information-logging',
+      'aws-iam-all-resources-accessible',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6888,5 +6889,43 @@ describe('confidential-information-logging rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(confidential-information-logging)');
+  });
+});
+
+describe('aws-iam-all-resources-accessible rule', () => {
+  it('reports resources granting access to all via "*"', () => {
+    const source = 'new PolicyStatement({ resources: ["*"] });';
+    const reports = runRule('aws-iam-all-resources-accessible', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('iamAllResources');
+  });
+
+  it('does not report a specific resource', () => {
+    const source = 'new PolicyStatement({ resources: ["arn:aws:s3:::x"] });';
+    const reports = runRule('aws-iam-all-resources-accessible', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an empty resources array', () => {
+    const source = 'new PolicyStatement({ resources: [] });';
+    const reports = runRule('aws-iam-all-resources-accessible', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-array resources value', () => {
+    const source = 'new PolicyStatement({ resources: x });';
+    const reports = runRule('aws-iam-all-resources-accessible', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-iam-all-resources-accessible through the CLI', () => {
+    const result = runOxlint(
+      'aws-iam-all-resources-accessible',
+      'new PolicyStatement({ resources: ["*"] });',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-iam-all-resources-accessible)');
   });
 });

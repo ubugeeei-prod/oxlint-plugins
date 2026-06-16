@@ -9878,3 +9878,49 @@ fn confidential_information_logging_does_not_report_other_callee() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_iam_all_resources_accessible_reports_wildcard_resources() {
+    let diagnostics = scan(
+        "aws-iam-all-resources-accessible",
+        r#"new PolicyStatement({ resources: ["*"] });"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-iam-all-resources-accessible");
+}
+
+#[test]
+fn aws_iam_all_resources_accessible_does_not_report_specific_resource() {
+    let diagnostics = scan(
+        "aws-iam-all-resources-accessible",
+        r#"new PolicyStatement({ resources: ["arn:aws:s3:::x"] });"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_iam_all_resources_accessible_does_not_report_empty_resources() {
+    let diagnostics = scan(
+        "aws-iam-all-resources-accessible",
+        "new PolicyStatement({ resources: [] });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_iam_all_resources_accessible_does_not_report_non_array_value() {
+    let diagnostics = scan(
+        "aws-iam-all-resources-accessible",
+        "new PolicyStatement({ resources: x });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_iam_all_resources_accessible_does_not_report_other_key() {
+    let diagnostics = scan(
+        "aws-iam-all-resources-accessible",
+        r#"new PolicyStatement({ other: ["*"] });"#,
+    );
+    assert!(diagnostics.is_empty());
+}
