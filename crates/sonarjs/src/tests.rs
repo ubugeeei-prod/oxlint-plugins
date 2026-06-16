@@ -11398,3 +11398,37 @@ fn xpath_does_not_report_generic_evaluate() {
     let diagnostics = scan("xpath", "var result = expr.evaluate(scope);");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn sockets_reports_new_net_socket() {
+    let diagnostics = scan("sockets", "var socket = new net.Socket();");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "sockets");
+    assert_eq!(diagnostics[0].message_id, "sockets");
+}
+
+#[test]
+fn sockets_reports_net_create_connection() {
+    let diagnostics = scan("sockets", "net.createConnection({ port: port }, () => {});");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "sockets");
+}
+
+#[test]
+fn sockets_reports_net_connect() {
+    let diagnostics = scan("sockets", "net.connect({ port: port }, () => {});");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "sockets");
+}
+
+#[test]
+fn sockets_does_not_report_other_connect() {
+    let diagnostics = scan("sockets", "db.connect(); store.connect(mapState);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn sockets_does_not_report_bare_new_socket() {
+    let diagnostics = scan("sockets", "var socket = new Socket();");
+    assert!(diagnostics.is_empty());
+}
