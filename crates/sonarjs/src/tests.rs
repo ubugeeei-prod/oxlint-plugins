@@ -11214,3 +11214,48 @@ fn aws_s3_bucket_insecure_http_does_not_report_other_key() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_s3_bucket_server_encryption_reports_unencrypted_member() {
+    let diagnostics = scan(
+        "aws-s3-bucket-server-encryption",
+        "new s3.Bucket(this, 'b', { encryption: s3.BucketEncryption.UNENCRYPTED });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn aws_s3_bucket_server_encryption_reports_unencrypted_string() {
+    let diagnostics = scan(
+        "aws-s3-bucket-server-encryption",
+        "const x = { encryption: 'UNENCRYPTED' };",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn aws_s3_bucket_server_encryption_does_not_report_kms_managed() {
+    let diagnostics = scan(
+        "aws-s3-bucket-server-encryption",
+        "const x = { encryption: s3.BucketEncryption.KMS_MANAGED };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_server_encryption_does_not_report_other_key() {
+    let diagnostics = scan(
+        "aws-s3-bucket-server-encryption",
+        "const x = { other: 'UNENCRYPTED' };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_s3_bucket_server_encryption_does_not_report_non_literal() {
+    let diagnostics = scan(
+        "aws-s3-bucket-server-encryption",
+        "const x = { encryption: someVariable };",
+    );
+    assert!(diagnostics.is_empty());
+}

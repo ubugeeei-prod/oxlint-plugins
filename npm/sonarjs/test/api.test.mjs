@@ -212,6 +212,7 @@ const expectedRuleNames = [
   'os-command',
   'argument-type',
   'aws-s3-bucket-insecure-http',
+  'aws-s3-bucket-server-encryption',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
