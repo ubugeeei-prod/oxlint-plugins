@@ -718,6 +718,10 @@ const messages = Object.freeze({
     insecureJwtToken:
       'Do not use the "none" algorithm for JWTs; it disables signature verification.',
   },
+  'xml-parser-xxe': {
+    xmlParserXxe:
+      'Disable external entity expansion (do not set noent: true) to prevent XXE attacks.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1233,6 +1237,11 @@ const ruleDescriptions = Object.freeze({
     "the string literal 'none' (both compared case-insensitively); the 'none' JWT algorithm " +
     'disables signature verification and lets tokens be forged (zero-false-positive subset of ' +
     'S5659 keyed on the distinctive algorithm/algorithms options)',
+  'xml-parser-xxe':
+    'Flag an object property whose key is the boolean option noent and whose value is the ' +
+    'boolean literal true; libxmljs parseXmlString enables external entity expansion when ' +
+    'noent: true is set, exposing the application to XML External Entity (XXE) attacks (zero-' +
+    'false-positive subset of S2755 keyed on the distinctive noent option)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1432,6 +1441,7 @@ const ruleTypes = Object.freeze({
   'no-ip-forward': 'problem',
   'no-angular-bypass-sanitization': 'problem',
   'insecure-jwt-token': 'problem',
+  'xml-parser-xxe': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1630,6 +1640,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-ip-forward': 'error',
   'no-angular-bypass-sanitization': 'error',
   'insecure-jwt-token': 'error',
+  'xml-parser-xxe': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

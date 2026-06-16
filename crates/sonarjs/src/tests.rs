@@ -10576,3 +10576,39 @@ fn insecure_jwt_token_does_not_report_other_key() {
     let diagnostics = scan("insecure-jwt-token", "const o = { other: 'none' };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn xml_parser_xxe_reports_parse_xml_string_noent_true() {
+    let diagnostics = scan(
+        "xml-parser-xxe",
+        "libxmljs.parseXmlString(xml, { noent: true });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "xml-parser-xxe");
+    assert_eq!(diagnostics[0].message_id, "xmlParserXxe");
+}
+
+#[test]
+fn xml_parser_xxe_reports_direct_noent_true() {
+    let diagnostics = scan("xml-parser-xxe", "const o = { noent: true };");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "xmlParserXxe");
+}
+
+#[test]
+fn xml_parser_xxe_does_not_report_noent_false() {
+    let diagnostics = scan("xml-parser-xxe", "const o = { noent: false };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn xml_parser_xxe_does_not_report_dynamic_value() {
+    let diagnostics = scan("xml-parser-xxe", "const o = { noent: x };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn xml_parser_xxe_does_not_report_other_key() {
+    let diagnostics = scan("xml-parser-xxe", "const o = { other: true };");
+    assert!(diagnostics.is_empty());
+}

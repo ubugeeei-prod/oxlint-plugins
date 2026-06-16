@@ -290,6 +290,7 @@ describe('sonarjs plugin shape', () => {
       'no-ip-forward',
       'no-angular-bypass-sanitization',
       'insecure-jwt-token',
+      'xml-parser-xxe',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7610,5 +7611,47 @@ describe('insecure-jwt-token rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(insecure-jwt-token)');
+  });
+});
+
+describe('xml-parser-xxe rule', () => {
+  it('reports a libxmljs parseXmlString call with noent: true', () => {
+    const source = 'libxmljs.parseXmlString(xml, { noent: true });';
+    const reports = runRule('xml-parser-xxe', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('xmlParserXxe');
+  });
+
+  it('reports a direct config literal with noent: true', () => {
+    const source = 'const o = { noent: true };';
+    const reports = runRule('xml-parser-xxe', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('xmlParserXxe');
+  });
+
+  it('does not report noent: false', () => {
+    const source = 'const o = { noent: false };';
+    const reports = runRule('xml-parser-xxe', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal noent value', () => {
+    const source = 'const o = { noent: x };';
+    const reports = runRule('xml-parser-xxe', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = 'const o = { other: true };';
+    const reports = runRule('xml-parser-xxe', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports xml-parser-xxe through the CLI', () => {
+    const result = runOxlint('xml-parser-xxe', 'libxmljs.parseXmlString(xml, { noent: true });');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(xml-parser-xxe)');
   });
 });
