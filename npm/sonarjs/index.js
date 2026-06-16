@@ -752,6 +752,10 @@ const messages = Object.freeze({
     noTableAsLayout:
       'Do not use an HTML <table> for layout; a table with role="presentation"/"none" confuses screen readers. Use CSS instead.',
   },
+  'no-vue-bypass-sanitization': {
+    noVueBypassSanitization:
+      'Make sure disabling Vue.js built-in escaping (rendering raw HTML) is safe here.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1305,6 +1309,8 @@ const ruleDescriptions = Object.freeze({
     "Flag a helmet contentSecurityPolicy frameAncestors directive set to the array value \"'none'\" (the documented Noncompliant pattern of S5732); the distinctive frameAncestors key plus the CSP 'none' keyword keeps this a zero-false-positive subset",
   'no-table-as-layout':
     'Flag a JSX <table> element carrying role="presentation" or role="none" (the documented Noncompliant pattern of S5257), which marks a layout table that confuses screen readers; matching this exact shape keeps it zero-false-positive',
+  'no-vue-bypass-sanitization':
+    'Flag the Vue.js raw-HTML render patterns of S6299: a JSX domPropsInnerHTML attribute, or a domProps object literal containing an innerHTML property; both bypass Vue built-in escaping. The distinctive domProps/domPropsInnerHTML shapes keep this zero-false-positive (v-html templates are out of scope)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1513,6 +1519,7 @@ const ruleTypes = Object.freeze({
   'unverified-hostname': 'problem',
   'frame-ancestors': 'problem',
   'no-table-as-layout': 'suggestion',
+  'no-vue-bypass-sanitization': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1720,6 +1727,7 @@ const recommendedRuleConfig = Object.freeze({
   'unverified-hostname': 'error',
   'frame-ancestors': 'error',
   'no-table-as-layout': 'error',
+  'no-vue-bypass-sanitization': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

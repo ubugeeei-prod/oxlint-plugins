@@ -168,6 +168,7 @@ mod no_useless_increment;
 mod no_useless_intersection;
 mod no_useless_react_setstate;
 mod no_variable_usage_before_declaration;
+mod no_vue_bypass_sanitization;
 mod no_weak_cipher;
 mod no_weak_keys;
 mod no_wildcard_import;
