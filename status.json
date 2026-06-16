@@ -14126,19 +14126,19 @@
       },
       {
         "name": "unverified-certificate",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule unverified-certificate (Sonar key S4830). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port (Sonar key S4830). Flags an ObjectProperty whose key is exactly rejectUnauthorized and whose value is the boolean literal false, which disables TLS server-certificate validation in Node.js https/tls/request options. Implemented via visit_object_property. No upstream source, tests, fixtures, or messages consulted."
       },
       {
         "name": "unverified-hostname",

@@ -194,6 +194,7 @@ const expectedRuleNames = [
   'insecure-cookie',
   'no-hook-setter-in-body',
   'content-length',
+  'unverified-certificate',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4356,6 +4357,41 @@ describe('content-length rule', () => {
   it('does not report a non-literal fileSize value', () => {
     const source = 'const cfg = { fileSize: x };';
     const diagnostics = scan('content-length', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('unverified-certificate rule', () => {
+  it('reports rejectUnauthorized:false in https.request options', () => {
+    const source = 'https.request({ rejectUnauthorized: false });';
+    const diagnostics = scan('unverified-certificate', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('unverified-certificate');
+    expect(diagnostics[0].messageId).toBe('unverifiedCertificate');
+  });
+
+  it('reports rejectUnauthorized:false in a direct options literal', () => {
+    const source = 'const o = { rejectUnauthorized: false };';
+    const diagnostics = scan('unverified-certificate', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('unverifiedCertificate');
+  });
+
+  it('does not report rejectUnauthorized:true', () => {
+    const source = 'const o = { rejectUnauthorized: true };';
+    const diagnostics = scan('unverified-certificate', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal rejectUnauthorized value', () => {
+    const source = 'const o = { rejectUnauthorized: x };';
+    const diagnostics = scan('unverified-certificate', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = 'const o = { other: false };';
+    const diagnostics = scan('unverified-certificate', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

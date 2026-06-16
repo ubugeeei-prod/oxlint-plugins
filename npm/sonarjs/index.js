@@ -699,6 +699,10 @@ const messages = Object.freeze({
     contentLength:
       'This file-size limit is very large; cap upload size to mitigate denial-of-service risk.',
   },
+  'unverified-certificate': {
+    unverifiedCertificate:
+      'Enable server certificate validation (do not set rejectUnauthorized to false).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1187,6 +1191,11 @@ const ruleDescriptions = Object.freeze({
     'property or a .fileSize/.maxFileSize member assignment whose value is a numeric literal ' +
     'greater than 8000000; an excessive limit enables denial-of-service attacks (zero-false-' +
     'positive subset of S5693 that skips string limits and generic keys)',
+  'unverified-certificate':
+    'Flag a rejectUnauthorized object property whose value is the boolean literal false, which ' +
+    'disables TLS server-certificate validation in Node.js https/tls/request options and exposes ' +
+    'the connection to man-in-the-middle attacks; only the distinctive rejectUnauthorized key with ' +
+    'a literal false value is reported (zero-false-positive subset of S4830)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1381,6 +1390,7 @@ const ruleTypes = Object.freeze({
   'insecure-cookie': 'problem',
   'no-hook-setter-in-body': 'problem',
   'content-length': 'problem',
+  'unverified-certificate': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1574,6 +1584,7 @@ const recommendedRuleConfig = Object.freeze({
   'insecure-cookie': 'error',
   'no-hook-setter-in-body': 'error',
   'content-length': 'error',
+  'unverified-certificate': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
