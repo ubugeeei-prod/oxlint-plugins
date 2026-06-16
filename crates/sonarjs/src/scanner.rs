@@ -664,6 +664,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_weak_keys(it);
         self.check_strict_transport_security(it);
         self.check_os_command(it);
+        self.check_no_os_command_from_path(it);
         self.check_encryption_secure_mode(it);
         self.check_no_same_argument_assert(it);
         self.check_inverted_assertion_arguments(it);

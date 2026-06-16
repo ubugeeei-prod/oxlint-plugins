@@ -796,6 +796,10 @@ const messages = Object.freeze({
   'regular-expr': {
     regularExpr: 'Make sure that using this hardcoded regular expression is safe here.',
   },
+  'no-os-command-from-path': {
+    noOsCommandFromPath:
+      'Use a fully-qualified absolute path for this OS command instead of relying on the PATH environment variable.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1373,6 +1377,8 @@ const ruleDescriptions = Object.freeze({
     'Flag data-encryption calls (the security hotspot S4787): the Node crypto createCipher/createCipheriv/createDecipher/createDecipheriv/publicEncrypt/privateDecrypt/privateEncrypt/publicDecrypt functions, and crypto.subtle.encrypt/decrypt. Generic encrypt/decrypt are gated on a .subtle receiver to keep this zero-false-positive',
   'regular-expr':
     'Flag a hardcoded regular expression with at least 3 characters and at least 2 of the characters *, +, or { (the documented heuristic of the security hotspot S4784): a regex literal, new RegExp("..."), or a .search/.match/.split("...") string argument. Deprecated upstream in favor of slow-regex (S5852)',
+  'no-os-command-from-path':
+    'Flag a child_process spawn/spawnSync/execFile/execFileSync call whose first argument is a bare command name string literal (no path separator), which resolves via PATH (the security hotspot S4036). exec/execSync are excluded to avoid colliding with RegExp.exec, keeping this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1593,6 +1599,7 @@ const ruleTypes = Object.freeze({
   'existing-groups': 'problem',
   encryption: 'problem',
   'regular-expr': 'problem',
+  'no-os-command-from-path': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1812,6 +1819,7 @@ const recommendedRuleConfig = Object.freeze({
   'existing-groups': 'error',
   encryption: 'error',
   'regular-expr': 'error',
+  'no-os-command-from-path': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

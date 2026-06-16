@@ -11571,3 +11571,49 @@ fn regular_expr_does_not_report_dynamic_arg() {
     let diagnostics = scan("regular-expr", "const r = new RegExp(pattern);");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_os_command_from_path_reports_bare_command() {
+    let diagnostics = scan("no-os-command-from-path", "cp.spawn('file.exe');");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-os-command-from-path");
+    assert_eq!(diagnostics[0].message_id, "noOsCommandFromPath");
+    let diagnostics = scan("no-os-command-from-path", "cp.execFileSync('git');");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noOsCommandFromPath");
+}
+
+#[test]
+fn no_os_command_from_path_does_not_report_absolute() {
+    let diagnostics = scan("no-os-command-from-path", "cp.spawn('/usr/bin/file.exe');");
+    assert!(diagnostics.is_empty());
+    let diagnostics = scan(
+        "no-os-command-from-path",
+        "cp.spawn('C:\\\\tools\\\\x.exe');",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_os_command_from_path_does_not_report_relative_with_slash() {
+    let diagnostics = scan("no-os-command-from-path", "cp.execFile('./file.exe');");
+    assert!(diagnostics.is_empty());
+    let diagnostics = scan("no-os-command-from-path", "cp.spawnSync('bin/file.exe');");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_os_command_from_path_does_not_report_exec() {
+    // `exec`/`execSync` are intentionally excluded to avoid colliding with
+    // RegExp.prototype.exec and other library `.exec` methods.
+    let diagnostics = scan("no-os-command-from-path", "re.exec('x');");
+    assert!(diagnostics.is_empty());
+    let diagnostics = scan("no-os-command-from-path", "cp.exec('file.exe');");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_os_command_from_path_does_not_report_non_literal() {
+    let diagnostics = scan("no-os-command-from-path", "cp.spawn(cmd);");
+    assert!(diagnostics.is_empty());
+}
