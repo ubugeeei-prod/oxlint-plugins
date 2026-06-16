@@ -9612,3 +9612,56 @@ fn aws_sqs_unencrypted_queue_does_not_report_other_key() {
     let diagnostics = scan("aws-sqs-unencrypted-queue", "const x = { other: false };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_apigateway_public_api_reports_enum_none() {
+    let diagnostics = scan(
+        "aws-apigateway-public-api",
+        "resource.addMethod('GET', i, { authorizationType: apigateway.AuthorizationType.NONE });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-apigateway-public-api");
+}
+
+#[test]
+fn aws_apigateway_public_api_reports_string_none() {
+    let diagnostics = scan(
+        "aws-apigateway-public-api",
+        "new apigateway.CfnRoute(this, 'r', { authorizationType: \"NONE\" });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-apigateway-public-api");
+}
+
+#[test]
+fn aws_apigateway_public_api_does_not_report_iam_enum() {
+    let diagnostics = scan(
+        "aws-apigateway-public-api",
+        "x = { authorizationType: AuthorizationType.IAM };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_apigateway_public_api_does_not_report_aws_iam_string() {
+    let diagnostics = scan(
+        "aws-apigateway-public-api",
+        "x = { authorizationType: \"AWS_IAM\" };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_apigateway_public_api_does_not_report_non_literal_value() {
+    let diagnostics = scan(
+        "aws-apigateway-public-api",
+        "x = { authorizationType: authType };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_apigateway_public_api_does_not_report_other_key() {
+    let diagnostics = scan("aws-apigateway-public-api", "x = { other: \"NONE\" };");
+    assert!(diagnostics.is_empty());
+}

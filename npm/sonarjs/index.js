@@ -639,6 +639,10 @@ const messages = Object.freeze({
   'aws-sqs-unencrypted-queue': {
     sqsUnencrypted: 'Enable server-side encryption for this SQS queue.',
   },
+  'aws-apigateway-public-api': {
+    apigatewayPublicApi:
+      'This API method has no authorization (authorizationType: NONE); require authorization or confirm public access is intended.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1058,6 +1062,10 @@ const ruleDescriptions = Object.freeze({
     'Flag AWS CDK SQS queues created with server-side encryption disabled; matches an ' +
     'object property "encryption" set to a member expression ending in UNENCRYPTED ' +
     '(QueueEncryption.UNENCRYPTED) or "sqsManagedSseEnabled" set to the boolean literal false',
+  'aws-apigateway-public-api':
+    'Flag an AWS API Gateway method created without authorization; matches an object ' +
+    'property "authorizationType" whose value is AuthorizationType.NONE (any member ' +
+    'expression ending in NONE) or the string literal "NONE"',
 });
 
 const ruleTypes = Object.freeze({
@@ -1236,6 +1244,7 @@ const ruleTypes = Object.freeze({
   'aws-iam-public-access': 'problem',
   'hidden-files': 'problem',
   'aws-sqs-unencrypted-queue': 'problem',
+  'aws-apigateway-public-api': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1413,6 +1422,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-iam-public-access': 'error',
   'hidden-files': 'error',
   'aws-sqs-unencrypted-queue': 'error',
+  'aws-apigateway-public-api': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
