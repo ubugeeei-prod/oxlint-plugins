@@ -196,6 +196,7 @@ mod process_argv;
 mod production_debug;
 mod pseudo_random;
 mod public_static_readonly;
+mod publicly_writable_directories;
 mod reduce_initial_value;
 mod redundant_type_aliases;
 mod regular_expr;

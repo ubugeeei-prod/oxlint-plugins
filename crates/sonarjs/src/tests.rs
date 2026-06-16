@@ -11617,3 +11617,46 @@ fn no_os_command_from_path_does_not_report_non_literal() {
     let diagnostics = scan("no-os-command-from-path", "cp.spawn(cmd);");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn publicly_writable_directories_reports_tmp_path() {
+    let diagnostics = scan(
+        "publicly-writable-directories",
+        "let tmp_file = \"/tmp/temporary_file\";",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "publicly-writable-directories");
+    assert_eq!(diagnostics[0].message_id, "publiclyWritableDirectories");
+}
+
+#[test]
+fn publicly_writable_directories_reports_var_tmp() {
+    let diagnostics = scan("publicly-writable-directories", "const d = \"/var/tmp\";");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "publiclyWritableDirectories");
+}
+
+#[test]
+fn publicly_writable_directories_does_not_report_tmpfoo() {
+    let diagnostics = scan("publicly-writable-directories", "const x = \"/tmpfoo\";");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn publicly_writable_directories_does_not_report_unrelated_string() {
+    let diagnostics = scan(
+        "publicly-writable-directories",
+        "const x = \"/home/user/file\";",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn publicly_writable_directories_reports_process_env_tmpdir() {
+    let diagnostics = scan(
+        "publicly-writable-directories",
+        "let tmp_dir = process.env.TMPDIR;",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "publiclyWritableDirectories");
+}

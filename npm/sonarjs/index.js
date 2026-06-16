@@ -800,6 +800,9 @@ const messages = Object.freeze({
     noOsCommandFromPath:
       'Use a fully-qualified absolute path for this OS command instead of relying on the PATH environment variable.',
   },
+  'publicly-writable-directories': {
+    publiclyWritableDirectories: 'Make sure using this publicly writable directory is safe here.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1379,6 +1382,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a hardcoded regular expression with at least 3 characters and at least 2 of the characters *, +, or { (the documented heuristic of the security hotspot S4784): a regex literal, new RegExp("..."), or a .search/.match/.split("...") string argument. Deprecated upstream in favor of slow-regex (S5852)',
   'no-os-command-from-path':
     'Flag a child_process spawn/spawnSync/execFile/execFileSync call whose first argument is a bare command name string literal (no path separator), which resolves via PATH (the security hotspot S4036). exec/execSync are excluded to avoid colliding with RegExp.exec, keeping this zero-false-positive',
+  'publicly-writable-directories':
+    'Flag a hardcoded publicly-writable directory (the security hotspot S5443): a string literal under /tmp, /var/tmp, /usr/tmp or /dev/shm, or a process.env.TMPDIR/TMP/TEMP access. The distinctive temp-directory paths keep this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1600,6 +1605,7 @@ const ruleTypes = Object.freeze({
   encryption: 'problem',
   'regular-expr': 'problem',
   'no-os-command-from-path': 'problem',
+  'publicly-writable-directories': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1820,6 +1826,7 @@ const recommendedRuleConfig = Object.freeze({
   encryption: 'error',
   'regular-expr': 'error',
   'no-os-command-from-path': 'error',
+  'publicly-writable-directories': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
