@@ -745,6 +745,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_aws_iam_public_access(it);
         self.check_aws_ec2_unencrypted_ebs_volume(it);
         self.check_aws_efs_unencrypted(it);
+        self.check_aws_sagemaker_unencrypted_notebook(it);
         self.check_confidential_information_logging(it);
         self.check_no_invalid_regexp_new(it);
         self.check_no_primitive_wrappers(it);

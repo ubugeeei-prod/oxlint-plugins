@@ -316,6 +316,7 @@ describe('sonarjs plugin shape', () => {
       'chai-determinate-assertion',
       'no-async-constructor',
       'unused-import',
+      'aws-sagemaker-unencrypted-notebook',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
