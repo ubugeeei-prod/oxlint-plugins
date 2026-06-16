@@ -736,6 +736,10 @@ const messages = Object.freeze({
   'no-weak-keys': {
     weakKeys: 'Use a strong key size (RSA/DSA/DH >= 2048 bits, or a strong EC curve).',
   },
+  'strict-transport-security': {
+    strictTransportSecurity:
+      'Strengthen this HSTS policy (enable includeSubDomains and use a long max-age).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1276,6 +1280,10 @@ const ruleDescriptions = Object.freeze({
     'object with a modulusLength numeric literal below 2048 (RSA/DSA/DH) or a namedCurve string literal naming ' +
     'a curve below 224 bits; the distinctive generateKeyPair* callee plus a literal weak parameter keeps this a ' +
     'zero-false-positive subset of S4426',
+  'strict-transport-security':
+    'Flag a weak helmet hsts configuration: an hsts call whose first object argument either disables ' +
+    'includeSubDomains (set to false) or sets maxAge to a numeric literal below the recommended six-month ' +
+    'minimum of 15552000 seconds; the distinctive hsts method name keeps this zero-false-positive (S5739)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1480,6 +1488,7 @@ const ruleTypes = Object.freeze({
   'no-referrer-policy': 'problem',
   'weak-ssl': 'problem',
   'no-weak-keys': 'problem',
+  'strict-transport-security': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1683,6 +1692,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-referrer-policy': 'error',
   'weak-ssl': 'error',
   'no-weak-keys': 'error',
+  'strict-transport-security': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

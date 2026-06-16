@@ -10835,3 +10835,65 @@ fn no_weak_keys_does_not_report_non_literal_modulus_length() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn strict_transport_security_reports_include_subdomains_false() {
+    let diagnostics = scan(
+        "strict-transport-security",
+        "helmet.hsts({ includeSubDomains: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "strict-transport-security");
+    assert_eq!(diagnostics[0].message_id, "strictTransportSecurity");
+}
+
+#[test]
+fn strict_transport_security_reports_short_max_age() {
+    let diagnostics = scan(
+        "strict-transport-security",
+        "helmet.hsts({ maxAge: 3153600 });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "strictTransportSecurity");
+}
+
+#[test]
+fn strict_transport_security_does_not_report_strong_policy() {
+    let diagnostics = scan(
+        "strict-transport-security",
+        "helmet.hsts({ includeSubDomains: true, maxAge: 31536000 });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn strict_transport_security_does_not_report_minimum_max_age() {
+    let diagnostics = scan(
+        "strict-transport-security",
+        "helmet.hsts({ maxAge: 15552000 });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn strict_transport_security_flags_unrelated_receiver_by_method_name() {
+    // The match keys off the distinctive `hsts` method name only, so any
+    // receiver with a weak config is flagged (documented zero-FP trade-off).
+    let diagnostics = scan(
+        "strict-transport-security",
+        "foo.hsts({ includeSubDomains: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn strict_transport_security_does_not_report_non_literal_value() {
+    let diagnostics = scan("strict-transport-security", "helmet.hsts({ maxAge: x });");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn strict_transport_security_does_not_report_unrelated_callee() {
+    let diagnostics = scan("strict-transport-security", "bar();");
+    assert!(diagnostics.is_empty());
+}
