@@ -12343,3 +12343,40 @@ fn no_incorrect_string_concat_does_not_report_string_plus_identifier() {
     let diagnostics = scan("no-incorrect-string-concat", r#""x" + y;"#);
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn table_header_reports_td_without_th() {
+    let source = r#"<table><tr><td>a</td></tr></table>"#;
+    let diagnostics = scan_jsx("table-header", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "table-header");
+    assert_eq!(diagnostics[0].message_id, "tableHeader");
+}
+
+#[test]
+fn table_header_does_not_report_with_th() {
+    let source = r#"<table><tr><th>a</th></tr><tr><td>b</td></tr></table>"#;
+    let diagnostics = scan_jsx("table-header", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn table_header_does_not_report_dynamic() {
+    let source = r#"<table>{rows.map(r => <tr><td>{r}</td></tr>)}</table>"#;
+    let diagnostics = scan_jsx("table-header", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn table_header_does_not_report_empty() {
+    let source = r#"<table></table>"#;
+    let diagnostics = scan_jsx("table-header", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn table_header_does_not_report_non_table() {
+    let source = r#"<div><td>x</td></div>"#;
+    let diagnostics = scan_jsx("table-header", source);
+    assert!(diagnostics.is_empty());
+}
