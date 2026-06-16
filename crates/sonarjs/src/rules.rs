@@ -173,6 +173,7 @@ mod production_debug;
 mod pseudo_random;
 mod public_static_readonly;
 mod reduce_initial_value;
+mod redundant_type_aliases;
 mod shorthand_property_grouping;
 mod single_char_in_character_classes;
 mod single_character_alternation;

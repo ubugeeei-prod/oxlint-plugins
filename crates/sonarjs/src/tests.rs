@@ -10084,3 +10084,49 @@ fn aws_restricted_ip_admin_access_does_not_report_unrelated_call() {
     let diagnostics = scan("aws-restricted-ip-admin-access", "foo(a, b)");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn redundant_type_aliases_reports_string_keyword() {
+    let diagnostics = scan("redundant-type-aliases", "type MyString = string;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "redundant-type-aliases");
+    assert_eq!(diagnostics[0].message_id, "redundantTypeAlias");
+}
+
+#[test]
+fn redundant_type_aliases_reports_boolean_keyword() {
+    let diagnostics = scan("redundant-type-aliases", "type B = boolean;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "redundant-type-aliases");
+}
+
+#[test]
+fn redundant_type_aliases_reports_bare_type_reference() {
+    let diagnostics = scan("redundant-type-aliases", "type X = Y;");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "redundant-type-aliases");
+}
+
+#[test]
+fn redundant_type_aliases_does_not_report_generic_alias_with_type_parameter() {
+    let diagnostics = scan("redundant-type-aliases", "type Box<T> = T;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn redundant_type_aliases_does_not_report_union() {
+    let diagnostics = scan("redundant-type-aliases", "type U = string | number;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn redundant_type_aliases_does_not_report_type_reference_with_arguments() {
+    let diagnostics = scan("redundant-type-aliases", "type Arr = Array<string>;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn redundant_type_aliases_does_not_report_object_type() {
+    let diagnostics = scan("redundant-type-aliases", "type O = { a: number };");
+    assert!(diagnostics.is_empty());
+}

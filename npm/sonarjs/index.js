@@ -676,6 +676,10 @@ const messages = Object.freeze({
     restrictedIpAdminAccess:
       'Restrict access to administration ports (SSH/RDP) to specific trusted IP ranges instead of all addresses.',
   },
+  'redundant-type-aliases': {
+    redundantTypeAlias:
+      'This type alias only renames an existing type and adds no value; use the underlying type directly.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1134,6 +1138,10 @@ const ruleDescriptions = Object.freeze({
     'Flag an AWS CDK security group ingress rule that opens an administration port (SSH 22 ' +
     'or RDP 3389) to all IP addresses; matches an addIngressRule call whose peer argument is ' +
     'anyIpv4()/anyIpv6() and whose port argument is Port.tcp(22) or Port.tcp(3389)',
+  'redundant-type-aliases':
+    'Flag a TypeScript type alias whose right-hand side merely renames an existing type; ' +
+    'matches an alias with no type parameters whose declared type is a primitive/built-in ' +
+    'keyword type or a bare type reference with no type arguments',
 });
 
 const ruleTypes = Object.freeze({
@@ -1322,6 +1330,7 @@ const ruleTypes = Object.freeze({
   'aws-ec2-unencrypted-ebs-volume': 'problem',
   'aws-efs-unencrypted': 'problem',
   'aws-restricted-ip-admin-access': 'problem',
+  'redundant-type-aliases': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1509,6 +1518,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-ec2-unencrypted-ebs-volume': 'error',
   'aws-efs-unencrypted': 'error',
   'aws-restricted-ip-admin-access': 'error',
+  'redundant-type-aliases': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

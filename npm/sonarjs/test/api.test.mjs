@@ -188,6 +188,7 @@ const expectedRuleNames = [
   'aws-ec2-unencrypted-ebs-volume',
   'aws-efs-unencrypted',
   'aws-restricted-ip-admin-access',
+  'redundant-type-aliases',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4129,6 +4130,54 @@ describe('aws-restricted-ip-admin-access rule', () => {
   it('does not report an unrelated call', () => {
     const source = 'foo(a, b);';
     const diagnostics = scan('aws-restricted-ip-admin-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('redundant-type-aliases rule', () => {
+  it('reports an alias to the string keyword', () => {
+    const source = 'type MyString = string;';
+    const diagnostics = scan('redundant-type-aliases', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('redundant-type-aliases');
+    expect(diagnostics[0].messageId).toBe('redundantTypeAlias');
+  });
+
+  it('reports an alias to the boolean keyword', () => {
+    const source = 'type B = boolean;';
+    const diagnostics = scan('redundant-type-aliases', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('redundantTypeAlias');
+  });
+
+  it('reports a bare type reference alias', () => {
+    const source = 'type X = Y;';
+    const diagnostics = scan('redundant-type-aliases', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('redundant-type-aliases');
+  });
+
+  it('does not report a generic alias with a type parameter', () => {
+    const source = 'type Box<T> = T;';
+    const diagnostics = scan('redundant-type-aliases', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a union type', () => {
+    const source = 'type U = string | number;';
+    const diagnostics = scan('redundant-type-aliases', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a type reference with type arguments', () => {
+    const source = 'type Arr = Array<string>;';
+    const diagnostics = scan('redundant-type-aliases', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report an object type', () => {
+    const source = 'type O = { a: number };';
+    const diagnostics = scan('redundant-type-aliases', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

@@ -14,9 +14,9 @@ use oxc_ast::ast::{
     LogicalExpression, NewExpression, ObjectExpression, ObjectProperty, ParenthesizedExpression,
     Program, PropertyDefinition, RegExpLiteral, ReturnStatement, SimpleAssignmentTarget, Statement,
     StaticBlock, StaticMemberExpression, StringLiteral, SwitchCase, SwitchStatement,
-    TSIntersectionType, TSPropertySignature, TSUnionType, TaggedTemplateExpression,
-    TemplateLiteral, ThisExpression, TryStatement, UnaryExpression, UpdateExpression,
-    VariableDeclaration, VariableDeclarator, WhileStatement, YieldExpression,
+    TSIntersectionType, TSPropertySignature, TSTypeAliasDeclaration, TSUnionType,
+    TaggedTemplateExpression, TemplateLiteral, ThisExpression, TryStatement, UnaryExpression,
+    UpdateExpression, VariableDeclaration, VariableDeclarator, WhileStatement, YieldExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_semantic::{AstNodes, Scoping, SymbolId};
@@ -585,6 +585,11 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_ts_property_signature(&mut self, it: &TSPropertySignature<'a>) {
         self.check_no_redundant_optional(it);
         walk::walk_ts_property_signature(self, it);
+    }
+
+    fn visit_ts_type_alias_declaration(&mut self, it: &TSTypeAliasDeclaration<'a>) {
+        self.check_redundant_type_aliases(it);
+        walk::walk_ts_type_alias_declaration(self, it);
     }
 
     fn visit_identifier_reference(&mut self, it: &IdentifierReference<'a>) {

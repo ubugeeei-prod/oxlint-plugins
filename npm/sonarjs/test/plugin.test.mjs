@@ -279,6 +279,7 @@ describe('sonarjs plugin shape', () => {
       'aws-ec2-unencrypted-ebs-volume',
       'aws-efs-unencrypted',
       'aws-restricted-ip-admin-access',
+      'redundant-type-aliases',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7070,5 +7071,59 @@ describe('aws-restricted-ip-admin-access rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-restricted-ip-admin-access)');
+  });
+});
+
+describe('redundant-type-aliases rule', () => {
+  it('reports an alias to the string keyword', () => {
+    const source = 'type MyString = string;';
+    const reports = runRule('redundant-type-aliases', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('redundantTypeAlias');
+  });
+
+  it('reports an alias to the boolean keyword', () => {
+    const source = 'type B = boolean;';
+    const reports = runRule('redundant-type-aliases', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('redundantTypeAlias');
+  });
+
+  it('reports a bare type reference alias', () => {
+    const source = 'type X = Y;';
+    const reports = runRule('redundant-type-aliases', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report a generic alias with a type parameter', () => {
+    const source = 'type Box<T> = T;';
+    const reports = runRule('redundant-type-aliases', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a union type', () => {
+    const source = 'type U = string | number;';
+    const reports = runRule('redundant-type-aliases', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a type reference with type arguments', () => {
+    const source = 'type Arr = Array<string>;';
+    const reports = runRule('redundant-type-aliases', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report an object type', () => {
+    const source = 'type O = { a: number };';
+    const reports = runRule('redundant-type-aliases', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports redundant-type-aliases through the CLI', () => {
+    const result = runOxlint('redundant-type-aliases', 'type MyString = string;');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(redundant-type-aliases)');
   });
 });
