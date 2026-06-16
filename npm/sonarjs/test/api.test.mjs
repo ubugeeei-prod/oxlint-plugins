@@ -209,6 +209,7 @@ const expectedRuleNames = [
   'frame-ancestors',
   'no-table-as-layout',
   'no-vue-bypass-sanitization',
+  'os-command',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

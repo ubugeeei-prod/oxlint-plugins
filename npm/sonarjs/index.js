@@ -756,6 +756,9 @@ const messages = Object.freeze({
     noVueBypassSanitization:
       'Make sure disabling Vue.js built-in escaping (rendering raw HTML) is safe here.',
   },
+  'os-command': {
+    osCommand: 'Make sure using a shell to execute this OS command is safe here.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1311,6 +1314,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a JSX <table> element carrying role="presentation" or role="none" (the documented Noncompliant pattern of S5257), which marks a layout table that confuses screen readers; matching this exact shape keeps it zero-false-positive',
   'no-vue-bypass-sanitization':
     'Flag the Vue.js raw-HTML render patterns of S6299: a JSX domPropsInnerHTML attribute, or a domProps object literal containing an innerHTML property; both bypass Vue built-in escaping. The distinctive domProps/domPropsInnerHTML shapes keep this zero-false-positive (v-html templates are out of scope)',
+  'os-command':
+    'Flag a child_process spawn/spawnSync/execFile/execFileSync call passed an options object with shell:true (the shell-interpreter form of S4721), which risks OS command injection; exec/execSync are intentionally excluded to avoid colliding with RegExp.exec, keeping this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1520,6 +1525,7 @@ const ruleTypes = Object.freeze({
   'frame-ancestors': 'problem',
   'no-table-as-layout': 'suggestion',
   'no-vue-bypass-sanitization': 'problem',
+  'os-command': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1728,6 +1734,7 @@ const recommendedRuleConfig = Object.freeze({
   'frame-ancestors': 'error',
   'no-table-as-layout': 'error',
   'no-vue-bypass-sanitization': 'error',
+  'os-command': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

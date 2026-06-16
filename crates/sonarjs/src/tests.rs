@@ -11086,3 +11086,49 @@ fn no_vue_bypass_sanitization_does_not_report_dom_props_without_inner_html() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn os_command_reports_spawn_shell_true() {
+    let diagnostics = scan("os-command", "cp.spawn(cmd, { shell: true });");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "os-command");
+    assert_eq!(diagnostics[0].message_id, "osCommand");
+}
+
+#[test]
+fn os_command_reports_execfile_shell_true() {
+    let diagnostics = scan("os-command", "cp.execFile(cmd, { shell: true });");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "osCommand");
+}
+
+#[test]
+fn os_command_does_not_report_shell_false() {
+    let diagnostics = scan(
+        "os-command",
+        "cp.spawnSync('/usr/bin/file.exe', { shell: false });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn os_command_does_not_report_without_options() {
+    let diagnostics = scan("os-command", "cp.spawn(cmd);");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn os_command_does_not_report_exec() {
+    // `exec`/`execSync` are intentionally excluded to avoid colliding with
+    // RegExp.prototype.exec and other library `.exec` methods.
+    let diagnostics = scan("os-command", "regex.exec(str);");
+    assert!(diagnostics.is_empty());
+    let diagnostics = scan("os-command", "cp.exec(cmd, { shell: true });");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn os_command_does_not_report_non_literal_shell() {
+    let diagnostics = scan("os-command", "cp.spawn(cmd, { shell: someVar });");
+    assert!(diagnostics.is_empty());
+}
