@@ -759,6 +759,9 @@ const messages = Object.freeze({
   'os-command': {
     osCommand: 'Make sure using a shell to execute this OS command is safe here.',
   },
+  'argument-type': {
+    argumentType: 'Pass a number to this Math function; this argument evaluates to a boolean.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1316,6 +1319,8 @@ const ruleDescriptions = Object.freeze({
     'Flag the Vue.js raw-HTML render patterns of S6299: a JSX domPropsInnerHTML attribute, or a domProps object literal containing an innerHTML property; both bypass Vue built-in escaping. The distinctive domProps/domPropsInnerHTML shapes keep this zero-false-positive (v-html templates are out of scope)',
   'os-command':
     'Flag a child_process spawn/spawnSync/execFile/execFileSync call passed an options object with shell:true (the shell-interpreter form of S4721), which risks OS command injection; exec/execSync are intentionally excluded to avoid colliding with RegExp.exec, keeping this zero-false-positive',
+  'argument-type':
+    'Flag a single-argument Math.* numeric call (abs, floor, sqrt, ...) whose argument is a boolean-producing expression — a comparison, a logical &&/||, or a logical-not — which is the documented type-mismatch bug of S3782 (e.g. Math.abs(x < 0.0042)); requiring a boolean-producing argument to a numeric Math method keeps this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1526,6 +1531,7 @@ const ruleTypes = Object.freeze({
   'no-table-as-layout': 'suggestion',
   'no-vue-bypass-sanitization': 'problem',
   'os-command': 'problem',
+  'argument-type': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1735,6 +1741,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-table-as-layout': 'error',
   'no-vue-bypass-sanitization': 'error',
   'os-command': 'error',
+  'argument-type': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
