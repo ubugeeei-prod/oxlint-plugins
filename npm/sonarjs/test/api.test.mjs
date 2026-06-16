@@ -224,6 +224,7 @@ const expectedRuleNames = [
   'publicly-writable-directories',
   'chai-determinate-assertion',
   'no-async-constructor',
+  'unused-import',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

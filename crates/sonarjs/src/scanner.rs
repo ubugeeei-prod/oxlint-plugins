@@ -958,6 +958,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_import_declaration(&mut self, it: &ImportDeclaration<'a>) {
         self.exclude_string(&it.source);
         self.check_no_wildcard_import(it);
+        self.check_unused_import(it);
         walk::walk_import_declaration(self, it);
     }
 
