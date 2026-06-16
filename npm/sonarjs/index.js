@@ -839,6 +839,10 @@ const messages = Object.freeze({
     uselessStringOperation:
       'The result of this string operation is ignored; strings are immutable, so assign or use the returned value.',
   },
+  'no-incorrect-string-concat': {
+    incorrectStringConcat:
+      'Do not concatenate a string with an object, array, or function; this relies on an unintended string coercion.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1440,6 +1444,8 @@ const ruleDescriptions = Object.freeze({
     'Flag an arithmetic operator (- * / % **) with a string-literal or boolean-literal operand (S3760), which relies on implicit type conversion. Binary + (concatenation) is excluded; only the literal form is flagged (the typed-variable form needs type inference), keeping this zero-false-positive',
   'useless-string-operation':
     'Flag a statement-level call to a string-specific immutable method (toUpperCase, trim, padStart, ...) whose returned value is discarded (S1154). Methods shared with arrays or commonly user-defined are excluded to stay zero-false-positive',
+  'no-incorrect-string-concat':
+    'Flag a + expression concatenating a string literal with an object, array, or function literal (S3402) — an unambiguous coercion bug. The general string+number/variable case needs type inference and is deliberately not flagged, keeping this zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1672,6 +1678,7 @@ const ruleTypes = Object.freeze({
   'strings-comparison': 'problem',
   'non-number-in-arithmetic-expression': 'problem',
   'useless-string-operation': 'problem',
+  'no-incorrect-string-concat': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1903,6 +1910,7 @@ const recommendedRuleConfig = Object.freeze({
   'strings-comparison': 'error',
   'non-number-in-arithmetic-expression': 'error',
   'useless-string-operation': 'error',
+  'no-incorrect-string-concat': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -12303,3 +12303,43 @@ fn useless_string_operation_does_not_report_used_as_arg() {
     let diagnostics = scan("useless-string-operation", "console.log(s.trim());");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_incorrect_string_concat_reports_string_plus_object() {
+    let diagnostics = scan("no-incorrect-string-concat", r#""x" + {};"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-incorrect-string-concat");
+    assert_eq!(diagnostics[0].message_id, "incorrectStringConcat");
+}
+
+#[test]
+fn no_incorrect_string_concat_reports_array_plus_string() {
+    let diagnostics = scan("no-incorrect-string-concat", r#"[] + "x";"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "incorrectStringConcat");
+}
+
+#[test]
+fn no_incorrect_string_concat_reports_string_plus_arrow() {
+    let diagnostics = scan("no-incorrect-string-concat", r#""x" + (() => {});"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "incorrectStringConcat");
+}
+
+#[test]
+fn no_incorrect_string_concat_does_not_report_string_plus_number() {
+    let diagnostics = scan("no-incorrect-string-concat", r#""x" + 5;"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_incorrect_string_concat_does_not_report_string_plus_string() {
+    let diagnostics = scan("no-incorrect-string-concat", r#""a" + "b";"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_incorrect_string_concat_does_not_report_string_plus_identifier() {
+    let diagnostics = scan("no-incorrect-string-concat", r#""x" + y;"#);
+    assert!(diagnostics.is_empty());
+}
