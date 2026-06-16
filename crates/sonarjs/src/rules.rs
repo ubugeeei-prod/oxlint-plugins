@@ -11,6 +11,7 @@ mod aws_iam_all_privileges;
 mod aws_iam_public_access;
 mod aws_rds_unencrypted_databases;
 mod aws_s3_bucket_granted_access;
+mod aws_s3_bucket_versioning;
 mod aws_sqs_unencrypted_queue;
 mod bitwise_operators;
 mod block_scoped_var;

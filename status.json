@@ -10414,19 +10414,19 @@
       },
       {
         "name": "aws-s3-bucket-versioning",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-s3-bucket-versioning (Sonar key S6252). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6252. Flags an AWS CDK S3 bucket whose versioning is explicitly disabled: an object property \"versioned\" set to the boolean literal false (e.g. new s3.Bucket(this, 'id', { versioned: false })). The spec also flags the absence of the \"versioned\" property (the CDK default is unversioned), but this port deliberately does NOT flag omission because detecting it reliably would require knowing the surrounding object is CDK BucketProps, which is false-positive-prone across CDK versions and unrelated APIs. Only the explicit versioned: false form is reported. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-sagemaker-unencrypted-notebook",

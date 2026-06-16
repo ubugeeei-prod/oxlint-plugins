@@ -271,6 +271,7 @@ describe('sonarjs plugin shape', () => {
       'aws-sqs-unencrypted-queue',
       'aws-apigateway-public-api',
       'aws-iam-all-privileges',
+      'aws-s3-bucket-versioning',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6731,5 +6732,44 @@ describe('aws-iam-all-privileges rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-iam-all-privileges)');
+  });
+});
+
+describe('aws-s3-bucket-versioning rule', () => {
+  it('reports a CDK S3 bucket with versioned: false', () => {
+    const source = "new s3.Bucket(this, 'b', { versioned: false });";
+    const reports = runRule('aws-s3-bucket-versioning', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('s3BucketVersioning');
+  });
+
+  it('reports a plain object with versioned: false', () => {
+    const source = 'const x = { versioned: false };';
+    const reports = runRule('aws-s3-bucket-versioning', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('s3BucketVersioning');
+  });
+
+  it('does not report versioned: true', () => {
+    const source = 'const x = { versioned: true };';
+    const reports = runRule('aws-s3-bucket-versioning', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal versioned value', () => {
+    const source = 'const x = { versioned: flag };';
+    const reports = runRule('aws-s3-bucket-versioning', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-s3-bucket-versioning through the CLI', () => {
+    const result = runOxlint(
+      'aws-s3-bucket-versioning',
+      "new s3.Bucket(this, 'b', { versioned: false });",
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-s3-bucket-versioning)');
   });
 });

@@ -647,6 +647,10 @@ const messages = Object.freeze({
     iamAllPrivileges:
       'This policy grants all actions ("*"); grant only the specific actions required.',
   },
+  'aws-s3-bucket-versioning': {
+    s3BucketVersioning:
+      'Versioning is disabled on this S3 bucket; enable it to protect against accidental or malicious data loss.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1073,6 +1077,10 @@ const ruleDescriptions = Object.freeze({
   'aws-iam-all-privileges':
     'Flag AWS IAM policy statements that grant all privileges; matches an object property ' +
     '"actions" whose array literal value contains the wildcard string "*"',
+  'aws-s3-bucket-versioning':
+    'Flag AWS CDK S3 bucket configuration that explicitly disables versioning; matches an ' +
+    'object property "versioned" set to the boolean literal false (omission is deliberately ' +
+    'not flagged to stay zero-false-positive)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1253,6 +1261,7 @@ const ruleTypes = Object.freeze({
   'aws-sqs-unencrypted-queue': 'problem',
   'aws-apigateway-public-api': 'problem',
   'aws-iam-all-privileges': 'problem',
+  'aws-s3-bucket-versioning': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1432,6 +1441,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-sqs-unencrypted-queue': 'error',
   'aws-apigateway-public-api': 'error',
   'aws-iam-all-privileges': 'error',
+  'aws-s3-bucket-versioning': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
