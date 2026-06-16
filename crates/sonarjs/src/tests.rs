@@ -10771,3 +10771,67 @@ fn weak_ssl_does_not_report_other_key() {
     let diagnostics = scan("weak-ssl", "const o = { other: 'TLSv1_method' };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_weak_keys_reports_small_rsa_modulus_length() {
+    let diagnostics = scan(
+        "no-weak-keys",
+        "crypto.generateKeyPairSync('rsa', { modulusLength: 1024 });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-weak-keys");
+    assert_eq!(diagnostics[0].message_id, "weakKeys");
+}
+
+#[test]
+fn no_weak_keys_reports_async_with_object_before_callback() {
+    let diagnostics = scan(
+        "no-weak-keys",
+        "crypto.generateKeyPair('rsa', { modulusLength: 512 }, cb);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "weakKeys");
+}
+
+#[test]
+fn no_weak_keys_reports_weak_named_curve() {
+    let diagnostics = scan(
+        "no-weak-keys",
+        "crypto.generateKeyPair('ec', { namedCurve: 'secp112r2' }, cb);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "weakKeys");
+}
+
+#[test]
+fn no_weak_keys_does_not_report_strong_modulus_length() {
+    let diagnostics = scan(
+        "no-weak-keys",
+        "crypto.generateKeyPairSync('rsa', { modulusLength: 2048 });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_weak_keys_does_not_report_strong_named_curve() {
+    let diagnostics = scan(
+        "no-weak-keys",
+        "crypto.generateKeyPair('ec', { namedCurve: 'secp256r1' }, cb);",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_weak_keys_does_not_report_wrong_callee() {
+    let diagnostics = scan("no-weak-keys", "foo({ modulusLength: 1024 });");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_weak_keys_does_not_report_non_literal_modulus_length() {
+    let diagnostics = scan(
+        "no-weak-keys",
+        "crypto.generateKeyPairSync('rsa', { modulusLength: x });",
+    );
+    assert!(diagnostics.is_empty());
+}

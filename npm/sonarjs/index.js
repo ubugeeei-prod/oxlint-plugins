@@ -733,6 +733,9 @@ const messages = Object.freeze({
     weakSsl:
       'Use a strong TLS protocol version (TLS 1.2 or higher); this configures a weak/deprecated protocol.',
   },
+  'no-weak-keys': {
+    weakKeys: 'Use a strong key size (RSA/DSA/DH >= 2048 bits, or a strong EC curve).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1268,6 +1271,11 @@ const ruleDescriptions = Object.freeze({
     "string of 'TLSv1_method', 'TLSv1_1_method', 'SSLv2_method', 'SSLv3_method', or 'SSLv23_method', or a " +
     "minVersion/maxVersion string of 'TLSv1' or 'TLSv1.1'. Those distinctive Node.js TLS constants make this " +
     'a zero-false-positive subset of S4423; use TLS 1.2 or higher instead',
+  'no-weak-keys':
+    'Flag a crypto.generateKeyPair/generateKeyPairSync call that generates a weak asymmetric key: an options ' +
+    'object with a modulusLength numeric literal below 2048 (RSA/DSA/DH) or a namedCurve string literal naming ' +
+    'a curve below 224 bits; the distinctive generateKeyPair* callee plus a literal weak parameter keeps this a ' +
+    'zero-false-positive subset of S4426',
 });
 
 const ruleTypes = Object.freeze({
@@ -1471,6 +1479,7 @@ const ruleTypes = Object.freeze({
   'no-useless-react-setstate': 'problem',
   'no-referrer-policy': 'problem',
   'weak-ssl': 'problem',
+  'no-weak-keys': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1673,6 +1682,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-useless-react-setstate': 'error',
   'no-referrer-policy': 'error',
   'weak-ssl': 'error',
+  'no-weak-keys': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

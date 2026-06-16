@@ -167,6 +167,7 @@ mod no_useless_intersection;
 mod no_useless_react_setstate;
 mod no_variable_usage_before_declaration;
 mod no_weak_cipher;
+mod no_weak_keys;
 mod no_wildcard_import;
 mod non_existent_operator;
 mod object_alt_content;
