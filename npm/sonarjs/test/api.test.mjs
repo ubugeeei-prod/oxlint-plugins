@@ -216,6 +216,7 @@ const expectedRuleNames = [
   'aws-opensearchservice-domain',
   'cookies',
   'xpath',
+  'sockets',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

@@ -782,6 +782,9 @@ const messages = Object.freeze({
     xpath:
       'Make sure executing this XPath expression is safe; validate or sanitize any user-controlled input.',
   },
+  sockets: {
+    sockets: 'Make sure that using this socket is safe here.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1351,6 +1354,8 @@ const ruleDescriptions = Object.freeze({
     'Flag cookie-write operations (the security hotspot S2255): a document.cookie assignment, a .cookie(name, value) call, or a setHeader("Set-Cookie", ...) call. The distinctive cookie-write shapes keep this zero-false-positive; cookie reads are not flagged',
   xpath:
     'Flag XPath-execution calls (the security hotspot S4817): document.evaluate(...), .selectNodes(...), .SelectSingleNode(...), or xpath.select/select1(...). Generic method names are receiver-gated (document/xpath) to keep this zero-false-positive',
+  sockets:
+    'Flag raw socket usage on the Node net module (the security hotspot S4818): new net.Socket(), net.createConnection(...), or net.connect(...). Gating on the net receiver keeps the generic connect/createConnection names zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1567,6 +1572,7 @@ const ruleTypes = Object.freeze({
   'aws-opensearchservice-domain': 'problem',
   cookies: 'problem',
   xpath: 'problem',
+  sockets: 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1782,6 +1788,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-opensearchservice-domain': 'error',
   cookies: 'error',
   xpath: 'error',
+  sockets: 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

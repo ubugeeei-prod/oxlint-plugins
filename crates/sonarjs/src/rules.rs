@@ -199,6 +199,7 @@ mod shorthand_property_grouping;
 mod single_char_in_character_classes;
 mod single_character_alternation;
 mod slow_regex;
+mod sockets;
 mod standard_input;
 mod strict_transport_security;
 mod todo_tag;

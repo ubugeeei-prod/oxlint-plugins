@@ -680,6 +680,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.record_call_inconsistent_function_call(it);
         self.check_cookies_call(it);
         self.check_xpath(it);
+        self.check_sockets_call(it);
         walk::walk_call_expression(self, it);
     }
 
@@ -731,6 +732,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_code_eval_new(it);
         self.check_prefer_promise_shorthand(it);
         self.record_new_inconsistent_function_call(it);
+        self.check_sockets_new(it);
         walk::walk_new_expression(self, it);
     }
 
