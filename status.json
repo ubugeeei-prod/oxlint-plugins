@@ -14206,19 +14206,19 @@
       },
       {
         "name": "useless-string-operation",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule useless-string-operation (Sonar key S1154). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of Sonar key S1154 (deprecated). Flags a statement-level call to a string-specific immutable method (toUpperCase, trim, padStart, ...) whose result is discarded; strings are immutable so the result must be kept. Implemented in Rust via visit_expression_statement. Methods shared with arrays or commonly user-defined are excluded to stay zero-false-positive; never read upstream source, fixtures, tests, or messages."
       },
       {
         "name": "values-not-convertible-to-numbers",
