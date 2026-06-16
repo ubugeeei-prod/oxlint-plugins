@@ -811,6 +811,9 @@ const messages = Object.freeze({
     noAsyncConstructor:
       'Do not start asynchronous operations in a constructor; move the async work to an async method or a static factory method.',
   },
+  'unused-import': {
+    unusedImport: 'Remove this unused import.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1396,6 +1399,8 @@ const ruleDescriptions = Object.freeze({
     'Flag non-deterministic Chai assertions in an expect(...) chain (S6092): negated .throw(arg)/.include(obj)/.property(2+)/.ownPropertyDescriptor(2+)/.members/.increase/.decrease/.by, the .not.finite property, and .change(...).by(...). Gated on an expect-rooted chain to stay zero-false-positive',
   'no-async-constructor':
     'Flag a class constructor whose top-level body starts an asynchronous operation (a .then/.catch/.finally call or a Promise.resolve/all/... call), per S7059. Only direct statements are inspected (nested callbacks are not), keeping this zero-false-positive',
+  'unused-import':
+    'Flag an import specifier whose binding is never referenced in the module (S1128), using semantic scope analysis; side-effect imports (import "x") are never flagged',
 });
 
 const ruleTypes = Object.freeze({
@@ -1620,6 +1625,7 @@ const ruleTypes = Object.freeze({
   'publicly-writable-directories': 'problem',
   'chai-determinate-assertion': 'problem',
   'no-async-constructor': 'problem',
+  'unused-import': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1843,6 +1849,7 @@ const recommendedRuleConfig = Object.freeze({
   'publicly-writable-directories': 'error',
   'chai-determinate-assertion': 'error',
   'no-async-constructor': 'error',
+  'unused-import': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

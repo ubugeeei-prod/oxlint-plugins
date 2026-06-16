@@ -315,6 +315,7 @@ describe('sonarjs plugin shape', () => {
       'publicly-writable-directories',
       'chai-determinate-assertion',
       'no-async-constructor',
+      'unused-import',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');

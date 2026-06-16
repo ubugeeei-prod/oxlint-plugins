@@ -6425,6 +6425,45 @@ fn no_unused_function_argument_does_not_report_destructuring_param() {
 }
 
 #[test]
+fn unused_import_reports_unused_named() {
+    let source = "import { foo } from 'x';";
+    let diagnostics = scan("unused-import", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unused-import");
+    assert_eq!(diagnostics[0].message_id, "unusedImport");
+}
+
+#[test]
+fn unused_import_reports_unused_default() {
+    let source = "import bar from 'x';";
+    let diagnostics = scan("unused-import", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "unused-import");
+    assert_eq!(diagnostics[0].message_id, "unusedImport");
+}
+
+#[test]
+fn unused_import_does_not_report_used() {
+    let source = "import { foo } from 'x'; foo();";
+    let diagnostics = scan("unused-import", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn unused_import_does_not_report_side_effect() {
+    let source = "import 'x';";
+    let diagnostics = scan("unused-import", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn unused_import_does_not_report_used_in_jsx_or_nested() {
+    let source = "import { foo } from 'x';\nfunction wrap() { return foo(); }";
+    let diagnostics = scan("unused-import", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn object_alt_content_reports_self_closing_object_without_attributes() {
     let source = r#"<object data="video.swf" />"#;
     let diagnostics = scan_jsx("object-alt-content", source);
