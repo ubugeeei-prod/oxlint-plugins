@@ -748,6 +748,10 @@ const messages = Object.freeze({
     frameAncestors:
       'Make sure this Content Security Policy frame-ancestors directive is safe here.',
   },
+  'no-table-as-layout': {
+    noTableAsLayout:
+      'Do not use an HTML <table> for layout; a table with role="presentation"/"none" confuses screen readers. Use CSS instead.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1299,6 +1303,8 @@ const ruleDescriptions = Object.freeze({
     'subset of S5527',
   'frame-ancestors':
     "Flag a helmet contentSecurityPolicy frameAncestors directive set to the array value \"'none'\" (the documented Noncompliant pattern of S5732); the distinctive frameAncestors key plus the CSP 'none' keyword keeps this a zero-false-positive subset",
+  'no-table-as-layout':
+    'Flag a JSX <table> element carrying role="presentation" or role="none" (the documented Noncompliant pattern of S5257), which marks a layout table that confuses screen readers; matching this exact shape keeps it zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1506,6 +1512,7 @@ const ruleTypes = Object.freeze({
   'strict-transport-security': 'problem',
   'unverified-hostname': 'problem',
   'frame-ancestors': 'problem',
+  'no-table-as-layout': 'suggestion',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1712,6 +1719,7 @@ const recommendedRuleConfig = Object.freeze({
   'strict-transport-security': 'error',
   'unverified-hostname': 'error',
   'frame-ancestors': 'error',
+  'no-table-as-layout': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

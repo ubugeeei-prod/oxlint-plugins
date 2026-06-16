@@ -207,6 +207,7 @@ const expectedRuleNames = [
   'strict-transport-security',
   'unverified-hostname',
   'frame-ancestors',
+  'no-table-as-layout',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

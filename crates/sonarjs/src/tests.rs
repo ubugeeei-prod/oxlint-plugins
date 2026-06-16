@@ -11003,3 +11003,43 @@ fn frame_ancestors_does_not_report_non_array() {
     );
     assert!(diagnostics.is_empty());
 }
+
+// no-table-as-layout tests
+
+#[test]
+fn no_table_as_layout_reports_role_presentation() {
+    let source = r#"<table role="presentation"></table>"#;
+    let diagnostics = scan_jsx("no-table-as-layout", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-table-as-layout");
+    assert_eq!(diagnostics[0].message_id, "noTableAsLayout");
+}
+
+#[test]
+fn no_table_as_layout_reports_role_none() {
+    let source = r#"<table role="none"></table>"#;
+    let diagnostics = scan_jsx("no-table-as-layout", source);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noTableAsLayout");
+}
+
+#[test]
+fn no_table_as_layout_does_not_report_table_without_role() {
+    let source = r#"<table></table>"#;
+    let diagnostics = scan_jsx("no-table-as-layout", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_table_as_layout_does_not_report_other_element() {
+    let source = r#"<div role="presentation"></div>"#;
+    let diagnostics = scan_jsx("no-table-as-layout", source);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_table_as_layout_does_not_report_non_string_role() {
+    let source = r#"<table role={layoutRole}></table>"#;
+    let diagnostics = scan_jsx("no-table-as-layout", source);
+    assert!(diagnostics.is_empty());
+}
