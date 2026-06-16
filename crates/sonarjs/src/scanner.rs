@@ -772,6 +772,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_disabled_auto_escaping_object_property(it);
         self.check_aws_s3_bucket_granted_access_object_property(it);
         self.check_aws_rds_unencrypted_databases_object_property(it);
+        self.check_hidden_files_object_property(it);
         walk::walk_object_property(self, it);
     }
 

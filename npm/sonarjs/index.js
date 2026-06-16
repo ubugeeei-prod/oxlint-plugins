@@ -632,6 +632,10 @@ const messages = Object.freeze({
     iamPublicAccess:
       'This policy grants public access to all AWS accounts; restrict the principal.',
   },
+  'hidden-files': {
+    hiddenFiles:
+      "Serving hidden files (dotfiles: 'allow') can expose sensitive files like .env or .git; use 'ignore' or 'deny'.",
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1043,6 +1047,10 @@ const ruleDescriptions = Object.freeze({
     'Flag AWS CDK IAM policies that grant public access to all AWS accounts; matches a ' +
     'new-expression whose callee is the AnyPrincipal class (a bare AnyPrincipal identifier ' +
     'or a member expression such as iam.AnyPrincipal)',
+  'hidden-files':
+    'Flag static file servers configured to serve dotfiles; matches an object ' +
+    'property "dotfiles" set to the string literal "allow" (the distinctive ' +
+    'serve-static / express.static option that exposes hidden files like .env or .git)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1219,6 +1227,7 @@ const ruleTypes = Object.freeze({
   'aws-s3-bucket-granted-access': 'problem',
   'aws-rds-unencrypted-databases': 'problem',
   'aws-iam-public-access': 'problem',
+  'hidden-files': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1394,6 +1403,7 @@ const recommendedRuleConfig = Object.freeze({
   'aws-s3-bucket-granted-access': 'error',
   'aws-rds-unencrypted-databases': 'error',
   'aws-iam-public-access': 'error',
+  'hidden-files': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
