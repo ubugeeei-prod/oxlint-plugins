@@ -195,6 +195,7 @@ const expectedRuleNames = [
   'no-hook-setter-in-body',
   'content-length',
   'unverified-certificate',
+  'no-mime-sniff',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4392,6 +4393,40 @@ describe('unverified-certificate rule', () => {
   it('does not report a different key', () => {
     const source = 'const o = { other: false };';
     const diagnostics = scan('unverified-certificate', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-mime-sniff rule', () => {
+  it('reports helmet noSniff: false', () => {
+    const source = 'helmet({ noSniff: false });';
+    const diagnostics = scan('no-mime-sniff', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-mime-sniff');
+    expect(diagnostics[0].messageId).toBe('noMimeSniff');
+  });
+
+  it('reports a direct noSniff: false property', () => {
+    const source = 'const o = { noSniff: false };';
+    const diagnostics = scan('no-mime-sniff', source);
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('does not report noSniff: true', () => {
+    const source = 'const o = { noSniff: true };';
+    const diagnostics = scan('no-mime-sniff', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal noSniff value', () => {
+    const source = 'const o = { noSniff: x };';
+    const diagnostics = scan('no-mime-sniff', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different key set to false', () => {
+    const source = 'const o = { other: false };';
+    const diagnostics = scan('no-mime-sniff', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

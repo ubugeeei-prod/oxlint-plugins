@@ -10418,3 +10418,36 @@ fn unverified_certificate_does_not_report_other_key() {
     let diagnostics = scan("unverified-certificate", "const o = { other: false };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn no_mime_sniff_reports_helmet_false() {
+    let diagnostics = scan("no-mime-sniff", "helmet({ noSniff: false });");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "no-mime-sniff");
+    assert_eq!(diagnostics[0].message_id, "noMimeSniff");
+}
+
+#[test]
+fn no_mime_sniff_reports_direct_false() {
+    let diagnostics = scan("no-mime-sniff", "const o = { noSniff: false };");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "noMimeSniff");
+}
+
+#[test]
+fn no_mime_sniff_does_not_report_true() {
+    let diagnostics = scan("no-mime-sniff", "const o = { noSniff: true };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_mime_sniff_does_not_report_non_literal_value() {
+    let diagnostics = scan("no-mime-sniff", "const o = { noSniff: x };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn no_mime_sniff_does_not_report_other_key() {
+    let diagnostics = scan("no-mime-sniff", "const o = { other: false };");
+    assert!(diagnostics.is_empty());
+}

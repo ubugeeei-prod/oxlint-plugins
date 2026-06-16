@@ -124,6 +124,7 @@ mod no_invariant_returns;
 mod no_inverted_boolean_check;
 mod no_labels;
 mod no_literal_call;
+mod no_mime_sniff;
 mod no_misleading_array_reverse;
 mod no_misleading_character_class;
 mod no_nested_assignment;

@@ -286,6 +286,7 @@ describe('sonarjs plugin shape', () => {
       'no-hook-setter-in-body',
       'content-length',
       'unverified-certificate',
+      'no-mime-sniff',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7430,5 +7431,46 @@ describe('unverified-certificate rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(unverified-certificate)');
+  });
+});
+
+describe('no-mime-sniff rule', () => {
+  it('reports helmet noSniff: false', () => {
+    const source = 'helmet({ noSniff: false });';
+    const reports = runRule('no-mime-sniff', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noMimeSniff');
+  });
+
+  it('reports a direct noSniff: false property', () => {
+    const source = 'const o = { noSniff: false };';
+    const reports = runRule('no-mime-sniff', source);
+    expect(reports).toHaveLength(1);
+  });
+
+  it('does not report noSniff: true', () => {
+    const source = 'const o = { noSniff: true };';
+    const reports = runRule('no-mime-sniff', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal noSniff value', () => {
+    const source = 'const o = { noSniff: x };';
+    const reports = runRule('no-mime-sniff', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different key set to false', () => {
+    const source = 'const o = { other: false };';
+    const reports = runRule('no-mime-sniff', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-mime-sniff through the CLI', () => {
+    const result = runOxlint('no-mime-sniff', 'helmet({ noSniff: false });');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-mime-sniff)');
   });
 });
