@@ -186,6 +186,7 @@ const expectedRuleNames = [
   'confidential-information-logging',
   'aws-iam-all-resources-accessible',
   'aws-ec2-unencrypted-ebs-volume',
+  'aws-efs-unencrypted',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4045,6 +4046,47 @@ describe('aws-ec2-unencrypted-ebs-volume rule', () => {
   it('does not report a Volume without an options object', () => {
     const source = "new ec2.Volume(this, 'v');";
     const diagnostics = scan('aws-ec2-unencrypted-ebs-volume', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('aws-efs-unencrypted rule', () => {
+  it('reports an efs.FileSystem created with encrypted: false', () => {
+    const source = "new efs.FileSystem(this, 'f', { encrypted: false });";
+    const diagnostics = scan('aws-efs-unencrypted', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('aws-efs-unencrypted');
+    expect(diagnostics[0].messageId).toBe('efsUnencrypted');
+  });
+
+  it('reports a bare FileSystem callee alongside other props', () => {
+    const source = "new FileSystem(this, 'f', { encrypted: false, vpc: v });";
+    const diagnostics = scan('aws-efs-unencrypted', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('efsUnencrypted');
+  });
+
+  it('does not report when encryption is enabled', () => {
+    const source = "new efs.FileSystem(this, 'f', { encrypted: true });";
+    const diagnostics = scan('aws-efs-unencrypted', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report when the encrypted property is absent', () => {
+    const source = "new FileSystem(this, 'f', {});";
+    const diagnostics = scan('aws-efs-unencrypted', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different construct', () => {
+    const source = "new Volume(this, 'v', { encrypted: false });";
+    const diagnostics = scan('aws-efs-unencrypted', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a FileSystem without an options object', () => {
+    const source = "new FileSystem(this, 'f');";
+    const diagnostics = scan('aws-efs-unencrypted', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

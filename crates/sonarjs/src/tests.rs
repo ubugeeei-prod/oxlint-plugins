@@ -9981,3 +9981,53 @@ fn aws_ec2_unencrypted_ebs_volume_does_not_report_volume_without_options() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_efs_unencrypted_reports_member_callee_encrypted_false() {
+    let diagnostics = scan(
+        "aws-efs-unencrypted",
+        "new efs.FileSystem(this, 'f', { encrypted: false });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-efs-unencrypted");
+}
+
+#[test]
+fn aws_efs_unencrypted_reports_identifier_callee_with_other_props() {
+    let diagnostics = scan(
+        "aws-efs-unencrypted",
+        "new FileSystem(this, 'f', { encrypted: false, vpc: v });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-efs-unencrypted");
+}
+
+#[test]
+fn aws_efs_unencrypted_does_not_report_encrypted_true() {
+    let diagnostics = scan(
+        "aws-efs-unencrypted",
+        "new efs.FileSystem(this, 'f', { encrypted: true });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_efs_unencrypted_does_not_report_absent_encrypted_prop() {
+    let diagnostics = scan("aws-efs-unencrypted", "new FileSystem(this, 'f', {});");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_efs_unencrypted_does_not_report_wrong_construct() {
+    let diagnostics = scan(
+        "aws-efs-unencrypted",
+        "new Volume(this, 'v', { encrypted: false });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_efs_unencrypted_does_not_report_without_options_object() {
+    let diagnostics = scan("aws-efs-unencrypted", "new FileSystem(this, 'f');");
+    assert!(diagnostics.is_empty());
+}

@@ -277,6 +277,7 @@ describe('sonarjs plugin shape', () => {
       'confidential-information-logging',
       'aws-iam-all-resources-accessible',
       'aws-ec2-unencrypted-ebs-volume',
+      'aws-efs-unencrypted',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6972,5 +6973,50 @@ describe('aws-ec2-unencrypted-ebs-volume rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-ec2-unencrypted-ebs-volume)');
+  });
+});
+
+describe('aws-efs-unencrypted rule', () => {
+  it('reports an efs.FileSystem created with encrypted: false', () => {
+    const source = "new efs.FileSystem(this, 'f', { encrypted: false });";
+    const reports = runRule('aws-efs-unencrypted', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('efsUnencrypted');
+  });
+
+  it('reports a bare FileSystem callee alongside other props', () => {
+    const source = "new FileSystem(this, 'f', { encrypted: false, vpc: v });";
+    const reports = runRule('aws-efs-unencrypted', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('efsUnencrypted');
+  });
+
+  it('does not report when encryption is enabled', () => {
+    const source = "new efs.FileSystem(this, 'f', { encrypted: true });";
+    const reports = runRule('aws-efs-unencrypted', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report when the encrypted property is absent', () => {
+    const source = "new FileSystem(this, 'f', {});";
+    const reports = runRule('aws-efs-unencrypted', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different construct', () => {
+    const source = "new Volume(this, 'v', { encrypted: false });";
+    const reports = runRule('aws-efs-unencrypted', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-efs-unencrypted through the CLI', () => {
+    const result = runOxlint(
+      'aws-efs-unencrypted',
+      "new efs.FileSystem(this, 'f', { encrypted: false });",
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-efs-unencrypted)');
   });
 });

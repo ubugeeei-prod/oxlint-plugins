@@ -10222,19 +10222,19 @@
       },
       {
         "name": "aws-efs-unencrypted",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule aws-efs-unencrypted (Sonar key S6332). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S6332. Flags an AWS CDK EFS FileSystem created without encryption at rest. Construct-gated: a new-expression whose callee (after get_inner_expression) names the FileSystem construct — a bare identifier FileSystem or a static member expression ending in .FileSystem (e.g. efs.FileSystem) — and one of whose arguments is an object literal with an \"encrypted\" property (static identifier or string-literal key) set to the boolean literal false. Gating on the FileSystem construct name keeps this distinct from the EBS-volume rule, which also keys off encrypted: false. Encryption enabled (encrypted: true), the encrypted property absent (out of scope), other constructs (new Volume(...)), and calls without an options object are deliberately NOT flagged. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "aws-iam-all-privileges",

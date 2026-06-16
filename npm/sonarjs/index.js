@@ -669,6 +669,9 @@ const messages = Object.freeze({
   'aws-ec2-unencrypted-ebs-volume': {
     ebsUnencrypted: 'Enable encryption for this EBS volume (encrypted: true).',
   },
+  'aws-efs-unencrypted': {
+    efsUnencrypted: 'Enable encryption at rest for this EFS file system (encrypted: true).',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1119,6 +1122,10 @@ const ruleDescriptions = Object.freeze({
     'callee is the Volume construct and one of whose arguments is an object literal with an ' +
     '"encrypted" property set to the boolean literal false (the implicit/absent form is ' +
     'deliberately not flagged to stay zero-false-positive)',
+  'aws-efs-unencrypted':
+    'Flag an AWS CDK EFS FileSystem created without encryption at rest; matches a ' +
+    'new-expression whose callee names the FileSystem construct and one of whose arguments ' +
+    'is an object literal with an "encrypted" property set to the boolean literal false',
 });
 
 const ruleTypes = Object.freeze({
@@ -1305,6 +1312,7 @@ const ruleTypes = Object.freeze({
   'confidential-information-logging': 'problem',
   'aws-iam-all-resources-accessible': 'problem',
   'aws-ec2-unencrypted-ebs-volume': 'problem',
+  'aws-efs-unencrypted': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1490,6 +1498,7 @@ const recommendedRuleConfig = Object.freeze({
   'confidential-information-logging': 'error',
   'aws-iam-all-resources-accessible': 'error',
   'aws-ec2-unencrypted-ebs-volume': 'error',
+  'aws-efs-unencrypted': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
