@@ -202,6 +202,7 @@ const expectedRuleNames = [
   'xml-parser-xxe',
   'no-useless-react-setstate',
   'no-referrer-policy',
+  'weak-ssl',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4621,6 +4622,47 @@ describe('no-referrer-policy rule', () => {
   it('does not report a leaky value under a different key', () => {
     const source = "const o = { other: 'unsafe-url' };";
     const diagnostics = scan('no-referrer-policy', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('weak-ssl rule', () => {
+  it('reports a weak secureProtocol method', () => {
+    const source = "const o = { secureProtocol: 'TLSv1_method' };";
+    const diagnostics = scan('weak-ssl', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('weak-ssl');
+    expect(diagnostics[0].messageId).toBe('weakSsl');
+  });
+
+  it('reports a weak minVersion', () => {
+    const source = "const o = { minVersion: 'TLSv1.1' };";
+    const diagnostics = scan('weak-ssl', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('weakSsl');
+  });
+
+  it('does not report a strong secureProtocol method', () => {
+    const source = "const o = { secureProtocol: 'TLSv1_2_method' };";
+    const diagnostics = scan('weak-ssl', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a strong minVersion', () => {
+    const source = "const o = { minVersion: 'TLSv1.2' };";
+    const diagnostics = scan('weak-ssl', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal value', () => {
+    const source = 'const o = { secureProtocol: x };';
+    const diagnostics = scan('weak-ssl', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a weak value under a different key', () => {
+    const source = "const o = { other: 'TLSv1_method' };";
+    const diagnostics = scan('weak-ssl', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

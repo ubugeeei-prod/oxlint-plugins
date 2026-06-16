@@ -10729,3 +10729,45 @@ fn no_referrer_policy_does_not_report_other_key() {
     let diagnostics = scan("no-referrer-policy", "const o = { other: 'unsafe-url' };");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn weak_ssl_reports_weak_secure_protocol() {
+    let diagnostics = scan("weak-ssl", "const o = { secureProtocol: 'TLSv1_method' };");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "weak-ssl");
+    assert_eq!(diagnostics[0].message_id, "weakSsl");
+}
+
+#[test]
+fn weak_ssl_reports_weak_min_version() {
+    let diagnostics = scan("weak-ssl", "const o = { minVersion: 'TLSv1.1' };");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "weakSsl");
+}
+
+#[test]
+fn weak_ssl_does_not_report_strong_secure_protocol() {
+    let diagnostics = scan(
+        "weak-ssl",
+        "const o = { secureProtocol: 'TLSv1_2_method' };",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn weak_ssl_does_not_report_strong_min_version() {
+    let diagnostics = scan("weak-ssl", "const o = { minVersion: 'TLSv1.2' };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn weak_ssl_does_not_report_non_literal_value() {
+    let diagnostics = scan("weak-ssl", "const o = { secureProtocol: x };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn weak_ssl_does_not_report_other_key() {
+    let diagnostics = scan("weak-ssl", "const o = { other: 'TLSv1_method' };");
+    assert!(diagnostics.is_empty());
+}

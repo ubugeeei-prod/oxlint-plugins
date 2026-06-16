@@ -802,6 +802,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_ip_forward_object_property(it);
         self.check_insecure_jwt_token_object_property(it);
         self.check_no_referrer_policy_object_property(it);
+        self.check_weak_ssl_object_property(it);
         walk::walk_object_property(self, it);
     }
 

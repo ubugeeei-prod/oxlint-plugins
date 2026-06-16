@@ -293,6 +293,7 @@ describe('sonarjs plugin shape', () => {
       'xml-parser-xxe',
       'no-useless-react-setstate',
       'no-referrer-policy',
+      'weak-ssl',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7747,5 +7748,53 @@ describe('no-referrer-policy rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-referrer-policy)');
+  });
+});
+
+describe('weak-ssl rule', () => {
+  it('reports a weak secureProtocol method', () => {
+    const source = "const o = { secureProtocol: 'TLSv1_method' };";
+    const reports = runRule('weak-ssl', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('weakSsl');
+  });
+
+  it('reports a weak minVersion', () => {
+    const source = "const o = { minVersion: 'TLSv1.1' };";
+    const reports = runRule('weak-ssl', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('weakSsl');
+  });
+
+  it('does not report a strong secureProtocol method', () => {
+    const source = "const o = { secureProtocol: 'TLSv1_2_method' };";
+    const reports = runRule('weak-ssl', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a strong minVersion', () => {
+    const source = "const o = { minVersion: 'TLSv1.2' };";
+    const reports = runRule('weak-ssl', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal value', () => {
+    const source = 'const o = { secureProtocol: x };';
+    const reports = runRule('weak-ssl', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a weak value under a different key', () => {
+    const source = "const o = { other: 'TLSv1_method' };";
+    const reports = runRule('weak-ssl', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports weak-ssl through the CLI', () => {
+    const result = runOxlint('weak-ssl', "const o = { secureProtocol: 'TLSv1_method' };");
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(weak-ssl)');
   });
 });
