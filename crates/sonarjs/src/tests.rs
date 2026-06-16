@@ -11660,3 +11660,179 @@ fn publicly_writable_directories_reports_process_env_tmpdir() {
     assert_eq!(diagnostics.len(), 1);
     assert_eq!(diagnostics[0].message_id, "publiclyWritableDirectories");
 }
+
+#[test]
+fn chai_determinate_assertion_reports_not_throw_with_argument() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(throwsTypeError).to.not.throw(ReferenceError);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "chai-determinate-assertion");
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_reports_not_include_object() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect({a: 42}).to.not.include({b: 10, c: 20});",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_reports_not_property_two_args() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect({a: 21}).to.not.have.property('b', 42);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_reports_not_own_property_descriptor_two_args() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect({a: 21}).to.not.have.ownPropertyDescriptor('b', {value: 42});",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_reports_not_members() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect([21, 42]).to.not.have.members([1, 2]);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_reports_change_by() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(incThree).to.change(myObj, 'value').by(3);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_reports_not_increase() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(decThree).to.not.increase(myObj, 'value');",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_reports_not_decrease() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(incThree).to.not.decrease(myObj, 'value');",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_reports_not_by() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(incThree).to.increase(myObj, 'value').but.not.by(1);",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_reports_not_finite() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(toCheck).to.not.be.finite;",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "chaiDeterminateAssertion");
+}
+
+#[test]
+fn chai_determinate_assertion_does_not_report_throw_without_not() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(throwsTypeError).to.throw(TypeError);",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn chai_determinate_assertion_does_not_report_not_property_one_arg() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect({a: 21}).to.not.have.property('b');",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn chai_determinate_assertion_does_not_report_not_own_property_descriptor_one_arg() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect({a: 21}).to.not.have.ownPropertyDescriptor('b');",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn chai_determinate_assertion_does_not_report_increase_by() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(incThree).to.increase(myObj, 'value').by(3);",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn chai_determinate_assertion_does_not_report_decrease_by() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(decThree).to.decrease(myObj, 'value').by(3);",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn chai_determinate_assertion_does_not_report_not_change_without_by() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "expect(doNothing).to.not.change(myObj, 'value');",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn chai_determinate_assertion_does_not_report_be_nan() {
+    let diagnostics = scan("chai-determinate-assertion", "expect(toCheck).to.be.NaN;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn chai_determinate_assertion_does_not_report_non_expect_rooted_finite() {
+    let diagnostics = scan("chai-determinate-assertion", "foo.to.not.be.finite;");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn chai_determinate_assertion_does_not_report_non_expect_rooted_members() {
+    let diagnostics = scan(
+        "chai-determinate-assertion",
+        "foo([21, 42]).to.not.have.members([1, 2]);",
+    );
+    assert!(diagnostics.is_empty());
+}

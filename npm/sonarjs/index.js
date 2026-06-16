@@ -803,6 +803,10 @@ const messages = Object.freeze({
   'publicly-writable-directories': {
     publiclyWritableDirectories: 'Make sure using this publicly writable directory is safe here.',
   },
+  'chai-determinate-assertion': {
+    chaiDeterminateAssertion:
+      'This Chai assertion can succeed for more than one reason; make it assert a single deterministic condition.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1384,6 +1388,8 @@ const ruleDescriptions = Object.freeze({
     'Flag a child_process spawn/spawnSync/execFile/execFileSync call whose first argument is a bare command name string literal (no path separator), which resolves via PATH (the security hotspot S4036). exec/execSync are excluded to avoid colliding with RegExp.exec, keeping this zero-false-positive',
   'publicly-writable-directories':
     'Flag a hardcoded publicly-writable directory (the security hotspot S5443): a string literal under /tmp, /var/tmp, /usr/tmp or /dev/shm, or a process.env.TMPDIR/TMP/TEMP access. The distinctive temp-directory paths keep this zero-false-positive',
+  'chai-determinate-assertion':
+    'Flag non-deterministic Chai assertions in an expect(...) chain (S6092): negated .throw(arg)/.include(obj)/.property(2+)/.ownPropertyDescriptor(2+)/.members/.increase/.decrease/.by, the .not.finite property, and .change(...).by(...). Gated on an expect-rooted chain to stay zero-false-positive',
 });
 
 const ruleTypes = Object.freeze({
@@ -1606,6 +1612,7 @@ const ruleTypes = Object.freeze({
   'regular-expr': 'problem',
   'no-os-command-from-path': 'problem',
   'publicly-writable-directories': 'problem',
+  'chai-determinate-assertion': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1827,6 +1834,7 @@ const recommendedRuleConfig = Object.freeze({
   'regular-expr': 'error',
   'no-os-command-from-path': 'error',
   'publicly-writable-directories': 'error',
+  'chai-determinate-assertion': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
