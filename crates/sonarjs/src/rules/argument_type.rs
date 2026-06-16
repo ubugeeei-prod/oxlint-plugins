@@ -20,9 +20,13 @@
 //! An argument counts as boolean-producing when, after stripping parentheses,
 //! it is one of:
 //! - a `BinaryExpression` with a comparison operator
-//!   (`<`, `>`, `<=`, `>=`, `==`, `===`, `!=`, `!==`);
-//! - a `LogicalExpression` (`&&` or `||`); or
+//!   (`<`, `>`, `<=`, `>=`, `==`, `===`, `!=`, `!==`); or
 //! - a `UnaryExpression` with the logical-not operator (`!`).
+//!
+//! A `LogicalExpression` (`&&` / `||`) is *not* boolean-producing: in
+//! JavaScript these operators evaluate to one of their operands, not a boolean,
+//! so `Math.floor(width || 100)` is a valid numeric-fallback idiom and must not
+//! be flagged.
 //!
 //! Numbers, identifiers, and any other expression are never flagged: a number
 //! is the correct type, and an identifier's type is unknown without type
@@ -32,7 +36,7 @@
 //! ## Flagged
 //! ```js
 //! Math.abs(x < 0.0042);   // comparison -> boolean
-//! Math.floor(a && b);     // logical    -> boolean
+//! Math.floor(a < b);      // comparison -> boolean
 //! Math.sqrt(!ready);      // logical-not -> boolean
 //! ```
 //!
@@ -41,6 +45,8 @@
 //! Math.abs(x);            // identifier (unknown type)
 //! Math.abs(x) < 0.0042;   // comparison is outside the call
 //! Math.floor(1.5);        // numeric argument (correct type)
+//! Math.floor(width || 100); // `||` returns an operand (a number), not a boolean
+//! Math.abs(a && b);       // `&&` returns an operand (a number), not a boolean
 //! Math.max(a < b, c);     // max is excluded (multi-argument)
 //! Math.atan2(a, b);       // atan2 is excluded (two arguments)
 //! foo.abs(x < 1);         // object is not the `Math` identifier
@@ -109,7 +115,6 @@ fn is_boolean_producing(expr: &Expression<'_>) -> bool {
                 | BinaryOperator::Inequality
                 | BinaryOperator::StrictInequality
         ),
-        Expression::LogicalExpression(_) => true,
         Expression::UnaryExpression(unary) => unary.operator == UnaryOperator::LogicalNot,
         _ => false,
     }

@@ -1369,7 +1369,7 @@ const ruleDescriptions = Object.freeze({
   'os-command':
     'Flag a child_process spawn/spawnSync/execFile/execFileSync call passed an options object with shell:true (the shell-interpreter form of S4721), which risks OS command injection; exec/execSync are intentionally excluded to avoid colliding with RegExp.exec, keeping this zero-false-positive',
   'argument-type':
-    'Flag a single-argument Math.* numeric call (abs, floor, sqrt, ...) whose argument is a boolean-producing expression — a comparison, a logical &&/||, or a logical-not — which is the documented type-mismatch bug of S3782 (e.g. Math.abs(x < 0.0042)); requiring a boolean-producing argument to a numeric Math method keeps this zero-false-positive',
+    'Flag a single-argument Math.* numeric call (abs, floor, sqrt, ...) whose argument is a boolean-producing expression — a comparison or a logical-not — which is the documented type-mismatch bug of S3782 (e.g. Math.abs(x < 0.0042)); logical &&/|| arguments are not flagged because they evaluate to an operand (often a number), so requiring a boolean-producing argument keeps this zero-false-positive',
   'aws-s3-bucket-insecure-http':
     'Flag an AWS CDK S3 bucket property enforceSSL:false (the explicit insecure-HTTP form of S6249), which authorizes cleartext HTTP access. The distinctive enforceSSL key keeps this zero-false-positive; omission is intentionally not flagged',
   'aws-s3-bucket-server-encryption':
