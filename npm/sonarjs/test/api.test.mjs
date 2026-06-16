@@ -230,6 +230,7 @@ const expectedRuleNames = [
   'no-globals-shadowing',
   'no-unused-vars',
   'strings-comparison',
+  'non-number-in-arithmetic-expression',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
