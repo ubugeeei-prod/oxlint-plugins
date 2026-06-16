@@ -291,6 +291,7 @@ describe('sonarjs plugin shape', () => {
       'no-angular-bypass-sanitization',
       'insecure-jwt-token',
       'xml-parser-xxe',
+      'no-useless-react-setstate',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7653,5 +7654,46 @@ describe('xml-parser-xxe rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(xml-parser-xxe)');
+  });
+});
+
+describe('no-useless-react-setstate rule', () => {
+  it('reports a setter called with its own state in a handler', () => {
+    const source = 'function C(){ const [v,setV]=useState(0); const h=()=>setV(v); return null; }';
+    const reports = runRule('no-useless-react-setstate', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noUselessReactSetstate');
+  });
+
+  it('reports a setter called with its own state inside JSX', () => {
+    const source =
+      'function C(){ const [v,setV]=React.useState(0); return <button onClick={()=>setV(v)}/>; }';
+    const reports = runRule('no-useless-react-setstate', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('noUselessReactSetstate');
+  });
+
+  it('does not report a derived value', () => {
+    const source = 'function C(){ const [v,setV]=useState(0); setV(v+1); return null; }';
+    const reports = runRule('no-useless-react-setstate', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a setter call with no argument', () => {
+    const source = 'function C(){ const [v,setV]=useState(0); setV(); return null; }';
+    const reports = runRule('no-useless-react-setstate', source, { filename: 'sample.tsx' });
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports no-useless-react-setstate through the CLI', () => {
+    const result = runOxlint(
+      'no-useless-react-setstate',
+      'function C(){ const [v,setV]=useState(0); const h=()=>setV(v); return null; }',
+      'sample.tsx',
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(no-useless-react-setstate)');
   });
 });

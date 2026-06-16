@@ -200,6 +200,7 @@ const expectedRuleNames = [
   'no-angular-bypass-sanitization',
   'insecure-jwt-token',
   'xml-parser-xxe',
+  'no-useless-react-setstate',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -4542,6 +4543,42 @@ describe('insecure-jwt-token rule', () => {
   it('does not report an unrelated key', () => {
     const source = "const o = { other: 'none' };";
     const diagnostics = scan('insecure-jwt-token', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('no-useless-react-setstate rule', () => {
+  it('reports a setter called with its own state in a handler', () => {
+    const source = 'function C(){ const [v,setV]=useState(0); const h=()=>setV(v); return null; }';
+    const diagnostics = scan('no-useless-react-setstate', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('no-useless-react-setstate');
+    expect(diagnostics[0].messageId).toBe('noUselessReactSetstate');
+  });
+
+  it('reports a setter called with its own state inside JSX', () => {
+    const source =
+      'function C(){ const [v,setV]=React.useState(0); return <button onClick={()=>setV(v)}/>; }';
+    const diagnostics = scan('no-useless-react-setstate', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('noUselessReactSetstate');
+  });
+
+  it('does not report a derived value', () => {
+    const source = 'function C(){ const [v,setV]=useState(0); setV(v+1); return null; }';
+    const diagnostics = scan('no-useless-react-setstate', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different variable', () => {
+    const source = 'function C(){ const [v,setV]=useState(0); setV(other); return null; }';
+    const diagnostics = scan('no-useless-react-setstate', source, 'sample.tsx');
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a setter call with no argument', () => {
+    const source = 'function C(){ const [v,setV]=useState(0); setV(); return null; }';
+    const diagnostics = scan('no-useless-react-setstate', source, 'sample.tsx');
     expect(diagnostics).toHaveLength(0);
   });
 });
