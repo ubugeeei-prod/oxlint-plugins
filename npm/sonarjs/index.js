@@ -688,6 +688,9 @@ const messages = Object.freeze({
     noUniqKey:
       'Do not use a random or time-based value as a React key; it changes every render and defeats reconciliation.',
   },
+  'insecure-cookie': {
+    insecureCookie: 'Set this cookie\'s "secure" flag to true so it is only sent over HTTPS.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1160,6 +1163,11 @@ const ruleDescriptions = Object.freeze({
     'Flag a JSX key attribute whose value is a Math.random() or Date.now() call; ' +
     'such a value differs on every render, so React keys never match up between renders ' +
     'and the DOM is needlessly recreated (zero-false-positive syntactic subset of S6486)',
+  'insecure-cookie':
+    'Flag a cookie configuration object that sets "secure" to the boolean literal false, ' +
+    'which lets the cookie be sent over unencrypted HTTP; gated to stay zero-false-positive ' +
+    'by requiring a distinctive cookie-marker sibling key (httpOnly, sameSite, maxAge, domain, ' +
+    'path, or signed) in the same object literal',
 });
 
 const ruleTypes = Object.freeze({
@@ -1351,6 +1359,7 @@ const ruleTypes = Object.freeze({
   'redundant-type-aliases': 'suggestion',
   'jsx-no-leaked-render': 'problem',
   'no-uniq-key': 'problem',
+  'insecure-cookie': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1541,6 +1550,7 @@ const recommendedRuleConfig = Object.freeze({
   'redundant-type-aliases': 'error',
   'jsx-no-leaked-render': 'error',
   'no-uniq-key': 'error',
+  'insecure-cookie': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());

@@ -282,6 +282,7 @@ describe('sonarjs plugin shape', () => {
       'redundant-type-aliases',
       'jsx-no-leaked-render',
       'no-uniq-key',
+      'insecure-cookie',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -7224,5 +7225,53 @@ describe('no-uniq-key rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(no-uniq-key)');
+  });
+});
+
+describe('insecure-cookie rule', () => {
+  it('reports secure: false with an httpOnly cookie-marker sibling', () => {
+    const source = 'const c = { secure: false, httpOnly: true };';
+    const reports = runRule('insecure-cookie', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('insecureCookie');
+  });
+
+  it('reports secure: false in a nested cookie config', () => {
+    const source = "session({ cookie: { secure: false, sameSite: 'lax' } });";
+    const reports = runRule('insecure-cookie', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('insecureCookie');
+  });
+
+  it('does not report secure: false without a cookie-marker sibling', () => {
+    const source = 'const c = { secure: false };';
+    const reports = runRule('insecure-cookie', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report secure: true', () => {
+    const source = 'const c = { secure: true, httpOnly: true };';
+    const reports = runRule('insecure-cookie', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a TLS config without a cookie marker', () => {
+    const source = 'const tls = { secure: false, rejectUnauthorized: false };';
+    const reports = runRule('insecure-cookie', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal secure value', () => {
+    const source = 'const c = { secure: x, maxAge: 1 };';
+    const reports = runRule('insecure-cookie', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports insecure-cookie through the CLI', () => {
+    const result = runOxlint('insecure-cookie', 'const c = { secure: false, httpOnly: true };');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(insecure-cookie)');
   });
 });

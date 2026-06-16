@@ -11422,19 +11422,19 @@
       },
       {
         "name": "insecure-cookie",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule insecure-cookie (Sonar key S2092). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+        "notes": "Clean-room port of S2092. Flags an object literal that configures a cookie with the secure flag disabled: an ObjectExpression containing a property whose key (static identifier or string literal) is \"secure\" with the boolean literal value false, gated to stay zero-false-positive by requiring that the same object literal also contains at least one distinctive cookie-marker sibling key (httpOnly, sameSite, maxAge, domain, path, or signed). The bare key \"secure\" is too generic (TLS sockets, database drivers, and HTTP clients use it too), so a \"secure: false\" property with no cookie-marker sibling is not flagged; neither is secure: true nor a non-literal secure value. SonarJS upstream is LGPL-3.0; this port is clean-room from public RSPEC description only — never copy upstream source, fixtures, tests, or messages."
       },
       {
         "name": "insecure-jwt-token",
