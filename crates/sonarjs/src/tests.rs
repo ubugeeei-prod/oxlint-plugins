@@ -12026,3 +12026,49 @@ fn aws_sagemaker_unencrypted_notebook_does_not_report_other_construct() {
     );
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn aws_sns_unencrypted_topics_reports_cfn_topic_missing_kms() {
+    let diagnostics = scan(
+        "aws-sns-unencrypted-topics",
+        "new CfnTopic(this, 'exampleCfnTopic');",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-sns-unencrypted-topics");
+    assert_eq!(diagnostics[0].message_id, "snsUnencryptedTopic");
+}
+
+#[test]
+fn aws_sns_unencrypted_topics_reports_sns_topic_missing_master_key() {
+    let diagnostics = scan(
+        "aws-sns-unencrypted-topics",
+        "new sns.Topic(this, 'exampleTopic');",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "aws-sns-unencrypted-topics");
+    assert_eq!(diagnostics[0].message_id, "snsUnencryptedTopic");
+}
+
+#[test]
+fn aws_sns_unencrypted_topics_does_not_report_cfn_topic_with_kms() {
+    let diagnostics = scan(
+        "aws-sns-unencrypted-topics",
+        "new CfnTopic(this, 'x', { kmsMasterKeyId: k.keyId });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_sns_unencrypted_topics_does_not_report_sns_topic_with_master_key() {
+    let diagnostics = scan(
+        "aws-sns-unencrypted-topics",
+        "new sns.Topic(this, 'x', { masterKey: k });",
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn aws_sns_unencrypted_topics_does_not_report_bare_topic() {
+    let diagnostics = scan("aws-sns-unencrypted-topics", "new Topic(this, 'x');");
+    assert!(diagnostics.is_empty());
+}

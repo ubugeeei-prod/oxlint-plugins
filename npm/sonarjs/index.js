@@ -818,6 +818,9 @@ const messages = Object.freeze({
     sagemakerUnencryptedNotebook:
       'Set a KMS key (kmsKeyId) on this SageMaker notebook instance to encrypt its data at rest.',
   },
+  'aws-sns-unencrypted-topics': {
+    snsUnencryptedTopic: 'Encrypt this SNS topic by setting a KMS master key.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1407,6 +1410,8 @@ const ruleDescriptions = Object.freeze({
     'Flag an import specifier whose binding is never referenced in the module (S1128), using semantic scope analysis; side-effect imports (import "x") are never flagged',
   'aws-sagemaker-unencrypted-notebook':
     'Flag an AWS CDK CfnNotebookInstance constructed without a kmsKeyId property (the security hotspot S6319), leaving the notebook unencrypted. Gated on the distinctive CfnNotebookInstance construct name to stay zero-false-positive',
+  'aws-sns-unencrypted-topics':
+    'Flag an AWS CDK SNS topic constructed without encryption (the security hotspot S6327): a CfnTopic without kmsMasterKeyId, or an sns.Topic without masterKey. Gated on the distinctive CfnTopic name and the sns.Topic receiver to stay zero-false-positive (a bare new Topic() is not flagged)',
 });
 
 const ruleTypes = Object.freeze({
@@ -1633,6 +1638,7 @@ const ruleTypes = Object.freeze({
   'no-async-constructor': 'problem',
   'unused-import': 'suggestion',
   'aws-sagemaker-unencrypted-notebook': 'problem',
+  'aws-sns-unencrypted-topics': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1858,6 +1864,7 @@ const recommendedRuleConfig = Object.freeze({
   'no-async-constructor': 'error',
   'unused-import': 'error',
   'aws-sagemaker-unencrypted-notebook': 'error',
+  'aws-sns-unencrypted-topics': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
