@@ -9396,6 +9396,39 @@ fn disabled_auto_escaping_does_not_report_other_escape_assignment() {
 }
 
 #[test]
+fn hidden_files_reports_serve_static_allow() {
+    let diagnostics = scan(
+        "hidden-files",
+        "serveStatic('public', { dotfiles: 'allow' });",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn hidden_files_reports_string_literal_key() {
+    let diagnostics = scan("hidden-files", "const x = { 'dotfiles': 'allow' };");
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn hidden_files_does_not_report_ignore() {
+    let diagnostics = scan("hidden-files", "const x = { dotfiles: 'ignore' };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn hidden_files_does_not_report_non_literal_value() {
+    let diagnostics = scan("hidden-files", "const x = { dotfiles: x };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn hidden_files_does_not_report_other_key() {
+    let diagnostics = scan("hidden-files", "const x = { other: 'allow' };");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn aws_s3_bucket_granted_access_reports_public_read_write() {
     let diagnostics = scan(
         "aws-s3-bucket-granted-access",

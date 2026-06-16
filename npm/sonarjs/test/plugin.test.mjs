@@ -267,6 +267,7 @@ describe('sonarjs plugin shape', () => {
       'aws-s3-bucket-granted-access',
       'aws-rds-unencrypted-databases',
       'aws-iam-public-access',
+      'hidden-files',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6562,5 +6563,41 @@ describe('aws-iam-public-access rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(aws-iam-public-access)');
+  });
+});
+
+describe('hidden-files rule', () => {
+  it('reports a serve-static dotfiles: allow option', () => {
+    const source = "serveStatic('public', { dotfiles: 'allow' });";
+    const reports = runRule('hidden-files', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hiddenFiles');
+  });
+
+  it('reports a string-literal dotfiles key', () => {
+    const source = "const x = { 'dotfiles': 'allow' };";
+    const reports = runRule('hidden-files', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('hiddenFiles');
+  });
+
+  it('does not report dotfiles: ignore', () => {
+    const source = "const x = { dotfiles: 'ignore' };";
+    const reports = runRule('hidden-files', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal dotfiles value', () => {
+    const source = 'const x = { dotfiles: y };';
+    const reports = runRule('hidden-files', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports hidden-files through the CLI', () => {
+    const result = runOxlint('hidden-files', "serveStatic('public', { dotfiles: 'allow' });");
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(hidden-files)');
   });
 });

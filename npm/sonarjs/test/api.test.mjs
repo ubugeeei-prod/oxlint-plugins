@@ -176,6 +176,7 @@ const expectedRuleNames = [
   'aws-s3-bucket-granted-access',
   'aws-rds-unencrypted-databases',
   'aws-iam-public-access',
+  'hidden-files',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {
@@ -3715,6 +3716,41 @@ describe('aws-iam-public-access rule', () => {
   it('does not report an AnyPrincipal reference without new', () => {
     const source = 'const p = iam.AnyPrincipal;';
     const diagnostics = scan('aws-iam-public-access', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+});
+
+describe('hidden-files rule', () => {
+  it('reports a serve-static dotfiles: allow option', () => {
+    const source = "serveStatic('public', { dotfiles: 'allow' });";
+    const diagnostics = scan('hidden-files', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].ruleName).toBe('hidden-files');
+    expect(diagnostics[0].messageId).toBe('hiddenFiles');
+  });
+
+  it('reports a string-literal dotfiles key', () => {
+    const source = "const x = { 'dotfiles': 'allow' };";
+    const diagnostics = scan('hidden-files', source);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].messageId).toBe('hiddenFiles');
+  });
+
+  it('does not report dotfiles: ignore', () => {
+    const source = "const x = { dotfiles: 'ignore' };";
+    const diagnostics = scan('hidden-files', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a non-literal dotfiles value', () => {
+    const source = 'const x = { dotfiles: y };';
+    const diagnostics = scan('hidden-files', source);
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = "const x = { other: 'allow' };";
+    const diagnostics = scan('hidden-files', source);
     expect(diagnostics).toHaveLength(0);
   });
 });

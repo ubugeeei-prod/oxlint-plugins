@@ -48,6 +48,7 @@ mod function_inside_loop;
 mod function_name;
 mod generator_without_yield;
 mod hashing;
+mod hidden_files;
 mod in_operator_type_error;
 mod inconsistent_function_call;
 mod index_of_compare_to_positive_number;
