@@ -729,6 +729,10 @@ const messages = Object.freeze({
     noReferrerPolicy:
       "This Referrer-Policy value leaks the full URL to other origins; use a stricter policy like 'no-referrer' or 'same-origin'.",
   },
+  'weak-ssl': {
+    weakSsl:
+      'Use a strong TLS protocol version (TLS 1.2 or higher); this configures a weak/deprecated protocol.',
+  },
 });
 
 const ruleDescriptions = Object.freeze({
@@ -1259,6 +1263,11 @@ const ruleDescriptions = Object.freeze({
     "Flag a helmet referrerPolicy option set to a leaky Referrer-Policy value ('no-referrer-when-downgrade' " +
     "or 'unsafe-url'), which sends the full URL to other origins and can expose confidential data; flags a " +
     'policy property whose string value is one of those distinctive tokens (zero-false-positive subset of S5736)',
+  'weak-ssl':
+    'Flag a TLS/SSL options object configured with a weak, deprecated protocol version: a secureProtocol ' +
+    "string of 'TLSv1_method', 'TLSv1_1_method', 'SSLv2_method', 'SSLv3_method', or 'SSLv23_method', or a " +
+    "minVersion/maxVersion string of 'TLSv1' or 'TLSv1.1'. Those distinctive Node.js TLS constants make this " +
+    'a zero-false-positive subset of S4423; use TLS 1.2 or higher instead',
 });
 
 const ruleTypes = Object.freeze({
@@ -1461,6 +1470,7 @@ const ruleTypes = Object.freeze({
   'xml-parser-xxe': 'problem',
   'no-useless-react-setstate': 'problem',
   'no-referrer-policy': 'problem',
+  'weak-ssl': 'problem',
 });
 
 const recommendedRuleConfig = Object.freeze({
@@ -1662,6 +1672,7 @@ const recommendedRuleConfig = Object.freeze({
   'xml-parser-xxe': 'error',
   'no-useless-react-setstate': 'error',
   'no-referrer-policy': 'error',
+  'weak-ssl': 'error',
 });
 
 const implementedRuleNames = Object.freeze(implementedSonarjsRuleNames());
