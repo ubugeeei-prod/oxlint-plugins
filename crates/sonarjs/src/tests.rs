@@ -11350,6 +11350,12 @@ fn cookies_does_not_report_zero_arg_cookie() {
 }
 
 #[test]
+fn cookies_does_not_report_single_arg_cookie_read() {
+    let diagnostics = scan("cookies", "const v = $.cookie('session');");
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
 fn cookies_does_not_report_other_header() {
     let diagnostics = scan("cookies", "res.setHeader('Content-Type', 'text/html');");
     assert!(diagnostics.is_empty());

@@ -22,8 +22,10 @@
 //!
 //! (b) A `CallExpression` whose callee (after `get_inner_expression`) is a
 //!     static member expression whose property name is exactly `cookie` and
-//!     which has at least one argument — the ExpressJS `res.cookie(name, value)`
-//!     write. The call span is reported.
+//!     which has at least two arguments (a name *and* a value) — the ExpressJS
+//!     `res.cookie(name, value)` write. The call span is reported. Requiring two
+//!     arguments avoids flagging a single-argument cookie *read* such as the
+//!     legacy jQuery cookie plugin `$.cookie('session')`.
 //!
 //! (c) A `CallExpression` whose callee is a static member expression whose
 //!     property name is exactly `setHeader` and whose first argument is a string
@@ -34,8 +36,10 @@
 //!
 //! Cookie *reads* are out of scope: a bare `document.cookie` reference that is
 //! not the target of an assignment, and `req.cookies` reads, are not writes. A
-//! `.cookie()` call with zero arguments is not a write (it does not set a value),
-//! and a `setHeader` call with any other header name is unrelated.
+//! `.cookie()` call with fewer than two arguments is not a write (it does not set
+//! a value) — this includes the single-argument read form `$.cookie('session')`
+//! used by the legacy jQuery cookie plugin — and a `setHeader` call with any
+//! other header name is unrelated.
 //!
 //! ## Flagged
 //! ```js
@@ -49,6 +53,7 @@
 //! const c = document.cookie;          // read, not a write
 //! const all = req.cookies;            // read, not a write
 //! res.cookie();                       // zero-argument call, not a write
+//! const v = $.cookie('session');      // single-argument read, not a write
 //! res.setHeader('Content-Type', 'x'); // different header name
 //! ```
 
@@ -83,9 +88,10 @@ impl Scanner<'_> {
             return;
         };
         match member.property.name.as_str() {
-            // (b) `.cookie(name, value)` with at least one argument.
+            // (b) `.cookie(name, value)` with at least two arguments (name and
+            // value). A single-argument call is a read (e.g. `$.cookie('session')`).
             "cookie" => {
-                if !it.arguments.is_empty() {
+                if it.arguments.len() >= 2 {
                     self.report(RULE_NAME, "cookies", it.span);
                 }
             }
