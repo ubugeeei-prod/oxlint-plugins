@@ -11432,3 +11432,65 @@ fn sockets_does_not_report_bare_new_socket() {
     let diagnostics = scan("sockets", "var socket = new Socket();");
     assert!(diagnostics.is_empty());
 }
+
+#[test]
+fn existing_groups_reports_dollar_zero() {
+    let diagnostics = scan(
+        "existing-groups",
+        r#"'John Doe'.replace(/(\w+)\s(\w+)/, '$1, $0 $1');"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "existing-groups");
+    assert_eq!(diagnostics[0].message_id, "existingGroups");
+}
+
+#[test]
+fn existing_groups_reports_numeric_out_of_range() {
+    let diagnostics = scan("existing-groups", r#"'a'.replace(/(a)/, '$2');"#);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "existingGroups");
+}
+
+#[test]
+fn existing_groups_reports_missing_named_group() {
+    let diagnostics = scan(
+        "existing-groups",
+        r#"'John Doe'.replace(/(?<firstName>\w+)\s(?<lastName>\w+)/, '$<surname>, $<firstName> $<surname>');"#,
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "existingGroups");
+}
+
+#[test]
+fn existing_groups_does_not_report_valid_numeric() {
+    let diagnostics = scan(
+        "existing-groups",
+        r#"'John Doe'.replace(/(\w+)\s(\w+)/, '$2, $1 $2');"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn existing_groups_does_not_report_valid_named() {
+    let diagnostics = scan(
+        "existing-groups",
+        r#"'John Doe'.replace(/(?<firstName>\w+)\s(?<lastName>\w+)/, '$<lastName>, $<firstName> $<lastName>');"#,
+    );
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn existing_groups_does_not_report_escaped_dollar() {
+    let diagnostics = scan("existing-groups", r#"'a'.replace(/(a)/, '$$');"#);
+    assert!(diagnostics.is_empty());
+    let diagnostics = scan("existing-groups", r#"'a'.replace(/(a)/, '$&');"#);
+    assert!(diagnostics.is_empty());
+}
+
+#[test]
+fn existing_groups_does_not_report_dynamic_args() {
+    let diagnostics = scan("existing-groups", "'a'.replace(re, '$5');");
+    assert!(diagnostics.is_empty());
+    let diagnostics = scan("existing-groups", "'a'.replace(/(a)/, repl);");
+    assert!(diagnostics.is_empty());
+}

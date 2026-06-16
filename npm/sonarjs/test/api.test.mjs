@@ -217,6 +217,7 @@ const expectedRuleNames = [
   'cookies',
   'xpath',
   'sockets',
+  'existing-groups',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

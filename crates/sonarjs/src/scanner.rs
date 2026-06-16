@@ -681,6 +681,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_cookies_call(it);
         self.check_xpath(it);
         self.check_sockets_call(it);
+        self.check_existing_groups(it);
         walk::walk_call_expression(self, it);
     }
 
