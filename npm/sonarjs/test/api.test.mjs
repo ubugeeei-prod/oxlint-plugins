@@ -177,6 +177,7 @@ const expectedRuleNames = [
   'aws-rds-unencrypted-databases',
   'aws-iam-public-access',
   'hidden-files',
+  'aws-sqs-unencrypted-queue',
 ];
 
 function scan(ruleName, sourceText, filename = 'sample.ts') {

@@ -268,6 +268,7 @@ describe('sonarjs plugin shape', () => {
       'aws-rds-unencrypted-databases',
       'aws-iam-public-access',
       'hidden-files',
+      'aws-sqs-unencrypted-queue',
     ]);
     expect(typeof plugin.rules['no-nested-template-literals']).toBe('object');
     expect(typeof plugin.rules['no-nested-switch']).toBe('object');
@@ -6599,5 +6600,56 @@ describe('hidden-files rule', () => {
     expect(result.stderr).toBe('');
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0].code).toBe('sonarjs(hidden-files)');
+  });
+});
+
+describe('aws-sqs-unencrypted-queue rule', () => {
+  it('reports QueueEncryption.UNENCRYPTED', () => {
+    const source = "new Queue(this, 'q', { encryption: sqs.QueueEncryption.UNENCRYPTED });";
+    const reports = runRule('aws-sqs-unencrypted-queue', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('sqsUnencrypted');
+  });
+
+  it('reports sqsManagedSseEnabled: false', () => {
+    const source = 'const x = { sqsManagedSseEnabled: false };';
+    const reports = runRule('aws-sqs-unencrypted-queue', source);
+    expect(reports).toHaveLength(1);
+    expect(reports[0].messageId).toBe('sqsUnencrypted');
+  });
+
+  it('does not report KMS encryption', () => {
+    const source = 'const x = { encryption: QueueEncryption.KMS };';
+    const reports = runRule('aws-sqs-unencrypted-queue', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report sqsManagedSseEnabled: true', () => {
+    const source = 'const x = { sqsManagedSseEnabled: true };';
+    const reports = runRule('aws-sqs-unencrypted-queue', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a non-literal encryption value', () => {
+    const source = 'const x = { encryption: e };';
+    const reports = runRule('aws-sqs-unencrypted-queue', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('does not report a different key', () => {
+    const source = 'const x = { other: false };';
+    const reports = runRule('aws-sqs-unencrypted-queue', source);
+    expect(reports).toHaveLength(0);
+  });
+
+  it('reports aws-sqs-unencrypted-queue through the CLI', () => {
+    const result = runOxlint(
+      'aws-sqs-unencrypted-queue',
+      "new Queue(this, 'q', { encryption: sqs.QueueEncryption.UNENCRYPTED });",
+    );
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('sonarjs(aws-sqs-unencrypted-queue)');
   });
 });
