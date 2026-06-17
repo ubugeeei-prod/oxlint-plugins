@@ -1,10 +1,15 @@
-use oxlint_plugins_carton::{CompactString, SmallVec};
+//! NAPI boundary for the `no-forbidden-identifiers` sample plugin.
+//!
+//! Rule logic lives in `oxlint_plugins_stylistic`; this module only compacts the
+//! JavaScript-supplied options at the boundary before the hot logic runs.
 
-type OptionNames = SmallVec<[CompactString; 8]>;
+use oxlint_plugins_carton::{CompactString, SmallVec};
 
 pub use napi_abi::{
     ForbiddenIdentifierOptions, is_forbidden_identifier_name, scan_forbidden_identifiers,
 };
+
+type OptionNames = SmallVec<[CompactString; 8]>;
 
 #[allow(
     clippy::disallowed_macros,
@@ -18,9 +23,9 @@ mod napi_abi {
         is_forbidden_identifier_name as core_is_forbidden_identifier_name, scan_source_for_rule,
     };
 
-    use crate::OptionNames;
+    use super::OptionNames;
 
-    #[napi(object)]
+    #[napi(object, namespace = "noForbiddenIdentifiers")]
     #[derive(Clone, Debug, Default)]
     pub struct ForbiddenIdentifierOptions {
         // NAPI converts JavaScript arrays and strings through `Vec<String>`.
@@ -28,7 +33,7 @@ mod napi_abi {
         pub names: Option<Vec<String>>,
     }
 
-    #[napi]
+    #[napi(namespace = "noForbiddenIdentifiers")]
     pub fn scan_forbidden_identifiers(
         source_text: String,
         options: Option<ForbiddenIdentifierOptions>,
@@ -40,7 +45,7 @@ mod napi_abi {
             .collect()
     }
 
-    #[napi]
+    #[napi(namespace = "noForbiddenIdentifiers")]
     pub fn is_forbidden_identifier_name(
         name: String,
         options: Option<ForbiddenIdentifierOptions>,

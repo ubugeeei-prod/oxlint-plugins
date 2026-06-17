@@ -15,13 +15,13 @@ mod napi_abi {
     use oxlint_plugins_carton::{CompactString, SmallVec};
     use oxlint_plugins_unused_imports as core;
 
-    #[napi(object)]
+    #[napi(object, namespace = "unusedImports")]
     #[derive(Clone, Debug, Default)]
     pub struct UnusedImportsScanOptions {
         pub rule_names: Option<Vec<String>>,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "unusedImports")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticLoc {
         pub start_line: u32,
@@ -30,7 +30,7 @@ mod napi_abi {
         pub end_column: u32,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "unusedImports")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticFix {
         pub start: u32,
@@ -38,7 +38,7 @@ mod napi_abi {
         pub replacement: String,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "unusedImports")]
     #[derive(Clone, Debug)]
     pub struct Diagnostic {
         pub rule_name: String,
@@ -47,7 +47,7 @@ mod napi_abi {
         pub fix: Option<DiagnosticFix>,
     }
 
-    #[napi]
+    #[napi(namespace = "unusedImports")]
     pub fn implemented_unused_imports_rule_names() -> Vec<String> {
         core::implemented_unused_imports_rule_names()
             .iter()
@@ -55,7 +55,7 @@ mod napi_abi {
             .collect()
     }
 
-    #[napi]
+    #[napi(namespace = "unusedImports")]
     pub fn scan_unused_imports(
         source_text: String,
         filename: String,

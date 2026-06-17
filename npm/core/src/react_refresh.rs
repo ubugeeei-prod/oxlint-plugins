@@ -16,7 +16,7 @@ mod napi_abi {
     use oxlint_plugins_carton::{CompactString, SmallVec};
     use oxlint_plugins_react_refresh as core;
 
-    #[napi(object)]
+    #[napi(object, namespace = "reactRefresh")]
     #[derive(Clone, Debug, Default)]
     pub struct OnlyExportComponentsOptions {
         pub extra_hocs: Option<Vec<String>>,
@@ -25,7 +25,7 @@ mod napi_abi {
         pub check_js: Option<bool>,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "reactRefresh")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticLoc {
         pub start_line: u32,
@@ -34,34 +34,34 @@ mod napi_abi {
         pub end_column: u32,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "reactRefresh")]
     #[derive(Clone, Debug)]
     pub struct Diagnostic {
         pub message_id: String,
         pub loc: DiagnosticLoc,
     }
 
-    #[napi]
+    #[napi(namespace = "reactRefresh")]
     pub fn is_react_component_name(name: String) -> bool {
         core::is_react_component_name(&name)
     }
 
-    #[napi]
+    #[napi(namespace = "reactRefresh")]
     pub fn should_scan_filename(filename: String, check_js: bool) -> bool {
         core::should_scan_filename(&filename, check_js)
     }
 
-    #[napi]
+    #[napi(namespace = "reactRefresh")]
     pub fn is_constant_export_expression_kind(kind: String) -> bool {
         core::is_constant_export_expression_kind(&kind)
     }
 
-    #[napi]
+    #[napi(namespace = "reactRefresh")]
     pub fn default_hocs() -> Vec<String> {
         core::DEFAULT_HOCS.into_iter().map(str::to_owned).collect()
     }
 
-    #[napi]
+    #[napi(namespace = "reactRefresh")]
     pub fn scan_only_export_components(
         source_text: String,
         filename: String,

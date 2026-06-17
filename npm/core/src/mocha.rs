@@ -14,7 +14,7 @@ mod napi_abi {
     use oxlint_plugins_carton::{CompactString, SmallVec};
     use oxlint_plugins_mocha as core;
 
-    #[napi(object)]
+    #[napi(object, namespace = "mocha")]
     #[derive(Clone, Debug, Default)]
     pub struct MochaScanOptions {
         pub consistent_interface: Option<String>,
@@ -32,7 +32,7 @@ mod napi_abi {
         pub prefer_arrow_allow_unbound_this: Option<bool>,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "mocha")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticLoc {
         pub start_line: u32,
@@ -41,7 +41,7 @@ mod napi_abi {
         pub end_column: u32,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "mocha")]
     #[derive(Clone, Debug)]
     pub struct Diagnostic {
         pub rule_name: String,
@@ -49,7 +49,7 @@ mod napi_abi {
         pub loc: DiagnosticLoc,
     }
 
-    #[napi]
+    #[napi(namespace = "mocha")]
     pub fn implemented_mocha_rule_names() -> Vec<String> {
         core::implemented_mocha_rule_names()
             .iter()
@@ -57,7 +57,7 @@ mod napi_abi {
             .collect()
     }
 
-    #[napi]
+    #[napi(namespace = "mocha")]
     pub fn scan_mocha(
         source_text: String,
         filename: String,

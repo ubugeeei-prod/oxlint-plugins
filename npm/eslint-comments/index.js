@@ -7,7 +7,8 @@
 // per file and maps the returned diagnostics onto `context.report`.
 
 const { eslintCompatPlugin } = require('@oxlint/plugins');
-const native = require('./native.js');
+// Rule logic runs in the shared native core; this package is a thin facade.
+const native = require('@oxlint-plugins/core').eslintComments;
 
 const PLUGIN_NAME = 'eslint-comments';
 const DOCS_BASE = 'https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments';

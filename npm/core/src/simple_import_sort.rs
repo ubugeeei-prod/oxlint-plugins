@@ -15,13 +15,13 @@ mod napi_abi {
     use oxlint_plugins_carton::{CompactString, SmallVec};
     use oxlint_plugins_simple_import_sort as core;
 
-    #[napi(object)]
+    #[napi(object, namespace = "simpleImportSort")]
     #[derive(Clone, Debug, Default)]
     pub struct SimpleImportSortScanOptions {
         pub import_groups: Option<Vec<Vec<String>>>,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "simpleImportSort")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticLoc {
         pub start_line: u32,
@@ -30,7 +30,7 @@ mod napi_abi {
         pub end_column: u32,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "simpleImportSort")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticFix {
         pub start: u32,
@@ -38,7 +38,7 @@ mod napi_abi {
         pub replacement: String,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "simpleImportSort")]
     #[derive(Clone, Debug)]
     pub struct Diagnostic {
         pub rule_name: String,
@@ -47,7 +47,7 @@ mod napi_abi {
         pub fix: Option<DiagnosticFix>,
     }
 
-    #[napi]
+    #[napi(namespace = "simpleImportSort")]
     pub fn implemented_simple_import_sort_rule_names() -> Vec<String> {
         core::implemented_simple_import_sort_rule_names()
             .iter()
@@ -55,7 +55,7 @@ mod napi_abi {
             .collect()
     }
 
-    #[napi]
+    #[napi(namespace = "simpleImportSort")]
     pub fn scan_simple_import_sort(
         source_text: String,
         filename: String,

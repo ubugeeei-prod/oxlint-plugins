@@ -13,7 +13,7 @@ mod napi_abi {
     use napi_derive::napi;
     use oxlint_plugins_security as core;
 
-    #[napi(object)]
+    #[napi(object, namespace = "security")]
     #[derive(Clone, Debug, Default)]
     pub struct DiagnosticData {
         pub text: Option<String>,
@@ -26,7 +26,7 @@ mod napi_abi {
         pub argument_type: Option<String>,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "security")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticLoc {
         pub start_line: u32,
@@ -35,7 +35,7 @@ mod napi_abi {
         pub end_column: u32,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "security")]
     #[derive(Clone, Debug)]
     pub struct Diagnostic {
         pub rule_name: String,
@@ -44,7 +44,7 @@ mod napi_abi {
         pub loc: DiagnosticLoc,
     }
 
-    #[napi]
+    #[napi(namespace = "security")]
     pub fn implemented_security_rule_names() -> Vec<String> {
         core::implemented_security_rule_names()
             .iter()
@@ -52,7 +52,7 @@ mod napi_abi {
             .collect()
     }
 
-    #[napi]
+    #[napi(namespace = "security")]
     pub fn scan_security(source_text: String, filename: String) -> Vec<Diagnostic> {
         core::scan_security(&source_text, &filename)
             .into_iter()

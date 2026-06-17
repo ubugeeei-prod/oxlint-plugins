@@ -13,20 +13,21 @@ const BUILD_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes covers cold cargo builds
 const STALE_LOCK_MS = 15 * 60 * 1000;
 const POLL_INTERVAL_MS = 250;
 
-// Packages whose Vitest suites depend on NAPI bindings. Normally `vp build`
-// produces these before `vp test`; this is the fallback for direct test runs.
+// Packages whose Vitest suites depend on NAPI bindings. Shared-core converted
+// plugins use `@oxlint-plugins/core`; newer packages that have not moved yet
+// still build their per-package native binding.
 const nativePackages = [
+  {
+    name: '@oxlint-plugins/core',
+    binding: 'npm/core/native.js',
+  },
   {
     name: '@oxlint-plugins/oxlint-plugin-angular-eslint',
     binding: 'npm/angular-eslint/native.js',
   },
   {
-    name: '@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers',
-    binding: 'npm/no-forbidden-identifiers/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-eslint-comments',
-    binding: 'npm/eslint-comments/native.js',
+    name: '@oxlint-plugins/oxlint-plugin-e18e',
+    binding: 'npm/e18e/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-eslint-json',
@@ -37,6 +38,18 @@ const nativePackages = [
     binding: 'npm/eslint-markdown/native.js',
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-functional',
+    binding: 'npm/functional/native.js',
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-perfectionist',
+    binding: 'npm/perfectionist/native.js',
+  },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-playwright',
+    binding: 'npm/playwright/native.js',
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-postgresql',
     binding: 'npm/postgresql/native.js',
   },
@@ -45,72 +58,28 @@ const nativePackages = [
     binding: 'npm/postgresql-eslint-parser/native.js',
   },
   {
-    name: '@oxlint-plugins/oxlint-plugin-security',
-    binding: 'npm/security/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-cypress',
-    binding: 'npm/cypress/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-functional',
-    binding: 'npm/functional/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-e18e',
-    binding: 'npm/e18e/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-stylistic',
-    binding: 'npm/stylistic/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-testing-library',
-    binding: 'npm/testing-library/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-react-refresh',
-    binding: 'npm/react-refresh/native.js',
+    name: '@oxlint-plugins/oxlint-plugin-react-hooks',
+    binding: 'npm/react-hooks/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-regexp',
     binding: 'npm/regexp/native.js',
   },
   {
-    name: '@oxlint-plugins/oxlint-plugin-react-hooks',
-    binding: 'npm/react-hooks/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-mocha',
-    binding: 'npm/mocha/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-playwright',
-    binding: 'npm/playwright/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-simple-import-sort',
-    binding: 'npm/simple-import-sort/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-unused-imports',
-    binding: 'npm/unused-imports/native.js',
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-perfectionist',
-    binding: 'npm/perfectionist/native.js',
+    name: '@oxlint-plugins/oxlint-plugin-sonarjs',
+    binding: 'npm/sonarjs/native.js',
   },
   {
     name: '@oxlint-plugins/oxlint-plugin-storybook',
     binding: 'npm/storybook/native.js',
   },
   {
-    name: '@oxlint-plugins/oxlint-plugin-unocss',
-    binding: 'npm/unocss/native.js',
+    name: '@oxlint-plugins/oxlint-plugin-testing-library',
+    binding: 'npm/testing-library/native.js',
   },
   {
-    name: '@oxlint-plugins/oxlint-plugin-sonarjs',
-    binding: 'npm/sonarjs/native.js',
+    name: '@oxlint-plugins/oxlint-plugin-unocss',
+    binding: 'npm/unocss/native.js',
   },
 ];
 

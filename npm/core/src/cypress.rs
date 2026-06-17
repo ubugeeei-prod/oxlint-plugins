@@ -15,13 +15,13 @@ mod napi_abi {
     use oxlint_plugins_carton::{CompactString, SmallVec};
     use oxlint_plugins_cypress as core;
 
-    #[napi(object)]
+    #[napi(object, namespace = "cypress")]
     #[derive(Clone, Debug, Default)]
     pub struct CypressScanOptions {
         pub unsafe_to_chain_methods: Option<Vec<String>>,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "cypress")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticLoc {
         pub start_line: u32,
@@ -30,7 +30,7 @@ mod napi_abi {
         pub end_column: u32,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "cypress")]
     #[derive(Clone, Debug)]
     pub struct DiagnosticFix {
         pub start: u32,
@@ -38,7 +38,7 @@ mod napi_abi {
         pub replacement: String,
     }
 
-    #[napi(object)]
+    #[napi(object, namespace = "cypress")]
     #[derive(Clone, Debug)]
     pub struct Diagnostic {
         pub rule_name: String,
@@ -47,7 +47,7 @@ mod napi_abi {
         pub fix: Option<DiagnosticFix>,
     }
 
-    #[napi]
+    #[napi(namespace = "cypress")]
     pub fn implemented_cypress_rule_names() -> Vec<String> {
         core::implemented_cypress_rule_names()
             .iter()
@@ -55,7 +55,7 @@ mod napi_abi {
             .collect()
     }
 
-    #[napi]
+    #[napi(namespace = "cypress")]
     pub fn scan_cypress(
         source_text: String,
         filename: String,

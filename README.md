@@ -2,7 +2,7 @@
 
 Rust-backed Oxlint plugin workspace for porting ESLint plugins through NAPI-RS.
 
-The public package shape is an Oxlint JS plugin. Hot rule logic lives in Rust and is exposed through NAPI-RS so each plugin can be installed independently from npm.
+The public package shape is an Oxlint JS plugin. Hot rule logic lives in Rust and is exposed through NAPI-RS. All plugins share a single native addon (`@oxlint-plugins/core`); each `@oxlint-plugins/oxlint-plugin-*` package is a thin JavaScript facade that depends on it, so installing many plugins links the native code once instead of once per plugin. `@oxlint-plugins/oxlint` bundles the whole suite behind one config entry.
 
 This is unofficial community work. It is not an official Oxlint project, and builtin migration should happen only through normal upstream review.
 
@@ -231,7 +231,9 @@ vp run release patch
 
 - `crates/_carton`: shared allocation and fast-hash primitives.
 - `crates/stylistic`: stylistic-domain Rust rule logic. Add future domains like `import`, `react`, or `security` instead of one crate per rule.
-- `npm/*`: individually installable npm packages, including oxlint plugins and shared JS helpers.
+- `npm/core`: `@oxlint-plugins/core`, the single NAPI-RS native addon shared by every plugin. Holds only the NAPI boundary (one namespaced module per plugin); rule logic stays in the domain crates.
+- `npm/oxlint`: `@oxlint-plugins/oxlint`, the convenience bundle that aggregates every plugin into one combined plugin with a recommended config.
+- `npm/*`: individually installable npm packages. The `oxlint-plugin-*` packages are thin JavaScript facades over `@oxlint-plugins/core`; `type-aware` is a shared JS helper.
 - `examples/*`: small usage examples outside the npm workspace graph.
 - `docs/site`: ox-content + Void SDK website with rule status pages.
 - `docs/guides`: project policy and contributor guides rendered by the website.
@@ -262,7 +264,8 @@ pnpm run port:status                     # sync upstream rules into status.json 
 `@oxlint-plugins/oxlint-plugin-no-forbidden-identifiers` demonstrates the intended shape:
 
 - JS wrapper uses `@oxlint/plugins` and `createOnce`.
-- Rust performs a file-level pre-scan through NAPI-RS.
+- The package is a thin facade: it imports its native functions from `@oxlint-plugins/core` (`require('@oxlint-plugins/core').noForbiddenIdentifiers`) rather than shipping its own `.node`.
+- The NAPI boundary lives in `npm/core/src/no_forbidden_identifiers.rs`, namespaced so exported names never collide across plugins; the file-level pre-scan runs there.
 - Rust tests use `insta` snapshots.
 - Vitest covers wrapper reports and skip behavior.
 

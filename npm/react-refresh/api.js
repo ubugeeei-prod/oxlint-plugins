@@ -1,6 +1,6 @@
 'use strict';
 
-const native = require('./native.js');
+const native = require('@oxlint-plugins/core').reactRefresh;
 
 function defaultHocs() {
   return native.defaultHocs();
@@ -34,11 +34,13 @@ function scanOnlyExportComponents(sourceText, filename, options = {}) {
   if (typeof filename !== 'string') {
     throw new TypeError('filename must be a string.');
   }
+  const extraHocs = options.extraHOCs ?? options.extraHocs;
+  const checkJs = options.checkJS ?? options.checkJs;
   return native.scanOnlyExportComponents(sourceText, filename, {
-    extraHocs: Array.isArray(options.extraHOCs) ? options.extraHOCs : [],
+    extraHocs: Array.isArray(extraHocs) ? extraHocs : [],
     allowExportNames: Array.isArray(options.allowExportNames) ? options.allowExportNames : [],
     allowConstantExport: options.allowConstantExport === true,
-    checkJs: options.checkJS === true,
+    checkJs: checkJs === true,
   });
 }
 
