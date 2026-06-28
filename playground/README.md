@@ -38,10 +38,10 @@ The output in `dist/` is deployed to GitHub Pages by
 
 ## Coverage
 
-Every plugin whose rule logic compiles to WebAssembly is included. Two are not:
+Every plugin whose rule logic compiles to WebAssembly is included, including
+`eslint-comments` (the adapter recovers the comment list and first-token
+position from an oxc parse, and feeds the other plugins' diagnostics to
+`no-unused-disable` as the file's lint problems).
 
-- `postgresql` depends on the native `libpg_query` C library, which does not
-  compile to `wasm32`.
-- `eslint-comments` operates on comment tokens and disable-directive results
-  supplied by the full lint run rather than on source text, so several of its
-  rules cannot be reproduced standalone in the browser.
+One plugin is excluded: `postgresql` depends on the native `libpg_query` C
+library, which does not compile to `wasm32-unknown-unknown` (no libc/sysroot).

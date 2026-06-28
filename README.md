@@ -302,5 +302,5 @@ pnpm --filter @oxlint-plugins/playground build
 module compiled with `wasm-pack`. It is excluded from the recursive workspace
 build, so `vp build` does not require the wasm toolchain; it is built and
 deployed to GitHub Pages by `.github/workflows/deploy-playground.yml`. See
-`playground/README.md` for details, including the two plugins it cannot run
-(`postgresql` and `eslint-comments`).
+`playground/README.md` for details, including the one plugin it cannot run
+(`postgresql`, whose native `libpg_query` C parser has no `wasm32` build).

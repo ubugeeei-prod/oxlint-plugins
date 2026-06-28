@@ -21,10 +21,14 @@ name = "oxlint_plugins_playground_wasm"
 wasm-opt = false
 
 [dependencies]
+oxc_allocator.workspace = true
+oxc_parser.workspace = true
+oxc_span.workspace = true
 oxlint-plugins-angular-eslint.workspace = true
 oxlint-plugins-carton.workspace = true
 oxlint-plugins-cypress.workspace = true
 oxlint-plugins-e18e.workspace = true
+oxlint-plugins-eslint-comments.workspace = true
 oxlint-plugins-eslint-json.workspace = true
 oxlint-plugins-eslint-markdown.workspace = true
 oxlint-plugins-functional.workspace = true

@@ -764,6 +764,89 @@
       ]
     },
     {
+      "plugin": "eslint-comments",
+      "npm": "@oxlint-plugins/oxlint-plugin-eslint-comments",
+      "description": "Rust-backed oxlint plugin port of @eslint-community/eslint-plugin-eslint-comments.",
+      "rules": [
+        {
+          "name": "disable-enable-pair",
+          "description": "require a `eslint-enable` comment for every `eslint-disable` comment",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments#disable-enable-pair",
+          "messages": {
+            "missingPair": "Requires 'eslint-enable' directive.",
+            "missingRulePair": "Requires 'eslint-enable' directive for '{{ruleId}}'."
+          }
+        },
+        {
+          "name": "no-aggregating-enable",
+          "description": "disallow a `eslint-enable` comment for multiple `eslint-disable` comments",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments#no-aggregating-enable",
+          "messages": {
+            "aggregatingEnable": "This `eslint-enable` comment affects {{count}} `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment."
+          }
+        },
+        {
+          "name": "no-duplicate-disable",
+          "description": "disallow duplicate `eslint-disable` comments",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments#no-duplicate-disable",
+          "messages": {
+            "duplicate": "ESLint rules have been disabled already.",
+            "duplicateRule": "'{{ruleId}}' rule has been disabled already."
+          }
+        },
+        {
+          "name": "no-restricted-disable",
+          "description": "disallow `eslint-disable` comments about specific rules",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments#no-restricted-disable",
+          "messages": {
+            "disallow": "Disabling '{{ruleId}}' is not allowed."
+          }
+        },
+        {
+          "name": "no-unlimited-disable",
+          "description": "disallow `eslint-disable` comments without rule names",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments#no-unlimited-disable",
+          "messages": {
+            "unexpected": "Unexpected unlimited '{{kind}}' comment. Specify some rule names to disable."
+          }
+        },
+        {
+          "name": "no-unused-disable",
+          "description": "disallow unused `eslint-disable` comments",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments#no-unused-disable",
+          "messages": {
+            "unused": "Unused eslint-disable directive (no problems were reported).",
+            "unusedRule": "Unused eslint-disable directive (no problems were reported from '{{ruleId}}')."
+          }
+        },
+        {
+          "name": "no-unused-enable",
+          "description": "disallow unused `eslint-enable` comments",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments#no-unused-enable",
+          "messages": {
+            "unused": "ESLint rules are re-enabled but those have not been disabled.",
+            "unusedRule": "'{{ruleId}}' rule is re-enabled but it has not been disabled."
+          }
+        },
+        {
+          "name": "no-use",
+          "description": "disallow ESLint directive-comments",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments#no-use",
+          "messages": {
+            "disallow": "Unexpected ESLint directive comment."
+          }
+        },
+        {
+          "name": "require-description",
+          "description": "require include descriptions in ESLint directive-comments",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/eslint-comments#require-description",
+          "messages": {
+            "missingDescription": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary."
+          }
+        }
+      ]
+    },
+    {
       "plugin": "functional",
       "npm": "@oxlint-plugins/oxlint-plugin-functional",
       "description": "Rust-backed Oxlint plugin port of eslint-plugin-functional.",

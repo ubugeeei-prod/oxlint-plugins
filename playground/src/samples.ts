@@ -50,4 +50,14 @@ export function Counter() {
 }
 `,
   },
+  {
+    label: 'ESLint comments',
+    filename: 'directives.js',
+    code: `/* eslint-disable */
+const cp = require('child_process');
+
+// eslint-disable-next-line security/detect-child-process
+cp.exec(userInput);
+`,
+  },
 ];
