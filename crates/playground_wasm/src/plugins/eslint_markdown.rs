@@ -43,27 +43,27 @@ pub fn scan(
         }
         let mut data: BTreeMap<&'static str, String> = BTreeMap::new();
         let d = diagnostic.data;
-        push(&mut data, "lang", d.lang);
-        push(&mut data, "name", d.name);
-        push(&mut data, "identifier", d.identifier);
-        push(&mut data, "label", d.label);
+        super::push(&mut data, "lang", d.lang);
+        super::push(&mut data, "name", d.name);
+        super::push(&mut data, "identifier", d.identifier);
+        super::push(&mut data, "label", d.label);
         if let Some(value) = d.first_line {
             data.insert("firstLine", value.to_string());
         }
-        push(&mut data, "firstLabel", d.first_label);
+        super::push(&mut data, "firstLabel", d.first_label);
         if let Some(value) = d.from_level {
             data.insert("fromLevel", value.to_string());
         }
         if let Some(value) = d.to_level {
             data.insert("toLevel", value.to_string());
         }
-        push(&mut data, "position", d.position);
-        push(&mut data, "text", d.text);
+        super::push(&mut data, "position", d.position);
+        super::push(&mut data, "text", d.text);
         // The native diagnostic carries the node kind as `linkType`; upstream
         // reports it under the `type` placeholder (see index.js `dataForReport`).
-        push(&mut data, "type", d.link_type);
-        push(&mut data, "prefix", d.prefix);
-        push(&mut data, "fragment", d.fragment);
+        super::push(&mut data, "type", d.link_type);
+        super::push(&mut data, "prefix", d.prefix);
+        super::push(&mut data, "fragment", d.fragment);
         if let Some(value) = d.expected_cells {
             data.insert("expectedCells", value.to_string());
         }
@@ -80,15 +80,5 @@ pub fn scan(
             end_line: diagnostic.loc.end_line,
             end_column: diagnostic.loc.end_column,
         });
-    }
-}
-
-fn push(
-    data: &mut BTreeMap<&'static str, String>,
-    key: &'static str,
-    value: Option<CompactString>,
-) {
-    if let Some(value) = value {
-        data.insert(key, value.as_str().to_owned());
     }
 }

@@ -2,7 +2,6 @@
 
 use std::collections::BTreeMap;
 
-use oxlint_plugins_carton::CompactString;
 use oxlint_plugins_sonarjs as core;
 
 use super::EnabledFilter;
@@ -33,8 +32,8 @@ pub fn scan(
         }
         let mut data: BTreeMap<&'static str, String> = BTreeMap::new();
         let d = diagnostic.data;
-        push(&mut data, "value", d.value);
-        push(&mut data, "format", d.format);
+        super::push(&mut data, "value", d.value);
+        super::push(&mut data, "format", d.format);
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,
             rule: diagnostic.rule_name.to_owned(),
@@ -45,15 +44,5 @@ pub fn scan(
             end_line: diagnostic.loc.end_line,
             end_column: diagnostic.loc.end_column,
         });
-    }
-}
-
-fn push(
-    data: &mut BTreeMap<&'static str, String>,
-    key: &'static str,
-    value: Option<CompactString>,
-) {
-    if let Some(value) = value {
-        data.insert(key, value.as_str().to_owned());
     }
 }

@@ -250,9 +250,6 @@ importers:
 
   playground:
     dependencies:
-      '@codemirror/lang-css':
-        specifier: ^6.3.1
-        version: 6.3.1
       '@codemirror/lang-javascript':
         specifier: ^6.2.4
         version: 6.2.5

@@ -484,6 +484,14 @@ input[type='checkbox'] {
   color: var(--ink-soft);
 }
 
+.diag-error {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--diag);
+  word-break: break-word;
+}
+
 /* Loading + responsive ---------------------------------------------------- */
 
 .loading {

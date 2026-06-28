@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
 
 # Allow the workflow to publish to GitHub Pages.
@@ -48,12 +49,19 @@ jobs:
       - name: Build playground
         run: pnpm --filter @oxlint-plugins/playground build
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Typecheck playground
+        run: pnpm exec tsgo -p playground/tsconfig.json
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: playground/dist
 
   deploy:
     name: Deploy
+    # Only publish from the default branch; pull requests just build to validate.
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:

@@ -2,7 +2,6 @@
 
 use std::collections::BTreeMap;
 
-use oxlint_plugins_carton::CompactString;
 use oxlint_plugins_security as core;
 
 use super::EnabledFilter;
@@ -32,14 +31,14 @@ pub fn scan(
         }
         let mut data: BTreeMap<&'static str, String> = BTreeMap::new();
         let d = diagnostic.data;
-        push(&mut data, "text", d.text);
-        push(&mut data, "method", d.method);
-        push(&mut data, "packageName", d.package_name);
-        push(&mut data, "fnName", d.fn_name);
-        push(&mut data, "indices", d.indices);
-        push(&mut data, "side", d.side);
-        push(&mut data, "value", d.value);
-        push(&mut data, "argumentType", d.argument_type);
+        super::push(&mut data, "text", d.text);
+        super::push(&mut data, "method", d.method);
+        super::push(&mut data, "packageName", d.package_name);
+        super::push(&mut data, "fnName", d.fn_name);
+        super::push(&mut data, "indices", d.indices);
+        super::push(&mut data, "side", d.side);
+        super::push(&mut data, "value", d.value);
+        super::push(&mut data, "argumentType", d.argument_type);
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,
             rule: diagnostic.rule_name.to_owned(),
@@ -50,15 +49,5 @@ pub fn scan(
             end_line: diagnostic.loc.end_line,
             end_column: diagnostic.loc.end_column,
         });
-    }
-}
-
-fn push(
-    data: &mut BTreeMap<&'static str, String>,
-    key: &'static str,
-    value: Option<CompactString>,
-) {
-    if let Some(value) = value {
-        data.insert(key, value.as_str().to_owned());
     }
 }

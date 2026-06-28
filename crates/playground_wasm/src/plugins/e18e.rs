@@ -33,20 +33,20 @@ pub fn scan(
         }
         let mut data: BTreeMap<&'static str, String> = BTreeMap::new();
         let d = diagnostic.data;
-        push(&mut data, "array", d.array);
-        push(&mut data, "index", d.index);
-        push(&mut data, "item", d.item);
-        push(&mut data, "length", d.length);
-        push(&mut data, "value", d.value);
-        push(&mut data, "iterable", d.iterable);
-        push(&mut data, "mapper", d.mapper);
-        push(&mut data, "regex", d.regex);
-        push(&mut data, "string", d.string);
-        push(&mut data, "original", d.original);
-        push(&mut data, "name", d.name);
-        push(&mut data, "replacement", d.replacement);
-        push(&mut data, "url", d.url);
-        push(&mut data, "description", d.description);
+        super::push(&mut data, "array", d.array);
+        super::push(&mut data, "index", d.index);
+        super::push(&mut data, "item", d.item);
+        super::push(&mut data, "length", d.length);
+        super::push(&mut data, "value", d.value);
+        super::push(&mut data, "iterable", d.iterable);
+        super::push(&mut data, "mapper", d.mapper);
+        super::push(&mut data, "regex", d.regex);
+        super::push(&mut data, "string", d.string);
+        super::push(&mut data, "original", d.original);
+        super::push(&mut data, "name", d.name);
+        super::push(&mut data, "replacement", d.replacement);
+        super::push(&mut data, "url", d.url);
+        super::push(&mut data, "description", d.description);
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,
             rule: diagnostic.rule_name.to_owned(),
@@ -99,14 +99,4 @@ fn default_banned_dependencies() -> oxlint_plugins_carton::SmallVec<[core::BanDe
         )),
     });
     banned
-}
-
-fn push(
-    data: &mut BTreeMap<&'static str, String>,
-    key: &'static str,
-    value: Option<CompactString>,
-) {
-    if let Some(value) = value {
-        data.insert(key, value.as_str().to_owned());
-    }
 }

@@ -130,6 +130,9 @@ for (const { plugin: pluginName, rules } of wasmPlugins) {
   }
   const dir = nameToDir.get(pluginName);
   if (!dir) {
+    console.warn(
+      `[catalog] No npm directory matched plugin "${pluginName}"; emitting it without descriptions or messages.`,
+    );
     catalogPlugins.push({
       plugin: pluginName,
       npm: null,
@@ -144,7 +147,14 @@ for (const { plugin: pluginName, rules } of wasmPlugins) {
   } catch {
     pkg = {};
   }
-  const plugin = loadPlugin(dir, rules);
+  // Mirror the first pass's resilience: a plugin that throws when required with
+  // real rule names degrades to empty metadata instead of failing the build.
+  let plugin = null;
+  try {
+    plugin = loadPlugin(dir, rules);
+  } catch (error) {
+    console.warn(`[catalog] Failed to load "${dir}" for metadata: ${String(error)}`);
+  }
   const ruleEntries = rules.map((name) => {
     const meta = plugin?.rules?.[name]?.meta ?? {};
     const docs = meta.docs ?? {};

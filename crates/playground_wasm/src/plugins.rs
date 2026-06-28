@@ -3,9 +3,22 @@
 
 use std::collections::BTreeMap;
 
+use oxlint_plugins_carton::CompactString;
 use serde::Serialize;
 
 use crate::{PlaygroundDiagnostic, PluginInfo};
+
+/// Inserts a diagnostic data value into `data` under `key` when it is present.
+/// Shared by every adapter so the data-mapping convention lives in one place.
+pub(super) fn push(
+    data: &mut BTreeMap<&'static str, String>,
+    key: &'static str,
+    value: Option<CompactString>,
+) {
+    if let Some(value) = value {
+        data.insert(key, value.as_str().to_owned());
+    }
+}
 
 mod angular_eslint;
 mod cypress;
@@ -219,6 +232,19 @@ fn extension(filename: &str) -> &str {
         Some((_, ext)) => ext,
         None => "",
     }
+}
+
+/// Returns the source language for a file name (`javascript`, `json`,
+/// `markdown`, or `""`). The UI calls this so the editor and the rule scoping
+/// share one authoritative extension map.
+pub fn language_for_filename(filename: &str) -> &'static str {
+    let ext = extension(filename).to_ascii_lowercase();
+    for language in [Language::JavaScript, Language::Json, Language::Markdown] {
+        if language.matches_extension(&ext) {
+            return language.as_str();
+        }
+    }
+    ""
 }
 
 /// Runs the enabled plugins over `source_text` and collects diagnostics.

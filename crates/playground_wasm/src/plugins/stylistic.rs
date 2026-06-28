@@ -38,19 +38,23 @@ pub fn scan(
 ) {
     // The NAPI wrapper batches per-rule options into one native pass via
     // `runNativeStylisticLint(sourceText, { rules: config })`. The playground has
-    // no per-rule configuration, so we mirror the wrapper's default path: every
-    // implemented rule with empty options (`[]`, the `currentRuleOptions` default
-    // when `context.options` is empty), and apply rule selection through
-    // `filter`. Stylistic works on raw bytes and lines, so `filename` is unused.
+    // no per-rule configuration, so we mirror the wrapper's default path (empty
+    // options, the `currentRuleOptions` default when `context.options` is empty)
+    // but pass only the enabled rules to the core so it never runs disabled ones.
+    // Stylistic works on raw bytes and lines, so `filename` is unused.
     let config = core::StylisticRunConfig {
         rules: core::stylistic_rule_metas()
             .into_iter()
+            .filter(|meta| filter.rule_enabled(PLUGIN, &meta.name))
             .map(|meta| core::StylisticRuleConfig {
                 name: meta.name,
                 options: Value::Array(Vec::new()),
             })
             .collect(),
     };
+    if config.rules.is_empty() {
+        return;
+    }
 
     // `run_stylistic_lint` returns `Result<_, String>`; the npm wrapper surfaces
     // the error to JS. The playground simply reports nothing on failure.
@@ -60,16 +64,13 @@ pub fn scan(
 
     let line_starts = line_starts(source_text);
     for diagnostic in diagnostics {
-        if !filter.rule_enabled(PLUGIN, &diagnostic.rule_name) {
-            continue;
-        }
         // Stylistic renders each message in Rust and exposes no placeholder data,
         // and every message template is a fixed string (no `{{placeholder}}`), so
         // the data map is always empty.
         let data: BTreeMap<&'static str, String> = BTreeMap::new();
         // The core diagnostic carries a UTF-8 byte range rather than line/column
         // loc fields. Convert both ends to the playground's 1-based line /
-        // 0-based UTF-16 column convention (matching `security::LineIndex`).
+        // 0-based UTF-16 column convention.
         let (start_line, start_column) =
             position_for_offset(source_text, &line_starts, diagnostic.range.start);
         let (end_line, end_column) =

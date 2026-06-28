@@ -10,7 +10,11 @@ import {
 import { javascript } from '@codemirror/lang-javascript';
 import { json } from '@codemirror/lang-json';
 import { markdown } from '@codemirror/lang-markdown';
-import init, { lint, list_rules } from './wasm/oxlint_plugins_playground_wasm.js';
+import init, {
+  lint,
+  list_rules,
+  language_for_filename,
+} from './wasm/oxlint_plugins_playground_wasm.js';
 import wasmUrl from './wasm/oxlint_plugins_playground_wasm_bg.wasm?url';
 import catalogData from './catalog.json';
 import { samples, type Sample } from './samples';
@@ -50,7 +54,7 @@ type Diagnostic = {
 
 const catalog = catalogData as Catalog;
 
-// Quick lookups for rule metadata.
+// Quick lookup for rule metadata, keyed by `plugin/rule` for O(1) access.
 const ruleMeta = new Map<string, RuleMeta>();
 for (const plugin of catalog.plugins) {
   for (const rule of plugin.rules) {
@@ -152,8 +156,10 @@ function renderMessage(diagnostic: Diagnostic): string {
     // message string), then to the message id.
     return diagnostic.data.message ?? diagnostic.message_id;
   }
+  // Drop any placeholder the adapter didn't populate rather than leaking a raw
+  // `{{token}}` to the user.
   return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (_match, key: string) =>
-    key in diagnostic.data ? diagnostic.data[key] : `{{${key}}}`,
+    key in diagnostic.data ? diagnostic.data[key] : '',
   );
 }
 
@@ -233,9 +239,12 @@ function buttonLink(label: string, onClick: () => void): HTMLButtonElement {
 const languageConf = new Compartment();
 
 function languageExtension(name: string) {
+  // The WASM module owns the authoritative extension → language map; the editor
+  // only adds the jsx/typescript flags CodeMirror needs.
+  const language = language_for_filename(name);
+  if (language === 'json') return json();
+  if (language === 'markdown') return markdown();
   const ext = name.includes('.') ? name.slice(name.lastIndexOf('.') + 1).toLowerCase() : '';
-  if (ext === 'json' || ext === 'jsonc' || ext === 'json5') return json();
-  if (ext === 'md' || ext === 'markdown') return markdown();
   return javascript({
     jsx: ext === 'jsx' || ext === 'tsx',
     typescript: ext === 'ts' || ext === 'tsx' || ext === 'cts' || ext === 'mts',
@@ -248,16 +257,26 @@ function offsetFor(doc: Text, line: number, column: number): number {
   return Math.min(lineInfo.from + Math.max(column, 0), lineInfo.to);
 }
 
+// The document offset range [from, to] a diagnostic covers.
+function rangeFor(doc: Text, diagnostic: Diagnostic): { from: number; to: number } {
+  const from = offsetFor(doc, diagnostic.start_line, diagnostic.start_column);
+  const to = Math.max(from, offsetFor(doc, diagnostic.end_line, diagnostic.end_column));
+  return { from, to };
+}
+
+type LintResult = { diagnostics: Diagnostic[]; error: string | null };
+
 // The single source of truth for diagnostics: the WASM linter. CodeMirror calls
 // this on edits (and we force it on toggles), and we mirror the results into the
 // Problems panel so the inline markers and the list always agree.
-function computeDiagnostics(doc: Text): Diagnostic[] {
+function computeDiagnostics(doc: Text): LintResult {
   const enabledJson = buildEnabledJson();
-  if (enabledJson === '') return [];
+  if (enabledJson === '') return { diagnostics: [], error: null };
   try {
-    return JSON.parse(lint(doc.toString(), filename, enabledJson)) as Diagnostic[];
-  } catch {
-    return [];
+    const diagnostics = JSON.parse(lint(doc.toString(), filename, enabledJson)) as Diagnostic[];
+    return { diagnostics, error: null };
+  } catch (error) {
+    return { diagnostics: [], error: error instanceof Error ? error.message : String(error) };
   }
 }
 
@@ -267,15 +286,17 @@ const refreshLint = StateEffect.define<null>();
 
 const wasmLinter = linter(
   (view) => {
-    const diagnostics = computeDiagnostics(view.state.doc);
-    diagnostics.sort((a, b) => a.start_line - b.start_line || a.start_column - b.start_column);
-    renderProblems(view, diagnostics);
-    return diagnostics.map((diagnostic): CmDiagnostic => {
-      const from = offsetFor(view.state.doc, diagnostic.start_line, diagnostic.start_column);
-      const to = Math.max(
-        from,
-        offsetFor(view.state.doc, diagnostic.end_line, diagnostic.end_column),
-      );
+    const result = computeDiagnostics(view.state.doc);
+    result.diagnostics.sort(
+      (a, b) => a.start_line - b.start_line || a.start_column - b.start_column,
+    );
+    renderProblems(view, result);
+    if (result.error) {
+      console.error('Playground lint failed:', result.error);
+      return [];
+    }
+    return result.diagnostics.map((diagnostic): CmDiagnostic => {
+      const { from, to } = rangeFor(view.state.doc, diagnostic);
       return {
         from,
         to,
@@ -358,10 +379,9 @@ function renderTree(): void {
   let shown = 0;
 
   for (const plugin of listing) {
-    const meta = catalog.plugins.find((entry) => entry.plugin === plugin.plugin);
     const matchingRules = plugin.rules.filter((rule) => {
       if (!query) return true;
-      const description = meta?.rules.find((r) => r.name === rule)?.description ?? '';
+      const description = ruleMeta.get(`${plugin.plugin}/${rule}`)?.description ?? '';
       return (
         rule.toLowerCase().includes(query) ||
         plugin.plugin.toLowerCase().includes(query) ||
@@ -417,7 +437,7 @@ function renderTree(): void {
     const rulesEl = el('div', { class: 'rules' });
     for (const rule of matchingRules) {
       const on = enabledSet.has(rule);
-      const ruleInfo = meta?.rules.find((r) => r.name === rule);
+      const ruleInfo = ruleMeta.get(`${plugin.plugin}/${rule}`);
       // The whole row is the toggle. The checkbox is a visual indicator only
       // (clicks/keyboard go through the row) so there is one source of truth.
       const row = el('div', {
@@ -495,9 +515,20 @@ function buildEnabledJson(): string {
   return any ? JSON.stringify(payload) : '';
 }
 
-function renderProblems(editor: EditorView, diagnostics: Diagnostic[]): void {
-  diagCount.textContent = `${diagnostics.length} ${diagnostics.length === 1 ? 'problem' : 'problems'}`;
+function renderProblems(editor: EditorView, result: LintResult): void {
+  const { diagnostics, error } = result;
   diagList.innerHTML = '';
+  if (error) {
+    diagCount.textContent = 'error';
+    diagList.append(
+      el('div', { class: 'empty' }, [
+        el('strong', {}, ['The linter failed to run.']),
+        el('div', { class: 'diag-error' }, [error]),
+      ]),
+    );
+    return;
+  }
+  diagCount.textContent = `${diagnostics.length} ${diagnostics.length === 1 ? 'problem' : 'problems'}`;
   if (diagnostics.length === 0) {
     diagList.append(
       el('div', { class: 'empty' }, [
@@ -518,11 +549,7 @@ function renderProblems(editor: EditorView, diagnostics: Diagnostic[]): void {
       ]),
     ]);
     item.addEventListener('click', () => {
-      const from = offsetFor(editor.state.doc, diagnostic.start_line, diagnostic.start_column);
-      const to = Math.max(
-        from,
-        offsetFor(editor.state.doc, diagnostic.end_line, diagnostic.end_column),
-      );
+      const { from, to } = rangeFor(editor.state.doc, diagnostic);
       editor.dispatch({
         selection: { anchor: from, head: to },
         effects: EditorView.scrollIntoView(from, { y: 'center' }),
@@ -553,9 +580,11 @@ sampleSelect.addEventListener('change', () => {
   relint();
 });
 
+let searchTimer = 0;
 searchInput.addEventListener('input', () => {
   search = searchInput.value;
-  renderTree();
+  window.clearTimeout(searchTimer);
+  searchTimer = window.setTimeout(renderTree, 120);
 });
 
 // ---- First paint ---------------------------------------------------------
