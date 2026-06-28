@@ -39,6 +39,9 @@ export default defineConfig({
       'upstream/**',
       'npm/**/native.js',
       'npm/**/native.d.ts',
+      'playground/src/wasm/**',
+      'playground/src/catalog.json',
+      'playground/dist/**',
     ],
     singleQuote: true,
     semi: true,
@@ -59,6 +62,10 @@ export default defineConfig({
       'upstream/**',
       'npm/**/native.js',
       'npm/**/native.d.ts',
+      // The playground imports a generated (gitignored) WASM module, so the
+      // type-aware lint can't resolve it without a build. It has its own tsgo
+      // typecheck in the deploy-playground workflow instead.
+      'playground/**',
     ],
     options: {
       typeAware: true,

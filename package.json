@@ -28,7 +28,8 @@
   },
   "workspaces": [
     "docs/site",
-    "npm/*"
+    "npm/*",
+    "playground"
   ],
   "type": "module",
   "scripts": {
@@ -36,7 +37,7 @@
     "bench:check": "cargo bench --workspace --no-run",
     "bench:comment": "node tools/tasks/format-bench-comment.ts bench-output.txt > bench-comment.md",
     "build:rust": "cargo build --workspace --all-features",
-    "build:workspace": "pnpm --recursive --if-present build",
+    "build:workspace": "pnpm --recursive --if-present --filter=!@oxlint-plugins/playground build",
     "docs:build": "pnpm --filter @oxlint-plugins/docs build",
     "docs:dev": "pnpm --filter @oxlint-plugins/docs dev",
     "docs:readme": "node tools/tasks/generate-readme-coverage.ts",

@@ -1,0 +1,54 @@
+[package]
+name = "oxlint-plugins-playground-wasm"
+description = "WebAssembly aggregator that runs the Rust-backed oxlint plugin rule logic in the browser playground."
+# Literal package fields (not `*.workspace = true`): wasm-pack parses this
+# manifest directly and rejects workspace-inherited values for these keys.
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/ubugeeei-prod/oxlint-plugins"
+rust-version = "1.96"
+version = "0.0.0"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "oxlint_plugins_playground_wasm"
+
+# Skip wasm-opt: modern rustc emits wasm features (bulk-memory, sign-ext, …)
+# that older bundled wasm-opt builds reject, and it varies by CI environment.
+# The wasm-bindgen output is already gzip-friendly, so correctness wins here.
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[dependencies]
+oxlint-plugins-angular-eslint.workspace = true
+oxlint-plugins-carton.workspace = true
+oxlint-plugins-cypress.workspace = true
+oxlint-plugins-e18e.workspace = true
+oxlint-plugins-eslint-json.workspace = true
+oxlint-plugins-eslint-markdown.workspace = true
+oxlint-plugins-functional.workspace = true
+oxlint-plugins-mocha.workspace = true
+oxlint-plugins-perfectionist.workspace = true
+oxlint-plugins-playwright.workspace = true
+oxlint-plugins-regexp.workspace = true
+oxlint-plugins-security.workspace = true
+oxlint-plugins-simple-import-sort.workspace = true
+oxlint-plugins-sonarjs.workspace = true
+oxlint-plugins-storybook.workspace = true
+oxlint-plugins-stylistic.workspace = true
+oxlint-plugins-testing-library.workspace = true
+oxlint-plugins-unocss.workspace = true
+oxlint-plugins-unused-imports.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+wasm-bindgen.workspace = true
+
+[lints.rust]
+unused_must_use = "deny"
+
+[lints.clippy]
+dbg_macro = "deny"
+disallowed_types = "warn"
+todo = "deny"
+unwrap_used = "deny"

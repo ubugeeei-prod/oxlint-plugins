@@ -224,7 +224,9 @@ vp run release patch
 
 - `crates/_carton`: shared allocation and fast-hash primitives.
 - `crates/stylistic`: stylistic-domain Rust rule logic. Add future domains like `import`, `react`, or `security` instead of one crate per rule.
+- `crates/playground_wasm`: WebAssembly aggregator that exposes the wasm-compatible plugin cores to the browser playground.
 - `npm/*`: individually installable npm packages, including oxlint plugins and shared JS helpers.
+- `playground`: browser playground (Vite + CodeMirror) that runs the rules through WebAssembly.
 - `examples/*`: small usage examples outside the npm workspace graph.
 - `docs/site`: ox-content + Void SDK website with rule status pages.
 - `docs/guides`: project policy and contributor guides rendered by the website.
@@ -283,3 +285,22 @@ vp run status:sync
 ```
 
 The status page is generated from `status.json`.
+
+## Playground
+
+`playground/` is a browser playground that runs the Rust-backed rules through
+WebAssembly. Paste code, toggle rules per package, and see diagnostics inline.
+The code, file name, and rule selection are stored in the URL hash so a link
+reproduces the exact state (handy for bug reports).
+
+```sh
+pnpm --filter @oxlint-plugins/playground dev
+pnpm --filter @oxlint-plugins/playground build
+```
+
+`crates/playground_wasm` aggregates every wasm-compatible plugin core into one
+module compiled with `wasm-pack`. It is excluded from the recursive workspace
+build, so `vp build` does not require the wasm toolchain; it is built and
+deployed to GitHub Pages by `.github/workflows/deploy-playground.yml`. See
+`playground/README.md` for details, including the two plugins it cannot run
+(`postgresql` and `eslint-comments`).
