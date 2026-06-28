@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/typescript-eslint/typescript-eslint |
-| Submodule | `upstream/typescript-eslint` @ `v8.61.0` (`packages/eslint-plugin`) |
-| Baseline npm version | `8.61.0` |
+| Submodule | `upstream/typescript-eslint` @ `v8.62.0` (`packages/eslint-plugin`) |
+| Baseline npm version | `8.62.0` |
 | License | MIT |
 | Oxlint native support | partial — 127 rule(s) covered by Oxlint natively and excluded from this inventory |
 | Rules to port | 7 |

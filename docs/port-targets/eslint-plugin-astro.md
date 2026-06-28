@@ -5,11 +5,11 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/ota-meshi/eslint-plugin-astro |
-| Submodule | `upstream/eslint-plugin-astro` @ `v1.7.0` |
-| Baseline npm version | `1.7.0` |
+| Submodule | `upstream/eslint-plugin-astro` @ `v2.1.1` |
+| Baseline npm version | `2.1.1` |
 | License | MIT |
 | Oxlint native support | none — port target |
-| Rules to port | 19 |
+| Rules to port | 20 |
 
 > Lints .astro files via astro-eslint-parser; full parity depends on that parser (cf. eslint-plugin-svelte / eslint-plugin-vue, which are excluded, and @unocss/eslint-plugin).
 
@@ -24,15 +24,16 @@
 | 5 | `no-deprecated-astro-resolve` | disallow using deprecated `Astro.resolve()` | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-deprecated-astro-resolve/) |
 | 6 | `no-deprecated-getentrybyslug` | disallow using deprecated `getEntryBySlug()` | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-deprecated-getentrybyslug/) |
 | 7 | `no-exports-from-components` | disallow value export | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-exports-from-components/) |
-| 8 | `no-prerender-export-outside-pages` | disallow `prerender` export outside of pages/ directory | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-prerender-export-outside-pages/) |
-| 9 | `no-set-html-directive` | disallow use of `set:html` to prevent XSS attack | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-set-html-directive/) |
-| 10 | `no-set-text-directive` | disallow use of `set:text` | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-set-text-directive/) |
-| 11 | `no-unsafe-inline-scripts` | disallow inline `<script>` without `src` to encourage CSP-safe patterns | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-unsafe-inline-scripts/) |
-| 12 | `no-unused-css-selector` | disallow selectors defined in `style` tag that don't use in HTML | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-unused-css-selector/) |
-| 13 | `no-unused-define-vars-in-style` | disallow unused `define:vars={...}` in `style` tag | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-unused-define-vars-in-style/) |
-| 14 | `prefer-class-list-directive` | require `class:list` directives instead of `class` with expressions | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/prefer-class-list-directive/) |
-| 15 | `prefer-object-class-list` | require use object instead of ternary expression in `class:list` | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/prefer-object-class-list/) |
-| 16 | `prefer-split-class-list` | require use split array elements in `class:list` | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/prefer-split-class-list/) |
-| 17 | `semi` | Require or disallow semicolons instead of ASI | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/semi/) |
-| 18 | `sort-attributes` | enforce sorting of attributes | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/sort-attributes/) |
-| 19 | `valid-compile` | disallow warnings when compiling. | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/valid-compile/) |
+| 8 | `no-omitted-end-tags` | disallow omitted end tags | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-omitted-end-tags/) |
+| 9 | `no-prerender-export-outside-pages` | disallow `prerender` export outside of pages/ directory | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-prerender-export-outside-pages/) |
+| 10 | `no-set-html-directive` | disallow use of `set:html` to prevent XSS attack | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-set-html-directive/) |
+| 11 | `no-set-text-directive` | disallow use of `set:text` | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-set-text-directive/) |
+| 12 | `no-unsafe-inline-scripts` | disallow inline `<script>` without `src` to encourage CSP-safe patterns | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-unsafe-inline-scripts/) |
+| 13 | `no-unused-css-selector` | disallow selectors defined in `style` tag that don't use in HTML | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-unused-css-selector/) |
+| 14 | `no-unused-define-vars-in-style` | disallow unused `define:vars={...}` in `style` tag | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/no-unused-define-vars-in-style/) |
+| 15 | `prefer-class-list-directive` | require `class:list` directives instead of `class` with expressions | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/prefer-class-list-directive/) |
+| 16 | `prefer-object-class-list` | require use object instead of ternary expression in `class:list` | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/prefer-object-class-list/) |
+| 17 | `prefer-split-class-list` | require use split array elements in `class:list` | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/prefer-split-class-list/) |
+| 18 | `semi` | Require or disallow semicolons instead of ASI | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/semi/) |
+| 19 | `sort-attributes` | enforce sorting of attributes | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/sort-attributes/) |
+| 20 | `valid-compile` | disallow warnings when compiling. | [docs](https://ota-meshi.github.io/eslint-plugin-astro/rules/valid-compile/) |

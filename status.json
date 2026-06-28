@@ -2064,6 +2064,38 @@
           "oxlintIntegration": true
         },
         "notes": "Rust/Oxc port of @e18e/eslint-plugin/ban-dependencies; native diagnostics and representative fixes are covered by Vitest, with adapter and oxlint jsPlugins smoke coverage."
+      },
+      {
+        "name": "prefer-flatmap-over-map-flat",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule prefer-flatmap-over-map-flat."
+      },
+      {
+        "name": "prefer-get-or-insert",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule prefer-get-or-insert."
       }
     ]
   },
@@ -13370,6 +13402,118 @@
           "oxlintIntegration": true
         },
         "notes": "Pending port of upstream rule xpath (Sonar key S4817). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+      },
+      {
+        "name": "async-test-assertions",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule async-test-assertions (Sonar key S8780). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+      },
+      {
+        "name": "hooks-before-test-cases",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule hooks-before-test-cases (Sonar key S8782). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+      },
+      {
+        "name": "no-duplicate-test-title",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-duplicate-test-title (Sonar key S8754). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+      },
+      {
+        "name": "no-empty-test-title",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-empty-test-title (Sonar key S8781). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+      },
+      {
+        "name": "no-floating-point-equality",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-floating-point-equality (Sonar key S1244). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+      },
+      {
+        "name": "no-forced-browser-interaction",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-forced-browser-interaction (Sonar key S8783). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
+      },
+      {
+        "name": "super-linear-regex",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule super-linear-regex (Sonar key S8786). SonarJS upstream is LGPL-3.0; this port is clean-room from observed behavior only — never copy upstream source, fixtures, tests, or messages."
       }
     ]
   },
