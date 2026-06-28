@@ -38,7 +38,7 @@ oxlint-plugins-playwright.workspace = true
 # A direct path dep (not `workspace = true`) so we can disable default features:
 # that drops the libpg_query C parser, which has no wasm32 build. The browser
 # supplies a parse tree from @libpg-query/parser instead.
-oxlint-plugins-postgresql = { path = "../postgresql", default-features = false }
+oxlint-plugins-postgresql = { path = "../postgresql", version = "0.0.0", default-features = false }
 oxlint-plugins-regexp.workspace = true
 oxlint-plugins-security.workspace = true
 oxlint-plugins-simple-import-sort.workspace = true
