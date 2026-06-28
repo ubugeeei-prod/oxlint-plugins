@@ -8,113 +8,58 @@
 | Submodule | `upstream/eslint-plugin-react` @ `v7.37.5` |
 | Baseline npm version | `7.37.5` |
 | License | MIT |
-| Oxlint native support | none — port target |
-| Rules to port | 103 |
+| Oxlint native support | partial — 57 rule(s) covered by Oxlint natively and excluded from this inventory |
+| Rules to port | 46 |
+
+> Oxlint's native `react` plugin covers 57 of these rules; only the 46 rules Oxlint does not implement natively are tracked here as port targets. The covered rules are listed in `oxlintCovered` and excluded from the inventory.
 
 ## Rules
 
 | # | Rule | Description | Docs |
 |---|------|-------------|------|
 | 1 | `boolean-prop-naming` | Enforces consistent naming for boolean props | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/boolean-prop-naming.md) |
-| 2 | `button-has-type` | Disallow usage of `button` elements without an explicit `type` attribute | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/button-has-type.md) |
-| 3 | `checked-requires-onchange-or-readonly` | Enforce using `onChange` or `readonly` attribute when `checked` is used | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/checked-requires-onchange-or-readonly.md) |
-| 4 | `default-props-match-prop-types` | Enforce all defaultProps have a corresponding non-required PropType | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/default-props-match-prop-types.md) |
-| 5 | `destructuring-assignment` | Enforce consistent usage of destructuring assignment of props, state, and context | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/destructuring-assignment.md) |
-| 6 | `display-name` | Disallow missing displayName in a React component definition | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/display-name.md) |
-| 7 | `forbid-component-props` | Disallow certain props on components | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-component-props.md) |
-| 8 | `forbid-dom-props` | Disallow certain props on DOM Nodes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-dom-props.md) |
-| 9 | `forbid-elements` | Disallow certain elements | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-elements.md) |
-| 10 | `forbid-foreign-prop-types` | Disallow using another component\'s propTypes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-foreign-prop-types.md) |
-| 11 | `forbid-prop-types` | Disallow certain propTypes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-prop-types.md) |
-| 12 | `forward-ref-uses-ref` | Require all forwardRef components include a ref parameter | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forward-ref-uses-ref.md) |
-| 13 | `function-component-definition` | Enforce a specific function type for function components | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/function-component-definition.md) |
-| 14 | `hook-use-state` | Ensure destructuring and symmetric naming of useState hook value and setter variables | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/hook-use-state.md) |
-| 15 | `iframe-missing-sandbox` | Enforce sandbox attribute on iframe elements | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/iframe-missing-sandbox.md) |
-| 16 | `jsx-boolean-value` | Enforce boolean attributes notation in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-boolean-value.md) |
-| 17 | `jsx-child-element-spacing` | Enforce or disallow spaces inside of curly braces in JSX attributes and expressions | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-child-element-spacing.md) |
-| 18 | `jsx-closing-bracket-location` | Enforce closing bracket location in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-closing-bracket-location.md) |
-| 19 | `jsx-closing-tag-location` | Enforce closing tag location for multiline JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-closing-tag-location.md) |
-| 20 | `jsx-curly-brace-presence` | Disallow unnecessary JSX expressions when literals alone are sufficient or enforce JSX expressions on literals in JSX children or attributes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-curly-brace-presence.md) |
-| 21 | `jsx-curly-newline` | Enforce consistent linebreaks in curly braces in JSX attributes and expressions | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-curly-newline.md) |
-| 22 | `jsx-curly-spacing` | Enforce or disallow spaces inside of curly braces in JSX attributes and expressions | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-curly-spacing.md) |
-| 23 | `jsx-equals-spacing` | Enforce or disallow spaces around equal signs in JSX attributes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-equals-spacing.md) |
-| 24 | `jsx-filename-extension` | Disallow file extensions that may contain JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-filename-extension.md) |
-| 25 | `jsx-first-prop-new-line` | Enforce proper position of the first property in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-first-prop-new-line.md) |
-| 26 | `jsx-fragments` | Enforce shorthand or standard form for React fragments | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-fragments.md) |
-| 27 | `jsx-handler-names` | Enforce event handler naming conventions in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-handler-names.md) |
-| 28 | `jsx-indent` | Enforce JSX indentation | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-indent.md) |
-| 29 | `jsx-indent-props` | Enforce props indentation in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-indent-props.md) |
-| 30 | `jsx-key` | Disallow missing `key` props in iterators/collection literals | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-key.md) |
-| 31 | `jsx-max-depth` | Enforce JSX maximum depth | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-max-depth.md) |
-| 32 | `jsx-max-props-per-line` | Enforce maximum of props on a single line in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-max-props-per-line.md) |
-| 33 | `jsx-newline` | Require or prevent a new line after jsx elements and expressions. | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-newline.md) |
-| 34 | `jsx-no-bind` | Disallow `.bind()` or arrow functions in JSX props | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md) |
-| 35 | `jsx-no-comment-textnodes` | Disallow comments from being inserted as text nodes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-comment-textnodes.md) |
-| 36 | `jsx-no-constructed-context-values` | Disallows JSX context provider values from taking values that will cause needless rerenders | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-constructed-context-values.md) |
-| 37 | `jsx-no-duplicate-props` | Disallow duplicate properties in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-duplicate-props.md) |
-| 38 | `jsx-no-leaked-render` | Disallow problematic leaked values from being rendered | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-leaked-render.md) |
-| 39 | `jsx-no-literals` | Disallow usage of string literals in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-literals.md) |
-| 40 | `jsx-no-script-url` | Disallow usage of `javascript:` URLs | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-script-url.md) |
-| 41 | `jsx-no-target-blank` | Disallow `target="_blank"` attribute without `rel="noreferrer"` | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-target-blank.md) |
-| 42 | `jsx-no-undef` | Disallow undeclared variables in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-undef.md) |
-| 43 | `jsx-no-useless-fragment` | Disallow unnecessary fragments | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-useless-fragment.md) |
-| 44 | `jsx-one-expression-per-line` | Require one JSX element per line | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-one-expression-per-line.md) |
-| 45 | `jsx-pascal-case` | Enforce PascalCase for user-defined JSX components | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-pascal-case.md) |
-| 46 | `jsx-props-no-multi-spaces` | Disallow multiple spaces between inline JSX props | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-multi-spaces.md) |
-| 47 | `jsx-props-no-spread-multi` | Disallow JSX prop spreading the same identifier multiple times | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spread-multi.md) |
-| 48 | `jsx-props-no-spreading` | Disallow JSX prop spreading | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md) |
-| 49 | `jsx-sort-default-props` | Enforce defaultProps declarations alphabetical sorting | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-sort-default-props.md) |
-| 50 | `jsx-sort-props` | Enforce props alphabetical sorting | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-sort-props.md) |
-| 51 | `jsx-space-before-closing` | Enforce spacing before closing bracket in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-space-before-closing.md) |
-| 52 | `jsx-tag-spacing` | Enforce whitespace in and around the JSX opening and closing brackets | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-tag-spacing.md) |
-| 53 | `jsx-uses-react` | Disallow React to be incorrectly marked as unused | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-uses-react.md) |
-| 54 | `jsx-uses-vars` | Disallow variables used in JSX to be incorrectly marked as unused | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-uses-vars.md) |
-| 55 | `jsx-wrap-multilines` | Disallow missing parentheses around multiline JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md) |
-| 56 | `no-access-state-in-setstate` | Disallow when this.state is accessed within setState | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-access-state-in-setstate.md) |
-| 57 | `no-adjacent-inline-elements` | Disallow adjacent inline elements not separated by whitespace. | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-adjacent-inline-elements.md) |
-| 58 | `no-array-index-key` | Disallow usage of Array index in keys | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-array-index-key.md) |
-| 59 | `no-arrow-function-lifecycle` | Lifecycle methods should be methods on the prototype, not class fields | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-arrow-function-lifecycle.md) |
-| 60 | `no-children-prop` | Disallow passing of children as props | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-children-prop.md) |
-| 61 | `no-danger` | Disallow usage of dangerous JSX properties | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-danger.md) |
-| 62 | `no-danger-with-children` | Disallow when a DOM element is using both children and dangerouslySetInnerHTML | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-danger-with-children.md) |
-| 63 | `no-deprecated` | Disallow usage of deprecated methods | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-deprecated.md) |
-| 64 | `no-did-mount-set-state` |  | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-did-mount-set-state.md) |
-| 65 | `no-did-update-set-state` |  | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-did-update-set-state.md) |
-| 66 | `no-direct-mutation-state` | Disallow direct mutation of this.state | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-direct-mutation-state.md) |
-| 67 | `no-find-dom-node` | Disallow usage of findDOMNode | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-find-dom-node.md) |
-| 68 | `no-invalid-html-attribute` | Disallow usage of invalid attributes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-invalid-html-attribute.md) |
-| 69 | `no-is-mounted` | Disallow usage of isMounted | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-is-mounted.md) |
-| 70 | `no-multi-comp` | Disallow multiple component definition per file | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-multi-comp.md) |
-| 71 | `no-namespace` | Enforce that namespaces are not used in React elements | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-namespace.md) |
-| 72 | `no-object-type-as-default-prop` | Disallow usage of referential-type variables as default param in functional component | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-object-type-as-default-prop.md) |
-| 73 | `no-redundant-should-component-update` | Disallow usage of shouldComponentUpdate when extending React.PureComponent | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-redundant-should-component-update.md) |
-| 74 | `no-render-return-value` | Disallow usage of the return value of ReactDOM.render | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-render-return-value.md) |
-| 75 | `no-set-state` | Disallow usage of setState | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-set-state.md) |
-| 76 | `no-string-refs` | Disallow using string references | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-string-refs.md) |
-| 77 | `no-this-in-sfc` | Disallow `this` from being used in stateless functional components | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-this-in-sfc.md) |
-| 78 | `no-typos` | Disallow common typos | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-typos.md) |
-| 79 | `no-unescaped-entities` | Disallow unescaped HTML entities from appearing in markup | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unescaped-entities.md) |
-| 80 | `no-unknown-property` | Disallow usage of unknown DOM property | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unknown-property.md) |
-| 81 | `no-unsafe` | Disallow usage of unsafe lifecycle methods | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unsafe.md) |
-| 82 | `no-unstable-nested-components` | Disallow creating unstable components inside components | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unstable-nested-components.md) |
-| 83 | `no-unused-class-component-methods` | Disallow declaring unused methods of component class | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unused-class-component-methods.md) |
-| 84 | `no-unused-prop-types` | Disallow definitions of unused propTypes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unused-prop-types.md) |
-| 85 | `no-unused-state` | Disallow definitions of unused state | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unused-state.md) |
-| 86 | `no-will-update-set-state` |  | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-will-update-set-state.md) |
-| 87 | `prefer-es6-class` | Enforce ES5 or ES6 class for React Components | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-es6-class.md) |
-| 88 | `prefer-exact-props` | Prefer exact proptype definitions | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-exact-props.md) |
-| 89 | `prefer-read-only-props` | Enforce that props are read-only | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-read-only-props.md) |
-| 90 | `prefer-stateless-function` | Enforce stateless components to be written as a pure function | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-stateless-function.md) |
-| 91 | `prop-types` | Disallow missing props validation in a React component definition | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prop-types.md) |
-| 92 | `react-in-jsx-scope` | Disallow missing React when using JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/react-in-jsx-scope.md) |
-| 93 | `require-default-props` | Enforce a defaultProps definition for every prop that is not a required prop | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/require-default-props.md) |
-| 94 | `require-optimization` | Enforce React components to have a shouldComponentUpdate method | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/require-optimization.md) |
-| 95 | `require-render-return` | Enforce ES5 or ES6 class for returning value in render function | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/require-render-return.md) |
-| 96 | `self-closing-comp` | Disallow extra closing tags for components without children | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/self-closing-comp.md) |
-| 97 | `sort-comp` | Enforce component methods order | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/sort-comp.md) |
-| 98 | `sort-default-props` | Enforce defaultProps declarations alphabetical sorting | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/sort-default-props.md) |
-| 99 | `sort-prop-types` | Enforce propTypes declarations alphabetical sorting | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/sort-prop-types.md) |
-| 100 | `state-in-constructor` | Enforce class component state initialization style | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/state-in-constructor.md) |
-| 101 | `static-property-placement` | Enforces where React component static properties should be positioned. | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/static-property-placement.md) |
-| 102 | `style-prop-object` | Enforce style prop value is an object | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/style-prop-object.md) |
-| 103 | `void-dom-elements-no-children` | Disallow void DOM elements (e.g. `<img />`, `<br />`) from receiving children | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/void-dom-elements-no-children.md) |
+| 2 | `default-props-match-prop-types` | Enforce all defaultProps have a corresponding non-required PropType | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/default-props-match-prop-types.md) |
+| 3 | `destructuring-assignment` | Enforce consistent usage of destructuring assignment of props, state, and context | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/destructuring-assignment.md) |
+| 4 | `forbid-foreign-prop-types` | Disallow using another component\'s propTypes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-foreign-prop-types.md) |
+| 5 | `forbid-prop-types` | Disallow certain propTypes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/forbid-prop-types.md) |
+| 6 | `function-component-definition` | Enforce a specific function type for function components | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/function-component-definition.md) |
+| 7 | `jsx-child-element-spacing` | Enforce or disallow spaces inside of curly braces in JSX attributes and expressions | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-child-element-spacing.md) |
+| 8 | `jsx-closing-bracket-location` | Enforce closing bracket location in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-closing-bracket-location.md) |
+| 9 | `jsx-closing-tag-location` | Enforce closing tag location for multiline JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-closing-tag-location.md) |
+| 10 | `jsx-curly-newline` | Enforce consistent linebreaks in curly braces in JSX attributes and expressions | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-curly-newline.md) |
+| 11 | `jsx-curly-spacing` | Enforce or disallow spaces inside of curly braces in JSX attributes and expressions | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-curly-spacing.md) |
+| 12 | `jsx-equals-spacing` | Enforce or disallow spaces around equal signs in JSX attributes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-equals-spacing.md) |
+| 13 | `jsx-first-prop-new-line` | Enforce proper position of the first property in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-first-prop-new-line.md) |
+| 14 | `jsx-indent` | Enforce JSX indentation | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-indent.md) |
+| 15 | `jsx-indent-props` | Enforce props indentation in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-indent-props.md) |
+| 16 | `jsx-max-props-per-line` | Enforce maximum of props on a single line in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-max-props-per-line.md) |
+| 17 | `jsx-newline` | Require or prevent a new line after jsx elements and expressions. | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-newline.md) |
+| 18 | `jsx-no-bind` | Disallow `.bind()` or arrow functions in JSX props | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md) |
+| 19 | `jsx-no-leaked-render` | Disallow problematic leaked values from being rendered | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-leaked-render.md) |
+| 20 | `jsx-no-literals` | Disallow usage of string literals in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-literals.md) |
+| 21 | `jsx-one-expression-per-line` | Require one JSX element per line | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-one-expression-per-line.md) |
+| 22 | `jsx-props-no-multi-spaces` | Disallow multiple spaces between inline JSX props | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-multi-spaces.md) |
+| 23 | `jsx-sort-default-props` | Enforce defaultProps declarations alphabetical sorting | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-sort-default-props.md) |
+| 24 | `jsx-sort-props` | Enforce props alphabetical sorting | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-sort-props.md) |
+| 25 | `jsx-space-before-closing` | Enforce spacing before closing bracket in JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-space-before-closing.md) |
+| 26 | `jsx-tag-spacing` | Enforce whitespace in and around the JSX opening and closing brackets | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-tag-spacing.md) |
+| 27 | `jsx-uses-react` | Disallow React to be incorrectly marked as unused | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-uses-react.md) |
+| 28 | `jsx-uses-vars` | Disallow variables used in JSX to be incorrectly marked as unused | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-uses-vars.md) |
+| 29 | `jsx-wrap-multilines` | Disallow missing parentheses around multiline JSX | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md) |
+| 30 | `no-access-state-in-setstate` | Disallow when this.state is accessed within setState | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-access-state-in-setstate.md) |
+| 31 | `no-adjacent-inline-elements` | Disallow adjacent inline elements not separated by whitespace. | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-adjacent-inline-elements.md) |
+| 32 | `no-arrow-function-lifecycle` | Lifecycle methods should be methods on the prototype, not class fields | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-arrow-function-lifecycle.md) |
+| 33 | `no-invalid-html-attribute` | Disallow usage of invalid attributes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-invalid-html-attribute.md) |
+| 34 | `no-unused-class-component-methods` | Disallow declaring unused methods of component class | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unused-class-component-methods.md) |
+| 35 | `no-unused-prop-types` | Disallow definitions of unused propTypes | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unused-prop-types.md) |
+| 36 | `no-unused-state` | Disallow definitions of unused state | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unused-state.md) |
+| 37 | `prefer-exact-props` | Prefer exact proptype definitions | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-exact-props.md) |
+| 38 | `prefer-read-only-props` | Enforce that props are read-only | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-read-only-props.md) |
+| 39 | `prefer-stateless-function` | Enforce stateless components to be written as a pure function | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prefer-stateless-function.md) |
+| 40 | `prop-types` | Disallow missing props validation in a React component definition | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prop-types.md) |
+| 41 | `require-default-props` | Enforce a defaultProps definition for every prop that is not a required prop | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/require-default-props.md) |
+| 42 | `require-optimization` | Enforce React components to have a shouldComponentUpdate method | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/require-optimization.md) |
+| 43 | `sort-comp` | Enforce component methods order | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/sort-comp.md) |
+| 44 | `sort-default-props` | Enforce defaultProps declarations alphabetical sorting | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/sort-default-props.md) |
+| 45 | `sort-prop-types` | Enforce propTypes declarations alphabetical sorting | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/sort-prop-types.md) |
+| 46 | `static-property-placement` | Enforces where React component static properties should be positioned. | [docs](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/static-property-placement.md) |

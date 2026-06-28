@@ -22,7 +22,6 @@ const publishablePrefixes = [
   '@oxlint-plugins/oxlint-plugin-eslint-comments>',
   '@oxlint-plugins/oxlint-plugin-eslint-json>',
   '@oxlint-plugins/oxlint-plugin-eslint-markdown>',
-  '@oxlint-plugins/oxlint-plugin-react-refresh>',
   '@oxlint-plugins/oxlint-plugin-security>',
   '@oxlint-plugins/oxlint-plugin-cypress>',
   '@oxlint-plugins/oxlint-plugin-functional>',

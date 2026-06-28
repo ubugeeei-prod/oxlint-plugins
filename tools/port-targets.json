@@ -1,5 +1,5 @@
 {
-  "$note": "Port-target manifest for ESLint plugins and adjacent upstream packages (eslint-plugin-svelte is intentionally excluded; it is handled by rsvelte. eslint-plugin-vue is intentionally excluded; it is handled by vize). This file is the single source of truth for tools/tasks/enumerate-port-rules.ts (rule enumeration) and .github/workflows/track-upstream-releases.yml (release follow-up issues). baselineVersion is the upstream npm version the port should target first.",
+  "$note": "Port-target manifest for ESLint plugins and adjacent upstream packages (Plugins natively supported by Oxlint (react, typescript, etc.) are excluded or trimmed to only their Oxlint-uncovered rules via per-plugin oxlintCovered lists; eslint-plugin-svelte is intentionally excluded; it is handled by rsvelte. eslint-plugin-vue is intentionally excluded; it is handled by vize). This file is the single source of truth for tools/tasks/enumerate-port-rules.ts (rule enumeration) and .github/workflows/track-upstream-releases.yml (release follow-up issues). baselineVersion is the upstream npm version the port should target first.",
   "submoduleRoot": "upstream",
   "plugins": [
     {
@@ -13,7 +13,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 9,
-      "rules": { "type": "glob", "dir": "lib/rules", "ext": ".js", "exclude": [] },
+      "rules": {
+        "type": "glob",
+        "dir": "lib/rules",
+        "ext": ".js",
+        "exclude": []
+      },
       "docsUrlTemplate": "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/{rule}.html",
       "notes": ""
     },
@@ -28,7 +33,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 20,
-      "rules": { "type": "glob", "dir": "src/rules", "ext": ".ts", "exclude": ["index.ts"] },
+      "rules": {
+        "type": "glob",
+        "dir": "src/rules",
+        "ext": ".ts",
+        "exclude": ["index.ts"]
+      },
       "docsUrlTemplate": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/{rule}.md",
       "notes": ""
     },
@@ -43,7 +53,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 82,
-      "rules": { "type": "glob", "dir": "lib/rules", "ext": ".ts", "exclude": ["index.ts"] },
+      "rules": {
+        "type": "glob",
+        "dir": "lib/rules",
+        "ext": ".ts",
+        "exclude": ["index.ts"]
+      },
       "docsUrlTemplate": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/{rule}.html",
       "notes": ""
     },
@@ -58,7 +73,12 @@
       "license": "Apache-2.0",
       "monorepo": false,
       "expectedRuleCount": 14,
-      "rules": { "type": "glob", "dir": "rules", "ext": ".js", "exclude": ["index.js"] },
+      "rules": {
+        "type": "glob",
+        "dir": "rules",
+        "ext": ".js",
+        "exclude": ["index.js"]
+      },
       "docsUrlTemplate": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/{rule}.md",
       "notes": ""
     },
@@ -73,7 +93,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 2,
-      "rules": { "type": "fixed", "dir": "src", "ext": ".js", "names": ["imports", "exports"] },
+      "rules": {
+        "type": "fixed",
+        "dir": "src",
+        "ext": ".js",
+        "names": ["imports", "exports"]
+      },
       "docsUrlTemplate": "https://github.com/lydell/eslint-plugin-simple-import-sort#sort-order",
       "notes": ""
     },
@@ -88,7 +113,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 27,
-      "rules": { "type": "glob", "dir": "src/rules", "ext": ".ts", "exclude": [".test.ts"] },
+      "rules": {
+        "type": "glob",
+        "dir": "src/rules",
+        "ext": ".ts",
+        "exclude": [".test.ts"]
+      },
       "docsUrlTemplate": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/{rule}.ts",
       "notes": "Modernization and performance rules. Some rules optionally require TypeScript type information."
     },
@@ -103,7 +133,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 24,
-      "rules": { "type": "glob", "dir": "source/rules", "ext": ".ts", "exclude": [".test.ts"] },
+      "rules": {
+        "type": "glob",
+        "dir": "source/rules",
+        "ext": ".ts",
+        "exclude": [".test.ts"]
+      },
       "docsUrlTemplate": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/{rule}.md",
       "notes": ""
     },
@@ -138,7 +173,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 29,
-      "rules": { "type": "glob", "dir": "src/rules", "ext": ".ts", "exclude": ["index.ts"] },
+      "rules": {
+        "type": "glob",
+        "dir": "src/rules",
+        "ext": ".ts",
+        "exclude": ["index.ts"]
+      },
       "docsUrlTemplate": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/{rule}.md",
       "notes": ""
     },
@@ -153,7 +193,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 23,
-      "rules": { "type": "glob", "dir": "rules", "ext": ".ts", "exclude": [] },
+      "rules": {
+        "type": "glob",
+        "dir": "rules",
+        "ext": ".ts",
+        "exclude": []
+      },
       "docsUrlTemplate": "https://perfectionist.dev/rules/{rule}",
       "notes": ""
     },
@@ -168,7 +213,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 13,
-      "rules": { "type": "glob", "dir": "lib/rules", "ext": ".js", "exclude": [] },
+      "rules": {
+        "type": "glob",
+        "dir": "lib/rules",
+        "ext": ".js",
+        "exclude": []
+      },
       "docsUrlTemplate": "https://github.com/cypress-io/eslint-plugin-cypress/blob/master/docs/rules/{rule}.md",
       "notes": ""
     },
@@ -242,7 +292,136 @@
       "pinnedRef": "v8.62.0",
       "license": "MIT",
       "monorepo": true,
-      "expectedRuleCount": 134,
+      "expectedRuleCount": 7,
+      "oxlintCovered": [
+        "adjacent-overload-signatures",
+        "array-type",
+        "await-thenable",
+        "ban-ts-comment",
+        "ban-tslint-comment",
+        "class-literal-property-style",
+        "class-methods-use-this",
+        "consistent-generic-constructors",
+        "consistent-indexed-object-style",
+        "consistent-return",
+        "consistent-type-assertions",
+        "consistent-type-definitions",
+        "consistent-type-exports",
+        "consistent-type-imports",
+        "default-param-last",
+        "dot-notation",
+        "explicit-function-return-type",
+        "explicit-member-accessibility",
+        "explicit-module-boundary-types",
+        "init-declarations",
+        "max-params",
+        "no-array-constructor",
+        "no-array-delete",
+        "no-base-to-string",
+        "no-confusing-non-null-assertion",
+        "no-confusing-void-expression",
+        "no-deprecated",
+        "no-dupe-class-members",
+        "no-duplicate-enum-values",
+        "no-duplicate-type-constituents",
+        "no-dynamic-delete",
+        "no-empty-function",
+        "no-empty-interface",
+        "no-empty-object-type",
+        "no-explicit-any",
+        "no-extra-non-null-assertion",
+        "no-extraneous-class",
+        "no-floating-promises",
+        "no-for-in-array",
+        "no-implied-eval",
+        "no-import-type-side-effects",
+        "no-inferrable-types",
+        "no-invalid-void-type",
+        "no-loop-func",
+        "no-loss-of-precision",
+        "no-magic-numbers",
+        "no-meaningless-void-operator",
+        "no-misused-new",
+        "no-misused-promises",
+        "no-misused-spread",
+        "no-mixed-enums",
+        "no-namespace",
+        "no-non-null-asserted-nullish-coalescing",
+        "no-non-null-asserted-optional-chain",
+        "no-non-null-assertion",
+        "no-redeclare",
+        "no-redundant-type-constituents",
+        "no-require-imports",
+        "no-restricted-imports",
+        "no-restricted-types",
+        "no-shadow",
+        "no-this-alias",
+        "no-unnecessary-boolean-literal-compare",
+        "no-unnecessary-condition",
+        "no-unnecessary-parameter-property-assignment",
+        "no-unnecessary-qualifier",
+        "no-unnecessary-template-expression",
+        "no-unnecessary-type-arguments",
+        "no-unnecessary-type-assertion",
+        "no-unnecessary-type-constraint",
+        "no-unnecessary-type-conversion",
+        "no-unnecessary-type-parameters",
+        "no-unsafe-argument",
+        "no-unsafe-assignment",
+        "no-unsafe-call",
+        "no-unsafe-declaration-merging",
+        "no-unsafe-enum-comparison",
+        "no-unsafe-function-type",
+        "no-unsafe-member-access",
+        "no-unsafe-return",
+        "no-unsafe-type-assertion",
+        "no-unsafe-unary-minus",
+        "no-unused-expressions",
+        "no-unused-private-class-members",
+        "no-unused-vars",
+        "no-use-before-define",
+        "no-useless-constructor",
+        "no-useless-default-assignment",
+        "no-useless-empty-export",
+        "no-var-requires",
+        "no-wrapper-object-types",
+        "non-nullable-type-assertion-style",
+        "only-throw-error",
+        "parameter-properties",
+        "prefer-as-const",
+        "prefer-destructuring",
+        "prefer-enum-initializers",
+        "prefer-find",
+        "prefer-for-of",
+        "prefer-function-type",
+        "prefer-includes",
+        "prefer-literal-enum-member",
+        "prefer-namespace-keyword",
+        "prefer-nullish-coalescing",
+        "prefer-optional-chain",
+        "prefer-promise-reject-errors",
+        "prefer-readonly",
+        "prefer-readonly-parameter-types",
+        "prefer-reduce-type-parameter",
+        "prefer-regexp-exec",
+        "prefer-return-this-type",
+        "prefer-string-starts-ends-with",
+        "prefer-ts-expect-error",
+        "promise-function-async",
+        "related-getter-setter-pairs",
+        "require-array-sort-compare",
+        "require-await",
+        "restrict-plus-operands",
+        "restrict-template-expressions",
+        "return-await",
+        "strict-boolean-expressions",
+        "strict-void-return",
+        "switch-exhaustiveness-check",
+        "triple-slash-reference",
+        "unbound-method",
+        "unified-signatures",
+        "use-unknown-in-catch-callback-variable"
+      ],
       "rules": {
         "type": "glob",
         "dir": "packages/eslint-plugin/src/rules",
@@ -250,7 +429,7 @@
         "exclude": ["index.ts"]
       },
       "docsUrlTemplate": "https://typescript-eslint.io/rules/{rule}",
-      "notes": "Oxlint has native TypeScript lint coverage for some rules; tracked here as an explicit upstream reference."
+      "notes": "Oxlint's native `typescript` plugin covers 127 of these rules; only the 7 rules Oxlint does not implement natively are tracked here as port targets. The covered rules are listed in `oxlintCovered` and excluded from the inventory."
     },
     {
       "id": "eslint-plugin-react",
@@ -262,10 +441,74 @@
       "pinnedRef": "v7.37.5",
       "license": "MIT",
       "monorepo": false,
-      "expectedRuleCount": 103,
-      "rules": { "type": "glob", "dir": "lib/rules", "ext": ".js", "exclude": ["index.js"] },
+      "expectedRuleCount": 46,
+      "oxlintCovered": [
+        "button-has-type",
+        "checked-requires-onchange-or-readonly",
+        "display-name",
+        "forbid-component-props",
+        "forbid-dom-props",
+        "forbid-elements",
+        "forward-ref-uses-ref",
+        "hook-use-state",
+        "iframe-missing-sandbox",
+        "jsx-boolean-value",
+        "jsx-curly-brace-presence",
+        "jsx-filename-extension",
+        "jsx-fragments",
+        "jsx-handler-names",
+        "jsx-key",
+        "jsx-max-depth",
+        "jsx-no-comment-textnodes",
+        "jsx-no-constructed-context-values",
+        "jsx-no-duplicate-props",
+        "jsx-no-script-url",
+        "jsx-no-target-blank",
+        "jsx-no-undef",
+        "jsx-no-useless-fragment",
+        "jsx-pascal-case",
+        "jsx-props-no-spread-multi",
+        "jsx-props-no-spreading",
+        "no-array-index-key",
+        "no-children-prop",
+        "no-danger",
+        "no-danger-with-children",
+        "no-deprecated",
+        "no-did-mount-set-state",
+        "no-did-update-set-state",
+        "no-direct-mutation-state",
+        "no-find-dom-node",
+        "no-is-mounted",
+        "no-multi-comp",
+        "no-namespace",
+        "no-object-type-as-default-prop",
+        "no-redundant-should-component-update",
+        "no-render-return-value",
+        "no-set-state",
+        "no-string-refs",
+        "no-this-in-sfc",
+        "no-typos",
+        "no-unescaped-entities",
+        "no-unknown-property",
+        "no-unsafe",
+        "no-unstable-nested-components",
+        "no-will-update-set-state",
+        "prefer-es6-class",
+        "react-in-jsx-scope",
+        "require-render-return",
+        "self-closing-comp",
+        "state-in-constructor",
+        "style-prop-object",
+        "void-dom-elements-no-children"
+      ],
+      "rules": {
+        "type": "glob",
+        "dir": "lib/rules",
+        "ext": ".js",
+        "exclude": ["index.js"]
+      },
       "docsUrlTemplate": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/{rule}.md",
-      "notes": ""
+      "notes": "Oxlint's native `react` plugin covers 57 of these rules; only the 46 rules Oxlint does not implement natively are tracked here as port targets. The covered rules are listed in `oxlintCovered` and excluded from the inventory."
     },
     {
       "id": "eslint-plugin-react-hooks",
@@ -277,7 +520,8 @@
       "pinnedRef": "eslint-plugin-react-hooks@7.1.1",
       "license": "MIT",
       "monorepo": true,
-      "expectedRuleCount": 29,
+      "expectedRuleCount": 27,
+      "oxlintCovered": ["exhaustive-deps", "rules-of-hooks"],
       "rules": {
         "type": "react-hooks",
         "compilerErrorFile": "compiler/packages/babel-plugin-react-compiler/src/CompilerError.ts",
@@ -285,22 +529,7 @@
         "rulesOfHooksFile": "packages/eslint-plugin-react-hooks/src/rules/RulesOfHooks.ts"
       },
       "docsUrlTemplate": "https://react.dev/reference/eslint-plugin-react-hooks/lints/{rule}",
-      "notes": "React Hooks v7 exposes React Compiler lint categories in addition to the classic hooks rules."
-    },
-    {
-      "id": "eslint-plugin-react-refresh",
-      "npm": "eslint-plugin-react-refresh",
-      "repo": "https://github.com/ArnaudBarre/eslint-plugin-react-refresh",
-      "submodule": "upstream/eslint-plugin-react-refresh",
-      "packageSubdir": ".",
-      "baselineVersion": "0.5.3",
-      "pinnedRef": "v0.5.3",
-      "license": "MIT",
-      "monorepo": false,
-      "expectedRuleCount": 1,
-      "rules": { "type": "fixed", "dir": "src", "ext": ".ts", "names": ["only-export-components"] },
-      "docsUrlTemplate": "https://github.com/ArnaudBarre/eslint-plugin-react-refresh#only-export-components",
-      "notes": ""
+      "notes": "React Hooks v7 exposes React Compiler lint categories in addition to the classic hooks rules. Oxlint's native `react` plugin covers `rules-of-hooks` and `exhaustive-deps`; those are listed in `oxlintCovered` and excluded, leaving the 27 rules Oxlint does not implement natively."
     },
     {
       "id": "eslint-stylistic",
@@ -313,7 +542,10 @@
       "license": "MIT",
       "monorepo": true,
       "expectedRuleCount": 97,
-      "rules": { "type": "indexed", "index": "packages/eslint-plugin/rules/index.ts" },
+      "rules": {
+        "type": "indexed",
+        "index": "packages/eslint-plugin/rules/index.ts"
+      },
       "docsUrlTemplate": "https://eslint.style/rules",
       "notes": "Published as ESLint Stylistic. Public rule ids are read from packages/eslint-plugin/rules/index.ts because a few exported ids differ from their source directory names."
     },
@@ -328,7 +560,9 @@
       "license": "MIT",
       "monorepo": true,
       "expectedRuleCount": 0,
-      "rules": { "type": "none" },
+      "rules": {
+        "type": "none"
+      },
       "docsUrlTemplate": null,
       "notes": "Meta package that bundles parser, plugin, configs, and helpers; it does not define lint rules of its own."
     },
@@ -407,7 +641,12 @@
       "license": "Apache-2.0",
       "monorepo": false,
       "expectedRuleCount": 6,
-      "rules": { "type": "glob", "dir": "src/rules", "ext": ".js", "exclude": ["index.js"] },
+      "rules": {
+        "type": "glob",
+        "dir": "src/rules",
+        "ext": ".js",
+        "exclude": ["index.js"]
+      },
       "docsUrlTemplate": "https://github.com/eslint/json#rules",
       "notes": "Language plugin: lints JSON/JSONC/JSON5 files. Out of Oxlint's current JS/TS scope; tracked for completeness and a possible future language target."
     },
@@ -422,7 +661,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 21,
-      "rules": { "type": "glob", "dir": "src/rules", "ext": ".js", "exclude": ["index.js"] },
+      "rules": {
+        "type": "glob",
+        "dir": "src/rules",
+        "ext": ".js",
+        "exclude": ["index.js"]
+      },
       "docsUrlTemplate": "https://github.com/eslint/markdown/blob/main/docs/rules/{rule}.md",
       "notes": "Language plugin: lints Markdown files. Out of Oxlint's current JS/TS scope; tracked for completeness and a possible future language target."
     },
@@ -437,7 +681,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 89,
-      "rules": { "type": "glob", "dir": "src/rules", "ext": ".ts", "exclude": ["index.ts"] },
+      "rules": {
+        "type": "glob",
+        "dir": "src/rules",
+        "ext": ".ts",
+        "exclude": ["index.ts"]
+      },
       "docsUrlTemplate": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/{rule}.md",
       "notes": "Lints SQL embedded in template literals; depends on the postgresql-eslint-parser port-target."
     },
@@ -452,7 +701,9 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 0,
-      "rules": { "type": "none" },
+      "rules": {
+        "type": "none"
+      },
       "docsUrlTemplate": null,
       "notes": "Parser dependency of eslint-plugin-postgresql (no lint rules of its own). Required so the postgresql rules can be ported."
     },
@@ -467,7 +718,12 @@
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 20,
-      "rules": { "type": "glob", "dir": "src/rules", "ext": ".ts", "exclude": ["index.ts"] },
+      "rules": {
+        "type": "glob",
+        "dir": "src/rules",
+        "ext": ".ts",
+        "exclude": ["index.ts"]
+      },
       "docsUrlTemplate": "https://ota-meshi.github.io/eslint-plugin-astro/rules/{rule}/",
       "notes": "Lints .astro files via astro-eslint-parser; full parity depends on that parser (cf. eslint-plugin-svelte / eslint-plugin-vue, which are excluded, and @unocss/eslint-plugin)."
     }
