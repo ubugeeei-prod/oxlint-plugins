@@ -1,6 +1,7 @@
 //! Adapter for the `stylistic` plugin (port of @stylistic/eslint-plugin).
 
 use std::collections::BTreeMap;
+use std::sync::OnceLock;
 
 use oxlint_plugins_stylistic as core;
 use serde_json::Value;
@@ -10,16 +11,23 @@ use crate::{PlaygroundDiagnostic, PluginInfo};
 
 pub const PLUGIN: &str = "stylistic";
 
-pub fn info() -> PluginInfo {
-    // The core crate exposes no `implemented_*_rule_names()` helper; the npm
-    // wrapper derives `implementedStylisticRuleNames` from the rule metas, so we
-    // do the same here.
-    PluginInfo {
-        plugin: PLUGIN,
-        rules: core::stylistic_rule_metas()
+/// Stylistic has no `implemented_*_rule_names()` helper, so we derive the names
+/// from the rule metas once and cache them — `scan` runs on every keystroke and
+/// shouldn't rebuild the full metadata vector each time.
+fn rule_names() -> &'static [String] {
+    static NAMES: OnceLock<Vec<String>> = OnceLock::new();
+    NAMES.get_or_init(|| {
+        core::stylistic_rule_metas()
             .into_iter()
             .map(|meta| meta.name)
-            .collect(),
+            .collect()
+    })
+}
+
+pub fn info() -> PluginInfo {
+    PluginInfo {
+        plugin: PLUGIN,
+        rules: rule_names().to_vec(),
     }
 }
 
@@ -43,11 +51,11 @@ pub fn scan(
     // but pass only the enabled rules to the core so it never runs disabled ones.
     // Stylistic works on raw bytes and lines, so `filename` is unused.
     let config = core::StylisticRunConfig {
-        rules: core::stylistic_rule_metas()
-            .into_iter()
-            .filter(|meta| filter.rule_enabled(PLUGIN, &meta.name))
-            .map(|meta| core::StylisticRuleConfig {
-                name: meta.name,
+        rules: rule_names()
+            .iter()
+            .filter(|name| filter.rule_enabled(PLUGIN, name))
+            .map(|name| core::StylisticRuleConfig {
+                name: name.clone(),
                 options: Value::Array(Vec::new()),
             })
             .collect(),
