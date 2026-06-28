@@ -30,6 +30,10 @@ mod napi_abi {
         pub function_name_format: Option<String>,
         pub cognitive_complexity_threshold: Option<u32>,
         pub expression_complexity_threshold: Option<u32>,
+        pub comment_regex_format: Option<String>,
+        pub file_header_format: Option<String>,
+        pub file_header_is_regular_expression: Option<bool>,
+        pub regex_complexity_threshold: Option<u32>,
     }
 
     #[napi(object)]
@@ -120,6 +124,20 @@ mod napi_abi {
             expression_complexity_threshold: options
                 .expression_complexity_threshold
                 .unwrap_or(default_options.expression_complexity_threshold),
+            comment_regex_format: options
+                .comment_regex_format
+                .map(CompactString::from)
+                .unwrap_or(default_options.comment_regex_format),
+            file_header_format: options
+                .file_header_format
+                .map(CompactString::from)
+                .unwrap_or(default_options.file_header_format),
+            file_header_is_regular_expression: options
+                .file_header_is_regular_expression
+                .unwrap_or(default_options.file_header_is_regular_expression),
+            regex_complexity_threshold: options
+                .regex_complexity_threshold
+                .unwrap_or(default_options.regex_complexity_threshold),
         };
 
         core::scan_sonarjs(&source_text, &filename, &core_options)

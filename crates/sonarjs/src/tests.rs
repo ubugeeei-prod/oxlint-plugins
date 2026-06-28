@@ -12502,3 +12502,2104 @@ fn no_return_type_any_does_not_report_no_annotation() {
     let diagnostics = scan("no-return-type-any", "function f() { return x; }");
     assert!(diagnostics.is_empty());
 }
+
+mod arrow_function_convention_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn arrow_function_convention_reports_parens_around_single_param() {
+        let d = scan("arrow-function-convention", "const f = (x) => x;");
+        assert_eq!(d.len(), 1);
+        assert_eq!(d[0].message_id, "removeParens");
+    }
+
+    #[test]
+    fn arrow_function_convention_allows_unparenthesized_single_param() {
+        let d = scan("arrow-function-convention", "const f = x => x;");
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn arrow_function_convention_keeps_mandatory_parens() {
+        assert!(scan("arrow-function-convention", "const a = (x: number) => x;").is_empty());
+        assert!(scan("arrow-function-convention", "const b = (x = 1) => x;").is_empty());
+        assert!(scan("arrow-function-convention", "const c = (a, b) => a + b;").is_empty());
+        assert!(scan("arrow-function-convention", "const d = ({ x }) => x;").is_empty());
+        assert!(scan("arrow-function-convention", "const e = () => 1;").is_empty());
+    }
+
+    #[test]
+    fn arrow_function_convention_reports_single_return_block() {
+        let d = scan("arrow-function-convention", "const f = x => { return x; };");
+        assert_eq!(d.len(), 1);
+        assert_eq!(d[0].message_id, "removeBraces");
+    }
+
+    #[test]
+    fn arrow_function_convention_keeps_mandatory_braces() {
+        assert!(
+            scan(
+                "arrow-function-convention",
+                "const f = () => { doIt(); return x; };"
+            )
+            .is_empty()
+        );
+        assert!(scan("arrow-function-convention", "const g = () => { return; };").is_empty());
+        assert!(scan("arrow-function-convention", "const h = () => {};").is_empty());
+    }
+
+    #[test]
+    fn arrow_function_convention_reports_both_parens_and_braces() {
+        let d = scan(
+            "arrow-function-convention",
+            "const g = (x) => { return x; };",
+        );
+        assert_eq!(d.len(), 2);
+    }
+
+    #[test]
+    fn arrow_function_convention_reports_async_arrow_parens() {
+        let d = scan("arrow-function-convention", "const f = async (x) => x;");
+        assert_eq!(d.len(), 1);
+        assert_eq!(d[0].message_id, "removeParens");
+    }
+}
+
+mod assertions_in_tests_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn assertions_in_tests_valid_with_expect() {
+        let diagnostics = scan(
+            "assertions-in-tests",
+            r#"it("adds", () => { expect(1 + 1).toBe(2); });"#,
+        );
+        assert_eq!(diagnostics.len(), 0);
+    }
+
+    #[test]
+    fn assertions_in_tests_valid_helper_invocation() {
+        let diagnostics = scan(
+            "assertions-in-tests",
+            r#"it("delegates", () => { assertUserIsValid(user); });"#,
+        );
+        assert_eq!(diagnostics.len(), 0);
+    }
+
+    #[test]
+    fn assertions_in_tests_valid_pending_no_callback() {
+        let diagnostics = scan("assertions-in-tests", r#"it("pending");"#);
+        assert_eq!(diagnostics.len(), 0);
+    }
+
+    #[test]
+    fn assertions_in_tests_valid_skip_member_callee() {
+        let diagnostics = scan("assertions-in-tests", r#"it.skip("later", () => {});"#);
+        assert_eq!(diagnostics.len(), 0);
+    }
+
+    #[test]
+    fn assertions_in_tests_invalid_empty_arrow() {
+        let diagnostics = scan("assertions-in-tests", r#"it("does nothing", () => {});"#);
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "assertions-in-tests");
+        assert_eq!(diagnostics[0].message_id, "addAssertion");
+    }
+
+    #[test]
+    fn assertions_in_tests_invalid_function_without_assert() {
+        let diagnostics = scan(
+            "assertions-in-tests",
+            r#"test("computes", function () { const r = 1 + 2; });"#,
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "addAssertion");
+    }
+
+    #[test]
+    fn assertions_in_tests_edge_nested_describe_inner_asserts() {
+        let diagnostics = scan(
+            "assertions-in-tests",
+            r#"describe("suite", () => { it("a", () => { expect(x).toBe(y); }); });"#,
+        );
+        assert_eq!(diagnostics.len(), 0);
+    }
+
+    #[test]
+    fn assertions_in_tests_invalid_specify_empty() {
+        let diagnostics = scan("assertions-in-tests", r#"specify("x", () => {});"#);
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "addAssertion");
+    }
+}
+
+mod aws_iam_privilege_escalation_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn aws_iam_privilege_escalation_flags_action_with_wildcard_resource() {
+        let diagnostics = scan(
+            "aws-iam-privilege-escalation",
+            "new PolicyStatement({ actions: [\"iam:CreatePolicyVersion\"], resources: [\"*\"] });",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "aws-iam-privilege-escalation");
+        assert_eq!(diagnostics[0].message_id, "iamPrivilegeEscalation");
+    }
+
+    #[test]
+    fn aws_iam_privilege_escalation_flags_passrole_and_sts_assumerole() {
+        let diagnostics = scan(
+            "aws-iam-privilege-escalation",
+            "const s = { actions: [\"s3:GetObject\", \"sts:AssumeRole\"], resources: [\"*\"] };",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "iamPrivilegeEscalation");
+    }
+
+    #[test]
+    fn aws_iam_privilege_escalation_matches_action_case_insensitively() {
+        let diagnostics = scan(
+            "aws-iam-privilege-escalation",
+            "new PolicyStatement({ actions: [\"iam:attachuserpolicy\"], resources: [\"*\"] });",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn aws_iam_privilege_escalation_ignores_scoped_resource() {
+        let diagnostics = scan(
+            "aws-iam-privilege-escalation",
+            "new PolicyStatement({ actions: [\"iam:PutRolePolicy\"], resources: [\"arn:aws:iam::111:role/x\"] });",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn aws_iam_privilege_escalation_ignores_benign_action_with_wildcard() {
+        let diagnostics = scan(
+            "aws-iam-privilege-escalation",
+            "new PolicyStatement({ actions: [\"s3:GetObject\", \"s3:ListBucket\"], resources: [\"*\"] });",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn aws_iam_privilege_escalation_ignores_explicit_deny() {
+        let diagnostics = scan(
+            "aws-iam-privilege-escalation",
+            "new PolicyStatement({ effect: Effect.DENY, actions: [\"iam:PassRole\"], resources: [\"*\"] });",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn aws_iam_privilege_escalation_ignores_non_array_actions() {
+        let diagnostics = scan(
+            "aws-iam-privilege-escalation",
+            "new PolicyStatement({ actions: sensitiveActions, resources: [\"*\"] });",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod comment_regex_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn comment_regex_reports_line_comment_with_marker() {
+        let diagnostics = scan("comment-regex", "// fix XXX here\nconst a = 1;");
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "comment-regex");
+        assert_eq!(diagnostics[0].message_id, "commentRegex");
+        assert_eq!(diagnostics[0].loc.start_line, 1);
+    }
+
+    #[test]
+    fn comment_regex_reports_block_comment_with_marker() {
+        let diagnostics = scan("comment-regex", "/* contains XXX */\nlet b = 2;");
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "commentRegex");
+    }
+
+    #[test]
+    fn comment_regex_ignores_comment_without_marker() {
+        let diagnostics = scan("comment-regex", "// nothing notable here\nconst c = 3;");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn comment_regex_ignores_marker_outside_comments() {
+        let diagnostics = scan(
+            "comment-regex",
+            "const XXXValue = 1;\nfunction XXX() { return XXXValue; }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn comment_regex_reports_each_matching_comment() {
+        let diagnostics = scan("comment-regex", "// XXX one\n// XXX two\nconst d = 4;");
+        assert_eq!(diagnostics.len(), 2);
+    }
+
+    #[test]
+    fn comment_regex_is_case_sensitive_by_default() {
+        let diagnostics = scan("comment-regex", "// lowercase xxx is ignored\nconst e = 5;");
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod conditional_indentation_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn reports_unindented_if_body() {
+        let diagnostics = scan("conditional-indentation", "if (x)\ndoThing();");
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "conditional-indentation");
+        assert_eq!(diagnostics[0].message_id, "conditionalIndentation");
+        assert_eq!(diagnostics[0].loc.start_line, 2);
+    }
+
+    #[test]
+    fn does_not_report_indented_if_body() {
+        let diagnostics = scan("conditional-indentation", "if (x)\n  doThing();");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_single_line_if() {
+        let diagnostics = scan("conditional-indentation", "if (x) doThing();");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_braced_if_body() {
+        let diagnostics = scan("conditional-indentation", "if (x) {\ndoThing();\n}");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn reports_unindented_while_body() {
+        let diagnostics = scan("conditional-indentation", "while (x)\ndoThing();");
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].loc.start_line, 2);
+    }
+
+    #[test]
+    fn reports_for_body_at_same_column() {
+        let diagnostics = scan(
+            "conditional-indentation",
+            "function f() {\n  for (;;)\n  doThing();\n}",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].loc.start_line, 3);
+    }
+
+    #[test]
+    fn does_not_report_tab_indented_body() {
+        let diagnostics = scan("conditional-indentation", "if (x)\n\tdoThing();");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn reports_unindented_do_while_body() {
+        let diagnostics = scan("conditional-indentation", "do\ndoThing();\nwhile (x);");
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].loc.start_line, 2);
+    }
+}
+
+mod disabled_resource_integrity_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn disabled_resource_integrity_reports_cross_origin_script_without_integrity() {
+        let diagnostics = scan_jsx(
+            "disabled-resource-integrity",
+            r#"const a = <script src="https://cdn.example.com/lib.js"></script>;"#,
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "disabled-resource-integrity");
+        assert_eq!(diagnostics[0].message_id, "disabledResourceIntegrity");
+    }
+
+    #[test]
+    fn disabled_resource_integrity_reports_protocol_relative_script() {
+        let diagnostics = scan_jsx(
+            "disabled-resource-integrity",
+            r#"const a = <script src="//cdn.example.com/lib.js"></script>;"#,
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn disabled_resource_integrity_reports_cross_origin_stylesheet_link() {
+        let diagnostics = scan_jsx(
+            "disabled-resource-integrity",
+            r#"const a = <link rel="stylesheet" href="https://cdn.example.com/s.css" />;"#,
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn disabled_resource_integrity_ignores_script_with_integrity() {
+        let diagnostics = scan_jsx(
+            "disabled-resource-integrity",
+            r#"const a = <script src="https://cdn.example.com/lib.js" integrity="sha384-abc" crossorigin="anonymous"></script>;"#,
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn disabled_resource_integrity_ignores_same_origin_script() {
+        let diagnostics = scan_jsx(
+            "disabled-resource-integrity",
+            r#"const a = <script src="/local/lib.js"></script>;"#,
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn disabled_resource_integrity_ignores_dynamic_src_and_spread() {
+        let diagnostics = scan_jsx(
+            "disabled-resource-integrity",
+            r#"const a = <script src={url}></script>; const b = <script {...p} src="https://cdn.example.com/x.js"></script>;"#,
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn disabled_resource_integrity_ignores_non_stylesheet_link() {
+        let diagnostics = scan_jsx(
+            "disabled-resource-integrity",
+            r#"const a = <link rel="icon" href="https://cdn.example.com/favicon.ico" />;"#,
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod dompurify_unsafe_config_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn reports_allow_unknown_protocols_true() {
+        let diagnostics = scan(
+            "dompurify-unsafe-config",
+            "DOMPurify.sanitize(dirty, { ALLOW_UNKNOWN_PROTOCOLS: true });",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "dompurify-unsafe-config");
+        assert_eq!(diagnostics[0].message_id, "unsafeConfig");
+    }
+
+    #[test]
+    fn reports_standalone_config_object() {
+        let diagnostics = scan(
+            "dompurify-unsafe-config",
+            "const cfg = { ALLOW_UNKNOWN_PROTOCOLS: true };",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn reports_string_key_form() {
+        let diagnostics = scan(
+            "dompurify-unsafe-config",
+            "const cfg = { \"ALLOW_UNKNOWN_PROTOCOLS\": true };",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn does_not_report_false_value() {
+        let diagnostics = scan(
+            "dompurify-unsafe-config",
+            "DOMPurify.sanitize(dirty, { ALLOW_UNKNOWN_PROTOCOLS: false });",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_non_literal_value() {
+        let diagnostics = scan(
+            "dompurify-unsafe-config",
+            "const cfg = { ALLOW_UNKNOWN_PROTOCOLS: flag };",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_other_dompurify_keys() {
+        let diagnostics = scan(
+            "dompurify-unsafe-config",
+            "DOMPurify.sanitize(dirty, { ADD_TAGS: [\"b\"], ALLOWED_ATTR: [\"href\"] });",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod dynamically_constructed_templates_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn dynamically_constructed_templates_flags_string_concatenation() {
+        let diagnostics = scan(
+            "dynamically-constructed-templates",
+            "@Component({ template: '<div>' + userInput + '</div>' }) class AppComponent {}",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(
+            diagnostics[0].rule_name,
+            "dynamically-constructed-templates"
+        );
+        assert_eq!(diagnostics[0].message_id, "dynamicTemplate");
+    }
+
+    #[test]
+    fn dynamically_constructed_templates_flags_interpolated_template_literal() {
+        let diagnostics = scan(
+            "dynamically-constructed-templates",
+            "@Component({ template: `<h1>${title}</h1>` }) class TitleComponent {}",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "dynamicTemplate");
+    }
+
+    #[test]
+    fn dynamically_constructed_templates_flags_directive_decorator() {
+        let diagnostics = scan(
+            "dynamically-constructed-templates",
+            "@Directive({ template: header + body }) class BannerDirective {}",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn dynamically_constructed_templates_ignores_static_templates() {
+        assert_eq!(
+            scan(
+                "dynamically-constructed-templates",
+                "@Component({ template: '<div></div>' }) class StaticComponent {}",
+            )
+            .len(),
+            0
+        );
+        assert_eq!(
+            scan(
+                "dynamically-constructed-templates",
+                "@Component({ template: `<div></div>` }) class StaticTplComponent {}",
+            )
+            .len(),
+            0
+        );
+    }
+
+    #[test]
+    fn dynamically_constructed_templates_ignores_non_angular_decorators() {
+        assert_eq!(
+            scan(
+                "dynamically-constructed-templates",
+                "@Other({ template: '<x>' + y }) class C {}",
+            )
+            .len(),
+            0
+        );
+        assert_eq!(
+            scan("dynamically-constructed-templates", "class Plain {}").len(),
+            0
+        );
+    }
+
+    #[test]
+    fn dynamically_constructed_templates_ignores_template_url_key() {
+        let diagnostics = scan(
+            "dynamically-constructed-templates",
+            "@Component({ templateUrl: dir + '/app.html' }) class UrlComponent {}",
+        );
+        assert_eq!(diagnostics.len(), 0);
+    }
+}
+
+mod file_header_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn file_header_reports_when_header_missing() {
+        let mut options = options_for("file-header");
+        options.file_header_format = CompactString::from("// Copyright Acme\n");
+        let diagnostics = scan_sonarjs("const x = 1;\n", "sample.ts", &options);
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "file-header");
+        assert_eq!(diagnostics[0].message_id, "fileHeader");
+        assert_eq!(diagnostics[0].loc.start_line, 1);
+    }
+
+    #[test]
+    fn file_header_does_not_report_when_header_present() {
+        let mut options = options_for("file-header");
+        options.file_header_format = CompactString::from("// Copyright Acme\n");
+        let diagnostics = scan_sonarjs("// Copyright Acme\nconst x = 1;\n", "sample.ts", &options);
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn file_header_is_inactive_by_default() {
+        let diagnostics = scan("file-header", "const x = 1;\n");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn file_header_normalizes_line_endings() {
+        let mut options = options_for("file-header");
+        options.file_header_format = CompactString::from("// Line1\n// Line2\n");
+        let diagnostics = scan_sonarjs("// Line1\r\n// Line2\r\ncode;", "sample.ts", &options);
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn file_header_reports_when_file_shorter_than_header() {
+        let mut options = options_for("file-header");
+        options.file_header_format = CompactString::from("// A long required header banner\n");
+        let diagnostics = scan_sonarjs("// A long", "sample.ts", &options);
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn file_header_does_not_report_with_regex_mode() {
+        let mut options = options_for("file-header");
+        options.file_header_format = CompactString::from("// \\d{4}");
+        options.file_header_is_regular_expression = true;
+        let diagnostics = scan_sonarjs("nope;", "sample.ts", &options);
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod function_return_type_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn frt_same_type_numbers_ok() {
+        let d = scan(
+            "function-return-type",
+            "function f(x){ if(x) return 1; return 2; }",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn frt_single_return_ok() {
+        let d = scan("function-return-type", "function f(){ return 1; }");
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn frt_nullable_single_type_ok() {
+        let d = scan(
+            "function-return-type",
+            "function f(x){ if(x) return \"a\"; return null; }",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn frt_non_literal_returns_ignored() {
+        let d = scan(
+            "function-return-type",
+            "function f(x){ if(x) return foo(); return bar(); }",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn frt_number_and_string_flagged() {
+        let d = scan(
+            "function-return-type",
+            "function f(x){ if(x) return 1; return \"a\"; }",
+        );
+        assert_eq!(d.len(), 1);
+        assert_eq!(d[0].rule_name, "function-return-type");
+        assert_eq!(d[0].message_id, "differentTypes");
+    }
+
+    #[test]
+    fn frt_arrow_boolean_and_number_flagged() {
+        let d = scan(
+            "function-return-type",
+            "const g = (x) => { if(x) return true; return 0; };",
+        );
+        assert_eq!(d.len(), 1);
+    }
+
+    #[test]
+    fn frt_nested_function_isolated() {
+        let d = scan(
+            "function-return-type",
+            "function outer(x){ function inner(y){ if(y) return 1; return \"z\"; } return inner(x); }",
+        );
+        assert_eq!(d.len(), 1);
+    }
+
+    #[test]
+    fn frt_bigint_vs_number_flagged() {
+        let d = scan(
+            "function-return-type",
+            "function f(x){ if(x) return 1n; return 2; }",
+        );
+        assert_eq!(d.len(), 1);
+    }
+}
+
+mod hardcoded_secret_signatures_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn reports_aws_access_key_id() {
+        let diagnostics = scan(
+            "hardcoded-secret-signatures",
+            "const a = 'AKIAIOSFODNN7EXAMPLE';",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "hardcoded-secret-signatures");
+        assert_eq!(diagnostics[0].message_id, "hardcodedSecret");
+    }
+
+    #[test]
+    fn reports_github_token_in_call_argument() {
+        let diagnostics = scan(
+            "hardcoded-secret-signatures",
+            "login('ghp_0123456789abcdefghijklmnopqrstuvwxyz');",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn reports_github_token_embedded_in_bearer_header() {
+        let diagnostics = scan(
+            "hardcoded-secret-signatures",
+            "const h = 'Authorization: Bearer ghp_0123456789abcdefghijklmnopqrstuvwxyz';",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn reports_stripe_secret_key() {
+        let diagnostics = scan(
+            "hardcoded-secret-signatures",
+            "const k = 'sk_live_EXAMPLENOTREALKEY123';",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn reports_google_api_key_and_pem_private_key() {
+        let google = scan(
+            "hardcoded-secret-signatures",
+            "const g = 'AIzaSyD-abcdefghijklmnopqrstuvwxyz01234';",
+        );
+        assert_eq!(google.len(), 1);
+        let pem = scan(
+            "hardcoded-secret-signatures",
+            "const p = '-----BEGIN RSA PRIVATE KEY----- MIIE -----END RSA PRIVATE KEY-----';",
+        );
+        assert_eq!(pem.len(), 1);
+    }
+
+    #[test]
+    fn ignores_publishable_key_and_plain_strings() {
+        let diagnostics = scan(
+            "hardcoded-secret-signatures",
+            "const pub = 'pk_live_4eC39HqLyjWDarjtT1zdp7dc';\nconst msg = 'hello world';",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_uuid_and_non_string_initializer() {
+        let diagnostics = scan(
+            "hardcoded-secret-signatures",
+            "const id = '550e8400-e29b-41d4-a716-446655440000';\nconst s = process.env.SECRET;",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_look_alike_glued_to_a_word() {
+        let diagnostics = scan(
+            "hardcoded-secret-signatures",
+            "const x = 'myghp_0123456789abcdefghijklmnopqrstuvwxyz';",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod no_implicit_global_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn nig_reports_implicit_global_assignment_in_function() {
+        let d = scan("no-implicit-global", "function f() { result = compute(); }");
+        assert_eq!(d.len(), 1);
+        assert_eq!(d[0].message_id, "implicitGlobal");
+        assert_eq!(d[0].data.value.as_deref(), Some("result"));
+    }
+
+    #[test]
+    fn nig_does_not_report_declared_local() {
+        let d = scan(
+            "no-implicit-global",
+            "function f() { let result; result = 1; }",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn nig_does_not_report_explicitly_declared_var() {
+        let d = scan("no-implicit-global", "var total = 0; total = 5;");
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn nig_reports_update_expression_implicit_global() {
+        let d = scan("no-implicit-global", "function f() { counter++; }");
+        assert_eq!(d.len(), 1);
+        assert_eq!(d[0].data.value.as_deref(), Some("counter"));
+    }
+
+    #[test]
+    fn nig_does_not_report_member_assignment() {
+        let d = scan(
+            "no-implicit-global",
+            "window.foo = 1;\nlet o = {}; o.bar = 2;",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn nig_does_not_report_predefined_globals() {
+        let d = scan(
+            "no-implicit-global",
+            "function f(u) { location = u; name = \"x\"; }",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn nig_reports_two_distinct_implicit_globals() {
+        let d = scan("no-implicit-global", "function f() { a = 1; b = 2; }");
+        assert_eq!(d.len(), 2);
+    }
+
+    #[test]
+    fn nig_reports_for_loop_clause_implicit_global() {
+        let d = scan(
+            "no-implicit-global",
+            "function f(n) { for (i = 0; i < n; i++) {} }",
+        );
+        assert_eq!(d.len(), 2);
+    }
+}
+
+mod no_internal_api_use_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn flags_react_secret_internals() {
+        let diagnostics = scan(
+            "no-internal-api-use",
+            "const r = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "noInternalApiUse");
+    }
+
+    #[test]
+    fn flags_react_dom_internals_in_chain() {
+        let diagnostics = scan(
+            "no-internal-api-use",
+            "ReactDOM.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.Events;",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn flags_client_internals_token() {
+        let diagnostics = scan(
+            "no-internal-api-use",
+            "const c = mod.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn ignores_public_member_access() {
+        let diagnostics = scan(
+            "no-internal-api-use",
+            "const x = React.useState(0); foo.bar.baz;",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_normal_underscore_members() {
+        let diagnostics = scan(
+            "no-internal-api-use",
+            "obj._private; obj.__proto__; obj.internalDoNotUse;",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn flags_each_internal_access_separately() {
+        let diagnostics = scan(
+            "no-internal-api-use",
+            "a.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED; b.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;",
+        );
+        assert_eq!(diagnostics.len(), 2);
+    }
+}
+
+mod no_mixed_content_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn flags_csp_directives_missing_block_all_mixed_content() {
+        let diagnostics = scan(
+            "no-mixed-content",
+            "helmet.contentSecurityPolicy({ directives: { \"default-src\": [\"'self'\"] } });",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "no-mixed-content");
+        assert_eq!(diagnostics[0].message_id, "addBlockAllMixedContent");
+    }
+
+    #[test]
+    fn flags_camelcase_directives_missing_block_all() {
+        let diagnostics = scan(
+            "no-mixed-content",
+            "app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: [\"'self'\"], scriptSrc: [\"'self'\"] } } }));",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn ignores_directives_with_kebab_block_all_mixed_content() {
+        let diagnostics = scan(
+            "no-mixed-content",
+            "helmet.contentSecurityPolicy({ directives: { \"default-src\": [\"'self'\"], \"block-all-mixed-content\": [] } });",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_directives_with_camelcase_block_all_mixed_content() {
+        let diagnostics = scan(
+            "no-mixed-content",
+            "helmet.contentSecurityPolicy({ directives: { defaultSrc: [\"'self'\"], blockAllMixedContent: [] } });",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_non_csp_directives_object() {
+        let diagnostics = scan(
+            "no-mixed-content",
+            "const config = { directives: { foo: 1, bar: 2 } };",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_empty_directives_object() {
+        let diagnostics = scan(
+            "no-mixed-content",
+            "helmet.contentSecurityPolicy({ directives: {} });",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_unrelated_object_property() {
+        let diagnostics = scan(
+            "no-mixed-content",
+            "const x = { csp: false, name: \"app\" };",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod no_selector_parameter_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn no_selector_parameter_reports_boolean_typed_selector() {
+        let diagnostics = scan(
+            "no-selector-parameter",
+            "function render(highlight: boolean) { if (highlight) { a(); } else { b(); } }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "no-selector-parameter");
+        assert_eq!(diagnostics[0].message_id, "selectorParameter");
+    }
+
+    #[test]
+    fn no_selector_parameter_reports_boolean_default_used_negated() {
+        let diagnostics = scan(
+            "no-selector-parameter",
+            "function setState(enabled = false) { if (!enabled) { reset(); } }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "selectorParameter");
+    }
+
+    #[test]
+    fn no_selector_parameter_reports_arrow_selector() {
+        let diagnostics = scan(
+            "no-selector-parameter",
+            "const g = (verbose: boolean) => { if (verbose) { log(); } };",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn no_selector_parameter_reports_selector_in_nested_loop() {
+        let diagnostics = scan(
+            "no-selector-parameter",
+            "function f(flag: boolean) { for (let i = 0; i < 3; i++) { if (flag) { break; } } }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn no_selector_parameter_ignores_boolean_param_not_used_in_if() {
+        let diagnostics = scan(
+            "no-selector-parameter",
+            "function f(flag: boolean) { return flag; }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn no_selector_parameter_ignores_untyped_param() {
+        let diagnostics = scan("no-selector-parameter", "function f(x) { if (x) { a(); } }");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn no_selector_parameter_ignores_compound_condition() {
+        let diagnostics = scan(
+            "no-selector-parameter",
+            "function f(flag: boolean, other: boolean) { if (flag && other) { a(); } }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn no_selector_parameter_does_not_descend_into_nested_function() {
+        let diagnostics = scan(
+            "no-selector-parameter",
+            "function f(flag: boolean) { const h = (flag) => { if (flag) { a(); } }; return 1; }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod no_session_cookies_on_static_assets_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn no_session_cookies_on_static_assets_reports_require_session_then_static() {
+        let source = "const express = require('express');\nconst session = require('express-session');\nconst app = express();\napp.use(session({ secret: 's' }));\napp.use(express.static('public'));";
+        let diagnostics = scan("no-session-cookies-on-static-assets", source);
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "noSessionCookiesOnStaticAssets");
+    }
+
+    #[test]
+    fn no_session_cookies_on_static_assets_reports_import_session_then_static() {
+        let source = "import express from 'express';\nimport session from 'express-session';\nconst app = express();\napp.use(session({ secret: 's' }));\napp.use('/assets', express.static('public'));";
+        let diagnostics = scan("no-session-cookies-on-static-assets", source);
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn no_session_cookies_on_static_assets_reports_serve_static_binding() {
+        let source = "const session = require('cookie-session');\nconst serveStatic = require('serve-static');\napp.use(session({ secret: 's' }));\napp.use(serveStatic('public'));";
+        let diagnostics = scan("no-session-cookies-on-static-assets", source);
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn no_session_cookies_on_static_assets_does_not_report_static_before_session() {
+        let source = "const express = require('express');\nconst session = require('express-session');\nconst app = express();\napp.use(express.static('public'));\napp.use(session({ secret: 's' }));";
+        let diagnostics = scan("no-session-cookies-on-static-assets", source);
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn no_session_cookies_on_static_assets_does_not_report_without_session_binding() {
+        let source = "const express = require('express');\nconst app = express();\napp.use(express.static('public'));";
+        let diagnostics = scan("no-session-cookies-on-static-assets", source);
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn no_session_cookies_on_static_assets_does_not_report_different_apps() {
+        let source = "const express = require('express');\nconst session = require('express-session');\nconst app = express();\nconst other = express();\napp.use(session({ secret: 's' }));\nother.use(express.static('public'));";
+        let diagnostics = scan("no-session-cookies-on-static-assets", source);
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn no_session_cookies_on_static_assets_does_not_report_session_only() {
+        let source =
+            "const session = require('express-session');\napp.use(session({ secret: 's' }));";
+        let diagnostics = scan("no-session-cookies-on-static-assets", source);
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod no_try_promise_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn reports_then_chain_in_try_catch() {
+        let diagnostics = scan(
+            "no-try-promise",
+            "try { doAsync().then(handle); } catch (e) { log(e); }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "no-try-promise");
+        assert_eq!(diagnostics[0].message_id, "tryPromise");
+    }
+
+    #[test]
+    fn reports_new_promise_in_try_catch() {
+        let diagnostics = scan(
+            "no-try-promise",
+            "try { new Promise(function (r) { r(); }); } catch (e) {}",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn reports_promise_combinator_call() {
+        let diagnostics = scan("no-try-promise", "try { Promise.all(tasks); } catch (e) {}");
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn reports_returned_promise() {
+        let diagnostics = scan(
+            "no-try-promise",
+            "function f() { try { return fetchData().then(g); } catch (e) {} }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn does_not_report_awaited_promise() {
+        let diagnostics = scan(
+            "no-try-promise",
+            "async function f() { try { await doAsync(); } catch (e) {} }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_without_catch_handler() {
+        let diagnostics = scan(
+            "no-try-promise",
+            "try { Promise.all(tasks); } finally { cleanup(); }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_plain_sync_call() {
+        let diagnostics = scan("no-try-promise", "try { doWork(); } catch (e) {}");
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod null_dereference_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn flags_null_literal_member_access() {
+        let diagnostics = scan("null-dereference", "null.foo;");
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "nullDereference");
+    }
+
+    #[test]
+    fn flags_null_method_call() {
+        let diagnostics = scan("null-dereference", "null.foo();");
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn flags_undefined_member_access() {
+        let diagnostics = scan("null-dereference", "undefined.bar;");
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn flags_parenthesized_null() {
+        let diagnostics = scan("null-dereference", "(null).baz;");
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn ignores_regular_member_access() {
+        let diagnostics = scan("null-dereference", "const o = { foo: 1 }; o.foo; o.bar();");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_optional_chaining_on_null() {
+        let diagnostics = scan("null-dereference", "null?.foo; undefined?.bar;");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_nullable_variable_dereference() {
+        let diagnostics = scan("null-dereference", "let x = null; x.foo();");
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod prefer_read_only_props_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn prefer_read_only_props_flags_mutable_inline_props_function() {
+        let d = scan_with_file(
+            "prefer-read-only-props",
+            "function Welcome(props: { name: string }) {\n  return <h1>Hello, {props.name}</h1>;\n}",
+            "comp.tsx",
+        );
+        assert_eq!(d.len(), 1);
+        assert_eq!(d[0].rule_name, "prefer-read-only-props");
+        assert_eq!(d[0].message_id, "readonlyProps");
+    }
+
+    #[test]
+    fn prefer_read_only_props_allows_readonly_inline_props() {
+        let d = scan_with_file(
+            "prefer-read-only-props",
+            "function Welcome(props: { readonly name: string }) {\n  return <h1>Hi {props.name}</h1>;\n}",
+            "comp.tsx",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn prefer_read_only_props_allows_readonly_wrapper() {
+        let d = scan_with_file(
+            "prefer-read-only-props",
+            "function Welcome(props: Readonly<{ name: string }>) {\n  return <h1>Hi {props.name}</h1>;\n}",
+            "comp.tsx",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn prefer_read_only_props_flags_arrow_component() {
+        let d = scan_with_file(
+            "prefer-read-only-props",
+            "const Welcome = (props: { name: string }) => <h1>{props.name}</h1>;",
+            "comp.tsx",
+        );
+        assert_eq!(d.len(), 1);
+    }
+
+    #[test]
+    fn prefer_read_only_props_ignores_non_component_function() {
+        let d = scan_with_file(
+            "prefer-read-only-props",
+            "function compute(opts: { x: number }) {\n  return opts.x + 1;\n}",
+            "comp.tsx",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn prefer_read_only_props_ignores_jsx_from_nested_component_only() {
+        let d = scan_with_file(
+            "prefer-read-only-props",
+            "function makeThing(opts: { x: number }) {\n  function Inner() { return <div/>; }\n  return Inner;\n}",
+            "comp.tsx",
+        );
+        assert!(d.is_empty());
+    }
+
+    #[test]
+    fn prefer_read_only_props_flags_when_any_member_mutable() {
+        let d = scan_with_file(
+            "prefer-read-only-props",
+            "function C(props: { readonly a: string; b: number }) {\n  return <div>{props.b}</div>;\n}",
+            "comp.tsx",
+        );
+        assert_eq!(d.len(), 1);
+    }
+
+    #[test]
+    fn prefer_read_only_props_ignores_named_type_reference_props() {
+        let d = scan_with_file(
+            "prefer-read-only-props",
+            "interface P { name: string; }\nfunction C(props: P) {\n  return <div>{props.name}</div>;\n}",
+            "comp.tsx",
+        );
+        assert!(d.is_empty());
+    }
+}
+
+mod prefer_type_guard_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn reports_function_returning_instanceof_on_param() {
+        let diagnostics = scan(
+            "prefer-type-guard",
+            "function isCat(a: Animal): boolean {\n  return a instanceof Cat;\n}",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "prefer-type-guard");
+        assert_eq!(diagnostics[0].message_id, "preferTypeGuard");
+        assert_eq!(diagnostics[0].loc.start_line, 1);
+    }
+
+    #[test]
+    fn reports_function_without_return_annotation() {
+        let diagnostics = scan(
+            "prefer-type-guard",
+            "function isCat(a) {\n  return a instanceof Cat;\n}",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "preferTypeGuard");
+    }
+
+    #[test]
+    fn reports_expression_bodied_arrow() {
+        let diagnostics = scan(
+            "prefer-type-guard",
+            "const isCat = (a: Animal): boolean => a instanceof Cat;",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "preferTypeGuard");
+    }
+
+    #[test]
+    fn reports_block_bodied_arrow_with_parens() {
+        let diagnostics = scan(
+            "prefer-type-guard",
+            "const isCat = (a) => {\n  return (a instanceof Cat);\n};",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn does_not_report_existing_type_predicate() {
+        let diagnostics = scan(
+            "prefer-type-guard",
+            "function isCat(a: Animal): a is Cat {\n  return a instanceof Cat;\n}",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_multiple_parameters() {
+        let diagnostics = scan(
+            "prefer-type-guard",
+            "function f(a, b) {\n  return a instanceof Cat;\n}",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_non_instanceof_or_other_identifier() {
+        let diagnostics = scan(
+            "prefer-type-guard",
+            "function f(a) {\n  return a === null;\n}\nfunction g(a) {\n  return b instanceof Cat;\n}",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_when_body_has_extra_statements() {
+        let diagnostics = scan(
+            "prefer-type-guard",
+            "function isCat(a: Animal): boolean {\n  console.log(a);\n  return a instanceof Cat;\n}",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod regex_complexity_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn regex_complexity_ignores_simple_literal() {
+        let diagnostics = scan("regex-complexity", "const r = /abc/;");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn regex_complexity_ignores_moderate_anchored_alternation() {
+        let diagnostics = scan("regex-complexity", "const r = /^(a|b|c)$/;");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn regex_complexity_ignores_plain_nested_groups() {
+        // Nesting alone (no alternation, quantifier or back-reference) costs nothing.
+        let diagnostics = scan("regex-complexity", "const r = /((((((((((a))))))))))/;");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn regex_complexity_ignores_score_exactly_at_threshold() {
+        // Five `(a+)+` groups score exactly 20, which is not greater than the default 20.
+        let diagnostics = scan("regex-complexity", "const r = /(a+)+(b+)+(c+)+(d+)+(e+)+/;");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn regex_complexity_reports_score_above_threshold() {
+        let diagnostics = scan(
+            "regex-complexity",
+            "const r = /(a+)+(b+)+(c+)+(d+)+(e+)+x*/;",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "regex-complexity");
+        assert_eq!(diagnostics[0].message_id, "complexity");
+        assert_eq!(diagnostics[0].data.value.as_deref(), Some("21"));
+        assert_eq!(diagnostics[0].loc.start_line, 1);
+    }
+
+    #[test]
+    fn regex_complexity_reports_each_overcomplex_literal() {
+        let source = "const a = /(a+)+(b+)+(c+)+(d+)+(e+)+(f+)+/;\nconst b = /(g+)+(h+)+(i+)+(j+)+(k+)+(l+)+/;";
+        let diagnostics = scan("regex-complexity", source);
+        assert_eq!(diagnostics.len(), 2);
+        assert_eq!(diagnostics[0].data.value.as_deref(), Some("24"));
+        assert_eq!(diagnostics[1].loc.start_line, 2);
+    }
+
+    #[test]
+    fn regex_complexity_ignores_non_literal_regexp_constructor() {
+        // Only regex literals are scored; string-built patterns are not.
+        let diagnostics = scan(
+            "regex-complexity",
+            "const r = new RegExp(\"(a+)+(b+)+(c+)+(d+)+(e+)+(f+)+\");",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod review_blockchain_mnemonic_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn reports_hardcoded_mnemonic_in_variable() {
+        let diagnostics = scan(
+            "review-blockchain-mnemonic",
+            "const mnemonic = \"legal winner thank year wave sausage worth useful legal winner thank yellow\";",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "review-blockchain-mnemonic");
+        assert_eq!(diagnostics[0].message_id, "reviewMnemonic");
+    }
+
+    #[test]
+    fn reports_mnemonic_in_object_property() {
+        let diagnostics = scan(
+            "review-blockchain-mnemonic",
+            "const wallet = { seedPhrase: \"abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about\" };",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "reviewMnemonic");
+    }
+
+    #[test]
+    fn reports_mnemonic_in_assignment() {
+        let diagnostics = scan(
+            "review-blockchain-mnemonic",
+            "let recoveryPhrase; recoveryPhrase = \"uncle scare brave coyote leaf pause echo enroll oblige weasel cliff hover\";",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn ignores_wrong_word_count() {
+        let diagnostics = scan(
+            "review-blockchain-mnemonic",
+            "const mnemonic = \"remember to rotate the key often\";",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_non_mnemonic_target_name() {
+        let diagnostics = scan(
+            "review-blockchain-mnemonic",
+            "const note = \"abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about\";",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_empty_and_non_string() {
+        let diagnostics = scan(
+            "review-blockchain-mnemonic",
+            "const seedPhrase = \"\"; const mnemonic = 12345;",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_tokens_with_uppercase_or_digits() {
+        let diagnostics = scan(
+            "review-blockchain-mnemonic",
+            "const mnemonic = \"Legal winner thank year wave sausage worth useful legal winner thank yellow\";",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod session_regeneration_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn flags_function_handler_without_regenerate() {
+        let src = r#"
+        app.post('/login',
+          passport.authenticate('local', { failureRedirect: '/login' }),
+          function (req, res) { res.redirect('/'); });
+    "#;
+        let diags = scan("session-regeneration", src);
+        assert_eq!(diags.len(), 1);
+        assert_eq!(diags[0].message_id, "createSession");
+    }
+
+    #[test]
+    fn flags_arrow_handler_without_regenerate() {
+        let src = r#"
+        app.get('/auth',
+          passport.authenticate('oauth'),
+          (req, res) => { res.send('ok'); });
+    "#;
+        let diags = scan("session-regeneration", src);
+        assert_eq!(diags.len(), 1);
+    }
+
+    #[test]
+    fn compliant_handler_regenerates_session() {
+        let src = r#"
+        app.post('/login',
+          passport.authenticate('local', { failureRedirect: '/login' }),
+          function (req, res) {
+            req.session.regenerate(function (err) { res.redirect('/'); });
+          });
+    "#;
+        let diags = scan("session-regeneration", src);
+        assert_eq!(diags.len(), 0);
+    }
+
+    #[test]
+    fn compliant_arrow_handler_regenerates_session() {
+        let src = r#"
+        app.post('/login',
+          passport.authenticate('local'),
+          (req, res) => { req.session.regenerate(() => res.redirect('/')); });
+    "#;
+        let diags = scan("session-regeneration", src);
+        assert_eq!(diags.len(), 0);
+    }
+
+    #[test]
+    fn ignores_route_without_passport_authenticate() {
+        let src = r#"
+        app.post('/login', someMiddleware(), function (req, res) { res.redirect('/'); });
+    "#;
+        let diags = scan("session-regeneration", src);
+        assert_eq!(diags.len(), 0);
+    }
+
+    #[test]
+    fn ignores_named_handler_reference() {
+        let src = r#"
+        app.post('/login', passport.authenticate('local'), onLogin);
+    "#;
+        let diags = scan("session-regeneration", src);
+        assert_eq!(diags.len(), 0);
+    }
+
+    #[test]
+    fn ignores_passport_authenticate_with_no_handler() {
+        let src = r#"
+        app.use(passport.authenticate('session'));
+    "#;
+        let diags = scan("session-regeneration", src);
+        assert_eq!(diags.len(), 0);
+    }
+}
+
+mod sql_queries_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn reports_template_literal_sql_query() {
+        let diagnostics = scan(
+            "sql-queries",
+            "const q = `SELECT name FROM users WHERE id = ${userId}`;",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "sql-queries");
+        assert_eq!(diagnostics[0].message_id, "safeQuery");
+    }
+
+    #[test]
+    fn reports_string_concatenation_sql_query() {
+        let diagnostics = scan(
+            "sql-queries",
+            "db.query(\"DELETE FROM sessions WHERE token = '\" + token + \"'\");",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "safeQuery");
+    }
+
+    #[test]
+    fn reports_update_concatenation_once_for_nested_chain() {
+        let diagnostics = scan(
+            "sql-queries",
+            "const q = \"UPDATE t SET a = \" + a + \" WHERE b = \" + b;",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn ignores_static_template_without_interpolation() {
+        let diagnostics = scan(
+            "sql-queries",
+            "const q = `SELECT name FROM users WHERE id = 1`;",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_constant_string_literal_query() {
+        let diagnostics = scan("sql-queries", "const q = \"SELECT name FROM users\";");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_prose_with_single_keyword() {
+        let diagnostics = scan("sql-queries", "const msg = `Update ${count} records soon`;");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_non_sql_template_and_constant_concat() {
+        let diagnostics = scan(
+            "sql-queries",
+            "const a = `Hello ${name} from ${city}`;\nconst b = \"INSERT INTO t VALUES \" + \"(1, 2)\";",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod stable_tests_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn flags_jest_retry_times_positive() {
+        let diags = scan("stable-tests", "jest.retryTimes(3);");
+        assert_eq!(diags.len(), 1);
+        assert_eq!(diags[0].message_id, "stableTests");
+    }
+
+    #[test]
+    fn flags_jest_retry_times_with_options_arg() {
+        let diags = scan(
+            "stable-tests",
+            "jest.retryTimes(1, { logErrorsBeforeRetry: true });",
+        );
+        assert_eq!(diags.len(), 1);
+    }
+
+    #[test]
+    fn flags_mocha_this_retries_positive() {
+        let diags = scan("stable-tests", "it('x', function () { this.retries(2); });");
+        assert_eq!(diags.len(), 1);
+        assert_eq!(diags[0].message_id, "stableTests");
+    }
+
+    #[test]
+    fn ignores_zero_retry_count() {
+        let diags = scan(
+            "stable-tests",
+            "jest.retryTimes(0); function f() { this.retries(0); }",
+        );
+        assert!(diags.is_empty());
+    }
+
+    #[test]
+    fn ignores_non_literal_and_missing_count() {
+        let diags = scan(
+            "stable-tests",
+            "const n = 3; jest.retryTimes(n); jest.retryTimes();",
+        );
+        assert!(diags.is_empty());
+    }
+
+    #[test]
+    fn ignores_other_receivers() {
+        let diags = scan("stable-tests", "foo.retryTimes(3); obj.retries(2);");
+        assert!(diags.is_empty());
+    }
+
+    #[test]
+    fn ignores_unrelated_calls() {
+        let diags = scan("stable-tests", "jest.mock('m'); retryTimes(3);");
+        assert!(diags.is_empty());
+    }
+}
+
+mod stateful_regex_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn stateful_regex_flags_stored_global_test() {
+        let diagnostics = scan(
+            "stateful-regex",
+            "const re = /\\d+/g; function f(x) { return re.test(x); }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "statefulRegex");
+    }
+
+    #[test]
+    fn stateful_regex_flags_stored_sticky_exec() {
+        let diagnostics = scan(
+            "stateful-regex",
+            "let re = /[a-z]/y; function f(x) { return re.exec(x); }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn stateful_regex_flags_new_regexp_global() {
+        let diagnostics = scan(
+            "stateful-regex",
+            "const re = new RegExp(\"\\\\d\", \"g\"); function f(x) { return re.test(x); }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn stateful_regex_reports_each_reuse() {
+        let diagnostics = scan("stateful-regex", "const re = /a/g; re.test(x); re.exec(y);");
+        assert_eq!(diagnostics.len(), 2);
+    }
+
+    #[test]
+    fn stateful_regex_ignores_inline_literal() {
+        let diagnostics = scan(
+            "stateful-regex",
+            "function f(x) { return /\\d+/g.test(x); }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn stateful_regex_ignores_non_global_stored_regex() {
+        let diagnostics = scan(
+            "stateful-regex",
+            "const re = /\\d+/; function f(x) { return re.test(x); }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn stateful_regex_ignores_new_regexp_without_flag() {
+        let diagnostics = scan(
+            "stateful-regex",
+            "const re = new RegExp(\"\\\\d\"); function f(x) { return re.test(x); }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn stateful_regex_ignores_other_methods() {
+        let diagnostics = scan(
+            "stateful-regex",
+            "const re = /a/g; const m = re.toString(); const s = re.source;",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod test_check_exception_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn reports_unchecked_exception_in_test() {
+        let diagnostics = scan(
+            "test-check-exception",
+            "it('throws', () => {\n  try {\n    doSomething();\n  } catch (e) {\n    expect(e.message).to.equal('boom');\n  }\n});",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "test-check-exception");
+        assert_eq!(diagnostics[0].message_id, "checkException");
+    }
+
+    #[test]
+    fn reports_unchecked_exception_in_it_only() {
+        let diagnostics = scan(
+            "test-check-exception",
+            "it.only('throws', function () {\n  try {\n    run();\n  } catch (err) {\n    assert.equal(err.message, 'boom');\n  }\n});",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn does_not_report_when_try_calls_expect_fail() {
+        let diagnostics = scan(
+            "test-check-exception",
+            "it('throws', () => {\n  try {\n    doSomething();\n    expect.fail('should throw');\n  } catch (e) {\n    expect(e.message).to.equal('boom');\n  }\n});",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_when_try_throws_to_force_failure() {
+        let diagnostics = scan(
+            "test-check-exception",
+            "test('throws', function () {\n  try {\n    run();\n    throw new Error('no throw');\n  } catch (e) {\n    assert.equal(e.name, 'Error');\n  }\n});",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_when_catch_rethrows() {
+        let diagnostics = scan(
+            "test-check-exception",
+            "it('cleanup', () => {\n  try {\n    run();\n  } catch (e) {\n    cleanup();\n    throw e;\n  }\n});",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_empty_catch() {
+        let diagnostics = scan(
+            "test-check-exception",
+            "it('throws', () => {\n  try {\n    run();\n  } catch (e) {\n  }\n});",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_outside_test_callback() {
+        let diagnostics = scan(
+            "test-check-exception",
+            "function helper() {\n  try {\n    run();\n  } catch (e) {\n    expect(e.message).to.equal('boom');\n  }\n}",
+        );
+        assert!(diagnostics.is_empty());
+    }
+}
+
+mod unused_named_groups_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn valid_named_groups_referenced_in_replacement() {
+        let diagnostics = scan(
+            "unused-named-groups",
+            r#"const x = "John Doe".replace(/(?<first>\w+) (?<last>\w+)/, "$<last> $<first>");"#,
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn valid_named_group_used_via_backreference() {
+        let diagnostics = scan(
+            "unused-named-groups",
+            r#"const x = "aa".replace(/(?<c>\w)\k<c>/, "X");"#,
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn valid_no_named_groups() {
+        let diagnostics = scan(
+            "unused-named-groups",
+            r#"const x = "x1".replace(/(\d+)/, "$1");"#,
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn valid_function_replacement_is_skipped() {
+        let diagnostics = scan(
+            "unused-named-groups",
+            r#"const x = str.replace(/(?<y>\d)/, (m) => m.groups.y);"#,
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn valid_non_replace_call_is_skipped() {
+        let diagnostics = scan(
+            "unused-named-groups",
+            r#"const x = "abc".match(/(?<first>\w)/);"#,
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn invalid_single_unused_named_group() {
+        let diagnostics = scan(
+            "unused-named-groups",
+            r#"const x = "abc".replace(/(?<first>\w)/, "X");"#,
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "unusedNamedGroups");
+    }
+
+    #[test]
+    fn invalid_two_unused_named_groups() {
+        let diagnostics = scan(
+            "unused-named-groups",
+            r#"const x = "2020-01".replace(/(?<year>\d{4})-(?<month>\d{2})/, "literal");"#,
+        );
+        assert_eq!(diagnostics.len(), 2);
+    }
+
+    #[test]
+    fn invalid_one_used_one_unused() {
+        let diagnostics = scan(
+            "unused-named-groups",
+            r#"const x = "John Doe".replace(/(?<first>\w+) (?<last>\w+)/, "$<first>");"#,
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "unusedNamedGroups");
+    }
+}
+
+mod variable_name_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn reports_snake_case_local_variable() {
+        let diagnostics = scan(
+            "variable-name",
+            "function f() { let my_var = 1; return my_var; }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule_name, "variable-name");
+        assert_eq!(diagnostics[0].message_id, "renameVariable");
+    }
+
+    #[test]
+    fn reports_uppercase_starting_local_variable() {
+        let diagnostics = scan(
+            "variable-name",
+            "function f() { let MyLocal = 1; return MyLocal; }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn does_not_report_compliant_local_variables() {
+        let diagnostics = scan(
+            "variable-name",
+            "function f() { let myVar = 1; const x2 = 2; return myVar + x2; }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_report_top_level_variable() {
+        let diagnostics = scan("variable-name", "const top_level = 1;");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn exempts_screaming_snake_case_constant() {
+        let diagnostics = scan(
+            "variable-name",
+            "function f() { const MAX_VALUE = 10; return MAX_VALUE; }",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn reports_bad_function_parameter() {
+        let diagnostics = scan(
+            "variable-name",
+            "function f(bad_param) { return bad_param; }",
+        );
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn reports_bad_arrow_parameter_but_not_top_level_binding() {
+        let diagnostics = scan("variable-name", "const g = (Bad_Arg) => Bad_Arg;");
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn reports_each_bad_parameter_and_skips_compliant_one() {
+        let diagnostics = scan(
+            "variable-name",
+            "function h(goodOne, bad_two, alsoBad_) { return goodOne; }",
+        );
+        assert_eq!(diagnostics.len(), 2);
+    }
+}
+
+mod x_powered_by_tests {
+    #![allow(unused_imports, clippy::all)]
+    use super::*;
+    use crate::{Diagnostic, SonarjsOptions, scan_sonarjs};
+    use oxlint_plugins_carton::{CompactString, FastHashSet, SmallVec};
+
+    #[test]
+    fn flags_enable_x_powered_by() {
+        let diagnostics = scan(
+            "x-powered-by",
+            "const app = express(); app.enable('x-powered-by');",
+        );
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].message_id, "xPoweredBy");
+    }
+
+    #[test]
+    fn flags_set_x_powered_by_true() {
+        let diagnostics = scan("x-powered-by", "app.set('x-powered-by', true);");
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn flags_case_insensitive_header_name() {
+        let diagnostics = scan("x-powered-by", "app.enable('X-Powered-By');");
+        assert_eq!(diagnostics.len(), 1);
+    }
+
+    #[test]
+    fn ignores_disable_call() {
+        let diagnostics = scan("x-powered-by", "app.disable('x-powered-by');");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_set_false() {
+        let diagnostics = scan("x-powered-by", "app.set('x-powered-by', false);");
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_unrelated_setting() {
+        let diagnostics = scan(
+            "x-powered-by",
+            "app.enable('etag'); app.set('view engine', 'pug');",
+        );
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn ignores_plain_express_app() {
+        let diagnostics = scan("x-powered-by", "const app = express();");
+        assert!(diagnostics.is_empty());
+    }
+}

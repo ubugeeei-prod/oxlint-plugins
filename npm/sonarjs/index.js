@@ -14,6 +14,117 @@ const DOCS_BASE = 'https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm
 const diagnosticsCache = new WeakMap();
 
 const messages = Object.freeze({
+  'arrow-function-convention': {
+    removeParens: 'Remove the parentheses around this single arrow-function parameter.',
+    removeBraces: "Remove the curly braces and 'return' keyword from this arrow-function body.",
+  },
+  'assertions-in-tests': {
+    addAssertion: 'Add at least one assertion to this test case.',
+  },
+  'aws-iam-privilege-escalation': {
+    iamPrivilegeEscalation:
+      'Narrow the resource scope of this policy: granting this sensitive IAM action on all resources ("*") enables privilege escalation.',
+  },
+  'comment-regex': {
+    commentRegex: 'This comment matches the configured comment-regex pattern; review or remove it.',
+  },
+  'conditional-indentation': {
+    conditionalIndentation:
+      'Use indentation to denote the code that is conditionally executed by this control statement.',
+  },
+  'disabled-resource-integrity': {
+    disabledResourceIntegrity:
+      'Make sure not using resource integrity feature is safe here. Add an "integrity" attribute to verify this cross-origin resource.',
+  },
+  'dompurify-unsafe-config': {
+    unsafeConfig:
+      'Setting "ALLOW_UNKNOWN_PROTOCOLS" to true lets unsafe URI protocols bypass DOMPurify sanitization. Remove this option or set it to false.',
+  },
+  'dynamically-constructed-templates': {
+    dynamicTemplate:
+      'Refrain from constructing this Angular template dynamically; build a static template and pass runtime data through bindings to avoid template injection.',
+  },
+  'file-header': {
+    fileHeader: 'Add or update the header of this file so it matches the required header.',
+  },
+  'function-return-type': {
+    differentTypes: 'Refactor this function to always return the same type.',
+  },
+  'hardcoded-secret-signatures': {
+    hardcodedSecret:
+      'Revoke and change this leaked secret, then remove the hard-coded value from the source code.',
+  },
+  'no-implicit-global': {
+    implicitGlobal:
+      'Add the "let", "const" or "var" keyword to "{{value}}" so it is not implicitly created in the global scope.',
+  },
+  'no-internal-api-use': {
+    noInternalApiUse:
+      'Remove this usage of an internal framework API; it is not part of the public contract and may change or break without notice.',
+  },
+  'no-mixed-content': {
+    addBlockAllMixedContent:
+      'Make sure allowing mixed-content is safe here; add the "block-all-mixed-content" directive to this Content Security Policy.',
+  },
+  'no-selector-parameter': {
+    selectorParameter: 'Provide multiple methods instead of using this selector parameter.',
+  },
+  'no-session-cookies-on-static-assets': {
+    noSessionCookiesOnStaticAssets:
+      'Serve static assets before registering the session middleware so static-asset responses do not set a session cookie.',
+  },
+  'no-try-promise': {
+    tryPromise:
+      "Consider awaiting this promise inside the 'try', or handle its rejection with '.catch()'; a 'try'/'catch' will not intercept the rejection of an unawaited promise.",
+  },
+  'null-dereference': {
+    nullDereference:
+      'This expression dereferences "null" or "undefined" and will throw a TypeError at runtime.',
+  },
+  'prefer-read-only-props': {
+    readonlyProps: 'Mark the props of the component as read-only.',
+  },
+  'prefer-type-guard': {
+    preferTypeGuard:
+      "Declare this function's return type using a type predicate (e.g. `arg is SomeType`) so callers can narrow the argument's type.",
+  },
+  'regex-complexity': {
+    complexity:
+      'Simplify this regular expression; its structural complexity of {{value}} exceeds the maximum allowed.',
+  },
+  'review-blockchain-mnemonic': {
+    reviewMnemonic: 'Make sure this blockchain wallet mnemonic phrase is not disclosed.',
+  },
+  'session-regeneration': {
+    createSession:
+      'Create a new session during user authentication to prevent session fixation attacks.',
+  },
+  'sql-queries': {
+    safeQuery: 'Make sure that formatting this SQL query is safe here.',
+  },
+  'stable-tests': {
+    stableTests:
+      'Make your tests stable so that they pass on the first try, or remove this retry configuration.',
+  },
+  'stateful-regex': {
+    statefulRegex:
+      "This stateful regular expression keeps its global ('g') or sticky ('y') match position between calls; reusing it via test()/exec() can yield inconsistent results. Reset lastIndex, drop the flag, or create a fresh regex per call.",
+  },
+  'test-check-exception': {
+    checkException: 'Add an assertion that forces this test to fail when no exception is thrown.',
+  },
+  'unused-named-groups': {
+    unusedNamedGroups:
+      "Use the named group '{{value}}' of this regex or remove the name as it is never referenced.",
+  },
+  'variable-name': {
+    renameVariable:
+      'Rename this local variable or parameter "{{value}}" to match the regular expression {{format}}.',
+  },
+  'x-powered-by': {
+    xPoweredBy:
+      'Make sure disclosing the fingerprint of this web technology is safe here; disable the "x-powered-by" header instead.',
+  },
   'array-callback-without-return': {
     addReturn: 'Add a "return" statement to this callback.',
   },
@@ -861,6 +972,64 @@ const messages = Object.freeze({
 });
 
 const ruleDescriptions = Object.freeze({
+  'arrow-function-convention':
+    'Enforce consistent as-needed use of parentheses around a single arrow-function parameter and braces around a single-expression arrow body.',
+  'assertions-in-tests':
+    'Tests should include assertions; a test case with no assertion can only fail by throwing and gives a false sense of safety.',
+  'aws-iam-privilege-escalation':
+    'AWS IAM policies that grant sensitive IAM/STS actions on all resources enable privilege escalation and should restrict the resource scope.',
+  'comment-regex':
+    'Flag every comment whose text matches a configured regular expression (the "regularExpression" option); the pattern is compiled once per file and tested unanchored against each comment including its delimiters. Empty pattern disables the rule; the core narrow default is the literal marker XXX.',
+  'conditional-indentation':
+    'An unbraced statement controlled by an if/for/while on the line below should be indented further than its control keyword.',
+  'disabled-resource-integrity':
+    'External (cross-origin) script and stylesheet resources should be loaded with a Subresource Integrity (SRI) hash via the integrity attribute.',
+  'dompurify-unsafe-config':
+    'Disallow DOMPurify configuration options that bypass sanitization (e.g. ALLOW_UNKNOWN_PROTOCOLS: true).',
+  'dynamically-constructed-templates':
+    "Angular templates should not be constructed dynamically, which bypasses the framework's contextual escaping and risks template injection.",
+  'file-header':
+    'Require every file to start with a configured header banner (the "headerFormat" option). Inactive when no header is configured (the SonarJS default). Line endings are normalized; the regular-expression "isRegularExpression" mode is not supported in this port and is skipped.',
+  'function-return-type': 'Functions should always return the same type.',
+  'hardcoded-secret-signatures':
+    'Hard-coded secrets matching a well-known credential signature should be revoked and removed from source.',
+  'no-implicit-global':
+    'Disallow accidental creation of global variables by assigning to an undeclared name.',
+  'no-internal-api-use':
+    'Internal framework APIs (such as React internals named with the DO_NOT_USE token) should not be used.',
+  'no-mixed-content':
+    'Content Security Policy directives should block mixed content by including the block-all-mixed-content directive.',
+  'no-selector-parameter':
+    'Boolean selector parameters used only to branch behaviour inside a function should be replaced by separate, clearly named functions.',
+  'no-session-cookies-on-static-assets':
+    'Session middleware should not run before static-asset handlers, otherwise static assets needlessly receive a session cookie.',
+  'no-try-promise':
+    'Promises produced inside a try block must be awaited, otherwise their asynchronous rejection escapes the catch handler.',
+  'null-dereference':
+    'Properties of variables with a "null" or "undefined" value should not be accessed.',
+  'prefer-read-only-props':
+    'React function component props should be declared with a read-only type.',
+  'prefer-type-guard':
+    "A function that returns the result of a single `instanceof` check on its parameter should declare a type-predicate return type so callers can narrow the value's type.",
+  'regex-complexity': 'Regular expressions should not be too complicated.',
+  'review-blockchain-mnemonic':
+    'Blockchain wallet mnemonic (seed) phrases should not be hardcoded or disclosed.',
+  'session-regeneration':
+    'A new session should be created during user authentication; regenerate the session after Passport authentication to prevent session fixation.',
+  'sql-queries':
+    'Formatting SQL queries by mixing runtime values into the statement text (string concatenation or template interpolation) is security-sensitive and a common source of SQL injection.',
+  'stable-tests':
+    'Tests should be stable: flags automatic retry of flaky tests via jest.retryTimes(n) or Mocha this.retries(n) with a positive count.',
+  'stateful-regex':
+    'Regular expressions stored in a variable with the global or sticky flag are stateful and produce surprising results when reused with test()/exec().',
+  'test-check-exception':
+    'Tests that wrap throwing code in try/catch must assert that an exception was actually thrown; otherwise the test passes silently when nothing throws.',
+  'unused-named-groups':
+    'Named capturing groups in a regular expression should be referenced; flags named groups that are never used.',
+  'variable-name':
+    'Local variable and function parameter names should comply with a naming convention (default camelCase: ^[_a-z][a-zA-Z0-9]*$).',
+  'x-powered-by':
+    'Disclosing the technology stack via the X-Powered-By header is security-sensitive; explicitly enabling it is flagged.',
   'array-callback-without-return':
     'Require a return statement in callbacks of array methods that build a result',
   'declarations-in-global-scope':
@@ -1472,6 +1641,36 @@ const ruleDescriptions = Object.freeze({
 });
 
 const ruleTypes = Object.freeze({
+  'arrow-function-convention': 'suggestion',
+  'assertions-in-tests': 'problem',
+  'aws-iam-privilege-escalation': 'problem',
+  'comment-regex': 'suggestion',
+  'conditional-indentation': 'layout',
+  'disabled-resource-integrity': 'problem',
+  'dompurify-unsafe-config': 'problem',
+  'dynamically-constructed-templates': 'problem',
+  'file-header': 'problem',
+  'function-return-type': 'suggestion',
+  'hardcoded-secret-signatures': 'problem',
+  'no-implicit-global': 'problem',
+  'no-internal-api-use': 'problem',
+  'no-mixed-content': 'problem',
+  'no-selector-parameter': 'suggestion',
+  'no-session-cookies-on-static-assets': 'problem',
+  'no-try-promise': 'problem',
+  'null-dereference': 'problem',
+  'prefer-read-only-props': 'suggestion',
+  'prefer-type-guard': 'suggestion',
+  'regex-complexity': 'suggestion',
+  'review-blockchain-mnemonic': 'problem',
+  'session-regeneration': 'problem',
+  'sql-queries': 'problem',
+  'stable-tests': 'problem',
+  'stateful-regex': 'problem',
+  'test-check-exception': 'problem',
+  'unused-named-groups': 'suggestion',
+  'variable-name': 'suggestion',
+  'x-powered-by': 'problem',
   'array-callback-without-return': 'suggestion',
   'declarations-in-global-scope': 'suggestion',
   'no-nested-template-literals': 'suggestion',
@@ -1709,6 +1908,34 @@ const ruleTypes = Object.freeze({
 });
 
 const recommendedRuleConfig = Object.freeze({
+  'assertions-in-tests': 'error',
+  'aws-iam-privilege-escalation': 'error',
+  'conditional-indentation': 'error',
+  'disabled-resource-integrity': 'error',
+  'dompurify-unsafe-config': 'error',
+  'dynamically-constructed-templates': 'error',
+  'file-header': 'error',
+  'function-return-type': 'error',
+  'hardcoded-secret-signatures': 'error',
+  'no-implicit-global': 'error',
+  'no-internal-api-use': 'error',
+  'no-mixed-content': 'error',
+  'no-selector-parameter': 'error',
+  'no-session-cookies-on-static-assets': 'error',
+  'no-try-promise': 'error',
+  'null-dereference': 'error',
+  'prefer-read-only-props': 'error',
+  'prefer-type-guard': 'error',
+  'regex-complexity': 'error',
+  'review-blockchain-mnemonic': 'error',
+  'session-regeneration': 'error',
+  'sql-queries': 'error',
+  'stable-tests': 'error',
+  'stateful-regex': 'error',
+  'test-check-exception': 'error',
+  'unused-named-groups': 'error',
+  'variable-name': 'error',
+  'x-powered-by': 'error',
   'array-callback-without-return': 'error',
   'declarations-in-global-scope': 'error',
   'no-nested-template-literals': 'error',
@@ -1980,6 +2207,33 @@ function configFromRuleConfig(name, ruleConfig) {
 }
 
 function schemaForRule(ruleName) {
+  if (ruleName === 'comment-regex') {
+    return [
+      {
+        type: 'object',
+        properties: { regularExpression: { type: 'string' } },
+        additionalProperties: false,
+      },
+    ];
+  }
+  if (ruleName === 'file-header') {
+    return [
+      {
+        type: 'object',
+        properties: { headerFormat: { type: 'string' }, isRegularExpression: { type: 'boolean' } },
+        additionalProperties: false,
+      },
+    ];
+  }
+  if (ruleName === 'regex-complexity') {
+    return [
+      {
+        type: 'object',
+        properties: { threshold: { type: 'integer' } },
+        additionalProperties: false,
+      },
+    ];
+  }
   if (ruleName === 'max-switch-cases') {
     return [
       {
@@ -2086,6 +2340,20 @@ function scanOptionsForRule(context, ruleName) {
   const raw =
     context.options?.[0] && typeof context.options[0] === 'object' ? context.options[0] : {};
   const options = { ruleNames: [ruleName] };
+  if (ruleName === 'comment-regex' && typeof raw.regularExpression === 'string') {
+    options.commentRegexFormat = raw.regularExpression;
+  }
+  if (ruleName === 'file-header') {
+    if (typeof raw.headerFormat === 'string') {
+      options.fileHeaderFormat = raw.headerFormat;
+    }
+    if (typeof raw.isRegularExpression === 'boolean') {
+      options.fileHeaderIsRegularExpression = raw.isRegularExpression;
+    }
+  }
+  if (ruleName === 'regex-complexity' && Number.isInteger(raw.threshold)) {
+    options.regexComplexityThreshold = raw.threshold;
+  }
   if (ruleName === 'max-switch-cases' && Number.isInteger(raw.maximum)) {
     options.maxSwitchCasesThreshold = raw.maximum;
   }

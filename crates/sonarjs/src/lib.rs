@@ -24,7 +24,7 @@ pub(crate) use crate::types::LineIndex;
 pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, SonarjsOptions};
 
 /// Names of every rule implemented by the sonarjs core, in registration order.
-pub const RULE_NAMES: [&str; 234] = [
+pub const RULE_NAMES: [&str; 264] = [
     "no-nested-template-literals",
     "no-nested-switch",
     "no-nested-conditional",
@@ -259,6 +259,36 @@ pub const RULE_NAMES: [&str; 234] = [
     "table-header-reference",
     "no-return-type-any",
     "values-not-convertible-to-numbers",
+    "arrow-function-convention",
+    "assertions-in-tests",
+    "aws-iam-privilege-escalation",
+    "comment-regex",
+    "conditional-indentation",
+    "disabled-resource-integrity",
+    "dompurify-unsafe-config",
+    "dynamically-constructed-templates",
+    "file-header",
+    "function-return-type",
+    "hardcoded-secret-signatures",
+    "no-implicit-global",
+    "no-internal-api-use",
+    "no-mixed-content",
+    "no-selector-parameter",
+    "no-session-cookies-on-static-assets",
+    "no-try-promise",
+    "null-dereference",
+    "prefer-read-only-props",
+    "prefer-type-guard",
+    "regex-complexity",
+    "review-blockchain-mnemonic",
+    "session-regeneration",
+    "sql-queries",
+    "stable-tests",
+    "stateful-regex",
+    "test-check-exception",
+    "unused-named-groups",
+    "variable-name",
+    "x-powered-by",
 ];
 
 /// Returns the implemented rule names as a static slice.
@@ -311,7 +341,9 @@ pub fn scan_sonarjs(
         || options.has_rule("no-unused-collection")
         || options.has_rule("no-empty-collection")
         || options.has_rule("unused-import")
-        || options.has_rule("no-unused-vars");
+        || options.has_rule("no-unused-vars")
+        || options.has_rule("no-implicit-global")
+        || options.has_rule("stateful-regex");
     let semantic = needs_semantic.then(|| {
         SemanticBuilder::new()
             .build(&parser_return.program)
