@@ -77,6 +77,15 @@ pub struct SonarjsOptions {
     /// operators per top-level expression for `expression-complexity` (S1067);
     /// the SonarJS default is 3.
     pub expression_complexity_threshold: u32,
+    /// Pattern for `comment-regex` (S124). Default `XXX` (placeholder marker). Empty disables.
+    pub comment_regex_format: CompactString,
+    /// Expected header text for `file-header` (S1451). Empty (default) disables the check.
+    pub file_header_format: CompactString,
+    /// Whether `file_header_format` is a regular expression for `file-header` (S1451).
+    /// The Rust core has no header-regex engine, so the check is skipped when true.
+    pub file_header_is_regular_expression: bool,
+    /// Max structural complexity of a regex literal for `regex-complexity` (S5843); default 20.
+    pub regex_complexity_threshold: u32,
 }
 
 impl Default for SonarjsOptions {
@@ -99,6 +108,10 @@ impl Default for SonarjsOptions {
             function_name_format: CompactString::from("^[_a-z][a-zA-Z0-9]*$"),
             cognitive_complexity_threshold: 15,
             expression_complexity_threshold: 3,
+            comment_regex_format: CompactString::from("XXX"),
+            file_header_format: CompactString::default(),
+            file_header_is_regular_expression: false,
+            regex_complexity_threshold: 20,
         }
     }
 }
