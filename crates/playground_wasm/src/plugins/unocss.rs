@@ -32,7 +32,7 @@ pub fn scan(
         if !filter.rule_enabled(PLUGIN, diagnostic.rule_name) {
             continue;
         }
-        let mut data: BTreeMap<&'static str, String> = BTreeMap::new();
+        let mut data: BTreeMap<String, String> = BTreeMap::new();
         super::push(&mut data, "name", diagnostic.name);
         super::push(&mut data, "reason", diagnostic.reason);
         super::push(&mut data, "prefix", diagnostic.prefix);

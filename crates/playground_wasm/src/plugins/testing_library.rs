@@ -36,8 +36,8 @@ pub fn scan(
         // The core diagnostic carries an already-rendered message; the npm
         // plugin reports it via message id `unexpected` with template
         // `{{message}}`, so reproduce that here.
-        let mut data: BTreeMap<&'static str, String> = BTreeMap::new();
-        data.insert("message", diagnostic.message.to_string());
+        let mut data: BTreeMap<String, String> = BTreeMap::new();
+        data.insert("message".to_owned(), diagnostic.message.to_string());
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,
             rule: diagnostic.rule_name.to_owned(),

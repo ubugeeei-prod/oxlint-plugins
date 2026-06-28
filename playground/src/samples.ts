@@ -60,4 +60,15 @@ const cp = require('child_process');
 cp.exec(userInput);
 `,
   },
+  {
+    label: 'PostgreSQL',
+    filename: 'schema.sql',
+    code: `CREATE TABLE users (
+  id int,
+  Name text
+);
+
+SELECT * FROM users;
+`,
+  },
 ];

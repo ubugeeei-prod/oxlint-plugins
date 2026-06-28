@@ -19,6 +19,9 @@ use crate::tokenize::{Token, TokenKind};
 
 /// Attach `embeddedCode` to every top-level `CreateFunctionStmt` in `program`'s
 /// body that has a recognizable language + body literal.
+// Only the native `parse_for_eslint` path calls this; the playground's raw-JSON
+// path uses `attach_embedded_code_to_stmts`.
+#[cfg_attr(not(feature = "native-parser"), allow(dead_code))]
 pub fn attach_embedded_code(program: &mut Value, tokens: &[Token], source: &Source) {
     let Some(body) = program.get_mut("body").and_then(Value::as_array_mut) else {
         return;

@@ -1294,6 +1294,7 @@ dependencies = [
  "oxlint-plugins-mocha",
  "oxlint-plugins-perfectionist",
  "oxlint-plugins-playwright",
+ "oxlint-plugins-postgresql",
  "oxlint-plugins-regexp",
  "oxlint-plugins-security",
  "oxlint-plugins-simple-import-sort",

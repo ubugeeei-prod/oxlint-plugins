@@ -2145,6 +2145,746 @@
       ]
     },
     {
+      "plugin": "postgresql",
+      "npm": "@oxlint-plugins/oxlint-plugin-postgresql",
+      "description": "Rust-backed oxlint plugin port of eslint-plugin-postgresql.",
+      "rules": [
+        {
+          "name": "align-column-definitions",
+          "description": "Align column definitions vertically inside `CREATE TABLE` so that name, type, and constraints share consistent column offsets",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#align-column-definitions",
+          "messages": {
+            "misaligned": "Column definitions in this CREATE TABLE are not vertically aligned."
+          }
+        },
+        {
+          "name": "align-values",
+          "description": "Align column values vertically inside multi-row `INSERT ... VALUES (...)` so that each tuple position shares a consistent width across rows",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#align-values",
+          "messages": {
+            "misaligned": "VALUES rows are not vertically aligned: column widths can shrink to fit the current rows."
+          }
+        },
+        {
+          "name": "consistent-as-for-column-alias",
+          "description": "Enforce a consistent stance on the `AS` keyword before column aliases in `SELECT` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-as-for-column-alias",
+          "messages": {
+            "preferAs": "Use `AS` before the column alias `{{alias}}`.",
+            "unexpectedAs": "Omit `AS` before the column alias `{{alias}}`."
+          }
+        },
+        {
+          "name": "consistent-as-for-table-alias",
+          "description": "Enforce a consistent stance on the `AS` keyword before table aliases in `FROM` clauses (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-as-for-table-alias",
+          "messages": {
+            "preferAs": "Use `AS` before the table alias `{{alias}}`.",
+            "unexpectedAs": "Omit `AS` before the table alias `{{alias}}`."
+          }
+        },
+        {
+          "name": "consistent-between-over-and",
+          "description": "Enforce a consistent stance on `x BETWEEN a AND b` vs `x >= a AND x <= b` for closed-interval range checks",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-between-over-and",
+          "messages": {
+            "preferBetween": "Use `{{lhs}} BETWEEN {{lower}} AND {{upper}}` instead of `>= ... AND <=`.",
+            "unexpectedBetween": "Use `{{lhs}} >= {{lower}} AND {{lhs}} <= {{upper}}` instead of `BETWEEN`. Some teams prefer explicit comparisons so the inclusive bounds are obvious to readers."
+          }
+        },
+        {
+          "name": "consistent-create-index-concurrently",
+          "description": "Enforce a consistent stance on `CONCURRENTLY` for `CREATE INDEX` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-create-index-concurrently",
+          "messages": {
+            "preferConcurrently": "Use `CREATE INDEX CONCURRENTLY`. A plain `CREATE INDEX` takes a `SHARE` lock on the target table for the duration of the build — readers are unaffected, but every writer is blocked. Concurrent index builds cannot run inside a transaction, so a migration tool that wraps each step in BEGIN/COMMIT needs an explicit opt-out here.",
+            "unexpectedConcurrently": "Avoid `CREATE INDEX CONCURRENTLY`. Concurrent index builds cannot run inside a transaction, so they conflict with migration tools that wrap each step in BEGIN/COMMIT; drop the keyword and use a plain `CREATE INDEX`."
+          }
+        },
+        {
+          "name": "consistent-create-or-replace",
+          "description": "Enforce a consistent stance on `CREATE OR REPLACE` for `FUNCTION` / `PROCEDURE` / `VIEW` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-create-or-replace",
+          "messages": {
+            "preferOrReplace": "Use `CREATE OR REPLACE {{kind}}` so re-running this migration does not abort with `relation already exists`.",
+            "unexpectedOrReplace": "Avoid `CREATE OR REPLACE {{kind}}`; drop and re-create the object explicitly so unintended overwrites are surfaced."
+          }
+        },
+        {
+          "name": "consistent-drop-index-concurrently",
+          "description": "Enforce a consistent stance on `CONCURRENTLY` for `DROP INDEX` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-drop-index-concurrently",
+          "messages": {
+            "preferConcurrently": "Use `DROP INDEX CONCURRENTLY` to avoid an `ACCESS EXCLUSIVE` lock on the table for the entire drop.",
+            "unexpectedConcurrently": "Avoid `DROP INDEX CONCURRENTLY`. Concurrent drops cannot run inside a transaction, so they conflict with migration tools that wrap each step in BEGIN/COMMIT."
+          }
+        },
+        {
+          "name": "consistent-explicit-inner-join",
+          "description": "Enforce a consistent stance on the explicit `INNER` keyword in `INNER JOIN` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-explicit-inner-join",
+          "messages": {
+            "preferInnerJoin": "Write `INNER JOIN` explicitly instead of bare `JOIN`.",
+            "unexpectedInnerJoin": "Omit the redundant `INNER`; use bare `JOIN` for inner joins."
+          }
+        },
+        {
+          "name": "consistent-explicit-outer-join",
+          "description": "Enforce a consistent stance on the explicit `OUTER` keyword in outer joins (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-explicit-outer-join",
+          "messages": {
+            "preferOuterJoin": "Write `{{side}} OUTER JOIN` explicitly instead of `{{side}} JOIN`.",
+            "unexpectedOuterJoin": "Omit the redundant `OUTER`; use `{{side}} JOIN` instead of `{{side}} OUTER JOIN`."
+          }
+        },
+        {
+          "name": "consistent-fk-not-valid",
+          "description": "Enforce a consistent stance on `NOT VALID` for `ADD CONSTRAINT ... FOREIGN KEY` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-fk-not-valid",
+          "messages": {
+            "preferFkNotValid": "Adding a foreign key without `NOT VALID` validates every existing row under an `ACCESS EXCLUSIVE` lock that blocks writers. Use `ADD CONSTRAINT ... FOREIGN KEY (...) REFERENCES ... NOT VALID`, then `ALTER TABLE ... VALIDATE CONSTRAINT` in a separate migration (`VALIDATE` only takes a `SHARE UPDATE EXCLUSIVE` lock).",
+            "unexpectedFkNotValid": "Avoid `NOT VALID` on foreign keys. The constraint is added in a non-validated state and won't reject existing violations until you remember to run `VALIDATE CONSTRAINT`; some projects prefer to fail loudly at constraint-add time instead."
+          }
+        },
+        {
+          "name": "consistent-identity-over-serial",
+          "description": "Enforce a consistent stance on `GENERATED ... AS IDENTITY` vs `SERIAL` / `BIGSERIAL` / `SMALLSERIAL`",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-identity-over-serial",
+          "messages": {
+            "preferIdentity": "Use `GENERATED ALWAYS AS IDENTITY` (SQL standard) instead of `{{type}}`. The serial pseudo-types create a separately-owned sequence that breaks under pg_dump round-trips and does not honor column privileges.",
+            "unexpectedIdentity": "Use a serial pseudo-type (e.g. `bigserial`) instead of `GENERATED ... AS IDENTITY`. Useful for projects that need to keep compatibility with tooling that does not understand identity columns."
+          }
+        },
+        {
+          "name": "consistent-jsonb-over-json",
+          "description": "Enforce a consistent stance on `jsonb` vs `json` column types (either always require `jsonb`, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-jsonb-over-json",
+          "messages": {
+            "preferJsonb": "Use `jsonb` instead of `json`. `jsonb` stores the parsed representation, supports indexing, and is what almost every application actually wants.",
+            "unexpectedJsonb": "Use `json` instead of `jsonb`. Useful when the project intentionally relies on `json`'s preservation of key order, whitespace, and duplicate keys."
+          }
+        },
+        {
+          "name": "consistent-reindex-concurrently",
+          "description": "Enforce a consistent stance on `CONCURRENTLY` for `REINDEX` (either always require it, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-reindex-concurrently",
+          "messages": {
+            "preferReindexConcurrently": "`REINDEX` without `CONCURRENTLY` takes a `SHARE` lock (table) or `ACCESS EXCLUSIVE` (index), blocking writers for the rebuild. Use `REINDEX (TABLE|INDEX) CONCURRENTLY ...` (PG ≥ 12) so writers keep working.",
+            "unexpectedReindexConcurrently": "Avoid `REINDEX CONCURRENTLY`. Concurrent reindex cannot run inside a transaction; use plain `REINDEX` when the migration tool wraps each step in BEGIN/COMMIT."
+          }
+        },
+        {
+          "name": "consistent-text-over-varchar",
+          "description": "Enforce a consistent stance on `text` vs `varchar(n)` column types (either always require `text`, or always require a bounded type)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-text-over-varchar",
+          "messages": {
+            "preferText": "Use `text` instead of `varchar(n)`. PostgreSQL stores both the same way; the length cap is enforced by a constraint that you cannot relax without a full table rewrite. Move the limit into a CHECK constraint.",
+            "unexpectedText": "Use `varchar(n)` (or another bounded string type) instead of `text`. Useful for projects that intentionally cap every string column's length at the type level."
+          }
+        },
+        {
+          "name": "consistent-timestamptz",
+          "description": "Enforce a consistent stance on `timestamptz` vs `timestamp` column types (either always require `timestamptz`, or always forbid it)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#consistent-timestamptz",
+          "messages": {
+            "preferTimestamptz": "Use `timestamptz` (or `TIMESTAMP WITH TIME ZONE`) instead of `timestamp`. `timestamp` is timezone-naive: it stores the wall-clock value you handed in and assumes every reader and writer share the same convention, so two clients on different `TimeZone` settings will disagree on which instant the row represents.",
+            "unexpectedTimestamptz": "Use `timestamp` instead of `timestamptz` (or `TIMESTAMP WITH TIME ZONE`). When the project treats every timestamp as UTC at the application layer, `timestamp` avoids the implicit conversions `timestamptz` performs against each session's `TimeZone` setting."
+          }
+        },
+        {
+          "name": "no-add-check-constraint-without-not-valid",
+          "description": "Disallow `ALTER TABLE ... ADD CONSTRAINT ... CHECK (...)` without `NOT VALID`; the synchronous form holds `ACCESS EXCLUSIVE` on the table for the entire validating scan",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-add-check-constraint-without-not-valid",
+          "messages": {
+            "checkNotValid": "Add this CHECK constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not block writers under `ACCESS EXCLUSIVE`."
+          }
+        },
+        {
+          "name": "no-add-column-not-null-without-default",
+          "description": "Disallow `ALTER TABLE ADD COLUMN ... NOT NULL` without a `DEFAULT` because the migration fails outright on any non-empty table",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-add-column-not-null-without-default",
+          "messages": {
+            "noAddColumnNotNullWithoutDefault": "`ADD COLUMN ... NOT NULL` without a `DEFAULT` aborts the migration on any table that already has rows. Either supply a `DEFAULT`, or add the column nullable first, backfill, and then `ALTER COLUMN ... SET NOT NULL` in a follow-up."
+          }
+        },
+        {
+          "name": "no-add-unique-constraint-directly",
+          "description": "Disallow `ALTER TABLE ... ADD CONSTRAINT ... UNIQUE (...)` directly; build the index with `CREATE UNIQUE INDEX CONCURRENTLY` first, then promote it",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-add-unique-constraint-directly",
+          "messages": {
+            "useIndexFirst": "Build this UNIQUE constraint's index with `CREATE UNIQUE INDEX CONCURRENTLY` first, then promote it via `ALTER TABLE ... ADD CONSTRAINT ... UNIQUE USING INDEX <name>`. The inline form blocks writers under `ACCESS EXCLUSIVE` for the entire index build."
+          }
+        },
+        {
+          "name": "no-alter-column-type",
+          "description": "Disallow `ALTER TABLE ... ALTER COLUMN ... TYPE ...` because it can rewrite the table under an ACCESS EXCLUSIVE lock",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-alter-column-type",
+          "messages": {
+            "noAlterColumnType": "`ALTER COLUMN ... TYPE` can rewrite the entire table under an ACCESS EXCLUSIVE lock. For non-trivial tables, add a new column, dual-write, backfill, and swap — or use `USING` only for known-safe conversions in a separate migration."
+          }
+        },
+        {
+          "name": "no-char-type",
+          "description": "Disallow the blank-padded `char(n)` / `bpchar` column type",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-char-type",
+          "messages": {
+            "noChar": "Avoid `char(n)`. PostgreSQL pads stored values to `n` with trailing spaces and trims on read, which surprises every comparison and round-trip. Use `text` instead."
+          }
+        },
+        {
+          "name": "no-cluster",
+          "description": "Disallow the `CLUSTER` statement: it takes ACCESS EXCLUSIVE, rewrites the table, and is not maintained afterwards",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-cluster",
+          "messages": {
+            "noCluster": "`CLUSTER` takes `ACCESS EXCLUSIVE` and rewrites the entire table, just like `VACUUM FULL` — and PostgreSQL does not keep the rows clustered as you continue to write. Use `pg_repack --order-by` for online clustering, or build an index in the order you actually want to read."
+          }
+        },
+        {
+          "name": "no-composite-primary-key",
+          "description": "Disallow composite PRIMARY KEY constraints (more than one column)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-composite-primary-key",
+          "messages": {
+            "noCompositePk": "Composite PRIMARY KEY is not allowed. Use a single-column surrogate key (e.g. `id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY`) and enforce the natural key with a `UNIQUE` constraint. Composite primary keys complicate joins, ORM mapping, and foreign-key references."
+          }
+        },
+        {
+          "name": "no-create-role",
+          "description": "Disallow `CREATE ROLE` / `CREATE USER` in application migrations; manage roles in a separate operator workflow",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-create-role",
+          "messages": {
+            "noCreateRole": "`CREATE ROLE` / `CREATE USER` belongs in an operator-managed bootstrap (Terraform, Pulumi, a runbook), not in application migrations. Migration files run with whichever role the deploy uses and are not the right place to manage permissions."
+          }
+        },
+        {
+          "name": "no-cross-join",
+          "description": "Disallow `CROSS JOIN` (unqualified cartesian product)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-cross-join",
+          "messages": {
+            "noCrossJoin": "Avoid `CROSS JOIN`. Cartesian products are almost always a mistake; use an explicit `JOIN ... ON` with a join condition, or `JOIN ... ON true` if you really do want one."
+          }
+        },
+        {
+          "name": "no-distinct-on-without-order-by",
+          "description": "Disallow `SELECT DISTINCT ON (...)` without an `ORDER BY`; the surviving row in each group is otherwise non-deterministic",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-distinct-on-without-order-by",
+          "messages": {
+            "noDistinctOnWithoutOrderBy": "`DISTINCT ON (...)` keeps an arbitrary row from each group unless `ORDER BY` is specified. Add an `ORDER BY` whose leading columns match the `DISTINCT ON` expressions."
+          }
+        },
+        {
+          "name": "no-drop-column",
+          "description": "Disallow `ALTER TABLE ... DROP COLUMN` — every reader of the dropped column breaks at deploy time",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-drop-column",
+          "messages": {
+            "noDropColumn": "`DROP COLUMN` breaks every running app that still references the column. Roll it out as a two-step migration: stop reading the column in the application, deploy, then drop it in a follow-up release."
+          }
+        },
+        {
+          "name": "no-drop-database",
+          "description": "Disallow `DROP DATABASE`; it is catastrophic if run by accident and should not live in versioned SQL",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-drop-database",
+          "messages": {
+            "noDropDatabase": "`DROP DATABASE` is catastrophic and irreversible. Database creation/deletion belongs in an explicit operator workflow, not in versioned SQL applied automatically by a migration tool."
+          }
+        },
+        {
+          "name": "no-drop-not-null",
+          "description": "Disallow `ALTER COLUMN ... DROP NOT NULL` — relaxing a NOT NULL constraint surprises every consumer that already assumes the column is non-null",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-drop-not-null",
+          "messages": {
+            "noDropNotNull": "`DROP NOT NULL` lets the column store NULLs again — every consumer that already assumes the column is non-null (joins, COALESCE coverage, app-level types) silently breaks. If a row genuinely needs no value, model it with a sentinel or a separate optional table."
+          }
+        },
+        {
+          "name": "no-drop-schema-cascade",
+          "description": "Disallow `DROP SCHEMA ... CASCADE`; it silently removes every object in the schema",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-drop-schema-cascade",
+          "messages": {
+            "noDropSchemaCascade": "`DROP SCHEMA ... CASCADE` removes every table, view, function, and sequence in the schema with no preview. List the objects you actually want to drop instead, or drop the schema only when it's already empty."
+          }
+        },
+        {
+          "name": "no-drop-table-cascade",
+          "description": "Disallow `DROP TABLE ... CASCADE` because it silently removes dependent objects",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-drop-table-cascade",
+          "messages": {
+            "noCascade": "Avoid `DROP TABLE ... CASCADE`. CASCADE silently removes dependent objects (views, foreign keys, sequences); list them explicitly so reviewers can see the blast radius."
+          }
+        },
+        {
+          "name": "no-equality-with-null",
+          "description": "Disallow `x = NULL` / `x <> NULL`; PostgreSQL's three-valued logic makes both expressions evaluate to NULL (i.e. neither true nor false), which silently filters away rows the author probably wanted",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-equality-with-null",
+          "messages": {
+            "useIsNull": "`{{op}} NULL` always evaluates to NULL (treated as false). Use `IS NULL` / `IS NOT NULL` instead."
+          }
+        },
+        {
+          "name": "no-grant-all",
+          "description": "Disallow `GRANT ALL` / `GRANT ALL PRIVILEGES`; enumerate the privileges actually needed so the grant is auditable and a future PG release adding a new privilege does not silently extend it",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-grant-all",
+          "messages": {
+            "noGrantAll": "`GRANT ALL` (or `GRANT ALL PRIVILEGES`) is opaque — list the privileges you actually need (e.g. `SELECT, INSERT, UPDATE`) so the grant is auditable and adding a new PostgreSQL privilege in a future release does not silently extend it."
+          }
+        },
+        {
+          "name": "no-grant-to-public",
+          "description": "Disallow GRANT statements that target the `PUBLIC` pseudo-role",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-grant-to-public",
+          "messages": {
+            "noPublic": "Avoid `GRANT ... TO PUBLIC`. The PUBLIC role covers every current and future role in the database, including ones added later for unrelated services. Name the role(s) you actually want to grant to."
+          }
+        },
+        {
+          "name": "no-group-by-ordinal",
+          "description": "Disallow `GROUP BY <position>` (positional/ordinal references); use the column name or expression instead",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-group-by-ordinal",
+          "messages": {
+            "noGroupByOrdinal": "`GROUP BY <position>` silently breaks when the SELECT list changes. Use the column name or the expression itself."
+          }
+        },
+        {
+          "name": "no-having-without-group-by",
+          "description": "Disallow `HAVING` without `GROUP BY` — the query aggregates the entire result set, which is almost never the intended shape",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-having-without-group-by",
+          "messages": {
+            "noHavingWithoutGroupBy": "`HAVING` without `GROUP BY` collapses the query to one aggregate row over the whole table. If that is intended, put the predicate in `WHERE`. Otherwise, add a `GROUP BY`."
+          }
+        },
+        {
+          "name": "no-identifier-too-long",
+          "description": "Disallow identifiers longer than PostgreSQL's `NAMEDATALEN - 1` limit (default 63 bytes)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-identifier-too-long",
+          "messages": {
+            "identifierTooLong": "Identifier `{{name}}` is {{length}} bytes, which exceeds the {{max}}-byte limit. PostgreSQL silently truncates over-length identifiers at parse time, so the object will be created (or looked up) under a different name than written — every later `DROP` / `ALTER` / `\\d` that uses the original name will then fail with `does not exist`."
+          }
+        },
+        {
+          "name": "no-implicit-join",
+          "description": "Disallow comma-separated FROM clauses (implicit cross joins); use explicit JOIN syntax",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-implicit-join",
+          "messages": {
+            "noImplicitJoin": "Comma-separated tables in `FROM` are an implicit cross join. Use explicit `JOIN ... ON ...` so the join condition lives next to the join."
+          }
+        },
+        {
+          "name": "no-leading-wildcard-like",
+          "description": "Disallow `LIKE`/`ILIKE` patterns that begin with `%` because they cannot use a B-tree index and force a full scan",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-leading-wildcard-like",
+          "messages": {
+            "noLeadingWildcardLike": "`LIKE`/`ILIKE` patterns that begin with `%` cannot use a B-tree index and force a sequential scan. If you need substring search, use a `pg_trgm` GIN index, full-text search, or rework the schema so the prefix is indexable."
+          }
+        },
+        {
+          "name": "no-money-type",
+          "description": "Disallow the `money` column type",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-money-type",
+          "messages": {
+            "noMoney": "Avoid `money`. Its output format and precision depend on `lc_monetary`, so the same row looks different on different servers and round-trips badly. Store amounts as `numeric` and keep the currency in a separate column."
+          }
+        },
+        {
+          "name": "no-natural-join",
+          "description": "Disallow `NATURAL JOIN`",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-natural-join",
+          "messages": {
+            "noNaturalJoin": "Avoid `NATURAL JOIN`. The join columns are implicit — any future column with a matching name on both sides silently changes the result. Use `JOIN ... USING (...)` or `JOIN ... ON ...` and name the columns."
+          }
+        },
+        {
+          "name": "no-not-in-subquery",
+          "description": "Disallow `NOT IN (subquery)` because it returns no rows when the subquery yields any NULL",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-not-in-subquery",
+          "messages": {
+            "noNotInSubquery": "`NOT IN (subquery)` returns no rows if the subquery yields any NULL — almost certainly not what you want. Use `NOT EXISTS (SELECT 1 FROM ... WHERE ...)` instead; it handles NULL correctly."
+          }
+        },
+        {
+          "name": "no-numeric-without-precision",
+          "description": "Require an explicit precision (and scale) on `NUMERIC` / `DECIMAL` columns",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-numeric-without-precision",
+          "messages": {
+            "noNumericWithoutPrecision": "`NUMERIC` / `DECIMAL` without precision accepts unbounded magnitude and rejects nothing — it's a missed opportunity to encode the column's domain. Declare `NUMERIC(precision, scale)`."
+          }
+        },
+        {
+          "name": "no-on-delete-cascade",
+          "description": "Disallow `ON DELETE CASCADE` on foreign keys; cascading deletes are easy to write but can wipe out far more rows than the author intended",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-on-delete-cascade",
+          "messages": {
+            "noCascade": "Avoid `ON DELETE CASCADE`. The deletion will silently propagate through every dependent row; prefer an explicit `RESTRICT` or `SET NULL` action and handle the cleanup in application code."
+          }
+        },
+        {
+          "name": "no-order-by-ordinal",
+          "description": "Disallow `ORDER BY <position>` (positional/ordinal references); use the column name or alias instead",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-order-by-ordinal",
+          "messages": {
+            "noOrderByOrdinal": "`ORDER BY <position>` silently breaks when the SELECT list changes. Use the column name or alias instead."
+          }
+        },
+        {
+          "name": "no-rename-column",
+          "description": "Disallow `ALTER TABLE ... RENAME COLUMN` — every deployed reader of the old name breaks at deploy time",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-rename-column",
+          "messages": {
+            "noRenameColumn": "`RENAME COLUMN` breaks every running app that still selects/inserts by the old name. The safer pattern is to add a new column, dual-write, backfill, and drop the old one across separate deploys."
+          }
+        },
+        {
+          "name": "no-rename-table",
+          "description": "Disallow `ALTER TABLE ... RENAME TO` — every deployed reader of the old name breaks at deploy time",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-rename-table",
+          "messages": {
+            "noRenameTable": "`RENAME TO` breaks every running app that still queries the old name. The safer pattern is `CREATE VIEW old AS SELECT * FROM new` so old callers keep working until they're migrated, then drop the view in a separate deploy."
+          }
+        },
+        {
+          "name": "no-rule",
+          "description": "Disallow `CREATE RULE`; PostgreSQL's rule system is a known foot-gun and is effectively deprecated in favor of triggers and views",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-rule",
+          "messages": {
+            "noRule": "Avoid `CREATE RULE`. PostgreSQL's rule system has surprising semantics around row counts, RETURNING, and updatable views; use a trigger or an updatable view instead."
+          }
+        },
+        {
+          "name": "no-security-definer-without-search-path",
+          "description": "Require `SECURITY DEFINER` functions to also `SET search_path = ...` to prevent search-path injection attacks",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-security-definer-without-search-path",
+          "messages": {
+            "missingSearchPath": "`SECURITY DEFINER` function must `SET search_path = ...` (e.g. `pg_catalog, pg_temp`) so an attacker-controlled schema in the caller's `search_path` cannot shadow built-in objects called from inside the function body."
+          }
+        },
+        {
+          "name": "no-select-into",
+          "description": "Disallow `SELECT ... INTO target FROM ...` (creates a new table); use `CREATE TABLE AS SELECT ...` instead",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-select-into",
+          "messages": {
+            "noSelectInto": "`SELECT ... INTO target FROM ...` creates a new table whose semantics differ from a regular `SELECT` and conflict with PL/pgSQL's `SELECT INTO variable`. Use `CREATE TABLE target AS SELECT ...` so the intent is explicit."
+          }
+        },
+        {
+          "name": "no-select-star",
+          "description": "Disallow `SELECT *` in queries to keep result schemas stable when the underlying table changes",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-select-star",
+          "messages": {
+            "noSelectStar": "Avoid `SELECT *`; list the columns you need so the result schema does not silently change when the table does."
+          }
+        },
+        {
+          "name": "no-set-not-null",
+          "description": "Disallow `ALTER COLUMN ... SET NOT NULL` because it scans the whole table under ACCESS EXCLUSIVE",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-set-not-null",
+          "messages": {
+            "noSetNotNull": "`SET NOT NULL` scans the whole table for nulls under an `ACCESS EXCLUSIVE` lock. The safe pattern in production is to add a `CHECK (col IS NOT NULL) NOT VALID` constraint, `VALIDATE CONSTRAINT` separately, then `SET NOT NULL` (PG ≥ 12 reuses the validated CHECK and skips the scan)."
+          }
+        },
+        {
+          "name": "no-set-search-path",
+          "description": "Disallow `SET search_path = ...` in versioned SQL; qualify identifiers with their schema instead",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-set-search-path",
+          "messages": {
+            "noSetSearchPath": "`SET search_path` makes name resolution depend on session state and is a known foot-gun for security-definer functions and CREATE statements. Qualify identifiers with their schema (`audit.events`, `public.users`) instead."
+          }
+        },
+        {
+          "name": "no-syntax-error",
+          "description": "Disallow PostgreSQL syntax errors",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-syntax-error",
+          "messages": {
+            "syntaxError": "PostgreSQL syntax error: {{message}}"
+          }
+        },
+        {
+          "name": "no-temporary-table",
+          "description": "Disallow `CREATE TEMPORARY TABLE` in versioned SQL — temp tables exist for the session only and rarely belong in migration files",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-temporary-table",
+          "messages": {
+            "noTemporaryTable": "`TEMPORARY` tables exist only for the current session, so they almost never belong in versioned SQL. If you need session-scoped scratch storage, build it from application code; if you mean a persistent table, drop the `TEMP/TEMPORARY` qualifier."
+          }
+        },
+        {
+          "name": "no-time-type",
+          "description": "Disallow `TIME` / `TIME WITH TIME ZONE` columns; they rarely model a real-world value correctly",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-time-type",
+          "messages": {
+            "noTimeType": "`TIME` and `TIME WITH TIME ZONE` rarely model anything correctly: `time` has no date so cannot disambiguate around DST, and `timetz` stores an offset that is meaningless without a date. Use `timestamptz` for points in time, `interval` for durations, or store an opaque `text` if all you need is a display value."
+          }
+        },
+        {
+          "name": "no-truncate-cascade",
+          "description": "Disallow `TRUNCATE ... CASCADE` because it transitively empties referencing tables",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-truncate-cascade",
+          "messages": {
+            "noCascade": "`TRUNCATE ... CASCADE` also truncates every table that has a foreign key referencing this one. List the dependent tables explicitly so reviewers can see what gets emptied."
+          }
+        },
+        {
+          "name": "no-unlogged-table",
+          "description": "Disallow `CREATE UNLOGGED TABLE` because unlogged tables are truncated on crash and not replicated",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-unlogged-table",
+          "messages": {
+            "noUnloggedTable": "`UNLOGGED` tables skip WAL: they are truncated on crash, not replicated to standbys, and not restored from base backups. If a cache table is what you want, document it explicitly and disable this rule for that file."
+          }
+        },
+        {
+          "name": "no-unnecessary-quoted-identifier",
+          "description": "Disallow unnecessary double-quoting of identifiers (e.g. `\"users\"` when `users` would mean the same thing)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-unnecessary-quoted-identifier",
+          "messages": {
+            "unnecessaryQuoting": "The identifier `\"{{inner}}\"` does not need quoting; `{{inner}}` means the same thing."
+          }
+        },
+        {
+          "name": "no-update-primary-key",
+          "description": "Disallow `UPDATE ... SET <pk> = ...` for columns the rule treats as primary keys",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-update-primary-key",
+          "messages": {
+            "noUpdatePk": "Avoid `UPDATE` on the primary-key column `{{name}}`. Primary keys are intended to be immutable; FK references and external systems can hold the old value."
+          }
+        },
+        {
+          "name": "no-update-without-from-binding",
+          "description": "Disallow `UPDATE ... FROM` without a `WHERE` clause (Cartesian product with the target table)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-update-without-from-binding",
+          "messages": {
+            "missingJoin": "`UPDATE ... FROM` without a `WHERE` clause produces a Cartesian product with the target table; add a `WHERE t.x = other.x` condition to bind the rows."
+          }
+        },
+        {
+          "name": "no-vacuum-full",
+          "description": "Disallow `VACUUM FULL` because it takes ACCESS EXCLUSIVE and rewrites the entire table",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-vacuum-full",
+          "messages": {
+            "noVacuumFull": "`VACUUM FULL` takes `ACCESS EXCLUSIVE` and rewrites the whole table; the table is unavailable for the duration. For shrinking a bloated table on a live database, use `pg_repack` or `pg_squeeze`. A plain `VACUUM` (no `FULL`) is fine."
+          }
+        },
+        {
+          "name": "no-volatile-default-on-add-column",
+          "description": "Disallow `ALTER TABLE ... ADD COLUMN ... DEFAULT <volatile>()`; volatile defaults force a full table rewrite under `ACCESS EXCLUSIVE` because the stable-default short-cut cannot be used",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-volatile-default-on-add-column",
+          "messages": {
+            "noVolatileDefault": "`{{fn}}()` is VOLATILE — using it as a column DEFAULT on `ADD COLUMN` forces PostgreSQL to rewrite the entire table under `ACCESS EXCLUSIVE`. Add the column without a default, then `UPDATE` rows in batches."
+          }
+        },
+        {
+          "name": "no-with-recursive-without-limit",
+          "description": "Disallow `WITH RECURSIVE` queries that have no `LIMIT` on the outer SELECT, which can run unboundedly if the recursion's termination condition is wrong",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#no-with-recursive-without-limit",
+          "messages": {
+            "noLimit": "Add a `LIMIT` to a `WITH RECURSIVE` query so a buggy or accidentally-non-terminating recursion cannot run unboundedly."
+          }
+        },
+        {
+          "name": "plpgsql-keyword-case",
+          "description": "Enforce a consistent case (upper or lower) for SQL and PL/pgSQL keywords inside PL/pgSQL function bodies",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#plpgsql-keyword-case",
+          "messages": {
+            "expectedUpper": "PL/pgSQL keyword '{{actual}}' should be uppercase: '{{expected}}'.",
+            "expectedLower": "PL/pgSQL keyword '{{actual}}' should be lowercase: '{{expected}}'."
+          }
+        },
+        {
+          "name": "prefer-add-constraint-not-valid",
+          "description": "Prefer `ADD CONSTRAINT ... NOT VALID` followed by a separate `VALIDATE CONSTRAINT` to avoid an `ACCESS EXCLUSIVE` lock on the full table while it is being scanned",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-add-constraint-not-valid",
+          "messages": {
+            "notValid": "Add this constraint with `NOT VALID` and run `VALIDATE CONSTRAINT` separately, so the validating scan does not hold `ACCESS EXCLUSIVE` on the table."
+          }
+        },
+        {
+          "name": "prefer-bigint-id",
+          "description": "Prefer `bigint` for primary-key `id` columns; `int` / `smallint` primary keys risk silent overflow on growing tables",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-bigint-id",
+          "messages": {
+            "preferBigintId": "Primary-key `id` columns should be `bigint`. `int` overflows at 2.1 billion rows and the migration to widen it later requires a table rewrite under `ACCESS EXCLUSIVE`. Declare the column as `bigint GENERATED ALWAYS AS IDENTITY` from the start."
+          }
+        },
+        {
+          "name": "prefer-cast-operator",
+          "description": "Enforce a single style for type casts (`x::int` operator form vs `CAST(x AS int)` function form)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-cast-operator",
+          "messages": {
+            "preferOperator": "Use `<expr>::type` operator form instead of `CAST(...)`.",
+            "preferFunction": "Use `CAST(<expr> AS type)` instead of the `::` operator."
+          }
+        },
+        {
+          "name": "prefer-coalesce-over-case",
+          "description": "Prefer `COALESCE(x, y)` over `CASE WHEN x IS NULL THEN y ELSE x END` (and its IS NOT NULL mirror)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-coalesce-over-case",
+          "messages": {
+            "preferCoalesceOverCase": "`CASE WHEN ... IS NULL THEN ... ELSE ... END` is a verbose `COALESCE`. Use `COALESCE(x, fallback)` instead."
+          }
+        },
+        {
+          "name": "prefer-current-timestamp-over-now",
+          "description": "Prefer SQL-standard `CURRENT_TIMESTAMP` / `CURRENT_TIME` over PostgreSQL's `now()` and the timezone-naive `LOCALTIMESTAMP` / `LOCALTIME`",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-current-timestamp-over-now",
+          "messages": {
+            "preferCurrentTimestamp": "Use the SQL-standard `CURRENT_TIMESTAMP` instead of `now()`.",
+            "preferCurrentTimestampOverLocal": "Use `CURRENT_TIMESTAMP` instead of `LOCALTIMESTAMP`. `LOCALTIMESTAMP` returns a timezone-naive `timestamp`; `CURRENT_TIMESTAMP` returns `timestamptz`, which is what most apps actually want.",
+            "preferCurrentTimeOverLocal": "Use `CURRENT_TIME` instead of `LOCALTIME`. `LOCALTIME` returns a timezone-naive `time`; `CURRENT_TIME` returns `timetz`."
+          }
+        },
+        {
+          "name": "prefer-exists-over-in-subquery",
+          "description": "Prefer `EXISTS (...)` over `IN (subquery)` to avoid NULL-related surprises",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-exists-over-in-subquery",
+          "messages": {
+            "preferExists": "Use `EXISTS (...)` instead of `IN (subquery)`. `IN` returns NULL when the subquery has any NULL row, which silently turns the row into a no-match; `EXISTS` is unambiguously boolean."
+          }
+        },
+        {
+          "name": "prefer-explicit-null-ordering",
+          "description": "When `ORDER BY` specifies an explicit direction, require an explicit `NULLS FIRST` / `NULLS LAST` so null ordering is not implicit",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-explicit-null-ordering",
+          "messages": {
+            "preferExplicitNullOrdering": "`ORDER BY ... ASC|DESC` without `NULLS FIRST` / `NULLS LAST` relies on PostgreSQL's implicit ordering (NULLS LAST for ASC, NULLS FIRST for DESC), which trips up cross-database readers. Add an explicit `NULLS FIRST` / `NULLS LAST`."
+          }
+        },
+        {
+          "name": "prefer-in-list-over-or",
+          "description": "Prefer `x IN (a, b, c)` over a chain of `x = a OR x = b OR x = c`",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-in-list-over-or",
+          "messages": {
+            "preferIn": "Combine these `=` checks on `{{lhs}}` into a single `IN (...)` clause."
+          }
+        },
+        {
+          "name": "prefer-keyword-case",
+          "description": "Enforce a consistent case (upper or lower) for SQL keywords",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-keyword-case",
+          "messages": {
+            "expectedUpper": "SQL keyword '{{actual}}' should be uppercase: '{{expected}}'.",
+            "expectedLower": "SQL keyword '{{actual}}' should be lowercase: '{{expected}}'."
+          }
+        },
+        {
+          "name": "prefer-not-equals-operator",
+          "description": "Enforce a single style for the not-equal operator (`<>` or `!=`)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#prefer-not-equals-operator",
+          "messages": {
+            "preferAngle": "Use `<>` instead of `!=`.",
+            "preferBang": "Use `!=` instead of `<>`."
+          }
+        },
+        {
+          "name": "require-fk-include-columns",
+          "description": "Require every foreign-key constraint to include a configured set of columns (e.g. `tenant_id` in a multi-tenant database)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-fk-include-columns",
+          "messages": {
+            "missingFkColumn": "Foreign-key constraint on `{{table}}` references `{{refTable}}` but does not include `{{missing}}`. In a multi-tenant database every FK should carry the tenant key so a child row cannot point at a parent in a different tenant."
+          }
+        },
+        {
+          "name": "require-if-exists",
+          "description": "Require `IF EXISTS` on every `DROP` statement so re-running a migration on a database that already lost the object does not error",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-if-exists",
+          "messages": {
+            "missingIfExists": "Add `IF EXISTS` to this `DROP` so re-running the migration on a database that already lost the object does not abort."
+          }
+        },
+        {
+          "name": "require-index-on-fk-column",
+          "description": "Require an index on every foreign-key column; without it a `DELETE` or `UPDATE` on the referenced table sequentially scans the referencing table to enforce the constraint",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-index-on-fk-column",
+          "messages": {
+            "missingIndex": "Foreign-key column `{{col}}` has no covering index in this file. Without one, a DELETE / UPDATE of the parent row sequentially scans this table to enforce the FK."
+          }
+        },
+        {
+          "name": "require-limit",
+          "description": "Require LIMIT clause in SELECT statements",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-limit",
+          "messages": {
+            "missingLimit": "SELECT statement should include a LIMIT clause to prevent excessive data retrieval"
+          }
+        },
+        {
+          "name": "require-named-constraint",
+          "description": "Require an explicit `CONSTRAINT <name>` on table-level CHECK / UNIQUE / FOREIGN KEY / EXCLUSION constraints",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-named-constraint",
+          "messages": {
+            "requireNamedConstraint": "Table-level CHECK / UNIQUE / FOREIGN KEY / EXCLUSION constraints should be named with `CONSTRAINT <name>`. Auto-generated names are unpredictable across environments and make later `DROP CONSTRAINT` / `ALTER CONSTRAINT` migrations brittle."
+          }
+        },
+        {
+          "name": "require-on-delete-action",
+          "description": "Require an explicit `ON DELETE` clause on every foreign-key constraint",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-on-delete-action",
+          "messages": {
+            "missingOnDelete": "Foreign-key constraint is missing an explicit `ON DELETE` clause; the implicit default is `NO ACTION`. Make the choice explicit so reviewers can see what happens to dependent rows.",
+            "disallowedAction": "`ON DELETE {{action}}` is not in the `allowed` list ({{allowedList}}). Either change the action or extend the rule's `allowed` option."
+          }
+        },
+        {
+          "name": "require-primary-key",
+          "description": "Require every `CREATE TABLE` to have a PRIMARY KEY",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-primary-key",
+          "messages": {
+            "missingPrimaryKey": "Table `{{table}}` has no PRIMARY KEY. Tables without one cannot be replicated cleanly, cannot be sharded predictably, and break almost every ORM. Add one as either a column constraint or a table-level constraint."
+          }
+        },
+        {
+          "name": "require-schema-qualified-table",
+          "description": "Require `CREATE TABLE` to specify an explicit schema to avoid `search_path` dependence",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-schema-qualified-table",
+          "messages": {
+            "requireSchemaQualifiedTable": "`CREATE TABLE` should specify a schema (e.g. `audit.events`). Without one, the target depends on `search_path` and may land in an unintended schema. The rule is off by default in `recommended` because many projects intentionally use the `public` schema."
+          }
+        },
+        {
+          "name": "require-table-columns",
+          "description": "Require every `CREATE TABLE` to include a configured set of columns (e.g. multi-tenant / audit columns like `tenant_id`, `created_at`, `updated_by`)",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-table-columns",
+          "messages": {
+            "missingColumn": "`CREATE TABLE {{table}}` is missing required column `{{missing}}`. {{rationale}}"
+          }
+        },
+        {
+          "name": "require-trailing-semicolon",
+          "description": "Require a trailing `;` at the end of the SQL file",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-trailing-semicolon",
+          "messages": {
+            "missingSemicolon": "Missing trailing `;` at the end of the file."
+          }
+        },
+        {
+          "name": "require-where-in-delete",
+          "description": "Require a WHERE clause in DELETE statements",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-where-in-delete",
+          "messages": {
+            "missingWhere": "DELETE without WHERE removes every row in the table. Add a WHERE clause, or use TRUNCATE if you really mean to empty the table."
+          }
+        },
+        {
+          "name": "require-where-in-update",
+          "description": "Require a WHERE clause in UPDATE statements",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#require-where-in-update",
+          "messages": {
+            "missingWhere": "UPDATE without WHERE rewrites every row in the table. Add a WHERE clause to scope the change."
+          }
+        },
+        {
+          "name": "snake-case-column-name",
+          "description": "Require column names to be snake_case",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#snake-case-column-name",
+          "messages": {
+            "notSnakeCase": "Column name `{{name}}` is not snake_case. PostgreSQL preserves the case of quoted identifiers; using a mixed-case quoted name forces every consumer to quote-match it."
+          }
+        },
+        {
+          "name": "snake-case-table-name",
+          "description": "Require table names to be snake_case",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/postgresql#snake-case-table-name",
+          "messages": {
+            "notSnakeCase": "Table name `{{name}}` is not snake_case. PostgreSQL folds unquoted identifiers to lower case but preserves the case of quoted identifiers; mixing the two leads to `relation \"BadName\" does not exist` errors that are confusing to debug."
+          }
+        }
+      ]
+    },
+    {
       "plugin": "regexp",
       "npm": "@oxlint-plugins/oxlint-plugin-regexp",
       "description": "Rust-backed oxlint plugin port of eslint-plugin-regexp.",

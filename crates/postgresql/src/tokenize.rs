@@ -48,6 +48,9 @@ pub enum CommentKind {
     Block,
 }
 
+// Comments are only read by the native `parse_for_eslint` path; the playground
+// lints from a raw parse tree and never inspects them.
+#[cfg_attr(not(feature = "native-parser"), allow(dead_code))]
 #[derive(Clone, Debug)]
 pub struct Comment {
     pub kind: CommentKind,
