@@ -1,7 +1,7 @@
 //! Per-plugin adapters that map each Rust core crate's diagnostics into the
 //! unified [`PlaygroundDiagnostic`] shape, plus the registry that drives a run.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 
 use oxlint_plugins_carton::CompactString;
 use serde::Serialize;
@@ -270,7 +270,7 @@ pub struct EnabledFilter {
 
 enum RuleSet {
     All,
-    Some(Vec<String>),
+    Some(HashSet<String>),
 }
 
 impl EnabledFilter {
@@ -320,7 +320,7 @@ impl EnabledFilter {
             Some(map) => match map.get(plugin) {
                 None => false,
                 Some(RuleSet::All) => true,
-                Some(RuleSet::Some(rules)) => rules.iter().any(|name| name == rule),
+                Some(RuleSet::Some(rules)) => rules.contains(rule),
             },
         }
     }

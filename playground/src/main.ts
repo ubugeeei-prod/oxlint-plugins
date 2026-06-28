@@ -72,7 +72,14 @@ const app = document.querySelector<HTMLDivElement>('#app');
 if (!app) throw new Error('Missing #app root element.');
 app.innerHTML = '<div class="loading">Loading the linter…</div>';
 
-await init({ module_or_path: wasmUrl });
+try {
+  await init({ module_or_path: wasmUrl });
+} catch (error) {
+  console.error('Failed to load the playground WebAssembly module:', error);
+  app.innerHTML =
+    '<div class="loading">Failed to load the linter. Check the browser console for details.</div>';
+  throw error;
+}
 
 const listing = JSON.parse(list_rules()) as PluginListing[];
 listing.sort((a, b) => a.plugin.localeCompare(b.plugin));
@@ -175,11 +182,13 @@ const treeEl = el('div', { class: 'tree' });
 const filenameInput = el('input', { value: filename, spellcheck: false });
 filenameInput.setAttribute('aria-label', 'File name (its extension picks the language)');
 
-const sampleSelect = el(
-  'select',
-  {},
-  samples.map((sample, index) => el('option', { value: String(index) }, [sample.label])),
-);
+// A leading placeholder keeps the control a one-shot picker: it always starts
+// unselected (so a shared link's custom code isn't overwritten), and resetting
+// to it after each load lets re-picking the same sample fire `change` again.
+const sampleSelect = el('select', {}, [
+  el('option', { value: '' }, ['Load sample…']),
+  ...samples.map((sample, index) => el('option', { value: String(index) }, [sample.label])),
+]);
 sampleSelect.setAttribute('aria-label', 'Load a sample');
 
 const searchInput = el('input', { class: 'search', type: 'search', placeholder: 'Filter rules…' });
@@ -290,19 +299,21 @@ const wasmLinter = linter(
     result.diagnostics.sort(
       (a, b) => a.start_line - b.start_line || a.start_column - b.start_column,
     );
-    renderProblems(view, result);
+    // Render each message once and reuse it for both the panel and the markers.
+    const messages = result.diagnostics.map(renderMessage);
+    renderProblems(view, result, messages);
     if (result.error) {
       console.error('Playground lint failed:', result.error);
       return [];
     }
-    return result.diagnostics.map((diagnostic): CmDiagnostic => {
+    return result.diagnostics.map((diagnostic, index): CmDiagnostic => {
       const { from, to } = rangeFor(view.state.doc, diagnostic);
       return {
         from,
         to,
         severity: 'error',
         source: `${diagnostic.plugin}/${diagnostic.rule}`,
-        message: renderMessage(diagnostic),
+        message: messages[index],
       };
     });
   },
@@ -515,7 +526,7 @@ function buildEnabledJson(): string {
   return any ? JSON.stringify(payload) : '';
 }
 
-function renderProblems(editor: EditorView, result: LintResult): void {
+function renderProblems(editor: EditorView, result: LintResult, messages: string[]): void {
   const { diagnostics, error } = result;
   diagList.innerHTML = '';
   if (error) {
@@ -538,9 +549,9 @@ function renderProblems(editor: EditorView, result: LintResult): void {
     );
     return;
   }
-  for (const diagnostic of diagnostics) {
+  diagnostics.forEach((diagnostic, index) => {
     const item = el('button', { class: 'diag', type: 'button' }, [
-      el('div', { class: 'diag-msg' }, [renderMessage(diagnostic)]),
+      el('div', { class: 'diag-msg' }, [messages[index] ?? renderMessage(diagnostic)]),
       el('div', { class: 'diag-meta' }, [
         el('span', { class: 'diag-rule' }, [`${diagnostic.plugin}/${diagnostic.rule}`]),
         el('span', { class: 'diag-loc' }, [
@@ -557,7 +568,7 @@ function renderProblems(editor: EditorView, result: LintResult): void {
       editor.focus();
     });
     diagList.append(item);
-  }
+  });
 }
 
 // ---- Controls ------------------------------------------------------------
@@ -569,7 +580,9 @@ filenameInput.addEventListener('input', () => {
 });
 
 sampleSelect.addEventListener('change', () => {
+  if (sampleSelect.value === '') return;
   const sample: Sample | undefined = samples[Number(sampleSelect.value)];
+  sampleSelect.value = '';
   if (!sample) return;
   filename = sample.filename;
   filenameInput.value = filename;

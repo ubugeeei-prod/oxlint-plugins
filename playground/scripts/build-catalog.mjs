@@ -5,9 +5,8 @@
 // is actually implemented). The human-facing metadata is read from each npm
 // plugin's index.js by requiring it with light stubs for `@oxlint/plugins` and
 // the native binding, so no native build is needed.
-import Module from 'node:module';
-import { createRequire } from 'node:module';
-import { readFileSync, writeFileSync } from 'node:fs';
+import Module, { createRequire } from 'node:module';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, resolve, basename } from 'node:path';
 
@@ -64,35 +63,19 @@ function loadPlugin(dir, ruleNames) {
   return require(indexPath);
 }
 
-// First pass: map each plugin's reported name to its npm directory.
-const dirs = wasmPlugins.length ? readDirsWithIndex() : [];
+// Map each plugin's registered name to its npm directory. `PLUGIN_NAME` in
+// index.js is exactly what the WASM module reports, so we read it straight from
+// the source instead of evaluating index.js an extra time.
 const nameToDir = new Map();
-for (const dir of dirs) {
-  try {
-    const plugin = loadPlugin(dir, []);
-    // A plugin's runtime name can differ from the short name the rules are
-    // registered under (which is what the WASM module reports). Map every
-    // candidate: the config's plugin prefix, the meta namespace, and meta.name.
-    for (const key of pluginNameCandidates(plugin)) nameToDir.set(key, dir);
-  } catch {
-    // Skip plugins that cannot be required with stubs.
+if (wasmPlugins.length) {
+  for (const dir of readDirsWithIndex()) {
+    const source = readFileSync(resolve(npmDir, dir, 'index.js'), 'utf8');
+    const match = source.match(/PLUGIN_NAME\s*=\s*['"]([^'"]+)['"]/);
+    if (match) nameToDir.set(match[1], dir);
   }
-}
-
-function pluginNameCandidates(plugin) {
-  const candidates = new Set();
-  const configs = plugin?.configs ?? {};
-  for (const config of Object.values(configs)) {
-    const prefix = config?.plugins?.[0];
-    if (typeof prefix === 'string') candidates.add(prefix);
-  }
-  if (typeof plugin?.meta?.namespace === 'string') candidates.add(plugin.meta.namespace);
-  if (typeof plugin?.meta?.name === 'string') candidates.add(plugin.meta.name);
-  return candidates;
 }
 
 function readDirsWithIndex() {
-  const { readdirSync, existsSync } = require('node:fs');
   return readdirSync(npmDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
