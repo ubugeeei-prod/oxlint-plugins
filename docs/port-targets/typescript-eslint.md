@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/typescript-eslint/typescript-eslint |
-| Submodule | `upstream/typescript-eslint` @ `v8.61.0` (`packages/typescript-eslint`) |
-| Baseline npm version | `8.61.0` |
+| Submodule | `upstream/typescript-eslint` @ `v8.62.0` (`packages/typescript-eslint`) |
+| Baseline npm version | `8.62.0` |
 | License | MIT |
 | Oxlint native support | none — port target |
 | Rules to port | 0 |

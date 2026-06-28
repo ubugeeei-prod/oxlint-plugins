@@ -13,7 +13,7 @@ Upstream source is vendored under `upstream/` as git submodules pinned to each p
 | [`eslint-plugin-regexp`](./eslint-plugin-regexp.md) | 82 | MIT | https://github.com/ota-meshi/eslint-plugin-regexp |
 | [`eslint-plugin-security`](./eslint-plugin-security.md) | 14 | Apache-2.0 | https://github.com/eslint-community/eslint-plugin-security |
 | [`eslint-plugin-simple-import-sort`](./eslint-plugin-simple-import-sort.md) | 2 | MIT | https://github.com/lydell/eslint-plugin-simple-import-sort |
-| [`@e18e/eslint-plugin`](./eslint-plugin-e18e.md) | 25 | MIT | https://github.com/e18e/eslint-plugin |
+| [`@e18e/eslint-plugin`](./eslint-plugin-e18e.md) | 27 | MIT | https://github.com/e18e/eslint-plugin |
 | [`eslint-plugin-mocha`](./eslint-plugin-mocha.md) | 24 | MIT | https://github.com/lo1tuma/eslint-plugin-mocha |
 | [`eslint-plugin-unused-imports`](./eslint-plugin-unused-imports.md) | 2 | MIT | https://github.com/sweepline/eslint-plugin-unused-imports |
 | [`eslint-plugin-testing-library`](./eslint-plugin-testing-library.md) | 29 | MIT | https://github.com/testing-library/eslint-plugin-testing-library |
@@ -28,11 +28,12 @@ Upstream source is vendored under `upstream/` as git submodules pinned to each p
 | [`eslint-plugin-react-refresh`](./eslint-plugin-react-refresh.md) | 1 | MIT | https://github.com/ArnaudBarre/eslint-plugin-react-refresh |
 | [`@stylistic/eslint-plugin`](./eslint-stylistic.md) | 97 | MIT | https://github.com/eslint-stylistic/eslint-stylistic |
 | [`typescript-eslint`](./typescript-eslint.md) | 0 | MIT | https://github.com/typescript-eslint/typescript-eslint |
-| [`eslint-plugin-sonarjs`](./eslint-plugin-sonarjs.md) | 269 | LGPL-3.0-only | https://github.com/SonarSource/SonarJS |
+| [`eslint-plugin-sonarjs`](./eslint-plugin-sonarjs.md) | 265 | LGPL-3.0-only | https://github.com/SonarSource/SonarJS |
 | [`eslint-plugin-storybook`](./eslint-plugin-storybook.md) | 16 | MIT | https://github.com/storybookjs/storybook |
 | [`@unocss/eslint-plugin`](./unocss-eslint-plugin.md) | 4 | MIT | https://github.com/unocss/unocss |
 | [`@eslint/json`](./eslint-json.md) | 6 | Apache-2.0 | https://github.com/eslint/json |
 | [`@eslint/markdown`](./eslint-markdown.md) | 21 | MIT | https://github.com/eslint/markdown |
 | [`eslint-plugin-postgresql`](./eslint-plugin-postgresql.md) | 89 | MIT | https://github.com/baseballyama/eslint-plugin-postgresql |
 | [`postgresql-eslint-parser`](./postgresql-eslint-parser.md) | 0 | MIT | https://github.com/baseballyama/postgresql-eslint-parser |
-| **Total** | **1157** | | |
+| [`eslint-plugin-astro`](./eslint-plugin-astro.md) | 20 | MIT | https://github.com/ota-meshi/eslint-plugin-astro |
+| **Total** | **1175** | | |
