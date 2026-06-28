@@ -11,12 +11,12 @@ use crate::{PlaygroundDiagnostic, PluginInfo};
 /// Inserts a diagnostic data value into `data` under `key` when it is present.
 /// Shared by every adapter so the data-mapping convention lives in one place.
 pub(super) fn push(
-    data: &mut BTreeMap<&'static str, String>,
+    data: &mut BTreeMap<String, String>,
     key: &'static str,
     value: Option<CompactString>,
 ) {
     if let Some(value) = value {
-        data.insert(key, value.as_str().to_owned());
+        data.insert(key.to_owned(), value.as_str().to_owned());
     }
 }
 
@@ -30,6 +30,7 @@ mod functional;
 mod mocha;
 mod perfectionist;
 mod playwright;
+mod postgresql;
 mod regexp;
 mod security;
 mod simple_import_sort;
@@ -47,6 +48,7 @@ enum Language {
     JavaScript,
     Json,
     Markdown,
+    Sql,
 }
 
 impl Language {
@@ -55,6 +57,7 @@ impl Language {
             Self::JavaScript => "javascript",
             Self::Json => "json",
             Self::Markdown => "markdown",
+            Self::Sql => "sql",
         }
     }
 
@@ -67,6 +70,7 @@ impl Language {
             ),
             Self::Json => matches!(ext, "json" | "jsonc" | "json5"),
             Self::Markdown => matches!(ext, "md" | "markdown"),
+            Self::Sql => matches!(ext, "sql"),
         }
     }
 }
@@ -208,7 +212,7 @@ pub fn stylistic_rule_metas() -> String {
 
 /// Returns metadata for every plugin the playground can run.
 pub fn list_plugins() -> Vec<PluginListing> {
-    REGISTRY
+    let mut listings: Vec<PluginListing> = REGISTRY
         .iter()
         .map(|(_, language, info, _)| {
             let info = info();
@@ -218,7 +222,30 @@ pub fn list_plugins() -> Vec<PluginListing> {
                 rules: info.rules,
             }
         })
-        .collect()
+        .collect();
+    // postgresql is not in REGISTRY: it needs an externally-supplied parse tree
+    // (libpg_query has no wasm build), so it runs through `run_postgresql`.
+    let info = postgresql::info();
+    listings.push(PluginListing {
+        plugin: info.plugin,
+        language: Language::Sql.as_str(),
+        rules: info.rules,
+    });
+    listings
+}
+
+/// Lints SQL using a parse tree produced by `@libpg-query/parser` in the
+/// browser. Separate from [`run`] because postgresql needs the external tree.
+pub fn run_postgresql(
+    source_text: &str,
+    raw_json: &str,
+    filter: &EnabledFilter,
+) -> Vec<PlaygroundDiagnostic> {
+    let mut diagnostics = Vec::new();
+    if filter.plugin_enabled(postgresql::PLUGIN) {
+        postgresql::scan(source_text, raw_json, filter, &mut diagnostics);
+    }
+    diagnostics
 }
 
 /// Returns the lowercased-friendly extension of `filename` (without the dot).
@@ -234,7 +261,12 @@ fn extension(filename: &str) -> &str {
 /// share one authoritative extension map.
 pub fn language_for_filename(filename: &str) -> &'static str {
     let ext = extension(filename).to_ascii_lowercase();
-    for language in [Language::JavaScript, Language::Json, Language::Markdown] {
+    for language in [
+        Language::JavaScript,
+        Language::Json,
+        Language::Markdown,
+        Language::Sql,
+    ] {
         if language.matches_extension(&ext) {
             return language.as_str();
         }

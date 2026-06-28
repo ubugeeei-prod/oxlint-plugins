@@ -75,7 +75,7 @@ pub fn scan(
         // Stylistic renders each message in Rust and exposes no placeholder data,
         // and every message template is a fixed string (no `{{placeholder}}`), so
         // the data map is always empty.
-        let data: BTreeMap<&'static str, String> = BTreeMap::new();
+        let data: BTreeMap<String, String> = BTreeMap::new();
         // The core diagnostic carries a UTF-8 byte range rather than line/column
         // loc fields. Convert both ends to the playground's 1-based line /
         // 0-based UTF-16 column convention.

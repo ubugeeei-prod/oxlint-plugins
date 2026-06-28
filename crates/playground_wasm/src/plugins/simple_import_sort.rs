@@ -34,7 +34,7 @@ pub fn scan(
         }
         // The simple-import-sort messages carry no `{{placeholder}}` substitutions,
         // so there is no diagnostic data to forward.
-        let data: BTreeMap<&'static str, String> = BTreeMap::new();
+        let data: BTreeMap<String, String> = BTreeMap::new();
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,
             rule: diagnostic.rule_name.to_owned(),

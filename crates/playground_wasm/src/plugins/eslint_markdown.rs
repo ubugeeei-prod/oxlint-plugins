@@ -41,21 +41,21 @@ pub fn scan(
         if !filter.rule_enabled(PLUGIN, diagnostic.rule_name) {
             continue;
         }
-        let mut data: BTreeMap<&'static str, String> = BTreeMap::new();
+        let mut data: BTreeMap<String, String> = BTreeMap::new();
         let d = diagnostic.data;
         super::push(&mut data, "lang", d.lang);
         super::push(&mut data, "name", d.name);
         super::push(&mut data, "identifier", d.identifier);
         super::push(&mut data, "label", d.label);
         if let Some(value) = d.first_line {
-            data.insert("firstLine", value.to_string());
+            data.insert("firstLine".to_owned(), value.to_string());
         }
         super::push(&mut data, "firstLabel", d.first_label);
         if let Some(value) = d.from_level {
-            data.insert("fromLevel", value.to_string());
+            data.insert("fromLevel".to_owned(), value.to_string());
         }
         if let Some(value) = d.to_level {
-            data.insert("toLevel", value.to_string());
+            data.insert("toLevel".to_owned(), value.to_string());
         }
         super::push(&mut data, "position", d.position);
         super::push(&mut data, "text", d.text);
@@ -65,10 +65,10 @@ pub fn scan(
         super::push(&mut data, "prefix", d.prefix);
         super::push(&mut data, "fragment", d.fragment);
         if let Some(value) = d.expected_cells {
-            data.insert("expectedCells", value.to_string());
+            data.insert("expectedCells".to_owned(), value.to_string());
         }
         if let Some(value) = d.actual_cells {
-            data.insert("actualCells", value.to_string());
+            data.insert("actualCells".to_owned(), value.to_string());
         }
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,

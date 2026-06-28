@@ -7,11 +7,14 @@
 
 // Keep the statically linked libpg_query (and its build-script link directives)
 // in the dependency graph even though we reach its C entry point through `ffi`.
+#[cfg(feature = "native-parser")]
 use pg_query as _;
 
 mod ast;
 mod embedded_code;
+#[cfg(feature = "native-parser")]
 mod eslint;
+#[cfg(feature = "native-parser")]
 mod ffi;
 mod manipulate;
 mod parse;
@@ -23,13 +26,14 @@ use oxlint_plugins_carton::{CompactString, SmallVec};
 use serde_json::Value;
 
 use crate::embedded_code::attach_embedded_code_to_stmts;
-use crate::parse::{ParseError, parse};
+use crate::parse::{ParseError, Parsed};
 use crate::text::Source;
 
 /// The parser entry points consumed by `npm/postgresql-eslint-parser`:
 /// `parse_for_eslint` returns the `{ ast, visitorKeys, scopeManager }` value,
 /// `parse_for_eslint_json` serializes it for the NAPI boundary, and `parse_ast`
 /// returns only the AST (upstream's `parse`).
+#[cfg(feature = "native-parser")]
 pub use crate::eslint::{parse_ast, parse_for_eslint, parse_for_eslint_json};
 
 /// Every upstream rule name, in the order listed in the port inventory.
@@ -87,9 +91,28 @@ pub fn implemented_postgresql_rule_names() -> &'static [&'static str] {
     crate::rules::IMPLEMENTED_RULE_NAMES
 }
 
-/// Lint `source_text` (raw SQL) with the rules enabled in `options`.
+/// Lint `source_text` (raw SQL) with the rules enabled in `options`, parsing it
+/// with the statically linked libpg_query.
+#[cfg(feature = "native-parser")]
 pub fn scan_postgresql(source_text: &str, options: &ScanOptions) -> SmallVec<[Diagnostic; 8]> {
-    let mut parsed = parse(source_text);
+    scan_parsed(crate::parse::parse(source_text), options)
+}
+
+/// Lint `source_text` using a parse tree produced elsewhere. `raw_json` is
+/// libpg_query's JSON parse tree (e.g. from `@libpg-query/parser` in the
+/// browser), which is byte-compatible with the native parser's output. This is
+/// the entry point the WebAssembly playground build uses, since libpg_query's C
+/// parser cannot compile to `wasm32`.
+pub fn scan_postgresql_from_raw(
+    source_text: &str,
+    raw_json: &str,
+    options: &ScanOptions,
+) -> SmallVec<[Diagnostic; 8]> {
+    scan_parsed(crate::parse::parse_from_raw(source_text, raw_json), options)
+}
+
+/// Runs the enabled rules over an already-parsed file.
+fn scan_parsed(mut parsed: Parsed, options: &ScanOptions) -> SmallVec<[Diagnostic; 8]> {
     // Attach EmbeddedCode nodes to CreateFunctionStmt so that rules like
     // `plpgsql-keyword-case` can visit them, mirroring the attachment that
     // `parse_for_eslint` performs for the ESLint adapter.

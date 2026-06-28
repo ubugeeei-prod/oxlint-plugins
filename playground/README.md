@@ -38,10 +38,15 @@ The output in `dist/` is deployed to GitHub Pages by
 
 ## Coverage
 
-Every plugin whose rule logic compiles to WebAssembly is included, including
-`eslint-comments` (the adapter recovers the comment list and first-token
-position from an oxc parse, and feeds the other plugins' diagnostics to
-`no-unused-disable` as the file's lint problems).
+Every implemented plugin runs in the playground. Two need extra plumbing:
 
-One plugin is excluded: `postgresql` depends on the native `libpg_query` C
-library, which does not compile to `wasm32-unknown-unknown` (no libc/sysroot).
+- `eslint-comments` operates on comments rather than source text, so the adapter
+  recovers the comment list and first-token position from an oxc parse, and
+  feeds the other plugins' diagnostics to `no-unused-disable` as the file's lint
+  problems.
+- `postgresql` parses SQL with libpg_query, a C library with no
+  `wasm32-unknown-unknown` build. The Rust core is feature-gated so the
+  playground builds without it; the frontend parses `.sql` with
+  `@libpg-query/parser` (the same libpg_query compiled via Emscripten) and
+  passes the parse tree to the Rust rules. Its ~2 MB wasm is loaded lazily, only
+  when a `.sql` file is linted.

@@ -35,8 +35,8 @@ pub fn scan(
         }
         // index.js maps every messageId to the `{{message}}` template, so the
         // only data placeholder is `message`, fed the rendered diagnostic text.
-        let mut data: BTreeMap<&'static str, String> = BTreeMap::new();
-        data.insert("message", diagnostic.message.into_string());
+        let mut data: BTreeMap<String, String> = BTreeMap::new();
+        data.insert("message".to_owned(), diagnostic.message.into_string());
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,
             rule: diagnostic.rule_name.to_owned(),

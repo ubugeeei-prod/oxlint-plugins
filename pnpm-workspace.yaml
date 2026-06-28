@@ -17,6 +17,9 @@ catalog:
   void: ^0.9.2
   yaml: ^2.5.1
 allowBuilds:
+  # @libpg-query/parser ships prebuilt artifacts; its protobufjs build step is
+  # not needed (SQL parsing works without it), so skip the postinstall.
+  '@launchql/protobufjs': false
   better-sqlite3: true
   esbuild: true
   sharp: true

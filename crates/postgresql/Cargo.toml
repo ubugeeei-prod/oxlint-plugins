@@ -10,10 +10,17 @@ publish = false
 
 [dependencies]
 oxlint-plugins-carton.workspace = true
-pg_query.workspace = true
+pg_query = { workspace = true, optional = true }
 phf.workspace = true
 regex.workspace = true
 serde_json.workspace = true
+
+[features]
+# `native-parser` statically links libpg_query (a C library) for SQL parsing.
+# It is on by default for the npm plugin; the browser playground builds without
+# it and feeds in a parse tree produced by @libpg-query/parser instead.
+default = ["native-parser"]
+native-parser = ["dep:pg_query"]
 
 [dev-dependencies]
 insta.workspace = true

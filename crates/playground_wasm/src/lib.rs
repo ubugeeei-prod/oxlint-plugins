@@ -19,7 +19,7 @@ pub struct PlaygroundDiagnostic {
     pub plugin: &'static str,
     pub rule: String,
     pub message_id: String,
-    pub data: BTreeMap<&'static str, String>,
+    pub data: BTreeMap<String, String>,
     pub start_line: u32,
     pub start_column: u32,
     pub end_line: u32,
@@ -62,5 +62,16 @@ pub fn language_for_filename(filename: &str) -> String {
 pub fn lint(source_text: &str, filename: &str, enabled_json: &str) -> String {
     let filter = plugins::EnabledFilter::parse(enabled_json);
     let diagnostics = plugins::run(source_text, filename, &filter);
+    serde_json::to_string(&diagnostics).unwrap_or_else(|_| "[]".to_owned())
+}
+
+/// Lints SQL `source_text` using `raw_json` — libpg_query's JSON parse tree as
+/// produced by `@libpg-query/parser` in the browser — and returns the
+/// diagnostics as a JSON string. Separate from [`lint`] because libpg_query's C
+/// parser has no `wasm32` build, so SQL is parsed on the JS side.
+#[wasm_bindgen]
+pub fn lint_postgresql(source_text: &str, raw_json: &str, enabled_json: &str) -> String {
+    let filter = plugins::EnabledFilter::parse(enabled_json);
+    let diagnostics = plugins::run_postgresql(source_text, raw_json, &filter);
     serde_json::to_string(&diagnostics).unwrap_or_else(|_| "[]".to_owned())
 }

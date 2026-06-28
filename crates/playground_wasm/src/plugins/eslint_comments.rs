@@ -182,15 +182,15 @@ fn collect(
     diagnostics: impl IntoIterator<Item = CoreDiagnostic>,
 ) {
     for diagnostic in diagnostics {
-        let mut data: BTreeMap<&'static str, String> = BTreeMap::new();
+        let mut data: BTreeMap<String, String> = BTreeMap::new();
         if let Some(kind) = diagnostic.data.kind {
-            data.insert("kind", kind.as_str().to_owned());
+            data.insert("kind".to_owned(), kind.as_str().to_owned());
         }
         if let Some(rule_id) = diagnostic.data.rule_id {
-            data.insert("ruleId", rule_id.as_str().to_owned());
+            data.insert("ruleId".to_owned(), rule_id.as_str().to_owned());
         }
         if let Some(count) = diagnostic.data.count {
-            data.insert("count", count.to_string());
+            data.insert("count".to_owned(), count.to_string());
         }
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,

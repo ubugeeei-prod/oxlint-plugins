@@ -14,6 +14,7 @@
 
 use serde_json::Value;
 
+#[cfg(feature = "native-parser")]
 use crate::ffi::parse_to_json;
 use crate::manipulate::manipulate;
 use crate::text::Source;
@@ -27,43 +28,60 @@ pub struct ParseError {
 pub struct Parsed {
     pub source: Source,
     pub tokens: Vec<Token>,
+    // Read only by the native `parse_for_eslint` path.
+    #[cfg_attr(not(feature = "native-parser"), allow(dead_code))]
     pub comments: Vec<Comment>,
     pub statements: Vec<Value>,
     pub error: Option<ParseError>,
 }
 
+#[cfg(feature = "native-parser")]
 pub fn parse(source_text: &str) -> Parsed {
     let source = Source::new(source_text);
     let Tokenized { tokens, comments } = tokenize(&source);
 
     match parse_to_json(source_text) {
-        Ok(json) => match serde_json::from_str::<Value>(&json) {
-            Ok(raw) => {
-                let statements = manipulate(&raw, &tokens, &source);
-                Parsed {
-                    source,
-                    tokens,
-                    comments,
-                    statements,
-                    error: None,
-                }
-            }
-            Err(err) => Parsed {
-                source,
-                tokens,
-                comments,
-                statements: Vec::new(),
-                error: Some(ParseError {
-                    message: err.to_string(),
-                }),
-            },
-        },
+        Ok(json) => build_parsed(source, tokens, comments, &json),
         Err(message) => Parsed {
             source,
             tokens,
             comments,
             statements: Vec::new(),
             error: Some(ParseError { message }),
+        },
+    }
+}
+
+/// Builds a [`Parsed`] from a libpg_query JSON parse tree produced elsewhere.
+/// The browser playground passes `@libpg-query/parser`'s output here, since
+/// libpg_query's C parser cannot compile to `wasm32`.
+pub fn parse_from_raw(source_text: &str, raw_json: &str) -> Parsed {
+    let source = Source::new(source_text);
+    let Tokenized { tokens, comments } = tokenize(&source);
+    build_parsed(source, tokens, comments, raw_json)
+}
+
+/// Deserializes a libpg_query JSON parse tree and enriches it into statements.
+fn build_parsed(source: Source, tokens: Vec<Token>, comments: Vec<Comment>, json: &str) -> Parsed {
+    match serde_json::from_str::<Value>(json) {
+        Ok(raw) => {
+            let statements = manipulate(&raw, &tokens, &source);
+            Parsed {
+                source,
+                tokens,
+                comments,
+                statements,
+                error: None,
+            }
+        }
+        Err(err) => Parsed {
+            source,
+            tokens,
+            comments,
+            statements: Vec::new(),
+            error: Some(ParseError {
+                message: err.to_string(),
+            }),
         },
     }
 }

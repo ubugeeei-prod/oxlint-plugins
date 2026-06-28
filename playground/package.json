@@ -36,10 +36,12 @@
     "@codemirror/lang-javascript": "^6.2.4",
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/lang-markdown": "^6.3.4",
+    "@codemirror/lang-sql": "^6.10.0",
     "@codemirror/language": "^6.11.3",
     "@codemirror/lint": "^6.9.1",
     "@codemirror/state": "^6.5.2",
     "@codemirror/view": "^6.39.1",
+    "@libpg-query/parser": "17.6.10",
     "codemirror": "^6.0.2"
   },
   "devDependencies": {

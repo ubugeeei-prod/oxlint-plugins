@@ -10,8 +10,10 @@ import {
 import { javascript } from '@codemirror/lang-javascript';
 import { json } from '@codemirror/lang-json';
 import { markdown } from '@codemirror/lang-markdown';
+import { sql } from '@codemirror/lang-sql';
 import init, {
   lint,
+  lint_postgresql,
   list_rules,
   language_for_filename,
 } from './wasm/oxlint_plugins_playground_wasm.js';
@@ -253,6 +255,7 @@ function languageExtension(name: string) {
   const language = language_for_filename(name);
   if (language === 'json') return json();
   if (language === 'markdown') return markdown();
+  if (language === 'sql') return sql();
   const ext = name.includes('.') ? name.slice(name.lastIndexOf('.') + 1).toLowerCase() : '';
   return javascript({
     jsx: ext === 'jsx' || ext === 'tsx',
@@ -275,17 +278,42 @@ function rangeFor(doc: Text, diagnostic: Diagnostic): { from: number; to: number
 
 type LintResult = { diagnostics: Diagnostic[]; error: string | null };
 
+// SQL is parsed in JS by @libpg-query/parser (libpg_query has no wasm32 build),
+// loaded lazily so its ~2 MB module only downloads when a .sql file is linted.
+let sqlParserPromise: Promise<typeof import('@libpg-query/parser')> | null = null;
+function loadSqlParser(): Promise<typeof import('@libpg-query/parser')> {
+  sqlParserPromise ??= import('@libpg-query/parser');
+  return sqlParserPromise;
+}
+
+function toErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 // The single source of truth for diagnostics: the WASM linter. CodeMirror calls
 // this on edits (and we force it on toggles), and we mirror the results into the
 // Problems panel so the inline markers and the list always agree.
-function computeDiagnostics(doc: Text): LintResult {
+async function computeDiagnostics(doc: Text): Promise<LintResult> {
   const enabledJson = buildEnabledJson();
   if (enabledJson === '') return { diagnostics: [], error: null };
+  const source = doc.toString();
   try {
-    const diagnostics = JSON.parse(lint(doc.toString(), filename, enabledJson)) as Diagnostic[];
+    if (language_for_filename(filename) === 'sql') {
+      const { parse } = await loadSqlParser();
+      let rawTree: string;
+      try {
+        rawTree = JSON.stringify(await parse(source));
+      } catch (error) {
+        // A SQL syntax error from libpg_query — surface it rather than linting.
+        return { diagnostics: [], error: toErrorMessage(error) };
+      }
+      const diagnostics = JSON.parse(lint_postgresql(source, rawTree, enabledJson)) as Diagnostic[];
+      return { diagnostics, error: null };
+    }
+    const diagnostics = JSON.parse(lint(source, filename, enabledJson)) as Diagnostic[];
     return { diagnostics, error: null };
   } catch (error) {
-    return { diagnostics: [], error: error instanceof Error ? error.message : String(error) };
+    return { diagnostics: [], error: toErrorMessage(error) };
   }
 }
 
@@ -294,8 +322,8 @@ function computeDiagnostics(doc: Text): LintResult {
 const refreshLint = StateEffect.define<null>();
 
 const wasmLinter = linter(
-  (view) => {
-    const result = computeDiagnostics(view.state.doc);
+  async (view) => {
+    const result = await computeDiagnostics(view.state.doc);
     result.diagnostics.sort(
       (a, b) => a.start_line - b.start_line || a.start_column - b.start_column,
     );

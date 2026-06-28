@@ -298,9 +298,10 @@ pnpm --filter @oxlint-plugins/playground dev
 pnpm --filter @oxlint-plugins/playground build
 ```
 
-`crates/playground_wasm` aggregates every wasm-compatible plugin core into one
-module compiled with `wasm-pack`. It is excluded from the recursive workspace
-build, so `vp build` does not require the wasm toolchain; it is built and
-deployed to GitHub Pages by `.github/workflows/deploy-playground.yml`. See
-`playground/README.md` for details, including the one plugin it cannot run
-(`postgresql`, whose native `libpg_query` C parser has no `wasm32` build).
+`crates/playground_wasm` aggregates every plugin core into one module compiled
+with `wasm-pack`. It is excluded from the recursive workspace build, so
+`vp build` does not require the wasm toolchain; it is built and deployed to
+GitHub Pages by `.github/workflows/deploy-playground.yml`. Every implemented
+plugin runs, including `postgresql` — its `libpg_query` C parser has no `wasm32`
+build, so the frontend parses SQL with `@libpg-query/parser` and the
+feature-gated Rust core lints the resulting tree. See `playground/README.md`.
