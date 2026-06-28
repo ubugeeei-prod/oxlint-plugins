@@ -37,9 +37,7 @@
         "type": "glob",
         "dir": "src/rules",
         "ext": ".ts",
-        "exclude": [
-          "index.ts"
-        ]
+        "exclude": ["index.ts"]
       },
       "docsUrlTemplate": "https://github.com/eslint-functional/eslint-plugin-functional/blob/main/docs/rules/{rule}.md",
       "notes": ""
@@ -59,9 +57,7 @@
         "type": "glob",
         "dir": "lib/rules",
         "ext": ".ts",
-        "exclude": [
-          "index.ts"
-        ]
+        "exclude": ["index.ts"]
       },
       "docsUrlTemplate": "https://ota-meshi.github.io/eslint-plugin-regexp/rules/{rule}.html",
       "notes": ""
@@ -81,9 +77,7 @@
         "type": "glob",
         "dir": "rules",
         "ext": ".js",
-        "exclude": [
-          "index.js"
-        ]
+        "exclude": ["index.js"]
       },
       "docsUrlTemplate": "https://github.com/eslint-community/eslint-plugin-security/blob/main/docs/rules/{rule}.md",
       "notes": ""
@@ -103,10 +97,7 @@
         "type": "fixed",
         "dir": "src",
         "ext": ".js",
-        "names": [
-          "imports",
-          "exports"
-        ]
+        "names": ["imports", "exports"]
       },
       "docsUrlTemplate": "https://github.com/lydell/eslint-plugin-simple-import-sort#sort-order",
       "notes": ""
@@ -126,9 +117,7 @@
         "type": "glob",
         "dir": "src/rules",
         "ext": ".ts",
-        "exclude": [
-          ".test.ts"
-        ]
+        "exclude": [".test.ts"]
       },
       "docsUrlTemplate": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/{rule}.ts",
       "notes": "Modernization and performance rules. Some rules optionally require TypeScript type information."
@@ -148,9 +137,7 @@
         "type": "glob",
         "dir": "source/rules",
         "ext": ".ts",
-        "exclude": [
-          ".test.ts"
-        ]
+        "exclude": [".test.ts"]
       },
       "docsUrlTemplate": "https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/{rule}.md",
       "notes": ""
@@ -170,10 +157,7 @@
         "type": "glob",
         "dir": "src/rules",
         "ext": ".ts",
-        "exclude": [
-          "load-rule.ts",
-          "predicates.ts"
-        ]
+        "exclude": ["load-rule.ts", "predicates.ts"]
       },
       "docsUrlTemplate": "https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/{rule}.md",
       "notes": ""
@@ -193,9 +177,7 @@
         "type": "glob",
         "dir": "src/rules",
         "ext": ".ts",
-        "exclude": [
-          "index.ts"
-        ]
+        "exclude": ["index.ts"]
       },
       "docsUrlTemplate": "https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/{rule}.md",
       "notes": ""
@@ -255,10 +237,7 @@
         "type": "glob",
         "dir": "src/rules",
         "ext": ".ts",
-        "exclude": [
-          ".test.ts",
-          "rules.test.ts"
-        ]
+        "exclude": [".test.ts", "rules.test.ts"]
       },
       "docsUrlTemplate": "https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules/{rule}.md",
       "notes": ""
@@ -447,9 +426,7 @@
         "type": "glob",
         "dir": "packages/eslint-plugin/src/rules",
         "ext": ".ts",
-        "exclude": [
-          "index.ts"
-        ]
+        "exclude": ["index.ts"]
       },
       "docsUrlTemplate": "https://typescript-eslint.io/rules/{rule}",
       "notes": "Oxlint's native `typescript` plugin covers 127 of these rules; only the 7 rules Oxlint does not implement natively are tracked here as port targets. The covered rules are listed in `oxlintCovered` and excluded from the inventory."
@@ -528,9 +505,7 @@
         "type": "glob",
         "dir": "lib/rules",
         "ext": ".js",
-        "exclude": [
-          "index.js"
-        ]
+        "exclude": ["index.js"]
       },
       "docsUrlTemplate": "https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/{rule}.md",
       "notes": "Oxlint's native `react` plugin covers 57 of these rules; only the 46 rules Oxlint does not implement natively are tracked here as port targets. The covered rules are listed in `oxlintCovered` and excluded from the inventory."
@@ -546,10 +521,7 @@
       "license": "MIT",
       "monorepo": true,
       "expectedRuleCount": 27,
-      "oxlintCovered": [
-        "exhaustive-deps",
-        "rules-of-hooks"
-      ],
+      "oxlintCovered": ["exhaustive-deps", "rules-of-hooks"],
       "rules": {
         "type": "react-hooks",
         "compilerErrorFile": "compiler/packages/babel-plugin-react-compiler/src/CompilerError.ts",
@@ -633,10 +605,7 @@
         "type": "glob",
         "dir": "code/lib/eslint-plugin/src/rules",
         "ext": ".ts",
-        "exclude": [
-          "index.ts",
-          ".test.ts"
-        ]
+        "exclude": ["index.ts", ".test.ts"]
       },
       "docsUrlTemplate": "https://github.com/storybookjs/storybook/blob/next/code/lib/eslint-plugin/docs/rules/{rule}.md",
       "notes": ""
@@ -656,12 +625,7 @@
         "type": "glob",
         "dir": "packages-integrations/eslint-plugin/src/rules",
         "ext": ".ts",
-        "exclude": [
-          "index.ts",
-          ".test.ts",
-          "_.ts",
-          "uno.config.ts"
-        ]
+        "exclude": ["index.ts", ".test.ts", "_.ts", "uno.config.ts"]
       },
       "docsUrlTemplate": "https://unocss.dev/integrations/eslint",
       "notes": "Pulled in via @unocss/eslint-config."
@@ -681,9 +645,7 @@
         "type": "glob",
         "dir": "src/rules",
         "ext": ".js",
-        "exclude": [
-          "index.js"
-        ]
+        "exclude": ["index.js"]
       },
       "docsUrlTemplate": "https://github.com/eslint/json#rules",
       "notes": "Language plugin: lints JSON/JSONC/JSON5 files. Out of Oxlint's current JS/TS scope; tracked for completeness and a possible future language target."
@@ -703,9 +665,7 @@
         "type": "glob",
         "dir": "src/rules",
         "ext": ".js",
-        "exclude": [
-          "index.js"
-        ]
+        "exclude": ["index.js"]
       },
       "docsUrlTemplate": "https://github.com/eslint/markdown/blob/main/docs/rules/{rule}.md",
       "notes": "Language plugin: lints Markdown files. Out of Oxlint's current JS/TS scope; tracked for completeness and a possible future language target."
@@ -725,9 +685,7 @@
         "type": "glob",
         "dir": "src/rules",
         "ext": ".ts",
-        "exclude": [
-          "index.ts"
-        ]
+        "exclude": ["index.ts"]
       },
       "docsUrlTemplate": "https://github.com/baseballyama/eslint-plugin-postgresql/blob/main/docs/rules/{rule}.md",
       "notes": "Lints SQL embedded in template literals; depends on the postgresql-eslint-parser port-target."
@@ -764,9 +722,7 @@
         "type": "glob",
         "dir": "src/rules",
         "ext": ".ts",
-        "exclude": [
-          "index.ts"
-        ]
+        "exclude": ["index.ts"]
       },
       "docsUrlTemplate": "https://ota-meshi.github.io/eslint-plugin-astro/rules/{rule}/",
       "notes": "Lints .astro files via astro-eslint-parser; full parity depends on that parser (cf. eslint-plugin-svelte / eslint-plugin-vue, which are excluded, and @unocss/eslint-plugin)."
