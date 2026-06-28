@@ -1,11 +1,13 @@
 [package]
 name = "oxlint-plugins-playground-wasm"
 description = "WebAssembly aggregator that runs the Rust-backed oxlint plugin rule logic in the browser playground."
-edition.workspace = true
+# Literal package fields (not `*.workspace = true`): wasm-pack parses this
+# manifest directly and rejects workspace-inherited values for these keys.
+edition = "2024"
 license = "MIT"
-repository.workspace = true
-rust-version.workspace = true
-version.workspace = true
+repository = "https://github.com/ubugeeei-prod/oxlint-plugins"
+rust-version = "1.96"
+version = "0.0.0"
 publish = false
 
 [lib]
