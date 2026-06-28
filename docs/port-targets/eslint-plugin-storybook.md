@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/storybookjs/storybook |
-| Submodule | `upstream/storybook` @ `v10.4.2` (`code/lib/eslint-plugin`) |
-| Baseline npm version | `10.4.2` |
+| Submodule | `upstream/storybook` @ `v10.4.6` (`code/lib/eslint-plugin`) |
+| Baseline npm version | `10.4.6` |
 | License | MIT |
 | Oxlint native support | none — port target |
 | Rules to port | 16 |

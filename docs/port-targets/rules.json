@@ -590,7 +590,7 @@
       "id": "eslint-plugin-security",
       "npm": "eslint-plugin-security",
       "repo": "https://github.com/eslint-community/eslint-plugin-security",
-      "baselineVersion": "4.0.0",
+      "baselineVersion": "4.0.1",
       "license": "Apache-2.0",
       "ruleCount": 14,
       "rules": [
@@ -688,9 +688,9 @@
       "id": "eslint-plugin-e18e",
       "npm": "@e18e/eslint-plugin",
       "repo": "https://github.com/e18e/eslint-plugin",
-      "baselineVersion": "0.5.0",
+      "baselineVersion": "0.5.1",
       "license": "MIT",
-      "ruleCount": 25,
+      "ruleCount": 27,
       "rules": [
         {
           "name": "ban-dependencies",
@@ -756,6 +756,16 @@
           "name": "prefer-exponentiation-operator",
           "description": "Prefer the exponentiation operator ** over Math.pow()",
           "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-exponentiation-operator.ts"
+        },
+        {
+          "name": "prefer-flatmap-over-map-flat",
+          "description": "Prefer Array.prototype.flatMap() over .map(fn).flat() to avoid the intermediate array",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-flatmap-over-map-flat.ts"
+        },
+        {
+          "name": "prefer-get-or-insert",
+          "description": "Prefer `Map.prototype.getOrInsert()` over reading an entry with a default and writing it back",
+          "docsUrl": "https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-get-or-insert.ts"
         },
         {
           "name": "prefer-includes",
@@ -1128,7 +1138,7 @@
       "id": "eslint-plugin-perfectionist",
       "npm": "eslint-plugin-perfectionist",
       "repo": "https://github.com/azat-io/eslint-plugin-perfectionist",
-      "baselineVersion": "5.9.0",
+      "baselineVersion": "5.9.1",
       "license": "MIT",
       "ruleCount": 23,
       "rules": [
@@ -2083,7 +2093,7 @@
       "id": "typescript-eslint-eslint-plugin",
       "npm": "@typescript-eslint/eslint-plugin",
       "repo": "https://github.com/typescript-eslint/typescript-eslint",
-      "baselineVersion": "8.61.0",
+      "baselineVersion": "8.62.0",
       "license": "MIT",
       "ruleCount": 134,
       "rules": [
@@ -3443,7 +3453,7 @@
       "id": "eslint-plugin-react-refresh",
       "npm": "eslint-plugin-react-refresh",
       "repo": "https://github.com/ArnaudBarre/eslint-plugin-react-refresh",
-      "baselineVersion": "0.5.2",
+      "baselineVersion": "0.5.3",
       "license": "MIT",
       "ruleCount": 1,
       "rules": [
@@ -3855,7 +3865,7 @@
       "id": "typescript-eslint",
       "npm": "typescript-eslint",
       "repo": "https://github.com/typescript-eslint/typescript-eslint",
-      "baselineVersion": "8.61.0",
+      "baselineVersion": "8.62.0",
       "license": "MIT",
       "ruleCount": 0,
       "rules": []
@@ -3864,9 +3874,9 @@
       "id": "eslint-plugin-sonarjs",
       "npm": "eslint-plugin-sonarjs",
       "repo": "https://github.com/SonarSource/SonarJS",
-      "baselineVersion": "4.0.3",
+      "baselineVersion": "4.1.0",
       "license": "LGPL-3.0-only",
-      "ruleCount": 269,
+      "ruleCount": 265,
       "rules": [
         {
           "name": "anchor-precedence",
@@ -3915,6 +3925,12 @@
           "description": "",
           "sonarKey": "S2699",
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2699/javascript"
+        },
+        {
+          "name": "async-test-assertions",
+          "description": "",
+          "sonarKey": "S8780",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S8780/javascript"
         },
         {
           "name": "aws-apigateway-public-api",
@@ -4001,12 +4017,6 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6281/javascript"
         },
         {
-          "name": "aws-s3-bucket-server-encryption",
-          "description": "",
-          "sonarKey": "S6245",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6245/javascript"
-        },
-        {
           "name": "aws-s3-bucket-versioning",
           "description": "",
           "sonarKey": "S6252",
@@ -4053,12 +4063,6 @@
           "description": "",
           "sonarKey": "S1472",
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1472/javascript"
-        },
-        {
-          "name": "certificate-transparency",
-          "description": "",
-          "sonarKey": "S5742",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5742/javascript"
         },
         {
           "name": "chai-determinate-assertion",
@@ -4145,12 +4149,6 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3330/javascript"
         },
         {
-          "name": "cookies",
-          "description": "",
-          "sonarKey": "S2255",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2255/javascript"
-        },
-        {
           "name": "cors",
           "description": "",
           "sonarKey": "S5122",
@@ -4211,12 +4209,6 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6080/javascript"
         },
         {
-          "name": "dns-prefetching",
-          "description": "",
-          "sonarKey": "S5743",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5743/javascript"
-        },
-        {
           "name": "dompurify-unsafe-config",
           "description": "",
           "sonarKey": "S8479",
@@ -4245,12 +4237,6 @@
           "description": "",
           "sonarKey": "S5842",
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5842/javascript"
-        },
-        {
-          "name": "encryption",
-          "description": "",
-          "sonarKey": "S4787",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4787/javascript"
         },
         {
           "name": "encryption-secure-mode",
@@ -4365,6 +4351,12 @@
           "description": "",
           "sonarKey": "S5691",
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5691/javascript"
+        },
+        {
+          "name": "hooks-before-test-cases",
+          "description": "",
+          "sonarKey": "S8782",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S8782/javascript"
         },
         {
           "name": "in-operator-type-error",
@@ -4571,6 +4563,12 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1192/javascript"
         },
         {
+          "name": "no-duplicate-test-title",
+          "description": "",
+          "sonarKey": "S8754",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S8754/javascript"
+        },
+        {
           "name": "no-duplicated-branches",
           "description": "",
           "sonarKey": "S1871",
@@ -4619,6 +4617,12 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2187/javascript"
         },
         {
+          "name": "no-empty-test-title",
+          "description": "",
+          "sonarKey": "S8781",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S8781/javascript"
+        },
+        {
           "name": "no-equals-in-for-termination",
           "description": "",
           "sonarKey": "S888",
@@ -4643,10 +4647,22 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S128/javascript"
         },
         {
+          "name": "no-floating-point-equality",
+          "description": "",
+          "sonarKey": "S1244",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1244/javascript"
+        },
+        {
           "name": "no-for-in-iterable",
           "description": "",
           "sonarKey": "S4139",
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4139/javascript"
+        },
+        {
+          "name": "no-forced-browser-interaction",
+          "description": "",
+          "sonarKey": "S8783",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S8783/javascript"
         },
         {
           "name": "no-function-declaration-in-block",
@@ -5099,12 +5115,6 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1526/javascript"
         },
         {
-          "name": "no-vue-bypass-sanitization",
-          "description": "",
-          "sonarKey": "S6299",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S6299/javascript"
-        },
-        {
           "name": "no-weak-cipher",
           "description": "",
           "sonarKey": "S5547",
@@ -5219,12 +5229,6 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S1264/javascript"
         },
         {
-          "name": "process-argv",
-          "description": "",
-          "sonarKey": "S4823",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4823/javascript"
-        },
-        {
           "name": "production-debug",
           "description": "",
           "sonarKey": "S4507",
@@ -5267,12 +5271,6 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5843/javascript"
         },
         {
-          "name": "regular-expr",
-          "description": "",
-          "sonarKey": "S4784",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4784/javascript"
-        },
-        {
           "name": "review-blockchain-mnemonic",
           "description": "",
           "sonarKey": "S7639",
@@ -5309,12 +5307,6 @@
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5852/javascript"
         },
         {
-          "name": "sockets",
-          "description": "",
-          "sonarKey": "S4818",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4818/javascript"
-        },
-        {
           "name": "sql-queries",
           "description": "",
           "sonarKey": "S2077",
@@ -5325,12 +5317,6 @@
           "description": "",
           "sonarKey": "S5973",
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S5973/javascript"
-        },
-        {
-          "name": "standard-input",
-          "description": "",
-          "sonarKey": "S4829",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4829/javascript"
         },
         {
           "name": "stateful-regex",
@@ -5349,6 +5335,12 @@
           "description": "",
           "sonarKey": "S3003",
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S3003/javascript"
+        },
+        {
+          "name": "super-linear-regex",
+          "description": "",
+          "sonarKey": "S8786",
+          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S8786/javascript"
         },
         {
           "name": "table-header",
@@ -5475,12 +5467,6 @@
           "description": "",
           "sonarKey": "S2755",
           "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S2755/javascript"
-        },
-        {
-          "name": "xpath",
-          "description": "",
-          "sonarKey": "S4817",
-          "docsUrl": "https://sonarsource.github.io/rspec/#/rspec/S4817/javascript"
         }
       ]
     },
@@ -5488,7 +5474,7 @@
       "id": "eslint-plugin-storybook",
       "npm": "eslint-plugin-storybook",
       "repo": "https://github.com/storybookjs/storybook",
-      "baselineVersion": "10.4.2",
+      "baselineVersion": "10.4.6",
       "license": "MIT",
       "ruleCount": 16,
       "rules": [
@@ -5578,7 +5564,7 @@
       "id": "unocss-eslint-plugin",
       "npm": "@unocss/eslint-plugin",
       "repo": "https://github.com/unocss/unocss",
-      "baselineVersion": "66.7.0",
+      "baselineVersion": "66.7.3",
       "license": "MIT",
       "ruleCount": 4,
       "rules": [
@@ -6212,6 +6198,116 @@
       "license": "MIT",
       "ruleCount": 0,
       "rules": []
+    },
+    {
+      "id": "eslint-plugin-astro",
+      "npm": "eslint-plugin-astro",
+      "repo": "https://github.com/ota-meshi/eslint-plugin-astro",
+      "baselineVersion": "2.1.1",
+      "license": "MIT",
+      "ruleCount": 20,
+      "rules": [
+        {
+          "name": "missing-client-only-directive-value",
+          "description": "the client:only directive is missing the correct component's framework value",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/missing-client-only-directive-value/"
+        },
+        {
+          "name": "no-conflict-set-directives",
+          "description": "disallow conflicting set directives and child contents",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-conflict-set-directives/"
+        },
+        {
+          "name": "no-deprecated-astro-canonicalurl",
+          "description": "disallow using deprecated `Astro.canonicalURL`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-deprecated-astro-canonicalurl/"
+        },
+        {
+          "name": "no-deprecated-astro-fetchcontent",
+          "description": "disallow using deprecated `Astro.fetchContent()`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-deprecated-astro-fetchcontent/"
+        },
+        {
+          "name": "no-deprecated-astro-resolve",
+          "description": "disallow using deprecated `Astro.resolve()`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-deprecated-astro-resolve/"
+        },
+        {
+          "name": "no-deprecated-getentrybyslug",
+          "description": "disallow using deprecated `getEntryBySlug()`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-deprecated-getentrybyslug/"
+        },
+        {
+          "name": "no-exports-from-components",
+          "description": "disallow value export",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-exports-from-components/"
+        },
+        {
+          "name": "no-omitted-end-tags",
+          "description": "disallow omitted end tags",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-omitted-end-tags/"
+        },
+        {
+          "name": "no-prerender-export-outside-pages",
+          "description": "disallow `prerender` export outside of pages/ directory",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-prerender-export-outside-pages/"
+        },
+        {
+          "name": "no-set-html-directive",
+          "description": "disallow use of `set:html` to prevent XSS attack",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-set-html-directive/"
+        },
+        {
+          "name": "no-set-text-directive",
+          "description": "disallow use of `set:text`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-set-text-directive/"
+        },
+        {
+          "name": "no-unsafe-inline-scripts",
+          "description": "disallow inline `<script>` without `src` to encourage CSP-safe patterns",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-unsafe-inline-scripts/"
+        },
+        {
+          "name": "no-unused-css-selector",
+          "description": "disallow selectors defined in `style` tag that don't use in HTML",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-unused-css-selector/"
+        },
+        {
+          "name": "no-unused-define-vars-in-style",
+          "description": "disallow unused `define:vars={...}` in `style` tag",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/no-unused-define-vars-in-style/"
+        },
+        {
+          "name": "prefer-class-list-directive",
+          "description": "require `class:list` directives instead of `class` with expressions",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/prefer-class-list-directive/"
+        },
+        {
+          "name": "prefer-object-class-list",
+          "description": "require use object instead of ternary expression in `class:list`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/prefer-object-class-list/"
+        },
+        {
+          "name": "prefer-split-class-list",
+          "description": "require use split array elements in `class:list`",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/prefer-split-class-list/"
+        },
+        {
+          "name": "semi",
+          "description": "Require or disallow semicolons instead of ASI",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/semi/"
+        },
+        {
+          "name": "sort-attributes",
+          "description": "enforce sorting of attributes",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/sort-attributes/"
+        },
+        {
+          "name": "valid-compile",
+          "description": "disallow warnings when compiling.",
+          "docsUrl": "https://ota-meshi.github.io/eslint-plugin-astro/rules/valid-compile/"
+        }
+      ]
     }
   ]
 }

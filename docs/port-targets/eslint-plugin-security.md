@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/eslint-community/eslint-plugin-security |
-| Submodule | `upstream/eslint-plugin-security` @ `eslint-plugin-security-v4.0.0` |
-| Baseline npm version | `4.0.0` |
+| Submodule | `upstream/eslint-plugin-security` @ `eslint-plugin-security-v4.0.1` |
+| Baseline npm version | `4.0.1` |
 | License | Apache-2.0 |
 | Oxlint native support | none — port target |
 | Rules to port | 14 |

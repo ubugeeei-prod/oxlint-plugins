@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/ArnaudBarre/eslint-plugin-react-refresh |
-| Submodule | `upstream/eslint-plugin-react-refresh` @ `v0.5.2` |
-| Baseline npm version | `0.5.2` |
+| Submodule | `upstream/eslint-plugin-react-refresh` @ `v0.5.3` |
+| Baseline npm version | `0.5.3` |
 | License | MIT |
 | Oxlint native support | none — port target |
 | Rules to port | 1 |

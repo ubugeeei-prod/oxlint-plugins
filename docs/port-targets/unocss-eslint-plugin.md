@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/unocss/unocss |
-| Submodule | `upstream/unocss` @ `v66.7.0` (`packages-integrations/eslint-plugin`) |
-| Baseline npm version | `66.7.0` |
+| Submodule | `upstream/unocss` @ `v66.7.3` (`packages-integrations/eslint-plugin`) |
+| Baseline npm version | `66.7.3` |
 | License | MIT |
 | Oxlint native support | none — port target |
 | Rules to port | 4 |
