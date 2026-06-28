@@ -1280,10 +1280,14 @@ dependencies = [
 name = "oxlint-plugins-playground-wasm"
 version = "0.0.0"
 dependencies = [
+ "oxc_allocator",
+ "oxc_parser",
+ "oxc_span",
  "oxlint-plugins-_carton",
  "oxlint-plugins-angular-eslint",
  "oxlint-plugins-cypress",
  "oxlint-plugins-e18e",
+ "oxlint-plugins-eslint-comments",
  "oxlint-plugins-eslint-json",
  "oxlint-plugins-eslint-markdown",
  "oxlint-plugins-functional",

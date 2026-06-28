@@ -23,6 +23,7 @@ pub(super) fn push(
 mod angular_eslint;
 mod cypress;
 mod e18e;
+mod eslint_comments;
 mod eslint_json;
 mod eslint_markdown;
 mod functional;
@@ -180,6 +181,14 @@ const REGISTRY: &[(&str, Language, InfoFn, ScanFn)] = &[
         Language::JavaScript,
         unused_imports::info,
         unused_imports::scan,
+    ),
+    // eslint-comments runs last so its `no-unused-disable` rule can treat the
+    // other plugins' diagnostics as the file's lint problems.
+    (
+        eslint_comments::PLUGIN,
+        Language::JavaScript,
+        eslint_comments::info,
+        eslint_comments::scan,
     ),
 ];
 
