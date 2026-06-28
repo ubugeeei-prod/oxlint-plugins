@@ -1298,6 +1298,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxlint-plugins-playground-wasm"
+version = "0.0.0"
+dependencies = [
+ "oxlint-plugins-_carton",
+ "oxlint-plugins-angular-eslint",
+ "oxlint-plugins-cypress",
+ "oxlint-plugins-e18e",
+ "oxlint-plugins-eslint-json",
+ "oxlint-plugins-eslint-markdown",
+ "oxlint-plugins-functional",
+ "oxlint-plugins-mocha",
+ "oxlint-plugins-perfectionist",
+ "oxlint-plugins-playwright",
+ "oxlint-plugins-react-hooks",
+ "oxlint-plugins-react-refresh",
+ "oxlint-plugins-regexp",
+ "oxlint-plugins-security",
+ "oxlint-plugins-simple-import-sort",
+ "oxlint-plugins-sonarjs",
+ "oxlint-plugins-storybook",
+ "oxlint-plugins-stylistic",
+ "oxlint-plugins-testing-library",
+ "oxlint-plugins-unocss",
+ "oxlint-plugins-unused-imports",
+ "serde",
+ "serde_json",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "oxlint-plugins-playwright"
 version = "0.0.0"
 dependencies = [
@@ -2015,6 +2045,51 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5428f8bf88ea5ddc08faddef2ac4a67e390b88186c703ce6dbd955e1c145aca5"
 dependencies = [
  "wit-bindgen 0.51.0",
+]
+
+[[package]]
+name = "wasm-bindgen"
+version = "0.2.126"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4b067c0c11094aef6b7a801c1e34a26affafdf3d051dba08456b868789aaf9a4"
+dependencies = [
+ "cfg-if",
+ "once_cell",
+ "rustversion",
+ "wasm-bindgen-macro",
+ "wasm-bindgen-shared",
+]
+
+[[package]]
+name = "wasm-bindgen-macro"
+version = "0.2.126"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "167ce5e579f6bcf889c4f7175a8a5a585de84e8ff93976ce393efa5f2837aab1"
+dependencies = [
+ "quote",
+ "wasm-bindgen-macro-support",
+]
+
+[[package]]
+name = "wasm-bindgen-macro-support"
+version = "0.2.126"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3997c7839262f4ef12cf90b818d6340c18e80f263f1a94bf157d0ec4420380e"
+dependencies = [
+ "bumpalo",
+ "proc-macro2",
+ "quote",
+ "syn",
+ "wasm-bindgen-shared",
+]
+
+[[package]]
+name = "wasm-bindgen-shared"
+version = "0.2.126"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc1b4cb0cc549fcf58d7dfc081778139b3d283a081644e833e84682ad71cea24"
+dependencies = [
+ "unicode-ident",
 ]
 
 [[package]]

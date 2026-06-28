@@ -1,0 +1,49 @@
+{
+  "name": "@oxlint-plugins/playground",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Browser playground that runs the Rust-backed oxlint plugin rules through WebAssembly.",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "@ubugeeei",
+      "url": "https://github.com/ubugeeei"
+    },
+    {
+      "name": "@baseballyama",
+      "url": "https://github.com/baseballyama"
+    },
+    {
+      "name": "Blacksmith",
+      "url": "https://www.blacksmith.sh/"
+    },
+    {
+      "name": "OpenAI",
+      "url": "https://openai.com/"
+    }
+  ],
+  "type": "module",
+  "scripts": {
+    "build:wasm": "node scripts/build-wasm.mjs",
+    "build:catalog": "node scripts/build-catalog.mjs",
+    "prebuild": "pnpm run build:wasm && pnpm run build:catalog",
+    "build": "vp build",
+    "predev": "pnpm run build:wasm && pnpm run build:catalog",
+    "dev": "vp dev",
+    "preview": "vp preview"
+  },
+  "dependencies": {
+    "@codemirror/lang-css": "^6.3.1",
+    "@codemirror/lang-javascript": "^6.2.4",
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lang-markdown": "^6.3.4",
+    "@codemirror/language": "^6.11.3",
+    "@codemirror/lint": "^6.9.1",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.39.1",
+    "codemirror": "^6.0.2"
+  },
+  "devDependencies": {
+    "vite-plus": "catalog:"
+  }
+}

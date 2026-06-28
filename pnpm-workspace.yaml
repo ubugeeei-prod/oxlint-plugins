@@ -1,6 +1,7 @@
 packages:
   - docs/site
   - npm/*
+  - playground
 catalog:
   '@corsa-bind/napi': ^0.43.0
   '@napi-rs/cli': ^3.7.0
