@@ -13,8 +13,6 @@ members = [
   "crates/playground_wasm",
   "crates/playwright",
   "crates/postgresql",
-  "crates/react_hooks",
-  "crates/react_refresh",
   "crates/regexp",
   "crates/security",
   "crates/simple_import_sort",
@@ -37,8 +35,6 @@ members = [
   "npm/playwright",
   "npm/postgresql",
   "npm/postgresql-eslint-parser",
-  "npm/react-hooks",
-  "npm/react-refresh",
   "npm/regexp",
   "npm/security",
   "npm/simple-import-sort",
@@ -88,8 +84,6 @@ oxlint-plugins-mocha = { path = "crates/mocha", version = "0.0.0" }
 oxlint-plugins-perfectionist = { path = "crates/perfectionist", version = "0.0.0" }
 oxlint-plugins-playwright = { path = "crates/playwright", version = "0.0.0" }
 oxlint-plugins-postgresql = { path = "crates/postgresql", version = "0.0.0" }
-oxlint-plugins-react-hooks = { path = "crates/react_hooks", version = "0.0.0" }
-oxlint-plugins-react-refresh = { path = "crates/react_refresh", version = "0.0.0" }
 oxlint-plugins-regexp = { path = "crates/regexp", version = "0.0.0" }
 oxlint-plugins-security = { path = "crates/security", version = "0.0.0" }
 oxlint-plugins-simple-import-sort = { path = "crates/simple_import_sort", version = "0.0.0" }

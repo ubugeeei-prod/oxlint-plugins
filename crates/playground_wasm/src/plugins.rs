@@ -29,8 +29,6 @@ mod functional;
 mod mocha;
 mod perfectionist;
 mod playwright;
-mod react_hooks;
-mod react_refresh;
 mod regexp;
 mod security;
 mod simple_import_sort;
@@ -128,18 +126,6 @@ const REGISTRY: &[(&str, Language, InfoFn, ScanFn)] = &[
         Language::JavaScript,
         playwright::info,
         playwright::scan,
-    ),
-    (
-        react_hooks::PLUGIN,
-        Language::JavaScript,
-        react_hooks::info,
-        react_hooks::scan,
-    ),
-    (
-        react_refresh::PLUGIN,
-        Language::JavaScript,
-        react_refresh::info,
-        react_refresh::scan,
     ),
     (
         regexp::PLUGIN,

@@ -303,6 +303,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_element_overwrite(&it.body);
         self.check_no_redundant_assignments(&it.body);
         self.enter_expression_complexity_scope();
+        self.check_comment_regex(&it.comments);
+        self.check_file_header();
+        self.check_no_session_cookies_on_static_assets(&it.body);
         walk::walk_program(self, it);
         self.leave_expression_complexity_scope();
         self.finalize_no_duplicate_string();
@@ -320,6 +323,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_destructuring_assignment_syntax(&it.body);
         self.check_no_element_overwrite(&it.body);
         self.check_no_redundant_assignments(&it.body);
+        self.check_no_session_cookies_on_static_assets(&it.body);
         walk::walk_block_statement(self, it);
     }
 
@@ -328,12 +332,14 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_function_name_class(it);
         self.check_deprecation_class(it);
         self.check_no_async_constructor(it);
+        self.check_dynamically_constructed_templates(it);
         walk::walk_class(self, it);
     }
 
     fn visit_template_literal(&mut self, it: &TemplateLiteral<'a>) {
         self.check_no_nested_template_literals(it);
         self.template_literal_depth += 1;
+        self.check_sql_queries(it);
         walk::walk_template_literal(self, it);
         self.template_literal_depth -= 1;
     }
@@ -385,6 +391,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_non_number_in_arithmetic_expression(it);
         self.check_values_not_convertible_to_numbers(it);
         self.check_no_incorrect_string_concat(it);
+        self.check_sql_queries_concat(it);
         walk::walk_binary_expression(self, it);
     }
 
@@ -432,6 +439,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_nested_assignment_condition(&it.test);
         self.add_cyclomatic_complexity();
         let counted = self.enter_nested_control_flow_if(it);
+        self.check_conditional_indentation(it);
         walk::walk_if_statement(self, it);
         self.leave_nested_control_flow(counted);
     }
@@ -446,6 +454,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         self.enter_loop_depth();
+        self.check_conditional_indentation_for_in(it);
         walk::walk_for_in_statement(self, it);
         self.leave_loop_depth();
         self.leave_nested_control_flow(counted);
@@ -467,6 +476,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         let counted = self.enter_nested_control_flow(it.span);
         let counter_frame = self.enter_updated_loop_counter(it);
         self.enter_loop_depth();
+        self.check_conditional_indentation_for(it);
         walk::walk_for_statement(self, it);
         self.leave_loop_depth();
         self.leave_updated_loop_counter(counter_frame);
@@ -482,6 +492,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         self.enter_loop_depth();
+        self.check_conditional_indentation_while(it);
         walk::walk_while_statement(self, it);
         self.leave_loop_depth();
         self.leave_nested_control_flow(counted);
@@ -496,6 +507,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         self.enter_loop_depth();
+        self.check_conditional_indentation_do_while(it);
         walk::walk_do_while_statement(self, it);
         self.leave_loop_depth();
         self.leave_nested_control_flow(counted);
@@ -510,6 +522,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.enter_breakable_loop(it.span, label);
         let counted = self.enter_nested_control_flow(it.span);
         self.enter_loop_depth();
+        self.check_conditional_indentation_for_of(it);
         walk::walk_for_of_statement(self, it);
         self.leave_loop_depth();
         self.leave_nested_control_flow(counted);
@@ -545,6 +558,8 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_disabled_auto_escaping_assignment(it);
         self.check_content_length_assignment(it);
         self.check_cookies_assignment(it);
+        self.check_no_implicit_global(it);
+        self.check_review_blockchain_mnemonic_assignment(it);
         walk::walk_assignment_expression(self, it);
     }
 
@@ -555,6 +570,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         }
         self.check_updated_const_var_update(&it.argument);
         self.check_no_globals_shadowing_update(it);
+        self.check_no_implicit_global_update(it);
         walk::walk_update_expression(self, it);
     }
 
@@ -577,6 +593,8 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_unused_collection(it);
         self.check_empty_collection(it);
         self.check_no_unused_vars(it);
+        self.check_review_blockchain_mnemonic_declarator(it);
+        self.check_variable_name_declarator(it);
         walk::walk_variable_declarator(self, it);
     }
 
@@ -638,6 +656,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
             self.check_empty_string_repetition_with_pattern(it, pattern);
             self.check_no_misleading_character_class_with_pattern(it, pattern);
             self.check_slow_regex_with_pattern(it, pattern);
+            self.check_regex_complexity_with_pattern(it, pattern);
         });
 
         walk::walk_reg_exp_literal(self, it);
@@ -648,6 +667,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_clear_text_protocols(it);
         self.check_no_hardcoded_ip(it);
         self.check_publicly_writable_directories_string(it);
+        self.check_hardcoded_secret_signatures(it);
         walk::walk_string_literal(self, it);
     }
 
@@ -658,6 +678,8 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_standard_input(it);
         self.check_publicly_writable_directories_member(it);
         self.check_chai_determinate_assertion_member(it);
+        self.check_no_internal_api_use(it);
+        self.check_null_dereference(it);
         walk::walk_static_member_expression(self, it);
     }
 
@@ -711,6 +733,13 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_existing_groups(it);
         self.check_encryption(it);
         self.check_regular_expr_call(it);
+        self.check_assertions_in_tests(it);
+        self.check_session_regeneration(it);
+        self.check_stable_tests(it);
+        self.check_stateful_regex(it);
+        self.check_test_check_exception(it);
+        self.check_unused_named_groups(it);
+        self.check_x_powered_by(it);
         walk::walk_call_expression(self, it);
     }
 
@@ -796,6 +825,13 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_unused_function_argument_fn(it);
         self.fn_span_stack.push(it.span);
         self.cognitive_complexity_fn_depth += 1;
+        if let Some(body) = &it.body {
+            self.check_function_return_type(body, it.span);
+        }
+        self.check_no_selector_parameter(it);
+        self.check_prefer_read_only_props(it);
+        self.check_prefer_type_guard(it);
+        self.check_variable_name_function_params(it);
         walk::walk_function(self, it, flags);
         self.cognitive_complexity_fn_depth -= 1;
         self.fn_span_stack.pop();
@@ -818,6 +854,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_object_expression(&mut self, it: &ObjectExpression<'a>) {
         self.check_shorthand_property_grouping(it);
         self.check_insecure_cookie(it);
+        self.check_aws_iam_privilege_escalation(it);
         walk::walk_object_expression(self, it);
     }
 
@@ -853,6 +890,9 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_aws_s3_bucket_insecure_http_object_property(it);
         self.check_aws_s3_bucket_server_encryption_object_property(it);
         self.check_aws_opensearchservice_domain_object_property(it);
+        self.check_dompurify_unsafe_config(it);
+        self.check_no_mixed_content(it);
+        self.check_review_blockchain_mnemonic_object_property(it);
         walk::walk_object_property(self, it);
     }
 
@@ -898,6 +938,12 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_no_unused_function_argument_arrow(it);
         self.fn_span_stack.push(it.span);
         self.cognitive_complexity_fn_depth += 1;
+        self.check_arrow_function_convention(it);
+        self.check_function_return_type(&it.body, it.span);
+        self.check_no_selector_parameter_arrow(it);
+        self.check_prefer_read_only_props_arrow(it);
+        self.check_prefer_type_guard_arrow(it);
+        self.check_variable_name_arrow_params(it);
         walk::walk_arrow_function_expression(self, it);
         self.cognitive_complexity_fn_depth -= 1;
         self.fn_span_stack.pop();
@@ -953,6 +999,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
     fn visit_jsx_opening_element(&mut self, it: &JSXOpeningElement<'a>) {
         self.check_link_with_target_blank(it);
         self.check_no_table_as_layout(it);
+        self.check_disabled_resource_integrity(it);
         walk::walk_jsx_opening_element(self, it);
     }
 
@@ -1003,6 +1050,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
 
     fn visit_try_statement(&mut self, it: &TryStatement<'a>) {
         let counted = self.enter_nested_control_flow(it.span);
+        self.check_no_try_promise(it);
         walk::walk_try_statement(self, it);
         self.leave_nested_control_flow(counted);
     }
@@ -1016,6 +1064,7 @@ impl<'a> Visit<'a> for Scanner<'a> {
         self.check_destructuring_assignment_syntax(&it.statements);
         self.check_no_element_overwrite(&it.statements);
         self.check_no_redundant_assignments(&it.statements);
+        self.check_no_session_cookies_on_static_assets(&it.statements);
         walk::walk_function_body(self, it);
     }
 }

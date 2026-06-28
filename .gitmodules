@@ -82,10 +82,6 @@
 	path = upstream/react
 	url = https://github.com/facebook/react
 	shallow = true
-[submodule "upstream/eslint-plugin-react-refresh"]
-	path = upstream/eslint-plugin-react-refresh
-	url = https://github.com/ArnaudBarre/eslint-plugin-react-refresh
-	shallow = true
 [submodule "upstream/eslint-stylistic"]
 	path = upstream/eslint-stylistic
 	url = https://github.com/eslint-stylistic/eslint-stylistic

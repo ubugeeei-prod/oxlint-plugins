@@ -5,11 +5,11 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/e18e/eslint-plugin |
-| Submodule | `upstream/eslint-plugin-e18e` @ `0.5.0` |
-| Baseline npm version | `0.5.0` |
+| Submodule | `upstream/eslint-plugin-e18e` @ `0.5.1` |
+| Baseline npm version | `0.5.1` |
 | License | MIT |
 | Oxlint native support | none — port target |
-| Rules to port | 25 |
+| Rules to port | 27 |
 
 > Modernization and performance rules. Some rules optionally require TypeScript type information.
 
@@ -30,15 +30,17 @@
 | 11 | `prefer-array-to-spliced` | Prefer Array.prototype.toSpliced() over copying and splicing arrays | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-array-to-spliced.ts) |
 | 12 | `prefer-date-now` | Prefer Date.now() over new Date().getTime() and +new Date() | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-date-now.ts) |
 | 13 | `prefer-exponentiation-operator` | Prefer the exponentiation operator ** over Math.pow() | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-exponentiation-operator.ts) |
-| 14 | `prefer-includes` | Prefer .includes() over indexOf() comparisons for arrays and strings | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-includes.ts) |
-| 15 | `prefer-includes-over-regex-test` | Prefer String.prototype.{includes,startsWith,endsWith} over equivalent regex.test() calls | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-includes-over-regex-test.ts) |
-| 16 | `prefer-inline-equality` | Prefer inline equality checks over temporary object creation for simple comparisons | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-inline-equality.ts) |
-| 17 | `prefer-nullish-coalescing` | Prefer nullish coalescing operator (?? and ??=) over verbose null checks | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-nullish-coalescing.ts) |
-| 18 | `prefer-object-has-own` | Prefer Object.hasOwn() over Object.prototype.hasOwnProperty.call() and obj.hasOwnProperty() | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-object-has-own.ts) |
-| 19 | `prefer-regex-test` | prefer `RegExp.test()` over `String.match()` and `RegExp.exec()` when only checking for match existence | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-regex-test.ts) |
-| 20 | `prefer-spread-syntax` | Prefer spread syntax over Array.concat(), Array.from(), Object.assign({}, ...), and Function.apply() | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-spread-syntax.ts) |
-| 21 | `prefer-static-collator` | Prefer hoisting an `Intl.Collator` instance over calling localeCompare in a sort callback | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-static-collator.ts) |
-| 22 | `prefer-static-regex` | Prefer defining regular expressions at module scope to avoid re-compilation on every function call | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-static-regex.ts) |
-| 23 | `prefer-string-fromcharcode` | Prefer String.fromCharCode() over String.fromCodePoint() for code points below 0x10000 | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-string-fromcharcode.ts) |
-| 24 | `prefer-timer-args` | Prefer passing function and arguments directly to setTimeout/setInterval instead of wrapping in an arrow function or using bind | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-timer-args.ts) |
-| 25 | `prefer-url-canparse` | Prefer URL.canParse() over try-catch blocks for URL validation | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-url-canparse.ts) |
+| 14 | `prefer-flatmap-over-map-flat` | Prefer Array.prototype.flatMap() over .map(fn).flat() to avoid the intermediate array | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-flatmap-over-map-flat.ts) |
+| 15 | `prefer-get-or-insert` | Prefer `Map.prototype.getOrInsert()` over reading an entry with a default and writing it back | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-get-or-insert.ts) |
+| 16 | `prefer-includes` | Prefer .includes() over indexOf() comparisons for arrays and strings | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-includes.ts) |
+| 17 | `prefer-includes-over-regex-test` | Prefer String.prototype.{includes,startsWith,endsWith} over equivalent regex.test() calls | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-includes-over-regex-test.ts) |
+| 18 | `prefer-inline-equality` | Prefer inline equality checks over temporary object creation for simple comparisons | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-inline-equality.ts) |
+| 19 | `prefer-nullish-coalescing` | Prefer nullish coalescing operator (?? and ??=) over verbose null checks | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-nullish-coalescing.ts) |
+| 20 | `prefer-object-has-own` | Prefer Object.hasOwn() over Object.prototype.hasOwnProperty.call() and obj.hasOwnProperty() | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-object-has-own.ts) |
+| 21 | `prefer-regex-test` | prefer `RegExp.test()` over `String.match()` and `RegExp.exec()` when only checking for match existence | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-regex-test.ts) |
+| 22 | `prefer-spread-syntax` | Prefer spread syntax over Array.concat(), Array.from(), Object.assign({}, ...), and Function.apply() | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-spread-syntax.ts) |
+| 23 | `prefer-static-collator` | Prefer hoisting an `Intl.Collator` instance over calling localeCompare in a sort callback | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-static-collator.ts) |
+| 24 | `prefer-static-regex` | Prefer defining regular expressions at module scope to avoid re-compilation on every function call | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-static-regex.ts) |
+| 25 | `prefer-string-fromcharcode` | Prefer String.fromCharCode() over String.fromCodePoint() for code points below 0x10000 | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-string-fromcharcode.ts) |
+| 26 | `prefer-timer-args` | Prefer passing function and arguments directly to setTimeout/setInterval instead of wrapping in an arrow function or using bind | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-timer-args.ts) |
+| 27 | `prefer-url-canparse` | Prefer URL.canParse() over try-catch blocks for URL validation | [docs](https://github.com/e18e/eslint-plugin/blob/main/src/rules/prefer-url-canparse.ts) |

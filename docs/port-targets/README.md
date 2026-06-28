@@ -2,7 +2,7 @@
 
 # Port targets
 
-ESLint plugins and adjacent packages collected here as port targets or upstream references. `eslint-plugin-svelte` is intentionally excluded — it is handled by [rsvelte](https://github.com/baseballyama/rsvelte). `eslint-plugin-vue` is intentionally excluded — it is handled by [vize](https://vizejs.dev/). Oxlint-supported plugins (`eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-unicorn`) are used directly via Oxlint and are not listed here.
+ESLint plugins and adjacent packages collected here as port targets or upstream references. `eslint-plugin-svelte` is intentionally excluded — it is handled by [rsvelte](https://github.com/baseballyama/rsvelte). `eslint-plugin-vue` is intentionally excluded — it is handled by [vize](https://vizejs.dev/). Oxlint-supported plugins (`eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-unicorn`) are used directly via Oxlint and are not listed here. Plugins Oxlint covers natively through its `react` and `typescript` plugins (`eslint-plugin-react`, `eslint-plugin-react-hooks`, `@typescript-eslint/eslint-plugin`) are trimmed to only the rules Oxlint does not implement; the covered rules are listed in each plugin's `oxlintCovered` entry in `tools/port-targets.json`. `eslint-plugin-react-refresh` is fully covered by Oxlint and is not a port target.
 
 Upstream source is vendored under `upstream/` as git submodules pinned to each plugin's baseline version. The per-rule inventory below is generated from that source.
 
@@ -13,7 +13,7 @@ Upstream source is vendored under `upstream/` as git submodules pinned to each p
 | [`eslint-plugin-regexp`](./eslint-plugin-regexp.md) | 82 | MIT | https://github.com/ota-meshi/eslint-plugin-regexp |
 | [`eslint-plugin-security`](./eslint-plugin-security.md) | 14 | Apache-2.0 | https://github.com/eslint-community/eslint-plugin-security |
 | [`eslint-plugin-simple-import-sort`](./eslint-plugin-simple-import-sort.md) | 2 | MIT | https://github.com/lydell/eslint-plugin-simple-import-sort |
-| [`@e18e/eslint-plugin`](./eslint-plugin-e18e.md) | 25 | MIT | https://github.com/e18e/eslint-plugin |
+| [`@e18e/eslint-plugin`](./eslint-plugin-e18e.md) | 27 | MIT | https://github.com/e18e/eslint-plugin |
 | [`eslint-plugin-mocha`](./eslint-plugin-mocha.md) | 24 | MIT | https://github.com/lo1tuma/eslint-plugin-mocha |
 | [`eslint-plugin-unused-imports`](./eslint-plugin-unused-imports.md) | 2 | MIT | https://github.com/sweepline/eslint-plugin-unused-imports |
 | [`eslint-plugin-testing-library`](./eslint-plugin-testing-library.md) | 29 | MIT | https://github.com/testing-library/eslint-plugin-testing-library |
@@ -22,17 +22,17 @@ Upstream source is vendored under `upstream/` as git submodules pinned to each p
 | [`eslint-plugin-playwright`](./eslint-plugin-playwright.md) | 58 | MIT | https://github.com/mskelton/eslint-plugin-playwright |
 | [`@angular-eslint/eslint-plugin`](./angular-eslint-eslint-plugin.md) | 48 | MIT | https://github.com/angular-eslint/angular-eslint |
 | [`@angular-eslint/eslint-plugin-template`](./angular-eslint-eslint-plugin-template.md) | 39 | MIT | https://github.com/angular-eslint/angular-eslint |
-| [`@typescript-eslint/eslint-plugin`](./typescript-eslint-eslint-plugin.md) | 134 | MIT | https://github.com/typescript-eslint/typescript-eslint |
-| [`eslint-plugin-react`](./eslint-plugin-react.md) | 103 | MIT | https://github.com/jsx-eslint/eslint-plugin-react |
-| [`eslint-plugin-react-hooks`](./eslint-plugin-react-hooks.md) | 29 | MIT | https://github.com/facebook/react |
-| [`eslint-plugin-react-refresh`](./eslint-plugin-react-refresh.md) | 1 | MIT | https://github.com/ArnaudBarre/eslint-plugin-react-refresh |
+| [`@typescript-eslint/eslint-plugin`](./typescript-eslint-eslint-plugin.md) | 7 | MIT | https://github.com/typescript-eslint/typescript-eslint |
+| [`eslint-plugin-react`](./eslint-plugin-react.md) | 46 | MIT | https://github.com/jsx-eslint/eslint-plugin-react |
+| [`eslint-plugin-react-hooks`](./eslint-plugin-react-hooks.md) | 27 | MIT | https://github.com/facebook/react |
 | [`@stylistic/eslint-plugin`](./eslint-stylistic.md) | 97 | MIT | https://github.com/eslint-stylistic/eslint-stylistic |
 | [`typescript-eslint`](./typescript-eslint.md) | 0 | MIT | https://github.com/typescript-eslint/typescript-eslint |
-| [`eslint-plugin-sonarjs`](./eslint-plugin-sonarjs.md) | 269 | LGPL-3.0-only | https://github.com/SonarSource/SonarJS |
+| [`eslint-plugin-sonarjs`](./eslint-plugin-sonarjs.md) | 265 | LGPL-3.0-only | https://github.com/SonarSource/SonarJS |
 | [`eslint-plugin-storybook`](./eslint-plugin-storybook.md) | 16 | MIT | https://github.com/storybookjs/storybook |
 | [`@unocss/eslint-plugin`](./unocss-eslint-plugin.md) | 4 | MIT | https://github.com/unocss/unocss |
 | [`@eslint/json`](./eslint-json.md) | 6 | Apache-2.0 | https://github.com/eslint/json |
 | [`@eslint/markdown`](./eslint-markdown.md) | 21 | MIT | https://github.com/eslint/markdown |
 | [`eslint-plugin-postgresql`](./eslint-plugin-postgresql.md) | 89 | MIT | https://github.com/baseballyama/eslint-plugin-postgresql |
 | [`postgresql-eslint-parser`](./postgresql-eslint-parser.md) | 0 | MIT | https://github.com/baseballyama/postgresql-eslint-parser |
-| **Total** | **1157** | | |
+| [`eslint-plugin-astro`](./eslint-plugin-astro.md) | 20 | MIT | https://github.com/ota-meshi/eslint-plugin-astro |
+| **Total** | **988** | | |

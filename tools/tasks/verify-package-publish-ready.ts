@@ -45,18 +45,8 @@ const packages: PackageToPack[] = [
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
-    name: '@oxlint-plugins/oxlint-plugin-react-refresh',
-    dir: 'npm/react-refresh',
-    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
-  },
-  {
     name: '@oxlint-plugins/oxlint-plugin-regexp',
     dir: 'npm/regexp',
-    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
-  },
-  {
-    name: '@oxlint-plugins/oxlint-plugin-react-hooks',
-    dir: 'npm/react-hooks',
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {

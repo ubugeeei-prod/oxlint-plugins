@@ -1067,27 +1067,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "oxlint-plugin-react-hooks"
-version = "0.0.0"
-dependencies = [
- "napi",
- "napi-build",
- "napi-derive",
- "oxlint-plugins-react-hooks",
-]
-
-[[package]]
-name = "oxlint-plugin-react-refresh"
-version = "0.0.0"
-dependencies = [
- "napi",
- "napi-build",
- "napi-derive",
- "oxlint-plugins-_carton",
- "oxlint-plugins-react-refresh",
-]
-
-[[package]]
 name = "oxlint-plugin-regexp"
 version = "0.0.0"
 dependencies = [
@@ -1311,8 +1290,6 @@ dependencies = [
  "oxlint-plugins-mocha",
  "oxlint-plugins-perfectionist",
  "oxlint-plugins-playwright",
- "oxlint-plugins-react-hooks",
- "oxlint-plugins-react-refresh",
  "oxlint-plugins-regexp",
  "oxlint-plugins-security",
  "oxlint-plugins-simple-import-sort",
@@ -1348,29 +1325,6 @@ dependencies = [
  "phf",
  "regex",
  "serde_json",
-]
-
-[[package]]
-name = "oxlint-plugins-react-hooks"
-version = "0.0.0"
-dependencies = [
- "oxc_allocator",
- "oxc_ast",
- "oxc_parser",
- "oxc_span",
- "oxlint-plugins-_carton",
-]
-
-[[package]]
-name = "oxlint-plugins-react-refresh"
-version = "0.0.0"
-dependencies = [
- "insta",
- "oxc_allocator",
- "oxc_ast",
- "oxc_parser",
- "oxc_span",
- "oxlint-plugins-_carton",
 ]
 
 [[package]]

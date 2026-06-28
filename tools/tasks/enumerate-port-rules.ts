@@ -50,6 +50,10 @@ type Plugin = {
   license: string;
   monorepo: boolean;
   expectedRuleCount: number;
+  // Rule names that Oxlint already supports natively (e.g. via its `react` or
+  // `typescript` plugins). These are excluded from the port inventory so the
+  // backlog only tracks rules Oxlint does not implement.
+  oxlintCovered?: string[];
   rules: RulesConfig;
   docsUrlTemplate: string | null;
   notes: string;
@@ -86,7 +90,8 @@ const jsonPlugins: Array<{
 mkdirSync(OUT_DIR, { recursive: true });
 
 for (const plugin of manifest.plugins) {
-  const rules = enumerate(plugin);
+  const covered = new Set(plugin.oxlintCovered ?? []);
+  const rules = enumerate(plugin).filter((rule) => !covered.has(rule.name));
   rules.sort((a, b) => a.name.localeCompare(b.name));
 
   if (rules.length !== plugin.expectedRuleCount) {
@@ -321,7 +326,12 @@ function renderPluginDoc(plugin: Plugin, rules: Rule[]): string {
   lines.push(`| Submodule | \`${plugin.submodule}\` @ \`${plugin.pinnedRef}\`${subdir} |`);
   lines.push(`| Baseline npm version | \`${plugin.baselineVersion}\` |`);
   lines.push(`| License | ${plugin.license} |`);
-  lines.push(`| Oxlint native support | none — port target |`);
+  const coveredCount = plugin.oxlintCovered?.length ?? 0;
+  lines.push(
+    coveredCount > 0
+      ? `| Oxlint native support | partial — ${coveredCount} rule(s) covered by Oxlint natively and excluded from this inventory |`
+      : `| Oxlint native support | none — port target |`,
+  );
   lines.push(`| Rules to port | ${rules.length} |`);
   lines.push('');
   if (plugin.notes) {
@@ -377,7 +387,8 @@ function renderIndex(
     'ESLint plugins and adjacent packages collected here as port targets or upstream references. ' +
       '`eslint-plugin-svelte` is intentionally excluded — it is handled by [rsvelte](https://github.com/baseballyama/rsvelte). ' +
       '`eslint-plugin-vue` is intentionally excluded — it is handled by [vize](https://vizejs.dev/). ' +
-      'Oxlint-supported plugins (`eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-unicorn`) are used directly via Oxlint and are not listed here.',
+      'Oxlint-supported plugins (`eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-unicorn`) are used directly via Oxlint and are not listed here. ' +
+      "Plugins Oxlint covers natively through its `react` and `typescript` plugins (`eslint-plugin-react`, `eslint-plugin-react-hooks`, `@typescript-eslint/eslint-plugin`) are trimmed to only the rules Oxlint does not implement; the covered rules are listed in each plugin's `oxlintCovered` entry in `tools/port-targets.json`. `eslint-plugin-react-refresh` is fully covered by Oxlint and is not a port target.",
   );
   lines.push('');
   lines.push(

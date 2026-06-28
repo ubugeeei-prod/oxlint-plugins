@@ -173,11 +173,6 @@ const PACKAGE_MAP: Record<
     npmDir: 'npm/react-hooks',
     shortName: 'react-hooks',
   },
-  'eslint-plugin-react-refresh': {
-    pkgName: '@oxlint-plugins/oxlint-plugin-react-refresh',
-    npmDir: 'npm/react-refresh',
-    shortName: 'react-refresh',
-  },
   'eslint-stylistic': {
     pkgName: '@oxlint-plugins/oxlint-plugin-stylistic',
     npmDir: 'npm/stylistic',

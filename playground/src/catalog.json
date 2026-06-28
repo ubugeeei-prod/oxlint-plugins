@@ -2062,48 +2062,6 @@
       ]
     },
     {
-      "plugin": "react-hooks",
-      "npm": "@oxlint-plugins/oxlint-plugin-react-hooks",
-      "description": "Rust-backed oxlint plugin port of eslint-plugin-react-hooks.",
-      "rules": [
-        {
-          "name": "rules-of-hooks",
-          "description": "enforces the Rules of Hooks",
-          "docsUrl": "https://react.dev/reference/eslint-plugin-react-hooks/lints/rules-of-hooks",
-          "messages": {
-            "async": "React Hook \"{{hook}}\" cannot be called in an async function.",
-            "loop": "React Hook \"{{hook}}\" may be executed more than once. Possibly because it is called in a loop. React Hooks must be called in the exact same order in every component render.",
-            "conditional": "React Hook \"{{hook}}\" is called conditionally. React Hooks must be called in the exact same order in every component render.",
-            "class": "React Hook \"{{hook}}\" cannot be called in a class component. React Hooks must be called in a React function component or a custom React Hook function.",
-            "invalidFunction": "React Hook \"{{hook}}\" is called in function \"{{functionName}}\" that is neither a React function component nor a custom React Hook function. React component names must start with an uppercase letter. React Hook names must start with the word \"use\".",
-            "topLevel": "React Hook \"{{hook}}\" cannot be called at the top level. React Hooks must be called in a React function component or a custom React Hook function.",
-            "callback": "React Hook \"{{hook}}\" cannot be called inside a callback. React Hooks must be called in a React function component or a custom React Hook function.",
-            "tryCatch": "React Hook \"{{hook}}\" cannot be called in a try/catch block."
-          }
-        }
-      ]
-    },
-    {
-      "plugin": "react-refresh",
-      "npm": "@oxlint-plugins/oxlint-plugin-react-refresh",
-      "description": "Rust-backed Oxlint plugin port of eslint-plugin-react-refresh.",
-      "rules": [
-        {
-          "name": "only-export-components",
-          "description": "validate that Fast Refresh files only export components",
-          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/react-refresh#only-export-components",
-          "messages": {
-            "exportAll": "This rule can't verify that `export *` only exports components.",
-            "namedExport": "Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.",
-            "anonymousExport": "Fast refresh can't handle anonymous components. Add a name to your export.",
-            "localComponents": "Fast refresh only works when a file only exports components. Move your component(s) to a separate file. If all exports are HOCs, add them to the `extraHOCs` option.",
-            "noExport": "Fast refresh only works when a file has exports. Move your component(s) to a separate file.",
-            "reactContext": "Fast refresh only works when a file only exports components. Move your React context(s) to a separate file."
-          }
-        }
-      ]
-    },
-    {
       "plugin": "regexp",
       "npm": "@oxlint-plugins/oxlint-plugin-regexp",
       "description": "Rust-backed oxlint plugin port of eslint-plugin-regexp.",
@@ -4808,6 +4766,247 @@
           "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#values-not-convertible-to-numbers",
           "messages": {
             "valuesNotConvertibleToNumbers": "This operand does not convert to a number, so the comparison is always false."
+          }
+        },
+        {
+          "name": "arrow-function-convention",
+          "description": "Enforce consistent as-needed use of parentheses around a single arrow-function parameter and braces around a single-expression arrow body.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#arrow-function-convention",
+          "messages": {
+            "removeParens": "Remove the parentheses around this single arrow-function parameter.",
+            "removeBraces": "Remove the curly braces and 'return' keyword from this arrow-function body."
+          }
+        },
+        {
+          "name": "assertions-in-tests",
+          "description": "Tests should include assertions; a test case with no assertion can only fail by throwing and gives a false sense of safety.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#assertions-in-tests",
+          "messages": {
+            "addAssertion": "Add at least one assertion to this test case."
+          }
+        },
+        {
+          "name": "aws-iam-privilege-escalation",
+          "description": "AWS IAM policies that grant sensitive IAM/STS actions on all resources enable privilege escalation and should restrict the resource scope.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#aws-iam-privilege-escalation",
+          "messages": {
+            "iamPrivilegeEscalation": "Narrow the resource scope of this policy: granting this sensitive IAM action on all resources (\"*\") enables privilege escalation."
+          }
+        },
+        {
+          "name": "comment-regex",
+          "description": "Flag every comment whose text matches a configured regular expression (the \"regularExpression\" option); the pattern is compiled once per file and tested unanchored against each comment including its delimiters. Empty pattern disables the rule; the core narrow default is the literal marker XXX.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#comment-regex",
+          "messages": {
+            "commentRegex": "This comment matches the configured comment-regex pattern; review or remove it."
+          }
+        },
+        {
+          "name": "conditional-indentation",
+          "description": "An unbraced statement controlled by an if/for/while on the line below should be indented further than its control keyword.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#conditional-indentation",
+          "messages": {
+            "conditionalIndentation": "Use indentation to denote the code that is conditionally executed by this control statement."
+          }
+        },
+        {
+          "name": "disabled-resource-integrity",
+          "description": "External (cross-origin) script and stylesheet resources should be loaded with a Subresource Integrity (SRI) hash via the integrity attribute.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#disabled-resource-integrity",
+          "messages": {
+            "disabledResourceIntegrity": "Make sure not using resource integrity feature is safe here. Add an \"integrity\" attribute to verify this cross-origin resource."
+          }
+        },
+        {
+          "name": "dompurify-unsafe-config",
+          "description": "Disallow DOMPurify configuration options that bypass sanitization (e.g. ALLOW_UNKNOWN_PROTOCOLS: true).",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#dompurify-unsafe-config",
+          "messages": {
+            "unsafeConfig": "Setting \"ALLOW_UNKNOWN_PROTOCOLS\" to true lets unsafe URI protocols bypass DOMPurify sanitization. Remove this option or set it to false."
+          }
+        },
+        {
+          "name": "dynamically-constructed-templates",
+          "description": "Angular templates should not be constructed dynamically, which bypasses the framework's contextual escaping and risks template injection.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#dynamically-constructed-templates",
+          "messages": {
+            "dynamicTemplate": "Refrain from constructing this Angular template dynamically; build a static template and pass runtime data through bindings to avoid template injection."
+          }
+        },
+        {
+          "name": "file-header",
+          "description": "Require every file to start with a configured header banner (the \"headerFormat\" option). Inactive when no header is configured (the SonarJS default). Line endings are normalized; the regular-expression \"isRegularExpression\" mode is not supported in this port and is skipped.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#file-header",
+          "messages": {
+            "fileHeader": "Add or update the header of this file so it matches the required header."
+          }
+        },
+        {
+          "name": "function-return-type",
+          "description": "Functions should always return the same type.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#function-return-type",
+          "messages": {
+            "differentTypes": "Refactor this function to always return the same type."
+          }
+        },
+        {
+          "name": "hardcoded-secret-signatures",
+          "description": "Hard-coded secrets matching a well-known credential signature should be revoked and removed from source.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#hardcoded-secret-signatures",
+          "messages": {
+            "hardcodedSecret": "Revoke and change this leaked secret, then remove the hard-coded value from the source code."
+          }
+        },
+        {
+          "name": "no-implicit-global",
+          "description": "Disallow accidental creation of global variables by assigning to an undeclared name.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#no-implicit-global",
+          "messages": {
+            "implicitGlobal": "Add the \"let\", \"const\" or \"var\" keyword to \"{{value}}\" so it is not implicitly created in the global scope."
+          }
+        },
+        {
+          "name": "no-internal-api-use",
+          "description": "Internal framework APIs (such as React internals named with the DO_NOT_USE token) should not be used.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#no-internal-api-use",
+          "messages": {
+            "noInternalApiUse": "Remove this usage of an internal framework API; it is not part of the public contract and may change or break without notice."
+          }
+        },
+        {
+          "name": "no-mixed-content",
+          "description": "Content Security Policy directives should block mixed content by including the block-all-mixed-content directive.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#no-mixed-content",
+          "messages": {
+            "addBlockAllMixedContent": "Make sure allowing mixed-content is safe here; add the \"block-all-mixed-content\" directive to this Content Security Policy."
+          }
+        },
+        {
+          "name": "no-selector-parameter",
+          "description": "Boolean selector parameters used only to branch behaviour inside a function should be replaced by separate, clearly named functions.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#no-selector-parameter",
+          "messages": {
+            "selectorParameter": "Provide multiple methods instead of using this selector parameter."
+          }
+        },
+        {
+          "name": "no-session-cookies-on-static-assets",
+          "description": "Session middleware should not run before static-asset handlers, otherwise static assets needlessly receive a session cookie.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#no-session-cookies-on-static-assets",
+          "messages": {
+            "noSessionCookiesOnStaticAssets": "Serve static assets before registering the session middleware so static-asset responses do not set a session cookie."
+          }
+        },
+        {
+          "name": "no-try-promise",
+          "description": "Promises produced inside a try block must be awaited, otherwise their asynchronous rejection escapes the catch handler.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#no-try-promise",
+          "messages": {
+            "tryPromise": "Consider awaiting this promise inside the 'try', or handle its rejection with '.catch()'; a 'try'/'catch' will not intercept the rejection of an unawaited promise."
+          }
+        },
+        {
+          "name": "null-dereference",
+          "description": "Properties of variables with a \"null\" or \"undefined\" value should not be accessed.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#null-dereference",
+          "messages": {
+            "nullDereference": "This expression dereferences \"null\" or \"undefined\" and will throw a TypeError at runtime."
+          }
+        },
+        {
+          "name": "prefer-read-only-props",
+          "description": "React function component props should be declared with a read-only type.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#prefer-read-only-props",
+          "messages": {
+            "readonlyProps": "Mark the props of the component as read-only."
+          }
+        },
+        {
+          "name": "prefer-type-guard",
+          "description": "A function that returns the result of a single `instanceof` check on its parameter should declare a type-predicate return type so callers can narrow the value's type.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#prefer-type-guard",
+          "messages": {
+            "preferTypeGuard": "Declare this function's return type using a type predicate (e.g. `arg is SomeType`) so callers can narrow the argument's type."
+          }
+        },
+        {
+          "name": "regex-complexity",
+          "description": "Regular expressions should not be too complicated.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#regex-complexity",
+          "messages": {
+            "complexity": "Simplify this regular expression; its structural complexity of {{value}} exceeds the maximum allowed."
+          }
+        },
+        {
+          "name": "review-blockchain-mnemonic",
+          "description": "Blockchain wallet mnemonic (seed) phrases should not be hardcoded or disclosed.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#review-blockchain-mnemonic",
+          "messages": {
+            "reviewMnemonic": "Make sure this blockchain wallet mnemonic phrase is not disclosed."
+          }
+        },
+        {
+          "name": "session-regeneration",
+          "description": "A new session should be created during user authentication; regenerate the session after Passport authentication to prevent session fixation.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#session-regeneration",
+          "messages": {
+            "createSession": "Create a new session during user authentication to prevent session fixation attacks."
+          }
+        },
+        {
+          "name": "sql-queries",
+          "description": "Formatting SQL queries by mixing runtime values into the statement text (string concatenation or template interpolation) is security-sensitive and a common source of SQL injection.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#sql-queries",
+          "messages": {
+            "safeQuery": "Make sure that formatting this SQL query is safe here."
+          }
+        },
+        {
+          "name": "stable-tests",
+          "description": "Tests should be stable: flags automatic retry of flaky tests via jest.retryTimes(n) or Mocha this.retries(n) with a positive count.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#stable-tests",
+          "messages": {
+            "stableTests": "Make your tests stable so that they pass on the first try, or remove this retry configuration."
+          }
+        },
+        {
+          "name": "stateful-regex",
+          "description": "Regular expressions stored in a variable with the global or sticky flag are stateful and produce surprising results when reused with test()/exec().",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#stateful-regex",
+          "messages": {
+            "statefulRegex": "This stateful regular expression keeps its global ('g') or sticky ('y') match position between calls; reusing it via test()/exec() can yield inconsistent results. Reset lastIndex, drop the flag, or create a fresh regex per call."
+          }
+        },
+        {
+          "name": "test-check-exception",
+          "description": "Tests that wrap throwing code in try/catch must assert that an exception was actually thrown; otherwise the test passes silently when nothing throws.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#test-check-exception",
+          "messages": {
+            "checkException": "Add an assertion that forces this test to fail when no exception is thrown."
+          }
+        },
+        {
+          "name": "unused-named-groups",
+          "description": "Named capturing groups in a regular expression should be referenced; flags named groups that are never used.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#unused-named-groups",
+          "messages": {
+            "unusedNamedGroups": "Use the named group '{{value}}' of this regex or remove the name as it is never referenced."
+          }
+        },
+        {
+          "name": "variable-name",
+          "description": "Local variable and function parameter names should comply with a naming convention (default camelCase: ^[_a-z][a-zA-Z0-9]*$).",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#variable-name",
+          "messages": {
+            "renameVariable": "Rename this local variable or parameter \"{{value}}\" to match the regular expression {{format}}."
+          }
+        },
+        {
+          "name": "x-powered-by",
+          "description": "Disclosing the technology stack via the X-Powered-By header is security-sensitive; explicitly enabling it is flagged.",
+          "docsUrl": "https://github.com/ubugeeei-prod/oxlint-plugins/tree/main/npm/sonarjs#x-powered-by",
+          "messages": {
+            "xPoweredBy": "Make sure disclosing the fingerprint of this web technology is safe here; disable the \"x-powered-by\" header instead."
           }
         }
       ]

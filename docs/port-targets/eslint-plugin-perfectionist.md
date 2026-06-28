@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/azat-io/eslint-plugin-perfectionist |
-| Submodule | `upstream/eslint-plugin-perfectionist` @ `v5.9.0` |
-| Baseline npm version | `5.9.0` |
+| Submodule | `upstream/eslint-plugin-perfectionist` @ `v5.9.1` |
+| Baseline npm version | `5.9.1` |
 | License | MIT |
 | Oxlint native support | none — port target |
 | Rules to port | 23 |
