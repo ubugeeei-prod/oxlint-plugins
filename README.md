@@ -61,7 +61,7 @@ pnpm run port:rules                      # regenerate docs/port-targets/*
 - Rust tests use `insta` snapshots.
 - Vitest covers wrapper reports and skip behavior.
 
-See `docs/guides/porting.md`, `docs/guides/testing-strategy.md`, and `docs/guides/trusted-publishing.md`.
+See `docs/guides/porting.md`, `docs/guides/testing-strategy.md`, `docs/guides/parity-testing.md`, and `docs/guides/trusted-publishing.md`.
 
 ## Credits
 

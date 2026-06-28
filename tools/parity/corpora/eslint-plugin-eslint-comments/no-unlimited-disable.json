@@ -1,0 +1,332 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-eslint-comments",
+    "rule": "no-unlimited-disable",
+    "pinnedRef": "v4.7.2",
+    "submoduleSha": "62a2c3a4ee304a8383f170369c9999198d9bdac8",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Toru Nagashima",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "/*eslint-enable*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable eqeqeq*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "//eslint-disable-line eqeqeq",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "//eslint-disable-next-line eqeqeq",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable-line eqeqeq*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable-next-line eqeqeq*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "var foo;\n//eslint-disable-line eqeqeq",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "var foo;\n/*eslint-disable-line eqeqeq*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable-line eqeqeq*/ a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-line",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-line' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-line*/",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-line' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// eslint-disable-line ",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-line' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable-line */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-line' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-next-line",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-next-line' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-next-line*/",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-next-line' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// eslint-disable-next-line ",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-next-line' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable-next-line */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-next-line' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 31
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "var foo;\n//eslint-disable-line",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-line' comment. Specify some rule names to disable.",
+          "line": 2,
+          "column": 0,
+          "endLine": 2,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "var foo;\n/*eslint-disable-line*/",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable-line' comment. Specify some rule names to disable.",
+          "line": 2,
+          "column": 0,
+          "endLine": 2,
+          "endColumn": 24
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable -- description */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unexpected",
+          "message": "Unexpected unlimited 'eslint-disable' comment. Specify some rule names to disable.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable */ a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    }
+  ]
+}

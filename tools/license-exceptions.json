@@ -28,5 +28,17 @@
     "license": "Apache-2.0 AND LGPL-3.0-or-later",
     "scope": "optional binary dependency of docs image tooling",
     "reason": "Optional sharp binary package pulled by the private documentation toolchain. Not included in published plugin npm packages."
+  },
+  {
+    "package": "@typescript-eslint/parser",
+    "license": "MITClause",
+    "scope": "dev-only parity capture tooling",
+    "reason": "v8.18.0 ships a malformed SPDX string (\"MITClause\") in package.json; the package is actually MIT. Used only to load eslint-plugin tests as a capture oracle (tools/parity); never bundled into a published plugin."
+  },
+  {
+    "package": "caniuse-lite",
+    "license": "CC-BY-4.0",
+    "scope": "dev-only parity capture tooling",
+    "reason": "Pulled transitively by @babel/core -> browserslist, which @babel/eslint-parser needs only to load eslint-plugin-simple-import-sort's tests as a capture oracle (tools/parity). Data package, never bundled into a published plugin."
   }
 ]

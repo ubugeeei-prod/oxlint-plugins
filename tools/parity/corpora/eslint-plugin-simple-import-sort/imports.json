@@ -1,0 +1,1343 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-simple-import-sort",
+    "rule": "imports",
+    "pinnedRef": "v13.0.0",
+    "submoduleSha": "90078e7fce900b6860ab7cd1800c6ff055601d88",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Simon Lydell",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "import \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import a from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import {a} from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import a, {b} from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import {a,b} from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import {} from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import {    } from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import * as a from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import \"b\";\nimport \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import \"codemirror/addon/fold/brace-fold\"\nimport \"codemirror/addon/edit/closebrackets\"\nimport \"codemirror/addon/fold/foldgutter\"\nimport \"codemirror/addon/fold/foldgutter.css\"\nimport \"codemirror/addon/lint/json-lint\"\nimport \"codemirror/addon/lint/lint\"\nimport \"codemirror/addon/lint/lint.css\"\nimport \"codemirror/addon/scroll/simplescrollbars\"\nimport \"codemirror/addon/scroll/simplescrollbars.css\"\nimport \"codemirror/lib/codemirror.css\"\nimport \"codemirror/mode/javascript/javascript\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import x1 from \"a\";\nimport x2 from \"b\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-next-line\nimport x2 from \"b\"\nimport x1 from \"a\";",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import {\n  a, // a\n  b // b\n} from \"specifiers-comment-space\"\nimport {\n  c, // c\n  d, // d\n} from \"specifiers-comment-space-2\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "import a from \"a\"    \nimport b from \"b\";    \nimport c from \"c\";  /* comment */  ",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "invalid",
+      "code": "import x2 from \"b\"\nimport x1 from \"a\";",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 20
+        }
+      ],
+      "fixOutput": "import x1 from \"a\";\nimport x2 from \"b\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import x2 from \"b\"\nimport x1 from \"a\"\n\n;[].forEach()",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 19
+        }
+      ],
+      "fixOutput": "import x1 from \"a\"\nimport x2 from \"b\"\n\n;[].forEach()",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import { foo } from \"bar\"\nimport a from \"a\"\n\n;(async function() {\n  await foo()\n})()",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 18
+        }
+      ],
+      "fixOutput": "import a from \"a\"\nimport { foo } from \"bar\"\n\n;(async function() {\n  await foo()\n})()",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import x2 from \"b\"\nimport x7 from \"g\";\nimport x6 from \"f\"\n;import x5 from \"e\"\nimport x4 from \"d\" ; import x3 from \"c\"\nimport x1 from \"a\" ; [].forEach()",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": "import x1 from \"a\" ; \nimport x2 from \"b\"\nimport x3 from \"c\"\nimport x4 from \"d\" ; \nimport x5 from \"e\"\nimport x6 from \"f\"\n;\nimport x7 from \"g\";[].forEach()",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import x2 from \"b\"\nimport x1 from \"a\" // a\n\n;/* comment */[].forEach()",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 24
+        }
+      ],
+      "fixOutput": "import x1 from \"a\" // a\nimport x2 from \"b\"\n\n;/* comment */[].forEach()",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import x2 from \"b\"\nimport x1 from \"a\"\n\n;",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2
+        }
+      ],
+      "fixOutput": "import x1 from \"a\"\n;\nimport x2 from \"b\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import { e, b, a as c } from \"specifiers\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 42
+        }
+      ],
+      "fixOutput": "import { a as c,b, e } from \"specifiers\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import d, { e, b, a as c } from \"specifiers-default\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 53
+        }
+      ],
+      "fixOutput": "import d, { a as c,b, e } from \"specifiers-default\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import d, { e, b, a as c, } from \"specifiers-trailing-comma\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 61
+        }
+      ],
+      "fixOutput": "import d, { a as c,b, e,  } from \"specifiers-trailing-comma\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import { a as c, a as b2, b, a } from \"specifiers-renames\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 59
+        }
+      ],
+      "fixOutput": "import { a,a as b2, a as c, b } from \"specifiers-renames\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n  B,\n  a,\n  A,\n  b,\n  B2,\n  bb,\n  BB,\n  bB,\n  Bb,\n  ab,\n  ba,\n  Ba,\n  BA,\n  bA,\n  x as d,\n  x as C,\n  img10,\n  img2,\n  img1,\n  img10_black,\n} from \"specifiers-human-sort\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 22,
+          "endColumn": 31
+        }
+      ],
+      "fixOutput": "import {\n  A,\n  a,\n  ab,\n  B,\n  b,\n  B2,\n  BA,\n  Ba,\n  bA,\n  ba,\n  BB,\n  Bb,\n  bB,\n  bb,\n  img1,\n  img2,\n  img10,\n  img10_black,\n  x as C,\n  x as d,\n} from \"specifiers-human-sort\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import { aaNotKeyword, zzNotKeyword, abstract, as, asserts, any, async, /*await,*/ boolean, constructor, declare, get, infer, is, keyof, module, namespace, never, readonly, require, number, object, set, string, symbol, type, undefined, unique, unknown, from, global, bigint, of } from 'keyword-identifiers';",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 308
+        }
+      ],
+      "fixOutput": "import { aaNotKeyword, abstract, any, as, asserts, async, /*await,*/ bigint, boolean, constructor, declare, from, get, global, infer, is, keyof, module, namespace, never, number, object, of,readonly, require, set, string, symbol, type, undefined, unique, unknown, zzNotKeyword } from 'keyword-identifiers';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {e,b,a as c} from \"specifiers-no-spaces\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 48
+        }
+      ],
+      "fixOutput": "import {a as c,b,e} from \"specifiers-no-spaces\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import { b,a} from \"specifiers-no-space-before\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 48
+        }
+      ],
+      "fixOutput": "import { a,b} from \"specifiers-no-space-before\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {b,a } from \"specifiers-no-space-after\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 47
+        }
+      ],
+      "fixOutput": "import {a,b } from \"specifiers-no-space-after\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {b,a, } from \"specifiers-no-space-after-trailing\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 57
+        }
+      ],
+      "fixOutput": "import {a,b, } from \"specifiers-no-space-after-trailing\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n  // c\n  c,\n  b, // b\n  a\n  // last\n} from \"specifiers-comments\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 7,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": "import {\n  a,\n  b, // b\n  // c\n  c\n  // last\n} from \"specifiers-comments\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n  // c\n  c,b, // b\n  a\n  // last\n} from \"specifiers-comments-last\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 34
+        }
+      ],
+      "fixOutput": "import {\n  a,\nb, // b\n  // c\n  c\n  // last\n} from \"specifiers-comments-last\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import { b /* b */, a } from \"specifiers-comment-between\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 58
+        }
+      ],
+      "fixOutput": "import { a,b /* b */ } from \"specifiers-comment-between\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n  c,\n  a,\n  // x\n  // y\n} from \"specifiers-trailing\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": "import {\n  a,\n  c,\n  // x\n  // y\n} from \"specifiers-trailing\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n  /*c1*/ c, /*c2*/ /*a1\n  */a, /*a2*/ /*\n  after */\n  // x\n  // y\n} from \"specifiers-multiline-comments\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 7,
+          "endColumn": 39
+        }
+      ],
+      "fixOutput": "import {\n/*a1\n  */a, /*a2*/ \n  /*c1*/ c, /*c2*/ /*\n  after */\n  // x\n  // y\n} from \"specifiers-multiline-comments\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n  b,\n  a /*\n  after */\n} from \"specifiers-multiline-end-comment\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 42
+        }
+      ],
+      "fixOutput": "import {\n  a,   b/*\n  after */\n} from \"specifiers-multiline-end-comment\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n  b,\n  a /*a*/\n  /*\n  after */\n} from \"specifiers-multiline-end-comment-after-newline\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 56
+        }
+      ],
+      "fixOutput": "import {\n  a, /*a*/\n  b  /*\n  after */\n} from \"specifiers-multiline-end-comment-after-newline\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n  b,\n  a /*\n  after */ } from \"specifiers-multiline-end-comment-no-newline\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 64
+        }
+      ],
+      "fixOutput": "import {\n  a,   b/*\n  after */ } from \"specifiers-multiline-end-comment-no-newline\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*1*//*2*/import/*3*/def,/*4*/{/*{*/e/*e1*/,/*e2*//*e3*/b/*b1*/,/*b2*/a/*a1*/as/*a2*/c/*a3*/,/*a4*/}/*5*/from/*6*/\"specifiers-lots-of-comments\"/*7*//*8*/",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 154
+        }
+      ],
+      "fixOutput": "/*1*//*2*/import/*3*/def,/*4*/{/*{*/a/*a1*/as/*a2*/c/*a3*/,/*a4*/b/*b1*/,/*b2*/e/*e1*/,/*e2*//*e3*/}/*5*/from/*6*/\"specifiers-lots-of-comments\"/*7*//*8*/",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import { // start\n  /* c1 */ c /* c2 */, // c3\n  // b1\n\n  b as /* b2 */ renamed\n  , /* b3 */ /* a1\n  */ a /* not-a\n  */ // comment at end\n} from \"specifiers-lots-of-comments-multiline\";\nimport {\n  e,\n  d, /* d */ /* not-d\n  */ // comment at end after trailing comma\n} from \"specifiers-lots-of-comments-multiline-2\";",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 14,
+          "endColumn": 50
+        }
+      ],
+      "fixOutput": "import { // start\n/* a1\n  */ a, \n  // b1\n  b as /* b2 */ renamed\n  , /* b3 */ \n  /* c1 */ c /* c2 */// c3\n/* not-a\n  */ // comment at end\n} from \"specifiers-lots-of-comments-multiline\";\nimport {\n  d, /* d */   e,\n/* not-d\n  */ // comment at end after trailing comma\n} from \"specifiers-lots-of-comments-multiline-2\";",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n  b/*b*/\n  ,\n  a\n} from \"specifiers-blank\";",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 27
+        }
+      ],
+      "fixOutput": "import {\n  a,\n  b/*b*/\n  } from \"specifiers-blank\";",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {z, y,\n  x,\n\nw,\n    v\n  as /*v*/\n\n    u , t /*t*/, // t\n    s\n} from \"specifiers-inline-multiline\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 10,
+          "endColumn": 37
+        }
+      ],
+      "fixOutput": "import {    s,\nt /*t*/, // t\n    v\n  as /*v*/\n    u , w,\n  x,\ny,\nz} from \"specifiers-inline-multiline\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\nb,\na,\n} from \"specifiers-indent-0\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": "import {\na,\nb,\n} from \"specifiers-indent-0\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n    b,\n    a,\n} from \"specifiers-indent-4\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": "import {\n    a,\n    b,\n} from \"specifiers-indent-4\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n\tb,\n\ta,\n} from \"specifiers-indent-tab\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 31
+        }
+      ],
+      "fixOutput": "import {\n\ta,\n\tb,\n} from \"specifiers-indent-tab\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n //\n\tb,\n  a,\n\n    c,\n} from \"specifiers-indent-mixed\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 7,
+          "endColumn": 33
+        }
+      ],
+      "fixOutput": "import {\n  a,\n //\n\tb,\n    c,\n} from \"specifiers-indent-mixed\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "require(\"c\");\n\nimport x1 from \"b\"\nimport x2 from \"a\"\nrequire(\"c\");\n\nimport x3 from \"b\"\nimport x4 from \"a\" // x4\n\n// c1\nrequire(\"c\");\nimport x5 from \"b\"\n// x6-1\nimport x6 from \"a\" /* after\n*/\n\nrequire(\"c\"); import x7 from \"b\"; import x8 from \"a\"; require(\"c\")",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 3,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 19
+        },
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 7,
+          "column": 1,
+          "endLine": 8,
+          "endColumn": 25
+        },
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 12,
+          "column": 1,
+          "endLine": 14,
+          "endColumn": 20
+        },
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 17,
+          "column": 15,
+          "endLine": 17,
+          "endColumn": 55
+        }
+      ],
+      "fixOutput": "require(\"c\");\n\nimport x2 from \"a\"\nimport x1 from \"b\"\nrequire(\"c\");\n\nimport x4 from \"a\" // x4\nimport x3 from \"b\"\n\n// c1\nrequire(\"c\");\n// x6-1\nimport x6 from \"a\" \nimport x5 from \"b\"/* after\n*/\n\nrequire(\"c\"); import x8 from \"a\"; \nimport x7 from \"b\"; require(\"c\")",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import b from \"b\"\nimport a1 from \"a\"\nimport a2 from \"a\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "fixOutput": "import a1 from \"a\"\nimport a2 from \"a\"\nimport b from \"b\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import b from \"b\"\nimport a2 from \"a\"\nimport a1 from \"a\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "fixOutput": "import a2 from \"a\"\nimport a1 from \"a\"\nimport b from \"b\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import b from \"b\"\nimport {a2} from \"a\"\nimport a1 from \"a\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "fixOutput": "import a1 from \"a\"\nimport {a2} from \"a\"\nimport b from \"b\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {x} from \"a\"\nimport {} from \"a\"\nimport w1, {} from \"a\"\nimport w2 from \"a\"\nimport w3, {z} from \"a\"\nimport * as v from \"a\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 23
+        }
+      ],
+      "fixOutput": "import * as v from \"a\"\nimport w1, {} from \"a\"\nimport w2 from \"a\"\nimport w3, {z} from \"a\"\nimport {x} from \"a\"\nimport {} from \"a\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {} from \"\";\nimport {} from \".\";\nimport {} from \".//\";\nimport {} from \"./\";\nimport {} from \"./B\"; // B1\nimport {} from \"./b\";\nimport {} from \"./B\"; // B2\nimport {} from \"./A\";\nimport {} from \"./a\";\nimport {} from \"./_a\";\nimport {} from \"./-a\";\nimport {} from \"./[id]\";\nimport {} from \"./,\";\nimport {} from \"./ä\";\nimport {} from \"./ä\"; // “a” followed by “̈̈” (COMBINING DIAERESIS).\nimport {} from \"..\";\nimport {} from \"../\";\nimport {} from \"../a\";\nimport {} from \"../_a\";\nimport {} from \"../-a\";\nimport {} from \"../[id]\";\nimport {} from \"../,\";\nimport {} from \"../a/..\";\nimport {} from \"../a/../\";\nimport {} from \"../a/...\";\nimport {} from \"../a/../b\";\nimport {} from \"../../\";\nimport {} from \"../..\";\nimport {} from \"../../a\";\nimport {} from \"../../_a\";\nimport {} from \"../../-a\";\nimport {} from \"../../[id]\";\nimport {} from \"../../,\";\nimport {} from \"../../utils\";\nimport {} from \"../../..\";\nimport {} from \"../../../\";\nimport {} from \"../../../a\";\nimport {} from \"../../../_a\";\nimport {} from \"../../../[id]\";\nimport {} from \"../../../,\";\nimport {} from \"../../../utils\";\nimport {} from \"...\";\nimport {} from \".../\";\nimport {} from \".a\";\nimport {} from \"/\";\nimport {} from \"/a\";\nimport {} from \"/a/b\";\nimport {} from \"https://example.com/script.js\";\nimport {} from \"http://example.com/script.js\";\nimport {} from \"react\";\nimport {} from \"async\";\nimport {} from \"./a/-\";\nimport {} from \"./a/.\";\nimport {} from \"./a/0\";\nimport {} from \"@/components/error.vue\"\nimport {} from \"@/components/Alert\"\nimport {} from \"~/test\"\nimport {} from \"#/test\"\nimport {} from \"fs\";\nimport {} from \"fs/something\";\nimport {} from \"node:fs/something\";\nimport {} from \"node:fs\";\nimport {} from \"Fs\";\nimport {} from \"lodash/fp\";\nimport {} from \"@storybook/react\";\nimport {} from \"@storybook/react/something\";\nimport {} from \"1\";\nimport {} from \"1*\";\nimport {} from \"a*\";\nimport img2 from \"./img2\";\nimport img10 from \"./img10\";\nimport img1 from \"./img1\";",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 72,
+          "endColumn": 27
+        }
+      ],
+      "fixOutput": "import {} from \"node:fs\";\nimport {} from \"node:fs/something\";\n\nimport {} from \"@storybook/react\";\nimport {} from \"@storybook/react/something\";\nimport {} from \"1\";\nimport {} from \"1*\";\nimport {} from \"a*\";\nimport {} from \"async\";\nimport {} from \"Fs\";\nimport {} from \"fs\";\nimport {} from \"fs/something\";\nimport {} from \"http://example.com/script.js\";\nimport {} from \"https://example.com/script.js\";\nimport {} from \"lodash/fp\";\nimport {} from \"react\";\n\nimport {} from \"\";\nimport {} from \"/\";\nimport {} from \"/a\";\nimport {} from \"/a/b\";\nimport {} from \"@/components/Alert\"\nimport {} from \"@/components/error.vue\"\nimport {} from \"#/test\"\nimport {} from \"~/test\"\n\nimport {} from \"...\";\nimport {} from \".../\";\nimport {} from \"../../..\";\nimport {} from \"../../../\";\nimport {} from \"../../../,\";\nimport {} from \"../../../_a\";\nimport {} from \"../../../[id]\";\nimport {} from \"../../../a\";\nimport {} from \"../../../utils\";\nimport {} from \"../..\";\nimport {} from \"../../\";\nimport {} from \"../../,\";\nimport {} from \"../../_a\";\nimport {} from \"../../[id]\";\nimport {} from \"../../-a\";\nimport {} from \"../../a\";\nimport {} from \"../../utils\";\nimport {} from \"..\";\nimport {} from \"../\";\nimport {} from \"../,\";\nimport {} from \"../_a\";\nimport {} from \"../[id]\";\nimport {} from \"../-a\";\nimport {} from \"../a\";\nimport {} from \"../a/..\";\nimport {} from \"../a/...\";\nimport {} from \"../a/../\";\nimport {} from \"../a/../b\";\nimport {} from \".//\";\nimport {} from \".\";\nimport {} from \"./\";\nimport {} from \"./,\";\nimport {} from \"./_a\";\nimport {} from \"./[id]\";\nimport {} from \"./-a\";\nimport {} from \"./A\";\nimport {} from \"./a\";\nimport {} from \"./ä\"; // “a” followed by “̈̈” (COMBINING DIAERESIS).\nimport {} from \"./ä\";\nimport {} from \"./a/.\";\nimport {} from \"./a/-\";\nimport {} from \"./a/0\";\nimport {} from \"./B\"; // B1\nimport {} from \"./B\"; // B2\nimport {} from \"./b\";\nimport img1 from \"./img1\";\nimport img2 from \"./img2\";\nimport img10 from \"./img10\";\nimport {} from \".a\";",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// before\n\n/* also\nbefore */ /* b */ import b from \"b\" // b\n// above d\n  import d /*d1*/ from   \"d\" ; /* d2 */ /* before\n  c0 */ // before c1\n  /* c0\n*/ /*c1*/ /*c2*/import c from 'c' ; /*c3*/ import a from \"a\" /*a*/ /*\n   x1 */ /* x2 */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 4,
+          "column": 11,
+          "endLine": 9,
+          "endColumn": 68
+        }
+      ],
+      "fixOutput": "// before\n\n/* also\nbefore */ import a from \"a\" /*a*/ \n/* b */ import b from \"b\" // b\n/* before\n  c0 */ // before c1\n  /* c0\n*/ /*c1*/ /*c2*/import c from 'c' ; /*c3*/ \n// above d\n  import d /*d1*/ from   \"d\" ; /* d2 */ /*\n   x1 */ /* x2 */",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import b from \"b\"; // b\nimport a from \"a\"; code();",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 20
+        }
+      ],
+      "fixOutput": "import a from \"a\"; \nimport b from \"b\"; // b\ncode();",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import b from \"b\"; // b\nimport a from \"a\"; /*\nafter */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 20
+        }
+      ],
+      "fixOutput": "import a from \"a\"; \nimport b from \"b\"; // b\n/*\nafter */",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import b from \"b\"; // b\nimport a from \"a\"; /* a */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 27
+        }
+      ],
+      "fixOutput": "import a from \"a\"; /* a */\nimport b from \"b\"; // b",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// before\n/* also\nbefore */ import b from \"b\";\nimport a from \"a\"; /*a*/ /* comment\nafter */ // after",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 3,
+          "column": 11,
+          "endLine": 4,
+          "endColumn": 26
+        }
+      ],
+      "fixOutput": "// before\n/* also\nbefore */ import a from \"a\"; /*a*/ \nimport b from \"b\";/* comment\nafter */ // after",
+      "upstreamAssertion": {
+        "style": "messageId"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import c from \"c\"\n// b1\n\n// b2\nimport b from \"b\"\n// a\n\nimport a from \"a\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 8,
+          "endColumn": 18
+        }
+      ],
+      "fixOutput": "// a\nimport a from \"a\"\n// b1\n// b2\nimport b from \"b\"\nimport c from \"c\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import c from \"c\"\r\n// b1\r\n\r\n// b2\r\nimport b from \"b\"\r\n// a\r\n\r\nimport a from \"a\"\r\nafter();\r",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 8,
+          "endColumn": 18
+        }
+      ],
+      "fixOutput": "// a\r\nimport a from \"a\"\r\n// b1\r\n// b2\r\nimport b from \"b\"\r\nimport c from \"c\"\r\nafter();\r",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import\n\n// import\n\ndef /* default */\n\n,\n\n// default\n\n {\n\n  // c\n\n  c /*c*/,\n\n  /* b\n   */\n\n  b // b\n  ,\n\n  // a1\n\n  // a2\n\n  a\n\n  // a3\n\n  as\n\n  // a4\n\n  d\n\n  // a5\n\n  , // a6\n\n  // last\n\n}\n\n// from1\n\nfrom\n\n// from2\n\n\"c\"\n\n// final\n\n;",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 55,
+          "endColumn": 2
+        }
+      ],
+      "fixOutput": "import\n// import\ndef /* default */\n,\n// default\n {\n  // a1\n  // a2\n  a\n  // a3\n  as\n  // a4\n  d\n  // a5\n  , // a6\n  /* b\n   */\n  b // b\n  ,\n  // c\n  c /*c*/,\n  // last\n}\n// from1\nfrom\n// from2\n\"c\"\n// final\n;",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n\n    } from \"specifiers-empty\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 30
+        }
+      ],
+      "fixOutput": "import {\n    } from \"specifiers-empty\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import {\n\n  b // b\n  ,a} from \"specifiers-line-comment\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 37
+        }
+      ],
+      "fixOutput": "import {\na,  b // b\n  } from \"specifiers-line-comment\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "  import e from \"e\"\n  // b\n  import {\n    b4, b3,\n    b2\n  } from \"b\";\n  /* a */ import a from \"a\"; import c from \"c\"\n  \n    // d\n    import d from \"d\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 10,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": "  /* a */ import a from \"a\"; \n  // b\n  import {\n    b2,\nb3,\n    b4  } from \"b\";\nimport c from \"c\"\n    // d\n    import d from \"d\"\n  import e from \"e\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "      \r\n  import e from \"e\"\r\n  // b\r\n  import {\r\n    b4, b3,\r\n    b2\r\n  } from \"b\";\r\n  /* a */ import a from \"a\"; import c from \"c\"\r\n \r\n    // d\r\n    import d from \"d\"\r\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 2,
+          "column": 1,
+          "endLine": 11,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": "      \r\n  /* a */ import a from \"a\"; \r\n  // b\r\n  import {\r\n    b2,\r\nb3,\r\n    b4  } from \"b\";\r\nimport c from \"c\"\r\n    // d\r\n    import d from \"d\"\r\n  import e from \"e\"\r\n",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import c from \"c\";  /* comment */  \nimport b from \"b\";    \nimport d from \"d\";  /* multiline\ncomment */  \nimport a from \"a\"    \nimport e from \"e\"; /* multiline\ncomment 2 */ import f from \"f\";",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 7,
+          "endColumn": 32
+        }
+      ],
+      "fixOutput": "/* multiline\ncomment */  \nimport a from \"a\"    \nimport b from \"b\";    \nimport c from \"c\";  /* comment */  \nimport d from \"d\";  \nimport e from \"e\"; \n/* multiline\ncomment 2 */ import f from \"f\";",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import FloatingActionButton from 'src/components/FloatingActionButton'\nimport { Select, linkButton, buttonPrimary, spinnerOverlay } from 'src/components/common'\nimport { icon, spinner } from 'src/components/icons'\nimport { notify } from 'src/components/Notifications'\nimport { IGVBrowser } from 'src/components/IGVBrowser'\nimport { IGVFileSelector } from 'src/components/IGVFileSelector'\nimport { DelayedSearchInput, TextInput } from 'src/components/input'\nimport DataTable from 'src/components/DataTable'\nimport { FlexTable, SimpleTable, HeaderCell, TextCell } from 'src/components/table'\nimport Modal from 'src/components/Modal'\nimport ExportDataModal from 'src/components/ExportDataModal'",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 11,
+          "endColumn": 61
+        }
+      ],
+      "fixOutput": "import { buttonPrimary, linkButton, Select, spinnerOverlay } from 'src/components/common'\nimport DataTable from 'src/components/DataTable'\nimport ExportDataModal from 'src/components/ExportDataModal'\nimport FloatingActionButton from 'src/components/FloatingActionButton'\nimport { icon, spinner } from 'src/components/icons'\nimport { IGVBrowser } from 'src/components/IGVBrowser'\nimport { IGVFileSelector } from 'src/components/IGVFileSelector'\nimport { DelayedSearchInput, TextInput } from 'src/components/input'\nimport Modal from 'src/components/Modal'\nimport { notify } from 'src/components/Notifications'\nimport { FlexTable, HeaderCell, SimpleTable, TextCell } from 'src/components/table'",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import agent from '../agent';\nimport Header from './Header';\nimport React from 'react';\nimport { connect } from 'react-redux';\nimport { APP_LOAD, REDIRECT } from '../constants/actionTypes';\nimport { Route, Switch } from 'react-router-dom';\nimport Article from '../components/Article';\nimport Editor from '../components/Editor';\nimport Home from '../components/Home';\nimport Login from '../components/Login';\nimport Profile from '../components/Profile';\nimport ProfileFavorites from '../components/ProfileFavorites';\nimport Register from '../components/Register';\nimport Settings from '../components/Settings';\nimport { store } from '../store';\nimport { push } from 'react-router-redux';",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 16,
+          "endColumn": 43
+        }
+      ],
+      "fixOutput": "import React from 'react';\nimport { connect } from 'react-redux';\nimport { Route, Switch } from 'react-router-dom';\nimport { push } from 'react-router-redux';\n\nimport agent from '../agent';\nimport Article from '../components/Article';\nimport Editor from '../components/Editor';\nimport Home from '../components/Home';\nimport Login from '../components/Login';\nimport Profile from '../components/Profile';\nimport ProfileFavorites from '../components/ProfileFavorites';\nimport Register from '../components/Register';\nimport Settings from '../components/Settings';\nimport { APP_LOAD, REDIRECT } from '../constants/actionTypes';\nimport { store } from '../store';\nimport Header from './Header';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import ListErrors from './ListErrors';\nimport React from 'react';\nimport agent from '../agent';\nimport { connect } from 'react-redux';\nimport {\n  ADD_TAG,\n  EDITOR_PAGE_LOADED,\n  REMOVE_TAG,\n  ARTICLE_SUBMITTED,\n  EDITOR_PAGE_UNLOADED,\n  UPDATE_FIELD_EDITOR\n} from '../constants/actionTypes';",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 12,
+          "endColumn": 35
+        }
+      ],
+      "fixOutput": "import React from 'react';\nimport { connect } from 'react-redux';\n\nimport agent from '../agent';\nimport {\n  ADD_TAG,\n  ARTICLE_SUBMITTED,\n  EDITOR_PAGE_LOADED,\n  EDITOR_PAGE_UNLOADED,\n  REMOVE_TAG,\n  UPDATE_FIELD_EDITOR\n} from '../constants/actionTypes';\nimport ListErrors from './ListErrors';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import b from '.';\nimport a from 'ä';",
+      "options": [
+        {
+          "groups": [
+            [
+              "^\\p{L}"
+            ],
+            [
+              "^\\."
+            ]
+          ]
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 19
+        }
+      ],
+      "fixOutput": "import a from 'ä';\n\nimport b from '.';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import c from '';\nimport b from '.';\nimport a from 'a';\nimport d from '@/a';",
+      "options": [
+        {
+          "groups": [
+            [
+              "^\\w"
+            ],
+            [
+              "^\\."
+            ]
+          ]
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 21
+        }
+      ],
+      "fixOutput": "import a from 'a';\n\nimport b from '.';\n\nimport c from '';\nimport d from '@/a';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import c from './';\nimport b from 'bx';\nimport a from 'a';",
+      "options": [
+        {
+          "groups": [
+            [
+              "^\\w"
+            ],
+            [
+              "^\\w{2}"
+            ],
+            [
+              "^.{2}"
+            ]
+          ]
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "fixOutput": "import a from 'a';\n\nimport b from 'bx';\n\nimport c from './';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import '@/';\nimport c from '@/';\nimport b from './';\nimport './';\nimport a from 'a';\nimport 'a';\nimport {} from 'a';",
+      "options": [
+        {
+          "groups": [
+            [
+              "^\\w"
+            ],
+            [
+              "^\\."
+            ],
+            [
+              "^\\u0000"
+            ]
+          ]
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 7,
+          "endColumn": 20
+        }
+      ],
+      "fixOutput": "import a from 'a';\nimport {} from 'a';\n\nimport b from './';\n\nimport '@/';\nimport './';\nimport 'a';\n\nimport c from '@/';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import b from 'b';\nimport 'c';\nimport d from 'd';\nimport 'a';\nimport '.';\nimport x from './x';",
+      "options": [
+        {
+          "groups": []
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 6,
+          "endColumn": 21
+        }
+      ],
+      "fixOutput": "import 'c';\nimport 'a';\nimport '.';\nimport x from './x';\nimport b from 'b';\nimport d from 'd';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "import react from 'react';\nimport a from 'a';\nimport webpack from \"webpack\"\nimport Select from 'react-select';\nimport App from './App';",
+      "options": [
+        {
+          "groups": [
+            [
+              "^\\w",
+              "^react"
+            ],
+            [
+              "^\\."
+            ]
+          ]
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these imports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 25
+        }
+      ],
+      "fixOutput": "import a from 'a';\nimport webpack from \"webpack\"\nimport react from 'react';\nimport Select from 'react-select';\n\nimport App from './App';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    }
+  ]
+}

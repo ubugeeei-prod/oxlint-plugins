@@ -1,0 +1,398 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-eslint-comments",
+    "rule": "no-use",
+    "pinnedRef": "v4.7.2",
+    "submoduleSha": "62a2c3a4ee304a8383f170369c9999198d9bdac8",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Toru Nagashima",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "// eslint foo",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-enable",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// exported",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// global",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// globals",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* just eslint in a normal comment */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint */",
+      "options": [
+        {
+          "allow": [
+            "eslint"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-enable */",
+      "options": [
+        {
+          "allow": [
+            "eslint-enable"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable */",
+      "options": [
+        {
+          "allow": [
+            "eslint-disable"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-line",
+      "options": [
+        {
+          "allow": [
+            "eslint-disable-line"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-next-line",
+      "options": [
+        {
+          "allow": [
+            "eslint-disable-next-line"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable-line */",
+      "options": [
+        {
+          "allow": [
+            "eslint-disable-line"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable-next-line */",
+      "options": [
+        {
+          "allow": [
+            "eslint-disable-next-line"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* exported */",
+      "options": [
+        {
+          "allow": [
+            "exported"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* global */",
+      "options": [
+        {
+          "allow": [
+            "global"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* globals */",
+      "options": [
+        {
+          "allow": [
+            "globals"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable */ a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-enable */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// eslint-disable-line",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// eslint-disable-next-line",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable-line */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable-next-line */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 31
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* exported */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* global */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* globals */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Unexpected ESLint directive comment.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable */ a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    }
+  ]
+}

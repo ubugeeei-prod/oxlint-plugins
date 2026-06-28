@@ -1,0 +1,126 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-eslint-comments",
+    "rule": "no-unused-enable",
+    "pinnedRef": "v4.7.2",
+    "submoduleSha": "62a2c3a4ee304a8383f170369c9999198d9bdac8",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Toru Nagashima",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "\n/*eslint no-undef:error*/\n/*eslint-disable*/\nvar a = b\n/*eslint-enable*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint no-undef:error*/\n/*eslint-disable no-undef*/\nvar a = b\n/*eslint-enable no-undef*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint no-undef:error*/\n/*eslint-disable no-undef*/\nvar a = b\n/*eslint-enable*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint no-undef:error, no-unused-vars:error*/\n/*eslint-disable no-undef,no-unused-vars*/\nvar a = b\n/*eslint-enable no-undef*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint no-undef:error, no-unused-vars:error*/\n/*eslint-disable no-undef,no-unused-vars*/\nvar a = b\n/*eslint-enable*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-enable*/",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unused",
+          "message": "ESLint rules are re-enabled but those have not been disabled.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-enable no-undef*/",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unusedRule",
+          "message": "'no-undef' rule is re-enabled but it has not been disabled.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable no-unused-vars*/\n/*eslint-enable no-undef*/\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unusedRule",
+          "message": "'no-undef' rule is re-enabled but it has not been disabled.",
+          "line": 3,
+          "column": 17,
+          "endLine": 3,
+          "endColumn": 25
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-enable -- description*/",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "unused",
+          "message": "ESLint rules are re-enabled but those have not been disabled.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    }
+  ]
+}

@@ -1,0 +1,508 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-simple-import-sort",
+    "rule": "exports",
+    "pinnedRef": "v13.0.0",
+    "submoduleSha": "90078e7fce900b6860ab7cd1800c6ff055601d88",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Simon Lydell",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "export {a} from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export {a,b} from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export {} from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export {    } from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export * as a from \"a\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export var one = 1;",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export let two = 2;",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export const three = 3;",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export function f() {}",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export class C {}",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export { a, b as c }; var a, b;",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export default whatever;",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export {x1} from \"a\";\nexport {x2} from \"b\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-next-line\nexport {x2} from \"b\"\nexport {x1} from \"a\";",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export {\n  a, // a\n  b // b\n} from \"specifiers-comment-space\"\nexport {\n  c, // c\n  d, // d\n} from \"specifiers-comment-space-2\"",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export {a} from \"a\"    \nexport {b} from \"b\";    \nexport {c} from \"c\";  /* comment */  ",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "export {a} from \"a\"\n// export {b} from \"b\";\nexport {c} from \"c\";",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "invalid",
+      "code": "export {x2} from \"b\"\nexport {x1} from \"a\";",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": "export {x1} from \"a\";\nexport {x2} from \"b\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export * from \"g\"\nexport * from \"f\";\n// Group 2\nexport * from \"e\"\nexport * from \"d\"\n/* Group 3 */\n\nexport * from \"c\"\n\n\nexport * from \"b\"\n\n\n /* Group 4\n */\n\n   export * from \"a\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 19
+        },
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 4,
+          "column": 1,
+          "endLine": 5,
+          "endColumn": 18
+        },
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 8,
+          "column": 1,
+          "endLine": 11,
+          "endColumn": 18
+        }
+      ],
+      "fixOutput": "export * from \"f\";\nexport * from \"g\"\n// Group 2\nexport * from \"d\"\nexport * from \"e\"\n/* Group 3 */\n\nexport * from \"b\"\nexport * from \"c\"\n\n\n /* Group 4\n */\n\n   export * from \"a\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export { d, a as c, a as b2, b, a } from \"specifiers\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 54
+        }
+      ],
+      "fixOutput": "export { a,b, a as b2, a as c, d } from \"specifiers\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export { d, a as c, a as b2, b, a, }; var d, a, b;",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 38
+        }
+      ],
+      "fixOutput": "export { a,b, a as b2, a as c, d,  }; var d, a, b;",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export * from \"g\"\n/* f1 */export * from \"f\"; // f2\nexport * from \"e\" /* d\n */\nexport * from \"d\"\nexport * from \"c\" /*\n b */ export * from \"b\"\n /* a\n */ export * from \"a\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 9,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": " /* a\n */ export * from \"a\"\n/*\n b */ export * from \"b\"\nexport * from \"c\" \n/* d\n */\nexport * from \"d\"\nexport * from \"e\" \n/* f1 */export * from \"f\"; // f2\nexport * from \"g\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*1*//*2*/export/*3*/*/*4*/as/*as*/foo/*foo1*//*foo2*/from/*6*/\"specifiers-lots-of-comments\"/*7*//*8*/\nexport { // start\n  /* c1 */ c /* c2 */, // c3\n  // b1\n\n  b as /* b2 */ renamed\n  , /* b3 */ /* a1\n  */ a /* not-a\n  */ // comment at end\n} from \"specifiers-lots-of-comments-multiline\";\nexport {\n  e,\n  d, /* d */ /* not-d\n  */ // comment at end after trailing comma\n};\nvar e, d;",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 10,
+          "endColumn": 48
+        },
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 11,
+          "column": 1,
+          "endLine": 15,
+          "endColumn": 3
+        }
+      ],
+      "fixOutput": "/*1*//*2*/export/*3*/*/*4*/as/*as*/foo/*foo1*//*foo2*/from/*6*/\"specifiers-lots-of-comments\"/*7*//*8*/\nexport { // start\n/* a1\n  */ a, \n  /* c1 */ c /* c2 */, // c3\n  // b1\n  b as /* b2 */ renamed\n  /* b3 */ /* not-a\n  */ // comment at end\n} from \"specifiers-lots-of-comments-multiline\";\nexport {\n  d, /* d */   e,\n/* not-d\n  */ // comment at end after trailing comma\n};\nvar e, d;",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export\n\n// export\n\n/* default */\n\n\n\n// default\n\n {\n\n  // c\n\n  c /*c*/,\n\n  /* b\n   */\n\n  b // b\n  ,\n\n  // a1\n\n  // a2\n\n  a\n\n  // a3\n\n  as\n\n  // a4\n\n  d\n\n  // a5\n\n  , // a6\n\n  // last\n\n}\n\n// from1\n\nfrom\n\n// from2\n\n\"c\"\n\n// final\n\n;",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 55,
+          "endColumn": 2
+        }
+      ],
+      "fixOutput": "export\n// export\n/* default */\n// default\n {\n  /* b\n   */\n  b // b\n  ,\n  // c\n  c /*c*/,\n  // a1\n  // a2\n  a\n  // a3\n  as\n  // a4\n  d\n  // a5\n  , // a6\n  // last\n}\n// from1\nfrom\n// from2\n\"c\"\n// final\n;",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export {\n\n    } from \"specifiers-empty\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 30
+        }
+      ],
+      "fixOutput": "export {\n    } from \"specifiers-empty\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export const options = {\n\n    a: 1,\n\n    b: 2\n    }, a = 1\nexport {options as options2, a as a2}",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 7,
+          "column": 1,
+          "endLine": 7,
+          "endColumn": 38
+        }
+      ],
+      "fixOutput": "export const options = {\n\n    a: 1,\n\n    b: 2\n    }, a = 1\nexport {a as a2,options as options2}",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "  export {e} from \"e\"\n  export {\n    b4, b3,\n    b2\n  } from \"b\";\n  /* a */ export {a} from \"a\"; export {c} from \"c\"\n  \n    export {d} from \"d\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 8,
+          "endColumn": 24
+        }
+      ],
+      "fixOutput": "  /* a */ export {a} from \"a\"; \n  export {\n    b2,\nb3,\n    b4  } from \"b\";\nexport {c} from \"c\"\n    export {d} from \"d\"\n  export {e} from \"e\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export {x2} from \"b\"\nexport {x1} from \"a\"\n\n;[].forEach()",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 21
+        }
+      ],
+      "fixOutput": "export {x1} from \"a\"\nexport {x2} from \"b\"\n\n;[].forEach()",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export { something, something as default } from './something'",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 62
+        }
+      ],
+      "fixOutput": "export { something as default,something } from './something'",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export {default as default, default as def, default as fault} from \"b\"",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 71
+        }
+      ],
+      "fixOutput": "export {default as def, default as default, default as fault} from \"b\"",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// before\n/* also\nbefore */ export * from \"b\";\nexport * from \"a\"; /*a*/ /* comment\nafter */ // after",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 3,
+          "column": 11,
+          "endLine": 4,
+          "endColumn": 26
+        }
+      ],
+      "fixOutput": "// before\n/* also\nbefore */ export * from \"a\"; /*a*/ \nexport * from \"b\";/* comment\nafter */ // after",
+      "upstreamAssertion": {
+        "style": "messageId"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export { default as djedi } from \"./djedi\";\nexport { default as Node, NodeContext } from \"./Node\";\nexport { default as ForceNodes } from \"./ForceNodes\";\nexport { default as md } from \"dedent-js\";",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 43
+        }
+      ],
+      "fixOutput": "export { default as djedi } from \"./djedi\";\nexport { default as ForceNodes } from \"./ForceNodes\";\nexport { default as Node, NodeContext } from \"./Node\";\nexport { default as md } from \"dedent-js\";",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "export * from './logger';\nexport * from './AppsembleError';\nexport * from './basicAuth';\nexport * from './commandDirOptions';\nexport * from './getWorkspaces';\nexport * from './handleError';\nexport * from './interceptors';\nexport * from './loggerMiddleware';\nexport * from './readFileOrString';\nexport * from './fs';",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 1,
+          "column": 1,
+          "endLine": 10,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": "export * from './AppsembleError';\nexport * from './basicAuth';\nexport * from './commandDirOptions';\nexport * from './fs';\nexport * from './getWorkspaces';\nexport * from './handleError';\nexport * from './interceptors';\nexport * from './logger';\nexport * from './loggerMiddleware';\nexport * from './readFileOrString';",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "var\n  createPortal,\n  batchedUpdates,\n  flushSync,\n  Internals,\n  ReactVersion,\n  findDOMNode,\n  hydrate,\n  render,\n  unmountComponentAtNode,\n  createRoot,\n  createBlockingRoot,\n  flushControlled,\n  scheduleHydration,\n  renderSubtreeIntoContainer,\n  unstable_createPortal,\n  createEventHandle\n;\nexport {\n  createPortal,\n  batchedUpdates as unstable_batchedUpdates,\n  flushSync,\n  Internals as __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,\n  ReactVersion as version,\n  // Disabled behind disableLegacyReactDOMAPIs\n  findDOMNode,\n  hydrate,\n  render,\n  unmountComponentAtNode,\n  // exposeConcurrentModeAPIs\n  createRoot,\n  createBlockingRoot,\n  flushControlled as unstable_flushControlled,\n  scheduleHydration as unstable_scheduleHydration,\n  // Disabled behind disableUnstableRenderSubtreeIntoContainer\n  renderSubtreeIntoContainer as unstable_renderSubtreeIntoContainer,\n  // Disabled behind disableUnstableCreatePortal\n  // Temporary alias since we already shipped React 16 RC with it.\n  // Todo: remove in React 18.\n  unstable_createPortal,\n  // enableCreateEventHandleAPI\n  createEventHandle as unstable_createEventHandle,\n};",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 19,
+          "column": 1,
+          "endLine": 43,
+          "endColumn": 3
+        }
+      ],
+      "fixOutput": "var\n  createPortal,\n  batchedUpdates,\n  flushSync,\n  Internals,\n  ReactVersion,\n  findDOMNode,\n  hydrate,\n  render,\n  unmountComponentAtNode,\n  createRoot,\n  createBlockingRoot,\n  flushControlled,\n  scheduleHydration,\n  renderSubtreeIntoContainer,\n  unstable_createPortal,\n  createEventHandle\n;\nexport {\n  Internals as __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,\n  createBlockingRoot,\n  createPortal,\n  // exposeConcurrentModeAPIs\n  createRoot,\n  // Disabled behind disableLegacyReactDOMAPIs\n  findDOMNode,\n  flushSync,\n  hydrate,\n  render,\n  unmountComponentAtNode,\n  batchedUpdates as unstable_batchedUpdates,\n  // enableCreateEventHandleAPI\n  createEventHandle as unstable_createEventHandle,\n  // Disabled behind disableUnstableCreatePortal\n  // Temporary alias since we already shipped React 16 RC with it.\n  // Todo: remove in React 18.\n  unstable_createPortal,\n  flushControlled as unstable_flushControlled,\n  // Disabled behind disableUnstableRenderSubtreeIntoContainer\n  renderSubtreeIntoContainer as unstable_renderSubtreeIntoContainer,\n  scheduleHydration as unstable_scheduleHydration,\n  ReactVersion as version,\n};",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* Core */\n\nexport {\n  ApolloClient,\n  ApolloClientOptions,\n  DefaultOptions\n} from '../ApolloClient';\nexport {\n  ObservableQuery,\n  FetchMoreOptions,\n  UpdateQueryOptions,\n  ApolloCurrentQueryResult,\n} from '../core/ObservableQuery';\nexport {\n  QueryBaseOptions,\n  QueryOptions,\n  WatchQueryOptions,\n  MutationOptions,\n  SubscriptionOptions,\n  FetchPolicy,\n  WatchQueryFetchPolicy,\n  ErrorPolicy,\n  FetchMoreQueryOptions,\n  SubscribeToMoreOptions,\n  MutationUpdaterFn,\n} from '../core/watchQueryOptions';\nexport { NetworkStatus } from '../core/networkStatus';\nexport * from '../core/types';\nexport {\n  Resolver,\n  FragmentMatcher as LocalStateFragmentMatcher,\n} from '../core/LocalState';\nexport { isApolloError, ApolloError } from '../errors/ApolloError';\n\n/* Cache */\n\nexport * from '../cache';\n\n/* Link */\n\nexport { empty } from '../link/core/empty';\nexport { from } from '../link/core/from';\nexport { split } from '../link/core/split';\nexport { concat } from '../link/core/concat';\nexport { execute } from '../link/core/execute';\nexport { ApolloLink } from '../link/core/ApolloLink';\nexport * from '../link/core/types';\nexport {\n  parseAndCheckHttpResponse,\n  ServerParseError\n} from '../link/http/parseAndCheckHttpResponse';\nexport {\n  serializeFetchParameter,\n  ClientParseError\n} from '../link/http/serializeFetchParameter';\nexport {\n  HttpOptions,\n  fallbackHttpConfig,\n  selectHttpOptionsAndBody,\n  UriFunction\n} from '../link/http/selectHttpOptionsAndBody';\nexport { checkFetcher } from '../link/http/checkFetcher';\nexport { createSignalIfSupported } from '../link/http/createSignalIfSupported';\nexport { selectURI } from '../link/http/selectURI';\nexport { createHttpLink } from '../link/http/createHttpLink';\nexport { HttpLink } from '../link/http/HttpLink';\nexport { fromError } from '../link/utils/fromError';\nexport { toPromise } from '../link/utils/toPromise';\nexport { fromPromise } from '../link/utils/fromPromise';\nexport { ServerError, throwServerError } from '../link/utils/throwServerError';\nexport {\n  Observable,\n  Observer,\n  ObservableSubscription\n} from '../utilities/observables/Observable';\n\n/* Supporting */\n\n// Note that importing `gql` by itself, then destructuring\n// additional properties separately before exporting, is intentional...\nimport gql from 'graphql-tag';\nexport const {\n  resetCaches,\n  disableFragmentWarnings,\n  enableExperimentalFragmentVariables,\n  disableExperimentalFragmentVariables\n} = gql;\nexport { gql };",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 3,
+          "column": 1,
+          "endLine": 33,
+          "endColumn": 68
+        },
+        {
+          "messageId": "sort",
+          "message": "Run autofix to sort these exports!",
+          "line": 41,
+          "column": 1,
+          "endLine": 75,
+          "endColumn": 46
+        }
+      ],
+      "fixOutput": "/* Core */\n\nexport {\n  ApolloClient,\n  ApolloClientOptions,\n  DefaultOptions\n} from '../ApolloClient';\nexport {\n  FragmentMatcher as LocalStateFragmentMatcher,\n  Resolver,\n} from '../core/LocalState';\nexport { NetworkStatus } from '../core/networkStatus';\nexport {\n  ApolloCurrentQueryResult,\n  FetchMoreOptions,\n  ObservableQuery,\n  UpdateQueryOptions,\n} from '../core/ObservableQuery';\nexport * from '../core/types';\nexport {\n  ErrorPolicy,\n  FetchMoreQueryOptions,\n  FetchPolicy,\n  MutationOptions,\n  MutationUpdaterFn,\n  QueryBaseOptions,\n  QueryOptions,\n  SubscribeToMoreOptions,\n  SubscriptionOptions,\n  WatchQueryFetchPolicy,\n  WatchQueryOptions,\n} from '../core/watchQueryOptions';\nexport { ApolloError,isApolloError } from '../errors/ApolloError';\n\n/* Cache */\n\nexport * from '../cache';\n\n/* Link */\n\nexport { ApolloLink } from '../link/core/ApolloLink';\nexport { concat } from '../link/core/concat';\nexport { empty } from '../link/core/empty';\nexport { execute } from '../link/core/execute';\nexport { from } from '../link/core/from';\nexport { split } from '../link/core/split';\nexport * from '../link/core/types';\nexport { checkFetcher } from '../link/http/checkFetcher';\nexport { createHttpLink } from '../link/http/createHttpLink';\nexport { createSignalIfSupported } from '../link/http/createSignalIfSupported';\nexport { HttpLink } from '../link/http/HttpLink';\nexport {\n  parseAndCheckHttpResponse,\n  ServerParseError\n} from '../link/http/parseAndCheckHttpResponse';\nexport {\n  fallbackHttpConfig,\n  HttpOptions,\n  selectHttpOptionsAndBody,\n  UriFunction\n} from '../link/http/selectHttpOptionsAndBody';\nexport { selectURI } from '../link/http/selectURI';\nexport {\n  ClientParseError,\n  serializeFetchParameter} from '../link/http/serializeFetchParameter';\nexport { fromError } from '../link/utils/fromError';\nexport { fromPromise } from '../link/utils/fromPromise';\nexport { ServerError, throwServerError } from '../link/utils/throwServerError';\nexport { toPromise } from '../link/utils/toPromise';\nexport {\n  Observable,\n  ObservableSubscription,\n  Observer} from '../utilities/observables/Observable';\n\n/* Supporting */\n\n// Note that importing `gql` by itself, then destructuring\n// additional properties separately before exporting, is intentional...\nimport gql from 'graphql-tag';\nexport const {\n  resetCaches,\n  disableFragmentWarnings,\n  enableExperimentalFragmentVariables,\n  disableExperimentalFragmentVariables\n} = gql;\nexport { gql };",
+      "upstreamAssertion": {
+        "style": "count"
+      }
+    }
+  ]
+}

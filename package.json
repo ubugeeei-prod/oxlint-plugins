@@ -47,6 +47,10 @@
     "lint:rust": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
     "lint:rust:layout": "node tools/tasks/check-rust-layout.ts",
     "new": "node tools/tasks/new-port-prompt.ts",
+    "parity:capture": "node tools/parity/capture/run.cjs",
+    "parity:capture:esm": "vitest run --config tools/parity/capture/vitest.config.ts",
+    "parity:check": "node tools/parity/capture/run.cjs eslint-plugin-eslint-comments --check",
+    "parity:drift": "node tools/parity/check-drift.mjs",
     "port:releases": "node tools/tasks/check-upstream-releases.ts",
     "port:rules": "node tools/tasks/enumerate-port-rules.ts",
     "profile": "node tools/tasks/profile.ts",
@@ -62,9 +66,17 @@
     "verify": "pnpm run fmt:rust:check && vp fmt --check && pnpm run typecheck && vp lint && pnpm run lint:rust && pnpm run lint:rust:layout && vp build && vp test && pnpm run test:rust && pnpm run bench:check && pnpm run security:audit && pnpm run license && pnpm run status:check && node tools/tasks/verify-package-publish-ready.ts"
   },
   "devDependencies": {
+    "@babel/core": "7.26.0",
+    "@babel/eslint-parser": "7.25.9",
     "@napi-rs/cli": "catalog:",
     "@types/node": "catalog:",
+    "@typescript-eslint/parser": "8.18.0",
+    "@typescript-eslint/rule-tester": "8.18.0",
     "@typescript/native-preview": "catalog:",
+    "escape-string-regexp": "4.0.0",
+    "eslint": "9.39.4",
+    "ignore": "7.0.5",
+    "semver": "7.6.3",
     "vite-plus": "catalog:",
     "vitest": "catalog:"
   },

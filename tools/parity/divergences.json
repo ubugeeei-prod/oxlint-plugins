@@ -1,0 +1,25 @@
+{
+  "$note": "Known-divergences ledger. Each entry is an explicit, reviewed exception that tells the replay runner which expectations to relax for specific ported rules. An xfail that starts passing should also be cleaned up. Admissible classes: parser-ast-quirk, location-coordinate, core-rule-dependency, harness-directive.",
+  "eslint-plugin-eslint-comments/no-unlimited-disable": {
+    "class": "location-coordinate",
+    "suppressFields": ["column"],
+    "caseScope": "all",
+    "reason": "Upstream reports through utils.toForceLocation(), which sets the start column to a -1 sentinel that ESLint clamps to 0. The oxc port reports the comment's real start column (1 under eslintCompat). Start column is therefore intentionally not asserted; line, endLine, and endColumn still are, and messageId/message must match exactly.",
+    "expires": null,
+    "ledgerReviewedSha": "pending"
+  },
+  "eslint-plugin-simple-import-sort/imports": {
+    "class": "harness-directive",
+    "skipValidWithDisableDirective": true,
+    "reason": "Upstream marks an import block valid when an `eslint-disable*` directive suppresses the sort report. ESLint's RuleTester applies inline disable directives; oxlint's plugin RuleTester does not, so the (identical) report surfaces. The port's rule behavior matches upstream — only the harness's directive suppression differs — so valid cases that are valid solely due to a disable directive are skipped.",
+    "expires": null,
+    "ledgerReviewedSha": "pending"
+  },
+  "eslint-plugin-simple-import-sort/exports": {
+    "class": "harness-directive",
+    "skipValidWithDisableDirective": true,
+    "reason": "Same as eslint-plugin-simple-import-sort/imports: oxlint's RuleTester does not apply inline `eslint-disable*` directives, so a valid case that relies on directive suppression cannot be replayed as valid.",
+    "expires": null,
+    "ledgerReviewedSha": "pending"
+  }
+}

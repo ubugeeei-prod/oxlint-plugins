@@ -1,0 +1,140 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-eslint-comments",
+    "rule": "no-aggregating-enable",
+    "pinnedRef": "v4.7.2",
+    "submoduleSha": "62a2c3a4ee304a8383f170369c9999198d9bdac8",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Toru Nagashima",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "\n            /*eslint-disable no-redeclare*/\n            /*eslint-enable no-redeclare*/\n        ",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n            /*eslint-disable no-redeclare*/\n            /*eslint-enable no-shadow*/\n        ",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n            /*eslint-disable no-redeclare, no-shadow*/\n            /*eslint-enable*/\n        ",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n            /*eslint-disable no-redeclare, no-shadow*/\n            /*eslint-enable no-redeclare, no-shadow*/\n        ",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n            /*eslint-disable no-redeclare, no-shadow*/\n            /*eslint-enable no-redeclare*/\n            /*eslint-enable no-shadow*/\n        ",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n            /*eslint-disable no-redeclare, no-shadow*/\n            /*eslint-enable no-redeclare*/\n            /*eslint-enable no-shadow*/\n            a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n                /*eslint-disable no-redeclare*/\n                /*eslint-disable no-shadow*/\n                /*eslint-enable*/\n            ",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "aggregatingEnable",
+          "message": "This `eslint-enable` comment affects 2 `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment.",
+          "line": 4,
+          "column": 0,
+          "endLine": 4,
+          "endColumn": 34
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n                /*eslint-disable no-redeclare*/\n                /*eslint-disable no-shadow*/\n                /*eslint-disable no-undef*/\n                /*eslint-enable*/\n            ",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "aggregatingEnable",
+          "message": "This `eslint-enable` comment affects 3 `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment.",
+          "line": 5,
+          "column": 0,
+          "endLine": 5,
+          "endColumn": 34
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n                /*eslint-disable no-redeclare*/\n                /*eslint-disable no-shadow*/\n                /*eslint-enable no-redeclare, no-shadow*/\n            ",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "aggregatingEnable",
+          "message": "This `eslint-enable` comment affects 2 `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment.",
+          "line": 4,
+          "column": 0,
+          "endLine": 4,
+          "endColumn": 58
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n                /*eslint-disable no-redeclare*/\n                /*eslint-disable no-shadow*/\n                /*eslint-enable -- description*/\n            ",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "aggregatingEnable",
+          "message": "This `eslint-enable` comment affects 2 `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment.",
+          "line": 4,
+          "column": 0,
+          "endLine": 4,
+          "endColumn": 49
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n                /*eslint-disable no-redeclare*/\n                /*eslint-disable no-shadow*/\n                /*eslint-enable*/\n            a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    }
+  ]
+}

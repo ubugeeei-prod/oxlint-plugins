@@ -1,0 +1,57 @@
+name: Parity
+
+# Drift gate for the upstream parity corpora. Separate from CI/verify because it needs the
+# upstream submodules checked out, whereas verify stays hermetic (committed corpora + built
+# port only). Runs only when parity inputs change.
+
+on:
+  pull_request:
+    paths:
+      - 'tools/parity/**'
+      - 'upstream/**'
+      - '.gitmodules'
+      - 'npm/eslint-comments/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'tools/parity/**'
+      - 'upstream/**'
+      - '.gitmodules'
+      - 'npm/eslint-comments/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: parity-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    name: Corpus drift
+    runs-on: blacksmith-32vcpu-ubuntu-2404
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      # Only the captured submodules are needed; avoid fetching the large ones.
+      - run: |
+          git submodule update --init --depth 1 \
+            upstream/eslint-plugin-eslint-comments \
+            upstream/eslint-plugin-simple-import-sort
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - run: corepack enable
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '24'
+          cache: true
+
+      - run: vp install --frozen-lockfile
+      - run: pnpm run parity:drift

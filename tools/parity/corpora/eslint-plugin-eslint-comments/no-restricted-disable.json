@@ -1,0 +1,619 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-eslint-comments",
+    "rule": "no-restricted-disable",
+    "pinnedRef": "v4.7.2",
+    "submoduleSha": "62a2c3a4ee304a8383f170369c9999198d9bdac8",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Toru Nagashima",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "//eslint-disable-line",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "//eslint-disable-next-line",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable-line*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable-next-line*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable eqeqeq*/",
+      "options": [
+        "no-unused-vars"
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-enable eqeqeq*/",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable eqeqeq*/",
+      "options": [
+        "*",
+        "!eqeqeq"
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable eqeqeq*/ a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable eqeqeq*/",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable*/",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-line eqeqeq",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-line eqeqeq*/",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-line",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-line*/",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-next-line eqeqeq",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 28,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-next-line eqeqeq*/",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 28,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-next-line",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-next-line*/",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable eqeqeq, no-undef, no-redeclare*/",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable*/",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling '*,!no-undef,!no-redeclare' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-line eqeqeq, no-undef, no-redeclare",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-line eqeqeq, no-undef, no-redeclare*/",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-line",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling '*,!no-undef,!no-redeclare' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-line*/",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling '*,!no-undef,!no-redeclare' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-next-line eqeqeq, no-undef, no-redeclare",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 28,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-next-line eqeqeq, no-undef, no-redeclare*/",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 28,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "//eslint-disable-next-line",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling '*,!no-undef,!no-redeclare' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable-next-line*/",
+      "options": [
+        "*",
+        "!no-undef",
+        "!no-redeclare"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling '*,!no-undef,!no-redeclare' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 29
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable semi, no-extra-semi, semi-style, comma-style*/",
+      "options": [
+        "*semi*"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'semi' is not allowed.",
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 22
+        },
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'no-extra-semi' is not allowed.",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 37
+        },
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'semi-style' is not allowed.",
+          "line": 1,
+          "column": 39,
+          "endLine": 1,
+          "endColumn": 49
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable no-undef, no-redeclare, foo/no-undef, foo/no-redeclare*/",
+      "options": [
+        "foo/*"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'foo/no-undef' is not allowed.",
+          "line": 1,
+          "column": 42,
+          "endLine": 1,
+          "endColumn": 54
+        },
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'foo/no-redeclare' is not allowed.",
+          "line": 1,
+          "column": 56,
+          "endLine": 1,
+          "endColumn": 72
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable -- description*/",
+      "options": [
+        "eqeqeq"
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "disallow",
+          "message": "Disabling 'eqeqeq' is not allowed.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 34
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/*eslint-disable eqeqeq*/ a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    }
+  ]
+}

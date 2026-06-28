@@ -1,0 +1,630 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-eslint-comments",
+    "rule": "require-description",
+    "pinnedRef": "v4.7.2",
+    "submoduleSha": "62a2c3a4ee304a8383f170369c9999198d9bdac8",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Toru Nagashima",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "/* eslint eqeqeq: \"off\", curly: \"error\" -- Here's a description about why this configuration is necessary. */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable -- description */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-enable -- description */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* exported -- description */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* global -- description */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* globals -- description */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* just eslint in a normal comment */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-line -- description",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-next-line -- description",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable-line -- description */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable-next-line -- description */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-line eqeqeq -- description",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-next-line eqeqeq -- description",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint */",
+      "options": [
+        {
+          "ignore": [
+            "eslint"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-enable */",
+      "options": [
+        {
+          "ignore": [
+            "eslint-enable"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable */",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-line",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable-line"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "// eslint-disable-next-line",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable-next-line"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable-line */",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable-line"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable-next-line */",
+      "options": [
+        {
+          "ignore": [
+            "eslint-disable-next-line"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* exported */",
+      "options": [
+        {
+          "ignore": [
+            "exported"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* global */",
+      "options": [
+        {
+          "ignore": [
+            "global"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* globals */",
+      "options": [
+        {
+          "ignore": [
+            "globals"
+          ]
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/* eslint-disable */ a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint eqeqeq: \"off\", curly: \"error\" */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 43
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-enable */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 20
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-enable eqeqeq */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable eqeqeq */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// eslint-disable-line",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// eslint-disable-line eqeqeq",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 30
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// eslint-disable-next-line",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "// eslint-disable-next-line eqeqeq",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable-line */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable-line eqeqeq */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable-next-line */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 31
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable-next-line eqeqeq */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 38
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* exported */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* global */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* global _ */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* globals */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* globals _ */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable-next-line eqeqeq -- */",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingDescription",
+          "message": "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
+          "line": 1,
+          "column": 0,
+          "endLine": 1,
+          "endColumn": 41
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "plain-string"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable */ a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    }
+  ]
+}

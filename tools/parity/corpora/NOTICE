@@ -1,0 +1,24 @@
+Parity corpora — upstream attribution
+======================================
+
+The JSON files under tools/parity/corpora/ are test fixtures converted/derived from the
+upstream ESLint plugins' own test suites, by executing the upstream rule as an oracle (see
+docs/guides/parity-testing.md). They remain under their upstream licenses; this repository's
+MIT license does not relicense them. Per-corpus provenance is also embedded in each file.
+
+eslint-plugin-eslint-comments
+  Source:    https://github.com/eslint-community/eslint-plugin-eslint-comments
+  License:   MIT
+  Copyright: Toru Nagashima and eslint-community contributors
+  Pinned:    v4.7.2 (62a2c3a4ee30)
+  Derived:   valid/invalid cases and oracle-materialized diagnostics converted from
+             tests/lib/rules/*.js.
+
+eslint-plugin-simple-import-sort
+  Source:    https://github.com/lydell/eslint-plugin-simple-import-sort
+  License:   MIT
+  Copyright: Simon Lydell
+  Pinned:    v13.0.0 (90078e7fce90)
+  Derived:   JavaScript-parser valid/invalid cases and oracle-materialized diagnostics +
+             applied-fix output converted from test/imports.test.js and test/exports.test.js
+             (Flow and TypeScript parser runs are out of scope and not captured).

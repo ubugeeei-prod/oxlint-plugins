@@ -1,0 +1,336 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-eslint-comments",
+    "rule": "disable-enable-pair",
+    "pinnedRef": "v4.7.2",
+    "submoduleSha": "62a2c3a4ee304a8383f170369c9999198d9bdac8",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Toru Nagashima",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable*/\n/*eslint-enable*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef,no-unused-vars*/\n/*eslint-enable no-undef,no-unused-vars*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef,no-unused-vars*/\n/*eslint-enable*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "//eslint-disable-line",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "//eslint-disable-next-line",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable-line*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint-disable-next-line*/",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "/*eslint no-undef: off */",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\nfunction foo() {\n    /*eslint-disable*/\n    /*eslint-enable*/\n}\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable no-unused-vars*/\n/*eslint-enable*/\n/*eslint-enable*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\nconsole.log('This code does not even have any special comments')\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable no-unused-vars*/\n/*eslint-enable*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n\n/**\n * @file This test case makes sure comments and blank lines\n * before \"whole-file\" eslint-disable are allowed.\n */\n\n/*eslint-disable*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-unused-vars, no-undef */\nvar foo = 1\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef -- description*/\n/*eslint-enable no-undef*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef,no-unused-vars -- description*/\n/*eslint-enable no-undef,no-unused-vars*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-enable no-undef*/\na {}\n",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable*/\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingPair",
+          "message": "Requires 'eslint-enable' directive.",
+          "line": 2,
+          "column": 0,
+          "endLine": 2,
+          "endColumn": 19
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable no-undef*/\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingRulePair",
+          "message": "Requires 'eslint-enable' directive for 'no-undef'.",
+          "line": 2,
+          "column": 18,
+          "endLine": 2,
+          "endColumn": 26
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable no-undef,no-unused-vars*/\n/*eslint-enable no-undef*/\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingRulePair",
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 2,
+          "column": 27,
+          "endLine": 2,
+          "endColumn": 41
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable no-unused-vars*/\n/*eslint-enable no-unused-vars*/\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "missingRulePair",
+          "message": "Requires 'eslint-enable' directive for 'no-undef'.",
+          "line": 2,
+          "column": 18,
+          "endLine": 2,
+          "endColumn": 26
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable no-undef*/\nconsole.log();\n/*eslint-disable no-unused-vars*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "missingRulePair",
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 4,
+          "column": 18,
+          "endLine": 4,
+          "endColumn": 32
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\nconsole.log();\n/*eslint-disable no-unused-vars*/\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "missingRulePair",
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 3,
+          "column": 18,
+          "endLine": 3,
+          "endColumn": 32
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n{\n/*eslint-disable no-unused-vars*/\n}\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "missingRulePair",
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 3,
+          "column": 18,
+          "endLine": 3,
+          "endColumn": 32
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n{\n/*eslint-disable no-unused-vars -- description */\n}\n",
+      "options": [
+        {
+          "allowWholeFile": true
+        }
+      ],
+      "expectedErrors": [
+        {
+          "messageId": "missingRulePair",
+          "message": "Requires 'eslint-enable' directive for 'no-unused-vars'.",
+          "line": 3,
+          "column": 18,
+          "endLine": 3,
+          "endColumn": 32
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "/* eslint-disable no-unused-vars */ a {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    }
+  ]
+}

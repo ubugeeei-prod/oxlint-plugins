@@ -26,5 +26,77 @@
         "notes": "Scaffold rule used to prove the Rust/NAPI/Oxlint plugin shape."
       }
     ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-eslint-comments",
+    "directory": "npm/eslint-comments",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": "eslint-plugin-eslint-comments",
+    "status": "in-progress",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "no-unlimited-disable",
+        "status": "in-progress",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pure-JS port. Parity-replayed against the captured upstream corpus (tools/parity)."
+      }
+    ]
+  },
+  {
+    "packageName": "@oxlint-plugins/oxlint-plugin-simple-import-sort",
+    "directory": "npm/simple-import-sort",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": "eslint-plugin-simple-import-sort",
+    "status": "in-progress",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "imports",
+        "status": "in-progress",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pure-JS faithful port. Byte-exact autofix parity on the captured corpus; 1 directive-suppressed valid case ledgered."
+      },
+      {
+        "name": "exports",
+        "status": "in-progress",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pure-JS faithful port. Byte-exact autofix parity on the captured corpus; 1 directive-suppressed valid case ledgered."
+      }
+    ]
   }
 ]

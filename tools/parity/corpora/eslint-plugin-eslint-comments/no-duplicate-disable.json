@@ -1,0 +1,190 @@
+{
+  "corpusVersion": 1,
+  "provenance": {
+    "plugin": "eslint-plugin-eslint-comments",
+    "rule": "no-duplicate-disable",
+    "pinnedRef": "v4.7.2",
+    "submoduleSha": "62a2c3a4ee304a8383f170369c9999198d9bdac8",
+    "eslintVersion": "9.39.4",
+    "license": "MIT",
+    "copyright": "Toru Nagashima",
+    "note": "Test fixtures converted/derived from upstream; see tools/parity/corpora/NOTICE."
+  },
+  "cases": [
+    {
+      "kind": "valid",
+      "code": "\n//eslint-disable-line\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable-line*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef*/\n//eslint-disable-line no-unused-vars\n//eslint-disable-next-line semi\n/*eslint-disable eqeqeq*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable-line no-unused-vars*/\n/*eslint-disable-next-line semi*/\n/*eslint-disable eqeqeq*/\n",
+      "options": [],
+      "expectedErrors": [],
+      "fixOutput": null
+    },
+    {
+      "kind": "valid",
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable-line no-unused-vars*/\n/*eslint-disable-next-line semi*/\n/*eslint-disable eqeqeq*/\na {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable no-undef*/\n//eslint-disable-line no-undef\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "duplicateRule",
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 23,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable-line no-undef*/\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "duplicateRule",
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 23,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable no-undef*/\n//eslint-disable-next-line no-undef\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "duplicateRule",
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 28,
+          "endLine": 3,
+          "endColumn": 36
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable no-undef*/\n/*eslint-disable-next-line no-undef*/\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "duplicateRule",
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 28,
+          "endLine": 3,
+          "endColumn": 36
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n//eslint-disable-next-line no-undef\n//eslint-disable-line no-undef\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "duplicateRule",
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 23,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/*eslint-disable-next-line no-undef*/\n/*eslint-disable-line no-undef*/\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "duplicateRule",
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 23,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n// eslint-disable-next-line no-undef -- description\n// eslint-disable-line no-undef -- description\n",
+      "options": [],
+      "expectedErrors": [
+        {
+          "messageId": "duplicateRule",
+          "message": "'no-undef' rule has been disabled already.",
+          "line": 3,
+          "column": 24,
+          "endLine": 3,
+          "endColumn": 32
+        }
+      ],
+      "fixOutput": null,
+      "upstreamAssertion": {
+        "style": "location"
+      }
+    },
+    {
+      "kind": "invalid",
+      "code": "\n/* eslint-disable-next-line no-undef */\n/* eslint-disable-line no-undef */\na {}",
+      "outOfScope": {
+        "reason": "non-JS language: css/css"
+      }
+    }
+  ]
+}

@@ -36,6 +36,9 @@ export default defineConfig({
       'upstream/**',
       'npm/**/native.js',
       'npm/**/native.d.ts',
+      // Machine-generated parity ground truth; must stay byte-stable for the drift gate.
+      'tools/parity/corpora/**',
+      '.playwright-mcp/**',
     ],
     singleQuote: true,
     semi: true,
@@ -53,6 +56,8 @@ export default defineConfig({
       'upstream/**',
       'npm/**/native.js',
       'npm/**/native.d.ts',
+      'tools/parity/corpora/**',
+      '.playwright-mcp/**',
     ],
     options: {
       typeAware: true,
@@ -60,7 +65,13 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['npm/**/*.test.ts', 'npm/**/*.test.mjs', 'test/**/*.test.mjs', 'tools/**/*.test.ts'],
+    include: [
+      'npm/**/*.test.ts',
+      'npm/**/*.test.mjs',
+      'test/**/*.test.mjs',
+      'tools/**/*.test.ts',
+      'tools/**/*.test.mjs',
+    ],
     setupFiles: ['test/setup.mjs'],
     testTimeout: 120_000,
   },
