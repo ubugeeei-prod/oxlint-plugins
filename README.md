@@ -12,7 +12,7 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 
 <!-- This section is generated from `status.json` by `tools/tasks/generate-readme-coverage.ts`. Do not edit by hand; run `pnpm run docs:readme`. -->
 
-**26** ESLint plugins are being ported · **772 / 1159** rules implemented (**67%**).
+**25** ESLint plugins are being ported · **770 / 972** rules implemented (**79%**).
 
 | Plugin                                                     | Upstream                                                                                                               | Implemented | Total | Coverage |
 | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- | ----- | -------- |
@@ -29,9 +29,8 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 | [`perfectionist`](npm/perfectionist)                       | [`eslint-plugin-perfectionist`](https://github.com/azat-io/eslint-plugin-perfectionist)                                | 23          | 23    | 100%     |
 | [`playwright`](npm/playwright)                             | [`eslint-plugin-playwright`](https://github.com/mskelton/eslint-plugin-playwright)                                     | 58          | 58    | 100%     |
 | [`postgresql`](npm/postgresql)                             | [`eslint-plugin-postgresql`](https://github.com/baseballyama/eslint-plugin-postgresql)                                 | 89          | 89    | 100%     |
-| [`react`](npm/react)                                       | [`eslint-plugin-react`](https://github.com/jsx-eslint/eslint-plugin-react)                                             | 0           | 103   | 0%       |
-| [`react-hooks`](npm/react-hooks)                           | [`eslint-plugin-react-hooks`](https://github.com/facebook/react)                                                       | 1           | 29    | 3%       |
-| [`react-refresh`](npm/react-refresh)                       | [`eslint-plugin-react-refresh`](https://github.com/ArnaudBarre/eslint-plugin-react-refresh)                            | 1           | 1     | 100%     |
+| [`react`](npm/react)                                       | [`eslint-plugin-react`](https://github.com/jsx-eslint/eslint-plugin-react)                                             | 0           | 46    | 0%       |
+| [`react-hooks`](npm/react-hooks)                           | [`eslint-plugin-react-hooks`](https://github.com/facebook/react)                                                       | 0           | 27    | 0%       |
 | [`regexp`](npm/regexp)                                     | [`eslint-plugin-regexp`](https://github.com/ota-meshi/eslint-plugin-regexp)                                            | 82          | 82    | 100%     |
 | [`security`](npm/security)                                 | [`eslint-plugin-security`](https://github.com/eslint-community/eslint-plugin-security)                                 | 14          | 14    | 100%     |
 | [`simple-import-sort`](npm/simple-import-sort)             | [`eslint-plugin-simple-import-sort`](https://github.com/lydell/eslint-plugin-simple-import-sort)                       | 2           | 2     | 100%     |
@@ -39,7 +38,7 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 | [`storybook`](npm/storybook)                               | [`eslint-plugin-storybook`](https://github.com/storybookjs/storybook)                                                  | 16          | 16    | 100%     |
 | [`stylistic`](npm/stylistic)                               | [`corsa-oxlint/stylistic`](https://github.com/ubugeeei-prod/corsa-bind)                                                | 50          | 98    | 51%      |
 | [`testing-library`](npm/testing-library)                   | [`eslint-plugin-testing-library`](https://github.com/testing-library/eslint-plugin-testing-library)                    | 29          | 29    | 100%     |
-| [`typescript-eslint`](npm/typescript-eslint)               | [`@typescript-eslint/eslint-plugin`](https://github.com/typescript-eslint/typescript-eslint)                           | 0           | 134   | 0%       |
+| [`typescript-eslint`](npm/typescript-eslint)               | [`@typescript-eslint/eslint-plugin`](https://github.com/typescript-eslint/typescript-eslint)                           | 0           | 7     | 0%       |
 | [`unocss`](npm/unocss)                                     | [`@unocss/eslint-plugin`](https://github.com/unocss/unocss)                                                            | 4           | 4     | 100%     |
 | [`unused-imports`](npm/unused-imports)                     | [`eslint-plugin-unused-imports`](https://github.com/sweepline/eslint-plugin-unused-imports)                            | 2           | 2     | 100%     |
 
@@ -122,23 +121,15 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 
 </details>
 <details>
-<summary><code>react</code> — 0/103 implemented</summary>
+<summary><code>react</code> — 0/46 implemented</summary>
 
-**Not implemented (103):** `boolean-prop-naming`, `button-has-type`, `checked-requires-onchange-or-readonly`, `default-props-match-prop-types`, `destructuring-assignment`, `display-name`, `forbid-component-props`, `forbid-dom-props`, `forbid-elements`, `forbid-foreign-prop-types`, `forbid-prop-types`, `forward-ref-uses-ref`, `function-component-definition`, `hook-use-state`, `iframe-missing-sandbox`, `jsx-boolean-value`, `jsx-child-element-spacing`, `jsx-closing-bracket-location`, `jsx-closing-tag-location`, `jsx-curly-brace-presence`, `jsx-curly-newline`, `jsx-curly-spacing`, `jsx-equals-spacing`, `jsx-filename-extension`, `jsx-first-prop-new-line`, `jsx-fragments`, `jsx-handler-names`, `jsx-indent`, `jsx-indent-props`, `jsx-key`, `jsx-max-depth`, `jsx-max-props-per-line`, `jsx-newline`, `jsx-no-bind`, `jsx-no-comment-textnodes`, `jsx-no-constructed-context-values`, `jsx-no-duplicate-props`, `jsx-no-leaked-render`, `jsx-no-literals`, `jsx-no-script-url`, `jsx-no-target-blank`, `jsx-no-undef`, `jsx-no-useless-fragment`, `jsx-one-expression-per-line`, `jsx-pascal-case`, `jsx-props-no-multi-spaces`, `jsx-props-no-spread-multi`, `jsx-props-no-spreading`, `jsx-sort-default-props`, `jsx-sort-props`, `jsx-space-before-closing`, `jsx-tag-spacing`, `jsx-uses-react`, `jsx-uses-vars`, `jsx-wrap-multilines`, `no-access-state-in-setstate`, `no-adjacent-inline-elements`, `no-array-index-key`, `no-arrow-function-lifecycle`, `no-children-prop`, `no-danger`, `no-danger-with-children`, `no-deprecated`, `no-did-mount-set-state`, `no-did-update-set-state`, `no-direct-mutation-state`, `no-find-dom-node`, `no-invalid-html-attribute`, `no-is-mounted`, `no-multi-comp`, `no-namespace`, `no-object-type-as-default-prop`, `no-redundant-should-component-update`, `no-render-return-value`, `no-set-state`, `no-string-refs`, `no-this-in-sfc`, `no-typos`, `no-unescaped-entities`, `no-unknown-property`, `no-unsafe`, `no-unstable-nested-components`, `no-unused-class-component-methods`, `no-unused-prop-types`, `no-unused-state`, `no-will-update-set-state`, `prefer-es6-class`, `prefer-exact-props`, `prefer-read-only-props`, `prefer-stateless-function`, `prop-types`, `react-in-jsx-scope`, `require-default-props`, `require-optimization`, `require-render-return`, `self-closing-comp`, `sort-comp`, `sort-default-props`, `sort-prop-types`, `state-in-constructor`, `static-property-placement`, `style-prop-object`, `void-dom-elements-no-children`
-
-</details>
-<details>
-<summary><code>react-hooks</code> — 1/29 implemented</summary>
-
-**Implemented (1):** `rules-of-hooks`
-
-**Not implemented (28):** `capitalized-calls`, `component-hook-factories`, `config`, `error-boundaries`, `exhaustive-deps`, `exhaustive-effect-dependencies`, `fbt`, `gating`, `globals`, `hooks`, `immutability`, `incompatible-library`, `invariant`, `memo-dependencies`, `memoized-effect-dependencies`, `no-deriving-state-in-effects`, `preserve-manual-memoization`, `purity`, `refs`, `rule-suppression`, `set-state-in-effect`, `set-state-in-render`, `static-components`, `syntax`, `todo`, `unsupported-syntax`, `use-memo`, `void-use-memo`
+**Not implemented (46):** `boolean-prop-naming`, `default-props-match-prop-types`, `destructuring-assignment`, `forbid-foreign-prop-types`, `forbid-prop-types`, `function-component-definition`, `jsx-child-element-spacing`, `jsx-closing-bracket-location`, `jsx-closing-tag-location`, `jsx-curly-newline`, `jsx-curly-spacing`, `jsx-equals-spacing`, `jsx-first-prop-new-line`, `jsx-indent`, `jsx-indent-props`, `jsx-max-props-per-line`, `jsx-newline`, `jsx-no-bind`, `jsx-no-leaked-render`, `jsx-no-literals`, `jsx-one-expression-per-line`, `jsx-props-no-multi-spaces`, `jsx-sort-default-props`, `jsx-sort-props`, `jsx-space-before-closing`, `jsx-tag-spacing`, `jsx-uses-react`, `jsx-uses-vars`, `jsx-wrap-multilines`, `no-access-state-in-setstate`, `no-adjacent-inline-elements`, `no-arrow-function-lifecycle`, `no-invalid-html-attribute`, `no-unused-class-component-methods`, `no-unused-prop-types`, `no-unused-state`, `prefer-exact-props`, `prefer-read-only-props`, `prefer-stateless-function`, `prop-types`, `require-default-props`, `require-optimization`, `sort-comp`, `sort-default-props`, `sort-prop-types`, `static-property-placement`
 
 </details>
 <details>
-<summary><code>react-refresh</code> — 1/1 implemented</summary>
+<summary><code>react-hooks</code> — 0/27 implemented</summary>
 
-**Implemented (1):** `only-export-components`
+**Not implemented (27):** `capitalized-calls`, `component-hook-factories`, `config`, `error-boundaries`, `exhaustive-effect-dependencies`, `fbt`, `gating`, `globals`, `hooks`, `immutability`, `incompatible-library`, `invariant`, `memo-dependencies`, `memoized-effect-dependencies`, `no-deriving-state-in-effects`, `preserve-manual-memoization`, `purity`, `refs`, `rule-suppression`, `set-state-in-effect`, `set-state-in-render`, `static-components`, `syntax`, `todo`, `unsupported-syntax`, `use-memo`, `void-use-memo`
 
 </details>
 <details>
@@ -188,9 +179,9 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 
 </details>
 <details>
-<summary><code>typescript-eslint</code> — 0/134 implemented</summary>
+<summary><code>typescript-eslint</code> — 0/7 implemented</summary>
 
-**Not implemented (134):** `adjacent-overload-signatures`, `array-type`, `await-thenable`, `ban-ts-comment`, `ban-tslint-comment`, `class-literal-property-style`, `class-methods-use-this`, `consistent-generic-constructors`, `consistent-indexed-object-style`, `consistent-return`, `consistent-type-assertions`, `consistent-type-definitions`, `consistent-type-exports`, `consistent-type-imports`, `default-param-last`, `dot-notation`, `explicit-function-return-type`, `explicit-member-accessibility`, `explicit-module-boundary-types`, `init-declarations`, `max-params`, `member-ordering`, `method-signature-style`, `naming-convention`, `no-array-constructor`, `no-array-delete`, `no-base-to-string`, `no-confusing-non-null-assertion`, `no-confusing-void-expression`, `no-deprecated`, `no-dupe-class-members`, `no-duplicate-enum-values`, `no-duplicate-type-constituents`, `no-dynamic-delete`, `no-empty-function`, `no-empty-interface`, `no-empty-object-type`, `no-explicit-any`, `no-extra-non-null-assertion`, `no-extraneous-class`, `no-floating-promises`, `no-for-in-array`, `no-implied-eval`, `no-import-type-side-effects`, `no-inferrable-types`, `no-invalid-this`, `no-invalid-void-type`, `no-loop-func`, `no-loss-of-precision`, `no-magic-numbers`, `no-meaningless-void-operator`, `no-misused-new`, `no-misused-promises`, `no-misused-spread`, `no-mixed-enums`, `no-namespace`, `no-non-null-asserted-nullish-coalescing`, `no-non-null-asserted-optional-chain`, `no-non-null-assertion`, `no-redeclare`, `no-redundant-type-constituents`, `no-require-imports`, `no-restricted-imports`, `no-restricted-types`, `no-shadow`, `no-this-alias`, `no-type-alias`, `no-unnecessary-boolean-literal-compare`, `no-unnecessary-condition`, `no-unnecessary-parameter-property-assignment`, `no-unnecessary-qualifier`, `no-unnecessary-template-expression`, `no-unnecessary-type-arguments`, `no-unnecessary-type-assertion`, `no-unnecessary-type-constraint`, `no-unnecessary-type-conversion`, `no-unnecessary-type-parameters`, `no-unsafe-argument`, `no-unsafe-assignment`, `no-unsafe-call`, `no-unsafe-declaration-merging`, `no-unsafe-enum-comparison`, `no-unsafe-function-type`, `no-unsafe-member-access`, `no-unsafe-return`, `no-unsafe-type-assertion`, `no-unsafe-unary-minus`, `no-unused-expressions`, `no-unused-private-class-members`, `no-unused-vars`, `no-use-before-define`, `no-useless-constructor`, `no-useless-default-assignment`, `no-useless-empty-export`, `no-var-requires`, `no-wrapper-object-types`, `non-nullable-type-assertion-style`, `only-throw-error`, `parameter-properties`, `prefer-as-const`, `prefer-destructuring`, `prefer-enum-initializers`, `prefer-find`, `prefer-for-of`, `prefer-function-type`, `prefer-includes`, `prefer-literal-enum-member`, `prefer-namespace-keyword`, `prefer-nullish-coalescing`, `prefer-optional-chain`, `prefer-promise-reject-errors`, `prefer-readonly`, `prefer-readonly-parameter-types`, `prefer-reduce-type-parameter`, `prefer-regexp-exec`, `prefer-return-this-type`, `prefer-string-starts-ends-with`, `prefer-ts-expect-error`, `promise-function-async`, `related-getter-setter-pairs`, `require-array-sort-compare`, `require-await`, `restrict-plus-operands`, `restrict-template-expressions`, `return-await`, `sort-type-constituents`, `strict-boolean-expressions`, `strict-void-return`, `switch-exhaustiveness-check`, `triple-slash-reference`, `typedef`, `unbound-method`, `unified-signatures`, `use-unknown-in-catch-callback-variable`
+**Not implemented (7):** `member-ordering`, `method-signature-style`, `naming-convention`, `no-invalid-this`, `no-type-alias`, `sort-type-constituents`, `typedef`
 
 </details>
 <details>
@@ -247,6 +238,8 @@ vp run release patch
 
 `tools/port-targets.json` lists the ESLint plugins that Oxlint does not yet support natively (`eslint-plugin-svelte` is excluded; it is handled by [rsvelte](https://github.com/baseballyama/rsvelte), and `eslint-plugin-vue` is excluded; it is handled by [vize](https://vizejs.dev/)). Their sources are vendored under `upstream/` as submodules.
 
+Plugins Oxlint already covers through its native `react` and `typescript` plugins are not ported wholesale: `eslint-plugin-react-refresh` is fully covered by `react/only-export-components` and is therefore not a port target, while `eslint-plugin-react`, `eslint-plugin-react-hooks`, and `@typescript-eslint/eslint-plugin` are trimmed to only the rules Oxlint does not implement. The covered rule names are recorded per plugin in each entry's `oxlintCovered` list in `tools/port-targets.json` and excluded from the generated inventory.
+
 ```sh
 git submodule update --init --depth 1   # fetch upstream sources
 pnpm run port:rules                      # regenerate docs/port-targets/*
@@ -255,7 +248,7 @@ pnpm run port:status                     # sync upstream rules into status.json 
 
 `pnpm run port:rules` enumerates every rule of each target straight from its submodule and fails if a plugin's rule count drifts from the manifest, so the porting backlog stays complete. See `docs/port-targets/README.md` for the generated inventory.
 
-`pnpm run port:status` reads that inventory and ensures every upstream rule of every port target is listed in `status.json`. Rules that have not been ported yet are added with `status: "pending"` and zeroed test flags; existing entries are preserved verbatim. New plugins (e.g. `react`, `typescript-eslint`, `sonarjs`, `postgresql`, `angular-eslint-template`) are bootstrapped with a scaffold `npm/<plugin>/package.json` so the entire 1157-rule backlog is visible and parallelizable across contributors.
+`pnpm run port:status` reads that inventory and ensures every upstream rule of every port target is listed in `status.json`. Rules that have not been ported yet are added with `status: "pending"` and zeroed test flags; existing entries are preserved verbatim. New plugins (e.g. `sonarjs`, `postgresql`, `angular-eslint-template`) are bootstrapped with a scaffold `npm/<plugin>/package.json` so the entire backlog is visible and parallelizable across contributors.
 
 ## Sample Plugin
 
