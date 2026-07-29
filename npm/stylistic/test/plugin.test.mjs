@@ -59,6 +59,12 @@ const stylisticRuleFixtures = [
     ['unexpectedSpaceAfter', 'unexpectedSpaceBefore'],
   ],
   ['array-element-newline', 'const a = [1, 2];\n', [], ['missingLineBreak']],
+  [
+    'object-curly-newline',
+    'const value = {first, second};\n',
+    ['always'],
+    ['expectedLinebreakAfterOpeningBrace', 'expectedLinebreakBeforeClosingBrace'],
+  ],
   ['computed-property-spacing', 'a[ 0 ];\n', [], ['unexpectedSpaceAfter', 'unexpectedSpaceBefore']],
   ['block-spacing', 'function f() {g();}\n', [], ['missing', 'missing']],
   ['padded-blocks', 'if (x) {\n  y();\n}\n', [], ['missingPadBlock', 'missingPadBlock']],
@@ -322,6 +328,16 @@ describe('stylistic plugin', () => {
     expect(plugin.rules['array-element-newline'].meta.messages).toEqual({
       missingLineBreak: 'There should be a linebreak after this element.',
       unexpectedLineBreak: 'There should be no linebreak here.',
+    });
+  });
+
+  it('exposes the complete object-curly-newline message catalog', () => {
+    expect(plugin.rules['object-curly-newline'].meta.fixable).toBe('whitespace');
+    expect(plugin.rules['object-curly-newline'].meta.messages).toEqual({
+      unexpectedLinebreakBeforeClosingBrace: 'Unexpected line break before this closing brace.',
+      unexpectedLinebreakAfterOpeningBrace: 'Unexpected line break after this opening brace.',
+      expectedLinebreakBeforeClosingBrace: 'Expected a line break before this closing brace.',
+      expectedLinebreakAfterOpeningBrace: 'Expected a line break after this opening brace.',
     });
   });
 
@@ -2354,6 +2370,71 @@ const parenthesized = (a + b) * c;
       expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
         'There should be a linebreak after this element.',
         'There should be a linebreak after this element.',
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs object-curly-newline through oxlint jsPlugins on TypeScript and TSX', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-object-curly-newline-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(
+        sourcePath,
+        [
+          'type Shape = { first: string; second: number };',
+          'export const View = () => <Panel value={{ first, second }} />;',
+          '',
+        ].join('\n'),
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/object-curly-newline': [
+              'error',
+              {
+                ObjectExpression: 'always',
+                TSTypeLiteral: 'always',
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(object-curly-newline)',
+        'stylistic(object-curly-newline)',
+        'stylistic(object-curly-newline)',
+        'stylistic(object-curly-newline)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Expected a line break after this opening brace.',
+        'Expected a line break before this closing brace.',
+        'Expected a line break after this opening brace.',
+        'Expected a line break before this closing brace.',
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
