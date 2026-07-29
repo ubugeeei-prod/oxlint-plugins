@@ -475,6 +475,24 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the complete padding-line-between-statements metadata contract', () => {
+    expect(plugin.rules['padding-line-between-statements'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Require or disallow padding lines between statements',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        unexpectedBlankLine: 'Unexpected blank line before this statement.',
+        expectedBlankLine: 'Expected blank line before this statement.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

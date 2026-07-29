@@ -39,6 +39,9 @@ describe('stylistic native API', () => {
       'function-call-argument-newline',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('function-paren-newline');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'padding-line-between-statements',
+    );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('member-delimiter-style');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('indent-binary-ops');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
@@ -1352,6 +1355,64 @@ describe('stylistic native API', () => {
       },
     ]);
   });
+  it('runs padding-line-between-statements with exact UTF-8 ranges and insertion fixes', () => {
+    const source = 'const 日本語 = 1;\nuse();';
+    const statementStart = Buffer.byteLength('const 日本語 = 1;\n');
+    const statementEnd = Buffer.byteLength(source);
+    const insertAt = Buffer.byteLength('const 日本語 = 1;');
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [
+        {
+          name: 'padding-line-between-statements',
+          options: [{ blankLine: 'always', prev: 'const', next: '*' }],
+        },
+      ],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'padding-line-between-statements',
+        messageId: 'expectedBlankLine',
+        message: 'Expected blank line before this statement.',
+        range: { start: statementStart, end: statementEnd },
+        suggestions: [
+          {
+            messageId: 'expectedBlankLine',
+            message: 'Expected blank line before this statement.',
+            fixes: [
+              {
+                range: { start: insertAt, end: insertAt },
+                replacementText: '\n',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('does not offer an unsafe padding removal across two comment-separated sequences', () => {
+    const diagnostics = runNativeStylisticLint('foo();\n\n// preserve\n\nbar();', {
+      filename: 'fixture.js',
+      rules: [
+        {
+          name: 'padding-line-between-statements',
+          options: [{ blankLine: 'never', prev: '*', next: '*' }],
+        },
+      ],
+    });
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'padding-line-between-statements',
+        messageId: 'unexpectedBlankLine',
+        message: 'Unexpected blank line before this statement.',
+      },
+    ]);
+    expect(diagnostics[0].suggestions).toBeUndefined();
+  });
+
   it('runs wrap-iife with exact UTF-8 byte ranges and code fixes', () => {
     const source = "const 日本語 = function () { return '😀'; }();";
     const callStart = Buffer.byteLength(source.slice(0, source.indexOf('function')));

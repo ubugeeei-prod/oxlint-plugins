@@ -15279,19 +15279,19 @@
       },
       {
         "name": "padding-line-between-statements",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule padding-line-between-statements."
+        "notes": "Oxc AST-backed native Rust port of @stylistic/padding-line-between-statements v5.10.0. The deterministic pinned synchronizer, Rust, and Vitest suites replay all 419 valid and 323 invalid JavaScript and TypeScript upstream cases with 339 exact diagnostics, locations, first-pass fixes, and converged outputs; additional coverage exercises unfixable comment-separated padding, UTF-8 ranges, API/meta/plugin surfaces, and real Oxlint."
       },
       {
         "name": "semi",
