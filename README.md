@@ -12,7 +12,7 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 
 <!-- This section is generated from `status.json` by `tools/tasks/generate-readme-coverage.ts`. Do not edit by hand; run `pnpm run docs:readme`. -->
 
-**25** ESLint plugins are being ported · **792 / 981** rules implemented (**81%**).
+**25** ESLint plugins are being ported · **793 / 981** rules implemented (**81%**).
 
 | Plugin                                                     | Upstream                                                                                                               | Implemented | Total | Coverage |
 | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- | ----- | -------- |
