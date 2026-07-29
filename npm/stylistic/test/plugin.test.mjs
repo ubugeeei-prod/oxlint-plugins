@@ -142,6 +142,7 @@ const stylisticRuleFixtures = [
     ['always'],
     ['expectedLinebreakAfterOpeningBrace', 'expectedLinebreakBeforeClosingBrace'],
   ],
+  ['no-extra-parens', 'const value = (answer);\n', [], ['unexpected']],
   ['newline-per-chained-call', 'first().second().third();\n', [], ['expected']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
@@ -351,9 +352,10 @@ describe('stylistic plugin', () => {
     ).toEqual([...plugin.implementedStylisticRuleNames].sort((a, b) => a.localeCompare(b)));
   });
 
-  it('preserves upstream code-fix metadata for no-confusing-arrow', () => {
+  it('preserves upstream code-fix metadata', () => {
     expect(plugin.rules['no-confusing-arrow'].meta.fixable).toBe('code');
     expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
+    expect(plugin.rules['no-extra-parens'].meta.fixable).toBe('code');
     expect(plugin.rules['arrow-spacing'].meta.fixable).toBe('whitespace');
   });
 
@@ -678,6 +680,50 @@ describe('stylistic plugin', () => {
     });
     expect(messageIds(reports)).toEqual(['confusing']);
     expect(reports[0].suggest).toBeUndefined();
+  });
+
+  it('maps no-extra-parens ranges and paired fixes across Unicode source', () => {
+    const sourceText = 'const 名 = ((value));\n';
+    const reports = runRule('no-extra-parens', sourceText, []);
+
+    expect(reports).toHaveLength(1);
+    expect(reports[0]).toMatchObject({
+      messageId: 'unexpected',
+      node: { range: [11, 12] },
+    });
+    expect(reportFixes(reports[0])).toEqual([
+      { range: [11, 12], text: '' },
+      { range: [17, 18], text: '' },
+    ]);
+    expect(mergedReportFix(reports[0], sourceText)).toEqual({
+      range: [11, 18],
+      text: 'value',
+    });
+  });
+
+  it('honors no-extra-parens functions and JSX options through shared settings', () => {
+    const settings = (options) => ({
+      corsaStylistic: {
+        rules: {
+          'no-extra-parens': options,
+        },
+      },
+    });
+
+    expect(runRule('no-extra-parens', '(value)', [], settings(['functions']))).toEqual([]);
+    expect(
+      messageIds(
+        runRule('no-extra-parens', 'const value = (function () {});', [], settings(['functions'])),
+      ),
+    ).toEqual(['unexpected']);
+    expect(
+      runRule(
+        'no-extra-parens',
+        'const view = (<Panel />);',
+        [],
+        settings(['all', { ignoreJSX: 'all' }]),
+      ),
+    ).toEqual([]);
   });
 
   it('honors line-comment-position options and ignore patterns', () => {
@@ -2063,6 +2109,49 @@ const parenthesized = (a + b) * c;
       expect(JSON.parse(result.stdout).diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
         'stylistic(no-confusing-arrow)',
       ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs no-extra-parens through real oxlint JavaScript, TypeScript, and TSX configs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-no-extra-parens-'));
+
+    try {
+      const javaScriptPath = join(temp, 'sample.js');
+      const typeScriptPath = join(temp, 'sample.ts');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(javaScriptPath, 'export const answer = (42);\n');
+      writeFileSync(typeScriptPath, 'export const answer = (42 as number);\n');
+      writeFileSync(tsxPath, 'export const view = (<Panel />);\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: { 'stylistic/no-extra-parens': 'error' },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', javaScriptPath, typeScriptPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics).toHaveLength(3);
+      expect(new Set(diagnostics.map((diagnostic) => diagnostic.code))).toEqual(
+        new Set(['stylistic(no-extra-parens)']),
+      );
+      expect(
+        diagnostics.every(
+          (diagnostic) => diagnostic.message === 'Unnecessary parentheses around expression.',
+        ),
+      ).toBe(true);
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

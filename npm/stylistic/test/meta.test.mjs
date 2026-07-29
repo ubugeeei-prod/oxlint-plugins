@@ -44,7 +44,12 @@ describe('stylistic plugin meta contract', () => {
       expect(rule.meta.hasSuggestions).toBe(false);
     } else {
       expect(rule.meta.fixable).toBe(
-        ['jsx-closing-bracket-location', 'jsx-quotes', 'no-confusing-arrow'].includes(ruleName)
+        [
+          'jsx-closing-bracket-location',
+          'jsx-quotes',
+          'no-confusing-arrow',
+          'no-extra-parens',
+        ].includes(ruleName)
           ? 'code'
           : 'whitespace',
       );
@@ -387,6 +392,23 @@ describe('stylistic plugin meta contract', () => {
       messages: {
         missingSemi: 'Missing semicolon.',
         extraSemi: 'Extra semicolon.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves stable no-extra-parens metadata', () => {
+    expect(plugin.rules['no-extra-parens'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Disallow unnecessary parentheses',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        unexpected: 'Unnecessary parentheses around expression.',
       },
       schema: { type: 'array' },
     });
