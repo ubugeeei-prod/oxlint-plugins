@@ -19,6 +19,9 @@ describe('stylistic native API', () => {
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('lines-around-comment');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-equals-spacing');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'jsx-closing-tag-location',
+    );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-child-element-spacing',
@@ -293,6 +296,36 @@ describe('stylistic native API', () => {
     expect(neverDiagnostics.map((diagnostic) => diagnostic.range)).toEqual([
       { start: 9, end: 10 },
       { start: 9, end: 10 },
+    ]);
+  });
+
+  it('runs jsx-closing-tag-location with exact UTF-8 byte ranges and fixes', () => {
+    const source = 'const 日本語 = <App>\n  child</App>;';
+    const closingStart = Buffer.byteLength(source.slice(0, source.indexOf('</App>')));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-closing-tag-location', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-closing-tag-location',
+        messageId: 'onOwnLine',
+        message: 'Closing tag of a multiline JSX expression must be on its own line.',
+        range: { start: closingStart, end: closingStart + Buffer.byteLength('</App>') },
+        suggestions: [
+          {
+            messageId: 'onOwnLine',
+            message: 'Closing tag of a multiline JSX expression must be on its own line.',
+            fixes: [
+              {
+                range: { start: closingStart, end: closingStart },
+                replacementText: `\n${' '.repeat('const 日本語 = '.length)}`,
+              },
+            ],
+          },
+        ],
+      },
     ]);
   });
 

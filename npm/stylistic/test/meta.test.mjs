@@ -106,6 +106,26 @@ describe('stylistic plugin meta contract', () => {
     expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
   });
 
+  it('preserves stable jsx-closing-tag-location metadata', () => {
+    expect(plugin.rules['jsx-closing-tag-location'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce closing tag location for multiline JSX',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        onOwnLine: 'Closing tag of a multiline JSX expression must be on its own line.',
+        matchIndent: 'Expected closing tag to match indentation of opening.',
+        alignWithOpening:
+          'Expected closing tag to be aligned with the line containing the opening tag',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('preserves the complete upstream jsx-child-element-spacing metadata contract', () => {
     expect(plugin.rules['jsx-child-element-spacing'].meta).toMatchObject({
       type: 'layout',
