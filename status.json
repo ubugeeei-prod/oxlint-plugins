@@ -14639,19 +14639,19 @@
       },
       {
         "name": "function-call-argument-newline",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule function-call-argument-newline."
+        "notes": "Rust/Oxc AST port of @stylistic/function-call-argument-newline v5.10.0. A pinned synchronizer and committed JSON replay all 32 valid and 32 invalid upstream cases (42 diagnostics, including 29 fixed and 3 intentionally unfixable cases) with exact order, locations, messages, options, and output; additional Rust and Vitest coverage includes TypeScript, TSX, JavaScript scripts, UTF-8, comments, call/new/import expressions, and real Oxlint integration."
       },
       {
         "name": "function-paren-newline",

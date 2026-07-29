@@ -106,6 +106,21 @@ describe('stylistic plugin meta contract', () => {
     expect(plugin.rules['lines-around-comment'].meta.fixable).toBe('whitespace');
   });
 
+  it('preserves function-call-argument-newline upstream metadata', () => {
+    expect(plugin.rules['function-call-argument-newline'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce line breaks between arguments of a function call.',
+      },
+      fixable: 'whitespace',
+      messages: {
+        unexpectedLineBreak: 'There should be no line break here.',
+        missingLineBreak: 'There should be a line break after this argument.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

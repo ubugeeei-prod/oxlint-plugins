@@ -55,6 +55,7 @@ const stylisticRuleFixtures = [
   ['block-spacing', 'function f() {g();}\n', [], ['missing', 'missing']],
   ['padded-blocks', 'if (x) {\n  y();\n}\n', [], ['missingPadBlock', 'missingPadBlock']],
   ['space-before-blocks', 'if (x){ y(); }\n', [], ['missingSpace']],
+  ['function-call-argument-newline', 'fn(first, second);\n', [], ['missingLineBreak']],
   ['function-call-spacing', 'foo ();\n', [], ['unexpectedWhitespace']],
   ['space-before-function-paren', 'function f() {}\n', [], ['missingSpace']],
   ['no-floating-decimal', 'const x = .5;\n', [], ['leading']],
@@ -743,6 +744,77 @@ describe('stylistic plugin', () => {
     expect(messageIds(reports)).toEqual(['unexpectedSpaceBefore', 'unexpectedSpaceBefore']);
   });
 
+  it('supports every function-call-argument-newline mode with exact UTF-16 fixes', () => {
+    const source = 'fn("😀", first, second)';
+    const firstGap = [source.indexOf(',') + 1, source.indexOf('first')];
+    const secondComma = source.indexOf(',', source.indexOf('first'));
+    const secondGap = [secondComma + 1, source.indexOf('second')];
+    const alwaysReports = runRule('function-call-argument-newline', source, ['always']);
+
+    expect(alwaysReports).toMatchObject([
+      { messageId: 'missingLineBreak', node: { range: firstGap } },
+      { messageId: 'missingLineBreak', node: { range: secondGap } },
+    ]);
+    expect(
+      alwaysReports.flatMap((report) =>
+        report.suggest[0].fix({
+          replaceTextRange(range, replacementText) {
+            return { range, replacementText };
+          },
+        }),
+      ),
+    ).toEqual([
+      { range: firstGap, replacementText: '\n' },
+      { range: secondGap, replacementText: '\n' },
+    ]);
+
+    expect(
+      messageIds(
+        runRule('function-call-argument-newline', 'fn(first,\nsecond,\nthird)', ['never']),
+      ),
+    ).toEqual(['unexpectedLineBreak', 'unexpectedLineBreak']);
+    expect(
+      messageIds(
+        runRule('function-call-argument-newline', 'fn(first,\nsecond, third)', ['consistent']),
+      ),
+    ).toEqual(['missingLineBreak']);
+  });
+
+  it('uses shared function-call-argument-newline settings for call, new, and import', () => {
+    const source = [
+      'fn(first, second);',
+      'new Factory(first, second);',
+      "import('data.json', { with: { type: 'json' } });",
+    ].join('\n');
+    const reports = runRule('function-call-argument-newline', source, [], {
+      corsaStylistic: {
+        rules: {
+          'function-call-argument-newline': ['always'],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual([
+      'missingLineBreak',
+      'missingLineBreak',
+      'missingLineBreak',
+    ]);
+  });
+
+  it('does not offer a function-call-argument-newline fix after a line comment', () => {
+    const reports = runRule('function-call-argument-newline', 'fn(first, // preserve\nsecond)', [
+      'never',
+    ]);
+
+    expect(reports).toMatchObject([
+      {
+        messageId: 'unexpectedLineBreak',
+        node: { range: [21, 22] },
+      },
+    ]);
+    expect(reports[0].suggest).toBeUndefined();
+  });
+
   it('matches upstream no-mixed-operators defaults, custom groups, and report data', () => {
     const defaults = runRule('no-mixed-operators', 'a + b * c;\n');
     expect(defaults).toMatchObject([
@@ -1410,6 +1482,64 @@ const parenthesized = (a + b) * c;
           code: 'stylistic(lines-around-comment)',
           message: 'Expected line after comment.',
           labels: [{ span: { offset: sourceText.indexOf('// note'), length: '// note'.length } }],
+        },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs function-call-argument-newline through oxlint on TSX', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-function-call-argument-newline-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(
+        sourcePath,
+        [
+          'declare function render<T>(first: T, second: T): T;',
+          'declare class Factory { constructor(first: unknown, second: unknown); }',
+          'const node = render<JSX.Element>(<One />, <Two />);',
+          'const instance = new Factory(first, second);',
+          '',
+        ].join('\n'),
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/function-call-argument-newline': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(function-call-argument-newline)',
+          message: 'There should be a line break after this argument.',
+        },
+        {
+          code: 'stylistic(function-call-argument-newline)',
+          message: 'There should be a line break after this argument.',
         },
       ]);
     } finally {

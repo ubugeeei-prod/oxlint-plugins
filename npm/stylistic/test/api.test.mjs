@@ -21,6 +21,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'type-annotation-spacing',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'function-call-argument-newline',
+    );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
@@ -412,5 +415,51 @@ describe('stylistic native API', () => {
         ],
       },
     ]);
+  });
+
+  it('runs function-call-argument-newline with exact native byte ranges and fixes', () => {
+    const source = "fn('日本語', value)";
+    const commaEnd = Buffer.byteLength("fn('日本語',");
+    const valueStart = Buffer.byteLength("fn('日本語', ");
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'function-call-argument-newline', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'function-call-argument-newline',
+        messageId: 'missingLineBreak',
+        message: 'There should be a line break after this argument.',
+        range: { start: commaEnd, end: valueStart },
+        suggestions: [
+          {
+            messageId: 'missingLineBreak',
+            message: 'There should be a line break after this argument.',
+            fixes: [
+              {
+                range: { start: commaEnd, end: valueStart },
+                replacementText: '\n',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('keeps function-call-argument-newline line-comment diagnostics unfixable', () => {
+    const source = 'fn(first, // keep\nsecond)';
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'function-call-argument-newline', options: ['never'] }],
+    });
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'function-call-argument-newline',
+        messageId: 'unexpectedLineBreak',
+        message: 'There should be no line break here.',
+      },
+    ]);
+    expect(diagnostics[0].suggestions).toBeUndefined();
   });
 });
