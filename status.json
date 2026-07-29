@@ -15295,19 +15295,19 @@
       },
       {
         "name": "semi",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule semi."
+        "notes": "Native Oxc-AST port of stable @stylistic/semi v5.10.0 with always/never modes, one-line block/class exceptions, statement-continuation policies, class-field and arrow-block ASI hazards, TypeScript/TSX support, and FixTracker-compatible fixes. Exact pinned JS/TS fixture replay covers 199 valid and 152 invalid cases (158 diagnostics), with Rust, NAPI, metadata, settings, Unicode/line-ending, and real Oxlint integration tests."
       },
       {
         "name": "type-annotation-spacing",

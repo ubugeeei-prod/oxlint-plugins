@@ -1,0 +1,6811 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFiles": [
+      "packages/eslint-plugin/rules/semi/semi._js_.test.ts",
+      "packages/eslint-plugin/rules/semi/semi._ts_.test.ts"
+    ],
+    "license": "MIT",
+    "eslintVersion": "10.4.1",
+    "typescriptEslintParserVersion": "8.60.0",
+    "tool": "tools/tasks/sync-stylistic-semi-tests.ts",
+    "inventory": {
+      "valid": 199,
+      "invalid": 152,
+      "diagnostics": 158,
+      "unfixableInvalid": 0,
+      "total": 351,
+      "fixableInvalid": 152,
+      "javascript": {
+        "valid": 179,
+        "invalid": 130
+      },
+      "typescript": {
+        "valid": 20,
+        "invalid": 22
+      }
+    }
+  },
+  "valid": [
+    {
+      "code": "var x = 5;",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "var x =5, y;",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "foo();",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "x = foo();",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "setTimeout(function() {foo = \"bar\"; });",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "setTimeout(function() {foo = \"bar\";});",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "for (var a in b){}",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "for (var i;;){}",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "if (true) {}\n;[global, extended].forEach(function(){});",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "throw new Error('foo');",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "debugger;",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "throw new Error('foo')",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "var x = 5",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "var x =5, y",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "foo()",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "debugger",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "for (var a in b){}",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "for (var i;;){}",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "x = foo()",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "if (true) {}\n;[global, extended].forEach(function(){})",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "(function bar() {})\n;(function foo(){})",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": ";/foo/.test('bar')",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": ";+5",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": ";-foo()",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "a++\nb++",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "a++; b++",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "for (let thing of {}) {\n  console.log(thing);\n}",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "do{}while(true)",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "do{}while(true);",
+      "language": "js",
+      "options": ["always"]
+    },
+    {
+      "code": "class C { static {} }",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "class C { static {} }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo(); } }",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "class C { static { foo(); } }",
+      "language": "js",
+      "options": ["always"]
+    },
+    {
+      "code": "class C { static { foo(); bar(); } }",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "class C { static { foo(); bar(); baz();} }",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "class C { static { foo() } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo()\nbar() } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo()\nbar()\nbaz() } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo(); bar() } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo();\n (a) } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo()\n ;(a) } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo();\n [a] } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo()\n ;[a] } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo();\n +a } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo()\n ;+a } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo();\n -a } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo()\n ;-a } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo();\n /a/ } }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo()\n ;/a/} }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static { foo();\n (a) } }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "class C { static { do ; while (foo)\n (a)} }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "class C { static { do ; while (foo)\n ;(a)} }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "if (foo) { bar() }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "if (foo) { bar(); baz() }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "if (foo)\n{ bar(); baz() }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "if (foo) {\n  bar(); baz(); }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "if (foo) { bar(); baz();\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() { bar(); baz() }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "function foo()\n{ bar(); baz() }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(){\n bar(); baz(); }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(){ bar(); baz(); \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "() => { bar(); baz() };",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "() =>\n { bar(); baz() };",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "() => {\n bar(); baz(); };",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "() => { bar(); baz(); \n};",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "const obj = { method() { bar(); baz() } };",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "const obj = { method()\n { bar(); baz() } };",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "const obj = { method() {\n bar(); baz(); } };",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "const obj = { method() { bar(); baz(); \n} };",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "class C {\n method() { bar(); baz() } \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "class C {\n method()\n { bar(); baz() } \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "class C {\n method() {\n bar(); baz(); } \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "class C {\n method() { bar(); baz(); \n} \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "class C {\n static { bar(); baz() } \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "class C {\n static\n { bar(); baz() } \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "class C {\n static {\n bar(); baz(); } \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "class C {\n static { bar(); baz(); \n} \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ]
+    },
+    {
+      "code": "export class SomeClass{\n    logType(){\n        console.log(this.type);\n    }\n}\n\nexport class Variant1 extends SomeClass{type=1}\nexport class Variant2 extends SomeClass{type=2}\nexport class Variant3 extends SomeClass{type=3}\nexport class Variant4 extends SomeClass{type=4}\nexport class Variant5 extends SomeClass{type=5}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                        console.log(this.anotherType);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1; anotherType=2}\n            ",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1;}\n                export class Variant2 extends SomeClass{type=2;}\n                export class Variant3 extends SomeClass{type=3;}\n                export class Variant4 extends SomeClass{type=4;}\n                export class Variant5 extends SomeClass{type=5;}\n            ",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": false
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "class C {\nfoo;}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": true
+        }
+      ]
+    },
+    {
+      "code": "class C {foo;\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": true
+        }
+      ]
+    },
+    {
+      "code": "class C {foo;\nbar;}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": true
+        }
+      ]
+    },
+    {
+      "code": "{ foo; }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": true
+        }
+      ]
+    },
+    {
+      "code": "class C\n{ foo }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": true
+        }
+      ]
+    },
+    {
+      "code": "class A { a() {} b() {} }",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "var A = class { a() {} b() {} };",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "class A { static {} }",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "import theDefault, { named1, named2 } from 'src/mylib';",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "import theDefault, { named1, named2 } from 'src/mylib'",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export * from 'foo';",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export { foo } from 'foo';",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "var foo = 0;export { foo };",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export var foo;",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export function foo () { }",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export function* foo () { }",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export class Foo { }",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export let foo;",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export const FOO = 42;",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default function() { }",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default function* () { }",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default class { }",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default foo || bar;",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default (foo) => foo.bar();",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default foo = 42;",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default foo += 42;",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export * from 'foo'",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export { foo } from 'foo'",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "var foo = 0; export { foo }",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export var foo",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export function foo () { }",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export function* foo () { }",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export class Foo { }",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export let foo",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export const FOO = 42",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default function() { }",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default function* () { }",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default class { }",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default foo || bar",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default (foo) => foo.bar()",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default foo = 42",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "export default foo += 42",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+      }
+    },
+    {
+      "code": "++\nfoo;",
+      "language": "js",
+      "options": ["always"]
+    },
+    {
+      "code": "var a = b;\n+ c",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "var a = b;\n/foo/.test(c)",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "var a = b;\n`foo`",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "do; while(a);\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "any"
+        }
+      ]
+    },
+    {
+      "code": "do; while(a)\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "any"
+        }
+      ]
+    },
+    {
+      "code": "import a from \"a\";\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "var a = 0; export {a};\n[a] = b",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "function wrap() {\n  return;\n  ({a} = b)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2015
+      }
+    },
+    {
+      "code": "while (true) {\n  break;\n  +i\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "while (true) {\n  continue;\n  [1,2,3].forEach(doSomething)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "do; while(a);\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "const f = () => {};\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2015
+      }
+    },
+    {
+      "code": "import a from \"a\"\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "var a = 0; export {a}\n[a] = b",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "function wrap() {\n  return\n  ({a} = b)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2015
+      }
+    },
+    {
+      "code": "while (true) {\n  break\n  +i\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "while (true) {\n  continue\n  [1,2,3].forEach(doSomething)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "do; while(a)\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "const f = () => {}\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2015
+      }
+    },
+    {
+      "code": "class C { foo; }",
+      "language": "js",
+      "options": []
+    },
+    {
+      "code": "class C { foo; }",
+      "language": "js",
+      "options": ["always"]
+    },
+    {
+      "code": "class C { foo }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { foo = obj\n;[bar] }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { foo;\n[bar]; }",
+      "language": "js",
+      "options": ["always"]
+    },
+    {
+      "code": "class C { foo\n;[bar] }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { foo\n[bar] }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { foo\n;[bar] }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "class C { foo\n[bar] }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "class C { foo = () => {}\n;[bar] }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { foo = () => {}\n[bar] }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { foo = () => {}\n;[bar] }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "class C { foo = () => {}\n[bar] }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "class C { foo() {} }",
+      "language": "js",
+      "options": ["always"]
+    },
+    {
+      "code": "class C { foo() {}; }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static {}; }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { a=b;\n*foo() {} }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { get;\nfoo() {} }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { set;\nfoo() {} }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static;\nfoo() {} }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { a=b;\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { a=b;\ninstanceof }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "\n                class C {\n                    x\n                    [foo]\n\n                    x;\n                    [foo]\n\n                    x = \"a\";\n                    [foo]\n                }\n            ",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "\n                class C {\n                    x\n                    [foo]\n\n                    x;\n                    [foo]\n\n                    x = 1;\n                    [foo]\n                }\n            ",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "class C { foo\n[bar] }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "class C { foo = () => {}\n[bar] }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ]
+    },
+    {
+      "code": "class C { foo\n;[bar] }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "class C { foo = () => {}\n;[bar] }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ]
+    },
+    {
+      "code": "class C { [foo] = bar;\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { #foo = bar;\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static static = bar;\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { [foo];\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { [get];\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { [get] = 5;\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { #get;\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { #set = 5;\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { static static;\nin }",
+      "language": "js",
+      "options": ["never"]
+    },
+    {
+      "code": "export = Foo;",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "export = Foo",
+      "language": "ts",
+      "options": ["never"]
+    },
+    {
+      "code": "import f = require(\"f\");",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "import f = require(\"f\")",
+      "language": "ts",
+      "options": ["never"]
+    },
+    {
+      "code": "type Foo = {};",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "type Foo = {}",
+      "language": "ts",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { accessor foo; } ",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "class C { accessor foo } ",
+      "language": "ts",
+      "options": ["never"]
+    },
+    {
+      "code": "class C { accessor [foo]; } ",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "class C { accessor [foo] } ",
+      "language": "ts",
+      "options": ["never"]
+    },
+    {
+      "code": "class Class {\n    prop: string;\n}",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "class Class {\n    prop: string\n}",
+      "language": "ts",
+      "options": ["never"]
+    },
+    {
+      "code": "abstract class AbsClass {\n    abstract prop: string;\n    abstract meth(): string;\n}",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "abstract class AbsClass {\n    abstract prop: string\n    abstract meth(): string\n}",
+      "language": "ts",
+      "options": ["never"]
+    },
+    {
+      "code": "class PanCamera extends FreeCamera {\n  public invertY: boolean = false;\n}",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "class PanCamera extends FreeCamera {\n  public invertY: boolean = false\n}",
+      "language": "ts",
+      "options": ["never"]
+    },
+    {
+      "code": "export default interface test {}",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "export default interface test {}",
+      "language": "ts",
+      "options": ["never"]
+    },
+    {
+      "code": "declare function declareFn(): string;",
+      "language": "ts",
+      "options": ["always"]
+    },
+    {
+      "code": "declare function declareFn(): string",
+      "language": "ts",
+      "options": ["never"]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "import * as utils from './utils'",
+      "language": "js",
+      "options": [],
+      "output": "import * as utils from './utils';",
+      "recursiveOutput": "import * as utils from './utils';",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 33
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [32, 32],
+          "loc": {
+            "line": 1,
+            "column": 33
+          },
+          "fix": {
+            "range": [32, 32],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import { square, diag } from 'lib'",
+      "language": "js",
+      "options": [],
+      "output": "import { square, diag } from 'lib';",
+      "recursiveOutput": "import { square, diag } from 'lib';",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 35
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 1,
+            "column": 35
+          },
+          "fix": {
+            "range": [34, 34],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import { default as foo } from 'lib'",
+      "language": "js",
+      "options": [],
+      "output": "import { default as foo } from 'lib';",
+      "recursiveOutput": "import { default as foo } from 'lib';",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 37
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [36, 36],
+          "loc": {
+            "line": 1,
+            "column": 37
+          },
+          "fix": {
+            "range": [36, 36],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import 'src/mylib'",
+      "language": "js",
+      "options": [],
+      "output": "import 'src/mylib';",
+      "recursiveOutput": "import 'src/mylib';",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 19
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [18, 18],
+          "loc": {
+            "line": 1,
+            "column": 19
+          },
+          "fix": {
+            "range": [18, 18],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import theDefault, { named1, named2 } from 'src/mylib'",
+      "language": "js",
+      "options": [],
+      "output": "import theDefault, { named1, named2 } from 'src/mylib';",
+      "recursiveOutput": "import theDefault, { named1, named2 } from 'src/mylib';",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 55
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [54, 54],
+          "loc": {
+            "line": 1,
+            "column": 55
+          },
+          "fix": {
+            "range": [54, 54],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo() { return [] }",
+      "language": "js",
+      "options": [],
+      "output": "function foo() { return []; }",
+      "recursiveOutput": "function foo() { return []; }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 27,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [26, 27],
+          "loc": {
+            "line": 1,
+            "column": 27,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [26, 26],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "while(true) { break }",
+      "language": "js",
+      "options": [],
+      "output": "while(true) { break; }",
+      "recursiveOutput": "while(true) { break; }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [19, 20],
+          "loc": {
+            "line": 1,
+            "column": 20,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [19, 19],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "while(true) { continue }",
+      "language": "js",
+      "options": [],
+      "output": "while(true) { continue; }",
+      "recursiveOutput": "while(true) { continue; }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [22, 23],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [22, 22],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "let x = 5",
+      "language": "js",
+      "options": [],
+      "parserOptions": {
+        "ecmaVersion": 6
+      },
+      "output": "let x = 5;",
+      "recursiveOutput": "let x = 5;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 10
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [9, 9],
+          "loc": {
+            "line": 1,
+            "column": 10
+          },
+          "fix": {
+            "range": [9, 9],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var x = 5",
+      "language": "js",
+      "options": [],
+      "output": "var x = 5;",
+      "recursiveOutput": "var x = 5;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 10
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [9, 9],
+          "loc": {
+            "line": 1,
+            "column": 10
+          },
+          "fix": {
+            "range": [9, 9],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var x = 5, y",
+      "language": "js",
+      "options": [],
+      "output": "var x = 5, y;",
+      "recursiveOutput": "var x = 5, y;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 13
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [12, 12],
+          "loc": {
+            "line": 1,
+            "column": 13
+          },
+          "fix": {
+            "range": [12, 12],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "debugger",
+      "language": "js",
+      "options": [],
+      "output": "debugger;",
+      "recursiveOutput": "debugger;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 9
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [8, 8],
+          "loc": {
+            "line": 1,
+            "column": 9
+          },
+          "fix": {
+            "range": [8, 8],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo()",
+      "language": "js",
+      "options": [],
+      "output": "foo();",
+      "recursiveOutput": "foo();",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 6
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [5, 5],
+          "loc": {
+            "line": 1,
+            "column": 6
+          },
+          "fix": {
+            "range": [5, 5],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo()\n",
+      "language": "js",
+      "options": [],
+      "output": "foo();\n",
+      "recursiveOutput": "foo();\n",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 6,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [5, 6],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [5, 5],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo()\r\n",
+      "language": "js",
+      "options": [],
+      "output": "foo();\r\n",
+      "recursiveOutput": "foo();\r\n",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 6,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [5, 7],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [5, 5],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo()\nbar();",
+      "language": "js",
+      "options": [],
+      "output": "foo();\nbar();",
+      "recursiveOutput": "foo();\nbar();",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 6,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [5, 6],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [5, 5],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo()\r\nbar();",
+      "language": "js",
+      "options": [],
+      "output": "foo();\r\nbar();",
+      "recursiveOutput": "foo();\r\nbar();",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 6,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [5, 7],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [5, 5],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "for (var a in b) var i ",
+      "language": "js",
+      "options": [],
+      "output": "for (var a in b) var i; ",
+      "recursiveOutput": "for (var a in b) var i; ",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [22, 23],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [22, 22],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "for (;;){var i}",
+      "language": "js",
+      "options": [],
+      "output": "for (;;){var i;}",
+      "recursiveOutput": "for (;;){var i;}",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [14, 15],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [14, 14],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "for (;;) var i ",
+      "language": "js",
+      "options": [],
+      "output": "for (;;) var i; ",
+      "recursiveOutput": "for (;;) var i; ",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [14, 15],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [14, 14],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "for (var j;;) {var i}",
+      "language": "js",
+      "options": [],
+      "output": "for (var j;;) {var i;}",
+      "recursiveOutput": "for (var j;;) {var i;}",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [20, 21],
+          "loc": {
+            "line": 1,
+            "column": 21,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [20, 20],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var foo = {\n bar: baz\n}",
+      "language": "js",
+      "options": [],
+      "output": "var foo = {\n bar: baz\n};",
+      "recursiveOutput": "var foo = {\n bar: baz\n};",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 3,
+          "column": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [23, 23],
+          "loc": {
+            "line": 3,
+            "column": 2
+          },
+          "fix": {
+            "range": [23, 23],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var foo\nvar bar;",
+      "language": "js",
+      "options": [],
+      "output": "var foo;\nvar bar;",
+      "recursiveOutput": "var foo;\nvar bar;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [7, 8],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [7, 7],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "throw new Error('foo')",
+      "language": "js",
+      "options": [],
+      "output": "throw new Error('foo');",
+      "recursiveOutput": "throw new Error('foo');",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 23
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [22, 22],
+          "loc": {
+            "line": 1,
+            "column": 23
+          },
+          "fix": {
+            "range": [22, 22],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "do{}while(true)",
+      "language": "js",
+      "options": [],
+      "output": "do{}while(true);",
+      "recursiveOutput": "do{}while(true);",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [15, 15],
+          "loc": {
+            "line": 1,
+            "column": 16
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if (foo) {bar()}",
+      "language": "js",
+      "options": [],
+      "output": "if (foo) {bar();}",
+      "recursiveOutput": "if (foo) {bar();}",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if (foo) {bar()} ",
+      "language": "js",
+      "options": [],
+      "output": "if (foo) {bar();} ",
+      "recursiveOutput": "if (foo) {bar();} ",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if (foo) {bar()\n}",
+      "language": "js",
+      "options": [],
+      "output": "if (foo) {bar();\n}",
+      "recursiveOutput": "if (foo) {bar();\n}",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 16,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "throw new Error('foo');",
+      "language": "js",
+      "options": ["never"],
+      "output": "throw new Error('foo')",
+      "recursiveOutput": "throw new Error('foo')",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [22, 23],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [21, 23],
+            "text": ")"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo() { return []; }",
+      "language": "js",
+      "options": ["never"],
+      "output": "function foo() { return [] }",
+      "recursiveOutput": "function foo() { return [] }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 27,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [26, 27],
+          "loc": {
+            "line": 1,
+            "column": 27,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [25, 29],
+            "text": "] }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "while(true) { break; }",
+      "language": "js",
+      "options": ["never"],
+      "output": "while(true) { break }",
+      "recursiveOutput": "while(true) { break }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [19, 20],
+          "loc": {
+            "line": 1,
+            "column": 20,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [14, 22],
+            "text": "break }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "while(true) { continue; }",
+      "language": "js",
+      "options": ["never"],
+      "output": "while(true) { continue }",
+      "recursiveOutput": "while(true) { continue }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [22, 23],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [14, 25],
+            "text": "continue }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "let x = 5;",
+      "language": "js",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 6
+      },
+      "output": "let x = 5",
+      "recursiveOutput": "let x = 5",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [9, 10],
+          "loc": {
+            "line": 1,
+            "column": 10,
+            "endLine": 1,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [8, 10],
+            "text": "5"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var x = 5;",
+      "language": "js",
+      "options": ["never"],
+      "output": "var x = 5",
+      "recursiveOutput": "var x = 5",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 11
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [9, 10],
+          "loc": {
+            "line": 1,
+            "column": 10,
+            "endLine": 1,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [8, 10],
+            "text": "5"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var x = 5, y;",
+      "language": "js",
+      "options": ["never"],
+      "output": "var x = 5, y",
+      "recursiveOutput": "var x = 5, y",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [12, 13],
+          "loc": {
+            "line": 1,
+            "column": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [11, 13],
+            "text": "y"
+          }
+        }
+      ]
+    },
+    {
+      "code": "debugger;",
+      "language": "js",
+      "options": ["never"],
+      "output": "debugger",
+      "recursiveOutput": "debugger",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 9,
+          "endLine": 1,
+          "endColumn": 10
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [8, 9],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [0, 9],
+            "text": "debugger"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo();",
+      "language": "js",
+      "options": ["never"],
+      "output": "foo()",
+      "recursiveOutput": "foo()",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [5, 6],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [4, 6],
+            "text": ")"
+          }
+        }
+      ]
+    },
+    {
+      "code": "for (var a in b) var i; ",
+      "language": "js",
+      "options": ["never"],
+      "output": "for (var a in b) var i ",
+      "recursiveOutput": "for (var a in b) var i ",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [22, 23],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [21, 23],
+            "text": "i"
+          }
+        }
+      ]
+    },
+    {
+      "code": "for (;;){var i;}",
+      "language": "js",
+      "options": ["never"],
+      "output": "for (;;){var i}",
+      "recursiveOutput": "for (;;){var i}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [14, 15],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [13, 16],
+            "text": "i}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "for (;;) var i; ",
+      "language": "js",
+      "options": ["never"],
+      "output": "for (;;) var i ",
+      "recursiveOutput": "for (;;) var i ",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [14, 15],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [13, 15],
+            "text": "i"
+          }
+        }
+      ]
+    },
+    {
+      "code": "for (var j;;) {var i;}",
+      "language": "js",
+      "options": ["never"],
+      "output": "for (var j;;) {var i}",
+      "recursiveOutput": "for (var j;;) {var i}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 22
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [20, 21],
+          "loc": {
+            "line": 1,
+            "column": 21,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [19, 22],
+            "text": "i}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var foo = {\n bar: baz\n};",
+      "language": "js",
+      "options": ["never"],
+      "output": "var foo = {\n bar: baz\n}",
+      "recursiveOutput": "var foo = {\n bar: baz\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 3,
+          "column": 2,
+          "endLine": 3,
+          "endColumn": 3
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [23, 24],
+          "loc": {
+            "line": 3,
+            "column": 2,
+            "endLine": 3,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [22, 24],
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import theDefault, { named1, named2 } from 'src/mylib';",
+      "language": "js",
+      "options": ["never"],
+      "output": "import theDefault, { named1, named2 } from 'src/mylib'",
+      "recursiveOutput": "import theDefault, { named1, named2 } from 'src/mylib'",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 55,
+          "endLine": 1,
+          "endColumn": 56
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [54, 55],
+          "loc": {
+            "line": 1,
+            "column": 55,
+            "endLine": 1,
+            "endColumn": 56
+          },
+          "fix": {
+            "range": [43, 55],
+            "text": "'src/mylib'"
+          }
+        }
+      ]
+    },
+    {
+      "code": "do{}while(true);",
+      "language": "js",
+      "options": ["never"],
+      "output": "do{}while(true)",
+      "recursiveOutput": "do{}while(true)",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [14, 16],
+            "text": ")"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { foo() } }",
+      "language": "js",
+      "options": [],
+      "output": "class C { static { foo(); } }",
+      "recursiveOutput": "class C { static { foo(); } }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 1,
+            "column": 25,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [24, 24],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { foo() } }",
+      "language": "js",
+      "options": ["always"],
+      "output": "class C { static { foo(); } }",
+      "recursiveOutput": "class C { static { foo(); } }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 1,
+            "column": 25,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [24, 24],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { foo(); bar() } }",
+      "language": "js",
+      "options": [],
+      "output": "class C { static { foo(); bar(); } }",
+      "recursiveOutput": "class C { static { foo(); bar(); } }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 32,
+          "endLine": 1,
+          "endColumn": 33
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [31, 32],
+          "loc": {
+            "line": 1,
+            "column": 32,
+            "endLine": 1,
+            "endColumn": 33
+          },
+          "fix": {
+            "range": [31, 31],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { foo()\nbar(); } }",
+      "language": "js",
+      "options": [],
+      "output": "class C { static { foo();\nbar(); } }",
+      "recursiveOutput": "class C { static { foo();\nbar(); } }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 25,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 1,
+            "column": 25,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [24, 24],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { foo(); bar()\nbaz(); } }",
+      "language": "js",
+      "options": [],
+      "output": "class C { static { foo(); bar();\nbaz(); } }",
+      "recursiveOutput": "class C { static { foo(); bar();\nbaz(); } }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 32,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [31, 32],
+          "loc": {
+            "line": 1,
+            "column": 32,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [31, 31],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { foo(); } }",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { static { foo() } }",
+      "recursiveOutput": "class C { static { foo() } }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 1,
+            "column": 25,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [23, 27],
+            "text": ") }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { foo();\nbar() } }",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { static { foo()\nbar() } }",
+      "recursiveOutput": "class C { static { foo()\nbar() } }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 1,
+            "column": 25,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [23, 29],
+            "text": ")\nbar"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { foo()\nbar(); } }",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { static { foo()\nbar() } }",
+      "recursiveOutput": "class C { static { foo()\nbar() } }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 2,
+          "column": 6,
+          "endLine": 2,
+          "endColumn": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [29, 33],
+            "text": ") }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { foo()\nbar();\nbaz() } }",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { static { foo()\nbar()\nbaz() } }",
+      "recursiveOutput": "class C { static { foo()\nbar()\nbaz() } }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 2,
+          "column": 6,
+          "endLine": 2,
+          "endColumn": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [29, 35],
+            "text": ")\nbaz"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { do ; while (foo)\n (a)} }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "output": "class C { static { do ; while (foo);\n (a)} }",
+      "recursiveOutput": "class C { static { do ; while (foo);\n (a)} }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 36,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [35, 36],
+          "loc": {
+            "line": 1,
+            "column": 36,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [35, 35],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static { do ; while (foo)\n ;(a)} }",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "class C { static { do ; while (foo)\n (a)} }",
+      "recursiveOutput": "class C { static { do ; while (foo)\n (a)} }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 2,
+          "column": 2,
+          "endLine": 2,
+          "endColumn": 3
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [37, 38],
+          "loc": {
+            "line": 2,
+            "column": 2,
+            "endLine": 2,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [34, 39],
+            "text": ")\n ("
+          }
+        }
+      ]
+    },
+    {
+      "code": "if (foo) { bar()\n }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "if (foo) { bar();\n }",
+      "recursiveOutput": "if (foo) { bar();\n }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 17,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [16, 17],
+          "loc": {
+            "line": 1,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [16, 16],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if (foo) {\n bar() }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "if (foo) {\n bar(); }",
+      "recursiveOutput": "if (foo) {\n bar(); }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 8
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [17, 18],
+          "loc": {
+            "line": 2,
+            "column": 7,
+            "endLine": 2,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if (foo) {\n bar(); baz() }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "if (foo) {\n bar(); baz(); }",
+      "recursiveOutput": "if (foo) {\n bar(); baz(); }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 2,
+          "column": 14,
+          "endLine": 2,
+          "endColumn": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [24, 24],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if (foo) { bar(); }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "if (foo) { bar() }",
+      "recursiveOutput": "if (foo) { bar() }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [16, 17],
+          "loc": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [15, 19],
+            "text": ") }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo() { bar(); baz(); }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "function foo() { bar(); baz() }",
+      "recursiveOutput": "function foo() { bar(); baz() }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 31
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [29, 30],
+          "loc": {
+            "line": 1,
+            "column": 30,
+            "endLine": 1,
+            "endColumn": 31
+          },
+          "fix": {
+            "range": [28, 32],
+            "text": ") }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo()\n{ bar(); baz(); }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "function foo()\n{ bar(); baz() }",
+      "recursiveOutput": "function foo()\n{ bar(); baz() }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 2,
+          "column": 15,
+          "endLine": 2,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [29, 30],
+          "loc": {
+            "line": 2,
+            "column": 15,
+            "endLine": 2,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [28, 32],
+            "text": ") }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo() {\n bar(); baz() }",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "function foo() {\n bar(); baz(); }",
+      "recursiveOutput": "function foo() {\n bar(); baz(); }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 2,
+          "column": 14,
+          "endLine": 2,
+          "endColumn": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo() { bar(); baz() \n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "function foo() { bar(); baz(); \n}",
+      "recursiveOutput": "function foo() { bar(); baz(); \n}",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 30,
+          "endLine": 1,
+          "endColumn": 31
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [29, 30],
+          "loc": {
+            "line": 1,
+            "column": 30,
+            "endLine": 1,
+            "endColumn": 31
+          },
+          "fix": {
+            "range": [29, 29],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\nfoo() { bar(); baz(); }\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 6
+      },
+      "output": "class C {\nfoo() { bar(); baz() }\n}",
+      "recursiveOutput": "class C {\nfoo() { bar(); baz() }\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 2,
+          "column": 21,
+          "endLine": 2,
+          "endColumn": 22
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 21,
+            "endLine": 2,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [29, 33],
+            "text": ") }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\nfoo() \n{ bar(); baz(); }\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 6
+      },
+      "output": "class C {\nfoo() \n{ bar(); baz() }\n}",
+      "recursiveOutput": "class C {\nfoo() \n{ bar(); baz() }\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [31, 32],
+          "loc": {
+            "line": 3,
+            "column": 15,
+            "endLine": 3,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [30, 34],
+            "text": ") }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\nfoo() {\n bar(); baz() }\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 6
+      },
+      "output": "class C {\nfoo() {\n bar(); baz(); }\n}",
+      "recursiveOutput": "class C {\nfoo() {\n bar(); baz(); }\n}",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 3,
+          "column": 14,
+          "endLine": 3,
+          "endColumn": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [31, 32],
+          "loc": {
+            "line": 3,
+            "column": 14,
+            "endLine": 3,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [31, 31],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\nfoo() { bar(); baz() \n}\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 6
+      },
+      "output": "class C {\nfoo() { bar(); baz(); \n}\n}",
+      "recursiveOutput": "class C {\nfoo() { bar(); baz(); \n}\n}",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 2,
+          "column": 21,
+          "endLine": 2,
+          "endColumn": 22
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 21,
+            "endLine": 2,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\nstatic { bar(); baz(); }\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "class C {\nstatic { bar(); baz() }\n}",
+      "recursiveOutput": "class C {\nstatic { bar(); baz() }\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 2,
+          "column": 22,
+          "endLine": 2,
+          "endColumn": 23
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [31, 32],
+          "loc": {
+            "line": 2,
+            "column": 22,
+            "endLine": 2,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [30, 34],
+            "text": ") }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\nstatic \n{ bar(); baz(); }\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "class C {\nstatic \n{ bar(); baz() }\n}",
+      "recursiveOutput": "class C {\nstatic \n{ bar(); baz() }\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [32, 33],
+          "loc": {
+            "line": 3,
+            "column": 15,
+            "endLine": 3,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [31, 35],
+            "text": ") }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\nstatic {\n bar(); baz() }\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "class C {\nstatic {\n bar(); baz(); }\n}",
+      "recursiveOutput": "class C {\nstatic {\n bar(); baz(); }\n}",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 3,
+          "column": 14,
+          "endLine": 3,
+          "endColumn": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [32, 33],
+          "loc": {
+            "line": 3,
+            "column": 14,
+            "endLine": 3,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [32, 32],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\nfoo() { bar(); baz() \n}\n}",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "output": "class C {\nfoo() { bar(); baz(); \n}\n}",
+      "recursiveOutput": "class C {\nfoo() { bar(); baz(); \n}\n}",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 2,
+          "column": 21,
+          "endLine": 2,
+          "endColumn": 22
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 21,
+            "endLine": 2,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export * from 'foo'",
+      "language": "js",
+      "options": [],
+      "output": "export * from 'foo';",
+      "recursiveOutput": "export * from 'foo';",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 20
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [19, 19],
+          "loc": {
+            "line": 1,
+            "column": 20
+          },
+          "fix": {
+            "range": [19, 19],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export { foo } from 'foo'",
+      "language": "js",
+      "options": [],
+      "output": "export { foo } from 'foo';",
+      "recursiveOutput": "export { foo } from 'foo';",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 26
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [25, 25],
+          "loc": {
+            "line": 1,
+            "column": 26
+          },
+          "fix": {
+            "range": [25, 25],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var foo = 0;export { foo }",
+      "language": "js",
+      "options": [],
+      "output": "var foo = 0;export { foo };",
+      "recursiveOutput": "var foo = 0;export { foo };",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 27
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [26, 26],
+          "loc": {
+            "line": 1,
+            "column": 27
+          },
+          "fix": {
+            "range": [26, 26],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export var foo",
+      "language": "js",
+      "options": [],
+      "output": "export var foo;",
+      "recursiveOutput": "export var foo;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [14, 14],
+          "loc": {
+            "line": 1,
+            "column": 15
+          },
+          "fix": {
+            "range": [14, 14],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export let foo",
+      "language": "js",
+      "options": [],
+      "output": "export let foo;",
+      "recursiveOutput": "export let foo;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [14, 14],
+          "loc": {
+            "line": 1,
+            "column": 15
+          },
+          "fix": {
+            "range": [14, 14],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export const FOO = 42",
+      "language": "js",
+      "options": [],
+      "output": "export const FOO = 42;",
+      "recursiveOutput": "export const FOO = 42;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 22
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [21, 21],
+          "loc": {
+            "line": 1,
+            "column": 22
+          },
+          "fix": {
+            "range": [21, 21],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export default foo || bar",
+      "language": "js",
+      "options": [],
+      "output": "export default foo || bar;",
+      "recursiveOutput": "export default foo || bar;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 26
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [25, 25],
+          "loc": {
+            "line": 1,
+            "column": 26
+          },
+          "fix": {
+            "range": [25, 25],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export default (foo) => foo.bar()",
+      "language": "js",
+      "options": [],
+      "output": "export default (foo) => foo.bar();",
+      "recursiveOutput": "export default (foo) => foo.bar();",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 34
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 1,
+            "column": 34
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export default foo = 42",
+      "language": "js",
+      "options": [],
+      "output": "export default foo = 42;",
+      "recursiveOutput": "export default foo = 42;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 24
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [23, 23],
+          "loc": {
+            "line": 1,
+            "column": 24
+          },
+          "fix": {
+            "range": [23, 23],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export default foo += 42",
+      "language": "js",
+      "options": [],
+      "output": "export default foo += 42;",
+      "recursiveOutput": "export default foo += 42;",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 25
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [24, 24],
+          "loc": {
+            "line": 1,
+            "column": 25
+          },
+          "fix": {
+            "range": [24, 24],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export * from 'foo';",
+      "language": "js",
+      "options": ["never"],
+      "output": "export * from 'foo'",
+      "recursiveOutput": "export * from 'foo'",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 20,
+          "endLine": 1,
+          "endColumn": 21
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [19, 20],
+          "loc": {
+            "line": 1,
+            "column": 20,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [14, 20],
+            "text": "'foo'"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export { foo } from 'foo';",
+      "language": "js",
+      "options": ["never"],
+      "output": "export { foo } from 'foo'",
+      "recursiveOutput": "export { foo } from 'foo'",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 26,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 1,
+            "column": 26,
+            "endLine": 1,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [20, 26],
+            "text": "'foo'"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var foo = 0;export { foo };",
+      "language": "js",
+      "options": ["never"],
+      "output": "var foo = 0;export { foo }",
+      "recursiveOutput": "var foo = 0;export { foo }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 27,
+          "endLine": 1,
+          "endColumn": 28
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [26, 27],
+          "loc": {
+            "line": 1,
+            "column": 27,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [25, 27],
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export var foo;",
+      "language": "js",
+      "options": ["never"],
+      "output": "export var foo",
+      "recursiveOutput": "export var foo",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [14, 15],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [11, 15],
+            "text": "foo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export let foo;",
+      "language": "js",
+      "options": ["never"],
+      "output": "export let foo",
+      "recursiveOutput": "export let foo",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [14, 15],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [11, 15],
+            "text": "foo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export const FOO = 42;",
+      "language": "js",
+      "options": ["never"],
+      "output": "export const FOO = 42",
+      "recursiveOutput": "export const FOO = 42",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 22,
+          "endLine": 1,
+          "endColumn": 23
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [21, 22],
+          "loc": {
+            "line": 1,
+            "column": 22,
+            "endLine": 1,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [19, 22],
+            "text": "42"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export default foo || bar;",
+      "language": "js",
+      "options": ["never"],
+      "output": "export default foo || bar",
+      "recursiveOutput": "export default foo || bar",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 26,
+          "endLine": 1,
+          "endColumn": 27
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 1,
+            "column": 26,
+            "endLine": 1,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [22, 26],
+            "text": "bar"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export default (foo) => foo.bar();",
+      "language": "js",
+      "options": ["never"],
+      "output": "export default (foo) => foo.bar()",
+      "recursiveOutput": "export default (foo) => foo.bar()",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 34,
+          "endLine": 1,
+          "endColumn": 35
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [33, 34],
+          "loc": {
+            "line": 1,
+            "column": 34,
+            "endLine": 1,
+            "endColumn": 35
+          },
+          "fix": {
+            "range": [32, 34],
+            "text": ")"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export default foo = 42;",
+      "language": "js",
+      "options": ["never"],
+      "output": "export default foo = 42",
+      "recursiveOutput": "export default foo = 42",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [23, 24],
+          "loc": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [21, 24],
+            "text": "42"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export default foo += 42;",
+      "language": "js",
+      "options": ["never"],
+      "output": "export default foo += 42",
+      "recursiveOutput": "export default foo += 42",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 25,
+          "endLine": 1,
+          "endColumn": 26
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 1,
+            "column": 25,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [22, 25],
+            "text": "42"
+          }
+        }
+      ]
+    },
+    {
+      "code": "a;\n++b",
+      "language": "js",
+      "options": ["never"],
+      "output": "a\n++b",
+      "recursiveOutput": "a\n++b",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 3
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [1, 2],
+          "loc": {
+            "line": 1,
+            "column": 2,
+            "endLine": 1,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [0, 5],
+            "text": "a\n++"
+          }
+        }
+      ]
+    },
+    {
+      "code": "/*eslint no-extra-semi: error */\nfoo();\n;[0,1,2].forEach(bar)",
+      "language": "js",
+      "options": ["never"],
+      "output": "/*eslint no-extra-semi: error */\nfoo()\n;[0,1,2].forEach(bar)",
+      "recursiveOutput": "/*eslint no-extra-semi: error */\nfoo()\n;[0,1,2].forEach(bar)",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 2,
+          "column": 6,
+          "endLine": 2,
+          "endColumn": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [38, 39],
+          "loc": {
+            "line": 2,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [37, 41],
+            "text": ")\n;"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import a from \"a\"\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "output": "import a from \"a\";\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "import a from \"a\";\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [17, 18],
+          "loc": {
+            "line": 1,
+            "column": 18,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var a = 0; export {a}\n[a] = b",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "output": "var a = 0; export {a};\n[a] = b",
+      "recursiveOutput": "var a = 0; export {a};\n[a] = b",
+      "errors": [
+        {
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [21, 22],
+          "loc": {
+            "line": 1,
+            "column": 22,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [21, 21],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function wrap() {\n  return\n  ({a} = b)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2015
+      },
+      "output": "function wrap() {\n  return;\n  ({a} = b)\n}",
+      "recursiveOutput": "function wrap() {\n  return;\n  ({a} = b)\n}",
+      "errors": [
+        {
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [26, 27],
+          "loc": {
+            "line": 2,
+            "column": 9,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [26, 26],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "while (true) {\n  break\n  +i\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "output": "while (true) {\n  break;\n  +i\n}",
+      "recursiveOutput": "while (true) {\n  break;\n  +i\n}",
+      "errors": [
+        {
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [22, 23],
+          "loc": {
+            "line": 2,
+            "column": 8,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [22, 22],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "while (true) {\n  continue\n  [1,2,3].forEach(doSomething)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "output": "while (true) {\n  continue;\n  [1,2,3].forEach(doSomething)\n}",
+      "recursiveOutput": "while (true) {\n  continue;\n  [1,2,3].forEach(doSomething)\n}",
+      "errors": [
+        {
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 2,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [25, 25],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "do; while(a)\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "output": "do; while(a);\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "do; while(a);\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [12, 13],
+          "loc": {
+            "line": 1,
+            "column": 13,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [12, 12],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "const f = () => {}\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2015
+      },
+      "output": "const f = () => {};\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "const f = () => {};\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [18, 19],
+          "loc": {
+            "line": 1,
+            "column": 19,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [18, 18],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import a from \"a\";\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "import a from \"a\"\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "import a from \"a\"\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [17, 18],
+          "loc": {
+            "line": 1,
+            "column": 18,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [14, 20],
+            "text": "\"a\"\n["
+          }
+        }
+      ]
+    },
+    {
+      "code": "var a = 0; export {a};\n[a] = b",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "var a = 0; export {a}\n[a] = b",
+      "recursiveOutput": "var a = 0; export {a}\n[a] = b",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [21, 22],
+          "loc": {
+            "line": 1,
+            "column": 22,
+            "endLine": 1,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [20, 24],
+            "text": "}\n["
+          }
+        }
+      ]
+    },
+    {
+      "code": "function wrap() {\n  return;\n  ({a} = b)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2015
+      },
+      "output": "function wrap() {\n  return\n  ({a} = b)\n}",
+      "recursiveOutput": "function wrap() {\n  return\n  ({a} = b)\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [26, 27],
+          "loc": {
+            "line": 2,
+            "column": 9,
+            "endLine": 2,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [20, 31],
+            "text": "return\n  ("
+          }
+        }
+      ]
+    },
+    {
+      "code": "while (true) {\n  break;\n  +i\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "while (true) {\n  break\n  +i\n}",
+      "recursiveOutput": "while (true) {\n  break\n  +i\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [22, 23],
+          "loc": {
+            "line": 2,
+            "column": 8,
+            "endLine": 2,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [17, 27],
+            "text": "break\n  +"
+          }
+        }
+      ]
+    },
+    {
+      "code": "while (true) {\n  continue;\n  [1,2,3].forEach(doSomething)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "while (true) {\n  continue\n  [1,2,3].forEach(doSomething)\n}",
+      "recursiveOutput": "while (true) {\n  continue\n  [1,2,3].forEach(doSomething)\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 2,
+            "column": 11,
+            "endLine": 2,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [17, 30],
+            "text": "continue\n  ["
+          }
+        }
+      ]
+    },
+    {
+      "code": "do; while(a);\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "do; while(a)\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "do; while(a)\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [12, 13],
+          "loc": {
+            "line": 1,
+            "column": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [11, 15],
+            "text": ")\n["
+          }
+        }
+      ]
+    },
+    {
+      "code": "const f = () => {};\n[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2015
+      },
+      "output": "const f = () => {}\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "const f = () => {}\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [18, 19],
+          "loc": {
+            "line": 1,
+            "column": 19,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [17, 21],
+            "text": "}\n["
+          }
+        }
+      ]
+    },
+    {
+      "code": "import a from \"a\"\n;[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "import a from \"a\"\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "import a from \"a\"\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [18, 19],
+          "loc": {
+            "line": 2,
+            "column": 1,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [14, 20],
+            "text": "\"a\"\n["
+          }
+        }
+      ]
+    },
+    {
+      "code": "var a = 0; export {a}\n;[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "var a = 0; export {a}\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "var a = 0; export {a}\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [22, 23],
+          "loc": {
+            "line": 2,
+            "column": 1,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [20, 24],
+            "text": "}\n["
+          }
+        }
+      ]
+    },
+    {
+      "code": "function wrap() {\n  return\n  ;[1,2,3].forEach(doSomething)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "function wrap() {\n  return\n  [1,2,3].forEach(doSomething)\n}",
+      "recursiveOutput": "function wrap() {\n  return\n  [1,2,3].forEach(doSomething)\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [29, 30],
+          "loc": {
+            "line": 3,
+            "column": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [20, 31],
+            "text": "return\n  ["
+          }
+        }
+      ]
+    },
+    {
+      "code": "while (true) {\n  break\n  ;[1,2,3].forEach(doSomething)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "while (true) {\n  break\n  [1,2,3].forEach(doSomething)\n}",
+      "recursiveOutput": "while (true) {\n  break\n  [1,2,3].forEach(doSomething)\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 3,
+            "column": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [17, 27],
+            "text": "break\n  ["
+          }
+        }
+      ]
+    },
+    {
+      "code": "while (true) {\n  continue\n  ;[1,2,3].forEach(doSomething)\n}",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "while (true) {\n  continue\n  [1,2,3].forEach(doSomething)\n}",
+      "recursiveOutput": "while (true) {\n  continue\n  [1,2,3].forEach(doSomething)\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [28, 29],
+          "loc": {
+            "line": 3,
+            "column": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [17, 30],
+            "text": "continue\n  ["
+          }
+        }
+      ]
+    },
+    {
+      "code": "do; while(a)\n;[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "do; while(a)\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "do; while(a)\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [13, 14],
+          "loc": {
+            "line": 2,
+            "column": 1,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [11, 15],
+            "text": ")\n["
+          }
+        }
+      ]
+    },
+    {
+      "code": "const f = () => {}\n;[1,2,3].forEach(doSomething)",
+      "language": "js",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2015
+      },
+      "output": "const f = () => {}\n[1,2,3].forEach(doSomething)",
+      "recursiveOutput": "const f = () => {}\n[1,2,3].forEach(doSomething)",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [19, 20],
+          "loc": {
+            "line": 2,
+            "column": 1,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [17, 21],
+            "text": "}\n["
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { foo }",
+      "language": "js",
+      "options": [],
+      "output": "class C { foo; }",
+      "recursiveOutput": "class C { foo; }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [13, 14],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [13, 13],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { foo }",
+      "language": "js",
+      "options": ["always"],
+      "output": "class C { foo; }",
+      "recursiveOutput": "class C { foo; }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [13, 14],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [13, 13],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { foo; }",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { foo }",
+      "recursiveOutput": "class C { foo }",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [13, 14],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [10, 16],
+            "text": "foo }"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { foo\n[bar]; }",
+      "language": "js",
+      "options": ["always"],
+      "output": "class C { foo;\n[bar]; }",
+      "recursiveOutput": "class C { foo;\n[bar]; }",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 1,
+          "column": 14,
+          "endLine": 2,
+          "endColumn": 1
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [13, 14],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [13, 13],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { [get];\nfoo\n}",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { [get]\nfoo\n}",
+      "recursiveOutput": "class C { [get]\nfoo\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [14, 20],
+            "text": "]\nfoo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { [set];\nfoo\n}",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { [set]\nfoo\n}",
+      "recursiveOutput": "class C { [set]\nfoo\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [14, 20],
+            "text": "]\nfoo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { #get;\nfoo\n}",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { #get\nfoo\n}",
+      "recursiveOutput": "class C { #get\nfoo\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [14, 15],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [10, 19],
+            "text": "#get\nfoo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { #set;\nfoo\n}",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { #set\nfoo\n}",
+      "recursiveOutput": "class C { #set\nfoo\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 15,
+          "endLine": 1,
+          "endColumn": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [14, 15],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [10, 19],
+            "text": "#set\nfoo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { #static;\nfoo\n}",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { #static\nfoo\n}",
+      "recursiveOutput": "class C { #static\nfoo\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 19
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [17, 18],
+          "loc": {
+            "line": 1,
+            "column": 18,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [10, 22],
+            "text": "#static\nfoo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { get=1;\nfoo\n}",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { get=1\nfoo\n}",
+      "recursiveOutput": "class C { get=1\nfoo\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [14, 20],
+            "text": "1\nfoo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static static;\nfoo\n}",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { static static\nfoo\n}",
+      "recursiveOutput": "class C { static static\nfoo\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 25
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [23, 24],
+          "loc": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [17, 28],
+            "text": "static\nfoo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C { static;\n}",
+      "language": "js",
+      "options": ["never"],
+      "output": "class C { static\n}",
+      "recursiveOutput": "class C { static\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [16, 17],
+          "loc": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [10, 19],
+            "text": "static\n}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1}\n            ",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": false
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+      },
+      "output": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1;}\n            ",
+      "recursiveOutput": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1;}\n            ",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 8,
+          "column": 63,
+          "endLine": 8,
+          "endColumn": 64
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [223, 224],
+          "loc": {
+            "line": 8,
+            "column": 63,
+            "endLine": 8,
+            "endColumn": 64
+          },
+          "fix": {
+            "range": [223, 223],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1}\n            ",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": false,
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+      },
+      "output": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1;}\n            ",
+      "recursiveOutput": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1;}\n            ",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 8,
+          "column": 63,
+          "endLine": 8,
+          "endColumn": 64
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [223, 224],
+          "loc": {
+            "line": 8,
+            "column": 63,
+            "endLine": 8,
+            "endColumn": 64
+          },
+          "fix": {
+            "range": [223, 223],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1;}\n            ",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": true,
+          "omitLastInOneLineBlock": false
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+      },
+      "output": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1}\n            ",
+      "recursiveOutput": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1}\n            ",
+      "errors": [
+        {
+          "messageId": "extraSemi",
+          "line": 8,
+          "column": 63,
+          "endLine": 8,
+          "endColumn": 64
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [223, 224],
+          "loc": {
+            "line": 8,
+            "column": 63,
+            "endLine": 8,
+            "endColumn": 64
+          },
+          "fix": {
+            "range": [222, 225],
+            "text": "1}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                        console.log(this.anotherType);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1; anotherType=2}\n            ",
+      "language": "js",
+      "options": [
+        "always",
+        {
+          "omitLastInOneLineClassBody": false,
+          "omitLastInOneLineBlock": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+      },
+      "output": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                        console.log(this.anotherType);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1; anotherType=2;}\n            ",
+      "recursiveOutput": "\n                export class SomeClass{\n                    logType(){\n                        console.log(this.type);\n                        console.log(this.anotherType);\n                    }\n                }\n\n                export class Variant1 extends SomeClass{type=1; anotherType=2;}\n            ",
+      "errors": [
+        {
+          "messageId": "missingSemi",
+          "line": 9,
+          "column": 78,
+          "endLine": 9,
+          "endColumn": 79
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [293, 294],
+          "loc": {
+            "line": 9,
+            "column": 78,
+            "endLine": 9,
+            "endColumn": 79
+          },
+          "fix": {
+            "range": [293, 293],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class A {\n  method(): void\n  method(arg?: any): void {\n\n  }\n}",
+      "language": "ts",
+      "options": ["always"],
+      "output": "class A {\n  method(): void;\n  method(arg?: any): void {\n\n  }\n}",
+      "recursiveOutput": "class A {\n  method(): void;\n  method(arg?: any): void {\n\n  }\n}",
+      "errors": [
+        {
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [26, 27],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [26, 26],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class A {\n  method(): void;\n  method(arg?: any): void {\n\n  }\n}",
+      "language": "ts",
+      "options": ["never"],
+      "output": "class A {\n  method(): void\n  method(arg?: any): void {\n\n  }\n}",
+      "recursiveOutput": "class A {\n  method(): void\n  method(arg?: any): void {\n\n  }\n}",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [26, 27],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [22, 36],
+            "text": "void\n  method"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import a from \"a\"\n(function() {\n    // ...\n})()",
+      "language": "ts",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "always"
+        }
+      ],
+      "output": "import a from \"a\";\n(function() {\n    // ...\n})()",
+      "recursiveOutput": "import a from \"a\";\n(function() {\n    // ...\n})()",
+      "errors": [
+        {
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [17, 18],
+          "loc": {
+            "line": 1,
+            "column": 18,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import a from \"a\"\n;(function() {\n    // ...\n})()",
+      "language": "ts",
+      "options": [
+        "never",
+        {
+          "beforeStatementContinuationChars": "never"
+        }
+      ],
+      "output": "import a from \"a\"\n(function() {\n    // ...\n})()",
+      "recursiveOutput": "import a from \"a\"\n(function() {\n    // ...\n})()",
+      "errors": [
+        {
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [18, 19],
+          "loc": {
+            "line": 2,
+            "column": 1,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [14, 20],
+            "text": "\"a\"\n("
+          }
+        }
+      ]
+    },
+    {
+      "code": "declare function declareFn(): string",
+      "language": "ts",
+      "options": ["always"],
+      "output": "declare function declareFn(): string;",
+      "recursiveOutput": "declare function declareFn(): string;",
+      "errors": [
+        {
+          "line": 1,
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [36, 36],
+          "loc": {
+            "line": 1,
+            "column": 37
+          },
+          "fix": {
+            "range": [36, 36],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "declare function declareFn(): string;",
+      "language": "ts",
+      "options": ["never"],
+      "output": "declare function declareFn(): string",
+      "recursiveOutput": "declare function declareFn(): string",
+      "errors": [
+        {
+          "line": 1,
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [36, 37],
+          "loc": {
+            "line": 1,
+            "column": 37,
+            "endLine": 1,
+            "endColumn": 38
+          },
+          "fix": {
+            "range": [30, 37],
+            "text": "string"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export = Foo",
+      "language": "ts",
+      "options": ["always"],
+      "output": "export = Foo;",
+      "recursiveOutput": "export = Foo;",
+      "errors": [
+        {
+          "line": 1,
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [12, 12],
+          "loc": {
+            "line": 1,
+            "column": 13
+          },
+          "fix": {
+            "range": [12, 12],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "export = Foo;",
+      "language": "ts",
+      "options": ["never"],
+      "output": "export = Foo",
+      "recursiveOutput": "export = Foo",
+      "errors": [
+        {
+          "line": 1,
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [12, 13],
+          "loc": {
+            "line": 1,
+            "column": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 13],
+            "text": "Foo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import f = require(\"f\")",
+      "language": "ts",
+      "options": ["always"],
+      "output": "import f = require(\"f\");",
+      "recursiveOutput": "import f = require(\"f\");",
+      "errors": [
+        {
+          "line": 1,
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [23, 23],
+          "loc": {
+            "line": 1,
+            "column": 24
+          },
+          "fix": {
+            "range": [23, 23],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import f = require(\"f\");",
+      "language": "ts",
+      "options": ["never"],
+      "output": "import f = require(\"f\")",
+      "recursiveOutput": "import f = require(\"f\")",
+      "errors": [
+        {
+          "line": 1,
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [23, 24],
+          "loc": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [22, 24],
+            "text": ")"
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {}",
+      "language": "ts",
+      "options": ["always"],
+      "output": "type Foo = {};",
+      "recursiveOutput": "type Foo = {};",
+      "errors": [
+        {
+          "line": 1,
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [13, 13],
+          "loc": {
+            "line": 1,
+            "column": 14
+          },
+          "fix": {
+            "range": [13, 13],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {};",
+      "language": "ts",
+      "options": ["never"],
+      "output": "type Foo = {}",
+      "recursiveOutput": "type Foo = {}",
+      "errors": [
+        {
+          "line": 1,
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [13, 14],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [12, 14],
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class Class {\n    prop: string\n}",
+      "language": "ts",
+      "options": ["always"],
+      "output": "class Class {\n    prop: string;\n}",
+      "recursiveOutput": "class Class {\n    prop: string;\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class Class {\n    prop: string;\n}",
+      "language": "ts",
+      "options": ["never"],
+      "output": "class Class {\n    prop: string\n}",
+      "recursiveOutput": "class Class {\n    prop: string\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [24, 33],
+            "text": "string\n}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "abstract class AbsClass {\n    abstract prop: string\n    abstract meth(): string\n}",
+      "language": "ts",
+      "options": ["always"],
+      "output": "abstract class AbsClass {\n    abstract prop: string;\n    abstract meth(): string;\n}",
+      "recursiveOutput": "abstract class AbsClass {\n    abstract prop: string;\n    abstract meth(): string;\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "missingSemi"
+        },
+        {
+          "line": 3,
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [51, 52],
+          "loc": {
+            "line": 2,
+            "column": 26,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [51, 51],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [79, 80],
+          "loc": {
+            "line": 3,
+            "column": 28,
+            "endLine": 4,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [79, 79],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "abstract class AbsClass {\n    abstract prop: string;\n    abstract meth(): string;\n}",
+      "language": "ts",
+      "options": ["never"],
+      "output": "abstract class AbsClass {\n    abstract prop: string\n    abstract meth(): string\n}",
+      "recursiveOutput": "abstract class AbsClass {\n    abstract prop: string\n    abstract meth(): string\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "extraSemi"
+        },
+        {
+          "line": 3,
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [51, 52],
+          "loc": {
+            "line": 2,
+            "column": 26,
+            "endLine": 2,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [45, 65],
+            "text": "string\n    abstract"
+          }
+        },
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [80, 81],
+          "loc": {
+            "line": 3,
+            "column": 28,
+            "endLine": 3,
+            "endColumn": 29
+          },
+          "fix": {
+            "range": [74, 83],
+            "text": "string\n}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class PanCamera extends FreeCamera {\n  public invertY: boolean = false\n}",
+      "language": "ts",
+      "options": ["always"],
+      "output": "class PanCamera extends FreeCamera {\n  public invertY: boolean = false;\n}",
+      "recursiveOutput": "class PanCamera extends FreeCamera {\n  public invertY: boolean = false;\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [70, 71],
+          "loc": {
+            "line": 2,
+            "column": 34,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [70, 70],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class PanCamera extends FreeCamera {\n  public invertY: boolean = false;\n}",
+      "language": "ts",
+      "options": ["never"],
+      "output": "class PanCamera extends FreeCamera {\n  public invertY: boolean = false\n}",
+      "recursiveOutput": "class PanCamera extends FreeCamera {\n  public invertY: boolean = false\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [70, 71],
+          "loc": {
+            "line": 2,
+            "column": 34,
+            "endLine": 2,
+            "endColumn": 35
+          },
+          "fix": {
+            "range": [65, 73],
+            "text": "false\n}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\n  accessor foo\n  accessor [bar]\n}",
+      "language": "ts",
+      "options": ["always"],
+      "output": "class C {\n  accessor foo;\n  accessor [bar];\n}",
+      "recursiveOutput": "class C {\n  accessor foo;\n  accessor [bar];\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "missingSemi"
+        },
+        {
+          "line": 3,
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 2,
+            "column": 15,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [24, 24],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [41, 42],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [41, 41],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\n  accessor foo;\n  accessor [bar];\n}",
+      "language": "ts",
+      "options": ["never"],
+      "output": "class C {\n  accessor foo\n  accessor [bar]\n}",
+      "recursiveOutput": "class C {\n  accessor foo\n  accessor [bar]\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "extraSemi"
+        },
+        {
+          "line": 3,
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 2,
+            "column": 15,
+            "endLine": 2,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [21, 36],
+            "text": "foo\n  accessor"
+          }
+        },
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [42, 43],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [41, 45],
+            "text": "]\n}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\n  accessor foo\n  accessor [bar]\n}",
+      "language": "ts",
+      "options": ["always"],
+      "output": "class C {\n  accessor foo;\n  accessor [bar];\n}",
+      "recursiveOutput": "class C {\n  accessor foo;\n  accessor [bar];\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "missingSemi"
+        },
+        {
+          "line": 3,
+          "messageId": "missingSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 2,
+            "column": 15,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [24, 24],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "missingSemi",
+          "message": "Missing semicolon.",
+          "data": {},
+          "range": [41, 42],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [41, 41],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "class C {\n  accessor foo;\n  accessor [bar];\n}",
+      "language": "ts",
+      "options": ["never"],
+      "output": "class C {\n  accessor foo\n  accessor [bar]\n}",
+      "recursiveOutput": "class C {\n  accessor foo\n  accessor [bar]\n}",
+      "errors": [
+        {
+          "line": 2,
+          "messageId": "extraSemi"
+        },
+        {
+          "line": 3,
+          "messageId": "extraSemi"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 2,
+            "column": 15,
+            "endLine": 2,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [21, 36],
+            "text": "foo\n  accessor"
+          }
+        },
+        {
+          "messageId": "extraSemi",
+          "message": "Extra semicolon.",
+          "data": {},
+          "range": [42, 43],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [41, 45],
+            "text": "]\n}"
+          }
+        }
+      ]
+    }
+  ]
+}

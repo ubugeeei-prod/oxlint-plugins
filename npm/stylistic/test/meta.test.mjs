@@ -374,6 +374,24 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the stable semi metadata and complete message catalog', () => {
+    expect(plugin.rules.semi.meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Require or disallow semicolons instead of ASI',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        missingSemi: 'Missing semicolon.',
+        extraSemi: 'Extra semicolon.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

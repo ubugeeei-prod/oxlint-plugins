@@ -41,6 +41,11 @@ deprecated `arrow` override (including `"ignore"`).
 `member-delimiter-style` follows the same stable baseline for interfaces and
 type literals, including per-container overrides and multiline detection.
 
+`semi` follows the complete stable v5.10.0 JavaScript and TypeScript contract:
+`always`/`never`, one-line block and class-body omissions, statement
+continuation policies, class-field ASI hazards, and conservative surrounding
+token fixes. TypeScript and TSX files use the same native Oxc-AST path.
+
 ## JS API
 
 ```js
@@ -61,6 +66,6 @@ bindings.
 
 Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 [`ubugeeei-prod/corsa-bind`](https://github.com/ubugeeei-prod/corsa-bind)
-v0.43.0 (MIT). JSX-specific ports, including `jsx-quotes`, follow
+v0.43.0 (MIT). Additional stable ports, including `jsx-quotes` and `semi`, follow
 [`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
 v5.10.0 (MIT).

@@ -34,6 +34,7 @@ mod object_curly_newline;
 mod object_property_newline;
 mod quote_convert;
 mod quotes;
+mod semi;
 mod tabs;
 mod token_rules;
 mod type_annotation_spacing;
@@ -434,6 +435,10 @@ const SEMI_STYLE_MESSAGES: &[(&str, &str)] = &[
         "Expected this semicolon to be at the line's edge.",
     ),
     ("moveSemi", "Move the semicolon."),
+];
+const SEMI_MESSAGES: &[(&str, &str)] = &[
+    ("missingSemi", "Missing semicolon."),
+    ("extraSemi", "Extra semicolon."),
 ];
 const COMMA_STYLE_MESSAGES: &[(&str, &str)] = &[
     ("expectedCommaLast", "',' should be placed last."),
@@ -985,6 +990,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: SEMI_STYLE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "semi",
+        docs_description: "Require or disallow semicolons instead of ASI",
+        messages: SEMI_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "comma-style",
         docs_description: "Enforce consistent comma placement.",
         messages: COMMA_STYLE_MESSAGES,
@@ -1321,6 +1331,12 @@ pub fn run_stylistic_lint(
                 )
             }
             "curly-newline" => curly_newline::check_curly_newline(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "semi" => semi::check_semi(
                 source_text,
                 config.filename.as_deref(),
                 &rule.options,
