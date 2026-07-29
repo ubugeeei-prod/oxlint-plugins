@@ -15215,19 +15215,19 @@
       },
       {
         "name": "nonblock-statement-body-position",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule nonblock-statement-body-position."
+        "notes": "Oxc AST-backed native Rust port of @stylistic/nonblock-statement-body-position v5.10.0. The pinned synchronizer plus Rust and Vitest suites replay all 31 valid and 17 invalid upstream cases with 19 diagnostics and exact fixes, and add statement-kind, override, comment-safety, TSX, Unicode, CRLF/CR/LS/PS, API/meta/plugin, and real Oxlint lint/fix coverage."
       },
       {
         "name": "object-curly-newline",

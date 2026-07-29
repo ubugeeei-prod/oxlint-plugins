@@ -35,6 +35,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('brace-style');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'nonblock-statement-body-position',
+    );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'newline-per-chained-call',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('multiline-ternary');
@@ -878,5 +881,48 @@ describe('stylistic native API', () => {
         range: { start: 20, end: 21 },
       },
     ]);
+  });
+
+  it('runs nonblock-statement-body-position with exact UTF-8 ranges and fixes', () => {
+    const source = 'if (準備) 実行();';
+    const start = Buffer.byteLength(source.slice(0, source.indexOf('実行')));
+    const end = Buffer.byteLength(source);
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [{ name: 'nonblock-statement-body-position', options: ['below'] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'nonblock-statement-body-position',
+        messageId: 'expectLinebreak',
+        message: 'Expected a linebreak before this statement.',
+        range: { start, end },
+        suggestions: [
+          {
+            messageId: 'expectLinebreak',
+            message: 'Expected a linebreak before this statement.',
+            fixes: [{ range: { start, end: start }, replacementText: '\n' }],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('suppresses unsafe nonblock-statement-body-position comment fixes', () => {
+    const source = 'while (ready)\n/* preserve */\nrun();';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.js',
+      rules: [{ name: 'nonblock-statement-body-position', options: ['beside'] }],
+    });
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'nonblock-statement-body-position',
+        messageId: 'expectNoLinebreak',
+        message: 'Expected no linebreak before this statement.',
+      },
+    ]);
+    expect(diagnostics[0].suggestions).toBeUndefined();
   });
 });

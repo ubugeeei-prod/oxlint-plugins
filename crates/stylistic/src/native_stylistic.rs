@@ -25,6 +25,7 @@ mod lines_around_comment;
 mod multiline_ternary;
 mod newline_per_chained_call;
 mod no_confusing_arrow;
+mod nonblock_statement_body_position;
 mod object_curly_newline;
 mod quote_convert;
 mod quotes;
@@ -270,6 +271,16 @@ const BRACE_STYLE_MESSAGES: &[(&str, &str)] = &[
     (
         "sameLineClose",
         "Closing curly brace appears on the same line as the subsequent block.",
+    ),
+];
+const NONBLOCK_STATEMENT_BODY_POSITION_MESSAGES: &[(&str, &str)] = &[
+    (
+        "expectNoLinebreak",
+        "Expected no linebreak before this statement.",
+    ),
+    (
+        "expectLinebreak",
+        "Expected a linebreak before this statement.",
     ),
 ];
 const COMPUTED_PROPERTY_SPACING_MESSAGES: &[(&str, &str)] = &[
@@ -804,6 +815,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: BRACE_STYLE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "nonblock-statement-body-position",
+        docs_description: "Enforce the location of single-line statements",
+        messages: NONBLOCK_STATEMENT_BODY_POSITION_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "computed-property-spacing",
         docs_description: "Enforce consistent spacing inside computed member-access brackets.",
         messages: COMPUTED_PROPERTY_SPACING_MESSAGES,
@@ -1176,6 +1192,14 @@ pub fn run_stylistic_lint(
                 &rule.options,
                 &mut diagnostics,
             ),
+            "nonblock-statement-body-position" => {
+                nonblock_statement_body_position::check_nonblock_statement_body_position(
+                    source_text,
+                    config.filename.as_deref(),
+                    &rule.options,
+                    &mut diagnostics,
+                )
+            }
             "function-call-argument-newline" => {
                 function_call_argument_newline::check_function_call_argument_newline(
                     source_text,
