@@ -16,6 +16,7 @@ describe('stylistic native API', () => {
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-equals-spacing');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-confusing-arrow');
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -157,5 +158,57 @@ describe('stylistic native API', () => {
 
     expect(diagnostics).toHaveLength(1);
     expect(source.slice(diagnostics[0].range.start, diagnostics[0].range.end)).toBe("'attribute'");
+  });
+
+  it('runs no-confusing-arrow with stable options and exact native fixes', () => {
+    const sourceText =
+      "const direct = value => value ? 'yes' : 'no';\n" +
+      "const parenthesized = value => (value ? 'yes' : 'no');\n" +
+      "const destructured = ({ value }) => value ? 'yes' : 'no';\n";
+    const diagnostics = runNativeStylisticLint(sourceText, {
+      rules: [{ name: 'no-confusing-arrow', options: [{ onlyOneSimpleParam: true }] }],
+    });
+
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0]).toMatchObject({
+      ruleName: 'no-confusing-arrow',
+      messageId: 'confusing',
+      message: 'Arrow function used ambiguously with a conditional expression.',
+    });
+    expect(diagnostics[0].range).toEqual({
+      start: sourceText.indexOf("value => value ? 'yes' : 'no'"),
+      end:
+        sourceText.indexOf("value => value ? 'yes' : 'no'") +
+        "value => value ? 'yes' : 'no'".length,
+    });
+    expect(diagnostics[0].suggestions).toEqual([
+      {
+        messageId: 'confusing',
+        message: 'Arrow function used ambiguously with a conditional expression.',
+        fixes: [
+          {
+            range: {
+              start: sourceText.indexOf("value ? 'yes' : 'no'"),
+              end: sourceText.indexOf("value ? 'yes' : 'no'") + "value ? 'yes' : 'no'".length,
+            },
+            replacementText: "(value ? 'yes' : 'no')",
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('does not expose a no-confusing-arrow fix when allowParens is false', () => {
+    const diagnostics = runNativeStylisticLint('value => condition ? yes : no', {
+      rules: [{ name: 'no-confusing-arrow', options: [{ allowParens: false }] }],
+    });
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'no-confusing-arrow',
+        messageId: 'confusing',
+      },
+    ]);
+    expect(diagnostics[0].suggestions).toBeUndefined();
   });
 });

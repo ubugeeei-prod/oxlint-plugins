@@ -51,7 +51,7 @@ function createStylisticRule(ruleName) {
         requiresTypeChecking: false,
         url: SOURCE_URL,
       },
-      fixable: ruleName === 'jsx-quotes' ? 'code' : 'whitespace',
+      fixable: ['jsx-quotes', 'no-confusing-arrow'].includes(ruleName) ? 'code' : 'whitespace',
       hasSuggestions: meta.hasSuggestions,
       messages: meta.messages,
       schema: { type: 'array' },

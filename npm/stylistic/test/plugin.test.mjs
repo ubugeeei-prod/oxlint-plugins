@@ -84,6 +84,7 @@ const stylisticRuleFixtures = [
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
+  ['no-confusing-arrow', 'const f = value => value ? yes : no;\n', [], ['confusing']],
 ];
 
 function runRule(ruleName, sourceText, options, settings) {
@@ -138,6 +139,12 @@ describe('stylistic plugin', () => {
     expect(
       stylisticRuleFixtures.map(([ruleName]) => ruleName).sort((a, b) => a.localeCompare(b)),
     ).toEqual([...plugin.implementedStylisticRuleNames].sort((a, b) => a.localeCompare(b)));
+  });
+
+  it('preserves upstream code-fix metadata for no-confusing-arrow', () => {
+    expect(plugin.rules['no-confusing-arrow'].meta.fixable).toBe('code');
+    expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
+    expect(plugin.rules['arrow-spacing'].meta.fixable).toBe('whitespace');
   });
 
   it.each(stylisticRuleFixtures)(
@@ -347,6 +354,55 @@ describe('stylistic plugin', () => {
         },
       }),
     ).toEqual([{ range: [insertAt, insertAt], replacementText: ',' }]);
+  });
+
+  it('maps no-confusing-arrow ranges and fixes across Unicode source', () => {
+    const sourceText = "const 日本語 = value => value ? 'はい' : 'いいえ';\n";
+    const arrowText = "value => value ? 'はい' : 'いいえ'";
+    const bodyText = "value ? 'はい' : 'いいえ'";
+    const arrowStart = sourceText.indexOf(arrowText);
+    const bodyStart = sourceText.indexOf(bodyText);
+    const reports = runRule('no-confusing-arrow', sourceText, []);
+
+    expect(reports).toHaveLength(1);
+    expect(reports[0]).toMatchObject({
+      messageId: 'confusing',
+      node: { range: [arrowStart, arrowStart + arrowText.length] },
+    });
+    expect(
+      reports[0].suggest?.[0]?.fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([
+      {
+        range: [bodyStart, bodyStart + bodyText.length],
+        replacementText: `(${bodyText})`,
+      },
+    ]);
+  });
+
+  it('honors no-confusing-arrow options through shared settings', () => {
+    expect(
+      runRule('no-confusing-arrow', '({ value }) => value ? yes : no', [], {
+        corsaStylistic: {
+          rules: {
+            'no-confusing-arrow': [{ onlyOneSimpleParam: true }],
+          },
+        },
+      }),
+    ).toEqual([]);
+
+    const reports = runRule('no-confusing-arrow', 'value => (value ? yes : no)', [], {
+      corsaStylistic: {
+        rules: {
+          'no-confusing-arrow': [{ allowParens: false }],
+        },
+      },
+    });
+    expect(messageIds(reports)).toEqual(['confusing']);
+    expect(reports[0].suggest).toBeUndefined();
   });
 
   it('honors line-comment-position options and ignore patterns', () => {
@@ -652,6 +708,57 @@ describe('stylistic plugin', () => {
           code: 'stylistic(jsx-quotes)',
           labels: [{ span: { offset: 24, length: 7 } }],
         },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs no-confusing-arrow through oxlint jsPlugins on TSX', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-no-confusing-arrow-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(
+        sourcePath,
+        [
+          'type Props = { value: boolean };',
+          'export const View = ({ value }: Props) => (',
+          '  <button onClick={() => value ? enabled : disabled}>run</button>',
+          ');',
+          '',
+        ].join('\n'),
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/no-confusing-arrow': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(no-confusing-arrow)',
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
