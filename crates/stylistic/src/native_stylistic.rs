@@ -18,6 +18,7 @@ mod function_paren_newline;
 mod helpers;
 mod indent_binary_ops;
 mod jsx_child_element_spacing;
+mod jsx_closing_bracket_location;
 mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
@@ -573,6 +574,10 @@ const JSX_EQUALS_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("insertSpace", "Insert a space."),
     ("removeSpace", "Remove the whitespace."),
 ];
+const JSX_CLOSING_BRACKET_LOCATION_MESSAGES: &[(&str, &str)] = &[(
+    "bracketLocation",
+    "The closing bracket must be {{location}}{{details}}",
+)];
 const LINE_COMMENT_POSITION_MESSAGES: &[(&str, &str)] = &[
     ("above", "Expected comment to be above code."),
     ("beside", "Expected comment to be beside code."),
@@ -1032,6 +1037,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_EQUALS_SPACING_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-closing-bracket-location",
+        docs_description: "Enforce closing bracket location in JSX",
+        messages: JSX_CLOSING_BRACKET_LOCATION_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-quotes",
         docs_description: "Enforce the consistent use of either double or single quotes in JSX attributes.",
         messages: JSX_QUOTES_MESSAGES,
@@ -1228,6 +1238,14 @@ pub fn run_stylistic_lint(
             }
             "jsx-child-element-spacing" => {
                 jsx_child_element_spacing::check_jsx_child_element_spacing(
+                    source_text,
+                    config.filename.as_deref(),
+                    &rule.options,
+                    &mut diagnostics,
+                )
+            }
+            "jsx-closing-bracket-location" => {
+                jsx_closing_bracket_location::check_jsx_closing_bracket_location(
                     source_text,
                     config.filename.as_deref(),
                     &rule.options,

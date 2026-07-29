@@ -12,7 +12,7 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 
 <!-- This section is generated from `status.json` by `tools/tasks/generate-readme-coverage.ts`. Do not edit by hand; run `pnpm run docs:readme`. -->
 
-**25** ESLint plugins are being ported · **791 / 981** rules implemented (**81%**).
+**25** ESLint plugins are being ported · **792 / 981** rules implemented (**81%**).
 
 | Plugin                                                     | Upstream                                                                                                               | Implemented | Total | Coverage |
 | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- | ----- | -------- |
@@ -29,7 +29,7 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 | [`perfectionist`](npm/perfectionist)                       | [`eslint-plugin-perfectionist`](https://github.com/azat-io/eslint-plugin-perfectionist)                                | 23          | 23    | 100%     |
 | [`playwright`](npm/playwright)                             | [`eslint-plugin-playwright`](https://github.com/mskelton/eslint-plugin-playwright)                                     | 58          | 58    | 100%     |
 | [`postgresql`](npm/postgresql)                             | [`eslint-plugin-postgresql`](https://github.com/baseballyama/eslint-plugin-postgresql)                                 | 89          | 89    | 100%     |
-| [`react`](npm/react)                                       | [`eslint-plugin-react`](https://github.com/jsx-eslint/eslint-plugin-react)                                             | 0           | 46    | 0%       |
+| [`react`](npm/react)                                       | [`eslint-plugin-react`](https://github.com/jsx-eslint/eslint-plugin-react)                                             | 1           | 46    | 2%       |
 | [`react-hooks`](npm/react-hooks)                           | [`eslint-plugin-react-hooks`](https://github.com/facebook/react)                                                       | 0           | 27    | 0%       |
 | [`regexp`](npm/regexp)                                     | [`eslint-plugin-regexp`](https://github.com/ota-meshi/eslint-plugin-regexp)                                            | 82          | 82    | 100%     |
 | [`security`](npm/security)                                 | [`eslint-plugin-security`](https://github.com/eslint-community/eslint-plugin-security)                                 | 14          | 14    | 100%     |
@@ -123,9 +123,11 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 
 </details>
 <details>
-<summary><code>react</code> — 0/46 implemented</summary>
+<summary><code>react</code> — 1/46 implemented</summary>
 
-**Not implemented (46):** `boolean-prop-naming`, `default-props-match-prop-types`, `destructuring-assignment`, `forbid-foreign-prop-types`, `forbid-prop-types`, `function-component-definition`, `jsx-child-element-spacing`, `jsx-closing-bracket-location`, `jsx-closing-tag-location`, `jsx-curly-newline`, `jsx-curly-spacing`, `jsx-equals-spacing`, `jsx-first-prop-new-line`, `jsx-indent`, `jsx-indent-props`, `jsx-max-props-per-line`, `jsx-newline`, `jsx-no-bind`, `jsx-no-leaked-render`, `jsx-no-literals`, `jsx-one-expression-per-line`, `jsx-props-no-multi-spaces`, `jsx-sort-default-props`, `jsx-sort-props`, `jsx-space-before-closing`, `jsx-tag-spacing`, `jsx-uses-react`, `jsx-uses-vars`, `jsx-wrap-multilines`, `no-access-state-in-setstate`, `no-adjacent-inline-elements`, `no-arrow-function-lifecycle`, `no-invalid-html-attribute`, `no-unused-class-component-methods`, `no-unused-prop-types`, `no-unused-state`, `prefer-exact-props`, `prefer-read-only-props`, `prefer-stateless-function`, `prop-types`, `require-default-props`, `require-optimization`, `sort-comp`, `sort-default-props`, `sort-prop-types`, `static-property-placement`
+**Implemented (1):** `jsx-closing-bracket-location`
+
+**Not implemented (45):** `boolean-prop-naming`, `default-props-match-prop-types`, `destructuring-assignment`, `forbid-foreign-prop-types`, `forbid-prop-types`, `function-component-definition`, `jsx-child-element-spacing`, `jsx-closing-tag-location`, `jsx-curly-newline`, `jsx-curly-spacing`, `jsx-equals-spacing`, `jsx-first-prop-new-line`, `jsx-indent`, `jsx-indent-props`, `jsx-max-props-per-line`, `jsx-newline`, `jsx-no-bind`, `jsx-no-leaked-render`, `jsx-no-literals`, `jsx-one-expression-per-line`, `jsx-props-no-multi-spaces`, `jsx-sort-default-props`, `jsx-sort-props`, `jsx-space-before-closing`, `jsx-tag-spacing`, `jsx-uses-react`, `jsx-uses-vars`, `jsx-wrap-multilines`, `no-access-state-in-setstate`, `no-adjacent-inline-elements`, `no-arrow-function-lifecycle`, `no-invalid-html-attribute`, `no-unused-class-component-methods`, `no-unused-prop-types`, `no-unused-state`, `prefer-exact-props`, `prefer-read-only-props`, `prefer-stateless-function`, `prop-types`, `require-default-props`, `require-optimization`, `sort-comp`, `sort-default-props`, `sort-prop-types`, `static-property-placement`
 
 </details>
 <details>
