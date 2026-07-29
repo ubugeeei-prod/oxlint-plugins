@@ -93,6 +93,9 @@ pub struct LintDiagnostic {
     pub message_id: String,
     /// Rendered user-facing diagnostic message.
     pub message: String,
+    /// Template interpolation data for ESLint-compatible message catalogs.
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
+    pub data: BTreeMap<String, String>,
     /// Source byte range reported by the rule.
     pub range: TextRange,
     /// Optional suggestions for automated repair.

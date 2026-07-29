@@ -1,0 +1,8139 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/type-annotation-spacing/type-annotation-spacing.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-stylistic-type-annotation-spacing-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "interface resolve {\n    resolver: (() => PromiseLike<T>) | PromiseLike<T>;\n}"
+    },
+    {
+      "code": "const foo = {} as Foo;"
+    },
+    {
+      "code": "let foo: string;"
+    },
+    {
+      "code": "function foo(): void {}"
+    },
+    {
+      "code": "function foo(a: string) {}"
+    },
+    {
+      "code": "class Foo {\n    name: string;\n}"
+    },
+    {
+      "code": "class Foo {\n    constructor(message: string);\n}"
+    },
+    {
+      "code": "class Foo {\n    greet(): string { return \"hello\"; }\n}"
+    },
+    {
+      "code": "class Foo {\n    greet(name: string): string { return name; }\n}"
+    },
+    {
+      "code": "interface Foo {\n    name: string;\n}"
+    },
+    {
+      "code": "interface Foo {\n    greet(): string;\n}"
+    },
+    {
+      "code": "interface Foo {\n    greet(name: string): string;\n}"
+    },
+    {
+      "code": "interface Foo {\n    thing: { [key in string]: number };\n}"
+    },
+    {
+      "code": "type Foo = {\n    name: string;\n}"
+    },
+    {
+      "code": "type Foo = {\n    greet(): string;\n}"
+    },
+    {
+      "code": "type Foo = {\n    greet(name: string): string;\n}"
+    },
+    {
+      "code": "type Foo = (name: string) => string;"
+    },
+    {
+      "code": "type Foo = {\n    greet: (name: string) => string;\n}"
+    },
+    {
+      "code": "const isString = (): x is string => {\n}"
+    },
+    {
+      "code": "let foo: string;",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(): string {}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(a: string) {}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name: string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message: string);\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(): string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name: string): string { return name; }\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name: string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(): string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name: string): string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name: string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(): string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name: string): string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name: string) => string;",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name: string) => string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "let foo: string;",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "function foo(): string {}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "function foo(a: string) {}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message: string);\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(): string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name: string): string { return name; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(): string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name: string): string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(): string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name: string): string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name: string)=> string;",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name: string)=> string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "let foo : string;",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() : string {}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(a : string) {}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message : string);\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet() : string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name : string) : string { return name; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet() : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet() : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string) => string;",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name : string) => string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "let foo :string;",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() :string {}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(a :string) {}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name :string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message :string);\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet() :string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name :string) :string { return name; }\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name :string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet() :string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name :string) :string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name :string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet() :string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name :string) :string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name :string) =>string;",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet :(name :string) =>string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "let foo : string;",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "function foo() : string {}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(a : string) {}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message : string);\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet() : string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name : string) : string { return name; }\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet() : string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name : string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet() : string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string) => string;",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name : string) => string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "let foo : string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo() : string {}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo(a : string) {}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message : string);\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet() : string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name : string) : string { return name; }\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet() : string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name : string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet() : string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string)=>string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name : string)=>string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string) => string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name : string) => string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string) =>string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name : string) =>string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing: { [key in string]: number };\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing: { [key in string]: number };\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing : { [key in string] : number };\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing :{ [key in string] :number };\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing : { [key in string] : number };\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing: { [key in string]: number };\n}"
+    },
+    {
+      "code": "type Foo = {\n    thing: { [key in string]: number };\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing: { [key in string]: number };\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing : { [key in string] : number };\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing :{ [key in string] :number };\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing : { [key in string] : number };\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet: (name: string) => void = {}\n}"
+    },
+    {
+      "code": "class Foo {\n    greet: (name: string) => void = {}\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet: (name: string)=> void = {}\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet : (name : string) => void = {}\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet :(name :string) =>void = {}\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet : (name : string) => void = {}\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: string }\ntype Bar = Record<keyof Foo, string>",
+      "options": [
+        {
+          "after": true,
+          "before": false,
+          "overrides": {
+            "arrow": {
+              "after": true,
+              "before": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "let resolver: (() => PromiseLike<T>) | PromiseLike<T>;"
+    },
+    {
+      "code": "const foo:string;",
+      "options": [
+        {
+          "overrides": {
+            "colon": {
+              "after": false,
+              "before": true
+            },
+            "variable": {
+              "before": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "const foo:string;",
+      "options": [
+        {
+          "before": true,
+          "overrides": {
+            "colon": {
+              "after": true,
+              "before": false
+            },
+            "variable": {
+              "after": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  greet():string;\n}",
+      "options": [
+        {
+          "overrides": {
+            "colon": {
+              "after": false,
+              "before": true
+            },
+            "property": {
+              "before": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n  name:string;\n}",
+      "options": [
+        {
+          "before": true,
+          "overrides": {
+            "colon": {
+              "after": true,
+              "before": false
+            },
+            "property": {
+              "after": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo(name:string) {}",
+      "options": [
+        {
+          "overrides": {
+            "colon": {
+              "after": false,
+              "before": true
+            },
+            "parameter": {
+              "before": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo(name:string) {}",
+      "options": [
+        {
+          "before": true,
+          "overrides": {
+            "colon": {
+              "after": true,
+              "before": false
+            },
+            "parameter": {
+              "after": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo():string {}",
+      "options": [
+        {
+          "overrides": {
+            "colon": {
+              "after": false,
+              "before": true
+            },
+            "returnType": {
+              "before": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "function foo():string {}",
+      "options": [
+        {
+          "before": true,
+          "overrides": {
+            "colon": {
+              "after": true,
+              "before": false
+            },
+            "returnType": {
+              "after": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type ConstructorFn = new (...args: any[]) => any;"
+    },
+    {
+      "code": "function error_is_reported_ok(): (void) {}"
+    },
+    {
+      "code": "interface resolve {\n    resolver?: (() => PromiseLike<T>) | PromiseLike<T>;\n}"
+    },
+    {
+      "code": "function foo(a?: string) {}"
+    },
+    {
+      "code": "class Foo {\n    name?: string;\n}"
+    },
+    {
+      "code": "class Foo {\n    constructor(message?: string);\n}"
+    },
+    {
+      "code": "class Foo {\n    greet(name?: string): string { return name; }\n}"
+    },
+    {
+      "code": "interface Foo {\n    name?: string;\n}"
+    },
+    {
+      "code": "interface Foo {\n    greet(name?: string): string;\n}"
+    },
+    {
+      "code": "interface Foo {\n    thing?: { [key in string]?: number };\n}"
+    },
+    {
+      "code": "type Foo = {\n    name?: string;\n}"
+    },
+    {
+      "code": "type Foo = {\n    greet(name?: string): string;\n}"
+    },
+    {
+      "code": "type Foo = (name?: string) => string;"
+    },
+    {
+      "code": "type Foo = {\n    greet?: (name?: string) => string;\n}"
+    },
+    {
+      "code": "function foo(a?: string) {}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name?: string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message?: string);\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name?: string): string { return name; }\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name?: string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name?: string): string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name?: string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name?: string): string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name?: string) => string;",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet?: (name?: string) => string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(a?: string) {}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name?: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message?: string);\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name?: string): string { return name; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name?: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name?: string): string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name?: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name?: string): string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name?: string)=> string;",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet?: (name?: string)=> string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "function foo(a ?: string) {}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message ?: string);\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name ?: string) : string { return name; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name ?: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string) => string;",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet ?: (name : string) => string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(a ?:string) {}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name ?:string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message ?:string);\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name ?:string) :string { return name; }\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name ?:string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name ?:string) :string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name ?:string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name ?:string) :string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?:string) =>string;",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet :(name ?:string) =>string;\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(a ?: string) {}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message ?: string);\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name ?: string) : string { return name; }\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name ?: string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string) => string;",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name ?: string) => string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "function foo(a ?: string) {}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message ?: string);\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name ?: string) : string { return name; }\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name ?: string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string)=>string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet ?: (name ?: string)=>string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string) => string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet ?: (name ?: string) => string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string) =>string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name ?: string) =>string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing?: { [key in string]?: number };\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing?: { [key in string]?: number };\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing ?: { [key in string] ?: number };\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing ?:{ [key in string] ?:number };\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    thing ?: { [key in string] ?: number };\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing?: { [key in string]?: number };\n}"
+    },
+    {
+      "code": "type Foo = {\n    thing?: { [key in string]?: number };\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing?: { [key in string]?: number };\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing ?: { [key in string] ?: number };\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing ?:{ [key in string] ?:number };\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    thing ?: { [key in string] ?: number };\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet: (name?: string) => void = {}\n}"
+    },
+    {
+      "code": "class Foo {\n    greet: (name?: string) => void = {}\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet: (name?: string)=> void = {}\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet : (name ?: string) => void = {}\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet :(name ?:string) =>void = {}\n}",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet : (name ?: string) => void = {}\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a?: string }\ntype Bar = Record<keyof Foo, string>",
+      "options": [
+        {
+          "after": true,
+          "before": false,
+          "overrides": {
+            "arrow": {
+              "after": true,
+              "before": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n  foo: () => void;\n  bar: ()=>void;\n}",
+      "options": [
+        {
+          "overrides": {
+            "arrow": "ignore"
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "options": []
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "options": [
+        {
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?:T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "options": [
+        {
+          "after": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "options": []
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "options": [
+        {
+          "after": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "options": [
+        {
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?:T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "options": [
+        {
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "options": [
+        {
+          "after": false
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": false
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "let foo : string;",
+      "output": "let foo: string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "function foo() : string {}",
+      "output": "function foo(): string {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "function foo(a : string) {}",
+      "output": "function foo(a: string) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name : string;\n}",
+      "output": "class Foo {\n    name: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message : string);\n}",
+      "output": "class Foo {\n    constructor(message: string);\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet() : string { return \"hello\"; }\n}",
+      "output": "class Foo {\n    greet(): string { return \"hello\"; }\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 13
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name : string) : string { return name; }\n}",
+      "output": "class Foo {\n    greet(name: string): string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name : string;\n}",
+      "output": "interface Foo {\n    name: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet() : string;\n}",
+      "output": "interface Foo {\n    greet(): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 13
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name : string) : string;\n}",
+      "output": "interface Foo {\n    greet(name: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name : string;\n}",
+      "output": "type Foo = {\n    name: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet() : string;\n}",
+      "output": "type Foo = {\n    greet(): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 13
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name : string) : string;\n}",
+      "output": "type Foo = {\n    greet(name: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string) => string;",
+      "output": "type Foo = (name: string) => string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string)=> string;",
+      "output": "type Foo = (name: string) => string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name : string) => string;\n}",
+      "output": "type Foo = {\n    greet: (name: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name : string)=> string;\n}",
+      "output": "type Foo = {\n    greet: (name: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "let foo : string;",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "let foo: string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "function foo() : string {}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "function foo(): string {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "function foo(a : string) {}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "function foo(a: string) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "class Foo {\n    name: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message : string);\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "class Foo {\n    constructor(message: string);\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet() : string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "class Foo {\n    greet(): string { return \"hello\"; }\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 13
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name : string) : string { return name; }\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "class Foo {\n    greet(name: string): string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "interface Foo {\n    name: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet() : string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "interface Foo {\n    greet(): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 13
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "interface Foo {\n    greet(name: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name : string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = {\n    name: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet() : string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = {\n    greet(): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 13
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = {\n    greet(name: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string) => string;",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = (name: string) => string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string)=> string;",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = (name: string) => string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name : string) => string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = {\n    greet: (name: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name : string)=> string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = {\n    greet: (name: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "let foo : string;",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "let foo: string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "function foo() : string {}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "function foo(): string {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "function foo(a : string) {}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "function foo(a: string) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "class Foo {\n    name: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message : string);\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "class Foo {\n    constructor(message: string);\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet() : string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "class Foo {\n    greet(): string { return \"hello\"; }\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 13
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name : string) : string { return name; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "class Foo {\n    greet(name: string): string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "interface Foo {\n    name: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet() : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "interface Foo {\n    greet(): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 13
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "interface Foo {\n    greet(name: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = {\n    name: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet() : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = {\n    greet(): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 13
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name : string) : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = {\n    greet(name: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string) => string;",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = (name: string)=> string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string)=> string;",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = (name: string)=> string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name : string) => string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = {\n    greet: (name: string)=> string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name : string)=> string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = {\n    greet: (name: string)=> string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "let foo:string;",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "let foo : string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 8
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 8
+        }
+      ]
+    },
+    {
+      "code": "function foo():string {}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "function foo() : string {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        }
+      ]
+    },
+    {
+      "code": "function foo(a:string) {}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "function foo(a : string) {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name:string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    name : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message:string);\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    constructor(message : string);\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet():string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    greet() : string { return \"hello\"; }\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name:string):string { return name; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    greet(name : string) : string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name:string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    name : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet():string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    greet() : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name:string):string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    greet(name : string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name:string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    name : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet():string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet() : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name:string):string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet(name : string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name: string)=> string;",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = (name : string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string)=> string;",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = (name : string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name: string)=> string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet : (name : string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name : string)=> string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet : (name : string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "let foo:string;",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "let foo : string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 8
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 8
+        }
+      ]
+    },
+    {
+      "code": "function foo():string {}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "function foo() : string {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        }
+      ]
+    },
+    {
+      "code": "function foo(a:string) {}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "function foo(a : string) {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name:string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    name : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message:string);\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    constructor(message : string);\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet():string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    greet() : string { return \"hello\"; }\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name:string):string { return name; }\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    greet(name : string) : string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name:string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    name : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet():string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    greet() : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name:string):string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    greet(name : string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name:string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    name : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet():string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet() : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name:string):string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet(name : string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name: string)=> string;",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = (name : string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string)=> string;",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = (name : string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name: string)=> string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet : (name : string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 10
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name : string)=> string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet : (name : string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "let foo:string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "let foo : string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 8
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 8
+        }
+      ]
+    },
+    {
+      "code": "function foo():string {}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "function foo() : string {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        }
+      ]
+    },
+    {
+      "code": "function foo(a:string) {}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "function foo(a : string) {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 15
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name:string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "class Foo {\n    name : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message:string);\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "class Foo {\n    constructor(message : string);\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet():string { return \"hello\"; }\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "class Foo {\n    greet() : string { return \"hello\"; }\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name:string):string { return name; }\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "class Foo {\n    greet(name : string) : string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name:string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "interface Foo {\n    name : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet():string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "interface Foo {\n    greet() : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name:string):string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "interface Foo {\n    greet(name : string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name:string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = {\n    name : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet():string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = {\n    greet() : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name:string):string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = {\n    greet(name : string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name:string)=>string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = (name : string)=>string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 17
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name:string)=>string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = {\n    greet : (name : string)=>string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name:string)=>string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = (name : string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 25
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet : (name:string)=>string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = {\n    greet : (name : string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 26
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "class Some {\n    a : {some: string, other: {more: number}};\n    someMethod : (args : {some: string, other: {more: number}}) => void;\n    doSomething(args : {some: string, other: {more: number}}) : void {}\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "class Some {\n    a : {some : string, other : {more : number}};\n    someMethod : (args : {some : string, other : {more : number}}) => void;\n    doSomething(args : {some : string, other : {more : number}}) : void {}\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 14
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 29
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 36
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 3,
+          "column": 31
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 3,
+          "column": 46
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 3,
+          "column": 53
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 4,
+          "column": 29
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 4,
+          "column": 44
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 4,
+          "column": 51
+        }
+      ]
+    },
+    {
+      "code": "function error_is_reported_ok():(void) {}",
+      "output": "function error_is_reported_ok(): (void) {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 1,
+          "column": 32
+        }
+      ]
+    },
+    {
+      "code": "function foo(a ?: string) {}",
+      "output": "function foo(a?: string) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "function foo(a? : string) {}",
+      "output": "function foo(a?: string) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBetween",
+          "data": {
+            "type": ":",
+            "previousToken": "?"
+          },
+          "line": 1,
+          "column": 17
+        }
+      ]
+    },
+    {
+      "code": "function foo(a ? : string) {}",
+      "output": "function foo(a?: string) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBetween",
+          "data": {
+            "type": ":",
+            "previousToken": "?"
+          },
+          "line": 1,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "function foo(a ?  : string) {}",
+      "output": "function foo(a?: string) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBetween",
+          "data": {
+            "type": ":",
+            "previousToken": "?"
+          },
+          "line": 1,
+          "column": 19
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name ?: string;\n}",
+      "output": "class Foo {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message ?: string);\n}",
+      "output": "class Foo {\n    constructor(message?: string);\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message ? : string);\n}",
+      "output": "class Foo {\n    constructor(message?: string);\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 25
+        },
+        {
+          "messageId": "unexpectedSpaceBetween",
+          "data": {
+            "type": ":",
+            "previousToken": "?"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name ?: string) : string { return name; }\n}",
+      "output": "class Foo {\n    greet(name?: string): string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name ?: string;\n}",
+      "output": "interface Foo {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name ? : string;\n}",
+      "output": "interface Foo {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        },
+        {
+          "messageId": "unexpectedSpaceBetween",
+          "data": {
+            "type": ":",
+            "previousToken": "?"
+          },
+          "line": 2,
+          "column": 12
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name ?: string) : string;\n}",
+      "output": "interface Foo {\n    greet(name?: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name ?: string;\n}",
+      "output": "type Foo = {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name ?: string) : string;\n}",
+      "output": "type Foo = {\n    greet(name?: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string) => string;",
+      "output": "type Foo = (name?: string) => string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string)=> string;",
+      "output": "type Foo = (name?: string) => string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name ?: string) => string;\n}",
+      "output": "type Foo = {\n    greet: (name?: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name ?: string)=> string;\n}",
+      "output": "type Foo = {\n    greet: (name?: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "function foo(a ?: string) {}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "function foo(a?: string) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "class Foo {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message ?: string);\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "class Foo {\n    constructor(message?: string);\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name ?: string) : string { return name; }\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "class Foo {\n    greet(name?: string): string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "interface Foo {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "interface Foo {\n    greet(name?: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name ?: string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = {\n    greet(name?: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string) => string;",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = (name?: string) => string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string)=> string;",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = (name?: string) => string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name ?: string) => string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = {\n    greet: (name?: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name ?: string)=> string;\n}",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo = {\n    greet: (name?: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "function foo(a ?: string) {}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "function foo(a?: string) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "class Foo {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message ?: string);\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "class Foo {\n    constructor(message?: string);\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name ?: string) : string { return name; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "class Foo {\n    greet(name?: string): string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name ?: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "interface Foo {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "interface Foo {\n    greet(name?: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name ?: string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = {\n    name?: string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name ?: string) : string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = {\n    greet(name?: string): string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string) => string;",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = (name?: string)=> string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 29
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string)=> string;",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = (name?: string)=> string;",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name ?: string) => string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = {\n    greet: (name?: string)=> string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 29
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet: (name ?: string)=> string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo = {\n    greet: (name?: string)=> string;\n}",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "function foo(a?:string) {}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "function foo(a ?: string) {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name?:string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    name ?: string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message?:string);\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    constructor(message ?: string);\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name?:string):string { return name; }\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    greet(name ?: string) : string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name?:string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    name ?: string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name?:string):string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    greet(name ?: string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name?:string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    name ?: string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name?:string):string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet(name ?: string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name?: string)=> string;",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = (name ?: string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name ?: string)=> string;",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = (name ?: string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet?: (name?: string)=> string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet ?: (name ?: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet ?: (name ?: string)=> string;\n}",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet ?: (name ?: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 30
+        }
+      ]
+    },
+    {
+      "code": "function foo(a?:string) {}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "function foo(a ?: string) {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name?:string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    name ?: string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message?:string);\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    constructor(message ?: string);\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name?:string):string { return name; }\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "class Foo {\n    greet(name ?: string) : string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name?:string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    name ?: string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name?:string):string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "interface Foo {\n    greet(name ?: string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name?:string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    name ?: string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name?:string):string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet(name ?: string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name?: string)=> string;",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = (name ?: string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name : string)=> string;",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = (name : string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 27
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet?: (name?: string)=> string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet ?: (name ?: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet ?: (name ?: string)=> string;\n}",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo = {\n    greet ?: (name ?: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 30
+        }
+      ]
+    },
+    {
+      "code": "function foo(a?:string) {}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "function foo(a ?: string) {}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 16
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    name?:string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "class Foo {\n    name ?: string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    constructor(message?:string);\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "class Foo {\n    constructor(message ?: string);\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 25
+        }
+      ]
+    },
+    {
+      "code": "class Foo {\n    greet(name?:string):string { return name; }\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "class Foo {\n    greet(name ?: string) : string { return name; }\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    name?:string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "interface Foo {\n    name ?: string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "interface Foo {\n    greet(name?:string):string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "interface Foo {\n    greet(name ?: string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    name?:string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = {\n    name ?: string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 9
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 10
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet(name?:string):string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = {\n    greet(name ?: string) : string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 15
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 16
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": ":"
+          },
+          "line": 2,
+          "column": 24
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name?:string)=>string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = (name ?: string)=>string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 18
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet ?: (name?:string)=>string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = {\n    greet ?: (name ?: string)=>string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 19
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 20
+        }
+      ]
+    },
+    {
+      "code": "type Foo = (name?:string)=>string;",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = (name ?: string) => string;",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 1,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 26
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 1,
+          "column": 26
+        }
+      ]
+    },
+    {
+      "code": "type Foo = {\n    greet ?: (name?:string)=>string;\n}",
+      "options": [
+        {
+          "before": false,
+          "after": false,
+          "overrides": {
+            "colon": {
+              "before": true,
+              "after": true
+            },
+            "arrow": {
+              "before": true,
+              "after": true
+            }
+          }
+        }
+      ],
+      "output": "type Foo = {\n    greet ?: (name ?: string) => string;\n}",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 19
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "?:"
+          },
+          "line": 2,
+          "column": 20
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 28
+        },
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "=>"
+          },
+          "line": 2,
+          "column": 28
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 32
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "options": [
+        {
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 32
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 32
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "options": [
+        {
+          "after": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] +?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 31
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 31
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] +?:T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 31
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?:T[P] }",
+      "options": [],
+      "output": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?:T[P] }",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?:T[P] }",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?:T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] +?:T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "options": [
+        {
+          "after": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 31
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] +?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 31
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] +?:T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 31
+        },
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]+?: T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]+?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "+?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 32
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "options": [
+        {
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 32
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 32
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "options": [
+        {
+          "after": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] -?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 31
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 31
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] -?:T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 31
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?:T[P] }",
+      "options": [],
+      "output": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?:T[P] }",
+      "options": [
+        {
+          "after": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?:T[P] }",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?:T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 32
+        },
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T] -?:T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "options": [
+        {
+          "after": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "options": [
+        {
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 31
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "options": [
+        {
+          "after": true,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] -?: T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 31
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": true
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T] -?:T[P] }",
+      "errors": [
+        {
+          "messageId": "expectedSpaceBefore",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 31
+        },
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    },
+    {
+      "code": "type Foo<T> = { [P in keyof T]-?: T[P] }",
+      "options": [
+        {
+          "after": false,
+          "before": false
+        }
+      ],
+      "output": "type Foo<T> = { [P in keyof T]-?:T[P] }",
+      "errors": [
+        {
+          "messageId": "unexpectedSpaceAfter",
+          "data": {
+            "type": "-?:"
+          },
+          "line": 1,
+          "column": 33
+        }
+      ]
+    }
+  ]
+}

@@ -18,6 +18,7 @@ mod quote_convert;
 mod quotes;
 mod tabs;
 mod token_rules;
+mod type_annotation_spacing;
 mod unicode_bom;
 
 const PROGRAM_LISTENER: &[&str] = &["Program"];
@@ -67,6 +68,28 @@ const ARROW_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("unexpectedAfter", "Unexpected space after =>."),
     ("insertSpace", "Insert a space."),
     ("removeSpace", "Remove the whitespace."),
+];
+const TYPE_ANNOTATION_SPACING_MESSAGES: &[(&str, &str)] = &[
+    (
+        "expectedSpaceAfter",
+        "Expected a space after the '{{type}}'.",
+    ),
+    (
+        "expectedSpaceBefore",
+        "Expected a space before the '{{type}}'.",
+    ),
+    (
+        "unexpectedSpaceAfter",
+        "Unexpected space after the '{{type}}'.",
+    ),
+    (
+        "unexpectedSpaceBefore",
+        "Unexpected space before the '{{type}}'.",
+    ),
+    (
+        "unexpectedSpaceBetween",
+        "Unexpected space between the '{{previousToken}}' and the '{{type}}'.",
+    ),
 ];
 const COMMA_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("missing", "A space is required around ','."),
@@ -537,6 +560,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: ARROW_SPACING_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "type-annotation-spacing",
+        docs_description: "Require consistent spacing around type annotations.",
+        messages: TYPE_ANNOTATION_SPACING_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "comma-spacing",
         docs_description: "Enforce consistent spacing before and after commas.",
         messages: COMMA_SPACING_MESSAGES,
@@ -901,6 +929,11 @@ pub fn run_stylistic_lint(
                 unicode_bom::check_unicode_bom(source_text, &rule.options, &mut diagnostics)
             }
             "no-confusing-arrow" => no_confusing_arrow::check_no_confusing_arrow(
+                source_text,
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "type-annotation-spacing" => type_annotation_spacing::check_type_annotation_spacing(
                 source_text,
                 &rule.options,
                 &mut diagnostics,

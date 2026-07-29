@@ -126,6 +126,7 @@ function reportStylisticDiagnostics(context, program, diagnostics) {
     const descriptor = {
       node: rangeNode(program, diagnostic.range),
       messageId: diagnostic.messageId,
+      ...(diagnostic.data ? { data: diagnostic.data } : {}),
     };
     const data = dataForStylisticDiagnostic(diagnostic);
     if (data) {
