@@ -15151,19 +15151,19 @@
       },
       {
         "name": "no-confusing-arrow",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-confusing-arrow."
+        "notes": "Native Oxc-AST port of @stylistic v5.10.0 no-confusing-arrow with exact allowParens and onlyOneSimpleParam behavior, full upstream valid/invalid coverage, exact conditional-body fixes, TS/JSX false-positive regressions, UTF-8/UTF-16 range checks, and real Oxlint JS-plugin integration."
       },
       {
         "name": "no-extra-parens",

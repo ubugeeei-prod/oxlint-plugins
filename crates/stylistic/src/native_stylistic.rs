@@ -13,6 +13,7 @@ mod jsx_rules;
 mod lexer;
 mod line_index;
 mod line_rules;
+mod no_confusing_arrow;
 mod quote_convert;
 mod quotes;
 mod tabs;
@@ -457,6 +458,10 @@ const LINES_BETWEEN_CLASS_MEMBERS_MESSAGES: &[(&str, &str)] = &[
     ("insertBlankLine", "Insert a blank line."),
     ("removeBlankLine", "Remove the blank line."),
 ];
+const NO_CONFUSING_ARROW_MESSAGES: &[(&str, &str)] = &[(
+    "confusing",
+    "Arrow function used ambiguously with a conditional expression.",
+)];
 
 /// One stylistic rule invocation requested by the JavaScript bridge.
 #[derive(Clone, Debug, Deserialize)]
@@ -746,6 +751,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         docs_description: "Require or disallow an empty line between class members.",
         messages: LINES_BETWEEN_CLASS_MEMBERS_MESSAGES,
     },
+    StylisticRuleDefinition {
+        name: "no-confusing-arrow",
+        docs_description: "Disallow arrow functions where they could be confused with comparisons.",
+        messages: NO_CONFUSING_ARROW_MESSAGES,
+    },
 ];
 
 /// Rule names that run over the shared token + bracket-matching scan.
@@ -890,6 +900,11 @@ pub fn run_stylistic_lint(
             "unicode-bom" => {
                 unicode_bom::check_unicode_bom(source_text, &rule.options, &mut diagnostics)
             }
+            "no-confusing-arrow" => no_confusing_arrow::check_no_confusing_arrow(
+                source_text,
+                &rule.options,
+                &mut diagnostics,
+            ),
             name if TOKEN_RULE_NAMES.contains(&name) => {
                 let scan = token_scan
                     .as_ref()

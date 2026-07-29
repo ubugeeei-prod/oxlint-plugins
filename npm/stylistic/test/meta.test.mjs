@@ -39,7 +39,9 @@ describe('stylistic plugin meta contract', () => {
     expect(rule.meta.docs.url).toMatch(/github\.com\/ubugeeei-prod\/oxlint-plugins/);
     expect(rule.meta.docs.recommended).toBe(false);
     expect(rule.meta.docs.requiresTypeChecking).toBe(false);
-    expect(rule.meta.fixable).toBe(ruleName === 'jsx-quotes' ? 'code' : 'whitespace');
+    expect(rule.meta.fixable).toBe(
+      ['jsx-quotes', 'no-confusing-arrow'].includes(ruleName) ? 'code' : 'whitespace',
+    );
     expect(typeof rule.meta.hasSuggestions).toBe('boolean');
     expect(typeof rule.meta.messages).toBe('object');
     expect(rule.meta.messages).not.toBeNull();
