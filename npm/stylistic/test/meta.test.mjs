@@ -232,6 +232,24 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the complete nonblock-statement-body-position metadata contract', () => {
+    expect(plugin.rules['nonblock-statement-body-position'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce the location of single-line statements',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        expectNoLinebreak: 'Expected no linebreak before this statement.',
+        expectLinebreak: 'Expected a linebreak before this statement.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

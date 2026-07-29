@@ -121,6 +121,7 @@ const stylisticRuleFixtures = [
     ['expectedTestCons', 'expectedConsAlt'],
   ],
   ['brace-style', 'if (value)\n{\n  work(); }\n', [], ['nextLineOpen', 'singleLineClose']],
+  ['nonblock-statement-body-position', 'if (value) work();\n', ['below'], ['expectLinebreak']],
   ['newline-per-chained-call', 'first().second().third();\n', [], ['expected']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
@@ -2201,6 +2202,47 @@ const parenthesized = (a + b) * c;
           'Closing curly brace should be on the same line as opening curly brace or on the line after the previous block.'
         ],
       ).toHaveLength(3);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs nonblock-statement-body-position through real oxlint TSX', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-nonblock-position-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      const source = 'if (ready) render(); else <View />;\n';
+      writeFileSync(sourcePath, source);
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/nonblock-statement-body-position': ['error', 'below'],
+          },
+        }),
+      );
+
+      const lintResult = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(lintResult.status).toBe(1);
+      expect(lintResult.stderr).toBe('');
+      expect(JSON.parse(lintResult.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(nonblock-statement-body-position)',
+          message: 'Expected a linebreak before this statement.',
+        },
+        {
+          code: 'stylistic(nonblock-statement-body-position)',
+          message: 'Expected a linebreak before this statement.',
+        },
+      ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
