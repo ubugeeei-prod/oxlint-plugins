@@ -25,6 +25,7 @@ mod lexer;
 mod line_index;
 mod line_rules;
 mod lines_around_comment;
+mod member_delimiter_style;
 mod multiline_ternary;
 mod newline_per_chained_call;
 mod no_confusing_arrow;
@@ -133,6 +134,12 @@ const FUNCTION_PAREN_NEWLINE_MESSAGES: &[(&str, &str)] = &[
     ),
     ("unexpectedBefore", "Unexpected newline before ')'."),
     ("unexpectedAfter", "Unexpected newline after '('."),
+];
+const MEMBER_DELIMITER_STYLE_MESSAGES: &[(&str, &str)] = &[
+    ("unexpectedComma", "Unexpected separator (,)."),
+    ("unexpectedSemi", "Unexpected separator (;)."),
+    ("expectedComma", "Expected a comma."),
+    ("expectedSemi", "Expected a semicolon."),
 ];
 const COMMA_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("missing", "A space is required around ','."),
@@ -823,6 +830,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: FUNCTION_PAREN_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "member-delimiter-style",
+        docs_description: "Require a specific member delimiter style for interfaces and type literals.",
+        messages: MEMBER_DELIMITER_STYLE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "comma-spacing",
         docs_description: "Enforce consistent spacing before and after commas.",
         messages: COMMA_SPACING_MESSAGES,
@@ -1338,6 +1350,12 @@ pub fn run_stylistic_lint(
             ),
             "function-paren-newline" => function_paren_newline::check_function_paren_newline(
                 source_text,
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "member-delimiter-style" => member_delimiter_style::check_member_delimiter_style(
+                source_text,
+                config.filename.as_deref(),
                 &rule.options,
                 &mut diagnostics,
             ),

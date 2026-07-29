@@ -38,6 +38,8 @@ configured rules share a single native call per source file.
 behavior, including the global `before`/`after` settings, context-specific
 `variable`, `property`, `parameter`, and `returnType` overrides, and the
 deprecated `arrow` override (including `"ignore"`).
+`member-delimiter-style` follows the same stable baseline for interfaces and
+type literals, including per-container overrides and multiline detection.
 
 ## JS API
 

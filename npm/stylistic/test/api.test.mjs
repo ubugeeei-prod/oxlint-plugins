@@ -35,6 +35,7 @@ describe('stylistic native API', () => {
       'function-call-argument-newline',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('function-paren-newline');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('member-delimiter-style');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('indent-binary-ops');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-element-newline');
