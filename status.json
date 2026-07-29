@@ -14559,19 +14559,19 @@
       },
       {
         "name": "array-element-newline",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule array-element-newline."
+        "notes": "AST-backed port of @stylistic/array-element-newline v5.10.0 with exact ArrayExpression/ArrayPattern options, sparse-array and comment-aware ranges/fixes, pinned synchronizer plus full 109-valid/58-invalid upstream fixture replay, TypeScript/TSX/UTF-8 regressions, NAPI/API/plugin/meta coverage, and real Oxlint integration."
       },
       {
         "name": "brace-style",

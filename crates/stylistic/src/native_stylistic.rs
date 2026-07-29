@@ -6,6 +6,7 @@ use serde_json::Value;
 use super::{LintDiagnostic, RuleBridgeRequirements, RuleMeta};
 
 mod array_bracket_newline;
+mod array_rules;
 mod context;
 mod context_rules;
 mod expression_rules;
@@ -519,6 +520,13 @@ const FUNCTION_CALL_ARGUMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
         "There should be a line break after this argument.",
     ),
 ];
+const ARRAY_ELEMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
+    ("unexpectedLineBreak", "There should be no linebreak here."),
+    (
+        "missingLineBreak",
+        "There should be a linebreak after this element.",
+    ),
+];
 const LINES_AROUND_COMMENT_MESSAGES: &[(&str, &str)] = &[
     ("after", "Expected line after comment."),
     ("before", "Expected line before comment."),
@@ -558,6 +566,11 @@ struct StylisticRuleDefinition {
 }
 
 const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
+    StylisticRuleDefinition {
+        name: "array-element-newline",
+        docs_description: "Enforce line breaks after each array element.",
+        messages: ARRAY_ELEMENT_NEWLINE_MESSAGES,
+    },
     StylisticRuleDefinition {
         name: "eol-last",
         docs_description: "Require or disallow a newline at the end of files.",
@@ -857,6 +870,7 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
 
 /// Rule names that run over the shared token + bracket-matching scan.
 const TOKEN_RULE_NAMES: &[&str] = &[
+    "array-element-newline",
     "arrow-spacing",
     "comma-spacing",
     "semi-spacing",
@@ -1059,6 +1073,9 @@ fn run_token_rule(
     diagnostics: &mut Vec<LintDiagnostic>,
 ) {
     match name {
+        "array-element-newline" => {
+            array_rules::check_array_element_newline(scan, options, diagnostics)
+        }
         "arrow-spacing" => token_rules::check_arrow_spacing(scan, options, diagnostics),
         "comma-spacing" => token_rules::check_comma_spacing(scan, options, diagnostics),
         "semi-spacing" => token_rules::check_semi_spacing(scan, options, diagnostics),

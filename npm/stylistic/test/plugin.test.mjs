@@ -51,6 +51,7 @@ const stylisticRuleFixtures = [
     [],
     ['unexpectedSpaceAfter', 'unexpectedSpaceBefore'],
   ],
+  ['array-element-newline', 'const a = [1, 2];\n', [], ['missingLineBreak']],
   ['computed-property-spacing', 'a[ 0 ];\n', [], ['unexpectedSpaceAfter', 'unexpectedSpaceBefore']],
   ['block-spacing', 'function f() {g();}\n', [], ['missing', 'missing']],
   ['padded-blocks', 'if (x) {\n  y();\n}\n', [], ['missingPadBlock', 'missingPadBlock']],
@@ -212,6 +213,14 @@ describe('stylistic plugin', () => {
     expect(plugin.rules['no-confusing-arrow'].meta.fixable).toBe('code');
     expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
     expect(plugin.rules['arrow-spacing'].meta.fixable).toBe('whitespace');
+  });
+
+  it('exposes whitespace-fix metadata for array-element-newline', () => {
+    expect(plugin.rules['array-element-newline'].meta.fixable).toBe('whitespace');
+    expect(plugin.rules['array-element-newline'].meta.messages).toEqual({
+      missingLineBreak: 'There should be a linebreak after this element.',
+      unexpectedLineBreak: 'There should be no linebreak here.',
+    });
   });
 
   it.each(stylisticRuleFixtures)(
@@ -1541,6 +1550,61 @@ const parenthesized = (a + b) * c;
           code: 'stylistic(function-call-argument-newline)',
           message: 'There should be a line break after this argument.',
         },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs array-element-newline through oxlint jsPlugins on TSX', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-array-element-newline-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(
+        sourcePath,
+        [
+          'type Tuple = [string, number];',
+          'export const View = () => <Panel values={[first, second, third]} />;',
+          '',
+        ].join('\n'),
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/array-element-newline': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(array-element-newline)',
+        'stylistic(array-element-newline)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'There should be a linebreak after this element.',
+        'There should be a linebreak after this element.',
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });

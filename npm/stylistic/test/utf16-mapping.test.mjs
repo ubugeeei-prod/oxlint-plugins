@@ -136,6 +136,22 @@ describe('stylistic UTF-16 byte mapping', () => {
     ]);
   });
 
+  it('maps array-element-newline reports and fixes after BMP and astral text', () => {
+    const sourceText = 'const 日本語 = "🦀";\nconst list = [日本語, 次];\n';
+    const reports = runRule('array-element-newline', sourceText);
+    const start = sourceText.indexOf('次') - 1;
+
+    expect(reports).toHaveLength(1);
+    expect(reports[0].node.range).toEqual([start, start + 1]);
+    expect(
+      reports[0].suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([{ range: [start, start + 1], replacementText: '\n' }]);
+  });
+
   it('clamps offsets that fall past the end of the source', () => {
     // An empty source should not crash even though the mapper has nothing to walk.
     const sourceText = '';

@@ -121,6 +121,14 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the upstream array-element-newline metadata', () => {
+    expect(plugin.rules['array-element-newline'].meta.messages).toEqual({
+      missingLineBreak: 'There should be a linebreak after this element.',
+      unexpectedLineBreak: 'There should be no linebreak here.',
+    });
+    expect(plugin.rules['array-element-newline'].meta.fixable).toBe('whitespace');
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {
