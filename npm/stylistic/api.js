@@ -20,6 +20,7 @@ function normalizeRunConfig(config) {
   }
 
   return {
+    ...(typeof config.filename === 'string' ? { filename: config.filename } : {}),
     rules: config.rules
       .filter((rule) => rule && typeof rule.name === 'string')
       .map((rule) => ({

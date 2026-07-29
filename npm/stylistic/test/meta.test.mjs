@@ -39,9 +39,14 @@ describe('stylistic plugin meta contract', () => {
     expect(rule.meta.docs.url).toMatch(/github\.com\/ubugeeei-prod\/oxlint-plugins/);
     expect(rule.meta.docs.recommended).toBe(false);
     expect(rule.meta.docs.requiresTypeChecking).toBe(false);
-    expect(rule.meta.fixable).toBe(
-      ['jsx-quotes', 'no-confusing-arrow'].includes(ruleName) ? 'code' : 'whitespace',
-    );
+    if (ruleName === 'no-mixed-operators') {
+      expect(rule.meta.fixable).toBeUndefined();
+      expect(rule.meta.hasSuggestions).toBe(false);
+    } else {
+      expect(rule.meta.fixable).toBe(
+        ['jsx-quotes', 'no-confusing-arrow'].includes(ruleName) ? 'code' : 'whitespace',
+      );
+    }
     expect(typeof rule.meta.hasSuggestions).toBe('boolean');
     expect(typeof rule.meta.messages).toBe('object');
     expect(rule.meta.messages).not.toBeNull();

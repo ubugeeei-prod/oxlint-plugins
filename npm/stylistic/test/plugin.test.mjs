@@ -16,6 +16,12 @@ const stylisticRuleFixtures = [
   ['linebreak-style', 'const x = 1;\r\n', ['unix'], ['expectedUnix']],
   ['no-multiple-empty-lines', 'const a = 1;\n\n\nconst b = 2;\n', [{ max: 1 }], ['tooMany']],
   ['no-mixed-spaces-and-tabs', 'function f() {\n\t return 1;\n}\n', [], ['mixedSpacesAndTabs']],
+  [
+    'no-mixed-operators',
+    'const result = a + b * c;\n',
+    [],
+    ['unexpectedMixedOperator', 'unexpectedMixedOperator'],
+  ],
   ['no-tabs', 'const\tlabel = 1;\n', [], ['unexpectedTab']],
   ['no-trailing-spaces', 'const x = 1;  \n', [], ['trailingSpace']],
   ['quotes', 'const label = "value";\n', ['single'], ['wrongQuote']],
@@ -646,6 +652,75 @@ describe('stylistic plugin', () => {
     expect(messageIds(reports)).toEqual(['unexpectedSpaceBefore', 'unexpectedSpaceBefore']);
   });
 
+  it('matches upstream no-mixed-operators defaults, custom groups, and report data', () => {
+    const defaults = runRule('no-mixed-operators', 'a + b * c;\n');
+    expect(defaults).toMatchObject([
+      {
+        messageId: 'unexpectedMixedOperator',
+        data: { leftOperator: '+', rightOperator: '*' },
+        node: { range: [2, 3] },
+      },
+      {
+        messageId: 'unexpectedMixedOperator',
+        data: { leftOperator: '+', rightOperator: '*' },
+        node: { range: [6, 7] },
+      },
+    ]);
+    expect(defaults.every((report) => report.suggest === undefined)).toBe(true);
+
+    expect(
+      messageIds(runRule('no-mixed-operators', 'a + b - c;\n', [{ allowSamePrecedence: false }])),
+    ).toEqual(['unexpectedMixedOperator', 'unexpectedMixedOperator']);
+    expect(
+      messageIds(
+        runRule('no-mixed-operators', 'a + b * c && d || e;\n', [{ groups: [['&&', '||']] }]),
+      ),
+    ).toEqual(['unexpectedMixedOperator', 'unexpectedMixedOperator']);
+    expect(runRule('no-mixed-operators', '((a + b) * c) + (d * e);\n')).toEqual([]);
+  });
+
+  it('handles no-mixed-operators in TypeScript, JSX, optional chains, and multiline code', () => {
+    const sourceText = `
+type Union = A | B & C;
+const generic = factory<A | B, C & D>();
+const optional = object?.value + fallback * scale;
+const view = <Panel value={left && right || fallback} />;
+const multiline = alpha
+  + /* keep */ beta
+  * gamma;
+`;
+    const reports = runRule('no-mixed-operators', sourceText);
+
+    expect(messageIds(reports)).toEqual([
+      'unexpectedMixedOperator',
+      'unexpectedMixedOperator',
+      'unexpectedMixedOperator',
+      'unexpectedMixedOperator',
+      'unexpectedMixedOperator',
+      'unexpectedMixedOperator',
+    ]);
+    expect(reports.map((report) => sourceText.slice(...report.node.range))).toEqual([
+      '+',
+      '*',
+      '&&',
+      '||',
+      '+',
+      '*',
+    ]);
+  });
+
+  it('ignores no-mixed-operators lookalikes in comments, strings, regexes, and raw templates', () => {
+    const sourceText = `
+// a + b * c
+const 文 = "a + b * c";
+const regex = /a+b*c/;
+const raw = \`a + b * c\`;
+const parenthesized = (a + b) * c;
+`;
+
+    expect(runRule('no-mixed-operators', sourceText)).toEqual([]);
+  });
+
   it('works through oxlint jsPlugins config', () => {
     const oxlint = findOxlintCli();
     const temp = mkdtempSync(join(tmpdir(), 'stylistic-plugin-'));
@@ -882,6 +957,63 @@ describe('stylistic plugin', () => {
           code: 'stylistic(type-annotation-spacing)',
           message: "Unexpected space before the ':'.",
         },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('reports no-mixed-operators through real oxlint TS and TSX runs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-no-mixed-operators-plugin-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const typeScriptSourcePath = join(temp, 'assertion.ts');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(
+        sourcePath,
+        'type T = A | B & C;\nexport const view = <Panel value={a + b * c} />;\n',
+      );
+      writeFileSync(typeScriptSourcePath, 'export const value = <number>(a + b * c);\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/no-mixed-operators': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath, typeScriptSourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(no-mixed-operators)',
+        'stylistic(no-mixed-operators)',
+        'stylistic(no-mixed-operators)',
+        'stylistic(no-mixed-operators)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        "Unexpected mix of '+' and '*'. Use parentheses to clarify the intended order of operations.",
+        "Unexpected mix of '+' and '*'. Use parentheses to clarify the intended order of operations.",
+        "Unexpected mix of '+' and '*'. Use parentheses to clarify the intended order of operations.",
+        "Unexpected mix of '+' and '*'. Use parentheses to clarify the intended order of operations.",
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
