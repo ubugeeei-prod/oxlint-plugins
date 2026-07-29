@@ -21,6 +21,9 @@ describe('stylistic native API', () => {
       'type-annotation-spacing',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'newline-per-chained-call',
+    );
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -303,6 +306,35 @@ describe('stylistic native API', () => {
           "Unexpected mix of '&&' and '||'. Use parentheses to clarify the intended order of operations.",
         data: { leftOperator: '&&', rightOperator: '||' },
         range: { start: 11, end: 13 },
+      },
+    ]);
+  });
+
+  it('runs newline-per-chained-call with exact native data, byte ranges, and fixes', () => {
+    const source = 'const 日本語 = service.first().second().third();';
+    const diagnostic = runNativeStylisticLint(source, {
+      rules: [{ name: 'newline-per-chained-call', options: [] }],
+    })[0];
+    const propertyStart = source.indexOf('.third');
+    const byteOffset = (offset) => new TextEncoder().encode(source.slice(0, offset)).length;
+
+    expect(diagnostic).toMatchObject({
+      ruleName: 'newline-per-chained-call',
+      messageId: 'expected',
+      message: 'Expected line break before `.third`.',
+      data: { callee: '.third' },
+      range: {
+        start: byteOffset(propertyStart),
+        end: byteOffset(propertyStart + '.third'.length),
+      },
+    });
+    expect(diagnostic.suggestions[0].fixes).toEqual([
+      {
+        range: {
+          start: byteOffset(propertyStart),
+          end: byteOffset(propertyStart),
+        },
+        replacementText: '\n',
       },
     ]);
   });

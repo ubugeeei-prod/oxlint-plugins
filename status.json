@@ -15135,19 +15135,19 @@
       },
       {
         "name": "newline-per-chained-call",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule newline-per-chained-call."
+        "notes": "Rust/Oxc AST port of @stylistic/newline-per-chained-call v5.10.0 with all stable upstream valid and invalid fixtures, exact messages, ranges, interpolation data, options, and fixes; Vitest covers the native bridge, UTF-16 mapping, shared settings, and real Oxlint TSX integration."
       },
       {
         "name": "no-confusing-arrow",

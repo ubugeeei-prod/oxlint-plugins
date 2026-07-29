@@ -14,6 +14,7 @@ mod jsx_rules;
 mod lexer;
 mod line_index;
 mod line_rules;
+mod newline_per_chained_call;
 mod no_confusing_arrow;
 mod quote_convert;
 mod quotes;
@@ -490,6 +491,8 @@ const NO_CONFUSING_ARROW_MESSAGES: &[(&str, &str)] = &[(
     "confusing",
     "Arrow function used ambiguously with a conditional expression.",
 )];
+const NEWLINE_PER_CHAINED_CALL_MESSAGES: &[(&str, &str)] =
+    &[("expected", "Expected line break before `{{callee}}`.")];
 
 /// One stylistic rule invocation requested by the JavaScript bridge.
 #[derive(Clone, Debug, Deserialize)]
@@ -797,6 +800,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         docs_description: "Disallow arrow functions where they could be confused with comparisons.",
         messages: NO_CONFUSING_ARROW_MESSAGES,
     },
+    StylisticRuleDefinition {
+        name: "newline-per-chained-call",
+        docs_description: "Require a newline after each call in a method chain.",
+        messages: NEWLINE_PER_CHAINED_CALL_MESSAGES,
+    },
 ];
 
 /// Rule names that run over the shared token + bracket-matching scan.
@@ -943,6 +951,11 @@ pub fn run_stylistic_lint(
                 unicode_bom::check_unicode_bom(source_text, &rule.options, &mut diagnostics)
             }
             "no-confusing-arrow" => no_confusing_arrow::check_no_confusing_arrow(
+                source_text,
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "newline-per-chained-call" => newline_per_chained_call::check_newline_per_chained_call(
                 source_text,
                 &rule.options,
                 &mut diagnostics,
