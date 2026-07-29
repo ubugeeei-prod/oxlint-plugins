@@ -1,0 +1,1908 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/curly-newline/curly-newline.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-stylistic-curly-newline-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "{}",
+      "options": []
+    },
+    {
+      "code": "{\n}",
+      "options": []
+    },
+    {
+      "code": "{void {foo}}",
+      "options": []
+    },
+    {
+      "code": "{\nvoid {foo}\n}",
+      "options": []
+    },
+    {
+      "code": "{\n}",
+      "options": ["always"]
+    },
+    {
+      "code": "{\nvoid {foo}\n}",
+      "options": ["always"]
+    },
+    {
+      "code": "{\nvoid {foo};void {foo}\n}",
+      "options": ["always"]
+    },
+    {
+      "code": "{\nvoid {foo}\nvoid {foo}\n}",
+      "options": ["always"]
+    },
+    {
+      "code": "{}",
+      "options": ["never"]
+    },
+    {
+      "code": "{void {foo}}",
+      "options": ["never"]
+    },
+    {
+      "code": "{void {foo};void {foo}}",
+      "options": ["never"]
+    },
+    {
+      "code": "{void {foo}\nvoid {foo}}",
+      "options": ["never"]
+    },
+    {
+      "code": "{void {\nfoo\n}}",
+      "options": ["never"]
+    },
+    {
+      "code": "{}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "code": "{void {}}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "code": "{void {}; void {}}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {}\nvoid {}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {\nfoo\n}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "code": "{\n// comment\nvoid {}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "code": "{ // comment\nvoid {}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "code": "{}",
+      "options": [
+        {
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{void 0}",
+      "options": [
+        {
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid 0;void 0\n}",
+      "options": [
+        {
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{void 0}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid 0; void 0\n}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid 0\nvoid 0\n}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {\nfoo\n}\n}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid 0\n}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid 0\nvoid 0\n}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ]
+    },
+    {
+      "code": "{void {foo}}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {foo}\n}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {\nfoo\n}\n}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ]
+    },
+    {
+      "code": "{void 0;void 0}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ]
+    },
+    {
+      "code": "{void 0}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true,
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid 0\n}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true,
+          "minElements": 2
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid 0;void 0\n}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true,
+          "minElements": 2
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "{void {foo}\n}",
+      "output": "{void {foo}}",
+      "options": [],
+      "errors": [
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {foo}}",
+      "output": "{void {foo}}",
+      "options": [],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        }
+      ]
+    },
+    {
+      "code": "{}",
+      "output": "{\n}",
+      "options": ["always"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 1,
+          "column": 2,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {foo}}",
+      "output": "{\nvoid {foo}\n}",
+      "options": ["always"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 2,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 1,
+          "column": 12,
+          "endLine": 1,
+          "endColumn": 13,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {foo};void {foo}}",
+      "output": "{\nvoid {foo};void {foo}\n}",
+      "options": ["always"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 1,
+          "column": 23,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {foo};\n  void {foo}}",
+      "output": "{\nvoid {foo};\n  void {foo}\n}",
+      "options": ["always"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 13,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {\n}}",
+      "output": "{\nvoid {\n}\n}",
+      "options": ["always"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 2,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{ void {foo} }",
+      "output": "{\n void {foo} \n}",
+      "options": ["always"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 1,
+          "column": 14,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n}",
+      "output": "{}",
+      "options": ["never"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {foo}}",
+      "output": "{void {foo}}",
+      "options": ["never"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {foo}\n}",
+      "output": "{void {foo}}",
+      "options": ["never"],
+      "errors": [
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {foo}\n}",
+      "output": "{void {foo}}",
+      "options": ["never"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {foo}\nvoid {foo}\n}",
+      "output": "{void {foo}\nvoid {foo}}",
+      "options": ["never"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 4,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {\nfoo\n}\n}",
+      "output": "{void {\nfoo\n}}",
+      "options": ["never"],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 5,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n}",
+      "output": "{}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n/*comment*/\n}",
+      "output": null,
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{// comment\n}",
+      "output": null,
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {}\n}",
+      "output": "{void {}}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {} // comment\n}",
+      "output": "{void {} // comment\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {};void {}\n}",
+      "output": "{void {};void {}}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {};void {} // comment\n}",
+      "output": "{void {};void {} // comment\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {}\n  void {}}",
+      "output": "{\nvoid {}\n  void {}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 10,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {\n}}",
+      "output": "{\nvoid {\n}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 2,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {} // comment\n  void {}}",
+      "output": "{\nvoid {} // comment\n  void {}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 10,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {\nfoo\n}}",
+      "output": "{\nvoid {\nfoo\n}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 2,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void { // comment\nfoo\n}}",
+      "output": "{\nvoid { // comment\nfoo\n}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 2,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {} /* comment */\nvoid {}\n}",
+      "output": "{\nvoid {} /* comment */\nvoid {}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        }
+      ]
+    },
+    {
+      "code": "{/* comment */void {}\nvoid {}\n}",
+      "output": null,
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n/* comment */\nvoid {}}",
+      "output": "{\n/* comment */\nvoid {}\n}",
+      "options": [
+        {
+          "multiline": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 3,
+          "column": 8,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n}",
+      "output": "{}",
+      "options": [
+        {
+          "minElements": 2
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {}\n}",
+      "output": "{void {}}",
+      "options": [
+        {
+          "minElements": 2
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {};void {}}",
+      "output": "{\nvoid {};void {}\n}",
+      "options": [
+        {
+          "minElements": 2
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 1,
+          "column": 17,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n}",
+      "output": "{}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {}\n}",
+      "output": "{void {}}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {};void {}}",
+      "output": "{\nvoid {};void {}\n}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 1,
+          "column": 17,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {};\n  void {}}",
+      "output": "{\nvoid {};\n  void {}\n}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 10,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {\n}}",
+      "output": "{\nvoid {\n}\n}",
+      "options": [
+        {
+          "multiline": true,
+          "minElements": 2
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 2,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {}\n}",
+      "output": "{void {}}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {}}",
+      "output": "{void {}}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {};void {}\n}",
+      "output": "{void {};void {}}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {};void {}}",
+      "output": "{void {};void {}}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {}\nvoid {}}",
+      "output": "{void {}\nvoid {}}",
+      "options": [
+        {
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {}\n}",
+      "output": "{void {}}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {}}",
+      "output": "{void {}}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {};void {}\n}",
+      "output": "{void {};void {}}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 2,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {};void {}}",
+      "output": "{void {};void {}}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {}\n  void {}}",
+      "output": "{\nvoid {}\n  void {}\n}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 10,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{void {\n}}",
+      "output": "{\nvoid {\n}\n}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 2,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {}\nvoid {}}",
+      "output": "{\nvoid {}\nvoid {}\n}",
+      "options": [
+        {
+          "multiline": true,
+          "consistent": true
+        }
+      ],
+      "errors": [
+        {
+          "line": 3,
+          "column": 8,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "for(;;){{}}",
+      "output": "for(;;){{\n}}",
+      "options": [
+        {
+          "BlockStatement": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 9,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 1,
+          "column": 10,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nif(true){}\n}",
+      "output": "{if(true){\n}}",
+      "options": [
+        {
+          "IfStatementConsequent": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 9,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 10,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nif(true){}else{}\n}",
+      "output": "{if(true){}else{\n}}",
+      "options": [
+        {
+          "IfStatementAlternative": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 15,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 16,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\ndo{}while(true)\n}",
+      "output": "{do{\n}while(true)}",
+      "options": [
+        {
+          "DoWhileStatement": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 3,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 4,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nfor(const {} in {}){}\n}",
+      "output": "{for(const {} in {}){\n}}",
+      "options": [
+        {
+          "ForInStatement": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 20,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 21,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nfor(const {} of {}){}\n}",
+      "output": "{for(const {} of {}){\n}}",
+      "options": [
+        {
+          "ForOfStatement": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 20,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 21,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nfor(;;){}\n}",
+      "output": "{for(;;){\n}}",
+      "options": [
+        {
+          "ForStatement": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 8,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 9,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nwhile({}){}\n}",
+      "output": "{while({}){\n}}",
+      "options": [
+        {
+          "WhileStatement": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 10,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 11,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nswitch({}){}\n}",
+      "output": "{switch({}){\n}}",
+      "options": [
+        {
+          "SwitchStatement": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 11,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 12,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nswitch({}){case {}:}\n}",
+      "output": "{switch({}){\ncase {}:\n}}",
+      "options": [
+        {
+          "SwitchStatement": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 11,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 20,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nswitch({}){case {}:}\n}",
+      "output": "{switch({}){case {}:}}",
+      "options": [
+        {
+          "SwitchCase": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nswitch({}){case {}: {}break}\n}",
+      "output": "{switch({}){case {}: {}break}}",
+      "options": [
+        {
+          "SwitchCase": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nswitch({}){case {}: {}}\n}",
+      "output": "{switch({}){case {}: {\n}}}",
+      "options": [
+        {
+          "SwitchCase": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 21,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 22,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\ntry{}finally{}\n}",
+      "output": "{try{\n}finally{}}",
+      "options": [
+        {
+          "TryStatementBlock": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 4,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 5,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\ntry{}catch(_){}\n}",
+      "output": "{try{}catch(_){\n}}",
+      "options": [
+        {
+          "TryStatementHandler": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 14,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 15,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\ntry{}finally{}\n}",
+      "output": "{try{}finally{\n}}",
+      "options": [
+        {
+          "TryStatementFinalizer": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 13,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 14,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n(() => {})\n}",
+      "output": "{(() => {\n})}",
+      "options": [
+        {
+          "ArrowFunctionExpression": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 8,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 9,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nfunction _() {}\n}",
+      "output": "{function _() {\n}}",
+      "options": [
+        {
+          "FunctionDeclaration": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 14,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 15,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n(function() {})\n}",
+      "output": "{(function() {\n})}",
+      "options": [
+        {
+          "FunctionExpression": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 13,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 14,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {_: function(){}}\n}",
+      "output": "{void {_: function(){}}}",
+      "options": [
+        {
+          "Property": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nvoid {_(){}}\n}",
+      "output": "{void {_(){\n}}}",
+      "options": [
+        {
+          "Property": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 10,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 11,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n(class {})\n}",
+      "output": "{(class {\n})}",
+      "options": [
+        {
+          "ClassBody": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 8,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 9,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\n(class {static{}})\n}",
+      "output": "{(class {static{\n}})}",
+      "options": [
+        {
+          "StaticBlock": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 15,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 16,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nwith({}){}\n}",
+      "output": "{with({}){\n}}",
+      "options": [
+        {
+          "WithStatement": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 9,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 10,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    },
+    {
+      "code": "{\nmodule _{}\n}",
+      "output": "{module _{\n}}",
+      "options": [
+        {
+          "TSModuleBlock": "always"
+        }
+      ],
+      "errors": [
+        {
+          "line": 1,
+          "column": 1,
+          "messageId": "unexpectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 9,
+          "messageId": "expectedLinebreakAfterOpeningBrace"
+        },
+        {
+          "line": 2,
+          "column": 10,
+          "messageId": "expectedLinebreakBeforeClosingBrace"
+        },
+        {
+          "line": 3,
+          "column": 1,
+          "messageId": "unexpectedLinebreakBeforeClosingBrace"
+        }
+      ]
+    }
+  ]
+}

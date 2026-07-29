@@ -34,6 +34,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('object-curly-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('brace-style');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('curly-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'nonblock-statement-body-position',
     );
@@ -561,6 +562,45 @@ describe('stylistic native API', () => {
         suggestions: [
           {
             messageId: 'missingClosingLinebreak',
+            fixes: [{ range: { start: closing, end: closing }, replacementText: '\n' }],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs curly-newline with exact native UTF-8 byte ranges and fixes', () => {
+    const source = 'const 日本語 = true; if (日本語) {}';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'sample.ts',
+      rules: [{ name: 'curly-newline', options: ['always'] }],
+    });
+    const opening = Buffer.byteLength('const 日本語 = true; if (日本語) ');
+    const closing = opening + 1;
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'curly-newline',
+        messageId: 'expectedLinebreakAfterOpeningBrace',
+        message: 'Expected a line break after this opening brace.',
+        range: { start: opening, end: opening + 1 },
+        suggestions: [
+          {
+            messageId: 'expectedLinebreakAfterOpeningBrace',
+            message: 'Expected a line break after this opening brace.',
+            fixes: [{ range: { start: opening + 1, end: opening + 1 }, replacementText: '\n' }],
+          },
+        ],
+      },
+      {
+        ruleName: 'curly-newline',
+        messageId: 'expectedLinebreakBeforeClosingBrace',
+        message: 'Expected a line break before this closing brace.',
+        range: { start: closing, end: closing + 1 },
+        suggestions: [
+          {
+            messageId: 'expectedLinebreakBeforeClosingBrace',
+            message: 'Expected a line break before this closing brace.',
             fixes: [{ range: { start: closing, end: closing }, replacementText: '\n' }],
           },
         ],

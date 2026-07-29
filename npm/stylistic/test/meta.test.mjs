@@ -159,6 +159,23 @@ describe('stylistic plugin meta contract', () => {
     expect(plugin.rules['function-paren-newline'].meta.hasSuggestions).toBe(true);
   });
 
+  it('preserves the stable curly-newline metadata', () => {
+    expect(plugin.rules['curly-newline'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce consistent line breaks after opening and before closing braces.',
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        unexpectedLinebreakBeforeClosingBrace: 'Unexpected line break before this closing brace.',
+        unexpectedLinebreakAfterOpeningBrace: 'Unexpected line break after this opening brace.',
+        expectedLinebreakBeforeClosingBrace: 'Expected a line break before this closing brace.',
+        expectedLinebreakAfterOpeningBrace: 'Expected a line break after this opening brace.',
+      },
+    });
+  });
+
   it('preserves the upstream multiline-comment-style metadata', () => {
     expect(plugin.rules['multiline-comment-style'].meta).toMatchObject({
       fixable: 'whitespace',
