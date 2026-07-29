@@ -1,0 +1,1105 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-closing-tag-location/jsx-closing-tag-location.test.ts",
+    "ruleFile": "packages/eslint-plugin/rules/jsx-closing-tag-location/jsx-closing-tag-location.ts",
+    "parserMatrixFile": "shared/test-utils/parsers-jsx.ts",
+    "sourceSha256": "969057cf48a7ebe4ad00e1f08e410ca64f81e0cce6161b55d32e0a6b2550aa9d",
+    "ruleSourceSha256": "712d13d53f8c069fbc31ff896a8a2d32fe510ceaa93e98285e76dcd3ee56a7ac",
+    "parserMatrixSourceSha256": "64dd12d67eac1eadf8a5a93de02bbb76c1d764c0ec7ebbdaae0c45389b52435c",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-stylistic-jsx-closing-tag-location-tests.ts",
+    "inventory": {
+      "valid": 28,
+      "invalid": 16,
+      "diagnostics": 16,
+      "fixableInvalid": 16,
+      "unfixableInvalid": 0,
+      "total": 44
+    }
+  },
+  "valid": [
+    {
+      "code": "\n        <App>\n          foo\n        </App>\n      \n// features: [],parser: default,,,"
+    },
+    {
+      "code": "\n        <App>\n          foo\n        </App>\n      \n// features: [],parser: @babel/eslint-parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        <App>\n          foo\n        </App>\n      \n// features: [],parser: @typescript-eslint/parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        <App>foo</App>\n      \n// features: [],parser: default,,,"
+    },
+    {
+      "code": "\n        <App>foo</App>\n      \n// features: [],parser: @babel/eslint-parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        <App>foo</App>\n      \n// features: [],parser: @typescript-eslint/parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        <>\n          foo\n        </>\n      \n// features: [fragment],parser: @babel/eslint-parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        <>\n          foo\n        </>\n      \n// features: [fragment],parser: @typescript-eslint/parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        <>foo</>\n      \n// features: [fragment],parser: @babel/eslint-parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        <>foo</>\n      \n// features: [fragment],parser: @typescript-eslint/parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo = () => {\n          return <App>\n       bar</App>\n        }\n      \n// features: [],parser: default,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"]
+    },
+    {
+      "code": "\n        const foo = () => {\n          return <App>\n       bar</App>\n        }\n      \n// features: [],parser: @babel/eslint-parser,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo = () => {\n          return <App>\n       bar</App>\n        }\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo = () => {\n          return <App>\n              bar</App>\n        }\n      \n// features: [],parser: default,,,"
+    },
+    {
+      "code": "\n        const foo = () => {\n          return <App>\n              bar</App>\n        }\n      \n// features: [],parser: @babel/eslint-parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo = () => {\n          return <App>\n              bar</App>\n        }\n      \n// features: [],parser: @typescript-eslint/parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo = () => {\n          return <App>\n              bar\n          </App>\n        }\n      \n// features: [],parser: default,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"]
+    },
+    {
+      "code": "\n        const foo = () => {\n          return <App>\n              bar\n          </App>\n        }\n      \n// features: [],parser: @babel/eslint-parser,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo = () => {\n          return <App>\n              bar\n          </App>\n        }\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo = <App>\n              bar\n        </App>\n      \n// features: [],parser: default,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"]
+    },
+    {
+      "code": "\n        const foo = <App>\n              bar\n        </App>\n      \n// features: [],parser: @babel/eslint-parser,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo = <App>\n              bar\n        </App>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const x = <App>\n              foo\n                  </App>\n      \n// features: [],parser: default,,,"
+    },
+    {
+      "code": "\n        const x = <App>\n              foo\n                  </App>\n      \n// features: [],parser: @babel/eslint-parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const x = <App>\n              foo\n                  </App>\n      \n// features: [],parser: @typescript-eslint/parser,,,",
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo =\n          <App>\n              bar\n          </App>\n      \n// features: [],parser: default,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"]
+    },
+    {
+      "code": "\n        const foo =\n          <App>\n              bar\n          </App>\n      \n// features: [],parser: @babel/eslint-parser,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    },
+    {
+      "code": "\n        const foo =\n          <App>\n              bar\n          </App>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"line-aligned\"],",
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n        <App>\n          foo\n          </App>\n      \n// features: [],parser: default,,,",
+      "output": "\n        <App>\n          foo\n        </App>\n      \n// features: [],parser: default,,,",
+      "errors": [
+        {
+          "messageId": "matchIndent"
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "matchIndent",
+          "message": "Expected closing tag to match indentation of opening.",
+          "data": {},
+          "line": 4,
+          "column": 11,
+          "endLine": 4,
+          "endColumn": 17,
+          "range": [39, 45],
+          "fix": {
+            "range": [29, 39],
+            "replacementText": "        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          foo\n          </App>\n      \n// features: [],parser: @babel/eslint-parser,,,",
+      "output": "\n        <App>\n          foo\n        </App>\n      \n// features: [],parser: @babel/eslint-parser,,,",
+      "errors": [
+        {
+          "messageId": "matchIndent"
+        }
+      ],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "matchIndent",
+          "message": "Expected closing tag to match indentation of opening.",
+          "data": {},
+          "line": 4,
+          "column": 11,
+          "endLine": 4,
+          "endColumn": 17,
+          "range": [39, 45],
+          "fix": {
+            "range": [29, 39],
+            "replacementText": "        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          foo\n          </App>\n      \n// features: [],parser: @typescript-eslint/parser,,,",
+      "output": "\n        <App>\n          foo\n        </App>\n      \n// features: [],parser: @typescript-eslint/parser,,,",
+      "errors": [
+        {
+          "messageId": "matchIndent"
+        }
+      ],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "matchIndent",
+          "message": "Expected closing tag to match indentation of opening.",
+          "data": {},
+          "line": 4,
+          "column": 11,
+          "endLine": 4,
+          "endColumn": 17,
+          "range": [39, 45],
+          "fix": {
+            "range": [29, 39],
+            "replacementText": "        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          foo</App>\n      \n// features: [],parser: default,,,",
+      "output": "\n        <App>\n          foo\n        </App>\n      \n// features: [],parser: default,,,",
+      "errors": [
+        {
+          "messageId": "onOwnLine"
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "onOwnLine",
+          "message": "Closing tag of a multiline JSX expression must be on its own line.",
+          "data": {},
+          "line": 3,
+          "column": 14,
+          "endLine": 3,
+          "endColumn": 20,
+          "range": [28, 34],
+          "fix": {
+            "range": [28, 28],
+            "replacementText": "\n        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          foo</App>\n      \n// features: [],parser: @babel/eslint-parser,,,",
+      "output": "\n        <App>\n          foo\n        </App>\n      \n// features: [],parser: @babel/eslint-parser,,,",
+      "errors": [
+        {
+          "messageId": "onOwnLine"
+        }
+      ],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "onOwnLine",
+          "message": "Closing tag of a multiline JSX expression must be on its own line.",
+          "data": {},
+          "line": 3,
+          "column": 14,
+          "endLine": 3,
+          "endColumn": 20,
+          "range": [28, 34],
+          "fix": {
+            "range": [28, 28],
+            "replacementText": "\n        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          foo</App>\n      \n// features: [],parser: @typescript-eslint/parser,,,",
+      "output": "\n        <App>\n          foo\n        </App>\n      \n// features: [],parser: @typescript-eslint/parser,,,",
+      "errors": [
+        {
+          "messageId": "onOwnLine"
+        }
+      ],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "onOwnLine",
+          "message": "Closing tag of a multiline JSX expression must be on its own line.",
+          "data": {},
+          "line": 3,
+          "column": 14,
+          "endLine": 3,
+          "endColumn": 20,
+          "range": [28, 34],
+          "fix": {
+            "range": [28, 28],
+            "replacementText": "\n        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          foo\n          </>\n      \n// features: [fragment,no-ts-old],parser: @babel/eslint-parser,,,",
+      "output": "\n        <>\n          foo\n        </>\n      \n// features: [fragment,no-ts-old],parser: @babel/eslint-parser,,,",
+      "errors": [
+        {
+          "messageId": "matchIndent"
+        }
+      ],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "matchIndent",
+          "message": "Expected closing tag to match indentation of opening.",
+          "data": {},
+          "line": 4,
+          "column": 11,
+          "endLine": 4,
+          "endColumn": 14,
+          "range": [36, 39],
+          "fix": {
+            "range": [26, 36],
+            "replacementText": "        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          foo\n          </>\n      \n// features: [fragment,no-ts-old],parser: @typescript-eslint/parser,,,",
+      "output": "\n        <>\n          foo\n        </>\n      \n// features: [fragment,no-ts-old],parser: @typescript-eslint/parser,,,",
+      "errors": [
+        {
+          "messageId": "matchIndent"
+        }
+      ],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "matchIndent",
+          "message": "Expected closing tag to match indentation of opening.",
+          "data": {},
+          "line": 4,
+          "column": 11,
+          "endLine": 4,
+          "endColumn": 14,
+          "range": [36, 39],
+          "fix": {
+            "range": [26, 36],
+            "replacementText": "        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          foo</>\n      \n// features: [fragment,no-ts-old],parser: @babel/eslint-parser,,,",
+      "output": "\n        <>\n          foo\n        </>\n      \n// features: [fragment,no-ts-old],parser: @babel/eslint-parser,,,",
+      "errors": [
+        {
+          "messageId": "onOwnLine"
+        }
+      ],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "onOwnLine",
+          "message": "Closing tag of a multiline JSX expression must be on its own line.",
+          "data": {},
+          "line": 3,
+          "column": 14,
+          "endLine": 3,
+          "endColumn": 17,
+          "range": [25, 28],
+          "fix": {
+            "range": [25, 25],
+            "replacementText": "\n        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          foo</>\n      \n// features: [fragment,no-ts-old],parser: @typescript-eslint/parser,,,",
+      "output": "\n        <>\n          foo\n        </>\n      \n// features: [fragment,no-ts-old],parser: @typescript-eslint/parser,,,",
+      "errors": [
+        {
+          "messageId": "onOwnLine"
+        }
+      ],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "onOwnLine",
+          "message": "Closing tag of a multiline JSX expression must be on its own line.",
+          "data": {},
+          "line": 3,
+          "column": 14,
+          "endLine": 3,
+          "endColumn": 17,
+          "range": [25, 28],
+          "fix": {
+            "range": [25, 25],
+            "replacementText": "\n        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const x = () => {\n          return <App>\n              foo</App>\n        }\n      \n// features: [],parser: default,,options: [\"line-aligned\"],",
+      "output": "\n        const x = () => {\n          return <App>\n              foo\n          </App>\n        }\n      \n// features: [],parser: default,,options: [\"line-aligned\"],",
+      "errors": [
+        {
+          "messageId": "onOwnLine"
+        }
+      ],
+      "options": ["line-aligned"],
+      "diagnostics": [
+        {
+          "messageId": "onOwnLine",
+          "message": "Closing tag of a multiline JSX expression must be on its own line.",
+          "data": {},
+          "line": 4,
+          "column": 18,
+          "endLine": 4,
+          "endColumn": 24,
+          "range": [67, 73],
+          "fix": {
+            "range": [67, 67],
+            "replacementText": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const x = () => {\n          return <App>\n              foo</App>\n        }\n      \n// features: [],parser: @babel/eslint-parser,,options: [\"line-aligned\"],",
+      "output": "\n        const x = () => {\n          return <App>\n              foo\n          </App>\n        }\n      \n// features: [],parser: @babel/eslint-parser,,options: [\"line-aligned\"],",
+      "errors": [
+        {
+          "messageId": "onOwnLine"
+        }
+      ],
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "onOwnLine",
+          "message": "Closing tag of a multiline JSX expression must be on its own line.",
+          "data": {},
+          "line": 4,
+          "column": 18,
+          "endLine": 4,
+          "endColumn": 24,
+          "range": [67, 73],
+          "fix": {
+            "range": [67, 67],
+            "replacementText": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const x = () => {\n          return <App>\n              foo</App>\n        }\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"line-aligned\"],",
+      "output": "\n        const x = () => {\n          return <App>\n              foo\n          </App>\n        }\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"line-aligned\"],",
+      "errors": [
+        {
+          "messageId": "onOwnLine"
+        }
+      ],
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "onOwnLine",
+          "message": "Closing tag of a multiline JSX expression must be on its own line.",
+          "data": {},
+          "line": 4,
+          "column": 18,
+          "endLine": 4,
+          "endColumn": 24,
+          "range": [67, 73],
+          "fix": {
+            "range": [67, 67],
+            "replacementText": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const x = <App>\n              foo\n                  </App>\n      \n// features: [],parser: default,,options: [\"line-aligned\"],",
+      "output": "\n        const x = <App>\n              foo\n        </App>\n      \n// features: [],parser: default,,options: [\"line-aligned\"],",
+      "errors": [
+        {
+          "messageId": "alignWithOpening"
+        }
+      ],
+      "options": ["line-aligned"],
+      "diagnostics": [
+        {
+          "messageId": "alignWithOpening",
+          "message": "Expected closing tag to be aligned with the line containing the opening tag",
+          "data": {},
+          "line": 4,
+          "column": 19,
+          "endLine": 4,
+          "endColumn": 25,
+          "range": [61, 67],
+          "fix": {
+            "range": [43, 61],
+            "replacementText": "        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const x = <App>\n              foo\n                  </App>\n      \n// features: [],parser: @babel/eslint-parser,,options: [\"line-aligned\"],",
+      "output": "\n        const x = <App>\n              foo\n        </App>\n      \n// features: [],parser: @babel/eslint-parser,,options: [\"line-aligned\"],",
+      "errors": [
+        {
+          "messageId": "alignWithOpening"
+        }
+      ],
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"],
+            "plugins": [
+              "@babel/plugin-syntax-do-expressions",
+              "@babel/plugin-syntax-function-bind",
+              [
+                "@babel/plugin-syntax-decorators",
+                {
+                  "legacy": true
+                }
+              ]
+            ],
+            "parserOpts": {
+              "allowSuperOutsideMethod": false,
+              "allowReturnOutsideFunction": false
+            }
+          },
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "alignWithOpening",
+          "message": "Expected closing tag to be aligned with the line containing the opening tag",
+          "data": {},
+          "line": 4,
+          "column": 19,
+          "endLine": 4,
+          "endColumn": 25,
+          "range": [61, 67],
+          "fix": {
+            "range": [43, 61],
+            "replacementText": "        "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const x = <App>\n              foo\n                  </App>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"line-aligned\"],",
+      "output": "\n        const x = <App>\n              foo\n        </App>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"line-aligned\"],",
+      "errors": [
+        {
+          "messageId": "alignWithOpening"
+        }
+      ],
+      "options": ["line-aligned"],
+      "languageOptions": {
+        "parserOptions": {
+          "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "legacyDecorators": false
+          }
+        }
+      },
+      "diagnostics": [
+        {
+          "messageId": "alignWithOpening",
+          "message": "Expected closing tag to be aligned with the line containing the opening tag",
+          "data": {},
+          "line": 4,
+          "column": 19,
+          "endLine": 4,
+          "endColumn": 25,
+          "range": [61, 67],
+          "fix": {
+            "range": [43, 61],
+            "replacementText": "        "
+          }
+        }
+      ]
+    }
+  ]
+}

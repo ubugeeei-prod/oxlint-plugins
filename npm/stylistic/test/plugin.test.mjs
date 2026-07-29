@@ -120,6 +120,7 @@ const stylisticRuleFixtures = [
     [{ location: 'tag-aligned' }],
     ['bracketLocation'],
   ],
+  ['jsx-closing-tag-location', '<App>\n  content</App>;\n', [], ['onOwnLine']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
@@ -940,6 +941,52 @@ describe('stylistic plugin', () => {
     );
 
     expect(messageIds(reports)).toEqual(['noSpaceBefore', 'noSpaceAfter']);
+  });
+
+  it('supports jsx-closing-tag-location options, UTF-16 ranges, and exact fixes', () => {
+    const source = 'const 日本語 = <App>\n  child</App>;';
+    const closingStart = source.indexOf('</App>');
+    const tagAligned = runRule('jsx-closing-tag-location', source, []);
+
+    expect(tagAligned).toMatchObject([
+      {
+        messageId: 'onOwnLine',
+        node: { range: [closingStart, closingStart + '</App>'.length] },
+      },
+    ]);
+    expect(reportFix(tagAligned[0])).toEqual({
+      range: [closingStart, closingStart],
+      replacementText: `\n${' '.repeat('const 日本語 = '.length)}`,
+    });
+    expect(applyReportFixes(source, tagAligned)).toBe(
+      `const 日本語 = <App>\n  child\n${' '.repeat('const 日本語 = '.length)}</App>;`,
+    );
+
+    const lineAligned = runRule(
+      'jsx-closing-tag-location',
+      '  const view = <App>\n    child\n        </App>;',
+      ['line-aligned'],
+    );
+    expect(messageIds(lineAligned)).toEqual(['alignWithOpening']);
+    expect(reportFix(lineAligned[0])).toEqual({
+      range: [31, 39],
+      replacementText: '  ',
+    });
+  });
+
+  it('runs jsx-closing-tag-location through shared settings for fragments', () => {
+    const source = 'const view = <>\n  child</>;';
+    const reports = runRule('jsx-closing-tag-location', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-closing-tag-location': ['line-aligned'],
+        },
+      },
+    });
+    expect(messageIds(reports)).toEqual(['onOwnLine']);
+    expect(iterativeFixedOutput('jsx-closing-tag-location', source, ['line-aligned'])).toBe(
+      'const view = <>\n  child\n</>;',
+    );
   });
 
   it('ports every upstream jsx-quotes invalid case with exact report and fix ranges', () => {
@@ -1963,6 +2010,69 @@ const parenthesized = (a + b) * c;
       expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
         "There should be no space before '='",
         "There should be no space after '='",
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('reports jsx-closing-tag-location through real Oxlint JSX and TSX runs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-closing-tag-location-'));
+
+    try {
+      const jsxPath = join(temp, 'sample.jsx');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(jsxPath, 'export const jsx = <App>\n  child</App>;\n');
+      writeFileSync(tsxPath, 'export const tsx: JSX.Element = <>\n  child\n    </>;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/jsx-closing-tag-location': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', jsxPath, tsxPath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(jsx-closing-tag-location)',
+        'stylistic(jsx-closing-tag-location)',
+      ]);
+      expect(
+        diagnostics
+          .map((diagnostic) => ({
+            message: diagnostic.message,
+            length: diagnostic.labels[0].span.length,
+          }))
+          .sort((left, right) => left.message.localeCompare(right.message)),
+      ).toEqual([
+        {
+          message: 'Closing tag of a multiline JSX expression must be on its own line.',
+          length: 6,
+        },
+        {
+          message: 'Expected closing tag to match indentation of opening.',
+          length: 3,
+        },
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });

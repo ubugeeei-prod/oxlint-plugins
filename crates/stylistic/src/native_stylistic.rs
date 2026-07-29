@@ -19,6 +19,7 @@ mod helpers;
 mod indent_binary_ops;
 mod jsx_child_element_spacing;
 mod jsx_closing_bracket_location;
+mod jsx_closing_tag_location;
 mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
@@ -609,6 +610,20 @@ const JSX_CLOSING_BRACKET_LOCATION_MESSAGES: &[(&str, &str)] = &[(
     "bracketLocation",
     "The closing bracket must be {{location}}{{details}}",
 )];
+const JSX_CLOSING_TAG_LOCATION_MESSAGES: &[(&str, &str)] = &[
+    (
+        "onOwnLine",
+        "Closing tag of a multiline JSX expression must be on its own line.",
+    ),
+    (
+        "matchIndent",
+        "Expected closing tag to match indentation of opening.",
+    ),
+    (
+        "alignWithOpening",
+        "Expected closing tag to be aligned with the line containing the opening tag",
+    ),
+];
 const LINE_COMMENT_POSITION_MESSAGES: &[(&str, &str)] = &[
     ("above", "Expected comment to be above code."),
     ("beside", "Expected comment to be beside code."),
@@ -1108,6 +1123,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_CLOSING_BRACKET_LOCATION_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-closing-tag-location",
+        docs_description: "Enforce closing tag location for multiline JSX",
+        messages: JSX_CLOSING_TAG_LOCATION_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-quotes",
         docs_description: "Enforce the consistent use of either double or single quotes in JSX attributes.",
         messages: JSX_QUOTES_MESSAGES,
@@ -1320,6 +1340,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "jsx-closing-tag-location" => jsx_closing_tag_location::check_jsx_closing_tag_location(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "unicode-bom" => {
                 unicode_bom::check_unicode_bom(source_text, &rule.options, &mut diagnostics)
             }
