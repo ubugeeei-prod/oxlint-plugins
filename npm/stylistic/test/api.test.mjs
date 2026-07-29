@@ -20,6 +20,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'type-annotation-spacing',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -257,6 +258,52 @@ describe('stylistic native API', () => {
       { replacementText: ' ' },
       { replacementText: ' ' },
       { replacementText: ' ' },
+    ]);
+  });
+
+  it('runs no-mixed-operators with exact messages, template data, and ranges', () => {
+    const diagnostics = runNativeStylisticLint('a && b > 0 || c', {
+      rules: [
+        {
+          name: 'no-mixed-operators',
+          options: [{ groups: [['&&', '||', '>']] }],
+        },
+      ],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'no-mixed-operators',
+        messageId: 'unexpectedMixedOperator',
+        message:
+          "Unexpected mix of '&&' and '||'. Use parentheses to clarify the intended order of operations.",
+        data: { leftOperator: '&&', rightOperator: '||' },
+        range: { start: 2, end: 4 },
+      },
+      {
+        ruleName: 'no-mixed-operators',
+        messageId: 'unexpectedMixedOperator',
+        message:
+          "Unexpected mix of '&&' and '>'. Use parentheses to clarify the intended order of operations.",
+        data: { leftOperator: '&&', rightOperator: '>' },
+        range: { start: 2, end: 4 },
+      },
+      {
+        ruleName: 'no-mixed-operators',
+        messageId: 'unexpectedMixedOperator',
+        message:
+          "Unexpected mix of '&&' and '>'. Use parentheses to clarify the intended order of operations.",
+        data: { leftOperator: '&&', rightOperator: '>' },
+        range: { start: 7, end: 8 },
+      },
+      {
+        ruleName: 'no-mixed-operators',
+        messageId: 'unexpectedMixedOperator',
+        message:
+          "Unexpected mix of '&&' and '||'. Use parentheses to clarify the intended order of operations.",
+        data: { leftOperator: '&&', rightOperator: '||' },
+        range: { start: 11, end: 13 },
+      },
     ]);
   });
 });

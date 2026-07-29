@@ -51,7 +51,13 @@ function createStylisticRule(ruleName) {
         requiresTypeChecking: false,
         url: SOURCE_URL,
       },
-      fixable: ['jsx-quotes', 'no-confusing-arrow'].includes(ruleName) ? 'code' : 'whitespace',
+      ...(meta.hasSuggestions
+        ? {
+            fixable: ['jsx-quotes', 'no-confusing-arrow'].includes(ruleName)
+              ? 'code'
+              : 'whitespace',
+          }
+        : {}),
       hasSuggestions: meta.hasSuggestions,
       messages: meta.messages,
       schema: { type: 'array' },
@@ -90,7 +96,7 @@ function diagnosticsForRule(context, ruleName) {
   }
 
   const diagnostics = mapNativeDiagnosticRanges(
-    runNativeStylisticLint(sourceText, { rules: config }),
+    runNativeStylisticLint(sourceText, config),
     sourceText,
   );
   sourceCache.set(key, { sourceText, diagnostics });
@@ -113,12 +119,18 @@ function stylisticRunConfig(context, currentRuleName) {
     rules.set(currentRuleName, currentOptions);
   }
 
-  return implementedStylisticRuleNames
-    .filter((name) => rules.has(name))
-    .map((name) => ({
-      name,
-      options: rules.get(name) ?? [],
-    }));
+  return {
+    filename:
+      typeof context.filename === 'string'
+        ? context.filename
+        : (context.getFilename?.() ?? 'file.tsx'),
+    rules: implementedStylisticRuleNames
+      .filter((name) => rules.has(name))
+      .map((name) => ({
+        name,
+        options: rules.get(name) ?? [],
+      })),
+  };
 }
 
 function reportStylisticDiagnostics(context, program, diagnostics) {

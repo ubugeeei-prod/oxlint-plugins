@@ -40,7 +40,7 @@ pub fn rule_metas_json() -> String {
 
 pub fn scan(
     source_text: &str,
-    _filename: &str,
+    filename: &str,
     filter: &EnabledFilter,
     out: &mut Vec<PlaygroundDiagnostic>,
 ) {
@@ -49,8 +49,8 @@ pub fn scan(
     // no per-rule configuration, so we mirror the wrapper's default path (empty
     // options, the `currentRuleOptions` default when `context.options` is empty)
     // but pass only the enabled rules to the core so it never runs disabled ones.
-    // Stylistic works on raw bytes and lines, so `filename` is unused.
     let config = core::StylisticRunConfig {
+        filename: Some(filename.to_owned()),
         rules: rule_names()
             .iter()
             .filter(|name| filter.rule_enabled(PLUGIN, name))
@@ -72,10 +72,8 @@ pub fn scan(
 
     let line_starts = line_starts(source_text);
     for diagnostic in diagnostics {
-        // Stylistic renders each message in Rust and exposes no placeholder data,
-        // and every message template is a fixed string (no `{{placeholder}}`), so
-        // the data map is always empty.
-        let data: BTreeMap<String, String> = BTreeMap::new();
+        // Preserve message-template data for rules such as no-mixed-operators.
+        let data: BTreeMap<String, String> = diagnostic.data;
         // The core diagnostic carries a UTF-8 byte range rather than line/column
         // loc fields. Convert both ends to the playground's 1-based line /
         // 0-based UTF-16 column convention.
@@ -122,4 +120,39 @@ fn position_for_offset(source_text: &str, line_starts: &[usize], offset: u32) ->
         .map(char::len_utf16)
         .sum::<usize>();
     ((line_index + 1) as u32, column as u32)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn preserves_no_mixed_operators_data_and_typescript_filename() {
+        let filter = EnabledFilter::parse(r#"{"stylistic":["no-mixed-operators"]}"#);
+        let mut diagnostics = Vec::new();
+        scan(
+            "const value = <number>(a + b * c);\n",
+            "fixture.ts",
+            &filter,
+            &mut diagnostics,
+        );
+
+        assert_eq!(diagnostics.len(), 2);
+        assert_eq!(diagnostics[0].message_id, "unexpectedMixedOperator");
+        assert_eq!(
+            diagnostics[0].data.get("leftOperator").map(String::as_str),
+            Some("+")
+        );
+        assert_eq!(
+            diagnostics[0].data.get("rightOperator").map(String::as_str),
+            Some("*")
+        );
+        assert_eq!(
+            diagnostics
+                .iter()
+                .map(|diagnostic| (diagnostic.start_line, diagnostic.start_column))
+                .collect::<Vec<_>>(),
+            [(1, 25), (1, 29)]
+        );
+    }
 }

@@ -51,6 +51,7 @@ export type NativeStylisticRuleConfig = {
 };
 
 export type NativeStylisticRunConfig = {
+  filename?: string;
   rules: NativeStylisticRuleConfig[];
 };
 

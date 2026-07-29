@@ -7,6 +7,7 @@ use super::{LintDiagnostic, RuleBridgeRequirements, RuleMeta};
 
 mod context;
 mod context_rules;
+mod expression_rules;
 mod helpers;
 mod jsx_quotes;
 mod jsx_rules;
@@ -48,6 +49,10 @@ const NO_TABS_MESSAGES: &[(&str, &str)] = &[
 ];
 const NO_MIXED_SPACES_AND_TABS_MESSAGES: &[(&str, &str)] =
     &[("mixedSpacesAndTabs", "Mixed spaces and tabs.")];
+const NO_MIXED_OPERATORS_MESSAGES: &[(&str, &str)] = &[(
+    "unexpectedMixedOperator",
+    "Unexpected mix of '{{leftOperator}}' and '{{rightOperator}}'. Use parentheses to clarify the intended order of operations.",
+)];
 const QUOTES_MESSAGES: &[(&str, &str)] = &[
     (
         "wrongQuote",
@@ -501,6 +506,9 @@ pub struct StylisticRuleConfig {
 #[derive(Clone, Debug, Default, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StylisticRunConfig {
+    /// Source filename used to select the JavaScript/TypeScript/JSX parser.
+    #[serde(default)]
+    pub filename: Option<String>,
     /// Rules to run in one native pass.
     #[serde(default)]
     pub rules: Vec<StylisticRuleConfig>,
@@ -538,6 +546,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         name: "no-mixed-spaces-and-tabs",
         docs_description: "Disallow mixed spaces and tabs for indentation.",
         messages: NO_MIXED_SPACES_AND_TABS_MESSAGES,
+    },
+    StylisticRuleDefinition {
+        name: "no-mixed-operators",
+        docs_description: "Disallow mixed binary operators.",
+        messages: NO_MIXED_OPERATORS_MESSAGES,
     },
     StylisticRuleDefinition {
         name: "no-trailing-spaces",
@@ -830,6 +843,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "jsx-equals-spacing",
     "one-var-declaration-per-line",
     "lines-between-class-members",
+    "no-mixed-operators",
 ];
 
 /// Returns metadata for every Rust-backed stylistic rule.
@@ -844,7 +858,7 @@ pub fn stylistic_rule_metas() -> Vec<RuleMeta> {
                 .iter()
                 .map(|(id, description)| ((*id).to_owned(), (*description).to_owned()))
                 .collect::<BTreeMap<_, _>>(),
-            has_suggestions: true,
+            has_suggestions: definition.name != "no-mixed-operators",
             listeners: PROGRAM_LISTENER
                 .iter()
                 .map(|listener| (*listener).to_owned())
@@ -942,7 +956,13 @@ pub fn run_stylistic_lint(
                 let scan = token_scan
                     .as_ref()
                     .expect("token scan is built when a token rule is enabled");
-                run_token_rule(name, scan, &rule.options, &mut diagnostics);
+                run_token_rule(
+                    name,
+                    scan,
+                    config.filename.as_deref(),
+                    &rule.options,
+                    &mut diagnostics,
+                );
             }
             unknown => {
                 let mut message = String::from("unknown native stylistic rule: ");
@@ -959,6 +979,7 @@ pub fn run_stylistic_lint(
 fn run_token_rule(
     name: &str,
     scan: &context::Scan,
+    filename: Option<&str>,
     options: &Value,
     diagnostics: &mut Vec<LintDiagnostic>,
 ) {
@@ -1038,6 +1059,9 @@ fn run_token_rule(
         }
         "lines-between-class-members" => {
             context_rules::check_lines_between_class_members(scan, options, diagnostics)
+        }
+        "no-mixed-operators" => {
+            expression_rules::check_no_mixed_operators(scan, filename, options, diagnostics)
         }
         _ => {}
     }

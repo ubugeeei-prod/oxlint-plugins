@@ -120,6 +120,22 @@ describe('stylistic UTF-16 byte mapping', () => {
     }
   });
 
+  it('maps no-mixed-operators ranges after BMP and astral Unicode', () => {
+    const sourceText = 'const 日本語 = value; // 🦀\nconst result = 日本語 + left * right;\n';
+    const reports = runRule('no-mixed-operators', sourceText);
+    const plus = sourceText.indexOf('+');
+    const star = sourceText.indexOf('*');
+
+    expect(reports.map((report) => report.node.range)).toEqual([
+      [plus, plus + 1],
+      [star, star + 1],
+    ]);
+    expect(reports.map((report) => report.data)).toEqual([
+      { leftOperator: '+', rightOperator: '*' },
+      { leftOperator: '+', rightOperator: '*' },
+    ]);
+  });
+
   it('clamps offsets that fall past the end of the source', () => {
     // An empty source should not crash even though the mapper has nothing to walk.
     const sourceText = '';

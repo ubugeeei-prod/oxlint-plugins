@@ -15183,19 +15183,19 @@
       },
       {
         "name": "no-mixed-operators",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-mixed-operators."
+        "notes": "Oxc AST-backed port of @stylistic/no-mixed-operators v5.10.0 with exact default/custom operator groups, allowSamePrecedence and parenthesis semantics, dynamic operator messages and source ranges, TypeScript/JSX coverage, and no fixes (matching upstream)."
       },
       {
         "name": "no-mixed-spaces-and-tabs",
