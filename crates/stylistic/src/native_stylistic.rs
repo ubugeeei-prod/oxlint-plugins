@@ -8,6 +8,7 @@ use super::{LintDiagnostic, RuleBridgeRequirements, RuleMeta};
 mod context;
 mod context_rules;
 mod helpers;
+mod jsx_rules;
 mod lexer;
 mod line_index;
 mod line_rules;
@@ -426,6 +427,14 @@ const KEYWORD_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("insertSpace", "Insert a space."),
     ("removeSpace", "Remove the whitespace."),
 ];
+const JSX_EQUALS_SPACING_MESSAGES: &[(&str, &str)] = &[
+    ("noSpaceBefore", "There should be no space before '='"),
+    ("noSpaceAfter", "There should be no space after '='"),
+    ("needSpaceBefore", "A space is required before '='"),
+    ("needSpaceAfter", "A space is required after '='"),
+    ("insertSpace", "Insert a space."),
+    ("removeSpace", "Remove the whitespace."),
+];
 const LINE_COMMENT_POSITION_MESSAGES: &[(&str, &str)] = &[
     ("above", "Expected comment to be above code."),
     ("beside", "Expected comment to be beside code."),
@@ -713,6 +722,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: LINE_COMMENT_POSITION_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-equals-spacing",
+        docs_description: "Enforce or disallow spaces around equal signs in JSX attributes.",
+        messages: JSX_EQUALS_SPACING_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "one-var-declaration-per-line",
         docs_description: "Require or disallow newlines around variable declarations.",
         messages: ONE_VAR_DECLARATION_PER_LINE_MESSAGES,
@@ -765,6 +779,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "operator-linebreak",
     "keyword-spacing",
     "line-comment-position",
+    "jsx-equals-spacing",
     "one-var-declaration-per-line",
     "lines-between-class-members",
 ];
@@ -956,6 +971,7 @@ fn run_token_rule(
         "line-comment-position" => {
             token_rules::check_line_comment_position(scan, options, diagnostics)
         }
+        "jsx-equals-spacing" => jsx_rules::check_jsx_equals_spacing(scan, options, diagnostics),
         "one-var-declaration-per-line" => {
             context_rules::check_one_var_declaration_per_line(scan, options, diagnostics)
         }

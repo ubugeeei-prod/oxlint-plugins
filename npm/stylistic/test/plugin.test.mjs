@@ -82,6 +82,7 @@ const stylisticRuleFixtures = [
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
+  ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
 ];
 
 function runRule(ruleName, sourceText, options, settings) {
@@ -390,6 +391,59 @@ describe('stylistic plugin', () => {
     ).toEqual(['beside']);
   });
 
+  it('supports jsx-equals-spacing options and exact fixes', () => {
+    const neverReports = runRule('jsx-equals-spacing', '<App foo = {bar} />;\n', ['never']);
+    expect(messageIds(neverReports)).toEqual(['noSpaceBefore', 'noSpaceAfter']);
+    expect(neverReports.map((report) => report.node.range)).toEqual([
+      [9, 10],
+      [9, 10],
+    ]);
+    expect(
+      neverReports.flatMap((report) =>
+        report.suggest[0].fix({
+          replaceTextRange(range, replacementText) {
+            return { range, replacementText };
+          },
+        }),
+      ),
+    ).toEqual([
+      { range: [8, 9], replacementText: '' },
+      { range: [10, 11], replacementText: '' },
+    ]);
+
+    const alwaysReports = runRule('jsx-equals-spacing', '<App foo={bar} />;\n', ['always']);
+    expect(messageIds(alwaysReports)).toEqual(['needSpaceBefore', 'needSpaceAfter']);
+    expect(
+      alwaysReports.flatMap((report) =>
+        report.suggest[0].fix({
+          replaceTextRange(range, replacementText) {
+            return { range, replacementText };
+          },
+        }),
+      ),
+    ).toEqual([
+      { range: [8, 8], replacementText: ' ' },
+      { range: [9, 9], replacementText: ' ' },
+    ]);
+  });
+
+  it('runs jsx-equals-spacing through shared settings without expression false positives', () => {
+    const reports = runRule(
+      'jsx-equals-spacing',
+      '<App foo={fallback = next}>text<Child bar = "value" /></App>;\n',
+      [],
+      {
+        corsaStylistic: {
+          rules: {
+            'jsx-equals-spacing': ['never'],
+          },
+        },
+      },
+    );
+
+    expect(messageIds(reports)).toEqual(['noSpaceBefore', 'noSpaceAfter']);
+  });
+
   it('works through oxlint jsPlugins config', () => {
     const oxlint = findOxlintCli();
     const temp = mkdtempSync(join(tmpdir(), 'stylistic-plugin-'));
@@ -436,6 +490,54 @@ describe('stylistic plugin', () => {
       expect(JSON.parse(result.stdout).diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
         'stylistic(no-trailing-spaces)',
         'stylistic(quotes)',
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('reports jsx-equals-spacing through a real oxlint JSX run', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-plugin-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.jsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(sourcePath, 'export const view = <App foo = {bar} />;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/jsx-equals-spacing': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(jsx-equals-spacing)',
+        'stylistic(jsx-equals-spacing)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        "There should be no space before '='",
+        "There should be no space after '='",
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
