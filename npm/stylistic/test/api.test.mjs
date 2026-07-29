@@ -25,6 +25,7 @@ describe('stylistic native API', () => {
       'function-call-argument-newline',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-element-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'newline-per-chained-call',
@@ -87,6 +88,42 @@ describe('stylistic native API', () => {
       'exceed',
       'missingPadBlock',
       'missingPadBlock',
+    ]);
+  });
+
+  it('runs array-element-newline with exact native messages, ranges, and fixes', () => {
+    const source = 'const list = [1, 2, 3];';
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'array-element-newline', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'array-element-newline',
+        messageId: 'missingLineBreak',
+        message: 'There should be a linebreak after this element.',
+        range: { start: 16, end: 17 },
+        suggestions: [
+          {
+            messageId: 'missingLineBreak',
+            message: 'There should be a linebreak after this element.',
+            fixes: [{ range: { start: 16, end: 17 }, replacementText: '\n' }],
+          },
+        ],
+      },
+      {
+        ruleName: 'array-element-newline',
+        messageId: 'missingLineBreak',
+        message: 'There should be a linebreak after this element.',
+        range: { start: 19, end: 20 },
+        suggestions: [
+          {
+            messageId: 'missingLineBreak',
+            message: 'There should be a linebreak after this element.',
+            fixes: [{ range: { start: 19, end: 20 }, replacementText: '\n' }],
+          },
+        ],
+      },
     ]);
   });
 
