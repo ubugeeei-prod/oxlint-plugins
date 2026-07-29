@@ -189,6 +189,31 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the stable brace-style metadata and complete message catalog', () => {
+    expect(plugin.rules['brace-style'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce consistent brace style for blocks',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        nextLineOpen:
+          'Opening curly brace does not appear on the same line as controlling statement.',
+        sameLineOpen: 'Opening curly brace appears on the same line as controlling statement.',
+        blockSameLine: 'Statement inside of curly braces should be on next line.',
+        nextLineClose:
+          'Closing curly brace does not appear on the same line as the subsequent block.',
+        singleLineClose:
+          'Closing curly brace should be on the same line as opening curly brace or on the line after the previous block.',
+        sameLineClose: 'Closing curly brace appears on the same line as the subsequent block.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

@@ -32,6 +32,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-element-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('brace-style');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'newline-per-chained-call',
     );
@@ -741,5 +742,101 @@ describe('stylistic native API', () => {
       },
     ]);
     expect(commented[0].suggestions).toBeUndefined();
+  });
+
+  it('runs brace-style with exact native UTF-8 byte ranges, messages, and fixes', () => {
+    const source = 'const 名 = 1;\r\nif (名)\r\n{\r\nrun(); }\r\n';
+    const opening = Buffer.byteLength('const 名 = 1;\r\nif (名)\r\n');
+    const closing = Buffer.byteLength('const 名 = 1;\r\nif (名)\r\n{\r\nrun(); ');
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [{ name: 'brace-style', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'brace-style',
+        messageId: 'nextLineOpen',
+        message: 'Opening curly brace does not appear on the same line as controlling statement.',
+        range: { start: opening, end: opening + 1 },
+        suggestions: [
+          {
+            messageId: 'nextLineOpen',
+            message:
+              'Opening curly brace does not appear on the same line as controlling statement.',
+            fixes: [
+              {
+                range: {
+                  start: Buffer.byteLength('const 名 = 1;\r\nif (名)'),
+                  end: opening,
+                },
+                replacementText: ' ',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'brace-style',
+        messageId: 'singleLineClose',
+        message:
+          'Closing curly brace should be on the same line as opening curly brace or on the line after the previous block.',
+        range: { start: closing, end: closing + 1 },
+        suggestions: [
+          {
+            messageId: 'singleLineClose',
+            message:
+              'Closing curly brace should be on the same line as opening curly brace or on the line after the previous block.',
+            fixes: [
+              {
+                range: { start: closing, end: closing },
+                replacementText: '\n',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('supports allman and allowSingleLine across TypeScript modules and TSX', () => {
+    const source = [
+      'namespace 名前 { value(); }',
+      'const View = () => <Panel value={{ nested: true }} />;',
+      'if (ok) { render(<View />); }',
+    ].join('\n');
+    const strict = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'brace-style', options: ['allman'] }],
+    });
+    expect(strict.map((diagnostic) => diagnostic.messageId)).toEqual([
+      'sameLineOpen',
+      'blockSameLine',
+      'singleLineClose',
+      'sameLineOpen',
+      'blockSameLine',
+      'singleLineClose',
+    ]);
+    expect(
+      runNativeStylisticLint(source, {
+        filename: 'fixture.tsx',
+        rules: [{ name: 'brace-style', options: ['allman', { allowSingleLine: true }] }],
+      }),
+    ).toEqual([]);
+  });
+
+  it('reports brace-style comment-separated violations without an unsafe fix', () => {
+    const diagnostics = runNativeStylisticLint('if (ok) // preserve\n{\nwork();\n}', {
+      filename: 'fixture.js',
+      rules: [{ name: 'brace-style', options: [] }],
+    });
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'brace-style',
+        messageId: 'nextLineOpen',
+        message: 'Opening curly brace does not appear on the same line as controlling statement.',
+        range: { start: 20, end: 21 },
+      },
+    ]);
   });
 });

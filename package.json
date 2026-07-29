@@ -70,6 +70,7 @@
     "port:tests:stylistic:multiline-comment-style": "node tools/tasks/sync-stylistic-multiline-comment-style-tests.ts",
     "port:tests:stylistic:type-annotation-spacing": "node tools/tasks/sync-stylistic-type-annotation-spacing-tests.ts",
     "port:tests:stylistic:array-bracket-newline": "node tools/tasks/sync-stylistic-array-bracket-newline-tests.ts",
+    "port:tests:stylistic:brace-style": "node tools/tasks/sync-stylistic-brace-style-tests.ts",
     "port:tests:stylistic:multiline-ternary": "node tools/tasks/sync-stylistic-multiline-ternary-tests.ts",
     "port:tests:unocss": "node tools/tasks/sync-unocss-tests.ts",
     "profile": "node tools/tasks/profile.ts",
