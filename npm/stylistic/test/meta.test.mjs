@@ -47,6 +47,7 @@ describe('stylistic plugin meta contract', () => {
         [
           'jsx-closing-bracket-location',
           'jsx-curly-spacing',
+          'jsx-first-prop-new-line',
           'jsx-quotes',
           'no-confusing-arrow',
           'no-extra-parens',
@@ -166,6 +167,24 @@ describe('stylistic plugin meta contract', () => {
         noSpaceBefore: "There should be no space before '{{token}}'",
         spaceNeededAfter: "A space is required after '{{token}}'",
         spaceNeededBefore: "A space is required before '{{token}}'",
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the stable jsx-first-prop-new-line metadata contract', () => {
+    expect(plugin.rules['jsx-first-prop-new-line'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce proper position of the first property in JSX',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        propOnNewLine: 'Property should be placed on a new line',
+        propOnSameLine: 'Property should be placed on the same line as the component declaration',
       },
       schema: { type: 'array' },
     });

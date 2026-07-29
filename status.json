@@ -14815,19 +14815,19 @@
       },
       {
         "name": "jsx-first-prop-new-line",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-first-prop-new-line."
+        "notes": "Native Rust/Oxc JSX AST port of stable @stylistic/eslint-plugin v5.10.0 jsx-first-prop-new-line. The pinned ESLint 10 parser-expanded fixture replays all 42 valid and 17 invalid upstream cases with 17 exact diagnostics, ranges, messages, and fixes; Rust and Vitest additionally cover all five modes, TypeScript generic arguments, member and namespaced names, spreads, booleans, nested JSX, raw comment replacement behavior, Unicode, CRLF/CR/LF/LS/PS, malformed options, native API/meta/shared settings, and real Oxlint JSX/TSX lint/fix integration."
       },
       {
         "name": "jsx-function-call-newline",

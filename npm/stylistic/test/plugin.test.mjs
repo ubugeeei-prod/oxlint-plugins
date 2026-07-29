@@ -133,6 +133,7 @@ const stylisticRuleFixtures = [
     ['never'],
     ['unexpectedAfter', 'unexpectedBefore'],
   ],
+  ['jsx-first-prop-new-line', '<App first={{\n  value: 1\n}} second />;\n', [], ['propOnNewLine']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
@@ -374,6 +375,7 @@ describe('stylistic plugin', () => {
 
   it('preserves upstream code-fix metadata', () => {
     expect(plugin.rules['no-confusing-arrow'].meta.fixable).toBe('code');
+    expect(plugin.rules['jsx-first-prop-new-line'].meta.fixable).toBe('code');
     expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
     expect(plugin.rules['no-extra-parens'].meta.fixable).toBe('code');
     expect(plugin.rules['arrow-spacing'].meta.fixable).toBe('whitespace');
@@ -3051,6 +3053,84 @@ const parenthesized = (a + b) * c;
       expect(fixed.stderr).toBe('');
       expect(readFileSync(sourcePath, 'utf8')).toBe(
         'export const view = <App title={ value }>{child}</App>;\n',
+      );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('supports jsx-first-prop-new-line shared settings, UTF-16 ranges, and exact fixes', () => {
+    const source = 'const marker = "😀"; const view = <DataTable<Items> first second />;\n';
+    const firstStart = source.indexOf('first');
+    const reports = runRule('jsx-first-prop-new-line', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-first-prop-new-line': ['always'],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual(['propOnNewLine']);
+    expect(reports[0].data).toBeUndefined();
+    expect(reports[0].node.range).toEqual([firstStart, firstStart + 'first'.length]);
+    expect(reportFix(reports[0])).toEqual({
+      range: [source.indexOf('> first') + 1, firstStart],
+      replacementText: '\n',
+    });
+    expect(applyReportFixes(source, reports)).toBe(
+      'const marker = "😀"; const view = <DataTable<Items>\nfirst second />;\n',
+    );
+  });
+
+  it('runs jsx-first-prop-new-line through real Oxlint JSX and TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-first-prop-new-line-'));
+
+    try {
+      const jsxPath = join(temp, 'sample.jsx');
+      const tsxPath = join(temp, 'generic.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(jsxPath, 'export const view = <Panel first second />;\n');
+      writeFileSync(
+        tsxPath,
+        'type Items = { id: string };\nexport const table = <DataTable<Items> first second />;\n',
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-first-prop-new-line': ['error', 'always'],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', jsxPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(jsx-first-prop-new-line)',
+          message: 'Property should be placed on a new line',
+        },
+        {
+          code: 'stylistic(jsx-first-prop-new-line)',
+          message: 'Property should be placed on a new line',
+        },
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', jsxPath, tsxPath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(jsxPath, 'utf8')).toBe('export const view = <Panel\nfirst second />;\n');
+      expect(readFileSync(tsxPath, 'utf8')).toBe(
+        'type Items = { id: string };\nexport const table = <DataTable<Items>\nfirst second />;\n',
       );
     } finally {
       rmSync(temp, { recursive: true, force: true });
