@@ -114,6 +114,7 @@ const stylisticRuleFixtures = [
     [],
     ['expectedTestCons', 'expectedConsAlt'],
   ],
+  ['brace-style', 'if (value)\n{\n  work(); }\n', [], ['nextLineOpen', 'singleLineClose']],
   ['newline-per-chained-call', 'first().second().third();\n', [], ['expected']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
@@ -1485,6 +1486,69 @@ const parenthesized = (a + b) * c;
     );
   });
 
+  it('maps brace-style byte offsets to exact UTF-16 token ranges and fixes', () => {
+    const source = 'const emoji = "😀";\nif (ok)\n{\nwork(); }\n';
+    const opening = source.indexOf('{');
+    const closing = source.lastIndexOf('}');
+    const reports = runRule('brace-style', source);
+
+    expect(reports).toMatchObject([
+      { messageId: 'nextLineOpen', node: { range: [opening, opening + 1] } },
+      { messageId: 'singleLineClose', node: { range: [closing, closing + 1] } },
+    ]);
+    expect(
+      reports.map(
+        (report) =>
+          report.suggest[0].fix({
+            replaceTextRange(range, replacementText) {
+              return { range, replacementText };
+            },
+          })[0],
+      ),
+    ).toEqual([
+      {
+        range: [source.indexOf('\n', source.indexOf('if (ok)')), opening],
+        replacementText: ' ',
+      },
+      { range: [closing, closing], replacementText: '\n' },
+    ]);
+  });
+
+  it('supports brace-style styles and allowSingleLine through shared settings', () => {
+    const source = 'namespace Foo { value(); }\nif (ok) { render(); }\n';
+    const settings = (allowSingleLine) => ({
+      corsaStylistic: {
+        rules: {
+          'brace-style': ['allman', { allowSingleLine }],
+        },
+      },
+    });
+    expect(messageIds(runRule('brace-style', source, [], settings(false)))).toEqual([
+      'sameLineOpen',
+      'blockSameLine',
+      'singleLineClose',
+      'sameLineOpen',
+      'blockSameLine',
+      'singleLineClose',
+    ]);
+    expect(runRule('brace-style', source, [], settings(true))).toEqual([]);
+  });
+
+  it('preserves brace-style comment safety and ignores JSX/object brace lookalikes', () => {
+    const source = [
+      'const View = () => <Panel value={{ nested: true }} />;',
+      'if (ok) // preserve',
+      '{',
+      'render(<View />);',
+      '}',
+    ].join('\n');
+    const reports = runRule('brace-style', source);
+
+    expect(reports).toMatchObject([{ messageId: 'nextLineOpen' }]);
+    expect(reports[0].suggest).toBeUndefined();
+    expect(source.slice(...reports[0].node.range)).toBe('{');
+  });
+
   it('reports newline-per-chained-call data and fixes with UTF-16 ranges', () => {
     const source = 'const value = "😀".trim().toString().valueOf();\n';
     const propertyStart = source.indexOf('.valueOf');
@@ -2073,6 +2137,54 @@ const parenthesized = (a + b) * c;
           message: "A linebreak is required before ']'.",
         },
       ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs brace-style through real oxlint JavaScript, TypeScript, and TSX configs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-brace-style-'));
+
+    try {
+      const javaScriptPath = join(temp, 'sample.js');
+      const typeScriptPath = join(temp, 'sample.ts');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(javaScriptPath, 'export function value() { return 1; }\n');
+      writeFileSync(typeScriptPath, 'export namespace Foo { export const value = 1; }\n');
+      writeFileSync(tsxPath, 'export function View() { return <div />; }\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: { 'stylistic/brace-style': ['error', 'allman'] },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', javaScriptPath, typeScriptPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics).toHaveLength(9);
+      expect(new Set(diagnostics.map((diagnostic) => diagnostic.code))).toEqual(
+        new Set(['stylistic(brace-style)']),
+      );
+      const grouped = Object.groupBy(diagnostics, (diagnostic) => diagnostic.message);
+      expect(
+        grouped['Opening curly brace appears on the same line as controlling statement.'],
+      ).toHaveLength(3);
+      expect(grouped['Statement inside of curly braces should be on next line.']).toHaveLength(3);
+      expect(
+        grouped[
+          'Closing curly brace should be on the same line as opening curly brace or on the line after the previous block.'
+        ],
+      ).toHaveLength(3);
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

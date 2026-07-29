@@ -14575,19 +14575,19 @@
       },
       {
         "name": "brace-style",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule brace-style."
+        "notes": "Native Rust/Oxc AST port of stable @stylistic/brace-style v5.10.0 with exact 1tbs, stroustrup, allman, allowSingleLine, comment-safe fixes, JS/TS/TSX support, and exhaustive replay of both upstream suites (89 valid, 91 invalid, 130 diagnostics)."
       },
       {
         "name": "curly-newline",

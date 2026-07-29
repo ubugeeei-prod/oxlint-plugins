@@ -7,6 +7,7 @@ use super::{LintDiagnostic, RuleBridgeRequirements, RuleMeta};
 
 mod array_bracket_newline;
 mod array_rules;
+mod brace_style;
 mod comment_rules;
 mod context;
 mod context_rules;
@@ -242,6 +243,32 @@ const ARRAY_BRACKET_NEWLINE_MESSAGES: &[(&str, &str)] = &[
     (
         "missingClosingLinebreak",
         "A linebreak is required before ']'.",
+    ),
+];
+const BRACE_STYLE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "nextLineOpen",
+        "Opening curly brace does not appear on the same line as controlling statement.",
+    ),
+    (
+        "sameLineOpen",
+        "Opening curly brace appears on the same line as controlling statement.",
+    ),
+    (
+        "blockSameLine",
+        "Statement inside of curly braces should be on next line.",
+    ),
+    (
+        "nextLineClose",
+        "Closing curly brace does not appear on the same line as the subsequent block.",
+    ),
+    (
+        "singleLineClose",
+        "Closing curly brace should be on the same line as opening curly brace or on the line after the previous block.",
+    ),
+    (
+        "sameLineClose",
+        "Closing curly brace appears on the same line as the subsequent block.",
     ),
 ];
 const COMPUTED_PROPERTY_SPACING_MESSAGES: &[(&str, &str)] = &[
@@ -748,6 +775,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: ARRAY_BRACKET_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "brace-style",
+        docs_description: "Enforce consistent brace style for blocks",
+        messages: BRACE_STYLE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "computed-property-spacing",
         docs_description: "Enforce consistent spacing inside computed member-access brackets.",
         messages: COMPUTED_PROPERTY_SPACING_MESSAGES,
@@ -1108,6 +1140,12 @@ pub fn run_stylistic_lint(
                 &mut diagnostics,
             ),
             "array-bracket-newline" => array_bracket_newline::check_array_bracket_newline(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "brace-style" => brace_style::check_brace_style(
                 source_text,
                 config.filename.as_deref(),
                 &rule.options,

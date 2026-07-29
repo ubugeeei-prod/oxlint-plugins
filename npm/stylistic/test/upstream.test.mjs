@@ -10,6 +10,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 const fixture = JSON.parse(
   readFileSync(join(here, 'fixtures', 'type-annotation-spacing.json'), 'utf8'),
 );
+const braceStyleFixture = JSON.parse(
+  readFileSync(join(here, 'fixtures', 'brace-style.json'), 'utf8'),
+);
 const functionCallArgumentNewlineFixture = JSON.parse(
   readFileSync(join(here, 'fixtures', 'function-call-argument-newline.json'), 'utf8'),
 );
@@ -264,6 +267,103 @@ describe('indent-binary-ops upstream v5.10.0 parity', () => {
       expect(applyIndentBinaryOpsRecursively(testCase.code, testCase.options)).toBe(
         testCase.output,
       );
+    },
+  );
+});
+
+function runBraceStyle(testCase) {
+  const reports = [];
+  const sourceCode = {
+    text: testCase.code,
+    getText() {
+      return this.text;
+    },
+  };
+  const visitor = plugin.rules['brace-style'].createOnce({
+    filename: testCase.language === 'js' ? 'fixture.js' : 'fixture.ts',
+    options: testCase.options ?? [],
+    sourceCode,
+    report(descriptor) {
+      reports.push(descriptor);
+    },
+  });
+
+  visitor.Program({ type: 'Program', range: [0, testCase.code.length] });
+  return reports;
+}
+
+function applyBraceStyleSuggestions(source, reports) {
+  const edits = [];
+  for (const report of reports) {
+    if (!report.suggest?.[0]) {
+      return null;
+    }
+    edits.push(
+      ...report.suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    );
+  }
+  edits.sort((left, right) => right.range[0] - left.range[0] || right.range[1] - left.range[1]);
+
+  let output = source;
+  for (const edit of edits) {
+    output = output.slice(0, edit.range[0]) + edit.replacementText + output.slice(edit.range[1]);
+  }
+  return output;
+}
+
+describe('brace-style upstream v5.10.0 parity', () => {
+  it('keeps both JavaScript and TypeScript suite inventories complete', () => {
+    expect(braceStyleFixture.__generated).toMatchObject({
+      source: '@stylistic/eslint-plugin',
+      version: 'v5.10.0',
+      commit: 'efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712',
+      sourceFiles: [
+        'packages/eslint-plugin/rules/brace-style/brace-style._js_.test.ts',
+        'packages/eslint-plugin/rules/brace-style/brace-style._ts_.test.ts',
+      ],
+    });
+    expect(braceStyleFixture.valid).toHaveLength(89);
+    expect(braceStyleFixture.invalid).toHaveLength(91);
+    expect(braceStyleFixture.invalid.flatMap((testCase) => testCase.errors)).toHaveLength(130);
+    expect(braceStyleFixture.valid.filter((testCase) => testCase.language === 'js')).toHaveLength(
+      81,
+    );
+    expect(braceStyleFixture.invalid.filter((testCase) => testCase.language === 'ts')).toHaveLength(
+      8,
+    );
+  });
+
+  it.each(braceStyleFixture.valid.map((testCase, index) => [index, testCase]))(
+    'accepts upstream brace-style valid case %i',
+    (_index, testCase) => {
+      expect(runBraceStyle(testCase)).toEqual([]);
+    },
+  );
+
+  it.each(braceStyleFixture.invalid.map((testCase, index) => [index, testCase]))(
+    'matches upstream brace-style invalid case %i',
+    (_index, testCase) => {
+      const reports = runBraceStyle(testCase);
+      expect(reports.map((report) => report.messageId)).toEqual(
+        testCase.errors.map((error) => error.messageId),
+      );
+      for (const [reportIndex, expected] of testCase.errors.entries()) {
+        if (expected.line !== undefined) {
+          expect(locationAt(testCase.code, reports[reportIndex].node.range[0]).line).toBe(
+            expected.line,
+          );
+        }
+      }
+      expect(reports.map((report) => testCase.code.slice(...report.node.range))).toEqual(
+        testCase.errors.map((error) =>
+          error.messageId.endsWith('Open') || error.messageId === 'blockSameLine' ? '{' : '}',
+        ),
+      );
+      expect(applyBraceStyleSuggestions(testCase.code, reports)).toBe(testCase.output);
     },
   );
 });
