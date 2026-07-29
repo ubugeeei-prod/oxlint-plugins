@@ -14,6 +14,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'lines-between-class-members',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-equals-spacing');
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -85,5 +86,28 @@ describe('stylistic native API', () => {
 
     expect(diagnostics.map((diagnostic) => diagnostic.messageId)).toEqual(['above']);
     expect(diagnostics[0].range).toEqual({ start: 7, end: 16 });
+  });
+
+  it('runs jsx-equals-spacing with upstream never and always options', () => {
+    const source = '<App foo = {bar} baz={value} />';
+    const neverDiagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'jsx-equals-spacing', options: ['never'] }],
+    });
+    const alwaysDiagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'jsx-equals-spacing', options: ['always'] }],
+    });
+
+    expect(neverDiagnostics.map((diagnostic) => diagnostic.messageId)).toEqual([
+      'noSpaceBefore',
+      'noSpaceAfter',
+    ]);
+    expect(alwaysDiagnostics.map((diagnostic) => diagnostic.messageId)).toEqual([
+      'needSpaceBefore',
+      'needSpaceAfter',
+    ]);
+    expect(neverDiagnostics.map((diagnostic) => diagnostic.range)).toEqual([
+      { start: 9, end: 10 },
+      { start: 9, end: 10 },
+    ]);
   });
 });
