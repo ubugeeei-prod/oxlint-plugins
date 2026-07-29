@@ -13,6 +13,9 @@ const fixture = JSON.parse(
 const functionCallArgumentNewlineFixture = JSON.parse(
   readFileSync(join(here, 'fixtures', 'function-call-argument-newline.json'), 'utf8'),
 );
+const indentBinaryOpsFixture = JSON.parse(
+  readFileSync(join(here, 'fixtures', 'indent-binary-ops.json'), 'utf8'),
+);
 
 function runRule(sourceText, options) {
   const reports = [];
@@ -58,6 +61,39 @@ function applySuggestions(source, reports) {
   let output = source;
   for (const edit of edits) {
     output = output.slice(0, edit.range[0]) + edit.replacementText + output.slice(edit.range[1]);
+  }
+  return output;
+}
+
+function runIndentBinaryOps(sourceText, options) {
+  const reports = [];
+  const sourceCode = {
+    text: sourceText,
+    getText() {
+      return this.text;
+    },
+  };
+  const visitor = plugin.rules['indent-binary-ops'].createOnce({
+    options: options ?? [],
+    filename: 'fixture.ts',
+    sourceCode,
+    report(descriptor) {
+      reports.push(descriptor);
+    },
+  });
+
+  visitor.Program({ type: 'Program', range: [0, sourceText.length] });
+  return reports;
+}
+
+function applyIndentBinaryOpsRecursively(source, options) {
+  let output = source;
+  for (let iteration = 0; iteration < indentBinaryOpsFixture.__generated.recursive; iteration++) {
+    const reports = runIndentBinaryOps(output, options);
+    if (reports.length === 0) {
+      return output;
+    }
+    output = applySuggestions(output, reports);
   }
   return output;
 }
@@ -176,6 +212,58 @@ describe('function-call-argument-newline upstream v5.10.0 parity', () => {
       } else {
         expect(applySuggestions(testCase.code, reports)).toBe(testCase.output);
       }
+    },
+  );
+});
+
+describe('indent-binary-ops upstream v5.10.0 parity', () => {
+  it('keeps the pinned stable upstream inventory complete', () => {
+    expect(indentBinaryOpsFixture.__generated).toEqual({
+      source: '@stylistic/eslint-plugin',
+      version: 'v5.10.0',
+      commit: 'efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712',
+      sourceFile: 'packages/eslint-plugin/rules/indent-binary-ops/indent-binary-ops.test.ts',
+      license: 'MIT',
+      recursive: 10,
+      tool: 'tools/tasks/sync-stylistic-indent-binary-ops-tests.ts',
+    });
+    expect(indentBinaryOpsFixture.valid).toHaveLength(19);
+    expect(indentBinaryOpsFixture.invalid).toHaveLength(29);
+    expect(
+      indentBinaryOpsFixture.invalid.every((testCase) => typeof testCase.output === 'string'),
+    ).toBe(true);
+  });
+
+  it.each(indentBinaryOpsFixture.valid.map((testCase, index) => [index, testCase]))(
+    'accepts upstream valid case %i',
+    (_index, testCase) => {
+      expect(runIndentBinaryOps(testCase.code, testCase.options)).toEqual([]);
+    },
+  );
+
+  it.each(indentBinaryOpsFixture.invalid.map((testCase, index) => [index, testCase]))(
+    'matches upstream invalid case %i including recursive output',
+    (_index, testCase) => {
+      const reports = runIndentBinaryOps(testCase.code, testCase.options);
+      expect(reports.length).toBeGreaterThan(0);
+      expect(reports.every((report) => report.messageId === 'wrongIndentation')).toBe(true);
+      expect(
+        reports.every(
+          (report) =>
+            typeof report.data?.expected === 'string' &&
+            /^\d+ (?:spaces?|tabs?)$/.test(report.data.expected),
+        ),
+      ).toBe(true);
+      expect(
+        reports.every((report) => {
+          const [start, end] = report.node.range;
+          const lineStart = testCase.code.lastIndexOf('\n', start - 1) + 1;
+          return start === lineStart && /^\s*$/.test(testCase.code.slice(start, end));
+        }),
+      ).toBe(true);
+      expect(applyIndentBinaryOpsRecursively(testCase.code, testCase.options)).toBe(
+        testCase.output,
+      );
     },
   );
 });

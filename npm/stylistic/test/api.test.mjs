@@ -28,6 +28,7 @@ describe('stylistic native API', () => {
       'function-call-argument-newline',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('function-paren-newline');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('indent-binary-ops');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-element-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
@@ -590,6 +591,64 @@ describe('stylistic native API', () => {
             ],
           },
         ],
+      },
+    ]);
+  });
+
+  it('runs indent-binary-ops with exact UTF-8 byte ranges, data, and fixes', () => {
+    const source = 'const 日本語 = first\n    + second';
+    const lineStart = Buffer.byteLength('const 日本語 = first\n');
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.js',
+      rules: [{ name: 'indent-binary-ops', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'indent-binary-ops',
+        messageId: 'wrongIndentation',
+        message: 'Expected indentation of 2 spaces',
+        data: { expected: '2 spaces' },
+        range: { start: lineStart, end: lineStart + 4 },
+        suggestions: [
+          {
+            messageId: 'wrongIndentation',
+            message: 'Expected indentation of 2 spaces',
+            fixes: [
+              {
+                range: { start: lineStart, end: lineStart + 4 },
+                replacementText: '  ',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('supports indent-binary-ops tab and zero-width options through the native API', () => {
+    const source = 'const total = first\n  + second';
+    const tabbed = runNativeStylisticLint(source, {
+      filename: 'fixture.js',
+      rules: [{ name: 'indent-binary-ops', options: ['tab'] }],
+    });
+    const zero = runNativeStylisticLint(source, {
+      filename: 'fixture.js',
+      rules: [{ name: 'indent-binary-ops', options: [0] }],
+    });
+
+    expect(tabbed).toMatchObject([
+      {
+        message: 'Expected indentation of 1 tab',
+        data: { expected: '1 tab' },
+        suggestions: [{ fixes: [{ replacementText: '\t' }] }],
+      },
+    ]);
+    expect(zero).toMatchObject([
+      {
+        message: 'Expected indentation of 0 spaces',
+        data: { expected: '0 spaces' },
+        suggestions: [{ fixes: [{ replacementText: '' }] }],
       },
     ]);
   });
