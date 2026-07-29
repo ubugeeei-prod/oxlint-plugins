@@ -1,0 +1,2938 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/function-paren-newline/function-paren-newline.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.4.1",
+    "typescriptEslintParserVersion": "8.60.0",
+    "tool": "tools/tasks/sync-stylistic-function-paren-newline-tests.ts"
+  },
+  "valid": [
+    {
+      "code": "new new Foo();",
+      "options": []
+    },
+    {
+      "code": "function baz(foo, bar) {}",
+      "options": []
+    },
+    {
+      "code": "(function(foo, bar) {});",
+      "options": []
+    },
+    {
+      "code": "(function baz(foo, bar) {});",
+      "options": []
+    },
+    {
+      "code": "(foo, bar) => {};",
+      "options": []
+    },
+    {
+      "code": "foo => {};",
+      "options": []
+    },
+    {
+      "code": "baz(foo, bar);",
+      "options": []
+    },
+    {
+      "code": "function baz() {}",
+      "options": []
+    },
+    {
+      "code": "function baz(\n    foo,\n    bar\n) {}",
+      "options": []
+    },
+    {
+      "code": "(function(\n    foo,\n    bar\n) {});",
+      "options": []
+    },
+    {
+      "code": "(function baz(\n    foo,\n    bar\n) {});",
+      "options": []
+    },
+    {
+      "code": "(\n    foo,\n    bar\n) => {};",
+      "options": []
+    },
+    {
+      "code": "baz(\n    foo,\n    bar\n);",
+      "options": []
+    },
+    {
+      "code": "baz(`foo\n    bar`)",
+      "options": []
+    },
+    {
+      "code": "new Foo(bar, baz)",
+      "options": []
+    },
+    {
+      "code": "new Foo",
+      "options": []
+    },
+    {
+      "code": "new (Foo)",
+      "options": []
+    },
+    {
+      "code": "(foo)\n(bar)",
+      "options": []
+    },
+    {
+      "code": "foo.map(value => {\n  return value;\n})",
+      "options": []
+    },
+    {
+      "code": "function baz(foo, bar) {}",
+      "options": ["multiline"]
+    },
+    {
+      "code": "async (foo, bar) => {};",
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "options": []
+    },
+    {
+      "code": "async (\n    foo,\n    bar\n) => {};",
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "options": []
+    },
+    {
+      "code": "async foo => {};",
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "options": []
+    },
+    {
+      "code": "import(source)",
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "options": []
+    },
+    {
+      "code": "import(source\n  + ext)",
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "options": []
+    },
+    {
+      "code": "import(source, options)",
+      "options": []
+    },
+    {
+      "code": "import(source\n  + ext, options)",
+      "options": []
+    },
+    {
+      "code": "function baz(foo, bar) {}",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "function baz(foo) {}",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(function(foo, bar) {});",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(function(foo) {});",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(function baz(foo, bar) {});",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(function baz(foo) {});",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(foo, bar) => {};",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "foo => {};",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "baz(foo, bar);",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "baz(foo);",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "function baz() {}",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "function baz(\n    foo,\n    bar\n) {}",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "function baz(\n    foo\n) {}",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(function(\n    foo,\n    bar\n) {});",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(function(\n    foo\n) {});",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(function baz(\n    foo,\n    bar\n) {});",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(function baz(\n    foo\n) {});",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(\n    foo,\n    bar\n) => {};",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(\n    foo\n) => {};",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "baz(\n    foo,\n    bar\n);",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "baz(\n    foo\n);",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "baz(`foo\n    bar`)",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "new Foo(bar, baz)",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "new Foo(bar)",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "new Foo",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "new (Foo)",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "async (foo, bar) => {};",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async (foo) => {};",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async (\n    foo\n) => {};",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async (\n    foo,\n    bar\n) => {};",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async foo => {};",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "import(source)",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "import(source\n  + ext)",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "import(source, options)",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "import(source\n  + ext, options)",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "(foo)\n(bar)",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "foo.map(value => {\n  return value;\n})",
+      "options": ["multiline-arguments"]
+    },
+    {
+      "code": "function baz(\n    foo,\n    bar\n) {}",
+      "options": ["always"]
+    },
+    {
+      "code": "(function(\n    foo,\n    bar\n) {});",
+      "options": ["always"]
+    },
+    {
+      "code": "(function baz(\n    foo,\n    bar\n) {});",
+      "options": ["always"]
+    },
+    {
+      "code": "(\n    foo,\n    bar\n) => {};",
+      "options": ["always"]
+    },
+    {
+      "code": "baz(\n    foo,\n    bar\n);",
+      "options": ["always"]
+    },
+    {
+      "code": "function baz(\n) {}",
+      "options": ["always"]
+    },
+    {
+      "code": "async (\n    foo\n) => {};",
+      "options": ["always"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async (\n    foo,\n    bar\n) => {};",
+      "options": ["always"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async foo => {};",
+      "options": ["always"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "import(\n  source\n)",
+      "options": ["always"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "import(\n  source, options\n)",
+      "options": ["always"]
+    },
+    {
+      "code": "function baz(foo, bar) {}",
+      "options": ["never"]
+    },
+    {
+      "code": "(function(foo, bar) {});",
+      "options": ["never"]
+    },
+    {
+      "code": "(function baz(foo, bar) {});",
+      "options": ["never"]
+    },
+    {
+      "code": "(foo, bar) => {};",
+      "options": ["never"]
+    },
+    {
+      "code": "baz(foo, bar);",
+      "options": ["never"]
+    },
+    {
+      "code": "function baz() {}",
+      "options": ["never"]
+    },
+    {
+      "code": "async (foo, bar) => {};",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async foo => {};",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "import(source)",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "import(source, options)",
+      "options": ["never"]
+    },
+    {
+      "code": "function baz(foo, bar) {}",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ]
+    },
+    {
+      "code": "function baz(\n    foo, bar, qux\n) {}",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ]
+    },
+    {
+      "code": "baz(\n    foo, bar, qux\n);",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ]
+    },
+    {
+      "code": "baz(foo, bar);",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ]
+    },
+    {
+      "code": "async (foo, bar) => {};",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async (\n    foo,\n    bar,\n    baz\n) => {};",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async foo => {};",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "import(source)",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "import(\n  source\n)",
+      "options": [
+        {
+          "minItems": 1
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "import(source, options)",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ]
+    },
+    {
+      "code": "import(\n  source, options\n)",
+      "options": [
+        {
+          "minItems": 2
+        }
+      ]
+    },
+    {
+      "code": "foo(bar, baz)",
+      "options": ["consistent"]
+    },
+    {
+      "code": "foo(bar,\nbaz)",
+      "options": ["consistent"]
+    },
+    {
+      "code": "foo(\n    bar, baz\n)",
+      "options": ["consistent"]
+    },
+    {
+      "code": "foo(\n    bar,\n    baz\n)",
+      "options": ["consistent"]
+    },
+    {
+      "code": "async (foo, bar) => {};",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async foo => {};",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async (foo,\n    bar) => {};",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async (\n    foo, bar\n) => {};",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "async (\n    foo,\n    bar\n) => {};",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      }
+    },
+    {
+      "code": "import(source)",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "import(source, options)",
+      "options": ["consistent"]
+    },
+    {
+      "code": "import(\n  source, options\n)",
+      "options": ["consistent"]
+    },
+    {
+      "code": "const method6 = (\n  abc: number,\n  def: () => void,\n): [\n  string,\n  () => void\n] => [`a${abc}`, def];\nmethod6(3, () => {});",
+      "options": ["multiline"],
+      "parser": "typescript"
+    },
+    {
+      "code": "function a<A extends Array<any>, T extends (...args: any[]) => any> (\n  b: T,\n  c: any,\n): any {}",
+      "options": ["multiline"],
+      "parser": "typescript"
+    },
+    {
+      "code": "const a = function <A extends Array<any>, T extends (...args: any[]) => any> (\n  b: T,\n  c: any,\n): any {}",
+      "options": ["multiline"],
+      "parser": "typescript"
+    },
+    {
+      "code": "a<Array<any>, (...args: any[]) => any>(\n  b,\n  c,\n)",
+      "options": ["multiline"],
+      "parser": "typescript"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "function baz(foo,\n    bar\n) {}",
+      "output": "function baz(\nfoo,\n    bar\n) {}",
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "(function(\n    foo,\n    bar) {})",
+      "output": "(function(\n    foo,\n    bar\n) {})",
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 9,
+          "fix": {
+            "range": [27, 27],
+            "text": "\n"
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "(function baz(foo,\n    bar) {})",
+      "output": "(function baz(\nfoo,\n    bar\n) {})",
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15,
+          "fix": {
+            "range": [14, 14],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [26, 26],
+            "text": "\n"
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "baz(\n    foo, bar);",
+      "output": "baz(foo, bar);",
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 5,
+          "fix": {
+            "range": [4, 9],
+            "text": ""
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "(foo, bar\n) => {};",
+      "output": "(foo, bar) => {};",
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [9, 10],
+            "text": ""
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "function baz(\n    foo, bar\n) {}",
+      "output": "function baz(foo, bar) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 18],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [26, 27],
+            "text": ""
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "function baz(\n    foo =\n    1\n) {}",
+      "output": "function baz(foo =\n    1) {}",
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 18],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [29, 30],
+            "text": ""
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "function baz(\n) {}",
+      "output": "function baz() {}",
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "new Foo(bar,\n    baz);",
+      "output": "new Foo(\nbar,\n    baz\n);",
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 9,
+          "fix": {
+            "range": [8, 8],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [20, 20],
+            "text": "\n"
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "function baz(/* not fixed due to comment */\nfoo) {}",
+      "output": null,
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": null
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "function baz(foo\n/* not fixed due to comment */) {}",
+      "output": null,
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 31,
+          "endLine": 2,
+          "endColumn": 32,
+          "fix": null
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "async (\n    foo, bar\n) => {};",
+      "output": "async (foo, bar) => {};",
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 12],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [20, 21],
+            "text": ""
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "async (foo, bar\n) => {};",
+      "output": "async (foo, bar) => {};",
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [15, 16],
+            "text": ""
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "async (foo,\n    bar) => {};",
+      "output": "async (\nfoo,\n    bar\n) => {};",
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [19, 19],
+            "text": "\n"
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "async (\n    foo,\n    bar) => {};",
+      "output": "async (\n    foo,\n    bar\n) => {};",
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 9,
+          "fix": {
+            "range": [24, 24],
+            "text": "\n"
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "import(\n  source\n)",
+      "output": "import(source)",
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 10],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [16, 17],
+            "text": ""
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "import(\n  source, options\n)",
+      "output": "import(source, options)",
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 10],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [25, 26],
+            "text": ""
+          }
+        }
+      ],
+      "options": []
+    },
+    {
+      "code": "function baz(foo,\n    bar\n) {}",
+      "output": "function baz(\nfoo,\n    bar\n) {}",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function(\n    foo,\n    bar) {})",
+      "output": "(function(\n    foo,\n    bar\n) {})",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 9,
+          "fix": {
+            "range": [27, 27],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function baz(foo,\n    bar) {})",
+      "output": "(function baz(\nfoo,\n    bar\n) {})",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15,
+          "fix": {
+            "range": [14, 14],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [26, 26],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "baz(\n    foo, bar);",
+      "output": "baz(foo, bar);",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 5,
+          "fix": {
+            "range": [4, 9],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "(foo, bar\n) => {};",
+      "output": "(foo, bar) => {};",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [9, 10],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(\n    foo, bar\n) {}",
+      "output": "function baz(foo, bar) {}",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 18],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [26, 27],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(\n) {}",
+      "output": "function baz() {}",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "new Foo(bar,\n    baz);",
+      "output": "new Foo(\nbar,\n    baz\n);",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 8,
+          "endLine": 1,
+          "endColumn": 9,
+          "fix": {
+            "range": [8, 8],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [20, 20],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(/* not fixed due to comment */\nfoo) {}",
+      "output": "function baz(/* not fixed due to comment */\nfoo\n) {}",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 4,
+          "endLine": 2,
+          "endColumn": 5,
+          "fix": {
+            "range": [47, 47],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(foo\n/* not fixed due to comment */) {}",
+      "output": null,
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 31,
+          "endLine": 2,
+          "endColumn": 32,
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "function baz(\n    qwe,\n    foo, bar\n) {}",
+      "output": "function baz(\n    qwe,\n    foo, \nbar\n) {}",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedBetween",
+          "message": "Expected newline between arguments/params.",
+          "line": 3,
+          "column": 5,
+          "endLine": 3,
+          "endColumn": 8,
+          "fix": {
+            "range": [32, 32],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(\n    qwe, foo,\n    bar\n) {}",
+      "output": "function baz(\n    qwe, \nfoo,\n    bar\n) {}",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedBetween",
+          "message": "Expected newline between arguments/params.",
+          "line": 2,
+          "column": 5,
+          "endLine": 2,
+          "endColumn": 8,
+          "fix": {
+            "range": [23, 23],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(qwe, foo,\n    bar) {}",
+      "output": "function baz(\nqwe, \nfoo,\n    bar\n) {}",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBetween",
+          "message": "Expected newline between arguments/params.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 17,
+          "fix": {
+            "range": [18, 18],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [30, 30],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "baz(\n    foo);",
+      "output": "baz(\n    foo\n);",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [12, 12],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "baz(foo\n    );",
+      "output": "baz(foo);",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 5,
+          "endLine": 2,
+          "endColumn": 6,
+          "fix": {
+            "range": [7, 12],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (foo, bar\n) => {};",
+      "output": "async (foo, bar) => {};",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [15, 16],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (foo,\n    bar) => {};",
+      "output": "async (\nfoo,\n    bar\n) => {};",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [19, 19],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (\n    foo,\n    bar) => {};",
+      "output": "async (\n    foo,\n    bar\n) => {};",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 9,
+          "fix": {
+            "range": [24, 24],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(source\n)",
+      "output": "import(source)",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(\n  source)",
+      "output": "import(\n  source\n)",
+      "options": ["multiline-arguments"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 9,
+          "endLine": 2,
+          "endColumn": 10,
+          "fix": {
+            "range": [16, 16],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(source, options\n)",
+      "output": "import(source, options)",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [22, 23],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(source,\noptions)",
+      "output": "import(\nsource,\noptions\n)",
+      "options": ["multiline-arguments"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [22, 22],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(foo,\n    bar\n) {}",
+      "output": "function baz(\nfoo,\n    bar\n) {}",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function(\n    foo,\n    bar) {})",
+      "output": "(function(\n    foo,\n    bar\n) {})",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 9,
+          "fix": {
+            "range": [27, 27],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function baz(foo,\n    bar) {})",
+      "output": "(function baz(\nfoo,\n    bar\n) {})",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15,
+          "fix": {
+            "range": [14, 14],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [26, 26],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(foo, bar) {}",
+      "output": "function baz(\nfoo, bar\n) {}",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 22,
+          "endLine": 1,
+          "endColumn": 23,
+          "fix": {
+            "range": [21, 21],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function(foo, bar) {});",
+      "output": "(function(\nfoo, bar\n) {});",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 11,
+          "fix": {
+            "range": [10, 10],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 19,
+          "endLine": 1,
+          "endColumn": 20,
+          "fix": {
+            "range": [18, 18],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function baz(foo, bar) {});",
+      "output": "(function baz(\nfoo, bar\n) {});",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15,
+          "fix": {
+            "range": [14, 14],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 24,
+          "fix": {
+            "range": [22, 22],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(foo, bar) => {};",
+      "output": "(\nfoo, bar\n) => {};",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 2,
+          "fix": {
+            "range": [1, 1],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 11,
+          "fix": {
+            "range": [9, 9],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "baz(foo, bar);",
+      "output": "baz(\nfoo, bar\n);",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 5,
+          "fix": {
+            "range": [4, 4],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [12, 12],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz() {}",
+      "output": "function baz(\n) {}",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (foo, bar) => {};",
+      "output": "async (\nfoo, bar\n) => {};",
+      "options": ["always"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 16,
+          "endLine": 1,
+          "endColumn": 17,
+          "fix": {
+            "range": [15, 15],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (foo,\n    bar) => {};",
+      "output": "async (\nfoo,\n    bar\n) => {};",
+      "options": ["always"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 8,
+          "endLine": 2,
+          "endColumn": 9,
+          "fix": {
+            "range": [19, 19],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (\n    foo,\n    bar) => {};",
+      "output": "async (\n    foo,\n    bar\n) => {};",
+      "options": ["always"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 9,
+          "fix": {
+            "range": [24, 24],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(source)",
+      "output": "import(\nsource\n)",
+      "options": ["always"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(source, options)",
+      "output": "import(\nsource, options\n)",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 24,
+          "fix": {
+            "range": [22, 22],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(foo,\n    bar\n) {}",
+      "output": "function baz(foo,\n    bar) {}",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [25, 26],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function(\n    foo,\n    bar) {})",
+      "output": "(function(foo,\n    bar) {})",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 11,
+          "fix": {
+            "range": [10, 15],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "new new C()(\n);",
+      "output": "new new C()();",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 12,
+          "endLine": 1,
+          "endColumn": 13,
+          "fix": {
+            "range": [12, 13],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [12, 13],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(\n    foo,\n    bar\n) {}",
+      "output": "function baz(foo,\n    bar) {}",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 18],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function(\n    foo,\n    bar\n) {});",
+      "output": "(function(foo,\n    bar) {});",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 11,
+          "fix": {
+            "range": [10, 15],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [27, 28],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function baz(\n    foo,\n    bar\n) {});",
+      "output": "(function baz(foo,\n    bar) {});",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15,
+          "fix": {
+            "range": [14, 19],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [31, 32],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "(\n    foo,\n    bar\n) => {};",
+      "output": "(foo,\n    bar) => {};",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 1,
+          "endLine": 1,
+          "endColumn": 2,
+          "fix": {
+            "range": [1, 6],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [18, 19],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "baz(\n    foo,\n    bar\n);",
+      "output": "baz(foo,\n    bar);",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 5,
+          "fix": {
+            "range": [4, 9],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [21, 22],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(\n) {}",
+      "output": "function baz() {}",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (\n    foo,\n    bar\n) => {};",
+      "output": "async (foo,\n    bar) => {};",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 12],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [24, 25],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (\n    foo,\n    bar) => {};",
+      "output": "async (foo,\n    bar) => {};",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 12],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(\n  source\n)",
+      "output": "import(source)",
+      "options": ["never"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 10],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [16, 17],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(\n  source, options\n)",
+      "output": "import(source, options)",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 10],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [25, 26],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(foo, bar, qux) {}",
+      "output": "function baz(\nfoo, bar, qux\n) {}",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 27,
+          "endLine": 1,
+          "endColumn": 28,
+          "fix": {
+            "range": [26, 26],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "function baz(\n    foo, bar\n) {}",
+      "output": "function baz(foo, bar) {}",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 13,
+          "endLine": 1,
+          "endColumn": 14,
+          "fix": {
+            "range": [13, 18],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [26, 27],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "baz(foo, bar, qux);",
+      "output": "baz(\nfoo, bar, qux\n);",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 5,
+          "fix": {
+            "range": [4, 4],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 18,
+          "endLine": 1,
+          "endColumn": 19,
+          "fix": {
+            "range": [17, 17],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "baz(\n    foo,\n    bar\n);",
+      "output": "baz(foo,\n    bar);",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 4,
+          "endLine": 1,
+          "endColumn": 5,
+          "fix": {
+            "range": [4, 9],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [21, 22],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (\n    foo,\n    bar\n) => {};",
+      "output": "async (foo,\n    bar) => {};",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 12],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [24, 25],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (\n    foo,\n    bar) => {};",
+      "output": "async (foo,\n    bar) => {};",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 12],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (foo, bar, baz) => {};",
+      "output": "async (\nfoo, bar, baz\n) => {};",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 22,
+          "fix": {
+            "range": [20, 20],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(\n  source\n)",
+      "output": "import(source)",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 10],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [16, 17],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(source)",
+      "output": "import(\nsource\n)",
+      "options": [
+        {
+          "minItems": 1
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 14,
+          "endLine": 1,
+          "endColumn": 15,
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(\n  source, options\n)",
+      "output": "import(source, options)",
+      "options": [
+        {
+          "minItems": 3
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 10],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [25, 26],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(source, options)",
+      "output": "import(\nsource, options\n)",
+      "options": [
+        {
+          "minItems": 2
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '('.",
+          "line": 1,
+          "column": 7,
+          "endLine": 1,
+          "endColumn": 8,
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 1,
+          "column": 23,
+          "endLine": 1,
+          "endColumn": 24,
+          "fix": {
+            "range": [22, 22],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo(\n    bar,\n    baz)",
+      "output": "foo(\n    bar,\n    baz\n)",
+      "options": ["consistent"],
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 9,
+          "fix": {
+            "range": [21, 21],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo(bar,\n    baz\n)",
+      "output": "foo(bar,\n    baz)",
+      "options": ["consistent"],
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [16, 17],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (\n    foo,\n    bar) => {};",
+      "output": "async (\n    foo,\n    bar\n) => {};",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 3,
+          "column": 8,
+          "endLine": 3,
+          "endColumn": 9,
+          "fix": {
+            "range": [24, 24],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "async (foo,\n    bar\n) => {};",
+      "output": "async (foo,\n    bar) => {};",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2017
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 3,
+          "column": 1,
+          "endLine": 3,
+          "endColumn": 2,
+          "fix": {
+            "range": [19, 20],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(source\n)",
+      "output": "import(source)",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(\n  source)",
+      "output": "import(\n  source\n)",
+      "options": ["consistent"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 9,
+          "endLine": 2,
+          "endColumn": 10,
+          "fix": {
+            "range": [16, 16],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(source, options\n)",
+      "output": "import(source, options)",
+      "options": ["consistent"],
+      "errors": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 2,
+          "column": 1,
+          "endLine": 2,
+          "endColumn": 2,
+          "fix": {
+            "range": [22, 23],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(\n  source, options)",
+      "output": "import(\n  source, options\n)",
+      "options": ["consistent"],
+      "errors": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before ')'.",
+          "line": 2,
+          "column": 18,
+          "endLine": 2,
+          "endColumn": 19,
+          "fix": {
+            "range": [25, 25],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "const method6 = (\n  abc: number,\n  def: () => void,\n): [\n  string,\n  () => void\n] => [`a${abc}`, def];\nmethod6(3, () => {});",
+      "output": "const method6 = (abc: number,\n  def: () => void,): [\n  string,\n  () => void\n] => [`a${abc}`, def];\nmethod6(3, () => {});",
+      "options": ["never"],
+      "parser": "typescript",
+      "errors": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '('.",
+          "line": 1,
+          "column": 17,
+          "endLine": 1,
+          "endColumn": 18,
+          "fix": {
+            "range": [17, 20],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before ')'.",
+          "line": 4,
+          "column": 1,
+          "endLine": 4,
+          "endColumn": 2,
+          "fix": {
+            "range": [51, 52],
+            "text": ""
+          }
+        }
+      ]
+    }
+  ]
+}

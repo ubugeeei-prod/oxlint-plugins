@@ -24,6 +24,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'function-call-argument-newline',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('function-paren-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-element-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
@@ -343,6 +344,70 @@ describe('stylistic native API', () => {
       { replacementText: ' ' },
       { replacementText: ' ' },
     ]);
+  });
+
+  it('runs function-paren-newline with exact UTF-8 byte ranges and fixes', () => {
+    const source = 'const 日本語 = call(first, second);';
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'function-paren-newline', options: ['always'] }],
+    });
+    const left = Buffer.byteLength('const 日本語 = call');
+    const right = Buffer.byteLength('const 日本語 = call(first, second');
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'function-paren-newline',
+        messageId: 'expectedAfter',
+        message: "Expected newline after '('.",
+        range: { start: left, end: left + 1 },
+        suggestions: [
+          {
+            messageId: 'expectedAfter',
+            fixes: [{ range: { start: left + 1, end: left + 1 }, replacementText: '\n' }],
+          },
+        ],
+      },
+      {
+        ruleName: 'function-paren-newline',
+        messageId: 'expectedBefore',
+        message: "Expected newline before ')'.",
+        range: { start: right, end: right + 1 },
+        suggestions: [
+          {
+            messageId: 'expectedBefore',
+            fixes: [{ range: { start: right, end: right }, replacementText: '\n' }],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs function-paren-newline multiline-arguments and preserves unsafe comments', () => {
+    const unsafeSource = ['function value(/* retain */', 'first', '/* retain */) {}'].join('\n');
+    const unsafeDiagnostics = runNativeStylisticLint(unsafeSource, {
+      rules: [{ name: 'function-paren-newline', options: ['never'] }],
+    });
+    expect(unsafeDiagnostics.map((diagnostic) => diagnostic.messageId)).toEqual([
+      'unexpectedAfter',
+      'unexpectedBefore',
+    ]);
+    expect(unsafeDiagnostics.every((diagnostic) => diagnostic.suggestions === undefined)).toBe(
+      true,
+    );
+
+    const source = ['function value(', 'first,', 'second, third', ') {}'].join('\n');
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'function-paren-newline', options: ['multiline-arguments'] }],
+    });
+
+    expect(diagnostics.map((diagnostic) => diagnostic.messageId)).toEqual(['expectedBetween']);
+    expect(diagnostics[0].suggestions[0].fixes[0]).toEqual({
+      range: {
+        start: Buffer.byteLength('function value(\nfirst,\nsecond, '),
+        end: Buffer.byteLength('function value(\nfirst,\nsecond, '),
+      },
+      replacementText: '\n',
+    });
   });
 
   it('runs no-mixed-operators with exact messages, template data, and ranges', () => {

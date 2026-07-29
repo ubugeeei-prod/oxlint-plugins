@@ -13,6 +13,9 @@ const workspaceRoot = resolve(packageRoot, '../..');
 const linesAroundCommentFixture = JSON.parse(
   readFileSync(new URL('./fixtures/lines-around-comment-v5.10.0.json', import.meta.url), 'utf8'),
 );
+const functionParenNewlineFixture = JSON.parse(
+  readFileSync(new URL('./fixtures/function-paren-newline-v5.10.0.json', import.meta.url), 'utf8'),
+);
 
 const stylisticRuleFixtures = [
   ['eol-last', 'const x = 1;', [], ['missing']],
@@ -110,6 +113,12 @@ const stylisticRuleFixtures = [
     [],
     ['expectedSpaceAfter', 'unexpectedSpaceBefore'],
   ],
+  [
+    'function-paren-newline',
+    'function value(first, second) {}\n',
+    ['always'],
+    ['expectedAfter', 'expectedBefore'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, options, settings) {
@@ -136,6 +145,13 @@ function runRule(ruleName, sourceText, options, settings) {
 
 function messageIds(reports) {
   return reports.map((report) => report.messageId);
+}
+
+function offsetAt(source, line, column) {
+  const lines = source.split('\n');
+  return (
+    lines.slice(0, line - 1).reduce((offset, value) => offset + value.length + 1, 0) + column - 1
+  );
 }
 
 function utf16OffsetForLocation(sourceText, line, column) {
@@ -165,6 +181,9 @@ function expectedReportRange(sourceText, reportRange) {
 }
 
 function reportFix(report) {
+  if (!report.suggest?.[0]) {
+    return null;
+  }
   return report.suggest[0].fix({
     replaceTextRange(range, replacementText) {
       return { range, replacementText };
@@ -179,6 +198,51 @@ function applyReportFixes(sourceText, reports) {
     output = output.slice(0, fix.range[0]) + fix.replacementText + output.slice(fix.range[1]);
   }
   return output;
+}
+
+function iterativeFixedOutput(ruleName, source, options) {
+  let output = source;
+  let changed = false;
+
+  for (let iteration = 0; iteration < 10; iteration += 1) {
+    const fixes = runRule(ruleName, output, options)
+      .map((report, index) => ({
+        index,
+        fix: report.suggest?.[0] ? reportFix(report) : null,
+      }))
+      .filter(({ fix }) => fix !== null)
+      .sort(
+        (left, right) =>
+          left.fix.range[0] - right.fix.range[0] ||
+          left.fix.range[1] - right.fix.range[1] ||
+          left.index - right.index,
+      );
+    if (fixes.length === 0) {
+      break;
+    }
+
+    let cursor = 0;
+    let lastEnd = Number.NEGATIVE_INFINITY;
+    let next = '';
+    let applied = false;
+    for (const { fix } of fixes) {
+      if (lastEnd >= fix.range[0]) {
+        continue;
+      }
+      next += output.slice(cursor, fix.range[0]);
+      next += fix.replacementText;
+      cursor = fix.range[1];
+      lastEnd = fix.range[1];
+      applied = true;
+    }
+    if (!applied) {
+      break;
+    }
+    output = next + output.slice(cursor);
+    changed = true;
+  }
+
+  return changed ? output : null;
 }
 
 function findOxlintCli() {
@@ -824,6 +888,107 @@ describe('stylistic plugin', () => {
     expect(reports[0].suggest).toBeUndefined();
   });
 
+  it('keeps the stable function-paren-newline upstream inventory complete', () => {
+    expect(functionParenNewlineFixture.__generated).toMatchObject({
+      source: '@stylistic/eslint-plugin',
+      version: 'v5.10.0',
+      commit: 'efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712',
+    });
+    expect(functionParenNewlineFixture.valid).toHaveLength(112);
+    expect(functionParenNewlineFixture.invalid).toHaveLength(86);
+    expect(functionParenNewlineFixture.invalid.flatMap((testCase) => testCase.errors)).toHaveLength(
+      135,
+    );
+  });
+
+  it('accepts every stable v5.10.0 function-paren-newline valid fixture', () => {
+    for (const [index, testCase] of functionParenNewlineFixture.valid.entries()) {
+      expect(
+        runRule('function-paren-newline', testCase.code, testCase.options),
+        `upstream valid fixture ${index}`,
+      ).toEqual([]);
+    }
+  });
+
+  it('replays every stable v5.10.0 function-paren-newline invalid fixture exactly', () => {
+    const messages = plugin.rules['function-paren-newline'].meta.messages;
+
+    for (const [index, testCase] of functionParenNewlineFixture.invalid.entries()) {
+      const label = `upstream invalid fixture ${index}`;
+      const reports = runRule('function-paren-newline', testCase.code, testCase.options);
+      expect(messageIds(reports), label).toEqual(testCase.errors.map((error) => error.messageId));
+      expect(
+        reports.map((report) => report.node.range),
+        `${label} report ranges`,
+      ).toEqual(
+        testCase.errors.map((error) => [
+          offsetAt(testCase.code, error.line, error.column),
+          offsetAt(testCase.code, error.endLine, error.endColumn),
+        ]),
+      );
+      expect(
+        testCase.errors.map((error) => messages[error.messageId]),
+        `${label} messages`,
+      ).toEqual(testCase.errors.map((error) => error.message));
+      expect(reports.map(reportFix), `${label} fixes`).toEqual(
+        testCase.errors.map((error) =>
+          error.fix ? { range: error.fix.range, replacementText: error.fix.text } : null,
+        ),
+      );
+      expect(
+        iterativeFixedOutput('function-paren-newline', testCase.code, testCase.options),
+        `${label} iterative output`,
+      ).toBe(testCase.output);
+    }
+  });
+
+  it('runs function-paren-newline through shared settings with UTF-16 ranges', () => {
+    const source = 'const 日本語 = call(first, second);\n';
+    const reports = runRule('function-paren-newline', source, [], {
+      corsaStylistic: {
+        rules: {
+          'function-paren-newline': ['always'],
+        },
+      },
+    });
+    const left = source.indexOf('(');
+    const right = source.indexOf(')');
+
+    expect(messageIds(reports)).toEqual(['expectedAfter', 'expectedBefore']);
+    expect(reports.map((report) => report.node.range)).toEqual([
+      [left, left + 1],
+      [right, right + 1],
+    ]);
+    expect(reports.map(reportFix)).toEqual([
+      { range: [left + 1, left + 1], replacementText: '\n' },
+      { range: [right, right], replacementText: '\n' },
+    ]);
+  });
+
+  it('handles CRLF, CR, line separator, and paragraph separator without lookalike reports', () => {
+    for (const linebreak of ['\r\n', '\r', '\u2028', '\u2029']) {
+      expect(
+        messageIds(
+          runRule('function-paren-newline', `call(${linebreak}first, second);`, ['consistent']),
+        ),
+        JSON.stringify(linebreak),
+      ).toEqual(['expectedBefore']);
+    }
+
+    expect(
+      runRule(
+        'function-paren-newline',
+        [
+          "const text = 'call(\\nvalue\\n)';",
+          'if (condition) { call(); }',
+          'const grouped = (value);',
+          'const arrow = value => value;',
+        ].join('\n'),
+        ['never'],
+      ),
+    ).toEqual([]);
+  });
+
   it('matches upstream no-mixed-operators defaults, custom groups, and report data', () => {
     const defaults = runRule('no-mixed-operators', 'a + b * c;\n');
     expect(defaults).toMatchObject([
@@ -1270,6 +1435,57 @@ const parenthesized = (a + b) * c;
         {
           code: 'stylistic(type-annotation-spacing)',
           message: "Unexpected space before the ':'.",
+        },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs function-paren-newline through an actual oxlint JavaScript config', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-function-paren-newline-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.ts');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      const sourceText = 'export function value(first: string, second: string) {}\n';
+      writeFileSync(sourcePath, sourceText);
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/function-paren-newline': ['error', 'always'],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(function-paren-newline)',
+          message: "Expected newline after '('.",
+          labels: [{ span: { offset: sourceText.indexOf('('), length: 1 } }],
+        },
+        {
+          code: 'stylistic(function-paren-newline)',
+          message: "Expected newline before ')'.",
+          labels: [{ span: { offset: sourceText.indexOf(')'), length: 1 } }],
         },
       ]);
     } finally {
