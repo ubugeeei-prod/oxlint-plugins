@@ -24,6 +24,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'type-annotation-spacing',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('type-generic-spacing');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'type-named-tuple-spacing',
     );
@@ -396,6 +397,43 @@ describe('stylistic native API', () => {
       { replacementText: ' ' },
       { replacementText: ' ' },
       { replacementText: ' ' },
+    ]);
+  });
+
+  it('runs type-generic-spacing with exact UTF-8 byte ranges and fixes', () => {
+    const source = 'type 日本語< 値=string > = 値;\r\n';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [{ name: 'type-generic-spacing', options: [{ ignored: true }] }],
+    });
+    const openGap = Buffer.byteLength('type 日本語<');
+    const defaultGap = Buffer.byteLength('type 日本語< 値');
+    const closeGap = Buffer.byteLength('type 日本語< 値=string');
+
+    expect(diagnostics).toHaveLength(3);
+    expect(diagnostics.map((diagnostic) => diagnostic.messageId)).toEqual([
+      'genericSpacingMismatch',
+      'genericSpacingMismatch',
+      'genericSpacingMismatch',
+    ]);
+    expect(diagnostics.map((diagnostic) => diagnostic.range)).toEqual([
+      { start: openGap, end: openGap + 1 },
+      { start: closeGap, end: closeGap + 1 },
+      { start: defaultGap, end: defaultGap + 1 },
+    ]);
+    expect(diagnostics.map((diagnostic) => diagnostic.suggestions[0].fixes[0])).toEqual([
+      {
+        range: { start: openGap, end: openGap + 1 },
+        replacementText: '',
+      },
+      {
+        range: { start: closeGap, end: closeGap + 1 },
+        replacementText: '',
+      },
+      {
+        range: { start: defaultGap, end: defaultGap + 1 },
+        replacementText: ' = ',
+      },
     ]);
   });
 

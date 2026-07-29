@@ -15327,19 +15327,19 @@
       },
       {
         "name": "type-generic-spacing",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule type-generic-spacing."
+        "notes": "AST-backed port of stable @stylistic/eslint-plugin v5.10.0 type-generic-spacing with all 15 valid and 18 invalid upstream cases, 28 pinned exact diagnostics and fixes, TypeScript/TSX nested generic, call, constructor, arrow, comment, Unicode, CRLF, invalid syntax, option-shape, native API, plugin metadata, and real Oxlint coverage."
       },
       {
         "name": "type-named-tuple-spacing",
