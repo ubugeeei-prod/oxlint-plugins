@@ -30,6 +30,7 @@ mod newline_per_chained_call;
 mod no_confusing_arrow;
 mod nonblock_statement_body_position;
 mod object_curly_newline;
+mod object_property_newline;
 mod quote_convert;
 mod quotes;
 mod tabs;
@@ -651,6 +652,16 @@ const ARRAY_ELEMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
         "There should be a linebreak after this element.",
     ),
 ];
+const OBJECT_PROPERTY_NEWLINE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "propertiesOnNewlineAll",
+        "Object properties must go on a new line if they aren't all on the same line.",
+    ),
+    (
+        "propertiesOnNewline",
+        "Object properties must go on a new line.",
+    ),
+];
 const OBJECT_CURLY_NEWLINE_MESSAGES: &[(&str, &str)] = &[
     (
         "unexpectedLinebreakBeforeClosingBrace",
@@ -735,6 +746,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         name: "object-curly-newline",
         docs_description: "Enforce consistent line breaks after opening and before closing braces.",
         messages: OBJECT_CURLY_NEWLINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
+        name: "object-property-newline",
+        docs_description: "Enforce placing object properties on separate lines.",
+        messages: OBJECT_PROPERTY_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
         name: "eol-last",
@@ -1092,6 +1108,7 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
 const TOKEN_RULE_NAMES: &[&str] = &[
     "array-element-newline",
     "object-curly-newline",
+    "object-property-newline",
     "arrow-spacing",
     "comma-spacing",
     "semi-spacing",
@@ -1361,6 +1378,9 @@ fn run_token_rule(
         }
         "object-curly-newline" => {
             object_curly_newline::check_object_curly_newline(scan, filename, options, diagnostics)
+        }
+        "object-property-newline" => {
+            object_property_newline::check_object_property_newline(scan, options, diagnostics)
         }
         "arrow-spacing" => token_rules::check_arrow_spacing(scan, options, diagnostics),
         "comma-spacing" => token_rules::check_comma_spacing(scan, options, diagnostics),

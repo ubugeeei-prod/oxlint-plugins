@@ -15247,19 +15247,19 @@
       },
       {
         "name": "object-property-newline",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule object-property-newline."
+        "notes": "AST-backed native Rust port of stable @stylistic/object-property-newline v5.10.0 for object expressions, TypeScript type literals, and interface bodies, including allowAllPropertiesOnSameLine; pinned JS/TS synchronizer and exhaustive 49-valid/52-invalid upstream replay covering 62 exact diagnostics, 51 fixable and 1 comment-blocked case; recursive fixes, Unicode/UTF-16, CRLF/CR/LF/LS/PS, TSX, settings, API/meta, and real Oxlint coverage."
       },
       {
         "name": "one-var-declaration-per-line",

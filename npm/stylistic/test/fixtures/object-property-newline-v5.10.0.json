@@ -1,0 +1,2380 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFiles": [
+      "packages/eslint-plugin/rules/object-property-newline/object-property-newline._js_.test.ts",
+      "packages/eslint-plugin/rules/object-property-newline/object-property-newline._ts_.test.ts"
+    ],
+    "license": "MIT",
+    "eslintVersion": "10.4.1",
+    "typescriptEslintParserVersion": "8.60.0",
+    "tool": "tools/tasks/sync-stylistic-object-property-newline-tests.ts",
+    "inventory": {
+      "valid": 49,
+      "invalid": 52,
+      "diagnostics": 62,
+      "unfixableInvalid": 1,
+      "total": 101,
+      "fixableInvalid": 51
+    }
+  },
+  "suites": [
+    {
+      "name": "object-property-newline",
+      "language": "javascript",
+      "sourceFile": "packages/eslint-plugin/rules/object-property-newline/object-property-newline._js_.test.ts",
+      "valid": [
+        {
+          "code": "var obj = {\nk1: 'val1',\nk2: 'val2',\nk3: 'val3',\nk4: 'val4'\n};",
+          "options": []
+        },
+        {
+          "code": "var obj = {\nk1: 'val1'\n, k2: 'val2'\n, k3: 'val3'\n, k4: 'val4'\n};",
+          "options": []
+        },
+        {
+          "code": "var obj = { k1: 'val1',\nk2: 'val2',\nk3: 'val3',\nk4: 'val4' };",
+          "options": []
+        },
+        {
+          "code": "var obj = { k1: 'val1'\n, k2: 'val2'\n, k3: 'val3'\n, k4: 'val4' };",
+          "options": []
+        },
+        {
+          "code": "var obj = { k1: 'val1' };",
+          "options": []
+        },
+        {
+          "code": "var obj = {\nk1: 'val1'\n};",
+          "options": []
+        },
+        {
+          "code": "var obj = {};",
+          "options": []
+        },
+        {
+          "code": "var obj = {\n[bar]: 'baz',\nbaz\n};",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          }
+        },
+        {
+          "code": "var obj = {\nk1: 'val1',\nk2: 'val2',\n...{}\n};",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "var obj = { k1: 'val1',\nk2: 'val2',\n...{} };",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "var obj = { ...{} };",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "foo({ k1: 'val1',\nk2: 'val2' });",
+          "options": []
+        },
+        {
+          "code": "foo({\nk1: 'val1',\nk2: 'val2'\n});",
+          "options": []
+        },
+        {
+          "code": "foo({\na,\nb\n});",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          }
+        },
+        {
+          "code": "foo({\na,\nb,\n});",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          }
+        },
+        {
+          "code": "foo({\nbar() {},\nbaz\n});",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          }
+        },
+        {
+          "code": "foo({\n[bar]: 'baz',\nbaz \n})",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          }
+        },
+        {
+          "code": "foo({\nk1: 'val1',\nk2: 'val2',\n...{}\n});",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "foo({ k1: 'val1',\nk2: 'val2',\n...{} });",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "foo({ ...{} });",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "var obj = { k1: 'val1', k2: 'val2', k3: 'val3' };",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\nk1: 'val1', k2: 'val2', k3: 'val3'\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = { k1: 'val1' };",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\nk1: 'val1'\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = {};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = { 'k1': 'val1', k2: 'val2', ...{} };",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "var obj = {\n'k1': 'val1', k2: 'val2', ...{}\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "foo({ k1: 'val1', k2: 'val2' });",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "foo({\nk1: 'val1', k2: 'val2'\n});",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "foo({ a, b });",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 6
+          }
+        },
+        {
+          "code": "foo({ bar() {}, baz });",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 6
+          }
+        },
+        {
+          "code": "foo({ [bar]: 'baz', baz })",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 6
+          }
+        },
+        {
+          "code": "foo({ 'k1': 'val1', k2: 'val2', ...{} });",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "foo({\n'k1': 'val1', k2: 'val2', ...{}\n});",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          }
+        },
+        {
+          "code": "var obj = {k1: ['foo', 'bar'], k2: 'val1', k3: 'val2'};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\nk1: ['foo', 'bar'], k2: 'val1', k3: 'val2'\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\nk1: 'val1', k2: {e1: 'foo', e2: 'bar'}, k3: 'val2'\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        }
+      ],
+      "invalid": [
+        {
+          "code": "var obj = { k1: 'val1', k2: 'val2', k3: 'val3' };",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 25,
+              "endLine": 1,
+              "endColumn": 27
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 37,
+              "endLine": 1,
+              "endColumn": 39
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [24, 26],
+              "loc": {
+                "line": 1,
+                "column": 25,
+                "endLine": 1,
+                "endColumn": 27
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [36, 38],
+              "loc": {
+                "line": 1,
+                "column": 37,
+                "endLine": 1,
+                "endColumn": 39
+              },
+              "fix": {
+                "range": [35, 36],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = { k1: 'val1',\nk2: 'val2',\nk3: 'val3' };"
+        },
+        {
+          "code": "var obj = { k1: 'val1', k2: \n'val2', \nk3: 'val3' };",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 25,
+              "endLine": 1,
+              "endColumn": 27
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [24, 26],
+              "loc": {
+                "line": 1,
+                "column": 25,
+                "endLine": 1,
+                "endColumn": 27
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = { k1: 'val1',\nk2: \n'val2', \nk3: 'val3' };"
+        },
+        {
+          "code": "var obj = {\nk1: 'val1', k2: 'val2'\n};",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 13,
+              "endLine": 2,
+              "endColumn": 15
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [24, 26],
+              "loc": {
+                "line": 2,
+                "column": 13,
+                "endLine": 2,
+                "endColumn": 15
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\nk1: 'val1',\nk2: 'val2'\n};"
+        },
+        {
+          "code": "var obj = {\nk1: 'val1', k2: 'val2',\nk3: 'val3', k4: 'val4'\n};",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 13,
+              "endLine": 2,
+              "endColumn": 15
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 3,
+              "column": 13,
+              "endLine": 3,
+              "endColumn": 15
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [24, 26],
+              "loc": {
+                "line": 2,
+                "column": 13,
+                "endLine": 2,
+                "endColumn": 15
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [48, 50],
+              "loc": {
+                "line": 3,
+                "column": 13,
+                "endLine": 3,
+                "endColumn": 15
+              },
+              "fix": {
+                "range": [47, 48],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\nk1: 'val1',\nk2: 'val2',\nk3: 'val3',\nk4: 'val4'\n};"
+        },
+        {
+          "code": "var obj = {k1: ['foo', 'bar'], k2: 'val1'};",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 32,
+              "endLine": 1,
+              "endColumn": 34
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [31, 33],
+              "loc": {
+                "line": 1,
+                "column": 32,
+                "endLine": 1,
+                "endColumn": 34
+              },
+              "fix": {
+                "range": [30, 31],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {k1: ['foo', 'bar'],\nk2: 'val1'};"
+        },
+        {
+          "code": "var obj = {k1: [\n'foo', 'bar'\n], k2: 'val1'};",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 3,
+              "column": 4,
+              "endLine": 3,
+              "endColumn": 6
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [33, 35],
+              "loc": {
+                "line": 3,
+                "column": 4,
+                "endLine": 3,
+                "endColumn": 6
+              },
+              "fix": {
+                "range": [32, 33],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {k1: [\n'foo', 'bar'\n],\nk2: 'val1'};"
+        },
+        {
+          "code": "var obj = {\nk1: 'val1', k2: {e1: 'foo', e2: 'bar'}, k3: 'val2'\n};",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 13,
+              "endLine": 2,
+              "endColumn": 15
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 29,
+              "endLine": 2,
+              "endColumn": 31
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 41,
+              "endLine": 2,
+              "endColumn": 43
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [24, 26],
+              "loc": {
+                "line": 2,
+                "column": 13,
+                "endLine": 2,
+                "endColumn": 15
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [40, 42],
+              "loc": {
+                "line": 2,
+                "column": 29,
+                "endLine": 2,
+                "endColumn": 31
+              },
+              "fix": {
+                "range": [39, 40],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [52, 54],
+              "loc": {
+                "line": 2,
+                "column": 41,
+                "endLine": 2,
+                "endColumn": 43
+              },
+              "fix": {
+                "range": [51, 52],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\nk1: 'val1',\nk2: {e1: 'foo',\ne2: 'bar'},\nk3: 'val2'\n};"
+        },
+        {
+          "code": "var obj = {\nk1: 'val1',\nk2: {e1: 'foo', e2: 'bar'},\nk3: 'val2'\n};",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 3,
+              "column": 17,
+              "endLine": 3,
+              "endColumn": 19
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [40, 42],
+              "loc": {
+                "line": 3,
+                "column": 17,
+                "endLine": 3,
+                "endColumn": 19
+              },
+              "fix": {
+                "range": [39, 40],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\nk1: 'val1',\nk2: {e1: 'foo',\ne2: 'bar'},\nk3: 'val2'\n};"
+        },
+        {
+          "code": "var obj = { k1: 'val1',\nk2: [\n'val2a', 'val2b', 'val2c'\n], k3: 'val3' };",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 4,
+              "column": 4,
+              "endLine": 4,
+              "endColumn": 6
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [59, 61],
+              "loc": {
+                "line": 4,
+                "column": 4,
+                "endLine": 4,
+                "endColumn": 6
+              },
+              "fix": {
+                "range": [58, 59],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = { k1: 'val1',\nk2: [\n'val2a', 'val2b', 'val2c'\n],\nk3: 'val3' };"
+        },
+        {
+          "code": "var obj = { k1: 'val1', [\nk2]: 'val2' };",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 25,
+              "endLine": 1,
+              "endColumn": 26
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [24, 25],
+              "loc": {
+                "line": 1,
+                "column": 25,
+                "endLine": 1,
+                "endColumn": 26
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = { k1: 'val1',\n[\nk2]: 'val2' };"
+        },
+        {
+          "code": "var obj = { k1: 'val1', ...{} };",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 25,
+              "endLine": 1,
+              "endColumn": 28
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [24, 27],
+              "loc": {
+                "line": 1,
+                "column": 25,
+                "endLine": 1,
+                "endColumn": 28
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = { k1: 'val1',\n...{} };"
+        },
+        {
+          "code": "var obj = {\nk1: 'val1', ...{}\n};",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 13,
+              "endLine": 2,
+              "endColumn": 16
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [24, 27],
+              "loc": {
+                "line": 2,
+                "column": 13,
+                "endLine": 2,
+                "endColumn": 16
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\nk1: 'val1',\n...{}\n};"
+        },
+        {
+          "code": "foo({ k1: 'val1', k2: 'val2' });",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 19,
+              "endLine": 1,
+              "endColumn": 21
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [18, 20],
+              "loc": {
+                "line": 1,
+                "column": 19,
+                "endLine": 1,
+                "endColumn": 21
+              },
+              "fix": {
+                "range": [17, 18],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({ k1: 'val1',\nk2: 'val2' });"
+        },
+        {
+          "code": "foo({\nk1: 'val1', k2: 'val2'\n});",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 13,
+              "endLine": 2,
+              "endColumn": 15
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [18, 20],
+              "loc": {
+                "line": 2,
+                "column": 13,
+                "endLine": 2,
+                "endColumn": 15
+              },
+              "fix": {
+                "range": [17, 18],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({\nk1: 'val1',\nk2: 'val2'\n});"
+        },
+        {
+          "code": "foo({ a, b });",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 10,
+              "endLine": 1,
+              "endColumn": 11
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [9, 10],
+              "loc": {
+                "line": 1,
+                "column": 10,
+                "endLine": 1,
+                "endColumn": 11
+              },
+              "fix": {
+                "range": [8, 9],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({ a,\nb });"
+        },
+        {
+          "code": "foo({\na, b\n});",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 4,
+              "endLine": 2,
+              "endColumn": 5
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [9, 10],
+              "loc": {
+                "line": 2,
+                "column": 4,
+                "endLine": 2,
+                "endColumn": 5
+              },
+              "fix": {
+                "range": [8, 9],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({\na,\nb\n});"
+        },
+        {
+          "code": "foo({\nbar() {}, baz\n});",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 11,
+              "endLine": 2,
+              "endColumn": 14
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [16, 19],
+              "loc": {
+                "line": 2,
+                "column": 11,
+                "endLine": 2,
+                "endColumn": 14
+              },
+              "fix": {
+                "range": [15, 16],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({\nbar() {},\nbaz\n});"
+        },
+        {
+          "code": "foo({\n[bar]: 'baz', baz\n})",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 15,
+              "endLine": 2,
+              "endColumn": 18
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [20, 23],
+              "loc": {
+                "line": 2,
+                "column": 15,
+                "endLine": 2,
+                "endColumn": 18
+              },
+              "fix": {
+                "range": [19, 20],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({\n[bar]: 'baz',\nbaz\n})"
+        },
+        {
+          "code": "foo({ k1: 'val1', [\nk2]: 'val2' })",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 6
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 19,
+              "endLine": 1,
+              "endColumn": 20
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [18, 19],
+              "loc": {
+                "line": 1,
+                "column": 19,
+                "endLine": 1,
+                "endColumn": 20
+              },
+              "fix": {
+                "range": [17, 18],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({ k1: 'val1',\n[\nk2]: 'val2' })"
+        },
+        {
+          "code": "foo({ k1: 'val1', ...{} })",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 19,
+              "endLine": 1,
+              "endColumn": 22
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [18, 21],
+              "loc": {
+                "line": 1,
+                "column": 19,
+                "endLine": 1,
+                "endColumn": 22
+              },
+              "fix": {
+                "range": [17, 18],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({ k1: 'val1',\n...{} })"
+        },
+        {
+          "code": "foo({\nk1: 'val1', ...{}\n})",
+          "options": [],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 2,
+              "column": 13,
+              "endLine": 2,
+              "endColumn": 16
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [18, 21],
+              "loc": {
+                "line": 2,
+                "column": 13,
+                "endLine": 2,
+                "endColumn": 16
+              },
+              "fix": {
+                "range": [17, 18],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({\nk1: 'val1',\n...{}\n})"
+        },
+        {
+          "code": "var obj = {\na: {\nb: 1,\nc: 2\n}, d: 2\n};",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 5,
+              "column": 4,
+              "endLine": 5,
+              "endColumn": 5
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [31, 32],
+              "loc": {
+                "line": 5,
+                "column": 4,
+                "endLine": 5,
+                "endColumn": 5
+              },
+              "fix": {
+                "range": [30, 31],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\na: {\nb: 1,\nc: 2\n},\nd: 2\n};"
+        },
+        {
+          "code": "({ foo: 1 /* comment */, bar: 2 })",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 26,
+              "endLine": 1,
+              "endColumn": 29
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [25, 28],
+              "loc": {
+                "line": 1,
+                "column": 26,
+                "endLine": 1,
+                "endColumn": 29
+              },
+              "fix": {
+                "range": [24, 25],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "({ foo: 1 /* comment */,\nbar: 2 })"
+        },
+        {
+          "code": "({ foo: 1, /* comment */ bar: 2 })",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewline",
+              "line": 1,
+              "column": 26,
+              "endLine": 1,
+              "endColumn": 29
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [25, 28],
+              "loc": {
+                "line": 1,
+                "column": 26,
+                "endLine": 1,
+                "endColumn": 29
+              },
+              "fix": null
+            }
+          ],
+          "output": null
+        },
+        {
+          "code": "var obj = {\nk1: 'val1',\nk2: 'val2', k3: 'val3'\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 3,
+              "column": 13,
+              "endLine": 3,
+              "endColumn": 15
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [36, 38],
+              "loc": {
+                "line": 3,
+                "column": 13,
+                "endLine": 3,
+                "endColumn": 15
+              },
+              "fix": {
+                "range": [35, 36],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\nk1: 'val1',\nk2: 'val2',\nk3: 'val3'\n};"
+        },
+        {
+          "code": "var obj = {\nk1:\n'val1', k2: 'val2', k3:\n'val3'\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 3,
+              "column": 9,
+              "endLine": 3,
+              "endColumn": 11
+            },
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 3,
+              "column": 21,
+              "endLine": 3,
+              "endColumn": 23
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [24, 26],
+              "loc": {
+                "line": 3,
+                "column": 9,
+                "endLine": 3,
+                "endColumn": 11
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [36, 38],
+              "loc": {
+                "line": 3,
+                "column": 21,
+                "endLine": 3,
+                "endColumn": 23
+              },
+              "fix": {
+                "range": [35, 36],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\nk1:\n'val1',\nk2: 'val2',\nk3:\n'val3'\n};"
+        },
+        {
+          "code": "var obj = {k1: [\n'foo',\n'bar'\n], k2: 'val1'};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 4,
+              "column": 4,
+              "endLine": 4,
+              "endColumn": 6
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [33, 35],
+              "loc": {
+                "line": 4,
+                "column": 4,
+                "endLine": 4,
+                "endColumn": 6
+              },
+              "fix": {
+                "range": [32, 33],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {k1: [\n'foo',\n'bar'\n],\nk2: 'val1'};"
+        },
+        {
+          "code": "var obj = {k1: [\n'foo', 'bar'\n], k2: 'val1'};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 3,
+              "column": 4,
+              "endLine": 3,
+              "endColumn": 6
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [33, 35],
+              "loc": {
+                "line": 3,
+                "column": 4,
+                "endLine": 3,
+                "endColumn": 6
+              },
+              "fix": {
+                "range": [32, 33],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {k1: [\n'foo', 'bar'\n],\nk2: 'val1'};"
+        },
+        {
+          "code": "var obj = {\nk1: 'val1', k2: {\ne1: 'foo', e2: 'bar'\n}, k3: 'val2'\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 2,
+              "column": 13,
+              "endLine": 2,
+              "endColumn": 15
+            },
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 4,
+              "column": 4,
+              "endLine": 4,
+              "endColumn": 6
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [24, 26],
+              "loc": {
+                "line": 2,
+                "column": 13,
+                "endLine": 2,
+                "endColumn": 15
+              },
+              "fix": {
+                "range": [23, 24],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [54, 56],
+              "loc": {
+                "line": 4,
+                "column": 4,
+                "endLine": 4,
+                "endColumn": 6
+              },
+              "fix": {
+                "range": [53, 54],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\nk1: 'val1',\nk2: {\ne1: 'foo', e2: 'bar'\n},\nk3: 'val2'\n};"
+        },
+        {
+          "code": "var obj = { k1: 'val1',\nk2: [\n'val2a', 'val2b', 'val2c'\n], k3: 'val3' };",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 4,
+              "column": 4,
+              "endLine": 4,
+              "endColumn": 6
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [59, 61],
+              "loc": {
+                "line": 4,
+                "column": 4,
+                "endLine": 4,
+                "endColumn": 6
+              },
+              "fix": {
+                "range": [58, 59],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = { k1: 'val1',\nk2: [\n'val2a', 'val2b', 'val2c'\n],\nk3: 'val3' };"
+        },
+        {
+          "code": "var obj = { [\nk1]: 'val1', k2: 'val2' };",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 6
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 2,
+              "column": 14,
+              "endLine": 2,
+              "endColumn": 16
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [27, 29],
+              "loc": {
+                "line": 2,
+                "column": 14,
+                "endLine": 2,
+                "endColumn": 16
+              },
+              "fix": {
+                "range": [26, 27],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = { [\nk1]: 'val1',\nk2: 'val2' };"
+        },
+        {
+          "code": "var obj = {\nk1: 'val1',\nk2: 'val2', ...{}\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 3,
+              "column": 13,
+              "endLine": 3,
+              "endColumn": 16
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [36, 39],
+              "loc": {
+                "line": 3,
+                "column": 13,
+                "endLine": 3,
+                "endColumn": 16
+              },
+              "fix": {
+                "range": [35, 36],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\nk1: 'val1',\nk2: 'val2',\n...{}\n};"
+        },
+        {
+          "code": "var obj = {\n...{},\nk1: 'val1', k2: 'val2'\n};",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 3,
+              "column": 13,
+              "endLine": 3,
+              "endColumn": 15
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [31, 33],
+              "loc": {
+                "line": 3,
+                "column": 13,
+                "endLine": 3,
+                "endColumn": 15
+              },
+              "fix": {
+                "range": [30, 31],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "var obj = {\n...{},\nk1: 'val1',\nk2: 'val2'\n};"
+        },
+        {
+          "code": "foo({ [\nk1]: 'val1', k2: 'val2' })",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 6
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 2,
+              "column": 14,
+              "endLine": 2,
+              "endColumn": 16
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [21, 23],
+              "loc": {
+                "line": 2,
+                "column": 14,
+                "endLine": 2,
+                "endColumn": 16
+              },
+              "fix": {
+                "range": [20, 21],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({ [\nk1]: 'val1',\nk2: 'val2' })"
+        },
+        {
+          "code": "foo({\nk1: 'val1',\nk2: 'val2', ...{}\n})",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 3,
+              "column": 13,
+              "endLine": 3,
+              "endColumn": 16
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [30, 33],
+              "loc": {
+                "line": 3,
+                "column": 13,
+                "endLine": 3,
+                "endColumn": 16
+              },
+              "fix": {
+                "range": [29, 30],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({\nk1: 'val1',\nk2: 'val2',\n...{}\n})"
+        },
+        {
+          "code": "foo({\n...{},\nk1: 'val1', k2: 'val2'\n})",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "parserOptions": {
+            "ecmaVersion": 2018
+          },
+          "upstreamErrors": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "line": 3,
+              "column": 13,
+              "endLine": 3,
+              "endColumn": 15
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [25, 27],
+              "loc": {
+                "line": 3,
+                "column": 13,
+                "endLine": 3,
+                "endColumn": 15
+              },
+              "fix": {
+                "range": [24, 25],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "foo({\n...{},\nk1: 'val1',\nk2: 'val2'\n})"
+        }
+      ]
+    },
+    {
+      "name": "object-property-newline",
+      "language": "typescript",
+      "sourceFile": "packages/eslint-plugin/rules/object-property-newline/object-property-newline._ts_.test.ts",
+      "valid": [
+        {
+          "code": "type Foo = {\n  id: number;\n  name: string;\n  age: number;\n}// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ]
+        },
+        {
+          "code": "type Foo = {\n  id: number;\n  name: string;\n  age: number;\n}// false",
+          "options": []
+        },
+        {
+          "code": "interface Foo {\n  id: number;\n  name: string;\n  age: number;\n}// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ]
+        },
+        {
+          "code": "interface Foo {\n  id: number;\n  name: string;\n  age: number;\n}// false",
+          "options": []
+        },
+        {
+          "code": "type Foo = {  id: number;\n  name: string;\n  age: number; }// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ]
+        },
+        {
+          "code": "type Foo = {  id: number;\n  name: string;\n  age: number; }// false",
+          "options": []
+        },
+        {
+          "code": "interface Foo {  id: number;\n  name: string;\n  age: number; }// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ]
+        },
+        {
+          "code": "interface Foo {  id: number;\n  name: string;\n  age: number; }// false",
+          "options": []
+        },
+        {
+          "code": "type Foo = {\n  id: number;\n  name: string;\n  age: number;\n}// true",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "interface Foo {\n  id: number;\n  name: string;\n  age: number;\n}// true",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "type Foo = { id: number; name: string; age: number; }// true",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        },
+        {
+          "code": "interface Foo { id: number; name: string; age: number; }// true",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ]
+        }
+      ],
+      "invalid": [
+        {
+          "code": "type Foo = {  id: number; name: string;\n  age: number; }// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 27,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [26, 30],
+              "loc": {
+                "line": 1,
+                "column": 27,
+                "endLine": 1,
+                "endColumn": 31
+              },
+              "fix": {
+                "range": [25, 26],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "type Foo = {  id: number;\nname: string;\n  age: number; }// false"
+        },
+        {
+          "code": "type Foo = {  id: number; name: string;\n  age: number; }// false",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 27,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [26, 30],
+              "loc": {
+                "line": 1,
+                "column": 27,
+                "endLine": 1,
+                "endColumn": 31
+              },
+              "fix": {
+                "range": [25, 26],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "type Foo = {  id: number;\nname: string;\n  age: number; }// false"
+        },
+        {
+          "code": "interface Foo {  id: number; name: string;\n  age: number; }// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 30,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [29, 33],
+              "loc": {
+                "line": 1,
+                "column": 30,
+                "endLine": 1,
+                "endColumn": 34
+              },
+              "fix": {
+                "range": [28, 29],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "interface Foo {  id: number;\nname: string;\n  age: number; }// false"
+        },
+        {
+          "code": "interface Foo {  id: number; name: string;\n  age: number; }// false",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 30,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [29, 33],
+              "loc": {
+                "line": 1,
+                "column": 30,
+                "endLine": 1,
+                "endColumn": 34
+              },
+              "fix": {
+                "range": [28, 29],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "interface Foo {  id: number;\nname: string;\n  age: number; }// false"
+        },
+        {
+          "code": "type Foo = {\n  id: number; name: string;\n  age: number; }// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 2,
+              "column": 15,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [27, 31],
+              "loc": {
+                "line": 2,
+                "column": 15,
+                "endLine": 2,
+                "endColumn": 19
+              },
+              "fix": {
+                "range": [26, 27],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "type Foo = {\n  id: number;\nname: string;\n  age: number; }// false"
+        },
+        {
+          "code": "type Foo = {\n  id: number; name: string;\n  age: number; }// false",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "line": 2,
+              "column": 15,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [27, 31],
+              "loc": {
+                "line": 2,
+                "column": 15,
+                "endLine": 2,
+                "endColumn": 19
+              },
+              "fix": {
+                "range": [26, 27],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "type Foo = {\n  id: number;\nname: string;\n  age: number; }// false"
+        },
+        {
+          "code": "interface Foo {\n  id: number; name: string;\n  age: number; }// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 2,
+              "column": 15,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [30, 34],
+              "loc": {
+                "line": 2,
+                "column": 15,
+                "endLine": 2,
+                "endColumn": 19
+              },
+              "fix": {
+                "range": [29, 30],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "interface Foo {\n  id: number;\nname: string;\n  age: number; }// false"
+        },
+        {
+          "code": "interface Foo {\n  id: number; name: string;\n  age: number; }// false",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "line": 2,
+              "column": 15,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [30, 34],
+              "loc": {
+                "line": 2,
+                "column": 15,
+                "endLine": 2,
+                "endColumn": 19
+              },
+              "fix": {
+                "range": [29, 30],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "interface Foo {\n  id: number;\nname: string;\n  age: number; }// false"
+        },
+        {
+          "code": "type Foo = { id: number; name: string; age: number; }// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 26,
+              "messageId": "propertiesOnNewline"
+            },
+            {
+              "line": 1,
+              "column": 40,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [25, 29],
+              "loc": {
+                "line": 1,
+                "column": 26,
+                "endLine": 1,
+                "endColumn": 30
+              },
+              "fix": {
+                "range": [24, 25],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [39, 42],
+              "loc": {
+                "line": 1,
+                "column": 40,
+                "endLine": 1,
+                "endColumn": 43
+              },
+              "fix": {
+                "range": [38, 39],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "type Foo = { id: number;\nname: string;\nage: number; }// false"
+        },
+        {
+          "code": "type Foo = { id: number; name: string; age: number; }// false",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 26,
+              "messageId": "propertiesOnNewline"
+            },
+            {
+              "line": 1,
+              "column": 40,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [25, 29],
+              "loc": {
+                "line": 1,
+                "column": 26,
+                "endLine": 1,
+                "endColumn": 30
+              },
+              "fix": {
+                "range": [24, 25],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [39, 42],
+              "loc": {
+                "line": 1,
+                "column": 40,
+                "endLine": 1,
+                "endColumn": 43
+              },
+              "fix": {
+                "range": [38, 39],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "type Foo = { id: number;\nname: string;\nage: number; }// false"
+        },
+        {
+          "code": "interface Foo { id: number; name: string; age: number; }// false",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": false
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 29,
+              "messageId": "propertiesOnNewline"
+            },
+            {
+              "line": 1,
+              "column": 43,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [28, 32],
+              "loc": {
+                "line": 1,
+                "column": 29,
+                "endLine": 1,
+                "endColumn": 33
+              },
+              "fix": {
+                "range": [27, 28],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [42, 45],
+              "loc": {
+                "line": 1,
+                "column": 43,
+                "endLine": 1,
+                "endColumn": 46
+              },
+              "fix": {
+                "range": [41, 42],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "interface Foo { id: number;\nname: string;\nage: number; }// false"
+        },
+        {
+          "code": "interface Foo { id: number; name: string; age: number; }// false",
+          "options": [],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 29,
+              "messageId": "propertiesOnNewline"
+            },
+            {
+              "line": 1,
+              "column": 43,
+              "messageId": "propertiesOnNewline"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [28, 32],
+              "loc": {
+                "line": 1,
+                "column": 29,
+                "endLine": 1,
+                "endColumn": 33
+              },
+              "fix": {
+                "range": [27, 28],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "propertiesOnNewline",
+              "message": "Object properties must go on a new line.",
+              "data": {},
+              "range": [42, 45],
+              "loc": {
+                "line": 1,
+                "column": 43,
+                "endLine": 1,
+                "endColumn": 46
+              },
+              "fix": {
+                "range": [41, 42],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "interface Foo { id: number;\nname: string;\nage: number; }// false"
+        },
+        {
+          "code": "type Foo = {  id: number; name: string;\nage: number; }// true",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 27,
+              "messageId": "propertiesOnNewlineAll"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [26, 30],
+              "loc": {
+                "line": 1,
+                "column": 27,
+                "endLine": 1,
+                "endColumn": 31
+              },
+              "fix": {
+                "range": [25, 26],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "type Foo = {  id: number;\nname: string;\nage: number; }// true"
+        },
+        {
+          "code": "interface Foo {  id: number; name: string;\nage: number; }// true",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 1,
+              "column": 30,
+              "messageId": "propertiesOnNewlineAll"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [29, 33],
+              "loc": {
+                "line": 1,
+                "column": 30,
+                "endLine": 1,
+                "endColumn": 34
+              },
+              "fix": {
+                "range": [28, 29],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "interface Foo {  id: number;\nname: string;\nage: number; }// true"
+        },
+        {
+          "code": "type Foo = {\n  id: number; name: string;\n  age: number; }// true",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 2,
+              "column": 15,
+              "messageId": "propertiesOnNewlineAll"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [27, 31],
+              "loc": {
+                "line": 2,
+                "column": 15,
+                "endLine": 2,
+                "endColumn": 19
+              },
+              "fix": {
+                "range": [26, 27],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "type Foo = {\n  id: number;\nname: string;\n  age: number; }// true"
+        },
+        {
+          "code": "interface Foo {\n  id: number; name: string;\n  age: number; }// true",
+          "options": [
+            {
+              "allowAllPropertiesOnSameLine": true
+            }
+          ],
+          "upstreamErrors": [
+            {
+              "line": 2,
+              "column": 15,
+              "messageId": "propertiesOnNewlineAll"
+            }
+          ],
+          "expectedDiagnostics": [
+            {
+              "messageId": "propertiesOnNewlineAll",
+              "message": "Object properties must go on a new line if they aren't all on the same line.",
+              "data": {},
+              "range": [30, 34],
+              "loc": {
+                "line": 2,
+                "column": 15,
+                "endLine": 2,
+                "endColumn": 19
+              },
+              "fix": {
+                "range": [29, 30],
+                "text": "\n"
+              }
+            }
+          ],
+          "output": "interface Foo {\n  id: number;\nname: string;\n  age: number; }// true"
+        }
+      ]
+    }
+  ]
+}
