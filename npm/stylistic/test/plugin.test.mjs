@@ -134,6 +134,7 @@ const stylisticRuleFixtures = [
     ['unexpectedAfter', 'unexpectedBefore'],
   ],
   ['jsx-first-prop-new-line', '<App first={{\n  value: 1\n}} second />;\n', [], ['propOnNewLine']],
+  ['jsx-function-call-newline', 'render(<App\n  prop />);\n', [], ['missingLineBreak']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
@@ -3654,6 +3655,60 @@ const parenthesized = (a + b) * c;
           '',
         ].join('\n'),
       );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs jsx-function-call-newline through a real oxlint TSX configuration', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-function-call-newline-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(
+        sourcePath,
+        [
+          'declare const render: (value: unknown) => void;',
+          'render(<Panel title="日本語" />);',
+          'new Wrapper(<Item',
+          '  value="😀" />);',
+          '',
+        ].join('\n'),
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/jsx-function-call-newline': ['error', 'always'],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(jsx-function-call-newline)',
+        'stylistic(jsx-function-call-newline)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Missing line break around JSX',
+        'Missing line break around JSX',
+      ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

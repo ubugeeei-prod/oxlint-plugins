@@ -27,6 +27,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-first-prop-new-line',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'jsx-function-call-newline',
+    );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-child-element-spacing',
@@ -1511,6 +1514,38 @@ describe('stylistic native API', () => {
               {
                 range: { start: namespacedNameEnd, end: namespacedStart },
                 replacementText: ' ',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs jsx-function-call-newline with exact UTF-8 byte ranges and CRLF fixes', () => {
+    const source = 'const marker = "😀";\r\nrender(<外側\r\n  label="日本語" />);';
+    const start = Buffer.byteLength(source.slice(0, source.indexOf('<外側')));
+    const end = Buffer.byteLength(source.slice(0, source.indexOf('/>);') + 2));
+    const jsx = source.slice(source.indexOf('<外側'), source.indexOf('/>);') + 2);
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-function-call-newline', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-function-call-newline',
+        messageId: 'missingLineBreak',
+        message: 'Missing line break around JSX',
+        range: { start, end },
+        suggestions: [
+          {
+            messageId: 'missingLineBreak',
+            message: 'Missing line break around JSX',
+            fixes: [
+              {
+                range: { start, end },
+                replacementText: `\n${jsx}\n`,
               },
             ],
           },

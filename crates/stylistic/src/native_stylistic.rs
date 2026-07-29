@@ -23,6 +23,7 @@ mod jsx_closing_tag_location;
 mod jsx_curly_newline;
 mod jsx_curly_spacing;
 mod jsx_first_prop_new_line;
+mod jsx_function_call_newline;
 mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
@@ -679,6 +680,8 @@ const JSX_CHILD_ELEMENT_SPACING_MESSAGES: &[(&str, &str)] = &[
         "Ambiguous spacing before next element {{element}}",
     ),
 ];
+const JSX_FUNCTION_CALL_NEWLINE_MESSAGES: &[(&str, &str)] =
+    &[("missingLineBreak", "Missing line break around JSX")];
 const MULTILINE_COMMENT_STYLE_MESSAGES: &[(&str, &str)] = &[
     (
         "expectedBlock",
@@ -1205,6 +1208,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_CHILD_ELEMENT_SPACING_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-function-call-newline",
+        docs_description: "Enforce line breaks before and after JSX elements when they are used as arguments to a function.",
+        messages: JSX_FUNCTION_CALL_NEWLINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "one-var-declaration-per-line",
         docs_description: "Require or disallow newlines around variable declarations.",
         messages: ONE_VAR_DECLARATION_PER_LINE_MESSAGES,
@@ -1431,6 +1439,14 @@ pub fn run_stylistic_lint(
                 &rule.options,
                 &mut diagnostics,
             ),
+            "jsx-function-call-newline" => {
+                jsx_function_call_newline::check_jsx_function_call_newline(
+                    source_text,
+                    config.filename.as_deref(),
+                    &rule.options,
+                    &mut diagnostics,
+                )
+            }
             "unicode-bom" => {
                 unicode_bom::check_unicode_bom(source_text, &rule.options, &mut diagnostics)
             }

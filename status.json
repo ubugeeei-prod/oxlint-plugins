@@ -14831,19 +14831,19 @@
       },
       {
         "name": "jsx-function-call-newline",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-function-call-newline."
+        "notes": "Oxc AST-backed native Rust port of @stylistic/jsx-function-call-newline v5.10.0. Deterministic pinned Rust and Vitest suites replay all 19 valid and 8 invalid authored upstream cases with 13 exact diagnostics, JSX ranges, first-pass fixes, and converged output across JSX and TSX; additional coverage exercises Unicode, CRLF and all ECMAScript line terminators, fragments, parentheses, comments, invalid options, API/meta/plugin surfaces, and real Oxlint."
       },
       {
         "name": "jsx-indent",

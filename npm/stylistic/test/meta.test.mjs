@@ -354,6 +354,24 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the complete jsx-function-call-newline metadata contract', () => {
+    expect(plugin.rules['jsx-function-call-newline'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description:
+          'Enforce line breaks before and after JSX elements when they are used as arguments to a function.',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        missingLineBreak: 'Missing line break around JSX',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('preserves the upstream multiline-comment-style metadata', () => {
     expect(plugin.rules['multiline-comment-style'].meta).toMatchObject({
       fixable: 'whitespace',
