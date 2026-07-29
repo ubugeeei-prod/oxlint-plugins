@@ -9,6 +9,7 @@ mod array_bracket_newline;
 mod context;
 mod context_rules;
 mod expression_rules;
+mod function_call_argument_newline;
 mod helpers;
 mod jsx_quotes;
 mod jsx_rules;
@@ -511,6 +512,13 @@ const NO_CONFUSING_ARROW_MESSAGES: &[(&str, &str)] = &[(
     "confusing",
     "Arrow function used ambiguously with a conditional expression.",
 )];
+const FUNCTION_CALL_ARGUMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
+    ("unexpectedLineBreak", "There should be no line break here."),
+    (
+        "missingLineBreak",
+        "There should be a line break after this argument.",
+    ),
+];
 const LINES_AROUND_COMMENT_MESSAGES: &[(&str, &str)] = &[
     ("after", "Expected line after comment."),
     ("before", "Expected line before comment."),
@@ -836,6 +844,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: NO_CONFUSING_ARROW_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "function-call-argument-newline",
+        docs_description: "Enforce line breaks between arguments of a function call.",
+        messages: FUNCTION_CALL_ARGUMENT_NEWLINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "newline-per-chained-call",
         docs_description: "Require a newline after each call in a method chain.",
         messages: NEWLINE_PER_CHAINED_CALL_MESSAGES,
@@ -1002,6 +1015,13 @@ pub fn run_stylistic_lint(
                 &rule.options,
                 &mut diagnostics,
             ),
+            "function-call-argument-newline" => {
+                function_call_argument_newline::check_function_call_argument_newline(
+                    source_text,
+                    &rule.options,
+                    &mut diagnostics,
+                )
+            }
             "type-annotation-spacing" => type_annotation_spacing::check_type_annotation_spacing(
                 source_text,
                 &rule.options,
