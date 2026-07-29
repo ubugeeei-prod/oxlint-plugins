@@ -106,6 +106,12 @@ const stylisticRuleFixtures = [
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
   ['lines-around-comment', 'before();\n/** docs */\nafter();\n', [], ['before']],
   ['jsx-child-element-spacing', '<App>word\n<a>link</a></App>;\n', [], ['spacingBeforeNext']],
+  [
+    'jsx-closing-bracket-location',
+    '<App\n  prop />;\n',
+    [{ location: 'tag-aligned' }],
+    ['bracketLocation'],
+  ],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
@@ -2512,6 +2518,83 @@ const parenthesized = (a + b) * c;
           message: 'Expected a line break before this closing brace.',
         },
       ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('supports jsx-closing-bracket-location shared settings, data, UTF-16 ranges, and fixes', () => {
+    const source = 'const marker = "😀"; const view = <Panel\n  prop />;\n';
+    const slash = source.indexOf('/>');
+    const reports = runRule('jsx-closing-bracket-location', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-closing-bracket-location': [{ location: 'tag-aligned' }],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual(['bracketLocation']);
+    expect(reports[0].data).toEqual({
+      location: 'aligned with the opening tag',
+      details: ' (expected column 35 on the next line)',
+    });
+    expect(reports[0].node.range).toEqual([slash, slash + 1]);
+    expect(
+      reports[0].suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([
+      {
+        range: [source.indexOf('prop') + 'prop'.length, slash + 2],
+        replacementText: `\n${' '.repeat(34)}/>`,
+      },
+    ]);
+  });
+
+  it('runs jsx-closing-bracket-location through real oxlint TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-closing-bracket-location-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(sourcePath, 'export const view = <Panel\n  title="日本語" />;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-closing-bracket-location': ['error', { location: 'tag-aligned' }],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(jsx-closing-bracket-location)',
+          message:
+            'The closing bracket must be aligned with the opening tag (expected column 21 on the next line)',
+        },
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        `export const view = <Panel\n  title="日本語"\n${' '.repeat(20)}/>;\n`,
+      );
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

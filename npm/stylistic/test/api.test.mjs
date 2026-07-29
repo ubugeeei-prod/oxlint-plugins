@@ -1068,4 +1068,47 @@ describe('stylistic native API', () => {
       },
     ]);
   });
+
+  it('runs jsx-closing-bracket-location with exact UTF-8 ranges, data, and fixes', () => {
+    const source = 'const marker = "😀"; const view = <Panel\n  prop />;';
+    const slash = Buffer.byteLength(source.slice(0, source.indexOf('/>')));
+    const propEnd = Buffer.byteLength(source.slice(0, source.indexOf('prop') + 'prop'.length));
+    const elementEnd = Buffer.byteLength(source.slice(0, source.indexOf('/>') + 2));
+    const message =
+      'The closing bracket must be aligned with the opening tag (expected column 35 on the next line)';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [
+        {
+          name: 'jsx-closing-bracket-location',
+          options: [{ location: 'tag-aligned' }],
+        },
+      ],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-closing-bracket-location',
+        messageId: 'bracketLocation',
+        message,
+        data: {
+          details: ' (expected column 35 on the next line)',
+          location: 'aligned with the opening tag',
+        },
+        range: { start: slash, end: slash + 1 },
+        suggestions: [
+          {
+            messageId: 'bracketLocation',
+            message,
+            fixes: [
+              {
+                range: { start: propEnd, end: elementEnd },
+                replacementText: `\n${' '.repeat(34)}/>`,
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
 });

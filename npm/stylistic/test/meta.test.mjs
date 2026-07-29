@@ -44,7 +44,9 @@ describe('stylistic plugin meta contract', () => {
       expect(rule.meta.hasSuggestions).toBe(false);
     } else {
       expect(rule.meta.fixable).toBe(
-        ['jsx-quotes', 'no-confusing-arrow'].includes(ruleName) ? 'code' : 'whitespace',
+        ['jsx-closing-bracket-location', 'jsx-quotes', 'no-confusing-arrow'].includes(ruleName)
+          ? 'code'
+          : 'whitespace',
       );
     }
     expect(typeof rule.meta.hasSuggestions).toBe('boolean');
@@ -207,6 +209,23 @@ describe('stylistic plugin meta contract', () => {
         expectedLinebreakBeforeClosingBrace: 'Expected a line break before this closing brace.',
         expectedLinebreakAfterOpeningBrace: 'Expected a line break after this opening brace.',
       },
+    });
+  });
+
+  it('preserves the stable jsx-closing-bracket-location metadata contract', () => {
+    expect(plugin.rules['jsx-closing-bracket-location'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce closing bracket location in JSX',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        bracketLocation: 'The closing bracket must be {{location}}{{details}}',
+      },
+      schema: { type: 'array' },
     });
   });
 

@@ -1,0 +1,1624 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-closing-bracket-location/jsx-closing-bracket-location.test.ts",
+    "license": "MIT",
+    "parserMatrix": "authored semantic cases; replayed with Oxc JSX/TSX",
+    "tool": "tools/tasks/sync-stylistic-jsx-closing-bracket-location-tests.ts",
+    "inventory": {
+      "valid": 44,
+      "invalid": 65,
+      "diagnostics": 65,
+      "fixableInvalid": 65,
+      "unfixableInvalid": 0,
+      "total": 109
+    }
+  },
+  "valid": [
+    {
+      "code": "\n        <App />\n      "
+    },
+    {
+      "code": "\n        <App\n          // comment\n        />\n      "
+    },
+    {
+      "code": "\n        <App /** comment */ />\n      "
+    },
+    {
+      "code": "\n        <App foo />\n      "
+    },
+    {
+      "code": "\n        <App\n          foo\n        />\n      "
+    },
+    {
+      "code": "\n        <App\n          foo\n          // comment\n        />\n      "
+    },
+    {
+      "code": "\n        <App\n          {...foo}\n        />\n      "
+    },
+    {
+      "code": "\n        <App\n          {...foo}\n          // comment\n        />\n      "
+    },
+    {
+      "code": "\n        <App foo />\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo />\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo />\n      ",
+      "options": ["after-props"]
+    },
+    {
+      "code": "\n        <App\n          foo\n          />\n      ",
+      "options": ["props-aligned"]
+    },
+    {
+      "code": "\n        <App\n          foo />\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n        />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n        />\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n          />\n      ",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo></App>\n      "
+    },
+    {
+      "code": "\n        <App\n          foo\n        ></App>\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n        ></App>\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n          ></App>\n      ",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={function() {\n            console.log('bar');\n          }} />\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={function() {\n            console.log('bar');\n          }}\n          />\n      ",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={function() {\n            console.log('bar');\n          }}\n        />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={function() {\n            console.log('bar');\n          }}\n        />\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={function() {\n          console.log('bar');\n        }}/>\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ]
+    },
+    {
+      "code": "\n         <App foo={function() {\n                console.log('bar');\n              }}\n              />\n      ",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={function() {\n          console.log('bar');\n        }}\n        />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={function() {\n          console.log('bar');\n        }}\n        />\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider store>\n          <App\n            foo />\n        </Provider>\n      ",
+      "options": [
+        {
+          "selfClosing": "after-props"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider\n          store\n        >\n          <App\n            foo />\n        </Provider>\n      ",
+      "options": [
+        {
+          "selfClosing": "after-props"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider\n          store>\n          <App\n            foo\n          />\n        </Provider>\n      ",
+      "options": [
+        {
+          "nonEmpty": "after-props"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider store>\n          <App\n            foo\n            />\n        </Provider>\n      ",
+      "options": [
+        {
+          "selfClosing": "props-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider\n          store\n          >\n          <App\n            foo\n          />\n        </Provider>\n      ",
+      "options": [
+        {
+          "nonEmpty": "props-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = function() {\n          return <App\n            foo\n                 >\n              bar\n                 </App>\n        }\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = function() {\n          return <App\n            foo\n                 />\n        }\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = <App\n          foo\n                />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = function() {\n          return <App\n            foo={function() {\n              console.log('bar');\n            }}\n          />\n        }\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = <App\n          foo={function() {\n            console.log('bar');\n          }}\n        />\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider\n          store\n        >\n          <App\n            foo={function() {\n              console.log('bar');\n            }}\n          />\n        </Provider>\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider\n          store\n        >\n          {baz && <App\n            foo={function() {\n              console.log('bar');\n            }}\n          />}\n        </Provider>\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Foo\n            bar\n          >\n          </Foo>\n          <Foo\n            bar />\n        </App>\n      ",
+      "options": [
+        {
+          "nonEmpty": false,
+          "selfClosing": "after-props"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Foo\n            bar>\n          </Foo>\n          <Foo\n            bar\n          />\n        </App>\n      ",
+      "options": [
+        {
+          "nonEmpty": "after-props",
+          "selfClosing": false
+        }
+      ]
+    },
+    {
+      "code": "\n        <div className={[\n          \"some\",\n          \"stuff\",\n          2 ]}\n        >\n          Some text\n        </div>\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n        <App\n        />\n      ",
+      "output": "\n        <App />\n      ",
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the opening tag",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the opening tag"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo\n        />\n      ",
+      "output": "\n        <App foo/>\n      ",
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo\n        ></App>\n      ",
+      "output": "\n        <App foo></App>\n      ",
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo />\n      ",
+      "output": "\n        <App\n          foo\n          />\n      ",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the last prop",
+            "details": " (expected column 11 on the next line)"
+          },
+          "line": 3,
+          "column": 15,
+          "message": "The closing bracket must be aligned with the last prop (expected column 11 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo />\n      ",
+      "output": "\n        <App\n          foo\n        />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 9 on the next line)"
+          },
+          "line": 3,
+          "column": 15,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 9 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo />\n      ",
+      "output": "\n        <App\n          foo\n        />\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 9 on the next line)"
+          },
+          "line": 3,
+          "column": 15,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 9 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n        />\n      ",
+      "output": "\n        <App\n          foo/>\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n        />\n      ",
+      "output": "\n        <App\n          foo\n          />\n      ",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the last prop",
+            "details": " (expected column 11)"
+          },
+          "line": 4,
+          "column": 9,
+          "message": "The closing bracket must be aligned with the last prop (expected column 11)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n          />\n      ",
+      "output": "\n        <App\n          foo/>\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n          />\n      ",
+      "output": "\n        <App\n          foo\n        />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 9)"
+          },
+          "line": 4,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 9)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n          />\n      ",
+      "output": "\n        <App\n          foo\n        />\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 9)"
+          },
+          "line": 4,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 9)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n        ></App>\n      ",
+      "output": "\n        <App\n          foo></App>\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n        ></App>\n      ",
+      "output": "\n        <App\n          foo\n          ></App>\n      ",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the last prop",
+            "details": " (expected column 11)"
+          },
+          "line": 4,
+          "column": 9,
+          "message": "The closing bracket must be aligned with the last prop (expected column 11)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n          ></App>\n      ",
+      "output": "\n        <App\n          foo></App>\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n          ></App>\n      ",
+      "output": "\n        <App\n          foo\n        ></App>\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 9)"
+          },
+          "line": 4,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 9)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n          ></App>\n      ",
+      "output": "\n        <App\n          foo\n        ></App>\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 9)"
+          },
+          "line": 4,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 9)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider\n          store>\n          <App\n            foo\n            />\n        </Provider>\n      ",
+      "output": "\n        <Provider\n          store\n        >\n          <App\n            foo\n            />\n        </Provider>\n      ",
+      "options": [
+        {
+          "selfClosing": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 9 on the next line)"
+          },
+          "line": 3,
+          "column": 16,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 9 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n        const Button = function(props) {\n          return (\n            <Button\n              size={size}\n              onClick={onClick}\n                                            >\n              Button Text\n            </Button>\n          );\n        };\n      ",
+      "output": "\n        const Button = function(props) {\n          return (\n            <Button\n              size={size}\n              onClick={onClick}\n              >\n              Button Text\n            </Button>\n          );\n        };\n      ",
+      "options": ["props-aligned"],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the last prop",
+            "details": " (expected column 15)"
+          },
+          "line": 7,
+          "column": 45,
+          "message": "The closing bracket must be aligned with the last prop (expected column 15)"
+        }
+      ]
+    },
+    {
+      "code": "\n        const Button = function(props) {\n          return (\n            <Button\n              size={size}\n              onClick={onClick}\n                                            >\n              Button Text\n            </Button>\n          );\n        };\n      ",
+      "output": "\n        const Button = function(props) {\n          return (\n            <Button\n              size={size}\n              onClick={onClick}\n            >\n              Button Text\n            </Button>\n          );\n        };\n      ",
+      "options": ["tag-aligned"],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 13)"
+          },
+          "line": 7,
+          "column": 45,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 13)"
+        }
+      ]
+    },
+    {
+      "code": "\n        const Button = function(props) {\n          return (\n            <Button\n              size={size}\n              onClick={onClick}\n                                            >\n              Button Text\n            </Button>\n          );\n        };\n      ",
+      "output": "\n        const Button = function(props) {\n          return (\n            <Button\n              size={size}\n              onClick={onClick}\n            >\n              Button Text\n            </Button>\n          );\n        };\n      ",
+      "options": ["line-aligned"],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 13)"
+          },
+          "line": 7,
+          "column": 45,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 13)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider\n          store\n          >\n          <App\n            foo\n            />\n        </Provider>\n      ",
+      "output": "\n        <Provider\n          store\n          >\n          <App\n            foo\n          />\n        </Provider>\n      ",
+      "options": [
+        {
+          "nonEmpty": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 11)"
+          },
+          "line": 7,
+          "column": 13,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 11)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider\n          store>\n          <App\n            foo />\n        </Provider>\n      ",
+      "output": "\n        <Provider\n          store\n        >\n          <App\n            foo />\n        </Provider>\n      ",
+      "options": [
+        {
+          "selfClosing": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 9 on the next line)"
+          },
+          "line": 3,
+          "column": 16,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 9 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Provider\n          store>\n          <App\n            foo\n            />\n        </Provider>\n      ",
+      "output": "\n        <Provider\n          store>\n          <App\n            foo\n          />\n        </Provider>\n      ",
+      "options": [
+        {
+          "nonEmpty": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 11)"
+          },
+          "line": 6,
+          "column": 13,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 11)"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = function() {\n          return <App\n            foo\n                />\n        }\n      ",
+      "output": "\n        var x = function() {\n          return <App\n            foo\n          />\n        }\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 11)"
+          },
+          "line": 5,
+          "column": 17,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 11)"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = <App\n          foo\n                />\n      ",
+      "output": "\n        var x = <App\n          foo\n        />\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 9)"
+          },
+          "line": 4,
+          "column": 17,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 9)"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = (\n          <div\n            className=\"MyComponent\"\n            {...props} />\n        )\n      ",
+      "output": "\n        var x = (\n          <div\n            className=\"MyComponent\"\n            {...props}\n          />\n        )\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 11 on the next line)"
+          },
+          "line": 5,
+          "column": 24,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 11 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = (\n          <Something\n            content={<Foo />} />\n        )\n      ",
+      "output": "\n        var x = (\n          <Something\n            content={<Foo />}\n          />\n        )\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 11 on the next line)"
+          },
+          "line": 4,
+          "column": 31,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 11 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n        var x = (\n          <Something\n            />\n        )\n      ",
+      "output": "\n        var x = (\n          <Something />\n        )\n      ",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the opening tag",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the opening tag"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div className={[\n          \"some\",\n          \"stuff\",\n          2 ]}>\n          Some text\n        </div>\n      ",
+      "output": "\n        <div className={[\n          \"some\",\n          \"stuff\",\n          2 ]}\n        >\n          Some text\n        </div>\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 9 on the next line)"
+          },
+          "line": 5,
+          "column": 15,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 9 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo />\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t\t/>\n\t\t\t",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the last prop",
+            "details": " (expected column 6 on the next line)"
+          },
+          "line": 3,
+          "column": 10,
+          "message": "The closing bracket must be aligned with the last prop (expected column 6 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo />\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 5 on the next line)"
+          },
+          "line": 3,
+          "column": 10,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 5 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo />\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 5 on the next line)"
+          },
+          "line": 3,
+          "column": 10,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 5 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo/>\n\t\t\t",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t\t/>\n\t\t\t",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the last prop",
+            "details": " (expected column 6)"
+          },
+          "line": 4,
+          "column": 5,
+          "message": "The closing bracket must be aligned with the last prop (expected column 6)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t\t/>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo/>\n\t\t\t",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t\t/>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 5)"
+          },
+          "line": 4,
+          "column": 6,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 5)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t\t/>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 5)"
+          },
+          "line": 4,
+          "column": 6,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 5)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t></App>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo></App>\n\t\t\t",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t></App>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t\t></App>\n\t\t\t",
+      "options": [
+        {
+          "location": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the last prop",
+            "details": " (expected column 6)"
+          },
+          "line": 4,
+          "column": 5,
+          "message": "The closing bracket must be aligned with the last prop (expected column 6)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t\t></App>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo></App>\n\t\t\t",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t\t></App>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t></App>\n\t\t\t",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 5)"
+          },
+          "line": 4,
+          "column": 6,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 5)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t\t></App>\n\t\t\t",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t></App>\n\t\t\t",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 5)"
+          },
+          "line": 4,
+          "column": 6,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 5)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<Provider\n\t\t\t\t\tstore>\n\t\t\t\t\t<App\n\t\t\t\t\t\tfoo\n\t\t\t\t\t\t/>\n\t\t\t\t</Provider>\n\t\t\t",
+      "output": "\n\t\t\t\t<Provider\n\t\t\t\t\tstore\n\t\t\t\t>\n\t\t\t\t\t<App\n\t\t\t\t\t\tfoo\n\t\t\t\t\t\t/>\n\t\t\t\t</Provider>\n\t\t\t",
+      "options": [
+        {
+          "selfClosing": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 5 on the next line)"
+          },
+          "line": 3,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 5 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tconst Button = function(props) {\n\t\t\t\t\treturn (\n\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\tsize={size}\n\t\t\t\t\t\t\tonClick={onClick}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\tButton Text\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t);\n\t\t\t\t};\n\t\t\t",
+      "output": "\n\t\t\t\tconst Button = function(props) {\n\t\t\t\t\treturn (\n\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\tsize={size}\n\t\t\t\t\t\t\tonClick={onClick}\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\tButton Text\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t);\n\t\t\t\t};\n\t\t\t",
+      "options": ["props-aligned"],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the last prop",
+            "details": " (expected column 8)"
+          },
+          "line": 7,
+          "column": 23,
+          "message": "The closing bracket must be aligned with the last prop (expected column 8)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tconst Button = function(props) {\n\t\t\t\t\treturn (\n\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\tsize={size}\n\t\t\t\t\t\t\tonClick={onClick}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\tButton Text\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t);\n\t\t\t\t};\n\t\t\t",
+      "output": "\n\t\t\t\tconst Button = function(props) {\n\t\t\t\t\treturn (\n\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\tsize={size}\n\t\t\t\t\t\t\tonClick={onClick}\n\t\t\t\t\t\t>\n\t\t\t\t\t\t\tButton Text\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t);\n\t\t\t\t};\n\t\t\t",
+      "options": ["tag-aligned"],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 7)"
+          },
+          "line": 7,
+          "column": 23,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 7)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tconst Button = function(props) {\n\t\t\t\t\treturn (\n\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\tsize={size}\n\t\t\t\t\t\t\tonClick={onClick}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\tButton Text\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t);\n\t\t\t\t};\n\t\t\t",
+      "output": "\n\t\t\t\tconst Button = function(props) {\n\t\t\t\t\treturn (\n\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\tsize={size}\n\t\t\t\t\t\t\tonClick={onClick}\n\t\t\t\t\t\t>\n\t\t\t\t\t\t\tButton Text\n\t\t\t\t\t\t</Button>\n\t\t\t\t\t);\n\t\t\t\t};\n\t\t\t",
+      "options": ["line-aligned"],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 7)"
+          },
+          "line": 7,
+          "column": 23,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 7)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<Provider\n\t\t\t\t\tstore\n\t\t\t\t\t>\n\t\t\t\t\t<App\n\t\t\t\t\t\tfoo\n\t\t\t\t\t\t/>\n\t\t\t\t</Provider>\n\t\t\t",
+      "output": "\n\t\t\t\t<Provider\n\t\t\t\t\tstore\n\t\t\t\t\t>\n\t\t\t\t\t<App\n\t\t\t\t\t\tfoo\n\t\t\t\t\t/>\n\t\t\t\t</Provider>\n\t\t\t",
+      "options": [
+        {
+          "nonEmpty": "props-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 6)"
+          },
+          "line": 7,
+          "column": 7,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 6)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<Provider\n\t\t\t\t\tstore>\n\t\t\t\t\t<App\n\t\t\t\t\t\tfoo />\n\t\t\t\t</Provider>\n\t\t\t",
+      "output": "\n\t\t\t\t<Provider\n\t\t\t\t\tstore\n\t\t\t\t>\n\t\t\t\t\t<App\n\t\t\t\t\t\tfoo />\n\t\t\t\t</Provider>\n\t\t\t",
+      "options": [
+        {
+          "selfClosing": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 5 on the next line)"
+          },
+          "line": 3,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 5 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<Provider\n\t\t\t\t\tstore>\n\t\t\t\t\t<App\n\t\t\t\t\t\tfoo\n\t\t\t\t\t\t/>\n\t\t\t\t</Provider>\n\t\t\t",
+      "output": "\n\t\t\t\t<Provider\n\t\t\t\t\tstore>\n\t\t\t\t\t<App\n\t\t\t\t\t\tfoo\n\t\t\t\t\t/>\n\t\t\t\t</Provider>\n\t\t\t",
+      "options": [
+        {
+          "nonEmpty": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 6)"
+          },
+          "line": 6,
+          "column": 7,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 6)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tvar x = function() {\n\t\t\t\t\treturn <App\n\t\t\t\t\t\tfoo\n\t\t\t\t\t\t\t\t/>\n\t\t\t\t}\n\t\t\t",
+      "output": "\n\t\t\t\tvar x = function() {\n\t\t\t\t\treturn <App\n\t\t\t\t\t\tfoo\n\t\t\t\t\t/>\n\t\t\t\t}\n\t\t\t",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 6)"
+          },
+          "line": 5,
+          "column": 9,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 6)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tvar x = <App\n\t\t\t\t\tfoo\n\t\t\t\t\t\t\t\t/>\n\t\t\t",
+      "output": "\n\t\t\t\tvar x = <App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 5)"
+          },
+          "line": 4,
+          "column": 9,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 5)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tvar x = (\n\t\t\t\t\t<div\n\t\t\t\t\t\tclassName=\"MyComponent\"\n\t\t\t\t\t\t{...props} />\n\t\t\t\t)\n\t\t\t",
+      "output": "\n\t\t\t\tvar x = (\n\t\t\t\t\t<div\n\t\t\t\t\t\tclassName=\"MyComponent\"\n\t\t\t\t\t\t{...props}\n\t\t\t\t\t/>\n\t\t\t\t)\n\t\t\t",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 6 on the next line)"
+          },
+          "line": 5,
+          "column": 18,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 6 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tvar x = (\n\t\t\t\t\t<Something\n\t\t\t\t\t\tcontent={<Foo />} />\n\t\t\t\t)\n\t\t\t",
+      "output": "\n\t\t\t\tvar x = (\n\t\t\t\t\t<Something\n\t\t\t\t\t\tcontent={<Foo />}\n\t\t\t\t\t/>\n\t\t\t\t)\n\t\t\t",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 6 on the next line)"
+          },
+          "line": 4,
+          "column": 25,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 6 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tvar x = (\n\t\t\t\t\t<Something\n\t\t\t\t\t\t/>\n\t\t\t\t)\n\t\t\t",
+      "output": "\n\t\t\t\tvar x = (\n\t\t\t\t\t<Something />\n\t\t\t\t)\n\t\t\t",
+      "options": [
+        {
+          "location": "line-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the opening tag",
+            "details": ""
+          },
+          "message": "The closing bracket must be placed after the opening tag"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<div className={[\n\t\t\t\t\t\"some\",\n\t\t\t\t\t\"stuff\",\n\t\t\t\t\t2 ]}>\n\t\t\t\t\tSome text\n\t\t\t\t</div>\n\t\t\t",
+      "output": "\n\t\t\t\t<div className={[\n\t\t\t\t\t\"some\",\n\t\t\t\t\t\"stuff\",\n\t\t\t\t\t2 ]}\n\t\t\t\t>\n\t\t\t\t\tSome text\n\t\t\t\t</div>\n\t\t\t",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 5 on the next line)"
+          },
+          "line": 5,
+          "column": 10,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 5 on the next line)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t\t\t\t<div\n\t\t\t\t\t\t\t\tclassName={styles}\n\t\t\t\t\t >\n\t\t\t\t\t\t\t\t{props}\n\t\t\t\t\t\t\t</div>\n\t\t\t",
+      "output": "\n\t\t\t\t\t\t\t<div\n\t\t\t\t\t\t\t\tclassName={styles}\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t{props}\n\t\t\t\t\t\t\t</div>\n\t\t\t",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 8)"
+          },
+          "line": 4,
+          "column": 7,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 8)"
+        }
+      ]
+    },
+    {
+      "code": "\n          <div\n            className={styles}\n            >\n            {props}\n          </div>\n      ",
+      "output": "\n          <div\n            className={styles}\n          >\n            {props}\n          </div>\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 11)"
+          },
+          "line": 4,
+          "column": 13,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 11)"
+        }
+      ]
+    },
+    {
+      "code": "\n          <App\n            foo\n            />\n      ",
+      "output": "\n          <App\n            foo\n          />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 11)"
+          },
+          "line": 4,
+          "column": 13,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 11)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t\t\t<App\n\t\t\t\t\t\t\tfoo\n\t\t\t\t\t/>\n\t\t\t",
+      "output": "\n\t\t\t\t\t\t<App\n\t\t\t\t\t\t\tfoo\n\t\t\t\t\t\t/>\n\t\t\t",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 7)"
+          },
+          "line": 4,
+          "column": 6,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 7)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <input\n          // comment\n          type=\"text\"\n          // comment\n          />\n      ",
+      "output": "\n        <input\n          // comment\n          type=\"text\"\n          // comment\n        />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 9)"
+          },
+          "line": 6,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 9)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <input\n          // comment\n          type=\"text\"\n          /**\n           * \n           * comment\n           * \n           */\n          />\n      ",
+      "output": "\n        <input\n          // comment\n          type=\"text\"\n          /**\n           * \n           * comment\n           * \n           */\n        />\n      ",
+      "options": [
+        {
+          "location": "tag-aligned"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the opening tag",
+            "details": " (expected column 9)"
+          },
+          "line": 10,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the opening tag (expected column 9)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <input\n          // comment\n          type=\"text\"\n\n        />\n      ",
+      "output": "\n        <input\n          // comment\n          type=\"text\"/>\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "placed after the last prop",
+            "details": ""
+          },
+          "line": 6,
+          "column": 9,
+          "message": "The closing bracket must be placed after the last prop"
+        }
+      ]
+    },
+    {
+      "code": "\n        <input\n          // comment\n          type=\"text\"\n          // comment\n          />\n      ",
+      "output": "\n        <input\n          // comment\n          type=\"text\"\n          // comment\n        />\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 9)"
+          },
+          "line": 6,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 9)"
+        }
+      ]
+    },
+    {
+      "code": "\n        <input\n          // comment\n          // comment\n          />\n      ",
+      "output": "\n        <input\n          // comment\n          // comment\n        />\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 9)"
+          },
+          "line": 5,
+          "column": 11,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 9)"
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<a\n\t\t\t\t\thref=\"javascript:;\"\n\t\t\t\t\t// comment\n\t\t\t\t\t// comment\n\t\t\t\t\t>\n\t\t\t\t\ttext\n\t\t\t\t</a>\n      ",
+      "output": "\n\t\t\t\t<a\n\t\t\t\t\thref=\"javascript:;\"\n\t\t\t\t\t// comment\n\t\t\t\t\t// comment\n\t\t\t\t>\n\t\t\t\t\ttext\n\t\t\t\t</a>\n      ",
+      "options": [
+        {
+          "location": "after-props"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "bracketLocation",
+          "data": {
+            "location": "aligned with the line containing the opening tag",
+            "details": " (expected column 5)"
+          },
+          "line": 6,
+          "column": 6,
+          "message": "The closing bracket must be aligned with the line containing the opening tag (expected column 5)"
+        }
+      ]
+    }
+  ]
+}
