@@ -80,6 +80,7 @@
     "port:tests:stylistic:array-bracket-newline": "node tools/tasks/sync-stylistic-array-bracket-newline-tests.ts",
     "port:tests:stylistic:brace-style": "node tools/tasks/sync-stylistic-brace-style-tests.ts",
     "port:tests:stylistic:curly-newline": "node tools/tasks/sync-stylistic-curly-newline-tests.ts",
+    "port:tests:stylistic:no-extra-parens": "node tools/tasks/sync-stylistic-no-extra-parens-tests.ts",
     "port:tests:stylistic:multiline-ternary": "node tools/tasks/sync-stylistic-multiline-ternary-tests.ts",
     "port:tests:stylistic:semi": "node tools/tasks/sync-stylistic-semi-tests.ts",
     "port:tests:unocss": "node tools/tasks/sync-unocss-tests.ts",

@@ -53,9 +53,12 @@ function createStylisticRule(ruleName) {
       },
       ...(meta.hasSuggestions
         ? {
-            fixable: ['jsx-closing-bracket-location', 'jsx-quotes', 'no-confusing-arrow'].includes(
-              ruleName,
-            )
+            fixable: [
+              'jsx-closing-bracket-location',
+              'jsx-quotes',
+              'no-confusing-arrow',
+              'no-extra-parens',
+            ].includes(ruleName)
               ? 'code'
               : 'whitespace',
           }

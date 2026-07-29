@@ -29,6 +29,7 @@ mod member_delimiter_style;
 mod multiline_ternary;
 mod newline_per_chained_call;
 mod no_confusing_arrow;
+mod no_extra_parens;
 mod nonblock_statement_body_position;
 mod object_curly_newline;
 mod object_property_newline;
@@ -325,6 +326,8 @@ const NONBLOCK_STATEMENT_BODY_POSITION_MESSAGES: &[(&str, &str)] = &[
         "Expected a linebreak before this statement.",
     ),
 ];
+const NO_EXTRA_PARENS_MESSAGES: &[(&str, &str)] =
+    &[("unexpected", "Unnecessary parentheses around expression.")];
 const COMPUTED_PROPERTY_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("missingSpaceBefore", "A space is required before ']'."),
     ("missingSpaceAfter", "A space is required after '['."),
@@ -915,6 +918,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: NONBLOCK_STATEMENT_BODY_POSITION_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "no-extra-parens",
+        docs_description: "Disallow unnecessary parentheses",
+        messages: NO_EXTRA_PARENS_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "computed-property-spacing",
         docs_description: "Enforce consistent spacing inside computed member-access brackets.",
         messages: COMPUTED_PROPERTY_SPACING_MESSAGES,
@@ -1330,6 +1338,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "no-extra-parens" => no_extra_parens::check_no_extra_parens(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "curly-newline" => curly_newline::check_curly_newline(
                 source_text,
                 config.filename.as_deref(),

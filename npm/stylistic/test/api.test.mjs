@@ -49,6 +49,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'nonblock-statement-body-position',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-extra-parens');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('semi');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'newline-per-chained-call',
@@ -1028,6 +1029,65 @@ describe('stylistic native API', () => {
             fixes: [{ range: { start: 14, end: 16 }, replacementText: '1' }],
           },
         ],
+      },
+    ]);
+  });
+
+  it('runs no-extra-parens with exact UTF-8 byte ranges and paired code fixes', () => {
+    const source = 'const 名 = ((value));\nconst f = (x => x);\n';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [{ name: 'no-extra-parens', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'no-extra-parens',
+        messageId: 'unexpected',
+        message: 'Unnecessary parentheses around expression.',
+        range: { start: 13, end: 14 },
+        suggestions: [
+          {
+            messageId: 'unexpected',
+            message: 'Unnecessary parentheses around expression.',
+            fixes: [
+              { range: { start: 13, end: 14 }, replacementText: '' },
+              { range: { start: 19, end: 20 }, replacementText: '' },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'no-extra-parens',
+        messageId: 'unexpected',
+        message: 'Unnecessary parentheses around expression.',
+        range: { start: 33, end: 34 },
+        suggestions: [
+          {
+            messageId: 'unexpected',
+            message: 'Unnecessary parentheses around expression.',
+            fixes: [
+              { range: { start: 33, end: 34 }, replacementText: '' },
+              { range: { start: 40, end: 41 }, replacementText: '' },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('does not offer an unsafe no-extra-parens directive fix', () => {
+    expect(
+      runNativeStylisticLint("('directive');\n", {
+        filename: 'fixture.js',
+        rules: [{ name: 'no-extra-parens', options: [] }],
+      }),
+    ).toEqual([
+      {
+        ruleName: 'no-extra-parens',
+        messageId: 'unexpected',
+        message: 'Unnecessary parentheses around expression.',
+        range: { start: 0, end: 1 },
       },
     ]);
   });

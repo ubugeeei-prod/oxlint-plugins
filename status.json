@@ -15167,19 +15167,19 @@
       },
       {
         "name": "no-extra-parens",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-extra-parens."
+        "notes": "Native Oxc AST and token-aware port of stable @stylistic/no-extra-parens v5.10.0 with every option, JS/TS/JSX grammar and fix-safety behavior, pinned synchronizer, exhaustive replay of 595 valid and 624 invalid upstream cases (681 diagnostics, 617 fixable and 7 unfixable), NAPI/API/meta/plugin coverage, UTF-16 regression coverage, and real Oxlint integration."
       },
       {
         "name": "no-mixed-operators",
