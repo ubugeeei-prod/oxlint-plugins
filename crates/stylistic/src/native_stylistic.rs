@@ -8,6 +8,7 @@ use super::{LintDiagnostic, RuleBridgeRequirements, RuleMeta};
 mod context;
 mod context_rules;
 mod helpers;
+mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
 mod line_index;
@@ -439,6 +440,10 @@ const LINE_COMMENT_POSITION_MESSAGES: &[(&str, &str)] = &[
     ("above", "Expected comment to be above code."),
     ("beside", "Expected comment to be beside code."),
 ];
+const JSX_QUOTES_MESSAGES: &[(&str, &str)] = &[
+    ("unexpected", "Unexpected usage of {{description}}."),
+    ("fixQuote", "Convert JSX attribute quote style."),
+];
 const ONE_VAR_DECLARATION_PER_LINE_MESSAGES: &[(&str, &str)] = &[
     (
         "expectVarOnNewline",
@@ -727,6 +732,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_EQUALS_SPACING_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-quotes",
+        docs_description: "Enforce the consistent use of either double or single quotes in JSX attributes.",
+        messages: JSX_QUOTES_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "one-var-declaration-per-line",
         docs_description: "Require or disallow newlines around variable declarations.",
         messages: ONE_VAR_DECLARATION_PER_LINE_MESSAGES,
@@ -874,6 +884,9 @@ pub fn run_stylistic_lint(
                 &mut diagnostics,
             ),
             "quotes" => quotes::check_quotes(source_text, &rule.options, &mut diagnostics),
+            "jsx-quotes" => {
+                jsx_quotes::check_jsx_quotes(source_text, &rule.options, &mut diagnostics)
+            }
             "unicode-bom" => {
                 unicode_bom::check_unicode_bom(source_text, &rule.options, &mut diagnostics)
             }

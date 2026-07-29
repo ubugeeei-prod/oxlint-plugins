@@ -51,7 +51,7 @@ function createStylisticRule(ruleName) {
         requiresTypeChecking: false,
         url: SOURCE_URL,
       },
-      fixable: 'whitespace',
+      fixable: ruleName === 'jsx-quotes' ? 'code' : 'whitespace',
       hasSuggestions: meta.hasSuggestions,
       messages: meta.messages,
       schema: { type: 'array' },
@@ -127,6 +127,10 @@ function reportStylisticDiagnostics(context, program, diagnostics) {
       node: rangeNode(program, diagnostic.range),
       messageId: diagnostic.messageId,
     };
+    const data = dataForStylisticDiagnostic(diagnostic);
+    if (data) {
+      descriptor.data = data;
+    }
 
     if (diagnostic.suggestions?.length) {
       descriptor.suggest = diagnostic.suggestions.map((suggestion) => ({
@@ -140,6 +144,15 @@ function reportStylisticDiagnostics(context, program, diagnostics) {
 
     context.report(descriptor);
   }
+}
+
+function dataForStylisticDiagnostic(diagnostic) {
+  if (diagnostic.ruleName !== 'jsx-quotes') {
+    return undefined;
+  }
+
+  const match = /^Unexpected usage of (.+)\.$/.exec(diagnostic.message);
+  return match ? { description: match[1] } : undefined;
 }
 
 function rangeNode(program, range) {

@@ -52,6 +52,8 @@ bindings.
 
 ## Credits
 
-Rule scanning logic is derived from `corsa-oxlint/stylistic` in
+Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 [`ubugeeei-prod/corsa-bind`](https://github.com/ubugeeei-prod/corsa-bind)
-v0.43.0 (MIT).
+v0.43.0 (MIT). JSX-specific ports, including `jsx-quotes`, follow
+[`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
+v5.10.0 (MIT).

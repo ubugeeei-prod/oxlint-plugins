@@ -1409,6 +1409,11 @@ version = "0.0.0"
 dependencies = [
  "divan",
  "insta",
+ "oxc_allocator",
+ "oxc_ast",
+ "oxc_ast_visit",
+ "oxc_parser",
+ "oxc_span",
  "oxlint-plugins-_carton",
  "phf",
  "regex",
