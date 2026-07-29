@@ -502,6 +502,24 @@ mod tests {
     }
 
     #[test]
+    fn checks_root_jsx_after_conditional_operators_and_export_default() {
+        for source in [
+            "const x = ready && <App foo = \"bar\" />;",
+            "const x = fallback || <App foo = \"bar\" />;",
+            "const x = maybe ?? <App foo = \"bar\" />;",
+            "const x = !<App foo = \"bar\" />;",
+            "export default <App foo = \"bar\" />;",
+            "const x = await <App foo = \"bar\" />;",
+        ] {
+            assert_eq!(
+                ids(&run(source, None)),
+                ["noSpaceBefore", "noSpaceAfter"],
+                "missed root JSX in {source}"
+            );
+        }
+    }
+
+    #[test]
     fn ignores_non_jsx_assignments_comparisons_and_typescript_generics() {
         for source in [
             "const value = other;",
