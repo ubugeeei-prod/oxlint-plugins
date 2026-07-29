@@ -21,6 +21,7 @@ mod lexer;
 mod line_index;
 mod line_rules;
 mod lines_around_comment;
+mod multiline_ternary;
 mod newline_per_chained_call;
 mod no_confusing_arrow;
 mod quote_convert;
@@ -571,6 +572,24 @@ const LINES_AROUND_COMMENT_MESSAGES: &[(&str, &str)] = &[
 ];
 const NEWLINE_PER_CHAINED_CALL_MESSAGES: &[(&str, &str)] =
     &[("expected", "Expected line break before `{{callee}}`.")];
+const MULTILINE_TERNARY_MESSAGES: &[(&str, &str)] = &[
+    (
+        "expectedTestCons",
+        "Expected newline between test and consequent of ternary expression.",
+    ),
+    (
+        "expectedConsAlt",
+        "Expected newline between consequent and alternate of ternary expression.",
+    ),
+    (
+        "unexpectedTestCons",
+        "Unexpected newline between test and consequent of ternary expression.",
+    ),
+    (
+        "unexpectedConsAlt",
+        "Unexpected newline between consequent and alternate of ternary expression.",
+    ),
+];
 
 /// One stylistic rule invocation requested by the JavaScript bridge.
 #[derive(Clone, Debug, Deserialize)]
@@ -918,6 +937,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         docs_description: "Require a newline after each call in a method chain.",
         messages: NEWLINE_PER_CHAINED_CALL_MESSAGES,
     },
+    StylisticRuleDefinition {
+        name: "multiline-ternary",
+        docs_description: "Enforce newlines between operands of ternary expressions.",
+        messages: MULTILINE_TERNARY_MESSAGES,
+    },
 ];
 
 /// Rule names that run over the shared token + bracket-matching scan.
@@ -1074,6 +1098,12 @@ pub fn run_stylistic_lint(
             ),
             "newline-per-chained-call" => newline_per_chained_call::check_newline_per_chained_call(
                 source_text,
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "multiline-ternary" => multiline_ternary::check_multiline_ternary(
+                source_text,
+                config.filename.as_deref(),
                 &rule.options,
                 &mut diagnostics,
             ),
