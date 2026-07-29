@@ -595,6 +595,23 @@ mod tests {
     }
 
     #[test]
+    fn unicode_line_terminators_end_line_comments() {
+        let source = "// first\u{2028}// second\u{2029}value";
+        let tokens = tokenize(source);
+        assert_eq!(
+            tokens
+                .iter()
+                .map(|token| (token.kind, token.text(source)))
+                .collect::<Vec<_>>(),
+            [
+                (TokenKind::LineComment, "// first"),
+                (TokenKind::LineComment, "// second"),
+                (TokenKind::Identifier, "value")
+            ]
+        );
+    }
+
+    #[test]
     fn distinguishes_regex_from_division() {
         assert_eq!(
             kinds("a = /ab+/gi"),
@@ -678,19 +695,6 @@ mod tests {
         assert_eq!(
             kinds("return /x/"),
             [(TokenKind::Identifier, "return"), (TokenKind::Regex, "/x/")]
-        );
-    }
-
-    #[test]
-    fn unicode_line_terminators_end_line_comments() {
-        assert_eq!(
-            kinds("// first\u{2028}next// second\u{2029}last"),
-            [
-                (TokenKind::LineComment, "// first"),
-                (TokenKind::Identifier, "next"),
-                (TokenKind::LineComment, "// second"),
-                (TokenKind::Identifier, "last"),
-            ]
         );
     }
 }
