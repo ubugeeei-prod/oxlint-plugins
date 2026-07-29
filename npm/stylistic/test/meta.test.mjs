@@ -165,6 +165,23 @@ describe('stylistic plugin meta contract', () => {
     expect(plugin.rules['array-element-newline'].meta.fixable).toBe('whitespace');
   });
 
+  it('preserves the stable object-property-newline metadata', () => {
+    expect(plugin.rules['object-property-newline'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce placing object properties on separate lines.',
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        propertiesOnNewline: 'Object properties must go on a new line.',
+        propertiesOnNewlineAll:
+          "Object properties must go on a new line if they aren't all on the same line.",
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('preserves the complete upstream object-curly-newline metadata contract', () => {
     expect(plugin.rules['object-curly-newline'].meta).toMatchObject({
       type: 'layout',

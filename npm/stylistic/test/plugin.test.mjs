@@ -53,6 +53,12 @@ const stylisticRuleFixtures = [
     ['unexpectedSpaceAfter', 'unexpectedSpaceBefore'],
   ],
   [
+    'object-property-newline',
+    'const value = { first: 1, second: 2 };\n',
+    [],
+    ['propertiesOnNewline'],
+  ],
+  [
     'array-bracket-spacing',
     'const a = [ 1, 2 ];\n',
     [],

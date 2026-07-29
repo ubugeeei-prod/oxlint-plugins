@@ -39,6 +39,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-element-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('object-curly-newline');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'object-property-newline',
+    );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('brace-style');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('curly-newline');
@@ -179,6 +182,36 @@ describe('stylistic native API', () => {
             messageId: 'expectedLinebreakBeforeClosingBrace',
             message: 'Expected a line break before this closing brace.',
             fixes: [{ range: { start: close, end: close }, replacementText: '\n' }],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs object-property-newline with exact native messages, ranges, and fixes', () => {
+    const source = 'const value = { first: 1, second: 2 };';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.js',
+      rules: [{ name: 'object-property-newline', options: [] }],
+    });
+    const start = source.indexOf('second');
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'object-property-newline',
+        messageId: 'propertiesOnNewline',
+        message: 'Object properties must go on a new line.',
+        range: { start, end: start + 'second'.length },
+        suggestions: [
+          {
+            messageId: 'propertiesOnNewline',
+            message: 'Object properties must go on a new line.',
+            fixes: [
+              {
+                range: { start: source.indexOf(',') + 1, end: start },
+                replacementText: '\n',
+              },
+            ],
           },
         ],
       },
