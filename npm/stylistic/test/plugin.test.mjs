@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -10,6 +10,9 @@ import plugin from '../index.js';
 
 const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const workspaceRoot = resolve(packageRoot, '../..');
+const linesAroundCommentFixture = JSON.parse(
+  readFileSync(new URL('./fixtures/lines-around-comment-v5.10.0.json', import.meta.url), 'utf8'),
+);
 
 const stylisticRuleFixtures = [
   ['eol-last', 'const x = 1;', [], ['missing']],
@@ -86,6 +89,7 @@ const stylisticRuleFixtures = [
   ['operator-linebreak', 'const x = 1\n  + 2;\n', [], ['operatorAtBeginning']],
   ['keyword-spacing', 'if(foo) {}\n', [], ['missingAfter']],
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
+  ['lines-around-comment', 'before();\n/** docs */\nafter();\n', [], ['before']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
   [
@@ -130,6 +134,49 @@ function runRule(ruleName, sourceText, options, settings) {
 
 function messageIds(reports) {
   return reports.map((report) => report.messageId);
+}
+
+function utf16OffsetForLocation(sourceText, line, column) {
+  let offset = 0;
+  let currentLine = 1;
+  while (currentLine < line && offset < sourceText.length) {
+    const character = sourceText[offset];
+    if (character === '\r') {
+      offset += sourceText[offset + 1] === '\n' ? 2 : 1;
+      currentLine += 1;
+    } else if (character === '\n' || character === '\u2028' || character === '\u2029') {
+      offset += 1;
+      currentLine += 1;
+    } else {
+      offset += 1;
+    }
+  }
+  return offset + column - 1;
+}
+
+function expectedReportRange(sourceText, reportRange) {
+  const [line, column, endLine, endColumn] = reportRange;
+  return [
+    utf16OffsetForLocation(sourceText, line, column),
+    utf16OffsetForLocation(sourceText, endLine, endColumn),
+  ];
+}
+
+function reportFix(report) {
+  return report.suggest[0].fix({
+    replaceTextRange(range, replacementText) {
+      return { range, replacementText };
+    },
+  })[0];
+}
+
+function applyReportFixes(sourceText, reports) {
+  const fixes = reports.map(reportFix).sort((left, right) => right.range[0] - left.range[0]);
+  let output = sourceText;
+  for (const fix of fixes) {
+    output = output.slice(0, fix.range[0]) + fix.replacementText + output.slice(fix.range[1]);
+  }
+  return output;
 }
 
 function findOxlintCli() {
@@ -566,6 +613,43 @@ describe('stylistic plugin', () => {
 
     for (const [source, options] of cases) {
       expect(runRule('jsx-quotes', source, options), source).toEqual([]);
+    }
+  });
+
+  it('accepts every stable v5.10.0 lines-around-comment valid fixture', () => {
+    expect(linesAroundCommentFixture.upstream).toBe('@stylistic/eslint-plugin@5.10.0');
+    expect(linesAroundCommentFixture.suites.map((suite) => suite.valid.length)).toEqual([125, 32]);
+
+    for (const suite of linesAroundCommentFixture.suites) {
+      for (const [index, test] of suite.valid.entries()) {
+        expect(
+          runRule('lines-around-comment', test.code, test.options),
+          `${suite.lang} valid fixture ${index}`,
+        ).toEqual([]);
+      }
+    }
+  });
+
+  it('replays every stable v5.10.0 lines-around-comment diagnostic and fix exactly', () => {
+    expect(linesAroundCommentFixture.suites.map((suite) => suite.invalid.length)).toEqual([74, 30]);
+
+    for (const suite of linesAroundCommentFixture.suites) {
+      for (const [index, test] of suite.invalid.entries()) {
+        const label = `${suite.lang} invalid fixture ${index}`;
+        const reports = runRule('lines-around-comment', test.code, test.options);
+        expect(messageIds(reports), label).toEqual(test.errors.map((error) => error.messageId));
+        expect(
+          reports.map((report) => report.node.range),
+          `${label} report ranges`,
+        ).toEqual(test.errors.map((error) => expectedReportRange(test.code, error.reportRange)));
+        expect(reports.map(reportFix), `${label} fixes`).toEqual(
+          test.errors.map((error) => ({
+            range: error.fix.range,
+            replacementText: error.fix.text,
+          })),
+        );
+        expect(applyReportFixes(test.code, reports), `${label} output`).toBe(test.output);
+      }
     }
   });
 
@@ -1269,6 +1353,63 @@ const parenthesized = (a + b) * c;
         {
           code: 'stylistic(array-bracket-newline)',
           message: "A linebreak is required before ']'.",
+        },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs lines-around-comment through an actual oxlint JavaScript config', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-lines-around-comment-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.js');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      const sourceText = 'before();\n// note\nafter();\n';
+      writeFileSync(sourcePath, sourceText);
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/lines-around-comment': [
+              'error',
+              {
+                beforeLineComment: true,
+                afterLineComment: true,
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(lines-around-comment)',
+          message: 'Expected line before comment.',
+          labels: [{ span: { offset: sourceText.indexOf('// note'), length: '// note'.length } }],
+        },
+        {
+          code: 'stylistic(lines-around-comment)',
+          message: 'Expected line after comment.',
+          labels: [{ span: { offset: sourceText.indexOf('// note'), length: '// note'.length } }],
         },
       ]);
     } finally {

@@ -1,0 +1,3641 @@
+{
+  "upstream": "@stylistic/eslint-plugin@5.10.0",
+  "rule": "lines-around-comment",
+  "suites": [
+    {
+      "lang": "js",
+      "valid": [
+        {
+          "code": "bar()\n\n/** block block block\n * block \n */\n\nvar a = 1;",
+          "options": []
+        },
+        {
+          "code": "bar()\n\n/** block block block\n * block \n */\nvar a = 1;",
+          "options": []
+        },
+        {
+          "code": "bar()\n// line line line \nvar a = 1;",
+          "options": []
+        },
+        {
+          "code": "bar()\n\n// line line line\nvar a = 1;",
+          "options": []
+        },
+        {
+          "code": "bar()\n// line line line\n\nvar a = 1;",
+          "options": []
+        },
+        {
+          "code": "bar()\n// line line line\n\nvar a = 1;",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "foo()\n\n// line line line\nvar a = 1;",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "foo()\n\n// line line line\n\nvar a = 1;",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "foo()\n\n// line line line\n// line line\n\nvar a = 1;",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "// line line line\n// line line",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "bar()\n\n/** A Block comment with a an empty line after\n *\n */\nvar a = 1;",
+          "options": [
+            {
+              "afterBlockComment": false,
+              "beforeBlockComment": true
+            }
+          ]
+        },
+        {
+          "code": "bar()\n\n/** block block block\n * block \n */\nvar a = 1;",
+          "options": [
+            {
+              "afterBlockComment": false
+            }
+          ]
+        },
+        {
+          "code": "/** \nblock \nblock block\n */\n/* block \n block \n */",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "beforeBlockComment": true
+            }
+          ]
+        },
+        {
+          "code": "bar()\n\n/** block block block\n * block \n */\n\nvar a = 1;",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "beforeBlockComment": true
+            }
+          ]
+        },
+        {
+          "code": "foo() // An inline comment with a an empty line after\nvar a = 1;",
+          "options": [
+            {
+              "afterLineComment": true,
+              "beforeLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "foo();\nbar() /* An inline block comment with a an empty line after\n *\n */\nvar a = 1;",
+          "options": [
+            {
+              "beforeBlockComment": true
+            }
+          ]
+        },
+        {
+          "code": "bar()\n\n/** block block block\n * block \n */\n//line line line\nvar a = 1;",
+          "options": [
+            {
+              "afterBlockComment": true
+            }
+          ]
+        },
+        {
+          "code": "bar()\n\n/** block block block\n * block \n */\n//line line line\nvar a = 1;",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "var a,\n\n// line\nb;",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "function foo(){   \n// line at block start\nvar g = 1;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "function foo(){// line at block start\nvar g = 1;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "var foo = function(){\n// line at block start\nvar g = 1;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "var foo = function(){\n// line at block start\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){\n// line at block start\nvar g = 1;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){\n\n// line at block start\nvar g = 1;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){\n// line at block start\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){ bar(); } else {\n// line at block start\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\n// line at switch case start\nbreak;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\n\n// line at switch case start\nbreak;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\n// line at switch case start\nbreak;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\n\n// line at switch case start\nbreak;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "function foo(){   \n/* block comment at block start */\nvar g = 1;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "function foo(){/* block comment at block start */\nvar g = 1;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "var foo = function(){\n/* block comment at block start */\nvar g = 1;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){\n/* block comment at block start */\nvar g = 1;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){\n\n/* block comment at block start */\nvar g = 1;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "while(true){\n\n/* \nblock comment at block start\n */\nvar g = 1;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "class A {\n/**\n* hi\n */\nconstructor() {}\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "class A {\n/**\n* hi\n */\nconstructor() {}\n}",
+          "options": [
+            {
+              "allowClassStart": true
+            }
+          ]
+        },
+        {
+          "code": "class A {\n/**\n* hi\n */\nconstructor() {}\n}",
+          "options": [
+            {
+              "allowBlockStart": false,
+              "allowClassStart": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\n/* block comment at switch case start */\nbreak;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\n\n/* block comment at switch case start */\nbreak;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\n/* block comment at switch case start */\nbreak;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\n\n/* block comment at switch case start */\nbreak;\n}",
+          "options": [
+            {
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        // line comment\n    }\n\n    static {\n        // line comment\n        foo();\n    }\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static\n    {\n        // line comment\n    }\n\n    static\n    {\n        // line comment\n        foo();\n    }\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        /* block comment */\n    }\n\n    static {\n        /* block\n           comment */\n    }\n\n    static {\n        /* block comment */\n        foo();\n    }\n\n    static {\n        /* block\n           comment */\n        foo();\n    }\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static\n    {\n        /* block comment */\n    }\n\n    static\n    {\n        /* block\n        comment */\n    }\n\n    static\n    {\n        /* block comment */\n        foo();\n    }\n\n    static\n    {\n        /* block\n        comment */\n        foo();\n    }\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "switch (foo) {\n// this comment is allowed by allowBlockStart: true \n    \ncase 1:    \n    bar();\n    break;\n    \n// this comment is allowed by allowBlockEnd: true\n}",
+          "options": [
+            {
+              "allowBlockStart": true,
+              "beforeLineComment": true,
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "switch (foo)\n{\n// this comment is allowed by allowBlockStart: true \n    \ncase 1:    \n    bar();\n    break;\n}",
+          "options": [
+            {
+              "allowBlockStart": true,
+              "beforeLineComment": true,
+              "afterLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "switch (\n    function(){}()\n)\n{\n    // this comment is allowed by allowBlockStart: true\n    case foo:\n        break;\n}",
+          "options": [
+            {
+              "allowBlockStart": true,
+              "beforeLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "var a,\n// line\n\nb;",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "function foo(){\nvar g = 91;\n// line at block end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "function foo(){\nvar g = 61;\n\n\n// line at block end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "var foo = function(){\nvar g = 1;\n\n\n// line at block end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){\nvar g = 1;\n// line at block end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){\nvar g = 1;\n\n// line at block end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nvar g = 1;\n\n// line at switch case end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nvar g = 1;\n\n// line at switch case end\n\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\nvar g = 1;\n\n// line at switch case end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\nvar g = 1;\n\n// line at switch case end\n\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "while(true){\n// line at block start and end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "while(true){\n// line at block start and end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "while(true){\n// line at block start and end\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "while(true){\n// line at block start and end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "beforeLineComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "while(true){\n// line at block start and end\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ]
+        },
+        {
+          "code": "function foo(){   \nvar g = 1;\n/* block comment at block end */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "function foo(){\nvar g = 1;\n/* block comment at block end */}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "var foo = function(){\nvar g = 1;\n/* block comment at block end */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){\nvar g = 1;\n/* block comment at block end */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "if(true){\nvar g = 1;\n\n/* block comment at block end */\n}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "while(true){\n\nvar g = 1;\n\n/* \nblock comment at block end\n */}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "class B {\nconstructor() {}\n\n/**\n* hi\n */\n}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "class B {\nconstructor() {}\n\n/**\n* hi\n */\n}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowClassEnd": true
+            }
+          ]
+        },
+        {
+          "code": "class B {\nconstructor() {}\n\n/**\n* hi\n */\n}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowBlockEnd": false,
+              "allowClassEnd": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nvar g = 1;\n\n/* block comment at switch case end */\n}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nvar g = 1;\n\n/* block comment at switch case end */\n\n}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\nvar g = 1;\n\n/* block comment at switch case end */\n}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\nvar g = 1;\n\n/* block comment at switch case end */\n\n}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        // line comment\n    }\n\n    static {\n        foo();\n        // line comment\n    }\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        /* block comment */\n    }\n\n    static {\n        /* block\n           comment */\n    }\n\n    static {\n        foo();\n        /* block comment */\n    }\n\n    static {\n        foo();\n        /* block\n           comment */\n    }\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowBlockEnd": true
+            }
+          ]
+        },
+        {
+          "code": "var a,\n\n// line\nb;",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowObjectStart": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\n  // line at object start\n  g: 1\n};",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowObjectStart": true
+            }
+          ]
+        },
+        {
+          "code": "function hi() {\n  return {\n    // hi\n    test: function() {\n    }\n  }\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowObjectStart": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\n  /* block comment at object start*/\n  g: 1\n};",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowObjectStart": true
+            }
+          ]
+        },
+        {
+          "code": "function hi() {\n  return {\n    /**\n    * hi\n    */\n    test: function() {\n    }\n  }\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowObjectStart": true
+            }
+          ]
+        },
+        {
+          "code": "const {\n  // line at object start\n  g: a\n} = {};",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowObjectStart": true
+            }
+          ]
+        },
+        {
+          "code": "const {\n  // line at object start\n  g\n} = {};",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowObjectStart": true
+            }
+          ]
+        },
+        {
+          "code": "const {\n  /* block comment at object-like start*/\n  g: a\n} = {};",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowObjectStart": true
+            }
+          ]
+        },
+        {
+          "code": "const {\n  /* block comment at object-like start*/\n  g\n} = {};",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowObjectStart": true
+            }
+          ]
+        },
+        {
+          "code": "var a,\n// line\n\nb;",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowObjectEnd": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\n  g: 1\n  // line at object end\n};",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowObjectEnd": true
+            }
+          ]
+        },
+        {
+          "code": "function hi() {\n  return {\n    test: function() {\n    }\n    // hi\n  }\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowObjectEnd": true
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\n  g: 1\n  \n  /* block comment at object end*/\n};",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowObjectEnd": true
+            }
+          ]
+        },
+        {
+          "code": "function hi() {\n  return {\n    test: function() {\n    }\n    \n    /**\n    * hi\n    */\n  }\n}",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowObjectEnd": true
+            }
+          ]
+        },
+        {
+          "code": "const {\n  g: a\n  // line at object end\n} = {};",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowObjectEnd": true
+            }
+          ]
+        },
+        {
+          "code": "const {\n  g\n  // line at object end\n} = {};",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowObjectEnd": true
+            }
+          ]
+        },
+        {
+          "code": "const {\n  g: a\n  \n  /* block comment at object-like end*/\n} = {};",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowObjectEnd": true
+            }
+          ]
+        },
+        {
+          "code": "const {\n  g\n  \n  /* block comment at object-like end*/\n} = {};",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowObjectEnd": true
+            }
+          ]
+        },
+        {
+          "code": "var a,\n\n// line\nb;",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowArrayStart": true
+            }
+          ]
+        },
+        {
+          "code": "var arr = [\n  // line at array start\n  1\n];",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowArrayStart": true
+            }
+          ]
+        },
+        {
+          "code": "var arr = [\n  /* block comment at array start*/\n  1\n];",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowArrayStart": true
+            }
+          ]
+        },
+        {
+          "code": "const [\n  // line at array start\n  a\n] = [];",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowArrayStart": true
+            }
+          ]
+        },
+        {
+          "code": "const [\n  /* block comment at array start*/\n  a\n] = [];",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowArrayStart": true
+            }
+          ]
+        },
+        {
+          "code": "var a,\n// line\n\nb;",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowArrayEnd": true
+            }
+          ]
+        },
+        {
+          "code": "var arr = [\n  1\n  // line at array end\n];",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowArrayEnd": true
+            }
+          ]
+        },
+        {
+          "code": "var arr = [\n  1\n  \n  /* block comment at array end*/\n];",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowArrayEnd": true
+            }
+          ]
+        },
+        {
+          "code": "const [\n  a\n  // line at array end\n] = [];",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowArrayEnd": true
+            }
+          ]
+        },
+        {
+          "code": "const [\n  a\n  \n  /* block comment at array end*/\n] = [];",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "allowArrayEnd": true
+            }
+          ]
+        },
+        {
+          "code": "foo;\n\n/* eslint-disable no-underscore-dangle */\n\nthis._values = values;\nthis._values2 = true;\n/* eslint-enable no-underscore-dangle */\nbar",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "afterBlockComment": true
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* eslint */",
+          "options": []
+        },
+        {
+          "code": "foo;\n/* jshint */",
+          "options": []
+        },
+        {
+          "code": "foo;\n/* jslint */",
+          "options": []
+        },
+        {
+          "code": "foo;\n/* istanbul */",
+          "options": []
+        },
+        {
+          "code": "foo;\n/* global */",
+          "options": []
+        },
+        {
+          "code": "foo;\n/* globals */",
+          "options": []
+        },
+        {
+          "code": "foo;\n/* exported */",
+          "options": []
+        },
+        {
+          "code": "foo;\n/* jscs */",
+          "options": []
+        },
+        {
+          "code": "foo\n/* this is pragmatic */",
+          "options": [
+            {
+              "ignorePattern": "pragma"
+            }
+          ]
+        },
+        {
+          "code": "foo\n/* this is pragmatic */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false,
+              "ignorePattern": "pragma"
+            }
+          ]
+        },
+        {
+          "code": "#!comment\n\nvar a = 1;",
+          "options": [
+            {
+              "afterHashbangComment": true
+            }
+          ]
+        },
+        {
+          "code": "#!comment\nvar a = 1;",
+          "options": []
+        },
+        {
+          "code": "#!comment\nvar a = 1;",
+          "options": [{}]
+        },
+        {
+          "code": "#!comment\nvar a = 1;",
+          "options": [
+            {
+              "afterHashbangComment": false
+            }
+          ]
+        },
+        {
+          "code": "#!comment\nvar a = 1;",
+          "options": [
+            {
+              "afterLineComment": true,
+              "afterBlockComment": true
+            }
+          ]
+        }
+      ],
+      "invalid": [
+        {
+          "code": "bar()\n/** block block block\n * block \n */\nvar a = 1;",
+          "options": [],
+          "output": "bar()\n\n/** block block block\n * block \n */\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 4, 4],
+              "fix": {
+                "range": [6, 6],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "baz()\n// A line comment with no empty line after\nvar a = 1;",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "baz()\n// A line comment with no empty line after\n\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "after",
+              "message": "Expected line after comment.",
+              "reportRange": [2, 1, 2, 43],
+              "fix": {
+                "range": [48, 48],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "baz()\n// A line comment with no empty line after\nvar a = 1;",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": false
+            }
+          ],
+          "output": "baz()\n\n// A line comment with no empty line after\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 43],
+              "fix": {
+                "range": [6, 6],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "// A line comment with no empty line after\nvar a = 1;",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true
+            }
+          ],
+          "output": "// A line comment with no empty line after\n\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 1,
+              "column": 1,
+              "message": "Expected line after comment.",
+              "reportRange": [1, 1, 1, 43],
+              "fix": {
+                "range": [42, 42],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "baz()\n// A line comment with no empty line after\nvar a = 1;",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true
+            }
+          ],
+          "output": "baz()\n\n// A line comment with no empty line after\n\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 43],
+              "fix": {
+                "range": [6, 6],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 1, 2, 43],
+              "fix": {
+                "range": [48, 48],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "bar()\n/**\n * block block block\n */\nvar a = 1;",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "beforeBlockComment": true
+            }
+          ],
+          "output": "bar()\n\n/**\n * block block block\n */\n\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 4, 4],
+              "fix": {
+                "range": [6, 6],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 1, 4, 4],
+              "fix": {
+                "range": [34, 34],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "bar()\n/* first block comment */ /* second block comment */\nvar a = 1;",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "beforeBlockComment": true
+            }
+          ],
+          "output": "bar()\n\n/* first block comment */ /* second block comment */\n\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 26],
+              "fix": {
+                "range": [6, 6],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 27, 2, 53],
+              "fix": {
+                "range": [58, 58],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "bar()\n/* first block comment */ /* second block\n comment */\nvar a = 1;",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "beforeBlockComment": true
+            }
+          ],
+          "output": "bar()\n\n/* first block comment */ /* second block\n comment */\n\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 26],
+              "fix": {
+                "range": [6, 6],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 27, 3, 12],
+              "fix": {
+                "range": [59, 59],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "bar()\n/**\n * block block block\n */\nvar a = 1;",
+          "options": [
+            {
+              "afterBlockComment": true,
+              "beforeBlockComment": false
+            }
+          ],
+          "output": "bar()\n/**\n * block block block\n */\n\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 1, 4, 4],
+              "fix": {
+                "range": [34, 34],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "bar()\n/**\n * block block block\n */\nvar a = 1;",
+          "options": [
+            {
+              "afterBlockComment": false,
+              "beforeBlockComment": true
+            }
+          ],
+          "output": "bar()\n\n/**\n * block block block\n */\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 4, 4],
+              "fix": {
+                "range": [6, 6],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var a,\n// line\nb;",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ],
+          "output": "var a,\n\n// line\nb;",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 8],
+              "fix": {
+                "range": [7, 7],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "function foo(){\nvar a = 1;\n// line at block start\nvar g = 1;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockStart": true
+            }
+          ],
+          "output": "function foo(){\nvar a = 1;\n\n// line at block start\nvar g = 1;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 1, 3, 23],
+              "fix": {
+                "range": [27, 27],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var a,\n// line\nb;",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ],
+          "output": "var a,\n// line\n\nb;",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 1, 2, 8],
+              "fix": {
+                "range": [14, 14],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "function foo(){\nvar a = 1;\n\n// line at block start\nvar g = 1;\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true
+            }
+          ],
+          "output": "function foo(){\nvar a = 1;\n\n// line at block start\n\nvar g = 1;\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 1, 4, 23],
+              "fix": {
+                "range": [50, 50],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\n// line at switch case start\nbreak;\n}",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "switch ('foo'){\ncase 'foo':\n\n// line at switch case start\nbreak;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 1, 3, 29],
+              "fix": {
+                "range": [28, 28],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\n// line at switch case start\nbreak;\n}",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\n\n// line at switch case start\nbreak;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 6,
+              "message": "Expected line before comment.",
+              "reportRange": [6, 1, 6, 29],
+              "fix": {
+                "range": [45, 45],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "while(true){\n// line at block start and end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockStart": true
+            }
+          ],
+          "output": "while(true){\n// line at block start and end\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 1, 2, 31],
+              "fix": {
+                "range": [43, 43],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "while(true){\n// line at block start and end\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowBlockEnd": true
+            }
+          ],
+          "output": "while(true){\n\n// line at block start and end\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 31],
+              "fix": {
+                "range": [13, 13],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class A {\n// line at class start\nconstructor() {}\n}",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "class A {\n\n// line at class start\nconstructor() {}\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 23],
+              "fix": {
+                "range": [10, 10],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class A {\n// line at class start\nconstructor() {}\n}",
+          "options": [
+            {
+              "allowBlockStart": true,
+              "allowClassStart": false,
+              "beforeLineComment": true
+            }
+          ],
+          "output": "class A {\n\n// line at class start\nconstructor() {}\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 23],
+              "fix": {
+                "range": [10, 10],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class B {\nconstructor() {}\n\n// line at class end\n}",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "class B {\nconstructor() {}\n\n// line at class end\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 1, 4, 21],
+              "fix": {
+                "range": [48, 48],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class B {\nconstructor() {}\n\n// line at class end\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowBlockEnd": true,
+              "allowClassEnd": false
+            }
+          ],
+          "output": "class B {\nconstructor() {}\n\n// line at class end\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 1, 4, 21],
+              "fix": {
+                "range": [48, 48],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nvar g = 1;\n\n// line at switch case end\n}",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "switch ('foo'){\ncase 'foo':\nvar g = 1;\n\n// line at switch case end\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 5,
+              "message": "Expected line after comment.",
+              "reportRange": [5, 1, 5, 27],
+              "fix": {
+                "range": [66, 66],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\nvar g = 1;\n\n// line at switch case end\n}",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "switch ('foo'){\ncase 'foo':\nbreak;\n\ndefault:\nvar g = 1;\n\n// line at switch case end\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 8,
+              "message": "Expected line after comment.",
+              "reportRange": [8, 1, 8, 27],
+              "fix": {
+                "range": [83, 83],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    // line comment\n    static{}\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true,
+              "allowClassStart": true,
+              "allowClassEnd": true
+            }
+          ],
+          "output": "class C {\n    // line comment\n\n    static{}\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 5, 2, 20],
+              "fix": {
+                "range": [29, 29],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    /* block\n       comment */\n    static{}\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "afterBlockComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true,
+              "allowClassStart": true,
+              "allowClassEnd": true
+            }
+          ],
+          "output": "class C {\n    /* block\n       comment */\n\n    static{}\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 5, 3, 18],
+              "fix": {
+                "range": [40, 40],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static\n    // line comment\n    {}\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true,
+              "allowClassStart": true,
+              "allowClassEnd": true
+            }
+          ],
+          "output": "class C {\n    static\n\n    // line comment\n\n    {}\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 5, 3, 20],
+              "fix": {
+                "range": [21, 21],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 5, 3, 20],
+              "fix": {
+                "range": [40, 40],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static\n    /* block\n       comment */\n    {}\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "afterBlockComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true,
+              "allowClassStart": true,
+              "allowClassEnd": true
+            }
+          ],
+          "output": "class C {\n    static\n\n    /* block\n       comment */\n\n    {}\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 5, 4, 18],
+              "fix": {
+                "range": [21, 21],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 5, 4, 18],
+              "fix": {
+                "range": [51, 51],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        // line comment\n        foo();\n    }\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true
+            }
+          ],
+          "output": "class C {\n    static {\n        // line comment\n\n        foo();\n    }\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 9, 3, 24],
+              "fix": {
+                "range": [46, 46],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        /* block\n           comment */\n        foo();\n    }\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "afterBlockComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true
+            }
+          ],
+          "output": "class C {\n    static {\n        /* block\n           comment */\n\n        foo();\n    }\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 9, 4, 22],
+              "fix": {
+                "range": [61, 61],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        foo();\n        // line comment\n    }\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true
+            }
+          ],
+          "output": "class C {\n    static {\n        foo();\n\n        // line comment\n    }\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 4,
+              "message": "Expected line before comment.",
+              "reportRange": [4, 9, 4, 24],
+              "fix": {
+                "range": [38, 38],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        foo();\n        /* block\n           comment */\n    }\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "afterBlockComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true
+            }
+          ],
+          "output": "class C {\n    static {\n        foo();\n\n        /* block\n           comment */\n    }\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 4,
+              "message": "Expected line before comment.",
+              "reportRange": [4, 9, 5, 22],
+              "fix": {
+                "range": [38, 38],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        foo();\n        // line comment\n        bar();\n    }\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true
+            }
+          ],
+          "output": "class C {\n    static {\n        foo();\n\n        // line comment\n\n        bar();\n    }\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 4,
+              "message": "Expected line before comment.",
+              "reportRange": [4, 9, 4, 24],
+              "fix": {
+                "range": [38, 38],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 9, 4, 24],
+              "fix": {
+                "range": [61, 61],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static {\n        foo();\n        /* block\n           comment */\n        bar();\n    }\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "afterBlockComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true
+            }
+          ],
+          "output": "class C {\n    static {\n        foo();\n\n        /* block\n           comment */\n\n        bar();\n    }\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 4,
+              "message": "Expected line before comment.",
+              "reportRange": [4, 9, 5, 22],
+              "fix": {
+                "range": [38, 38],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 9, 5, 22],
+              "fix": {
+                "range": [76, 76],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static{}\n    // line comment\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "afterLineComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true,
+              "allowClassStart": true,
+              "allowClassEnd": true
+            }
+          ],
+          "output": "class C {\n    static{}\n\n    // line comment\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 5, 3, 20],
+              "fix": {
+                "range": [23, 23],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "class C {\n    static{}\n    /* block\n       comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "afterBlockComment": true,
+              "allowBlockStart": true,
+              "allowBlockEnd": true,
+              "allowClassStart": true,
+              "allowClassEnd": true
+            }
+          ],
+          "output": "class C {\n    static{}\n\n    /* block\n       comment */\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 5, 4, 18],
+              "fix": {
+                "range": [23, 23],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\n  // line at object start\n  g: 1\n};",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "var obj = {\n\n  // line at object start\n  g: 1\n};",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 26],
+              "fix": {
+                "range": [12, 12],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "function hi() {\n  return {\n    // hi\n    test: function() {\n    }\n  }\n}",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "function hi() {\n  return {\n\n    // hi\n    test: function() {\n    }\n  }\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 5, 3, 10],
+              "fix": {
+                "range": [27, 27],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\n  /* block comment at object start*/\n  g: 1\n};",
+          "options": [
+            {
+              "beforeBlockComment": true
+            }
+          ],
+          "output": "var obj = {\n\n  /* block comment at object start*/\n  g: 1\n};",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 37],
+              "fix": {
+                "range": [12, 12],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "function hi() {\n  return {\n    /**\n    * hi\n    */\n    test: function() {\n    }\n  }\n}",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "function hi() {\n  return {\n\n    /**\n    * hi\n    */\n    test: function() {\n    }\n  }\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 5, 5, 7],
+              "fix": {
+                "range": [27, 27],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const {\n  // line at object start\n  g: a\n} = {};",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "const {\n\n  // line at object start\n  g: a\n} = {};",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 26],
+              "fix": {
+                "range": [8, 8],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const {\n  // line at object start\n  g\n} = {};",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "const {\n\n  // line at object start\n  g\n} = {};",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 26],
+              "fix": {
+                "range": [8, 8],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const {\n  /* block comment at object-like start*/\n  g: a\n} = {};",
+          "options": [
+            {
+              "beforeBlockComment": true
+            }
+          ],
+          "output": "const {\n\n  /* block comment at object-like start*/\n  g: a\n} = {};",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 42],
+              "fix": {
+                "range": [8, 8],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const {\n  /* block comment at object-like start*/\n  g\n} = {};",
+          "options": [
+            {
+              "beforeBlockComment": true
+            }
+          ],
+          "output": "const {\n\n  /* block comment at object-like start*/\n  g\n} = {};",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 42],
+              "fix": {
+                "range": [8, 8],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\n  g: 1\n  // line at object end\n};",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "var obj = {\n  g: 1\n  // line at object end\n\n};",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 3, 24],
+              "fix": {
+                "range": [42, 42],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "function hi() {\n  return {\n    test: function() {\n    }\n    // hi\n  }\n}",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "function hi() {\n  return {\n    test: function() {\n    }\n    // hi\n\n  }\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 5,
+              "message": "Expected line after comment.",
+              "reportRange": [5, 5, 5, 10],
+              "fix": {
+                "range": [65, 65],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var obj = {\n  g: 1\n  \n  /* block comment at object end*/\n};",
+          "options": [
+            {
+              "afterBlockComment": true
+            }
+          ],
+          "output": "var obj = {\n  g: 1\n  \n  /* block comment at object end*/\n\n};",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 3, 4, 35],
+              "fix": {
+                "range": [56, 56],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "function hi() {\n  return {\n    test: function() {\n    }\n    \n    /**\n    * hi\n    */\n  }\n}",
+          "options": [
+            {
+              "afterBlockComment": true
+            }
+          ],
+          "output": "function hi() {\n  return {\n    test: function() {\n    }\n    \n    /**\n    * hi\n    */\n\n  }\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 6,
+              "message": "Expected line after comment.",
+              "reportRange": [6, 5, 8, 7],
+              "fix": {
+                "range": [84, 84],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const {\n  g: a\n  // line at object end\n} = {};",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "const {\n  g: a\n  // line at object end\n\n} = {};",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 3, 24],
+              "fix": {
+                "range": [38, 38],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const {\n  g\n  // line at object end\n} = {};",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "const {\n  g\n  // line at object end\n\n} = {};",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 3, 24],
+              "fix": {
+                "range": [35, 35],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const {\n  g: a\n  \n  /* block comment at object-like end*/\n} = {};",
+          "options": [
+            {
+              "afterBlockComment": true
+            }
+          ],
+          "output": "const {\n  g: a\n  \n  /* block comment at object-like end*/\n\n} = {};",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 3, 4, 40],
+              "fix": {
+                "range": [57, 57],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const {\n  g\n  \n  /* block comment at object-like end*/\n} = {};",
+          "options": [
+            {
+              "afterBlockComment": true
+            }
+          ],
+          "output": "const {\n  g\n  \n  /* block comment at object-like end*/\n\n} = {};",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 3, 4, 40],
+              "fix": {
+                "range": [54, 54],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var arr = [\n  // line at array start\n  1\n];",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "var arr = [\n\n  // line at array start\n  1\n];",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 25],
+              "fix": {
+                "range": [12, 12],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var arr = [\n  /* block comment at array start*/\n  1\n];",
+          "options": [
+            {
+              "beforeBlockComment": true
+            }
+          ],
+          "output": "var arr = [\n\n  /* block comment at array start*/\n  1\n];",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 36],
+              "fix": {
+                "range": [12, 12],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const [\n  // line at array start\n  a\n] = [];",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ],
+          "output": "const [\n\n  // line at array start\n  a\n] = [];",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 25],
+              "fix": {
+                "range": [8, 8],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const [\n  /* block comment at array start*/\n  a\n] = [];",
+          "options": [
+            {
+              "beforeBlockComment": true
+            }
+          ],
+          "output": "const [\n\n  /* block comment at array start*/\n  a\n] = [];",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 36],
+              "fix": {
+                "range": [8, 8],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var arr = [\n  1\n  // line at array end\n];",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "var arr = [\n  1\n  // line at array end\n\n];",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 3, 23],
+              "fix": {
+                "range": [38, 38],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "var arr = [\n  1\n  \n  /* block comment at array end*/\n];",
+          "options": [
+            {
+              "afterBlockComment": true
+            }
+          ],
+          "output": "var arr = [\n  1\n  \n  /* block comment at array end*/\n\n];",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 3, 4, 34],
+              "fix": {
+                "range": [52, 52],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const [\n  a\n  // line at array end\n] = [];",
+          "options": [
+            {
+              "afterLineComment": true
+            }
+          ],
+          "output": "const [\n  a\n  // line at array end\n\n] = [];",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 3, 23],
+              "fix": {
+                "range": [34, 34],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "const [\n  a\n  \n  /* block comment at array end*/\n] = [];",
+          "options": [
+            {
+              "afterBlockComment": true
+            }
+          ],
+          "output": "const [\n  a\n  \n  /* block comment at array end*/\n\n] = [];",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 4,
+              "message": "Expected line after comment.",
+              "reportRange": [4, 3, 4, 34],
+              "fix": {
+                "range": [48, 48],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n\n/* eslint-disable no-underscore-dangle */\n\nthis._values = values;\nthis._values2 = true;\n/* eslint-enable no-underscore-dangle */\nbar",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "afterBlockComment": true,
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo;\n\n/* eslint-disable no-underscore-dangle */\n\nthis._values = values;\nthis._values2 = true;\n\n/* eslint-enable no-underscore-dangle */\n\nbar",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 7,
+              "message": "Expected line before comment.",
+              "reportRange": [7, 1, 7, 41],
+              "fix": {
+                "range": [94, 94],
+                "text": "\n"
+              }
+            },
+            {
+              "messageId": "after",
+              "line": 7,
+              "message": "Expected line after comment.",
+              "reportRange": [7, 1, 7, 41],
+              "fix": {
+                "range": [134, 134],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* eslint */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo;\n\n/* eslint */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 13],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* jshint */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo;\n\n/* jshint */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 13],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* jslint */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo;\n\n/* jslint */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 13],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* istanbul */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo;\n\n/* istanbul */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 15],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* global */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo;\n\n/* global */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 13],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* globals */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo;\n\n/* globals */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 14],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* exported */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo;\n\n/* exported */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 15],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* jscs */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo;\n\n/* jscs */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 11],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo\n/* something else */",
+          "options": [
+            {
+              "ignorePattern": "pragma"
+            }
+          ],
+          "output": "foo\n\n/* something else */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 21],
+              "fix": {
+                "range": [4, 4],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo\n/* eslint */",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false
+            }
+          ],
+          "output": "foo\n\n/* eslint */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 13],
+              "fix": {
+                "range": [4, 4],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "foo;\n/* fallthrough */",
+          "options": [],
+          "output": "foo;\n\n/* fallthrough */",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 18],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "switch (\n// this comment is not allowed by allowBlockStart: true\n\n    foo\n)\n{   \ncase 1:    \n    bar();\n    break;\n}",
+          "options": [
+            {
+              "allowBlockStart": true,
+              "beforeLineComment": true,
+              "afterLineComment": true
+            }
+          ],
+          "output": "switch (\n\n// this comment is not allowed by allowBlockStart: true\n\n    foo\n)\n{   \ncase 1:    \n    bar();\n    break;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 2, 56],
+              "fix": {
+                "range": [9, 9],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "#!foo\nvar a = 1;",
+          "options": [
+            {
+              "afterHashbangComment": true
+            }
+          ],
+          "output": "#!foo\n\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "after",
+              "message": "Expected line after comment.",
+              "reportRange": [1, 1, 1, 6],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "lang": "ts",
+      "valid": [
+        {
+          "code": "interface A {\n  // line\n  a: string;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowInterfaceStart": true
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  /* block\n    comment */\n  a: string;\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowInterfaceStart": true
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  a: string;\n  // line\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowInterfaceEnd": true
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  a: string;\n  /* block\n    comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowInterfaceEnd": true
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  // line\n  a: string;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowTypeStart": true
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  /* block\n    comment */\n  a: string;\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowTypeStart": true
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  a: string;\n  // line\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowTypeEnd": true
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  a: string;\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowTypeEnd": true
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  // line\n  a,\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowEnumStart": true
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  /* block\n     comment */\n  a,\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowEnumStart": true
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  a,\n  // line\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowEnumEnd": true
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  a,\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowEnumEnd": true
+            }
+          ]
+        },
+        {
+          "code": "declare module A {\n  // line\n  const a: string;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowModuleStart": true
+            }
+          ]
+        },
+        {
+          "code": "declare module A {\n  /* block\n     comment */\n  const a: string;\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowModuleStart": true
+            }
+          ]
+        },
+        {
+          "code": "declare module A {\n  const a: string;\n  // line\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowModuleEnd": true
+            }
+          ]
+        },
+        {
+          "code": "declare module A {\n  const a: string;\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowModuleEnd": true
+            }
+          ]
+        },
+        {
+          "code": "interface A {foo: string;\n\n/* eslint-disable no-underscore-dangle */\n\n_values: 2;\n_values2: true;\n/* eslint-enable no-underscore-dangle */\nbar: boolean}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "afterBlockComment": true
+            }
+          ]
+        },
+        {
+          "code": "\ninterface A {\n  foo;\n  /* eslint */\n}\n    ",
+          "options": []
+        },
+        {
+          "code": "\ninterface A {\n  foo;\n  /* jshint */\n}\n    ",
+          "options": []
+        },
+        {
+          "code": "\ninterface A {\n  foo;\n  /* jslint */\n}\n    ",
+          "options": []
+        },
+        {
+          "code": "\ninterface A {\n  foo;\n  /* istanbul */\n}\n    ",
+          "options": []
+        },
+        {
+          "code": "\ninterface A {\n  foo;\n  /* global */\n}\n    ",
+          "options": []
+        },
+        {
+          "code": "\ninterface A {\n  foo;\n  /* globals */\n}\n    ",
+          "options": []
+        },
+        {
+          "code": "\ninterface A {\n  foo;\n  /* exported */\n}\n    ",
+          "options": []
+        },
+        {
+          "code": "\ninterface A {\n  foo;\n  /* jscs */\n}\n    ",
+          "options": []
+        },
+        {
+          "code": "interface A {\n  foo: boolean;\n  /* this is pragmatic */\n}",
+          "options": [
+            {
+              "ignorePattern": "pragma"
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  foo;\n  /* this is pragmatic */\n}",
+          "options": [
+            {
+              "applyDefaultIgnorePatterns": false,
+              "ignorePattern": "pragma"
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  foo: string; // this is inline line comment\n}",
+          "options": [
+            {
+              "beforeLineComment": true
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  foo: string /* this is inline block comment */;\n}",
+          "options": []
+        },
+        {
+          "code": "interface A {\n  /* this is inline block comment */ foo: string;\n}",
+          "options": []
+        },
+        {
+          "code": "interface A {\n  /* this is inline block comment */ foo: string /* this is inline block comment */;\n}",
+          "options": []
+        },
+        {
+          "code": "interface A {\n  /* this is inline block comment */ foo: string; // this is inline line comment ;\n}",
+          "options": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "bar();\n/** block block block\n * block\n */\nvar a = 1;",
+          "options": [],
+          "output": "bar();\n\n/** block block block\n * block\n */\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "before",
+              "message": "Expected line before comment.",
+              "reportRange": [2, 1, 4, 4],
+              "fix": {
+                "range": [7, 7],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  a: string;\n  // line\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowInterfaceStart": true
+            }
+          ],
+          "output": "interface A {\n  a: string;\n\n  // line\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 3, 10],
+              "fix": {
+                "range": [27, 27],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  a: string;\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowInterfaceStart": true
+            }
+          ],
+          "output": "interface A {\n  a: string;\n\n  /* block\n     comment */\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 4, 16],
+              "fix": {
+                "range": [27, 27],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  // line\n  a: string;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowInterfaceStart": false
+            }
+          ],
+          "output": "interface A {\n\n  // line\n  a: string;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 10],
+              "fix": {
+                "range": [14, 14],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  /* block\n     comment */\n  a: string;\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowInterfaceStart": false
+            }
+          ],
+          "output": "interface A {\n\n  /* block\n     comment */\n  a: string;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 3, 16],
+              "fix": {
+                "range": [14, 14],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  a: string;\n  // line\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowInterfaceEnd": false
+            }
+          ],
+          "output": "interface A {\n  a: string;\n  // line\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 3, 10],
+              "fix": {
+                "range": [36, 36],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  a: string;\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowInterfaceEnd": false
+            }
+          ],
+          "output": "interface A {\n  a: string;\n  /* block\n     comment */\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 4, 16],
+              "fix": {
+                "range": [53, 53],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  a: string;\n  // line\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowInterfaceStart": true
+            }
+          ],
+          "output": "type A = {\n  a: string;\n\n  // line\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 3, 10],
+              "fix": {
+                "range": [24, 24],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  a: string;\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowInterfaceStart": true
+            }
+          ],
+          "output": "type A = {\n  a: string;\n\n  /* block\n     comment */\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 4, 16],
+              "fix": {
+                "range": [24, 24],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  // line\n  a: string;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowInterfaceStart": false
+            }
+          ],
+          "output": "type A = {\n\n  // line\n  a: string;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 10],
+              "fix": {
+                "range": [11, 11],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  /* block\n     comment */\n  a: string;\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowInterfaceStart": false
+            }
+          ],
+          "output": "type A = {\n\n  /* block\n     comment */\n  a: string;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 3, 16],
+              "fix": {
+                "range": [11, 11],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  a: string;\n  // line\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowInterfaceEnd": false
+            }
+          ],
+          "output": "type A = {\n  a: string;\n  // line\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 3, 10],
+              "fix": {
+                "range": [33, 33],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "type A = {\n  a: string;\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowInterfaceEnd": false
+            }
+          ],
+          "output": "type A = {\n  a: string;\n  /* block\n     comment */\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 4, 16],
+              "fix": {
+                "range": [50, 50],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  a,\n  // line\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowEnumStart": true
+            }
+          ],
+          "output": "enum A {\n  a,\n\n  // line\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 3, 10],
+              "fix": {
+                "range": [14, 14],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  a,\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowEnumStart": true
+            }
+          ],
+          "output": "enum A {\n  a,\n\n  /* block\n     comment */\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 4, 16],
+              "fix": {
+                "range": [14, 14],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  // line\n  a,\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowEnumStart": false
+            }
+          ],
+          "output": "enum A {\n\n  // line\n  a,\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 10],
+              "fix": {
+                "range": [9, 9],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  /* block\n     comment */\n  a,\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowEnumStart": false
+            }
+          ],
+          "output": "enum A {\n\n  /* block\n     comment */\n  a,\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 3, 16],
+              "fix": {
+                "range": [9, 9],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  a,\n  // line\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowEnumEnd": false
+            }
+          ],
+          "output": "enum A {\n  a,\n  // line\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 3, 10],
+              "fix": {
+                "range": [23, 23],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "enum A {\n  a,\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowEnumEnd": false
+            }
+          ],
+          "output": "enum A {\n  a,\n  /* block\n     comment */\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 4, 16],
+              "fix": {
+                "range": [40, 40],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "module A {\n  const a: string;\n  // line\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowModuleStart": true
+            }
+          ],
+          "output": "module A {\n  const a: string;\n\n  // line\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 3, 10],
+              "fix": {
+                "range": [30, 30],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "module A {\n  const a: string;\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowModuleStart": true
+            }
+          ],
+          "output": "module A {\n  const a: string;\n\n  /* block\n     comment */\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 4, 16],
+              "fix": {
+                "range": [30, 30],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "module A {\n  // line\n  const a: string;\n}",
+          "options": [
+            {
+              "beforeLineComment": true,
+              "allowModuleStart": false
+            }
+          ],
+          "output": "module A {\n\n  // line\n  const a: string;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 2, 10],
+              "fix": {
+                "range": [11, 11],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "module A {\n  /* block\n     comment */\n  const a: string;\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowModuleStart": false
+            }
+          ],
+          "output": "module A {\n\n  /* block\n     comment */\n  const a: string;\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 2,
+              "message": "Expected line before comment.",
+              "reportRange": [2, 3, 3, 16],
+              "fix": {
+                "range": [11, 11],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "module A {\n  const a: string;\n  // line\n}",
+          "options": [
+            {
+              "afterLineComment": true,
+              "allowModuleEnd": false
+            }
+          ],
+          "output": "module A {\n  const a: string;\n  // line\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 3, 10],
+              "fix": {
+                "range": [39, 39],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "module A {\n  const a: string;\n  /* block\n     comment */\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowModuleEnd": false
+            }
+          ],
+          "output": "module A {\n  const a: string;\n  /* block\n     comment */\n\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 3,
+              "message": "Expected line after comment.",
+              "reportRange": [3, 3, 4, 16],
+              "fix": {
+                "range": [56, 56],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  a: string;\n  /* block */ /* block */\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowInterfaceEnd": false
+            }
+          ],
+          "output": "interface A {\n  a: string;\n\n  /* block */ /* block */\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 3, 14],
+              "fix": {
+                "range": [27, 27],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  a: string;\n  /* block */ // line\n}",
+          "options": [
+            {
+              "beforeBlockComment": true,
+              "allowInterfaceEnd": false
+            }
+          ],
+          "output": "interface A {\n  a: string;\n\n  /* block */ // line\n}",
+          "errors": [
+            {
+              "messageId": "before",
+              "line": 3,
+              "message": "Expected line before comment.",
+              "reportRange": [3, 3, 3, 14],
+              "fix": {
+                "range": [27, 27],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  /* block */ /* block */\n  a: string;\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterBlockComment": true,
+              "allowInterfaceStart": false
+            }
+          ],
+          "output": "interface A {\n  /* block */ /* block */\n\n  a: string;\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 15, 2, 26],
+              "fix": {
+                "range": [39, 39],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "interface A {\n  /* block */ // line\n  a: string;\n}",
+          "options": [
+            {
+              "beforeBlockComment": false,
+              "afterLineComment": true,
+              "allowInterfaceStart": false
+            }
+          ],
+          "output": "interface A {\n  /* block */ // line\n\n  a: string;\n}",
+          "errors": [
+            {
+              "messageId": "after",
+              "line": 2,
+              "message": "Expected line after comment.",
+              "reportRange": [2, 15, 2, 22],
+              "fix": {
+                "range": [35, 35],
+                "text": "\n"
+              }
+            }
+          ]
+        },
+        {
+          "code": "#!foo\nvar a = 1;",
+          "options": [
+            {
+              "afterHashbangComment": true
+            }
+          ],
+          "output": "#!foo\n\nvar a = 1;",
+          "errors": [
+            {
+              "messageId": "after",
+              "message": "Expected line after comment.",
+              "reportRange": [1, 1, 1, 6],
+              "fix": {
+                "range": [5, 5],
+                "text": "\n"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

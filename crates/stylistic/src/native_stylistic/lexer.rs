@@ -188,6 +188,9 @@ impl<'a> Lexer<'a> {
                 b' ' | b'\t' | b'\r' | b'\n' | 0x0b | 0x0c => {
                     self.pos += 1;
                 }
+                0xe2 if is_unicode_line_terminator(self.bytes, self.pos) => {
+                    self.pos += 3;
+                }
                 b'/' if self.peek(1) == Some(b'/') => self.line_comment(),
                 b'/' if self.peek(1) == Some(b'*') => self.block_comment(),
                 b'/' if self.regex_allowed() => self.regex_or_punctuator(),
@@ -217,6 +220,7 @@ impl<'a> Lexer<'a> {
         while self.pos < self.bytes.len()
             && self.bytes[self.pos] != b'\n'
             && self.bytes[self.pos] != b'\r'
+            && !is_unicode_line_terminator(self.bytes, self.pos)
         {
             self.pos += 1;
         }
@@ -498,6 +502,14 @@ impl<'a> Lexer<'a> {
     }
 }
 
+/// Whether `bytes[index..]` starts with ECMAScript's U+2028 LINE SEPARATOR or
+/// U+2029 PARAGRAPH SEPARATOR.
+fn is_unicode_line_terminator(bytes: &[u8], index: usize) -> bool {
+    bytes
+        .get(index..index.saturating_add(3))
+        .is_some_and(|sequence| matches!(sequence, [0xe2, 0x80, 0xa8] | [0xe2, 0x80, 0xa9]))
+}
+
 fn is_ident_start(byte: u8) -> bool {
     byte == b'_' || byte == b'$' || byte.is_ascii_alphabetic() || byte >= 0x80
 }
@@ -666,6 +678,19 @@ mod tests {
         assert_eq!(
             kinds("return /x/"),
             [(TokenKind::Identifier, "return"), (TokenKind::Regex, "/x/")]
+        );
+    }
+
+    #[test]
+    fn unicode_line_terminators_end_line_comments() {
+        assert_eq!(
+            kinds("// first\u{2028}next// second\u{2029}last"),
+            [
+                (TokenKind::LineComment, "// first"),
+                (TokenKind::Identifier, "next"),
+                (TokenKind::LineComment, "// second"),
+                (TokenKind::Identifier, "last"),
+            ]
         );
     }
 }
