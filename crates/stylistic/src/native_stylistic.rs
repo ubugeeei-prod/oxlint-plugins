@@ -20,6 +20,7 @@ mod indent_binary_ops;
 mod jsx_child_element_spacing;
 mod jsx_closing_bracket_location;
 mod jsx_closing_tag_location;
+mod jsx_curly_newline;
 mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
@@ -624,6 +625,12 @@ const JSX_CLOSING_TAG_LOCATION_MESSAGES: &[(&str, &str)] = &[
         "Expected closing tag to be aligned with the line containing the opening tag",
     ),
 ];
+const JSX_CURLY_NEWLINE_MESSAGES: &[(&str, &str)] = &[
+    ("expectedBefore", "Expected newline before '}'."),
+    ("expectedAfter", "Expected newline after '{'."),
+    ("unexpectedBefore", "Unexpected newline before '}'."),
+    ("unexpectedAfter", "Unexpected newline after '{'."),
+];
 const LINE_COMMENT_POSITION_MESSAGES: &[(&str, &str)] = &[
     ("above", "Expected comment to be above code."),
     ("beside", "Expected comment to be beside code."),
@@ -1128,6 +1135,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_CLOSING_TAG_LOCATION_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-curly-newline",
+        docs_description: "Enforce consistent linebreaks in curly braces in JSX attributes and expressions",
+        messages: JSX_CURLY_NEWLINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-quotes",
         docs_description: "Enforce the consistent use of either double or single quotes in JSX attributes.",
         messages: JSX_QUOTES_MESSAGES,
@@ -1341,6 +1353,12 @@ pub fn run_stylistic_lint(
                 )
             }
             "jsx-closing-tag-location" => jsx_closing_tag_location::check_jsx_closing_tag_location(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "jsx-curly-newline" => jsx_curly_newline::check_jsx_curly_newline(
                 source_text,
                 config.filename.as_deref(),
                 &rule.options,

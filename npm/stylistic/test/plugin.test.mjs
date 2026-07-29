@@ -121,6 +121,12 @@ const stylisticRuleFixtures = [
     ['bracketLocation'],
   ],
   ['jsx-closing-tag-location', '<App>\n  content</App>;\n', [], ['onOwnLine']],
+  [
+    'jsx-curly-newline',
+    '<App value={\nfoo\n} />;\n',
+    ['never'],
+    ['unexpectedAfter', 'unexpectedBefore'],
+  ],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
@@ -987,6 +993,34 @@ describe('stylistic plugin', () => {
     expect(iterativeFixedOutput('jsx-closing-tag-location', source, ['line-aligned'])).toBe(
       'const view = <>\n  child\n</>;',
     );
+  });
+
+  it('exposes the complete jsx-curly-newline message catalog and exact fixes', () => {
+    expect(plugin.rules['jsx-curly-newline'].meta.fixable).toBe('whitespace');
+    expect(plugin.rules['jsx-curly-newline'].meta.messages).toEqual({
+      expectedBefore: "Expected newline before '}'.",
+      expectedAfter: "Expected newline after '{'.",
+      unexpectedBefore: "Unexpected newline before '}'.",
+      unexpectedAfter: "Unexpected newline after '{'.",
+    });
+
+    const source = '<App value={foo &&\nbar} />;';
+    const reports = runRule('jsx-curly-newline', source, [
+      { singleline: 'forbid', multiline: 'require' },
+    ]);
+    expect(messageIds(reports)).toEqual(['expectedAfter', 'expectedBefore']);
+    expect(reports.map(reportFix)).toEqual([
+      { range: [12, 12], replacementText: '\n' },
+      { range: [22, 22], replacementText: '\n' },
+    ]);
+  });
+
+  it('keeps jsx-curly-newline comment removals diagnostic-only', () => {
+    const reports = runRule('jsx-curly-newline', '<App value={ /* preserve */\nfoo } />;', [
+      'never',
+    ]);
+    expect(messageIds(reports)).toEqual(['unexpectedAfter']);
+    expect(reports[0].suggest).toBeUndefined();
   });
 
   it('ports every upstream jsx-quotes invalid case with exact report and fix ranges', () => {
@@ -3309,6 +3343,74 @@ const parenthesized = (a + b) * c;
         'export type Name = string\ndeclare function run(): void\n',
       );
       expect(readFileSync(tsxPath, 'utf8')).toBe('export const view = <div>😀</div>\n');
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs and fixes jsx-curly-newline through real oxlint JSX and TSX', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-curly-newline-plugin-'));
+
+    try {
+      const jsxPath = join(temp, 'sample.jsx');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(jsxPath, 'export const view = <App value={\nfoo\n} />;\n');
+      writeFileSync(
+        tsxPath,
+        [
+          'type Props = { value: string };',
+          'export const view: JSX.Element = <div>{',
+          'foo',
+          '}</div>;',
+          '',
+        ].join('\n'),
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/jsx-curly-newline': ['error', 'never'],
+          },
+        }),
+      );
+
+      const lint = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', jsxPath, tsxPath],
+        {
+          encoding: 'utf8',
+        },
+      );
+      expect(lint.status).toBe(1);
+      expect(lint.stderr).toBe('');
+      expect(JSON.parse(lint.stdout).diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(jsx-curly-newline)',
+        'stylistic(jsx-curly-newline)',
+        'stylistic(jsx-curly-newline)',
+        'stylistic(jsx-curly-newline)',
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', jsxPath, tsxPath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(jsxPath, 'utf8')).toBe('export const view = <App value={foo} />;\n');
+      expect(readFileSync(tsxPath, 'utf8')).toBe(
+        [
+          'type Props = { value: string };',
+          'export const view: JSX.Element = <div>{foo}</div>;',
+          '',
+        ].join('\n'),
+      );
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
