@@ -88,6 +88,12 @@ const stylisticRuleFixtures = [
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
+  [
+    'array-bracket-newline',
+    'const values = [1, 2];\n',
+    ['always'],
+    ['missingOpeningLinebreak', 'missingClosingLinebreak'],
+  ],
   ['newline-per-chained-call', 'first().second().third();\n', [], ['expected']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
@@ -722,6 +728,72 @@ const parenthesized = (a + b) * c;
     expect(runRule('no-mixed-operators', sourceText)).toEqual([]);
   });
 
+  it('supports array-bracket-newline modes, UTF-16 ranges, shared settings, and fixes', () => {
+    const source = 'const 日本語 = [1, 2];\n';
+    const opening = source.indexOf('[');
+    const closing = source.indexOf(']');
+    const reports = runRule('array-bracket-newline', source, ['always']);
+
+    expect(messageIds(reports)).toEqual(['missingOpeningLinebreak', 'missingClosingLinebreak']);
+    expect(reports.map((report) => report.node.range)).toEqual([
+      [opening, opening + 1],
+      [closing, closing + 1],
+    ]);
+    expect(
+      reports.map(
+        (report) =>
+          report.suggest[0].fix({
+            replaceTextRange(range, replacementText) {
+              return { range, replacementText };
+            },
+          })[0],
+      ),
+    ).toEqual([
+      { range: [opening + 1, opening + 1], replacementText: '\n' },
+      { range: [closing, closing], replacementText: '\n' },
+    ]);
+
+    expect(
+      messageIds(
+        runRule('array-bracket-newline', 'const values = [\n1,\n2\n];\n', [], {
+          corsaStylistic: {
+            rules: {
+              'array-bracket-newline': ['never'],
+            },
+          },
+        }),
+      ),
+    ).toEqual(['unexpectedOpeningLinebreak', 'unexpectedClosingLinebreak']);
+  });
+
+  it('handles array patterns, comments, nested arrays, TypeScript, and TSX without lookalikes', () => {
+    const source = [
+      'const [first, second] = values;',
+      'const nested = [[1, 2]];',
+      'const commented = [/* preserve */ 1];',
+      'type Tuple = [string, number];',
+      'const view = <Panel value={[1, 2]} />;',
+      'const member = object[index];',
+    ].join('\n');
+    const reports = runRule('array-bracket-newline', source, ['always']);
+
+    expect(messageIds(reports)).toEqual([
+      'missingOpeningLinebreak',
+      'missingClosingLinebreak',
+      'missingOpeningLinebreak',
+      'missingOpeningLinebreak',
+      'missingClosingLinebreak',
+      'missingClosingLinebreak',
+      'missingOpeningLinebreak',
+      'missingClosingLinebreak',
+      'missingOpeningLinebreak',
+      'missingClosingLinebreak',
+    ]);
+    expect(reports.every((report) => !source.slice(...report.node.range).includes('Tuple'))).toBe(
+      true,
+    );
+  });
+
   it('reports newline-per-chained-call data and fixes with UTF-16 ranges', () => {
     const source = 'const value = "😀".trim().toString().valueOf();\n';
     const propertyStart = source.indexOf('.valueOf');
@@ -1138,6 +1210,65 @@ const parenthesized = (a + b) * c;
         {
           code: 'stylistic(newline-per-chained-call)',
           message: 'Expected line break before `.third`.',
+        },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs array-bracket-newline through real oxlint TypeScript and TSX configs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-array-bracket-newline-'));
+
+    try {
+      const typeScriptPath = join(temp, 'sample.ts');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(typeScriptPath, 'export const values: number[] = [1, 2];\n');
+      writeFileSync(tsxPath, 'export const view = <Panel value={[1, 2]} />;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/array-bracket-newline': ['error', 'always'],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', typeScriptPath, tsxPath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(array-bracket-newline)',
+          message: "A linebreak is required after '['.",
+        },
+        {
+          code: 'stylistic(array-bracket-newline)',
+          message: "A linebreak is required before ']'.",
+        },
+        {
+          code: 'stylistic(array-bracket-newline)',
+          message: "A linebreak is required after '['.",
+        },
+        {
+          code: 'stylistic(array-bracket-newline)',
+          message: "A linebreak is required before ']'.",
         },
       ]);
     } finally {
