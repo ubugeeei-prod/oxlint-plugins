@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use super::{LintDiagnostic, RuleBridgeRequirements, RuleMeta};
 
+mod array_bracket_newline;
 mod context;
 mod context_rules;
 mod expression_rules;
@@ -207,6 +208,24 @@ const ARRAY_BRACKET_SPACING_MESSAGES: &[(&str, &str)] = &[
     ),
     ("insertSpace", "Insert a space."),
     ("removeSpace", "Remove the whitespace."),
+];
+const ARRAY_BRACKET_NEWLINE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "unexpectedOpeningLinebreak",
+        "There should be no linebreak after '['.",
+    ),
+    (
+        "unexpectedClosingLinebreak",
+        "There should be no linebreak before ']'.",
+    ),
+    (
+        "missingOpeningLinebreak",
+        "A linebreak is required after '['.",
+    ),
+    (
+        "missingClosingLinebreak",
+        "A linebreak is required before ']'.",
+    ),
 ];
 const COMPUTED_PROPERTY_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("missingSpaceBefore", "A space is required before ']'."),
@@ -636,6 +655,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: ARRAY_BRACKET_SPACING_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "array-bracket-newline",
+        docs_description: "Enforce linebreaks after opening and before closing array brackets.",
+        messages: ARRAY_BRACKET_NEWLINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "computed-property-spacing",
         docs_description: "Enforce consistent spacing inside computed member-access brackets.",
         messages: COMPUTED_PROPERTY_SPACING_MESSAGES,
@@ -957,6 +981,12 @@ pub fn run_stylistic_lint(
             ),
             "newline-per-chained-call" => newline_per_chained_call::check_newline_per_chained_call(
                 source_text,
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "array-bracket-newline" => array_bracket_newline::check_array_bracket_newline(
+                source_text,
+                config.filename.as_deref(),
                 &rule.options,
                 &mut diagnostics,
             ),

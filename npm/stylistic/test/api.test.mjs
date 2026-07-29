@@ -21,6 +21,7 @@ describe('stylistic native API', () => {
       'type-annotation-spacing',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'newline-per-chained-call',
     );
@@ -335,6 +336,40 @@ describe('stylistic native API', () => {
           end: byteOffset(propertyStart),
         },
         replacementText: '\n',
+      },
+    ]);
+  });
+
+  it('runs array-bracket-newline with exact native byte ranges and fixes', () => {
+    const source = 'const 日本語 = [1, 2];';
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'array-bracket-newline', options: ['always'] }],
+    });
+    const opening = Buffer.byteLength('const 日本語 = ');
+    const closing = Buffer.byteLength('const 日本語 = [1, 2');
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'array-bracket-newline',
+        messageId: 'missingOpeningLinebreak',
+        range: { start: opening, end: opening + 1 },
+        suggestions: [
+          {
+            messageId: 'missingOpeningLinebreak',
+            fixes: [{ range: { start: opening + 1, end: opening + 1 }, replacementText: '\n' }],
+          },
+        ],
+      },
+      {
+        ruleName: 'array-bracket-newline',
+        messageId: 'missingClosingLinebreak',
+        range: { start: closing, end: closing + 1 },
+        suggestions: [
+          {
+            messageId: 'missingClosingLinebreak',
+            fixes: [{ range: { start: closing, end: closing }, replacementText: '\n' }],
+          },
+        ],
       },
     ]);
   });
