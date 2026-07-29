@@ -46,6 +46,11 @@ type literals, including per-container overrides and multiline detection.
 continuation policies, class-field ASI hazards, and conservative surrounding
 token fixes. TypeScript and TSX files use the same native Oxc-AST path.
 
+`wrap-iife` is a native Oxc AST port of the stable v5.10.0 rule. It supports
+`"outside"`, `"inside"`, and `"any"`, including `functionPrototypeMethods`,
+optional chains, and comment-preserving code fixes for JavaScript, TypeScript,
+and TSX.
+
 ## JS API
 
 ```js

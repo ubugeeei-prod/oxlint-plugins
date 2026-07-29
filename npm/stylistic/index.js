@@ -58,6 +58,7 @@ function createStylisticRule(ruleName) {
               'jsx-quotes',
               'no-confusing-arrow',
               'no-extra-parens',
+              'wrap-iife',
             ].includes(ruleName)
               ? 'code'
               : 'whitespace',

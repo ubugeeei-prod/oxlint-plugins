@@ -107,6 +107,7 @@ const stylisticRuleFixtures = [
   ['new-parens', 'var x = new Person;\n', [], ['missing']],
   ['space-unary-ops', '++ foo\n', [], ['nonwordOperatorAfter']],
   ['wrap-regex', '/foo/.test(bar);\n', [], ['requireParens']],
+  ['wrap-iife', 'const value = function () {}();\n', ['inside'], ['wrapInvocation']],
   ['implicit-arrow-linebreak', 'const f = (a) =>\n  a;\n', [], ['unexpectedLinebreak']],
   ['operator-linebreak', 'const x = 1\n  + 2;\n', [], ['operatorAtBeginning']],
   ['keyword-spacing', 'if(foo) {}\n', [], ['missingAfter']],
@@ -3198,6 +3199,104 @@ const parenthesized = (a + b) * c;
         'export type Name = string\ndeclare function run(): void\n',
       );
       expect(readFileSync(tsxPath, 'utf8')).toBe('export const view = <div>😀</div>\n');
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('supports wrap-iife styles, prototype methods, shared settings, and exact fixes', () => {
+    const source = 'const 日本語 = function () {}();';
+    const reports = runRule('wrap-iife', source, ['inside']);
+
+    expect(messageIds(reports)).toEqual(['wrapInvocation']);
+    expect(reports[0].node.range).toEqual([source.indexOf('function'), source.lastIndexOf(';')]);
+    expect(applyReportFixes(source, reports)).toBe('const 日本語 = (function () {})();');
+
+    const prototypeSource = 'const value = function () {}.call(null);';
+    const sharedReports = runRule('wrap-iife', prototypeSource, [], {
+      corsaStylistic: {
+        rules: {
+          'wrap-iife': ['outside', { functionPrototypeMethods: true }],
+        },
+      },
+    });
+    expect(messageIds(sharedReports)).toEqual(['wrapInvocation']);
+    expect(applyReportFixes(prototypeSource, sharedReports)).toBe(
+      'const value = (function () {}.call(null));',
+    );
+
+    const commented = '(function () {} /* function */ () /* invocation */)';
+    const commentReports = runRule('wrap-iife', commented, ['inside']);
+    expect(applyReportFixes(commented, commentReports)).toBe(
+      '(function () {}) /* function */ () /* invocation */',
+    );
+  });
+
+  it('runs wrap-iife and applies suggestions through real oxlint JS, TS, and TSX runs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-wrap-iife-plugin-'));
+
+    try {
+      const javaScriptPath = join(temp, 'sample.js');
+      const typeScriptPath = join(temp, 'sample.ts');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      const javaScript = 'export const js = function () {}();\n';
+      const typeScript = 'export const ts: number = function (): number { return 1 }();\n';
+      const tsx =
+        'export const view = <div>{function (): JSX.Element { return <span /> }()}</div>;\n';
+
+      writeFileSync(javaScriptPath, javaScript);
+      writeFileSync(typeScriptPath, typeScript);
+      writeFileSync(tsxPath, tsx);
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/wrap-iife': ['error', 'inside'],
+          },
+        }),
+      );
+
+      const lintResult = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', javaScriptPath, typeScriptPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(lintResult.status).toBe(1);
+      expect(lintResult.stderr).toBe('');
+      const diagnostics = JSON.parse(lintResult.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(wrap-iife)',
+        'stylistic(wrap-iife)',
+        'stylistic(wrap-iife)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Wrap an immediate function invocation in parentheses.',
+        'Wrap an immediate function invocation in parentheses.',
+        'Wrap an immediate function invocation in parentheses.',
+      ]);
+
+      const fixResult = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--fix-suggestions', javaScriptPath, typeScriptPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(fixResult.status).toBe(0);
+      expect(fixResult.stderr).toBe('');
+      expect(readFileSync(javaScriptPath, 'utf8')).toBe('export const js = (function () {})();\n');
+      expect(readFileSync(typeScriptPath, 'utf8')).toBe(
+        'export const ts: number = (function (): number { return 1 })();\n',
+      );
+      expect(readFileSync(tsxPath, 'utf8')).toBe(
+        'export const view = <div>{(function (): JSX.Element { return <span /> })()}</div>;\n',
+      );
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

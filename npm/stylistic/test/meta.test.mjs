@@ -49,6 +49,7 @@ describe('stylistic plugin meta contract', () => {
           'jsx-quotes',
           'no-confusing-arrow',
           'no-extra-parens',
+          'wrap-iife',
         ].includes(ruleName)
           ? 'code'
           : 'whitespace',
@@ -409,6 +410,25 @@ describe('stylistic plugin meta contract', () => {
       hasSuggestions: true,
       messages: {
         unexpected: 'Unnecessary parentheses around expression.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the complete stable wrap-iife metadata contract', () => {
+    expect(plugin.rules['wrap-iife'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Require parentheses around immediate `function` invocations',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        wrapInvocation: 'Wrap an immediate function invocation in parentheses.',
+        wrapExpression: 'Wrap only the function expression in parens.',
+        moveInvocation: 'Move the invocation into the parens that contain the function.',
       },
       schema: { type: 'array' },
     });

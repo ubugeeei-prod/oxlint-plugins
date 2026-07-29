@@ -15359,19 +15359,19 @@
       },
       {
         "name": "wrap-iife",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule wrap-iife."
+        "notes": "Native Oxc AST port of stable @stylistic/wrap-iife v5.10.0 covering outside/inside/any, functionPrototypeMethods, optional chains, JavaScript/TypeScript/TSX, comments, Unicode and every ECMAScript line terminator. The pinned deterministic fixture synchronizer and exhaustive Rust plus Vitest replay assert all 86 valid and 42 invalid upstream cases, exact messages, UTF-8/UTF-16 ranges, fixes and recursive output, with API/meta/plugin/shared-settings and real Oxlint integration coverage."
       }
     ]
   },
