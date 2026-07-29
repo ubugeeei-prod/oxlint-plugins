@@ -158,6 +158,21 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves indent-binary-ops upstream metadata', () => {
+    expect(plugin.rules['indent-binary-ops'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Indentation for binary operators',
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        wrongIndentation: 'Expected indentation of {{expected}}',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

@@ -28,6 +28,7 @@ const stylisticRuleFixtures = [
     [],
     ['unexpectedMixedOperator', 'unexpectedMixedOperator'],
   ],
+  ['indent-binary-ops', 'const value = first\n+ second;\n', [], ['wrongIndentation']],
   ['no-tabs', 'const\tlabel = 1;\n', [], ['unexpectedTab']],
   ['no-trailing-spaces', 'const x = 1;  \n', [], ['trailingSpace']],
   ['quotes', 'const label = "value";\n', ['single'], ['wrongQuote']],
@@ -1166,6 +1167,72 @@ const multiline = alpha
     ]);
   });
 
+  it('reports indent-binary-ops data and exact UTF-16 fixes for numeric and tab options', () => {
+    const source = 'const 日本語 = first\n    + second';
+    const lineStart = source.indexOf('    +');
+    const reports = runRule('indent-binary-ops', source, [2]);
+
+    expect(reports).toMatchObject([
+      {
+        messageId: 'wrongIndentation',
+        data: { expected: '2 spaces' },
+        node: { range: [lineStart, lineStart + 4] },
+      },
+    ]);
+    expect(
+      reports[0].suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([{ range: [lineStart, lineStart + 4], replacementText: '  ' }]);
+
+    expect(
+      runRule('indent-binary-ops', source, ['tab']).map((report) => ({
+        data: report.data,
+        fix: report.suggest[0].fix({
+          replaceTextRange(range, replacementText) {
+            return { range, replacementText };
+          },
+        }),
+      })),
+    ).toEqual([
+      {
+        data: { expected: '1 tab' },
+        fix: [{ range: [lineStart, lineStart + 4], replacementText: '\t' }],
+      },
+    ]);
+  });
+
+  it('runs indent-binary-ops TypeScript unions through shared settings', () => {
+    const source = 'type Value =\n| A\n    | B';
+    const reports = runRule('indent-binary-ops', source, [], {
+      corsaStylistic: {
+        rules: {
+          'indent-binary-ops': ['tab'],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual(['wrongIndentation', 'wrongIndentation']);
+    expect(reports.map((report) => report.data)).toEqual([
+      { expected: '1 tab' },
+      { expected: '1 tab' },
+    ]);
+    expect(
+      reports.map((report) =>
+        report.suggest[0].fix({
+          replaceTextRange(range, replacementText) {
+            return { range, replacementText };
+          },
+        }),
+      ),
+    ).toEqual([
+      [{ range: [13, 13], replacementText: '\t' }],
+      [{ range: [17, 21], replacementText: '\t' }],
+    ]);
+  });
+
   it('ignores no-mixed-operators lookalikes in comments, strings, regexes, and raw templates', () => {
     const sourceText = `
 // a + b * c
@@ -1988,6 +2055,62 @@ const parenthesized = (a + b) * c;
       expect(diagnostics[0].message).toBe(
         'Expected a block comment instead of consecutive line comments.',
       );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('reports indent-binary-ops through real oxlint JS, TS, and TSX runs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-indent-binary-ops-plugin-'));
+
+    try {
+      const javaScriptPath = join(temp, 'sample.js');
+      const typeScriptPath = join(temp, 'sample.ts');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(javaScriptPath, 'export const total = first\n+ second;\n');
+      writeFileSync(typeScriptPath, 'export type Value =\n| A\n    | B;\n');
+      writeFileSync(tsxPath, 'export const view = <Box value={first\n+ second} />;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/indent-binary-ops': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', javaScriptPath, typeScriptPath, tsxPath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(indent-binary-ops)',
+        'stylistic(indent-binary-ops)',
+        'stylistic(indent-binary-ops)',
+        'stylistic(indent-binary-ops)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Expected indentation of 2 spaces',
+        'Expected indentation of 2 spaces',
+        'Expected indentation of 2 spaces',
+        'Expected indentation of 2 spaces',
+      ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

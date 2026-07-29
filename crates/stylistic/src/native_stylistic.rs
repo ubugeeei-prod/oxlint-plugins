@@ -14,6 +14,7 @@ mod expression_rules;
 mod function_call_argument_newline;
 mod function_paren_newline;
 mod helpers;
+mod indent_binary_ops;
 mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
@@ -554,6 +555,8 @@ const FUNCTION_CALL_ARGUMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
         "There should be a line break after this argument.",
     ),
 ];
+const INDENT_BINARY_OPS_MESSAGES: &[(&str, &str)] =
+    &[("wrongIndentation", "Expected indentation of {{expected}}")];
 const ARRAY_ELEMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
     ("unexpectedLineBreak", "There should be no linebreak here."),
     (
@@ -906,6 +909,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: FUNCTION_CALL_ARGUMENT_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "indent-binary-ops",
+        docs_description: "Indentation for binary operators",
+        messages: INDENT_BINARY_OPS_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "newline-per-chained-call",
         docs_description: "Require a newline after each call in a method chain.",
         messages: NEWLINE_PER_CHAINED_CALL_MESSAGES,
@@ -960,6 +968,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "one-var-declaration-per-line",
     "lines-between-class-members",
     "no-mixed-operators",
+    "indent-binary-ops",
 ];
 
 /// Returns metadata for every Rust-backed stylistic rule.
@@ -1210,6 +1219,9 @@ fn run_token_rule(
         }
         "no-mixed-operators" => {
             expression_rules::check_no_mixed_operators(scan, filename, options, diagnostics)
+        }
+        "indent-binary-ops" => {
+            indent_binary_ops::check_indent_binary_ops(scan, filename, options, diagnostics)
         }
         _ => {}
     }

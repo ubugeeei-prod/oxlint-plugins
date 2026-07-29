@@ -14687,19 +14687,19 @@
       },
       {
         "name": "indent-binary-ops",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule indent-binary-ops."
+        "notes": "Rust/Oxc AST and shared-token port of @stylistic/indent-binary-ops v5.10.0. A pinned synchronizer and committed fixture replay all 19 valid and 29 invalid upstream cases through the upstream recursive limit of 10, with every final fixed output matching; additional Rust and Vitest coverage checks numeric, zero, and tab options, exact messages/data/ranges/fixes, TypeScript unions/intersections, JavaScript, TSX, comments, UTF-8, CRLF and ECMAScript line separators, shared settings, false positives, and real Oxlint JS/TS/TSX integration."
       },
       {
         "name": "jsx-child-element-spacing",
