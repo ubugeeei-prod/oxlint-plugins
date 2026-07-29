@@ -106,6 +106,7 @@ impl NoConfusingArrowVisitor<'_, '_> {
             rule_name: RULE_NAME.to_owned(),
             message_id: MESSAGE_ID.to_owned(),
             message: MESSAGE.to_owned(),
+            data: std::collections::BTreeMap::new(),
             range: TextRange::new(arrow_span.start, arrow_span.end),
             suggestions: suggestion.into_iter().collect(),
         });

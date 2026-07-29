@@ -18,6 +18,7 @@ export type NativeLintDiagnostic = {
   ruleName: string;
   messageId: string;
   message: string;
+  data?: Record<string, string>;
   range: NativeLintRange;
   suggestions?: NativeLintSuggestion[];
 };

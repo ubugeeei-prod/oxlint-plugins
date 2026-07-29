@@ -87,6 +87,7 @@ pub(crate) fn push_diagnostic<F>(
         rule_name: rule_name.to_owned(),
         message_id: message_id.to_owned(),
         message: message.to_owned(),
+        data: std::collections::BTreeMap::new(),
         range,
         suggestions,
     });

@@ -15311,19 +15311,19 @@
       },
       {
         "name": "type-annotation-spacing",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule type-annotation-spacing."
+        "notes": "AST-backed port of stable @stylistic/eslint-plugin v5.10.0 type-annotation-spacing with all 255 valid and 223 invalid upstream cases, context and arrow options, exact fixes and ranges, TypeScript false-positive guards, and Rust/native API/npm plugin coverage."
       },
       {
         "name": "type-generic-spacing",

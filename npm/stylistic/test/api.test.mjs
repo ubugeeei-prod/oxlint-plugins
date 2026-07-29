@@ -17,6 +17,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-equals-spacing');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-confusing-arrow');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'type-annotation-spacing',
+    );
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -210,5 +213,50 @@ describe('stylistic native API', () => {
       },
     ]);
     expect(diagnostics[0].suggestions).toBeUndefined();
+  });
+
+  it('runs type-annotation-spacing with context overrides and exact byte fixes', () => {
+    const source = 'const 日本語 :string = 1; type F = (value:string)=>number;';
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [
+        {
+          name: 'type-annotation-spacing',
+          options: [
+            {
+              overrides: {
+                variable: { before: false, after: true },
+                parameter: { before: true, after: false },
+                arrow: { before: true, after: true },
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(diagnostics.map((diagnostic) => diagnostic.messageId)).toEqual([
+      'expectedSpaceAfter',
+      'unexpectedSpaceBefore',
+      'expectedSpaceBefore',
+      'expectedSpaceAfter',
+      'expectedSpaceBefore',
+    ]);
+    const variableColon = Buffer.byteLength('const 日本語 ');
+    const parameterColon = Buffer.byteLength('const 日本語 :string = 1; type F = (value');
+    const arrow = Buffer.byteLength('const 日本語 :string = 1; type F = (value:string)');
+    expect(diagnostics.map((diagnostic) => diagnostic.range)).toEqual([
+      { start: variableColon, end: variableColon + 1 },
+      { start: variableColon, end: variableColon + 1 },
+      { start: parameterColon, end: parameterColon + 1 },
+      { start: arrow, end: arrow + 2 },
+      { start: arrow, end: arrow + 2 },
+    ]);
+    expect(diagnostics.map((diagnostic) => diagnostic.suggestions?.[0]?.fixes[0])).toMatchObject([
+      { replacementText: ' ' },
+      { replacementText: '' },
+      { replacementText: ' ' },
+      { replacementText: ' ' },
+      { replacementText: ' ' },
+    ]);
   });
 });

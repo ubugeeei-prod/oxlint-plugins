@@ -59,6 +59,7 @@ pub(crate) fn check_max_len(
                 rule_name: "max-len".to_owned(),
                 message_id: message_id.to_owned(),
                 message: message.to_owned(),
+                data: std::collections::BTreeMap::new(),
                 range: TextRange::new(line.start as u32, line.content_end as u32),
                 suggestions: Vec::new(),
             });

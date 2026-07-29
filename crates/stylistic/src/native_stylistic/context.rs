@@ -421,6 +421,7 @@ pub(crate) fn push(
         rule_name: rule.to_owned(),
         message_id: message_id.to_owned(),
         message: message.to_owned(),
+        data: std::collections::BTreeMap::new(),
         range: TextRange::new(start, end),
         suggestions: std::iter::once(LintSuggestion {
             message_id: suggestion_id.to_owned(),

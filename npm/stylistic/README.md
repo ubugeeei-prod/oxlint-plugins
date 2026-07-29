@@ -34,6 +34,11 @@ Rule options can also be supplied directly from each rule entry, for example
 mirror enabled option payloads in `settings.corsaStylistic.rules` so all
 configured rules share a single native call per source file.
 
+`type-annotation-spacing` follows the stable `@stylistic/eslint-plugin` v5.10.0
+behavior, including the global `before`/`after` settings, context-specific
+`variable`, `property`, `parameter`, and `returnType` overrides, and the
+deprecated `arrow` override (including `"ignore"`).
+
 ## JS API
 
 ```js

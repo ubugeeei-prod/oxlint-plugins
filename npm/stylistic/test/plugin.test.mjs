@@ -85,6 +85,12 @@ const stylisticRuleFixtures = [
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
   ['no-confusing-arrow', 'const f = value => value ? yes : no;\n', [], ['confusing']],
+  [
+    'type-annotation-spacing',
+    'const value :string = 1;\n',
+    [],
+    ['expectedSpaceAfter', 'unexpectedSpaceBefore'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, options, settings) {
@@ -569,6 +575,77 @@ describe('stylistic plugin', () => {
     expect(source.slice(...reports[0].node.range)).toBe("'attribute'");
   });
 
+  it('supports type-annotation-spacing options, exact UTF-16 ranges, and fixes', () => {
+    const source = 'const 日本語 :string = 1; type F = (value:string)=>number;\n';
+    const reports = runRule('type-annotation-spacing', source, [
+      {
+        overrides: {
+          variable: { before: false, after: true },
+          parameter: { before: true, after: false },
+          arrow: { before: true, after: true },
+        },
+      },
+    ]);
+    const variableColon = source.indexOf(':');
+    const parameterColon = source.indexOf(':', variableColon + 1);
+    const arrow = source.indexOf('=>');
+
+    expect(messageIds(reports)).toEqual([
+      'expectedSpaceAfter',
+      'unexpectedSpaceBefore',
+      'expectedSpaceBefore',
+      'expectedSpaceAfter',
+      'expectedSpaceBefore',
+    ]);
+    expect(reports.map((report) => report.node.range)).toEqual([
+      [variableColon, variableColon + 1],
+      [variableColon, variableColon + 1],
+      [parameterColon, parameterColon + 1],
+      [arrow, arrow + 2],
+      [arrow, arrow + 2],
+    ]);
+    expect(
+      reports.flatMap((report) =>
+        report.suggest[0].fix({
+          replaceTextRange(range, replacementText) {
+            return { range, replacementText };
+          },
+        }),
+      ),
+    ).toEqual([
+      { range: [variableColon + 1, variableColon + 1], replacementText: ' ' },
+      { range: [variableColon - 1, variableColon], replacementText: '' },
+      { range: [parameterColon, parameterColon], replacementText: ' ' },
+      { range: [arrow + 2, arrow + 2], replacementText: ' ' },
+      { range: [arrow, arrow], replacementText: ' ' },
+    ]);
+  });
+
+  it('runs type-annotation-spacing through shared settings without colon false positives', () => {
+    const source = [
+      'const value : string = condition ? left : right;',
+      'const object = { key: value };',
+      'label: for (;;) break label;',
+      'type F = (input : string) => number;',
+    ].join('\n');
+    const reports = runRule('type-annotation-spacing', source, [], {
+      corsaStylistic: {
+        rules: {
+          'type-annotation-spacing': [
+            {
+              overrides: {
+                variable: { before: false },
+                parameter: { before: false },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual(['unexpectedSpaceBefore', 'unexpectedSpaceBefore']);
+  });
+
   it('works through oxlint jsPlugins config', () => {
     const oxlint = findOxlintCli();
     const temp = mkdtempSync(join(tmpdir(), 'stylistic-plugin-'));
@@ -759,6 +836,52 @@ describe('stylistic plugin', () => {
       expect(result.stderr).toBe('');
       expect(JSON.parse(result.stdout).diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
         'stylistic(no-confusing-arrow)',
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs type-annotation-spacing through oxlint on TypeScript', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-type-annotation-spacing-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.ts');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(sourcePath, 'const value :string = "value";\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/type-annotation-spacing': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        { code: 'stylistic(type-annotation-spacing)', message: "Expected a space after the ':'." },
+        {
+          code: 'stylistic(type-annotation-spacing)',
+          message: "Unexpected space before the ':'.",
+        },
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
