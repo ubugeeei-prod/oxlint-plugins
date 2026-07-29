@@ -106,6 +106,21 @@ describe('stylistic plugin meta contract', () => {
     expect(plugin.rules['lines-around-comment'].meta.fixable).toBe('whitespace');
   });
 
+  it('preserves type-generic-spacing upstream metadata', () => {
+    expect(plugin.rules['type-generic-spacing'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforces consistent spacing inside TypeScript type generics',
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        genericSpacingMismatch: 'Generic spaces mismatch',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('preserves function-call-argument-newline upstream metadata', () => {
     expect(plugin.rules['function-call-argument-newline'].meta).toMatchObject({
       type: 'layout',

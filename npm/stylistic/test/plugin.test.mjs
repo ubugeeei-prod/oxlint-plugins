@@ -140,6 +140,12 @@ const stylisticRuleFixtures = [
   ],
   ['type-named-tuple-spacing', 'type Tuple = [value:number];\n', [], ['expectedSpaceAfter']],
   [
+    'type-generic-spacing',
+    'type Box< T=string > = T;\n',
+    [],
+    ['genericSpacingMismatch', 'genericSpacingMismatch', 'genericSpacingMismatch'],
+  ],
+  [
     'function-paren-newline',
     'function value(first, second) {}\n',
     ['always'],
