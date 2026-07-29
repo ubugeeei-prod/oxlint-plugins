@@ -1,0 +1,1550 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-newline/jsx-newline.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.0.0",
+    "parserVersions": {
+      "espree": "10.4.0",
+      "typescriptEslint": "8.56.0",
+      "typescript": "5.9.3"
+    },
+    "parserMatrix": "ESLint 10 parsers-jsx expansion; Babel disabled by the stable runner",
+    "tool": "tools/tasks/sync-stylistic-jsx-newline-tests.ts",
+    "inventory": {
+      "logicalValid": 12,
+      "logicalInvalid": 19,
+      "valid": 20,
+      "invalid": 34,
+      "diagnostics": 48,
+      "unfixableInvalid": 0,
+      "total": 54,
+      "fixableInvalid": 34
+    }
+  },
+  "valid": [
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n\n          <List />\n\n          <Button>\n            <IconPreview />\n            Button 2\n\n            <span></span>\n          </Button>\n\n          {showSomething === true && <Something />}\n\n          <Button>Button 3</Button>\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n\n          <List />\n\n          <Button>\n            <IconPreview />\n            Button 2\n\n            <span></span>\n          </Button>\n\n          {showSomething === true && <Something />}\n\n          <Button>Button 3</Button>\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n          {showSomething === true && <Something />}\n          <Button>Button 3</Button>\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n          {showSomething === true && <Something />}\n          <Button>Button 3</Button>\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <>\n          <Button>{data.label}</Button>\n          Test\n\n          <span>Should be in new line</span>\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <>\n          <Button>{data.label}</Button>\n          Test\n          <span>Should be in new line</span>\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        {/* fake-eslint-disable-next-line react/forbid-component-props */}\n        <Button popoverOpen='#settings-popover' style={{ width: 'fit-content' }}>\n          <Icon f7='gear' />\n        </Button>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        {/* fake-eslint-disable-next-line react/forbid-component-props */}\n        <Button popoverOpen='#settings-popover' style={{ width: 'fit-content' }}>\n          <Icon f7='gear' />\n        </Button>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Button popoverOpen='#settings-popover' style={{ width: 'fit-content' }}>\n          {/* fake-eslint-disable-next-line should also work inside a component */}\n          <Icon f7='gear' />\n        </Button>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Button popoverOpen='#settings-popover' style={{ width: 'fit-content' }}>\n          {/* fake-eslint-disable-next-line should also work inside a component */}\n          <Icon f7='gear' />\n        </Button>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Button popoverOpen='#settings-popover' style={{ width: 'fit-content' }}>\n          {/* should work inside a component */}\n          {/* and it should work when using multiple comments */}\n          <Icon f7='gear' />\n        </Button>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Button popoverOpen='#settings-popover' style={{ width: 'fit-content' }}>\n          {/* should work inside a component */}\n          {/* and it should work when using multiple comments */}\n          <Icon f7='gear' />\n        </Button>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Button popoverOpen='#settings-popover' style={{ width: 'fit-content' }}>\n          {/* this is a multiline\n              block comment */}\n          <Icon f7='gear' />\n        </Button>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Button popoverOpen='#settings-popover' style={{ width: 'fit-content' }}>\n          {/* this is a multiline\n              block comment */}\n          <Icon f7='gear' />\n        </Button>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <>\n          {/* does this */}\n          <Icon f7='gear' />\n\n          {/* also work with multiple components and inside a fragment? */}\n          <OneLineComponent />\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <>\n          <OneLineComponent />\n          <AnotherOneLineComponent prop={prop} />\n\n          <MultilineComponent\n            prop1={prop1}\n            prop2={prop2}\n          />\n\n          <OneLineComponent />\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* but this one needs one */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* but this one needs one */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n\n          {showSomething === true && <Something />}\n          <Button>Button 3</Button>\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n\n          {showSomething === true && <Something />}\n          <Button>Button 3</Button>\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "typescript"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n        </div>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": "\n        <div>\n          <Button>{data.label}</Button>\n\n          <List />\n        </div>\n      \n// features: [], parser: default, , , ",
+      "recursiveOutput": "\n        <div>\n          <Button>{data.label}</Button>\n\n          <List />\n        </div>\n      \n// features: [], parser: default, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [65, 73],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 4,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [54, 65],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": "\n        <div>\n          <Button>{data.label}</Button>\n\n          <List />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "recursiveOutput": "\n        <div>\n          <Button>{data.label}</Button>\n\n          <List />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [65, 73],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 4,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [54, 65],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": "\n        <div>\n          <Button>{data.label}</Button>\n\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: default, , , ",
+      "recursiveOutput": "\n        <div>\n          <Button>{data.label}</Button>\n\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: default, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [65, 106],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 4,
+            "endColumn": 52
+          },
+          "fix": {
+            "range": [54, 65],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": "\n        <div>\n          <Button>{data.label}</Button>\n\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "recursiveOutput": "\n        <div>\n          <Button>{data.label}</Button>\n\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [65, 106],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 4,
+            "endColumn": 52
+          },
+          "fix": {
+            "range": [54, 65],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: default, , , ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: default, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [77, 106],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 4,
+            "endColumn": 40
+          },
+          "fix": {
+            "range": [66, 77],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [77, 106],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 4,
+            "endColumn": 40
+          },
+          "fix": {
+            "range": [66, 77],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , , ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [77, 196],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [66, 77],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [77, 196],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [66, 77],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {/* This should however still not work*/}\n          <Icon f7='gear' />\n\n          <OneLineComponent />\n          {/* Comments between components still need a newLine */}\n          <OneLineComponent />\n        </div>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": "\n        <div>\n          {/* This should however still not work*/}\n          <Icon f7='gear' />\n\n          <OneLineComponent />\n\n          {/* Comments between components still need a newLine */}\n          <OneLineComponent />\n        </div>\n      \n// features: [], parser: default, , , ",
+      "recursiveOutput": "\n        <div>\n          {/* This should however still not work*/}\n          <Icon f7='gear' />\n\n          <OneLineComponent />\n\n          {/* Comments between components still need a newLine */}\n          <OneLineComponent />\n        </div>\n      \n// features: [], parser: default, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [138, 194],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 67
+          },
+          "fix": {
+            "range": [127, 138],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {/* This should however still not work*/}\n          <Icon f7='gear' />\n\n          <OneLineComponent />\n          {/* Comments between components still need a newLine */}\n          <OneLineComponent />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {/* This should however still not work*/}\n          <Icon f7='gear' />\n\n          <OneLineComponent />\n\n          {/* Comments between components still need a newLine */}\n          <OneLineComponent />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "recursiveOutput": "\n        <div>\n          {/* This should however still not work*/}\n          <Icon f7='gear' />\n\n          <OneLineComponent />\n\n          {/* Comments between components still need a newLine */}\n          <OneLineComponent />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [138, 194],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 67
+          },
+          "fix": {
+            "range": [127, 138],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n          {/* but this one needs one */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* but this one needs one */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* but this one needs one */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "allowMultilines"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [168, 198],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 41
+          },
+          "fix": {
+            "range": [157, 168],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n          {/* but this one needs one */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* but this one needs one */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* but this one needs one */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "allowMultilines"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [168, 198],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 41
+          },
+          "fix": {
+            "range": [157, 168],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n          {/* Multiline */}\n          {/* Block comments */}\n          {/* Stick to MultilineComponent */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* Multiline */}\n          {/* Block comments */}\n          {/* Stick to MultilineComponent */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* Multiline */}\n          {/* Block comments */}\n          {/* Stick to MultilineComponent */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "allowMultilines"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [168, 185],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [157, 168],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n          {/* Multiline */}\n          {/* Block comments */}\n          {/* Stick to MultilineComponent */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* Multiline */}\n          {/* Block comments */}\n          {/* Stick to MultilineComponent */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {/* this does not have a newline */}\n          <Icon f7='gear' />\n          {/* neither does this */}\n          <OneLineComponent />\n\n          {/* Multiline */}\n          {/* Block comments */}\n          {/* Stick to MultilineComponent */}\n          <Button>\n            <IconPreview />\n            Button 2\n            <span></span>\n          </Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "allowMultilines"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [168, 185],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [157, 168],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": "\n        <div>\n          <div>\n            <button></button>\n\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: default, , , ",
+      "recursiveOutput": "\n        <div>\n          <div>\n            <button></button>\n\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: default, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        },
+        {
+          "messageId": "require"
+        },
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [73, 90],
+          "loc": {
+            "line": 5,
+            "column": 13,
+            "endLine": 5,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [60, 73],
+            "text": "\n\n            "
+          }
+        },
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [118, 192],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 10,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [107, 118],
+            "text": "\n\n          "
+          }
+        },
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [162, 175],
+          "loc": {
+            "line": 9,
+            "column": 13,
+            "endLine": 9,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [149, 162],
+            "text": "\n\n            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": "\n        <div>\n          <div>\n            <button></button>\n\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "recursiveOutput": "\n        <div>\n          <div>\n            <button></button>\n\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        },
+        {
+          "messageId": "require"
+        },
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [73, 90],
+          "loc": {
+            "line": 5,
+            "column": 13,
+            "endLine": 5,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [60, 73],
+            "text": "\n\n            "
+          }
+        },
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [118, 192],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 10,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [107, 118],
+            "text": "\n\n          "
+          }
+        },
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [162, 175],
+          "loc": {
+            "line": 9,
+            "column": 13,
+            "endLine": 9,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [149, 162],
+            "text": "\n\n            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n\n          <List />\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [66, 74],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [54, 66],
+            "text": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n\n          <List />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          <Button>{data.label}</Button>\n          <List />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [66, 74],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [54, 66],
+            "text": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          <Button>{data.label}</Button>\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          <Button>{data.label}</Button>\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [66, 107],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 52
+          },
+          "fix": {
+            "range": [54, 66],
+            "text": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <Button>{data.label}</Button>\n\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          <Button>{data.label}</Button>\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          <Button>{data.label}</Button>\n          {showSomething === true && <Something />}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [66, 107],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 52
+          },
+          "fix": {
+            "range": [54, 66],
+            "text": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [78, 107],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 40
+          },
+          "fix": {
+            "range": [66, 78],
+            "text": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n          <Button>{data.label}</Button>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [78, 107],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 40
+          },
+          "fix": {
+            "range": [66, 78],
+            "text": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [78, 197],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 9,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [66, 78],
+            "text": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [78, 197],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 9,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [66, 78],
+            "text": "\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <div>\n            <button></button>\n\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        },
+        {
+          "messageId": "prevent"
+        },
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [74, 91],
+          "loc": {
+            "line": 6,
+            "column": 13,
+            "endLine": 6,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [60, 74],
+            "text": "\n            "
+          }
+        },
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [120, 195],
+          "loc": {
+            "line": 9,
+            "column": 11,
+            "endLine": 13,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [108, 120],
+            "text": "\n          "
+          }
+        },
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [165, 178],
+          "loc": {
+            "line": 12,
+            "column": 13,
+            "endLine": 12,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [151, 165],
+            "text": "\n            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <div>\n            <button></button>\n\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        },
+        {
+          "messageId": "prevent"
+        },
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [74, 91],
+          "loc": {
+            "line": 6,
+            "column": 13,
+            "endLine": 6,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [60, 74],
+            "text": "\n            "
+          }
+        },
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [120, 195],
+          "loc": {
+            "line": 9,
+            "column": 11,
+            "endLine": 13,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [108, 120],
+            "text": "\n          "
+          }
+        },
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [165, 178],
+          "loc": {
+            "line": 12,
+            "column": 13,
+            "endLine": 12,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [151, 165],
+            "text": "\n            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          <Button>{data.label}</Button>\n          Test\n          <span>Should be in new line</span>\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": "\n        <>\n          <Button>{data.label}</Button>\n          Test\n\n          <span>Should be in new line</span>\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , , ",
+      "recursiveOutput": "\n        <>\n          <Button>{data.label}</Button>\n          Test\n\n          <span>Should be in new line</span>\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "require"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "require",
+          "message": "JSX element should start in a new line",
+          "data": {},
+          "range": [77, 111],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [51, 77],
+            "text": "\n          Test\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          <Button>{data.label}</Button>\n          Test\n\n          <span>Should be in new line</span>\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "options": [
+        {
+          "prevent": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <>\n          <Button>{data.label}</Button>\n          Test\n          <span>Should be in new line</span>\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "recursiveOutput": "\n        <>\n          <Button>{data.label}</Button>\n          Test\n          <span>Should be in new line</span>\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , options: [{\"prevent\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [78, 112],
+          "loc": {
+            "line": 6,
+            "column": 11,
+            "endLine": 6,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [51, 78],
+            "text": "\n          Test\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          <OneLineComponent />\n          <AnotherOneLineComponent prop={prop} />\n          <MultilineComponent\n            prop1={prop1}\n            prop2={prop2}\n          />\n          <OneLineComponent />\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <>\n          <OneLineComponent />\n          <AnotherOneLineComponent prop={prop} />\n\n          <MultilineComponent\n            prop1={prop1}\n            prop2={prop2}\n          />\n\n          <OneLineComponent />\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        <>\n          <OneLineComponent />\n          <AnotherOneLineComponent prop={prop} />\n\n          <MultilineComponent\n            prop1={prop1}\n            prop2={prop2}\n          />\n\n          <OneLineComponent />\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "allowMultilines"
+        },
+        {
+          "messageId": "allowMultilines"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [103, 187],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [92, 103],
+            "text": "\n\n          "
+          }
+        },
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [198, 218],
+          "loc": {
+            "line": 9,
+            "column": 11,
+            "endLine": 9,
+            "endColumn": 31
+          },
+          "fix": {
+            "range": [187, 198],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "allowMultilines"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [77, 196],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [66, 77],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {showSomething === true && <Something />}\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        <div>\n          {showSomething === true && <Something />}\n\n          {showSomethingElse === true ? (\n            <SomethingElse />\n          ) : (\n            <ErrorMessage />\n          )}\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "allowMultilines"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [77, 196],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [66, 77],
+            "text": "\n\n          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <div>\n            <button></button>\n\n            <button></button>\n          </div>\n          <div>\n            <span></span>\n\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: default, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        },
+        {
+          "messageId": "allowMultilines"
+        },
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [74, 91],
+          "loc": {
+            "line": 6,
+            "column": 13,
+            "endLine": 6,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [60, 74],
+            "text": "\n            "
+          }
+        },
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [119, 194],
+          "loc": {
+            "line": 8,
+            "column": 11,
+            "endLine": 12,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [108, 119],
+            "text": "\n\n          "
+          }
+        },
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [164, 177],
+          "loc": {
+            "line": 11,
+            "column": 13,
+            "endLine": 11,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [150, 164],
+            "text": "\n            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <div>\n            <button></button>\n\n            <button></button>\n          </div>\n          <div>\n            <span></span>\n\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        <div>\n          <div>\n            <button></button>\n            <button></button>\n          </div>\n\n          <div>\n            <span></span>\n            <span></span>\n          </div>\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "prevent"
+        },
+        {
+          "messageId": "allowMultilines"
+        },
+        {
+          "messageId": "prevent"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [74, 91],
+          "loc": {
+            "line": 6,
+            "column": 13,
+            "endLine": 6,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [60, 74],
+            "text": "\n            "
+          }
+        },
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [119, 194],
+          "loc": {
+            "line": 8,
+            "column": 11,
+            "endLine": 12,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [108, 119],
+            "text": "\n\n          "
+          }
+        },
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [164, 177],
+          "loc": {
+            "line": 11,
+            "column": 13,
+            "endLine": 11,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [150, 164],
+            "text": "\n            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const frag: DocumentFragment = (\n          <Fragment>\n            <sni-sequence-editor-tool\n              name=\"forward\"\n              direction=\"forward\"\n              type=\"control\"\n              onClick={ () => this.onClickNavigate('forward') }\n            />\n            <sni-sequence-editor-tool\n              name=\"rotate\"\n              direction=\"left\"\n              type=\"control\"\n              onClick={ () => this.onClickNavigate('left') }\n            />\n    \n            <sni-sequence-editor-tool\n              name=\"rotate\"\n              direction=\"right\"\n              type=\"control\"\n              onClick={ (): void => this.onClickNavigate('right') }\n            />\n    \n            <div className=\"sni-sequence-editor-control-panel__delete\" data-name=\"delete\" onClick={ this.onDeleteCommand } />\n    \n            {\n              ...Array.from(this.children)\n            }\n          </Fragment>\n        )\n      \n// features: [types], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "options": [
+        {
+          "prevent": true,
+          "allowMultilines": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        const frag: DocumentFragment = (\n          <Fragment>\n            <sni-sequence-editor-tool\n              name=\"forward\"\n              direction=\"forward\"\n              type=\"control\"\n              onClick={ () => this.onClickNavigate('forward') }\n            />\n\n            <sni-sequence-editor-tool\n              name=\"rotate\"\n              direction=\"left\"\n              type=\"control\"\n              onClick={ () => this.onClickNavigate('left') }\n            />\n    \n            <sni-sequence-editor-tool\n              name=\"rotate\"\n              direction=\"right\"\n              type=\"control\"\n              onClick={ (): void => this.onClickNavigate('right') }\n            />\n    \n            <div className=\"sni-sequence-editor-control-panel__delete\" data-name=\"delete\" onClick={ this.onDeleteCommand } />\n    \n            {\n              ...Array.from(this.children)\n            }\n          </Fragment>\n        )\n      \n// features: [types], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "recursiveOutput": "\n        const frag: DocumentFragment = (\n          <Fragment>\n            <sni-sequence-editor-tool\n              name=\"forward\"\n              direction=\"forward\"\n              type=\"control\"\n              onClick={ () => this.onClickNavigate('forward') }\n            />\n\n            <sni-sequence-editor-tool\n              name=\"rotate\"\n              direction=\"left\"\n              type=\"control\"\n              onClick={ () => this.onClickNavigate('left') }\n            />\n    \n            <sni-sequence-editor-tool\n              name=\"rotate\"\n              direction=\"right\"\n              type=\"control\"\n              onClick={ (): void => this.onClickNavigate('right') }\n            />\n    \n            <div className=\"sni-sequence-editor-control-panel__delete\" data-name=\"delete\" onClick={ this.onDeleteCommand } />\n    \n            {\n              ...Array.from(this.children)\n            }\n          </Fragment>\n        )\n      \n// features: [types], parser: @typescript-eslint/parser, , options: [{\"prevent\":true,\"allowMultilines\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "allowMultilines",
+          "line": 10
+        },
+        {
+          "messageId": "prevent",
+          "line": 26
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "allowMultilines",
+          "message": "Multiline JSX elements should start in a new line",
+          "data": {},
+          "range": [284, 473],
+          "loc": {
+            "line": 10,
+            "column": 13,
+            "endLine": 15,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [271, 284],
+            "text": "\n\n            "
+          }
+        },
+        {
+          "messageId": "prevent",
+          "message": "JSX element should not start in a new line",
+          "data": {},
+          "range": [837, 895],
+          "loc": {
+            "line": 26,
+            "column": 13,
+            "endLine": 28,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [819, 837],
+            "text": "\n    \n            "
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -114,6 +114,7 @@ const stylisticRuleFixtures = [
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
   ['lines-around-comment', 'before();\n/** docs */\nafter();\n', [], ['before']],
   ['jsx-child-element-spacing', '<App>word\n<a>link</a></App>;\n', [], ['spacingBeforeNext']],
+  ['jsx-newline', '<App><First />\n<Second /></App>;\n', [], ['require']],
   [
     'jsx-curly-spacing',
     '<App attr={ value }>{child}</App>;\n',
@@ -3709,6 +3710,86 @@ const parenthesized = (a + b) * c;
         'Missing line break around JSX',
         'Missing line break around JSX',
       ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('supports jsx-newline shared settings, comments, UTF-16 ranges, and fixes', () => {
+    const source = 'const emoji = "😀"; const view = <外><内 />\n{/* attached */}\n<次 /></外>;';
+    const reports = runRule('jsx-newline', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-newline': [{ prevent: true, allowMultilines: true }],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual([]);
+
+    const defaultReports = runRule('jsx-newline', source, []);
+    expect(messageIds(defaultReports)).toEqual(['require']);
+    expect(source.slice(...defaultReports[0].node.range)).toBe('{/* attached */}');
+    expect(defaultReports[0].node.range[0]).toBe(source.indexOf('{/* attached */}'));
+    expect(reportFix(defaultReports[0])).toEqual({
+      range: [source.indexOf('\n{/* attached */}'), source.indexOf('{/* attached */}')],
+      replacementText: '\n\n',
+    });
+  });
+
+  it('runs jsx-newline through real oxlint JSX and TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-newline-plugin-'));
+
+    try {
+      const jsxPath = join(temp, 'sample.jsx');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(jsxPath, 'export const view = <App><First />\n<Second /></App>;\n');
+      writeFileSync(
+        tsxPath,
+        'type Item = { id: string }; export const list = <List<Item>><Row<Item> />\n<Row<Item> /></List>;\n',
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/jsx-newline': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', jsxPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(jsx-newline)',
+        'stylistic(jsx-newline)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'JSX element should start in a new line',
+        'JSX element should start in a new line',
+      ]);
+
+      const fixed = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--fix-suggestions', jsxPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(fixed.status).toBe(0);
+      expect(readFileSync(jsxPath, 'utf8')).toContain('<First />\n\n<Second />');
+      expect(readFileSync(tsxPath, 'utf8')).toContain('<Row<Item> />\n\n<Row<Item> />');
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
