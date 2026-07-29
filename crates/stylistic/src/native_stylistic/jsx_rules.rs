@@ -58,7 +58,7 @@ pub(crate) fn check_jsx_equals_spacing(
             index += 1;
             continue;
         };
-        if jsx_depth == 0 && looks_like_type_parameter_list(scan, close) {
+        if looks_like_type_parameter_list(scan, close) {
             index = close + 1;
             continue;
         }
@@ -288,20 +288,55 @@ fn can_start_jsx_root(scan: &Scan, open: usize) -> bool {
     };
     let token = &scan.tokens()[previous];
     if token.kind == TokenKind::Identifier {
-        return matches!(scan.token_text(previous), "return" | "yield" | "case");
+        return matches!(
+            scan.token_text(previous),
+            "return" | "yield" | "case" | "default" | "await" | "typeof" | "void" | "in" | "of"
+        );
     }
     token.kind == TokenKind::Punctuator
         && matches!(
             scan.token_text(previous),
-            "=" | "=>" | "(" | "[" | "{" | "," | ":" | ";" | "?" | ">"
+            "=" | "=>" | "(" | "[" | "{" | "," | ":" | ";" | "?" | ">" | "&&" | "||" | "??" | "!"
         )
 }
 
 fn looks_like_type_parameter_list(scan: &Scan, close: usize) -> bool {
-    scan.next_significant(close).is_some_and(|next| {
-        punct_is(&scan.tokens()[next], scan.source(), "(")
-            || punct_is(&scan.tokens()[next], scan.source(), "=>")
-    })
+    let Some(parameters_open) = scan.next_significant(close) else {
+        return false;
+    };
+    if punct_is(&scan.tokens()[parameters_open], scan.source(), "=>") {
+        return true;
+    }
+    if !punct_is(&scan.tokens()[parameters_open], scan.source(), "(") {
+        return false;
+    }
+    let Some(parameters_close) = scan.partner(parameters_open) else {
+        return false;
+    };
+
+    // A JSX element may legitimately start with parenthesised child text:
+    // `<T prop="value">(child)</T>`. Require the arrow after the parameter
+    // list (allowing a TypeScript return annotation) before classifying `<T>`
+    // as generic syntax.
+    let mut cursor = scan.next_significant(parameters_close);
+    while let Some(index) = cursor {
+        let text = scan.token_text(index);
+        if punct_is(&scan.tokens()[index], scan.source(), "=>") {
+            return true;
+        }
+        if matches!(text, ";" | "=" | "}") {
+            return false;
+        }
+        if matches!(text, "(" | "[" | "{") {
+            let Some(partner) = scan.partner(index) else {
+                return false;
+            };
+            cursor = scan.next_significant(partner);
+        } else {
+            cursor = scan.next_significant(index);
+        }
+    }
+    false
 }
 
 #[cfg(test)]
@@ -474,6 +509,7 @@ mod tests {
             "type Box<T = 'default'> = { value: T };",
             "function identity<T = string>(value: T): T { return value; }",
             "const identity = <T = string>(value: T) => value;",
+            "const nested = <App>{<T extends U = 'default'>(value: T) => value}</App>;",
             "const literal = '<App foo = \"bar\" />';",
             "const template = `<App foo = \"bar\" />`;",
             "// <App foo = \"bar\" />\nconst value = 1;",
@@ -481,6 +517,33 @@ mod tests {
         ] {
             assert!(run(source, None).is_empty(), "false positive for {source}");
         }
+    }
+
+    #[test]
+    fn checks_jsx_roots_after_expression_operators_and_export_default() {
+        for source in [
+            "const node = ready && <App foo = \"bar\" />;",
+            "const node = ready || <App foo = \"bar\" />;",
+            "const node = value ?? <App foo = \"bar\" />;",
+            "const node = !<App foo = \"bar\" />;",
+            "export default <App foo = \"bar\" />;",
+            "const node = await <App foo = \"bar\" />;",
+        ] {
+            assert_eq!(
+                ids(&run(source, Some("never"))),
+                ["noSpaceBefore", "noSpaceAfter"],
+                "missed JSX root in {source}"
+            );
+        }
+    }
+
+    #[test]
+    fn does_not_mistake_parenthesised_jsx_children_for_generic_arrows() {
+        let source = "<T prop = \"value\">(child)</T>";
+        assert_eq!(
+            ids(&run(source, Some("never"))),
+            ["noSpaceBefore", "noSpaceAfter"]
+        );
     }
 
     #[test]
