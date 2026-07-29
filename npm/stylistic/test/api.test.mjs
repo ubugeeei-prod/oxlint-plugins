@@ -23,6 +23,7 @@ describe('stylistic native API', () => {
       'jsx-closing-tag-location',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-curly-newline');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-curly-spacing');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-child-element-spacing',
@@ -1355,6 +1356,107 @@ describe('stylistic native API', () => {
       },
     ]);
   });
+  it('runs jsx-curly-spacing with exact bytes, ordering, data, and fixes', () => {
+    const source = 'const marker = "😀"; const view = <App attr={value}>{ child }</App>;';
+    const attributeOpen = Buffer.byteLength(source.slice(0, source.indexOf('{value}')));
+    const attributeClose = attributeOpen + '{value'.length;
+    const childOpen = Buffer.byteLength(source.slice(0, source.indexOf('{ child }')));
+    const childClose = childOpen + '{ child '.length;
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [
+        {
+          name: 'jsx-curly-spacing',
+          options: [
+            {
+              attributes: { when: 'always' },
+              children: { when: 'never' },
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-curly-spacing',
+        messageId: 'spaceNeededAfter',
+        message: "A space is required after '{'",
+        data: { token: '{' },
+        range: { start: attributeOpen, end: attributeOpen + 1 },
+        suggestions: [
+          {
+            messageId: 'spaceNeededAfter',
+            message: "A space is required after '{'",
+            fixes: [
+              {
+                range: { start: attributeOpen + 1, end: attributeOpen + 1 },
+                replacementText: ' ',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'jsx-curly-spacing',
+        messageId: 'spaceNeededBefore',
+        message: "A space is required before '}'",
+        data: { token: '}' },
+        range: { start: attributeClose, end: attributeClose + 1 },
+        suggestions: [
+          {
+            messageId: 'spaceNeededBefore',
+            message: "A space is required before '}'",
+            fixes: [
+              {
+                range: { start: attributeClose, end: attributeClose },
+                replacementText: ' ',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'jsx-curly-spacing',
+        messageId: 'noSpaceAfter',
+        message: "There should be no space after '{'",
+        data: { token: '{' },
+        range: { start: childOpen, end: childOpen + 1 },
+        suggestions: [
+          {
+            messageId: 'noSpaceAfter',
+            message: "There should be no space after '{'",
+            fixes: [
+              {
+                range: { start: childOpen + 1, end: childOpen + 2 },
+                replacementText: '',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'jsx-curly-spacing',
+        messageId: 'noSpaceBefore',
+        message: "There should be no space before '}'",
+        data: { token: '}' },
+        range: { start: childClose, end: childClose + 1 },
+        suggestions: [
+          {
+            messageId: 'noSpaceBefore',
+            message: "There should be no space before '}'",
+            fixes: [
+              {
+                range: { start: childClose - 1, end: childClose },
+                replacementText: '',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
   it('runs padding-line-between-statements with exact UTF-8 ranges and insertion fixes', () => {
     const source = 'const 日本語 = 1;\nuse();';
     const statementStart = Buffer.byteLength('const 日本語 = 1;\n');

@@ -55,6 +55,7 @@ function createStylisticRule(ruleName) {
         ? {
             fixable: [
               'jsx-closing-bracket-location',
+              'jsx-curly-spacing',
               'jsx-quotes',
               'no-confusing-arrow',
               'no-extra-parens',
