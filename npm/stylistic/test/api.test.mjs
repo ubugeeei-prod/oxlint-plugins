@@ -49,6 +49,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'nonblock-statement-body-position',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('semi');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'newline-per-chained-call',
     );
@@ -981,6 +982,50 @@ describe('stylistic native API', () => {
                 replacementText: '\n',
               },
             ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs semi with exact native ranges and FixTracker-compatible fixes', () => {
+    expect(
+      runNativeStylisticLint('const value = 1\n', {
+        filename: 'fixture.js',
+        rules: [{ name: 'semi', options: [] }],
+      }),
+    ).toEqual([
+      {
+        ruleName: 'semi',
+        messageId: 'missingSemi',
+        message: 'Missing semicolon.',
+        range: { start: 15, end: 16 },
+        suggestions: [
+          {
+            messageId: 'missingSemi',
+            message: 'Missing semicolon.',
+            fixes: [{ range: { start: 15, end: 15 }, replacementText: ';' }],
+          },
+        ],
+      },
+    ]);
+
+    expect(
+      runNativeStylisticLint('const value = 1;', {
+        filename: 'fixture.js',
+        rules: [{ name: 'semi', options: ['never'] }],
+      }),
+    ).toEqual([
+      {
+        ruleName: 'semi',
+        messageId: 'extraSemi',
+        message: 'Extra semicolon.',
+        range: { start: 15, end: 16 },
+        suggestions: [
+          {
+            messageId: 'extraSemi',
+            message: 'Extra semicolon.',
+            fixes: [{ range: { start: 14, end: 16 }, replacementText: '1' }],
           },
         ],
       },

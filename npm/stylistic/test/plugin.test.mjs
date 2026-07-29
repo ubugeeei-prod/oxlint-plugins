@@ -39,6 +39,7 @@ const stylisticRuleFixtures = [
   ['arrow-spacing', 'const f = ()=>1;\n', [], ['expectedBefore', 'expectedAfter']],
   ['comma-spacing', '[1 ,2]\n', [], ['unexpected', 'missing']],
   ['semi-spacing', 'a ;b\n', [], ['unexpected', 'missing']],
+  ['semi', 'const value = 1\n', [], ['missingSemi']],
   ['space-in-parens', 'f( a )\n', [], ['rejectedOpeningSpace', 'rejectedClosingSpace']],
   ['template-curly-spacing', '`${ x }`\n', [], ['unexpectedAfter', 'unexpectedBefore']],
   ['rest-spread-spacing', 'f(... args)\n', [], ['unexpectedWhitespace']],
@@ -397,6 +398,53 @@ describe('stylistic plugin', () => {
       ).toEqual(expectedMessageIds);
     },
   );
+
+  it('supports semi modes and ASI continuation options through shared settings', () => {
+    const source = 'import value from "value"\r\n(value => value)()\r\n';
+    const alwaysReports = runRule('semi', source, [], {
+      corsaStylistic: {
+        rules: {
+          semi: ['never', { beforeStatementContinuationChars: 'always' }],
+        },
+      },
+    });
+    expect(messageIds(alwaysReports)).toEqual(['missingSemi']);
+    expect(alwaysReports[0].node.range).toEqual([
+      'import value from "value"'.length,
+      'import value from "value"\r\n'.length,
+    ]);
+    expect(reportFix(alwaysReports[0])).toEqual({
+      range: ['import value from "value"'.length, 'import value from "value"'.length],
+      replacementText: ';',
+    });
+
+    expect(
+      runRule('semi', source.replace('\r\n(', ';\r\n('), [], {
+        corsaStylistic: {
+          rules: {
+            semi: ['never', { beforeStatementContinuationChars: 'any' }],
+          },
+        },
+      }),
+    ).toEqual([]);
+  });
+
+  it('keeps semi option normalization total for malformed API inputs', () => {
+    expect(() =>
+      runRule('semi', 'const value = 1\n', [
+        'invalid-mode',
+        {
+          omitLastInOneLineBlock: 'yes',
+          omitLastInOneLineClassBody: 1,
+          beforeStatementContinuationChars: false,
+        },
+      ]),
+    ).not.toThrow();
+    expect(messageIds(runRule('semi', 'const value = 1\n', ['invalid-mode']))).toEqual([
+      'missingSemi',
+    ]);
+    expect(runRule('semi', 'const broken =', [])).toEqual([]);
+  });
 
   it('reports direct rule options', () => {
     expect(runRule('quotes', 'const label = "value";\n', ['single'])).toMatchObject([
@@ -2995,6 +3043,72 @@ const parenthesized = (a + b) * c;
         'Expected a semicolon.',
       ]);
       expect(diagnostics.map((diagnostic) => diagnostic.labels[0].span.length)).toEqual([0, 0]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs semi diagnostics and fixes through real oxlint JS, TS, and TSX configs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-semi-plugin-'));
+
+    try {
+      const javaScriptPath = join(temp, 'sample.js');
+      const typeScriptPath = join(temp, 'sample.ts');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(javaScriptPath, 'export const value = 1;\n');
+      writeFileSync(typeScriptPath, 'export type Name = string;\ndeclare function run(): void;\n');
+      writeFileSync(tsxPath, 'export const view = <div>😀</div>;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/semi': ['error', 'never'],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', javaScriptPath, typeScriptPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(semi)',
+        'stylistic(semi)',
+        'stylistic(semi)',
+        'stylistic(semi)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Extra semicolon.',
+        'Extra semicolon.',
+        'Extra semicolon.',
+        'Extra semicolon.',
+      ]);
+
+      const fixed = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--fix-suggestions', javaScriptPath, typeScriptPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(fixed.status).toBe(0);
+      expect(readFileSync(javaScriptPath, 'utf8')).toBe('export const value = 1\n');
+      expect(readFileSync(typeScriptPath, 'utf8')).toBe(
+        'export type Name = string\ndeclare function run(): void\n',
+      );
+      expect(readFileSync(tsxPath, 'utf8')).toBe('export const view = <div>😀</div>\n');
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
