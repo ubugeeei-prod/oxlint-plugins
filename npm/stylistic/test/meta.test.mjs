@@ -98,6 +98,14 @@ describe('stylistic plugin meta contract', () => {
     expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
   });
 
+  it('preserves the stable lines-around-comment message catalog', () => {
+    expect(plugin.rules['lines-around-comment'].meta.messages).toMatchObject({
+      before: 'Expected line before comment.',
+      after: 'Expected line after comment.',
+    });
+    expect(plugin.rules['lines-around-comment'].meta.fixable).toBe('whitespace');
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

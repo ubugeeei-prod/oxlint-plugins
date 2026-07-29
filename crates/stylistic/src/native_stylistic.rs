@@ -15,6 +15,7 @@ mod jsx_rules;
 mod lexer;
 mod line_index;
 mod line_rules;
+mod lines_around_comment;
 mod newline_per_chained_call;
 mod no_confusing_arrow;
 mod quote_convert;
@@ -510,6 +511,11 @@ const NO_CONFUSING_ARROW_MESSAGES: &[(&str, &str)] = &[(
     "confusing",
     "Arrow function used ambiguously with a conditional expression.",
 )];
+const LINES_AROUND_COMMENT_MESSAGES: &[(&str, &str)] = &[
+    ("after", "Expected line after comment."),
+    ("before", "Expected line before comment."),
+    ("insertLine", "Insert an empty line."),
+];
 const NEWLINE_PER_CHAINED_CALL_MESSAGES: &[(&str, &str)] =
     &[("expected", "Expected line break before `{{callee}}`.")];
 
@@ -800,6 +806,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: LINE_COMMENT_POSITION_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "lines-around-comment",
+        docs_description: "Require empty lines around comments.",
+        messages: LINES_AROUND_COMMENT_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-equals-spacing",
         docs_description: "Enforce or disallow spaces around equal signs in JSX attributes.",
         messages: JSX_EQUALS_SPACING_MESSAGES,
@@ -872,6 +883,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "operator-linebreak",
     "keyword-spacing",
     "line-comment-position",
+    "lines-around-comment",
     "jsx-equals-spacing",
     "one-var-declaration-per-line",
     "lines-between-class-members",
@@ -1095,6 +1107,9 @@ fn run_token_rule(
         "keyword-spacing" => context_rules::check_keyword_spacing(scan, options, diagnostics),
         "line-comment-position" => {
             token_rules::check_line_comment_position(scan, options, diagnostics)
+        }
+        "lines-around-comment" => {
+            lines_around_comment::check_lines_around_comment(scan, options, diagnostics)
         }
         "jsx-equals-spacing" => jsx_rules::check_jsx_equals_spacing(scan, options, diagnostics),
         "one-var-declaration-per-line" => {

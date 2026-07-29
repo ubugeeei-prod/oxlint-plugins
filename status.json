@@ -15055,19 +15055,19 @@
       },
       {
         "name": "lines-around-comment",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule lines-around-comment."
+        "notes": "Exact Rust/Oxc port of @stylistic/lines-around-comment v5.10.0 with all 261 stable JS/TS valid and invalid fixtures, boundary options, hashbang/directive handling, Unicode line terminators, native API tests, and real Oxlint integration."
       },
       {
         "name": "lines-between-class-members",

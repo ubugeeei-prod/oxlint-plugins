@@ -14,6 +14,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'lines-between-class-members',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('lines-around-comment');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-equals-spacing');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-confusing-arrow');
@@ -96,6 +97,45 @@ describe('stylistic native API', () => {
 
     expect(diagnostics.map((diagnostic) => diagnostic.messageId)).toEqual(['above']);
     expect(diagnostics[0].range).toEqual({ start: 7, end: 16 });
+  });
+
+  it('runs lines-around-comment with stable messages, ranges, and fixes', () => {
+    const sourceText = 'before();\n/** 注釈 */\nafter();';
+    const commentStart = Buffer.byteLength('before();\n');
+    const commentEnd = commentStart + Buffer.byteLength('/** 注釈 */');
+    const diagnostics = runNativeStylisticLint(sourceText, {
+      rules: [
+        {
+          name: 'lines-around-comment',
+          options: [{ beforeBlockComment: true, afterBlockComment: true }],
+        },
+      ],
+    });
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'lines-around-comment',
+        messageId: 'before',
+        message: 'Expected line before comment.',
+        range: { start: commentStart, end: commentEnd },
+      },
+      {
+        ruleName: 'lines-around-comment',
+        messageId: 'after',
+        message: 'Expected line after comment.',
+        range: { start: commentStart, end: commentEnd },
+      },
+    ]);
+    expect(diagnostics.map((diagnostic) => diagnostic.suggestions[0].fixes[0])).toEqual([
+      {
+        range: { start: commentStart, end: commentStart },
+        replacementText: '\n',
+      },
+      {
+        range: { start: commentEnd, end: commentEnd },
+        replacementText: '\n',
+      },
+    ]);
   });
 
   it('runs jsx-equals-spacing with upstream never and always options', () => {
