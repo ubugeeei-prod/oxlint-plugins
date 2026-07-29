@@ -80,6 +80,7 @@ const stylisticRuleFixtures = [
   ['operator-linebreak', 'const x = 1\n  + 2;\n', [], ['operatorAtBeginning']],
   ['keyword-spacing', 'if(foo) {}\n', [], ['missingAfter']],
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
+  ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
@@ -444,6 +445,74 @@ describe('stylistic plugin', () => {
     expect(messageIds(reports)).toEqual(['noSpaceBefore', 'noSpaceAfter']);
   });
 
+  it('ports every upstream jsx-quotes invalid case with exact report and fix ranges', () => {
+    const cases = [
+      ["<foo bar='baz' />", [], [9, 14], '"baz"'],
+      ['<foo bar="baz" />', ['prefer-single'], [9, 14], "'baz'"],
+      ['<foo bar="&quot;" />', ['prefer-single'], [9, 17], "'&quot;'"],
+      ["<foo bar='&#39;' />", [], [9, 16], '"&#39;"'],
+    ];
+
+    for (const [source, options, range, replacementText] of cases) {
+      const reports = runRule('jsx-quotes', source, options);
+      expect(messageIds(reports), source).toEqual(['unexpected']);
+      expect(reports[0].node.range, source).toEqual(range);
+      expect(reports[0].data, source).toEqual({
+        description: options[0] === 'prefer-single' ? 'doublequote' : 'singlequote',
+      });
+      expect(
+        reports[0].suggest[0].fix({
+          replaceTextRange(fixRange, text) {
+            return { range: fixRange, replacementText: text };
+          },
+        }),
+        source,
+      ).toEqual([{ range, replacementText }]);
+    }
+  });
+
+  it('accepts every upstream jsx-quotes valid case', () => {
+    const cases = [
+      ['<foo bar="baz" />', []],
+      ["<foo bar='\"' />", []],
+      ['<foo bar="\'" />', ['prefer-single']],
+      ["<foo bar='baz' />", ['prefer-single']],
+      ['<foo bar="baz">"</foo>', []],
+      ["<foo bar='baz'>'</foo>", ['prefer-single']],
+      ["<foo bar={'baz'} />", []],
+      ['<foo bar={"baz"} />', ['prefer-single']],
+      ['<foo bar={baz} />', []],
+      ['<foo bar />', []],
+      ["<foo bar='&quot;' />", ['prefer-single']],
+      ['<foo bar="&quot;" />', []],
+      ["<foo bar='&#39;' />", ['prefer-single']],
+      ['<foo bar="&#39;" />', []],
+    ];
+
+    for (const [source, options] of cases) {
+      expect(runRule('jsx-quotes', source, options), source).toEqual([]);
+    }
+  });
+
+  it('runs jsx-quotes through shared settings without non-JSX false positives', () => {
+    const source = [
+      "type Box<T = 'default'> = { value: 'literal' };",
+      "const plain = 'value';",
+      "const template = `<App title='template' />`;",
+      "const node = <UI.Root expression={'value'} title='attribute' />;",
+    ].join('\n');
+    const reports = runRule('jsx-quotes', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-quotes': ['prefer-double'],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual(['unexpected']);
+    expect(source.slice(...reports[0].node.range)).toBe("'attribute'");
+  });
+
   it('works through oxlint jsPlugins config', () => {
     const oxlint = findOxlintCli();
     const temp = mkdtempSync(join(tmpdir(), 'stylistic-plugin-'));
@@ -538,6 +607,51 @@ describe('stylistic plugin', () => {
       expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
         "There should be no space before '='",
         "There should be no space after '='",
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs jsx-quotes through an oxlint jsPlugins config', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-quotes-plugin-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.jsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(sourcePath, "const node = <App title='value' expression={'ignored'} />;\n");
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/jsx-quotes': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(jsx-quotes)',
+          labels: [{ span: { offset: 24, length: 7 } }],
+        },
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });

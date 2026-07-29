@@ -98,6 +98,28 @@ describe('stylistic UTF-16 byte mapping', () => {
     expect(fixes).toEqual([{ range: [insertAt, insertAt], replacementText: ',' }]);
   });
 
+  it('maps jsx-quotes reports and fixes around BMP and astral JSX text', () => {
+    const sourceText = "const node = <日本語 emoji='😀' title='値' />;\n";
+    const reports = runRule('jsx-quotes', sourceText);
+
+    expect(reports).toHaveLength(2);
+    for (const [report, literal, replacementText] of [
+      [reports[0], "'😀'", '"😀"'],
+      [reports[1], "'値'", '"値"'],
+    ]) {
+      const start = sourceText.indexOf(literal);
+      const range = [start, start + literal.length];
+      expect(report.node.range).toEqual(range);
+      expect(
+        report.suggest[0].fix({
+          replaceTextRange(fixRange, text) {
+            return { range: fixRange, replacementText: text };
+          },
+        }),
+      ).toEqual([{ range, replacementText }]);
+    }
+  });
+
   it('clamps offsets that fall past the end of the source', () => {
     // An empty source should not crash even though the mapper has nothing to walk.
     const sourceText = '';

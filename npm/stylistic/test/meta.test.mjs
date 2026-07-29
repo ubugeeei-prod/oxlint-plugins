@@ -39,7 +39,7 @@ describe('stylistic plugin meta contract', () => {
     expect(rule.meta.docs.url).toMatch(/github\.com\/ubugeeei-prod\/oxlint-plugins/);
     expect(rule.meta.docs.recommended).toBe(false);
     expect(rule.meta.docs.requiresTypeChecking).toBe(false);
-    expect(rule.meta.fixable).toBe('whitespace');
+    expect(rule.meta.fixable).toBe(ruleName === 'jsx-quotes' ? 'code' : 'whitespace');
     expect(typeof rule.meta.hasSuggestions).toBe('boolean');
     expect(typeof rule.meta.messages).toBe('object');
     expect(rule.meta.messages).not.toBeNull();
@@ -82,6 +82,13 @@ describe('stylistic plugin meta contract', () => {
   it('re-exports the same plugin object across legacy aliases', () => {
     expect(plugin.corsaStylisticPlugin).toBe(plugin);
     expect(plugin.corsaStylisticRules).toBe(plugin.rules);
+  });
+
+  it('preserves the upstream jsx-quotes message template', () => {
+    expect(plugin.rules['jsx-quotes'].meta.messages.unexpected).toBe(
+      'Unexpected usage of {{description}}.',
+    );
+    expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
   });
 
   it('rejects unknown rule names referenced from settings', () => {

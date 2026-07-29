@@ -14959,19 +14959,19 @@
       },
       {
         "name": "jsx-quotes",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-quotes."
+        "notes": "Port of @stylistic/eslint-plugin jsx-quotes v5.10.0. Rust parses TypeScript or JavaScript JSX with Oxc for exact JSXAttribute string boundaries, decoded quote-entity compatibility, byte-precise diagnostics, and fixes; NAPI, Vitest, UTF-16, and oxlint jsPlugins integration tests cover both preferences and false positives."
       },
       {
         "name": "jsx-self-closing-comp",

@@ -15,6 +15,7 @@ describe('stylistic native API', () => {
       'lines-between-class-members',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-equals-spacing');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -109,5 +110,52 @@ describe('stylistic native API', () => {
       { start: 9, end: 10 },
       { start: 9, end: 10 },
     ]);
+  });
+
+  it('runs jsx-quotes with both upstream options and exact native fixes', () => {
+    const source = '<App single=\'one\' double="two" />';
+    const preferDouble = runNativeStylisticLint(source, {
+      rules: [{ name: 'jsx-quotes', options: ['prefer-double'] }],
+    });
+    const preferSingle = runNativeStylisticLint(source, {
+      rules: [{ name: 'jsx-quotes', options: ['prefer-single'] }],
+    });
+
+    expect(preferDouble).toMatchObject([
+      {
+        ruleName: 'jsx-quotes',
+        messageId: 'unexpected',
+        message: 'Unexpected usage of singlequote.',
+        range: { start: 12, end: 17 },
+      },
+    ]);
+    expect(preferDouble[0].suggestions[0].fixes).toEqual([
+      { range: { start: 12, end: 17 }, replacementText: '"one"' },
+    ]);
+    expect(preferSingle).toMatchObject([
+      {
+        ruleName: 'jsx-quotes',
+        messageId: 'unexpected',
+        message: 'Unexpected usage of doublequote.',
+        range: { start: 25, end: 30 },
+      },
+    ]);
+    expect(preferSingle[0].suggestions[0].fixes).toEqual([
+      { range: { start: 25, end: 30 }, replacementText: "'two'" },
+    ]);
+  });
+
+  it('keeps non-attribute strings out of jsx-quotes native diagnostics', () => {
+    const source = [
+      "import value from 'module';",
+      "const plain = 'value';",
+      "const node = <App expression={'value'} title='attribute'>text 'child'</App>;",
+    ].join('\n');
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'jsx-quotes', options: [] }],
+    });
+
+    expect(diagnostics).toHaveLength(1);
+    expect(source.slice(diagnostics[0].range.start, diagnostics[0].range.end)).toBe("'attribute'");
   });
 });
