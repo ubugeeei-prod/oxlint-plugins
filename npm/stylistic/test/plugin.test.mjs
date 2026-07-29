@@ -122,6 +122,12 @@ const stylisticRuleFixtures = [
   ],
   ['brace-style', 'if (value)\n{\n  work(); }\n', [], ['nextLineOpen', 'singleLineClose']],
   ['nonblock-statement-body-position', 'if (value) work();\n', ['below'], ['expectLinebreak']],
+  [
+    'curly-newline',
+    'if (ready) {}\n',
+    ['always'],
+    ['expectedLinebreakAfterOpeningBrace', 'expectedLinebreakBeforeClosingBrace'],
+  ],
   ['newline-per-chained-call', 'first().second().third();\n', [], ['expected']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
@@ -1566,6 +1572,106 @@ const parenthesized = (a + b) * c;
     expect(source.slice(...reports[0].node.range)).toBe('{');
   });
 
+  it('supports curly-newline modes, UTF-16 ranges, shared settings, and exact fixes', () => {
+    const source = 'const 日本語 = true; if (日本語) {}\n';
+    const opening = source.lastIndexOf('{');
+    const closing = source.lastIndexOf('}');
+    const reports = runRule('curly-newline', source, ['always']);
+
+    expect(messageIds(reports)).toEqual([
+      'expectedLinebreakAfterOpeningBrace',
+      'expectedLinebreakBeforeClosingBrace',
+    ]);
+    expect(reports.map((report) => report.node.range)).toEqual([
+      [opening, opening + 1],
+      [closing, closing + 1],
+    ]);
+    expect(
+      reports.map(
+        (report) =>
+          report.suggest[0].fix({
+            replaceTextRange(range, replacementText) {
+              return { range, replacementText };
+            },
+          })[0],
+      ),
+    ).toEqual([
+      { range: [opening + 1, opening + 1], replacementText: '\n' },
+      { range: [closing, closing], replacementText: '\n' },
+    ]);
+
+    expect(
+      messageIds(
+        runRule('curly-newline', 'if (ready) {\r\nwork();\r\n}\r\n', [], {
+          corsaStylistic: {
+            rules: {
+              'curly-newline': ['never'],
+            },
+          },
+        }),
+      ),
+    ).toEqual(['unexpectedLinebreakAfterOpeningBrace', 'unexpectedLinebreakBeforeClosingBrace']);
+  });
+
+  it('honors curly-newline specialization overrides across JavaScript, TypeScript, and TSX', () => {
+    const options = [
+      {
+        IfStatementConsequent: 'always',
+        ArrowFunctionExpression: 'always',
+        ClassBody: 'always',
+        StaticBlock: 'always',
+        TSModuleBlock: 'always',
+      },
+    ];
+    const source = [
+      'if (ready) {}',
+      'const callback = () => {};',
+      'class Example { static {} }',
+      'namespace 日本語 {}',
+      'const view = <Panel render={() => {}} />;',
+    ].join('\n');
+    const reports = runRule('curly-newline', source, options);
+
+    expect(messageIds(reports)).toEqual([
+      'expectedLinebreakAfterOpeningBrace',
+      'expectedLinebreakBeforeClosingBrace',
+      'expectedLinebreakAfterOpeningBrace',
+      'expectedLinebreakBeforeClosingBrace',
+      'expectedLinebreakAfterOpeningBrace',
+      'expectedLinebreakAfterOpeningBrace',
+      'expectedLinebreakBeforeClosingBrace',
+      'expectedLinebreakBeforeClosingBrace',
+      'expectedLinebreakAfterOpeningBrace',
+      'expectedLinebreakBeforeClosingBrace',
+      'expectedLinebreakAfterOpeningBrace',
+      'expectedLinebreakBeforeClosingBrace',
+    ]);
+  });
+
+  it('keeps curly-newline comments unfixable and ignores object/type-like braces', () => {
+    const commented = runRule('curly-newline', 'if (ready) {/* first */work();/* last */}', [
+      'always',
+    ]);
+    expect(messageIds(commented)).toEqual([
+      'expectedLinebreakAfterOpeningBrace',
+      'expectedLinebreakBeforeClosingBrace',
+    ]);
+    expect(commented.every((report) => report.suggest === undefined)).toBe(true);
+
+    for (const source of [
+      'const object = {\nvalue: true\n};',
+      'type Shape = {\nvalue: boolean\n};',
+      'interface Shape {\nvalue: boolean\n}',
+      'enum Shape {\nValue\n}',
+      'const view = <Panel value={{\nnested: true\n}} />;',
+      'const literal = "{\\n}";',
+      'const template = `{\\n}`;',
+      'const regex = /\\{\\n\\}/;',
+    ]) {
+      expect(runRule('curly-newline', source, ['never'])).toEqual([]);
+    }
+  });
+
   it('reports newline-per-chained-call data and fixes with UTF-16 ranges', () => {
     const source = 'const value = "😀".trim().toString().valueOf();\n';
     const propertyStart = source.indexOf('.valueOf');
@@ -2241,6 +2347,71 @@ const parenthesized = (a + b) * c;
         {
           code: 'stylistic(nonblock-statement-body-position)',
           message: 'Expected a linebreak before this statement.',
+        },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs curly-newline specializations through real oxlint TypeScript and TSX configs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-curly-newline-'));
+
+    try {
+      const typeScriptPath = join(temp, 'sample.ts');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(typeScriptPath, 'export namespace 日本語 {}\n');
+      writeFileSync(tsxPath, 'export const view = <Panel render={() => {}} />;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/curly-newline': [
+              'error',
+              {
+                TSModuleBlock: 'always',
+                ArrowFunctionExpression: 'always',
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', typeScriptPath, tsxPath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(curly-newline)',
+          message: 'Expected a line break after this opening brace.',
+        },
+        {
+          code: 'stylistic(curly-newline)',
+          message: 'Expected a line break before this closing brace.',
+        },
+        {
+          code: 'stylistic(curly-newline)',
+          message: 'Expected a line break after this opening brace.',
+        },
+        {
+          code: 'stylistic(curly-newline)',
+          message: 'Expected a line break before this closing brace.',
         },
       ]);
     } finally {

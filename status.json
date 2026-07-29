@@ -14591,19 +14591,19 @@
       },
       {
         "name": "curly-newline",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule curly-newline."
+        "notes": "Native Oxc AST port of stable @stylistic v5.10.0 curly-newline covering all 21 block specializations, default/always/never/multiline/minElements/consistent modes, comment-aware fixes, UTF-8 and UTF-16 ranges, JavaScript/TypeScript/TSX and all ECMAScript line terminators; pinned synchronizer and exhaustive 37-valid/74-invalid upstream replay with 173 ordered diagnostics, 71 fixable and 3 unfixable cases; plugin/API/meta/shared-settings and real Oxlint integration coverage."
       },
       {
         "name": "exp-jsx-props-style",

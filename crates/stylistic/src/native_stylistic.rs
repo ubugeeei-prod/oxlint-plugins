@@ -11,6 +11,7 @@ mod brace_style;
 mod comment_rules;
 mod context;
 mod context_rules;
+mod curly_newline;
 mod expression_rules;
 mod function_call_argument_newline;
 mod function_paren_newline;
@@ -245,6 +246,24 @@ const ARRAY_BRACKET_NEWLINE_MESSAGES: &[(&str, &str)] = &[
     (
         "missingClosingLinebreak",
         "A linebreak is required before ']'.",
+    ),
+];
+const CURLY_NEWLINE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "unexpectedLinebreakBeforeClosingBrace",
+        "Unexpected line break before this closing brace.",
+    ),
+    (
+        "unexpectedLinebreakAfterOpeningBrace",
+        "Unexpected line break after this opening brace.",
+    ),
+    (
+        "expectedLinebreakBeforeClosingBrace",
+        "Expected a line break before this closing brace.",
+    ),
+    (
+        "expectedLinebreakAfterOpeningBrace",
+        "Expected a line break after this opening brace.",
     ),
 ];
 const BRACE_STYLE_MESSAGES: &[(&str, &str)] = &[
@@ -810,6 +829,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: ARRAY_BRACKET_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "curly-newline",
+        docs_description: "Enforce consistent line breaks after opening and before closing braces.",
+        messages: CURLY_NEWLINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "brace-style",
         docs_description: "Enforce consistent brace style for blocks",
         messages: BRACE_STYLE_MESSAGES,
@@ -1200,6 +1224,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "curly-newline" => curly_newline::check_curly_newline(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "function-call-argument-newline" => {
                 function_call_argument_newline::check_function_call_argument_newline(
                     source_text,
