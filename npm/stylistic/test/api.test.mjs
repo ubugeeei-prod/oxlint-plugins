@@ -9,6 +9,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('quote-props');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('line-comment-position');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'multiline-comment-style',
+    );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'one-var-declaration-per-line',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
@@ -563,5 +566,31 @@ describe('stylistic native API', () => {
       },
     ]);
     expect(diagnostics[0].suggestions).toBeUndefined();
+  });
+
+  it('runs multiline-comment-style with stable upstream options and exact fixes', () => {
+    const source = '  // first\n  // second\n';
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'multiline-comment-style', options: ['starred-block'] }],
+    });
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'multiline-comment-style',
+        messageId: 'expectedBlock',
+        range: { start: 2, end: 22 },
+        suggestions: [
+          {
+            messageId: 'fixStyle',
+            fixes: [
+              {
+                range: { start: 2, end: 22 },
+                replacementText: '/*\n   * first\n   * second\n   */',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
   });
 });

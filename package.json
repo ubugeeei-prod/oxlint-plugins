@@ -66,6 +66,7 @@
     "port:tests:stylistic": "node tools/tasks/sync-stylistic-tests.ts",
     "port:tests:stylistic:function-call-argument-newline": "node tools/tasks/sync-stylistic-function-call-argument-newline-tests.ts",
     "port:tests:stylistic:function-paren-newline": "node tools/tasks/sync-stylistic-function-paren-newline-tests.ts",
+    "port:tests:stylistic:multiline-comment-style": "node tools/tasks/sync-stylistic-multiline-comment-style-tests.ts",
     "port:tests:stylistic:type-annotation-spacing": "node tools/tasks/sync-stylistic-type-annotation-spacing-tests.ts",
     "port:tests:stylistic:array-bracket-newline": "node tools/tasks/sync-stylistic-array-bracket-newline-tests.ts",
     "port:tests:unocss": "node tools/tasks/sync-unocss-tests.ts",

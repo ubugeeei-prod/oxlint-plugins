@@ -7,6 +7,7 @@ use super::{LintDiagnostic, RuleBridgeRequirements, RuleMeta};
 
 mod array_bracket_newline;
 mod array_rules;
+mod comment_rules;
 mod context;
 mod context_rules;
 mod expression_rules;
@@ -507,6 +508,28 @@ const JSX_QUOTES_MESSAGES: &[(&str, &str)] = &[
     ("unexpected", "Unexpected usage of {{description}}."),
     ("fixQuote", "Convert JSX attribute quote style."),
 ];
+const MULTILINE_COMMENT_STYLE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "expectedBlock",
+        "Expected a block comment instead of consecutive line comments.",
+    ),
+    (
+        "expectedBareBlock",
+        "Expected a block comment without padding stars.",
+    ),
+    ("startNewline", "Expected a linebreak after '/*'."),
+    ("endNewline", "Expected a linebreak before '*/'."),
+    ("missingStar", "Expected a '*' at the start of this line."),
+    (
+        "alignment",
+        "Expected this line to be aligned with the start of the comment.",
+    ),
+    (
+        "expectedLines",
+        "Expected multiple line comments instead of a block comment.",
+    ),
+    ("fixStyle", "Apply the expected multiline comment style."),
+];
 const ONE_VAR_DECLARATION_PER_LINE_MESSAGES: &[(&str, &str)] = &[
     (
         "expectVarOnNewline",
@@ -848,6 +871,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: LINES_AROUND_COMMENT_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "multiline-comment-style",
+        docs_description: "Enforce a particular style for multiline comments.",
+        messages: MULTILINE_COMMENT_STYLE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-equals-spacing",
         docs_description: "Enforce or disallow spaces around equal signs in JSX attributes.",
         messages: JSX_EQUALS_SPACING_MESSAGES,
@@ -927,6 +955,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "keyword-spacing",
     "line-comment-position",
     "lines-around-comment",
+    "multiline-comment-style",
     "jsx-equals-spacing",
     "one-var-declaration-per-line",
     "lines-between-class-members",
@@ -1168,6 +1197,9 @@ fn run_token_rule(
         }
         "lines-around-comment" => {
             lines_around_comment::check_lines_around_comment(scan, options, diagnostics)
+        }
+        "multiline-comment-style" => {
+            comment_rules::check_multiline_comment_style(scan, options, diagnostics)
         }
         "jsx-equals-spacing" => jsx_rules::check_jsx_equals_spacing(scan, options, diagnostics),
         "one-var-declaration-per-line" => {

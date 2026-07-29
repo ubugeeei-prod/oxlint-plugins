@@ -15103,19 +15103,19 @@
       },
       {
         "name": "multiline-comment-style",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule multiline-comment-style."
+        "notes": "Rust native shared-scan port of stable @stylistic v5.10.0 multiline-comment-style with starred-block, bare-block, and separate-lines modes; exact boundary/alignment fixes; JSDoc and exclamation options; comment grouping and ignore semantics; pinned synchronizer and exhaustive 55-valid/69-invalid upstream replay covering 107 ordered diagnostics, 66 fixable and 3 unfixable cases; CRLF, Unicode, UTF-16 bridge, TypeScript, JSX, plugin/API/meta, and real Oxlint coverage."
       },
       {
         "name": "multiline-ternary",

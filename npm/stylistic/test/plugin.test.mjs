@@ -96,6 +96,7 @@ const stylisticRuleFixtures = [
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
   ['lines-around-comment', 'before();\n/** docs */\nafter();\n', [], ['before']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
+  ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
   [
     'array-bracket-newline',
@@ -586,6 +587,125 @@ describe('stylistic plugin', () => {
         }),
       ),
     ).toEqual(['beside']);
+  });
+
+  it('supports all multiline-comment-style modes and exact fixes', () => {
+    const starredReports = runRule('multiline-comment-style', '  // first\n  // second\n', [
+      'starred-block',
+    ]);
+    expect(messageIds(starredReports)).toEqual(['expectedBlock']);
+    expect(starredReports[0].node.range).toEqual([2, 22]);
+    expect(
+      starredReports[0].suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([
+      {
+        range: [2, 22],
+        replacementText: '/*\n   * first\n   * second\n   */',
+      },
+    ]);
+
+    const bareReports = runRule('multiline-comment-style', '/*\n * first\n * second\n */', [
+      'bare-block',
+    ]);
+    expect(messageIds(bareReports)).toEqual(['expectedBareBlock']);
+    expect(
+      bareReports[0].suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([
+      {
+        range: [0, 25],
+        replacementText: '/* first\n   second */',
+      },
+    ]);
+
+    const separateReports = runRule('multiline-comment-style', '/*\n * first\n * second\n */', [
+      'separate-lines',
+    ]);
+    expect(messageIds(separateReports)).toEqual(['expectedLines']);
+    expect(
+      separateReports[0].suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([
+      {
+        range: [0, 25],
+        replacementText: '// first\n// second',
+      },
+    ]);
+  });
+
+  it('honors multiline-comment-style JSDoc and exclamation options', () => {
+    const sourceText = '/**\n * docs\n */\n/*!\n * license\n */\n';
+
+    expect(messageIds(runRule('multiline-comment-style', sourceText, ['separate-lines']))).toEqual(
+      [],
+    );
+    expect(
+      messageIds(
+        runRule('multiline-comment-style', sourceText, [
+          'separate-lines',
+          { checkJSDoc: true, checkExclamation: true },
+        ]),
+      ),
+    ).toEqual(['expectedLines', 'expectedLines']);
+  });
+
+  it('maps multiline-comment-style UTF-8 ranges and fixes to UTF-16', () => {
+    const sourceText = '日本語\n  // première\n  // deuxième\n';
+    const reports = runRule('multiline-comment-style', sourceText, []);
+    const commentStart = sourceText.indexOf('// première');
+    const commentEnd = sourceText.indexOf('\n', sourceText.indexOf('// deuxième'));
+
+    expect(reports).toHaveLength(1);
+    expect(reports[0].node.range).toEqual([commentStart, commentEnd]);
+    expect(
+      reports[0].suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([
+      {
+        range: [commentStart, commentEnd],
+        replacementText: '/*\n   * première\n   * deuxième\n   */',
+      },
+    ]);
+  });
+
+  it('avoids multiline-comment-style literal, TypeScript, JSX text, and inline false positives', () => {
+    for (const sourceText of [
+      "const literal = '/* first\\nsecond */';",
+      'const template = `// first\\n// second`;',
+      'type Box<T> = { value: T }; // first\n// second\n',
+      'const view = <div>/* first\nsecond */</div>;',
+      'const view = <div>{/* first\nsecond */}</div>;',
+      'call(/* first\nsecond */);',
+    ]) {
+      expect(runRule('multiline-comment-style', sourceText, [])).toEqual([]);
+    }
+  });
+
+  it('runs multiline-comment-style through shared stylistic settings', () => {
+    expect(
+      messageIds(
+        runRule('multiline-comment-style', '/*\n * first\n * second\n */', [], {
+          corsaStylistic: {
+            rules: {
+              'multiline-comment-style': ['bare-block'],
+            },
+          },
+        }),
+      ),
+    ).toEqual(['expectedBareBlock']);
   });
 
   it('supports jsx-equals-spacing options and exact fixes', () => {
@@ -1822,6 +1942,52 @@ const parenthesized = (a + b) * c;
         'There should be a linebreak after this element.',
         'There should be a linebreak after this element.',
       ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('reports multiline-comment-style through a real oxlint run', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-multiline-comment-plugin-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.ts');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(sourcePath, '// first\n// second\nexport const value = 1;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/multiline-comment-style': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(multiline-comment-style)',
+      ]);
+      expect(diagnostics[0].message).toBe(
+        'Expected a block comment instead of consecutive line comments.',
+      );
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

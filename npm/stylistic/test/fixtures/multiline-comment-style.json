@@ -1,0 +1,2544 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/multiline-comment-style/multiline-comment-style.test.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-stylistic-multiline-comment-style-tests.ts",
+    "inventory": {
+      "valid": 55,
+      "invalid": 69,
+      "total": 124,
+      "diagnostics": 107,
+      "fixableInvalid": 66,
+      "unfixableInvalid": 3
+    }
+  },
+  "valid": [
+    {
+      "code": "\n            /*\n             * this is\n             * a comment\n             */\n        "
+    },
+    {
+      "code": "\n            /**\n             * this is\n             * a JSDoc comment\n             */\n        "
+    },
+    {
+      "code": "\n            /*!\n             * this is\n             * an exclamation comment\n             */\n        "
+    },
+    {
+      "code": "\n            /*! this is a single line exclamation comment */\n        "
+    },
+    {
+      "code": "\n            /* eslint semi: [\n              \"error\"\n            ] */\n        "
+    },
+    {
+      "code": "\n            // this is a single-line comment\n        "
+    },
+    {
+      "code": "\n            /* foo */\n        "
+    },
+    {
+      "code": "\n            // this is a comment\n            foo();\n            // this is another comment\n        "
+    },
+    {
+      "code": "\n            /*\n             * Function overview\n             * ...\n             */\n\n            // Step 1: Do the first thing\n            foo();\n        "
+    },
+    {
+      "code": "\n            /*\n             * Function overview\n             * ...\n             */\n\n            /*\n             * Step 1: Do the first thing.\n             * The first thing is foo().\n             */\n            foo();\n        "
+    },
+    {
+      "code": "\t\t/**\n\t\t * this comment\n\t\t * is tab-aligned\n\t\t */"
+    },
+    {
+      "code": "/**\r\n * this comment\r\n * uses windows linebreaks\r\n */"
+    },
+    {
+      "code": "/**  * this comment  * uses paragraph separators  */"
+    },
+    {
+      "code": "\n            foo(/* this is an\n                inline comment */);\n        "
+    },
+    {
+      "code": "\n            // The following line comment\n            // contains '*/'.\n        "
+    },
+    {
+      "code": "\n                // The following line comment\n                // contains '*/'.\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /*\n                 * this is\n                 * a comment\n                 */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /**\n                 * this is\n                 * a JSDoc comment\n                 */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /* eslint semi: [\n                  \"error\"\n                ] */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                // this is a single-line comment\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /* foo */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /*\n                 * foo\n                 */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /* foo */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /*\n                   foo */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /*\n                   foo\n                */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /*\n              foo */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /*\n            foo\n        */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                // this is\n                // a comment\n            ",
+      "options": ["separate-lines"]
+    },
+    {
+      "code": "\n                /* this is\n                   a comment */ foo;\n            ",
+      "options": ["separate-lines"]
+    },
+    {
+      "code": "\n                // a comment\n\n                // another comment\n            ",
+      "options": ["separate-lines"]
+    },
+    {
+      "code": "\n                // a comment\n\n                // another comment\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                // a comment\n\n                // another comment\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /* eslint semi: \"error\" */\n            ",
+      "options": ["separate-lines"]
+    },
+    {
+      "code": "\n                /**\n                 * This is\n                 * a JSDoc comment\n                 */\n            ",
+      "options": ["separate-lines"]
+    },
+    {
+      "code": "\n                /**\n                 * This is\n                 * a JSDoc comment\n                 */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /**\n                 * This is\n                 * a JSDoc comment\n                 */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /*!\n                 * This is\n                 * an exclamation comment\n                 */\n            ",
+      "options": ["separate-lines"]
+    },
+    {
+      "code": "\n                /*!\n                 * This is\n                 * an exclamation comment\n                 */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /*!\n                 * This is\n                 * an exclamation comment\n                 */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /* This is\n                   a comment */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /* This is\n                         a comment */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /* eslint semi: [\n                    \"error\"\n                ] */\n            ",
+      "options": ["separate-lines"]
+    },
+    {
+      "code": "\n                /* The value of 5\n                 + 4 is 9, and the value of 5\n                 * 4 is 20. */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /*\n                 *    foo\n                 *  bar\n                 *   baz\n                 * qux\n                 */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /*    foo\n                 *  bar\n                 *   baz\n                 * qux\n                 */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /**\n                 *    JSDoc blocks\n                 *  are\n                 *   ignored\n                 * !\n                 */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /**\n                 *    JSDoc blocks\n                 *  are\n                 *   ignored\n                 * !\n                 */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /**\n                 *    JSDoc blocks\n                 *  are\n                 *   ignored\n                 * !\n                 */\n            ",
+      "options": ["separate-lines"]
+    },
+    {
+      "code": "\n                /*!\n                 *    Exclamation blocks\n                 *  are\n                 *   ignored\n                 * !\n                 */\n            ",
+      "options": ["bare-block"]
+    },
+    {
+      "code": "\n                /*!\n                 *    Exclamation blocks\n                 *  are\n                 *   ignored\n                 * !\n                 */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "\n                /*!\n                 *    Exclamation blocks\n                 *  are\n                 *   ignored\n                 * !\n                 */\n            ",
+      "options": ["separate-lines"]
+    },
+    {
+      "code": "\n                /*\n                 * // a line comment\n                 *some.code();\n                 */\n            ",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "// djb2 algorithm\nlet hash = 5381;\nfor (let i = 0; i < view.length; i++) {\n\n  // eslint-disable\n  // hash * 33 + current byte -> truncate\n  hash = (((hash << 5) + hash) + view[i]) | 0;\n}",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "// eslint-disable\n// @ts-nocheck\n\nimport type { ESLint } from 'eslint';",
+      "options": ["starred-block"]
+    },
+    {
+      "code": "let x = 5; // first number\n// second number\nlet y = 10;\n\nconsole.log(x + y);",
+      "options": ["starred-block"]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n                // these are\n                // line comments\n            ",
+      "output": "\n                /*\n                 * these are\n                 * line comments\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 62],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 33
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                //foo\n                ///bar\n            ",
+      "output": null,
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 45],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                // foo\n                // bar\n\n                // baz\n                // qux\n            ",
+      "output": "\n                /*\n                 * foo\n                 * bar\n                 */\n\n                /*\n                 * baz\n                 * qux\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        },
+        {
+          "messageId": "expectedBlock",
+          "line": 5
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 46],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 23
+          }
+        },
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [64, 93],
+          "loc": {
+            "line": 5,
+            "column": 17,
+            "endLine": 6,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                //  foo\n                // bar\n                //    baz\n                // qux\n            ",
+      "output": "\n                /*\n                 *  foo\n                 * bar\n                 *    baz\n                 * qux\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 96],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 5,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                //  foo\n                //\n                //    baz\n                // qux\n            ",
+      "output": "\n                /*\n                 *  foo\n                 * \n                 *    baz\n                 * qux\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 92],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 5,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                //    foo\n                     // bar\n           //  baz\n                // qux\n            ",
+      "output": "\n                /*\n                 *    foo\n                 * bar\n                 *  baz\n                 * qux\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 96],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 5,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /* this block\n                 * is missing a newline at the start\n                 */\n            ",
+      "output": "\n                /*\n                 * this block\n                 * is missing a newline at the start\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "startNewline",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "startNewline",
+          "message": "Expected a linebreak after '/*'.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /** this JSDoc comment\n                 * is missing a newline at the start\n                 */\n            ",
+      "output": "\n                /**\n                 * this JSDoc comment\n                 * is missing a newline at the start\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "startNewline",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "startNewline",
+          "message": "Expected a linebreak after '/*'.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*! this Exclamation comment\n                 * is missing a newline\n                 * at the start\n                 */\n            ",
+      "output": "\n                /*!\n                 * this Exclamation comment\n                 * is missing a newline\n                 * at the start\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "startNewline",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "startNewline",
+          "message": "Expected a linebreak after '/*'.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*! this Exclamation comment is missing a newline at the start\n                 */\n            ",
+      "output": "\n                /*!\n                 * this Exclamation comment is missing a newline at the start\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "startNewline",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "startNewline",
+          "message": "Expected a linebreak after '/*'.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * this block\n                 * is missing a newline at the end*/\n            ",
+      "output": "\n                /*\n                 * this block\n                 * is missing a newline at the end\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "endNewline",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "endNewline",
+          "message": "Expected a linebreak before '*/'.",
+          "data": {},
+          "range": [100, 102],
+          "loc": {
+            "line": 4,
+            "column": 51,
+            "endLine": 4,
+            "endColumn": 53
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * the following line\n                   is missing a '*' at the start\n                 */\n            ",
+      "output": "\n                /*\n                 * the following line\n                 * is missing a '*' at the start\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [58, 106],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 49
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * the following line\n                 is missing a '*' at the start\n                 */\n            ",
+      "output": "\n                /*\n                 * the following line\n                 * is missing a '*' at the start\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [58, 104],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 47
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * the following line\n                is missing a '*' at the start\n                 */\n            ",
+      "output": "\n                /*\n                 * the following line\n                 * is missing a '*' at the start\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [58, 103],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 46
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * the following line\n                      * has a '*' with the wrong offset at the start\n                 */\n            ",
+      "output": "\n                /*\n                 * the following line\n                 * has a '*' with the wrong offset at the start\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "alignment",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [58, 126],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 69
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                  /*\n                   * the following line\n                 * has a '*' with the wrong offset at the start\n                   */\n            ",
+      "output": "\n                  /*\n                   * the following line\n                   * has a '*' with the wrong offset at the start\n                   */\n            ",
+      "errors": [
+        {
+          "messageId": "alignment",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [62, 125],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 64
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * the last line of this comment\n                 * is misaligned\n                   */\n            ",
+      "output": "\n                /*\n                 * the last line of this comment\n                 * is misaligned\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "alignment",
+          "line": 5
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [102, 123],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 22
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * the following line\n                *\n                 * is blank\n                 */\n            ",
+      "output": "\n                /*\n                 * the following line\n                 *\n                 * is blank\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "alignment",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [58, 75],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 18
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * the following line\n                  *\n                 * is blank\n                 */\n            ",
+      "output": "\n                /*\n                 * the following line\n                 *\n                 * is blank\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "alignment",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [58, 77],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 20
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * the last line of this comment\n                 * is misaligned\n                   */ foo\n            ",
+      "output": "\n                /*\n                 * the last line of this comment\n                 * is misaligned\n                 */ foo\n            ",
+      "errors": [
+        {
+          "messageId": "alignment",
+          "line": 5
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [102, 127],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 26
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * foo\n                 * bar\n                 */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // foo\n                // bar\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /**\n                 * JSDoc\n                 * Comment\n                 */\n            ",
+      "options": [
+        "separate-lines",
+        {
+          "checkJSDoc": true
+        }
+      ],
+      "output": "\n                // JSDoc\n                // Comment\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*!\n                 * Exclamation\n                 * Comment\n                 */\n            ",
+      "options": [
+        "separate-lines",
+        {
+          "checkExclamation": true
+        }
+      ],
+      "output": "\n                // Exclamation\n                // Comment\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /* foo\n                 *bar\n                 baz\n                 qux*/\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // foo\n                // bar\n                // baz\n                // qux\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                // foo\n                // bar\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 46],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                // foo\n                //\n                // bar\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   \n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 65],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                //foo\n                //bar\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 44],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 22
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                //   foo\n                //   bar\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /*   foo\n                     bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 50],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 25
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                // foo\n              // bar\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 44],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 21
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                //    foo\n                     // bar\n           //  baz\n                // qux\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /*    foo\n                   bar\n                    baz\n                   qux */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 96],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 5,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                * foo\n                * bar\n                */\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBareBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBareBlock",
+          "message": "Expected a block comment without padding stars.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                *foo\n                *bar\n                */\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBareBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBareBlock",
+          "message": "Expected a block comment without padding stars.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                *   foo\n                *   bar\n                */\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /*   foo\n                     bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBareBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBareBlock",
+          "message": "Expected a block comment without padding stars.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                * foo\n             * bar\n                */\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBareBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBareBlock",
+          "message": "Expected a block comment without padding stars.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 *    foo\n                 *  bar\n                 *   baz\n                 * qux\n                 */\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /*    foo\n                    bar\n                     baz\n                   qux */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBareBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBareBlock",
+          "message": "Expected a block comment without padding stars.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                {\n                    \"foo\": 1,\n                    \"bar\": 2\n                }\n                */\n            ",
+      "output": "\n                /*\n                 *{\n                 *    \"foo\": 1,\n                 *    \"bar\": 2\n                 *}\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "missingStar",
+          "line": 5
+        },
+        {
+          "messageId": "missingStar",
+          "line": 6
+        },
+        {
+          "messageId": "alignment",
+          "line": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [20, 37],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [38, 67],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 30
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [68, 96],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 29
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [97, 114],
+          "loc": {
+            "line": 6,
+            "column": 1,
+            "endLine": 6,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [115, 133],
+          "loc": {
+            "line": 7,
+            "column": 1,
+            "endLine": 7,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                {\n                \t\"foo\": 1,\n                \t\"bar\": 2\n                }\n                */\n            ",
+      "output": "\n                /*\n                 *{\n                 *\t\"foo\": 1,\n                 *\t\"bar\": 2\n                 *}\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "missingStar",
+          "line": 5
+        },
+        {
+          "messageId": "missingStar",
+          "line": 6
+        },
+        {
+          "messageId": "alignment",
+          "line": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [20, 37],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [38, 64],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 27
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [65, 90],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 26
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [91, 108],
+          "loc": {
+            "line": 6,
+            "column": 1,
+            "endLine": 6,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [109, 127],
+          "loc": {
+            "line": 7,
+            "column": 1,
+            "endLine": 7,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                {\n                \t  \"foo\": 1,\n                \t  \"bar\": 2\n                }\n                */\n            ",
+      "output": "\n                /*\n                 *{\n                 *\t  \"foo\": 1,\n                 *\t  \"bar\": 2\n                 *}\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "missingStar",
+          "line": 5
+        },
+        {
+          "messageId": "missingStar",
+          "line": 6
+        },
+        {
+          "messageId": "alignment",
+          "line": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [20, 37],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [38, 66],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 29
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [67, 94],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 28
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [95, 112],
+          "loc": {
+            "line": 6,
+            "column": 1,
+            "endLine": 6,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [113, 131],
+          "loc": {
+            "line": 7,
+            "column": 1,
+            "endLine": 7,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                {\n               \t\"foo\": 1,\n               \t\"bar\": 2\n                }\n                */\n            ",
+      "output": "\n                /*\n                 *{\n                 *\"foo\": 1,\n                 *\"bar\": 2\n                 *}\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "missingStar",
+          "line": 5
+        },
+        {
+          "messageId": "missingStar",
+          "line": 6
+        },
+        {
+          "messageId": "alignment",
+          "line": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [20, 37],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [38, 63],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 26
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [64, 88],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 25
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [89, 106],
+          "loc": {
+            "line": 6,
+            "column": 1,
+            "endLine": 6,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [107, 125],
+          "loc": {
+            "line": 7,
+            "column": 1,
+            "endLine": 7,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                \t /*\n                      \t    {\n                  \t    \"foo\": 1,\n                \t   \"bar\": 2\n                }\n                */\n            ",
+      "output": "\n                \t /*\n                \t  *{\n                \t  *\"foo\": 1,\n                \t  *\"bar\": 2\n                \t  *}\n                \t  */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "missingStar",
+          "line": 5
+        },
+        {
+          "messageId": "missingStar",
+          "line": 6
+        },
+        {
+          "messageId": "alignment",
+          "line": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [22, 50],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 29
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [51, 83],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 33
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [84, 112],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 29
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [113, 130],
+          "loc": {
+            "line": 6,
+            "column": 1,
+            "endLine": 6,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [131, 149],
+          "loc": {
+            "line": 7,
+            "column": 1,
+            "endLine": 7,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                //{\n                //    \"foo\": 1,\n                //    \"bar\": 2\n                //}\n            ",
+      "output": "\n                /*\n                 * {\n                 *     \"foo\": 1,\n                 *     \"bar\": 2\n                 * }\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 103],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 5,
+            "endColumn": 20
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * {\n                 *     \"foo\": 1,\n                 *     \"bar\": 2\n                 * }\n                 */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // {\n                //     \"foo\": 1,\n                //     \"bar\": 2\n                // }\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 *\n                 * {\n                 *     \"foo\": 1,\n                 *     \"bar\": 2\n                 * }\n                 *\n                 */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // \n                // {\n                //     \"foo\": 1,\n                //     \"bar\": 2\n                // }\n                // \n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 *\n                 * {\n                 *     \"foo\": 1,\n                 *     \"bar\": 2\n                 * }\n                 *\n                 */\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* \n                   {\n                       \"foo\": 1,\n                       \"bar\": 2\n                   }\n                    */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBareBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBareBlock",
+          "message": "Expected a block comment without padding stars.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 *\n                 *{\n                 *    \"foo\": 1,\n                 *    \"bar\": 2\n                 *}\n                 *\n                 */\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* \n                   {\n                       \"foo\": 1,\n                       \"bar\": 2\n                   }\n                    */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBareBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBareBlock",
+          "message": "Expected a block comment without padding stars.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 *{\n                 *    \"foo\": 1,\n                 *    \"bar\": 2\n                 *}\n                 */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // {\n                //     \"foo\": 1,\n                //     \"bar\": 2\n                // }\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 *   {\n                 *       \"foo\": 1,\n                 *       \"bar\": 2\n                 *   }\n                 */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                //   {\n                //       \"foo\": 1,\n                //       \"bar\": 2\n                //   }\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n            *{\n                 *    \"foo\": 1,\n                    *    \"bar\": 2\n                 *}\n                  */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // {\n                //     \"foo\": 1,\n                //     \"bar\": 2\n                // }\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 *   {\n                 *       \"foo\": 1,\n                 *       \"bar\": 2\n           *}\n                 */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                //    {\n                //        \"foo\": 1,\n                //        \"bar\": 2\n                // }\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                {\n                    \"foo\": 1,\n                    \"bar\": 2\n                }\n                */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // \n                // {\n                //     \"foo\": 1,\n                //     \"bar\": 2\n                // }\n                // \n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /* {\n                       \"foo\": 1,\n                       \"bar\": 2\n                   } */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // {\n                //     \"foo\": 1,\n                //     \"bar\": 2\n                // } \n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * foo\n                 *\n                 * bar\n                 */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // foo\n                // \n                // bar\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * foo\n                 * \n                 * bar\n                 */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // foo\n                // \n                // bar\n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * foo\n                 *\n                 * bar\n                 */\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   \n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBareBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBareBlock",
+          "message": "Expected a block comment without padding stars.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 * foo\n                 * \n                 * bar\n                 */\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   \n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBareBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBareBlock",
+          "message": "Expected a block comment without padding stars.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                // foo\n                //\n                // bar\n            ",
+      "options": ["starred-block"],
+      "output": "\n                /*\n                 * foo\n                 * \n                 * bar\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 65],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                // foo\n                // \n                // bar\n            ",
+      "options": ["starred-block"],
+      "output": "\n                /*\n                 * foo\n                 * \n                 * bar\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 66],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                // foo\n                // \n                // bar\n            ",
+      "options": ["bare-block"],
+      "output": "\n                /* foo\n                   \n                   bar */\n            ",
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 66],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 23
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /* foo\n\n                   bar */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // foo\n                // \n                // bar \n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /* foo\n                   \n                   bar */\n            ",
+      "options": ["separate-lines"],
+      "output": "\n                // foo\n                // \n                // bar \n            ",
+      "errors": [
+        {
+          "messageId": "expectedLines",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedLines",
+          "message": "Expected multiple line comments instead of a block comment.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /* foo\n\n                   bar */\n            ",
+      "options": ["starred-block"],
+      "output": "\n                /*\n                 * foo\n                 * \n                 * bar \n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "startNewline",
+          "line": 2
+        },
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "endNewline",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "startNewline",
+          "message": "Expected a linebreak after '/*'.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [24, 24],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 1
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [25, 50],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 26
+          }
+        },
+        {
+          "messageId": "endNewline",
+          "message": "Expected a linebreak before '*/'.",
+          "data": {},
+          "range": [48, 50],
+          "loc": {
+            "line": 4,
+            "column": 24,
+            "endLine": 4,
+            "endColumn": 26
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /* foo\n                   \n                   bar */\n            ",
+      "options": ["starred-block"],
+      "output": "\n                /*\n                 * foo\n                 * \n                 * bar \n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "startNewline",
+          "line": 2
+        },
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "endNewline",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "startNewline",
+          "message": "Expected a linebreak after '/*'.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [24, 43],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 20
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [44, 69],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 26
+          }
+        },
+        {
+          "messageId": "endNewline",
+          "message": "Expected a linebreak before '*/'.",
+          "data": {},
+          "range": [67, 69],
+          "loc": {
+            "line": 4,
+            "column": 24,
+            "endLine": 4,
+            "endColumn": 26
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*foo\n\n                  bar */\n            ",
+      "options": ["starred-block"],
+      "output": "\n                /*\n                 *foo\n                 *\n                 *bar \n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "startNewline",
+          "line": 2
+        },
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "endNewline",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "startNewline",
+          "message": "Expected a linebreak after '/*'.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [23, 23],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 1
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [24, 48],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 25
+          }
+        },
+        {
+          "messageId": "endNewline",
+          "message": "Expected a linebreak before '*/'.",
+          "data": {},
+          "range": [46, 48],
+          "loc": {
+            "line": 4,
+            "column": 23,
+            "endLine": 4,
+            "endColumn": 25
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*foo\n                   \n                  bar */\n            ",
+      "options": ["starred-block"],
+      "output": "\n                /*\n                 *foo\n                 * \n                 *bar \n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "startNewline",
+          "line": 2
+        },
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "endNewline",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "startNewline",
+          "message": "Expected a linebreak after '/*'.",
+          "data": {},
+          "range": [17, 19],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 19
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [23, 42],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 20
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [43, 67],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 25
+          }
+        },
+        {
+          "messageId": "endNewline",
+          "message": "Expected a linebreak before '*/'.",
+          "data": {},
+          "range": [65, 67],
+          "loc": {
+            "line": 4,
+            "column": 23,
+            "endLine": 4,
+            "endColumn": 25
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 // a line comment\n                 some.code();\n                 */\n            ",
+      "options": ["starred-block"],
+      "output": "\n                /*\n                 * // a line comment\n                 *some.code();\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [20, 54],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 35
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [55, 84],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 30
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                 // a line comment\n                 * some.code();\n                 */\n            ",
+      "options": ["starred-block"],
+      "output": "\n                /*\n                 * // a line comment\n                 * some.code();\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 3
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [20, 54],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 35
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                ////This comment is in\n                //`separate-lines` format.\n            ",
+      "options": ["starred-block"],
+      "output": null,
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 82],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 43
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                // // This comment is in\n                // `separate-lines` format.\n            ",
+      "options": ["starred-block"],
+      "output": null,
+      "errors": [
+        {
+          "messageId": "expectedBlock",
+          "line": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBlock",
+          "message": "Expected a block comment instead of consecutive line comments.",
+          "data": {},
+          "range": [17, 85],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 44
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n                /*\n                {\n                \t\"foo\": 1,\n                \t//\"bar\": 2\n                }\n                */\n            ",
+      "options": ["starred-block"],
+      "output": "\n                /*\n                 *{\n                 *\t\"foo\": 1,\n                 *\t//\"bar\": 2\n                 *}\n                 */\n            ",
+      "errors": [
+        {
+          "messageId": "missingStar",
+          "line": 3
+        },
+        {
+          "messageId": "missingStar",
+          "line": 4
+        },
+        {
+          "messageId": "missingStar",
+          "line": 5
+        },
+        {
+          "messageId": "missingStar",
+          "line": 6
+        },
+        {
+          "messageId": "alignment",
+          "line": 7
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [20, 37],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [38, 64],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 27
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [65, 92],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 28
+          }
+        },
+        {
+          "messageId": "missingStar",
+          "message": "Expected a '*' at the start of this line.",
+          "data": {},
+          "range": [93, 110],
+          "loc": {
+            "line": 6,
+            "column": 1,
+            "endLine": 6,
+            "endColumn": 18
+          }
+        },
+        {
+          "messageId": "alignment",
+          "message": "Expected this line to be aligned with the start of the comment.",
+          "data": {},
+          "range": [111, 129],
+          "loc": {
+            "line": 7,
+            "column": 1,
+            "endLine": 7,
+            "endColumn": 19
+          }
+        }
+      ]
+    }
+  ]
+}

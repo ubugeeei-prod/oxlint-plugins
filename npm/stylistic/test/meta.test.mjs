@@ -141,6 +141,23 @@ describe('stylistic plugin meta contract', () => {
     expect(plugin.rules['function-paren-newline'].meta.hasSuggestions).toBe(true);
   });
 
+  it('preserves the upstream multiline-comment-style metadata', () => {
+    expect(plugin.rules['multiline-comment-style'].meta).toMatchObject({
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        expectedBlock: 'Expected a block comment instead of consecutive line comments.',
+        expectedBareBlock: 'Expected a block comment without padding stars.',
+        startNewline: "Expected a linebreak after '/*'.",
+        endNewline: "Expected a linebreak before '*/'.",
+        missingStar: "Expected a '*' at the start of this line.",
+        alignment: 'Expected this line to be aligned with the start of the comment.',
+        expectedLines: 'Expected multiple line comments instead of a block comment.',
+        fixStyle: 'Apply the expected multiline comment style.',
+      },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {
