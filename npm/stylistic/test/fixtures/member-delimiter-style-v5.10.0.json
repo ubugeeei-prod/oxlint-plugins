@@ -1,0 +1,5926 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/member-delimiter-style/member-delimiter-style.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.4.1",
+    "typescriptEslintParserVersion": "8.60.0",
+    "tool": "tools/tasks/sync-stylistic-member-delimiter-style-tests.ts",
+    "inventory": {
+      "valid": 61,
+      "invalid": 99,
+      "diagnostics": 153,
+      "unfixableInvalid": 1,
+      "total": 160,
+      "fixableInvalid": 98
+    }
+  },
+  "valid": [
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n    ",
+      "options": []
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "semi"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n    ",
+      "options": []
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "semi"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n\ntype Bar = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none"
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "semi"
+              }
+            },
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any; [key: string]: any }",
+      "options": []
+    },
+    {
+      "code": "interface Foo { a: any; [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any; [key: string]: any; }",
+      "options": [
+        {
+          "singleline": {
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any, [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "comma"
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any, [key: string]: any, }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "comma",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any, [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any; [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi"
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any; [key: string]: any; }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any; [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any; [key: string]: any }",
+      "options": []
+    },
+    {
+      "code": "type Foo = { a: any; [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any; [key: string]: any; }",
+      "options": [
+        {
+          "singleline": {
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any, [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "comma"
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any, [key: string]: any, }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "comma",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any, [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any; [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi"
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any; [key: string]: any; }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any; [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {a: {\n  b: true;\n}};\n      ",
+      "options": [
+        {
+          "multilineDetection": "last-member"
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {a: {\n  b: true;\n};};\n    ",
+      "options": []
+    },
+    {
+      "code": "\ntype Foo = {a: {\n  b: true;\n};};\n      ",
+      "options": [
+        {
+          "multilineDetection": "brackets"
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n  a: {\n    b: true;\n  };\n};\n      ",
+      "options": [
+        {
+          "multilineDetection": "last-member"
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {a: {\n  b: true;\n};};\n      ",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "multilineDetection": "last-member"
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n\n};\n      ",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "multilineDetection": "last-member"
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n\ninterface Bar { name: string, age: number }\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "singleline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n\ntype Bar = { name: string, age: number }\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "singleline": {
+                "delimiter": "comma",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [49, 49],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Test = {\n  a: {\n      one: 1\n  }; b: 2\n};\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
+      ],
+      "output": null,
+      "recursiveOutput": null,
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 5,
+          "column": 5
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [39, 39],
+          "loc": {
+            "line": 5,
+            "column": 5,
+            "endLine": 5,
+            "endColumn": 5
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [49, 49],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [49, 49],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [50, 50],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [50, 50],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [49, 49],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [49, 49],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [50, 50],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [49, 50],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [50, 50],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [49, 50],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [50, 50],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [49, 50],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "semi"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [49, 49],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [49, 49],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [50, 50],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [50, 50],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [49, 49],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [49, 49],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [50, 50],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [49, 50],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [50, 50],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [49, 50],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string,\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [50, 50],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [49, 50],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [],
+      "output": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [46, 46],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [46, 46],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [46, 46],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [46, 46],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [46, 46],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [46, 46],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [47, 47],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [47, 47],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [46, 46],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [46, 46],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [46, 46],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [46, 46],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [47, 47],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [46, 47],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [47, 47],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [46, 47],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [47, 47],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [46, 47],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "semi"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [46, 46],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [46, 46],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [46, 46],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [46, 46],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [47, 47],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [47, 47],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [46, 46],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [46, 46],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 16
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [46, 46],
+          "loc": {
+            "line": 4,
+            "column": 16,
+            "endLine": 4,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [46, 46],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ","
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "comma",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 17
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [47, 47],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [46, 47],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi"
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [47, 47],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [46, 47],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma"
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string,\n    age: number\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 3,
+          "column": 18
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedComma",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [47, 47],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [46, 47],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n\ntype Bar = {\n    name: string,\n    age: number,\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "comma"
+              }
+            },
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "semi"
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n\ntype Bar = {\n    name: string;\n    age: number;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string,\n    age: number,\n}\n\ntype Bar = {\n    name: string;\n    age: number;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedComma",
+          "line": 3,
+          "column": 18
+        },
+        {
+          "messageId": "expectedComma",
+          "line": 4,
+          "column": 17
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 8,
+          "column": 18
+        },
+        {
+          "messageId": "expectedSemi",
+          "line": 9,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 3,
+            "column": 18,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [33, 34],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedComma",
+          "message": "Expected a comma.",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [85, 85],
+          "loc": {
+            "line": 8,
+            "column": 18,
+            "endLine": 8,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [84, 85],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [102, 102],
+          "loc": {
+            "line": 9,
+            "column": 17,
+            "endLine": 9,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [101, 102],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    [key: string]: any\n}\n      ",
+      "options": [],
+      "output": "\ninterface Foo {\n    [key: string]: any;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    [key: string]: any;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 23
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [39, 39],
+          "loc": {
+            "line": 3,
+            "column": 23,
+            "endLine": 3,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [39, 39],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    [key: string]: any\n}\n      ",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "comma"
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    [key: string]: any;\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    [key: string]: any;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 23
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [39, 39],
+          "loc": {
+            "line": 3,
+            "column": 23,
+            "endLine": 3,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [39, 39],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any, [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi"
+          }
+        }
+      ],
+      "output": "interface Foo { a: any; [key: string]: any }",
+      "recursiveOutput": "interface Foo { a: any; [key: string]: any }",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 1,
+          "column": 24
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [23, 23],
+          "loc": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [22, 23],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any, [key: string]: any, }",
+      "options": [
+        {
+          "multiline": {
+            "requireLast": true
+          },
+          "singleline": {
+            "delimiter": "semi"
+          }
+        }
+      ],
+      "output": "interface Foo { a: any; [key: string]: any }",
+      "recursiveOutput": "interface Foo { a: any; [key: string]: any }",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 1,
+          "column": 24
+        },
+        {
+          "messageId": "unexpectedComma",
+          "line": 1,
+          "column": 44
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [23, 23],
+          "loc": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [22, 23],
+            "text": ";"
+          }
+        },
+        {
+          "messageId": "unexpectedComma",
+          "message": "Unexpected separator (,).",
+          "data": {},
+          "range": [43, 43],
+          "loc": {
+            "line": 1,
+            "column": 44,
+            "endLine": 1,
+            "endColumn": 44
+          },
+          "fix": {
+            "range": [42, 43],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { [key: string]: any }",
+      "options": [
+        {
+          "multiline": {
+            "requireLast": true
+          },
+          "singleline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+          "overrides": {
+            "interface": {
+              "singleline": {
+                "delimiter": "semi",
+                "requireLast": true
+              }
+            }
+          }
+        }
+      ],
+      "output": "interface Foo { [key: string]: any; }",
+      "recursiveOutput": "interface Foo { [key: string]: any; }",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 1,
+          "column": 35
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [34, 34],
+          "loc": {
+            "line": 1,
+            "column": 35,
+            "endLine": 1,
+            "endColumn": 35
+          },
+          "fix": {
+            "range": [34, 34],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    [key: string]: any\n}\n      ",
+      "options": [],
+      "output": "\ntype Foo = {\n    [key: string]: any;\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    [key: string]: any;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 23
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [36, 36],
+          "loc": {
+            "line": 3,
+            "column": 23,
+            "endLine": 3,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [36, 36],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    [key: string]: any\n}\n      ",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi"
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    [key: string]: any;\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    [key: string]: any;\n}\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 3,
+          "column": 23
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [36, 36],
+          "loc": {
+            "line": 3,
+            "column": 23,
+            "endLine": 3,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [36, 36],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { [key: string]: any }",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "type Foo = { [key: string]: any; }",
+      "recursiveOutput": "type Foo = { [key: string]: any; }",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 1,
+          "column": 32
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 1,
+            "column": 32,
+            "endLine": 1,
+            "endColumn": 32
+          },
+          "fix": {
+            "range": [31, 31],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { [key: string]: any }",
+      "options": [
+        {
+          "multiline": {
+            "requireLast": false
+          },
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": true
+          }
+        }
+      ],
+      "output": "type Foo = { [key: string]: any; }",
+      "recursiveOutput": "type Foo = { [key: string]: any; }",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 1,
+          "column": 32
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 1,
+            "column": 32,
+            "endLine": 1,
+            "endColumn": 32
+          },
+          "fix": {
+            "range": [31, 31],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any, [key: string]: any }",
+      "options": [
+        {
+          "multiline": {
+            "requireLast": true
+          },
+          "singleline": {
+            "delimiter": "comma"
+          },
+          "overrides": {
+            "typeLiteral": {
+              "singleline": {
+                "delimiter": "semi"
+              }
+            }
+          }
+        }
+      ],
+      "output": "type Foo = { a: any; [key: string]: any }",
+      "recursiveOutput": "type Foo = { a: any; [key: string]: any }",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 1,
+          "column": 21
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [20, 20],
+          "loc": {
+            "line": 1,
+            "column": 21,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [19, 20],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ninterface Foo {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          },
+          "overrides": {
+            "interface": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "recursiveOutput": "\ninterface Foo {\n    name: string;\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [51, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [50, 51],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "interface Foo { a: any, [key: string]: any }",
+      "options": [],
+      "output": "interface Foo { a: any; [key: string]: any }",
+      "recursiveOutput": "interface Foo { a: any; [key: string]: any }",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 1,
+          "column": 24
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [23, 23],
+          "loc": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [22, 23],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": false
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n    name: string;\n    age: number;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "comma",
+            "requireLast": true
+          },
+          "overrides": {
+            "typeLiteral": {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": false
+              }
+            }
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n    name: string;\n    age: number\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 17
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "type Foo = { a: any, [key: string]: any }",
+      "options": [],
+      "output": "type Foo = { a: any; [key: string]: any }",
+      "recursiveOutput": "type Foo = { a: any; [key: string]: any }",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 1,
+          "column": 21
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [20, 20],
+          "loc": {
+            "line": 1,
+            "column": 21,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [19, 20],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {a: {\n  b: true;\n};};\n      ",
+      "options": [
+        {
+          "multilineDetection": "last-member"
+        }
+      ],
+      "output": "\ntype Foo = {a: {\n  b: true;\n}};\n      ",
+      "recursiveOutput": "\ntype Foo = {a: {\n  b: true;\n}};\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 3
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [31, 31],
+          "loc": {
+            "line": 4,
+            "column": 3,
+            "endLine": 4,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {a: {\n  b: true;\n}};\n      ",
+      "options": [],
+      "output": "\ntype Foo = {a: {\n  b: true;\n};};\n      ",
+      "recursiveOutput": "\ntype Foo = {a: {\n  b: true;\n};};\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 4,
+            "column": 2,
+            "endLine": 4,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n  a: {\n    b: true;\n  }\n};\n      ",
+      "options": [
+        {
+          "multilineDetection": "last-member"
+        }
+      ],
+      "output": "\ntype Foo = {\n  a: {\n    b: true;\n  };\n};\n      ",
+      "recursiveOutput": "\ntype Foo = {\n  a: {\n    b: true;\n  };\n};\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 5,
+          "column": 4
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [37, 37],
+          "loc": {
+            "line": 5,
+            "column": 4,
+            "endLine": 5,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [37, 37],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {a: {\n  b: true;\n}};\n      ",
+      "options": [
+        {
+          "singleline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "multilineDetection": "last-member"
+        }
+      ],
+      "output": "\ntype Foo = {a: {\n  b: true;\n};};\n      ",
+      "recursiveOutput": "\ntype Foo = {a: {\n  b: true;\n};};\n      ",
+      "errors": [
+        {
+          "messageId": "expectedSemi",
+          "line": 4,
+          "column": 2
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedSemi",
+          "message": "Expected a semicolon.",
+          "data": {},
+          "range": [30, 30],
+          "loc": {
+            "line": 4,
+            "column": 2,
+            "endLine": 4,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [30, 30],
+            "text": ";"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n  a: {\n    b: true;\n  }; c: false;\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n  a: {\n    b: true\n  }; c: false\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n  a: {\n    b: true\n  }; c: false\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 13
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 5,
+          "column": 5
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 5,
+          "column": 15
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 4,
+            "column": 13,
+            "endLine": 4,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [32, 33],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [38, 38],
+          "loc": {
+            "line": 5,
+            "column": 5,
+            "endLine": 5,
+            "endColumn": 5
+          },
+          "fix": null
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 5,
+            "column": 15,
+            "endLine": 5,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [47, 48],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\ntype Foo = {\n  a: true; /** something */ /** some\n  thing */ b: true; /** something */ c: false; // something\n}\n      ",
+      "options": [
+        {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
+      ],
+      "output": "\ntype Foo = {\n  a: true /** something */ /** some\n  thing */ b: true; /** something */ c: false // something\n}\n      ",
+      "recursiveOutput": "\ntype Foo = {\n  a: true /** something */ /** some\n  thing */ b: true; /** something */ c: false // something\n}\n      ",
+      "errors": [
+        {
+          "messageId": "unexpectedSemi",
+          "line": 3,
+          "column": 11
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 20
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "line": 4,
+          "column": 47
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [24, 24],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [23, 24],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [70, 70],
+          "loc": {
+            "line": 4,
+            "column": 20,
+            "endLine": 4,
+            "endColumn": 20
+          },
+          "fix": null
+        },
+        {
+          "messageId": "unexpectedSemi",
+          "message": "Unexpected separator (;).",
+          "data": {},
+          "range": [97, 97],
+          "loc": {
+            "line": 4,
+            "column": 47,
+            "endLine": 4,
+            "endColumn": 47
+          },
+          "fix": {
+            "range": [96, 97],
+            "text": ""
+          }
+        }
+      ]
+    }
+  ]
+}

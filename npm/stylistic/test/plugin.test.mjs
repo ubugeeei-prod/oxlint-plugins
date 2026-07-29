@@ -144,6 +144,12 @@ const stylisticRuleFixtures = [
   ['newline-per-chained-call', 'first().second().third();\n', [], ['expected']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
+  [
+    'member-delimiter-style',
+    'interface Value {\n  first: string,\n  second: number,\n}\n',
+    [],
+    ['expectedSemi', 'expectedSemi'],
+  ],
   ['no-confusing-arrow', 'const f = value => value ? yes : no;\n', [], ['confusing']],
   [
     'type-annotation-spacing',
@@ -2938,6 +2944,57 @@ const parenthesized = (a + b) * c;
         'Expected indentation of 2 spaces',
         'Expected indentation of 2 spaces',
       ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs member-delimiter-style through real oxlint TypeScript', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-member-delimiter-style-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.ts');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(
+        sourcePath,
+        ['interface 日本語 {', '  first: string,', '  second(): number,', '}', ''].join('\n'),
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/member-delimiter-style': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(member-delimiter-style)',
+        'stylistic(member-delimiter-style)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Expected a semicolon.',
+        'Expected a semicolon.',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.labels[0].span.length)).toEqual([0, 0]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

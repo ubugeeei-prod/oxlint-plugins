@@ -15087,19 +15087,19 @@
       },
       {
         "name": "member-delimiter-style",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule member-delimiter-style."
+        "notes": "Native Rust/Oxc port of stable @stylistic/eslint-plugin v5.10.0 member-delimiter-style with interface and type-literal overrides, multiline detection, exact conservative comment-aware fixes, pinned fixture synchronization, exhaustive 61-valid/99-invalid replay covering 153 ordered diagnostics and recursive output, TypeScript, TSX, CRLF, Unicode/UTF-16, LS/PS, plugin/API/meta, and real Oxlint coverage."
       },
       {
         "name": "multiline-comment-style",

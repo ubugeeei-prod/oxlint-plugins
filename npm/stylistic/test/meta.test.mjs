@@ -246,6 +246,24 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves member-delimiter-style metadata from the stable upstream rule', () => {
+    expect(plugin.rules['member-delimiter-style'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Require a specific member delimiter style for interfaces and type literals.',
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        unexpectedComma: 'Unexpected separator (,).',
+        unexpectedSemi: 'Unexpected separator (;).',
+        expectedComma: 'Expected a comma.',
+        expectedSemi: 'Expected a semicolon.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('preserves the upstream multiline-comment-style metadata', () => {
     expect(plugin.rules['multiline-comment-style'].meta).toMatchObject({
       fixable: 'whitespace',
