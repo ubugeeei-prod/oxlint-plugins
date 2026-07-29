@@ -267,6 +267,25 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the complete type-named-tuple-spacing metadata contract', () => {
+    expect(plugin.rules['type-named-tuple-spacing'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Expect space before the type declaration in the named tuple',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        expectedSpaceAfter: "Expected a space after the ':'.",
+        unexpectedSpaceBetween: "Unexpected space between '?' and the ':'.",
+        unexpectedSpaceBefore: "Unexpected space before the ':'.",
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

@@ -33,6 +33,7 @@ mod quotes;
 mod tabs;
 mod token_rules;
 mod type_annotation_spacing;
+mod type_named_tuple_spacing;
 mod unicode_bom;
 
 const PROGRAM_LISTENER: &[&str] = &["Program"];
@@ -108,6 +109,14 @@ const TYPE_ANNOTATION_SPACING_MESSAGES: &[(&str, &str)] = &[
         "unexpectedSpaceBetween",
         "Unexpected space between the '{{previousToken}}' and the '{{type}}'.",
     ),
+];
+const TYPE_NAMED_TUPLE_SPACING_MESSAGES: &[(&str, &str)] = &[
+    ("expectedSpaceAfter", "Expected a space after the ':'."),
+    (
+        "unexpectedSpaceBetween",
+        "Unexpected space between '?' and the ':'.",
+    ),
+    ("unexpectedSpaceBefore", "Unexpected space before the ':'."),
 ];
 const FUNCTION_PAREN_NEWLINE_MESSAGES: &[(&str, &str)] = &[
     ("expectedBefore", "Expected newline before ')'."),
@@ -764,6 +773,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: TYPE_ANNOTATION_SPACING_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "type-named-tuple-spacing",
+        docs_description: "Expect space before the type declaration in the named tuple",
+        messages: TYPE_NAMED_TUPLE_SPACING_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "function-paren-newline",
         docs_description: "Enforce consistent line breaks inside function parentheses.",
         messages: FUNCTION_PAREN_NEWLINE_MESSAGES,
@@ -1240,6 +1254,11 @@ pub fn run_stylistic_lint(
             "type-annotation-spacing" => type_annotation_spacing::check_type_annotation_spacing(
                 source_text,
                 &rule.options,
+                &mut diagnostics,
+            ),
+            "type-named-tuple-spacing" => type_named_tuple_spacing::check_type_named_tuple_spacing(
+                source_text,
+                config.filename.as_deref(),
                 &mut diagnostics,
             ),
             "function-paren-newline" => function_paren_newline::check_function_paren_newline(

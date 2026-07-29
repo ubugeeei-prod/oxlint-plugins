@@ -138,6 +138,7 @@ const stylisticRuleFixtures = [
     [],
     ['expectedSpaceAfter', 'unexpectedSpaceBefore'],
   ],
+  ['type-named-tuple-spacing', 'type Tuple = [value:number];\n', [], ['expectedSpaceAfter']],
   [
     'function-paren-newline',
     'function value(first, second) {}\n',
@@ -1983,6 +1984,46 @@ const parenthesized = (a + b) * c;
         {
           code: 'stylistic(type-annotation-spacing)',
           message: "Unexpected space before the ':'.",
+        },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs type-named-tuple-spacing through real oxlint TypeScript configs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-type-named-tuple-spacing-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.ts');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(sourcePath, 'type Events = [change:string, update?:  number];\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/type-named-tuple-spacing': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(type-named-tuple-spacing)',
+          message: "Expected a space after the ':'.",
+        },
+        {
+          code: 'stylistic(type-named-tuple-spacing)',
+          message: "Expected a space after the ':'.",
         },
       ]);
     } finally {

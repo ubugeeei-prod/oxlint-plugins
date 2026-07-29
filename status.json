@@ -15343,19 +15343,19 @@
       },
       {
         "name": "type-named-tuple-spacing",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule type-named-tuple-spacing."
+        "notes": "Oxc AST-backed native Rust port of @stylistic/type-named-tuple-spacing v5.10.0. The pinned synchronizer plus Rust and Vitest suites replay all 5 valid and 11 invalid upstream cases with 18 exact diagnostics and outputs, and add nested generic, optional member, whitespace/line-ending, Unicode range, TSX, API/meta/plugin, and real Oxlint coverage."
       },
       {
         "name": "wrap-iife",

@@ -71,6 +71,7 @@
     "port:tests:stylistic:nonblock-statement-body-position": "node tools/tasks/sync-stylistic-nonblock-statement-body-position-tests.ts",
     "port:tests:stylistic:object-curly-newline": "node tools/tasks/sync-stylistic-object-curly-newline-tests.ts",
     "port:tests:stylistic:type-annotation-spacing": "node tools/tasks/sync-stylistic-type-annotation-spacing-tests.ts",
+    "port:tests:stylistic:type-named-tuple-spacing": "node tools/tasks/sync-stylistic-type-named-tuple-spacing-tests.ts",
     "port:tests:stylistic:array-bracket-newline": "node tools/tasks/sync-stylistic-array-bracket-newline-tests.ts",
     "port:tests:stylistic:brace-style": "node tools/tasks/sync-stylistic-brace-style-tests.ts",
     "port:tests:stylistic:curly-newline": "node tools/tasks/sync-stylistic-curly-newline-tests.ts",
