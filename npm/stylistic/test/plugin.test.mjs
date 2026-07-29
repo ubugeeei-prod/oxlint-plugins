@@ -88,6 +88,7 @@ const stylisticRuleFixtures = [
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
+  ['newline-per-chained-call', 'first().second().third();\n', [], ['expected']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
   ['jsx-equals-spacing', '<App foo = {bar} />;\n', [], ['noSpaceBefore', 'noSpaceAfter']],
   ['no-confusing-arrow', 'const f = value => value ? yes : no;\n', [], ['confusing']],
@@ -721,6 +722,82 @@ const parenthesized = (a + b) * c;
     expect(runRule('no-mixed-operators', sourceText)).toEqual([]);
   });
 
+  it('reports newline-per-chained-call data and fixes with UTF-16 ranges', () => {
+    const source = 'const value = "😀".trim().toString().valueOf();\n';
+    const propertyStart = source.indexOf('.valueOf');
+    const reports = runRule('newline-per-chained-call', source, []);
+
+    expect(reports).toMatchObject([
+      {
+        messageId: 'expected',
+        data: { callee: '.valueOf' },
+        node: { range: [propertyStart, propertyStart + '.valueOf'.length] },
+      },
+    ]);
+    expect(
+      reports[0].suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([{ range: [propertyStart, propertyStart], replacementText: '\n' }]);
+  });
+
+  it('honors newline-per-chained-call depth options from direct and shared config', () => {
+    const source = 'first().second().third();\n';
+
+    expect(
+      runRule('newline-per-chained-call', source, [{ ignoreChainWithDepth: 1 }]),
+    ).toMatchObject([
+      { messageId: 'expected', data: { callee: '.second' } },
+      { messageId: 'expected', data: { callee: '.third' } },
+    ]);
+    expect(
+      runRule('newline-per-chained-call', source, [], {
+        corsaStylistic: {
+          rules: {
+            'newline-per-chained-call': [{ ignoreChainWithDepth: 3 }],
+          },
+        },
+      }),
+    ).toEqual([]);
+  });
+
+  it('keeps newline-per-chained-call comments, optional calls, and computed properties fixable', () => {
+    const source = [
+      'first().second() /* preserve */ .third();',
+      'obj?.foo1()?.foo2()?.foo3();',
+      'first()[second()]()[third()]();',
+    ].join('\n');
+    const reports = runRule('newline-per-chained-call', source, []);
+
+    expect(reports.map((report) => report.data)).toEqual([
+      { callee: '.third' },
+      { callee: '?.foo3' },
+      { callee: '[third()]' },
+    ]);
+    expect(
+      reports.map(
+        (report) =>
+          report.suggest[0].fix({
+            replaceTextRange(range, replacementText) {
+              return { range, replacementText };
+            },
+          })[0],
+      ),
+    ).toEqual([
+      { range: [source.indexOf('.third'), source.indexOf('.third')], replacementText: '\n' },
+      {
+        range: [source.indexOf('?.foo3'), source.indexOf('?.foo3')],
+        replacementText: '\n',
+      },
+      {
+        range: [source.indexOf('[third()]'), source.indexOf('[third()]')],
+        replacementText: '\n',
+      },
+    ]);
+  });
+
   it('works through oxlint jsPlugins config', () => {
     const oxlint = findOxlintCli();
     const temp = mkdtempSync(join(tmpdir(), 'stylistic-plugin-'));
@@ -1014,6 +1091,54 @@ const parenthesized = (a + b) * c;
         "Unexpected mix of '+' and '*'. Use parentheses to clarify the intended order of operations.",
         "Unexpected mix of '+' and '*'. Use parentheses to clarify the intended order of operations.",
         "Unexpected mix of '+' and '*'. Use parentheses to clarify the intended order of operations.",
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs newline-per-chained-call through a real oxlint TSX config', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-newline-chain-plugin-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      const source =
+        'declare const service: any;\nexport const view = <div>{service.first().second().third()}</div>;\n';
+
+      writeFileSync(sourcePath, source);
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/newline-per-chained-call': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics).toMatchObject([
+        {
+          code: 'stylistic(newline-per-chained-call)',
+          message: 'Expected line break before `.third`.',
+        },
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });
