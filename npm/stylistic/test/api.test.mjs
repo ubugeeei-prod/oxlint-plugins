@@ -55,6 +55,7 @@ describe('stylistic native API', () => {
       'newline-per-chained-call',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('multiline-ternary');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('wrap-iife');
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -1243,6 +1244,38 @@ describe('stylistic native API', () => {
               {
                 range: { start: propEnd, end: elementEnd },
                 replacementText: `\n${' '.repeat(34)}/>`,
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+  it('runs wrap-iife with exact UTF-8 byte ranges and code fixes', () => {
+    const source = "const 日本語 = function () { return '😀'; }();";
+    const callStart = Buffer.byteLength(source.slice(0, source.indexOf('function')));
+    const functionEnd = Buffer.byteLength(source.slice(0, source.indexOf('}') + 1));
+    const callEnd = Buffer.byteLength(source.slice(0, source.lastIndexOf(';')));
+    const functionText = source.slice(source.indexOf('function'), source.indexOf('}') + 1);
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [{ name: 'wrap-iife', options: ['inside'] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'wrap-iife',
+        messageId: 'wrapInvocation',
+        message: 'Wrap an immediate function invocation in parentheses.',
+        range: { start: callStart, end: callEnd },
+        suggestions: [
+          {
+            messageId: 'wrapInvocation',
+            message: 'Wrap an immediate function invocation in parentheses.',
+            fixes: [
+              {
+                range: { start: callStart, end: functionEnd },
+                replacementText: `(${functionText})`,
               },
             ],
           },

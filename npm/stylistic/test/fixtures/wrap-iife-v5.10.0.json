@@ -1,0 +1,1926 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/wrap-iife/wrap-iife.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.4.1",
+    "tool": "tools/tasks/sync-stylistic-wrap-iife-tests.ts",
+    "inventory": {
+      "valid": 86,
+      "invalid": 42,
+      "diagnostics": 42,
+      "unfixableInvalid": 0,
+      "total": 128,
+      "fixableInvalid": 42
+    }
+  },
+  "valid": [
+    {
+      "code": "(function(){ }());",
+      "options": ["any"]
+    },
+    {
+      "code": "(function(){ })();",
+      "options": ["any"]
+    },
+    {
+      "code": "(function a(){ }());",
+      "options": ["any"]
+    },
+    {
+      "code": "(function a(){ })();",
+      "options": ["any"]
+    },
+    {
+      "code": "(function(){ }())",
+      "options": ["any"]
+    },
+    {
+      "code": "(function(){ })()",
+      "options": ["any"]
+    },
+    {
+      "code": "(function a(){ }());",
+      "options": ["outside"]
+    },
+    {
+      "code": "(function a(){ })();",
+      "options": ["inside"]
+    },
+    {
+      "code": "foo.bar();",
+      "options": ["any"]
+    },
+    {
+      "code": "var a = function(){return 1;};",
+      "options": ["any"]
+    },
+    {
+      "code": "var a = ((function(){return 1;})());",
+      "options": ["any"]
+    },
+    {
+      "code": "var a = ((function(){return 1;})());",
+      "options": ["inside"]
+    },
+    {
+      "code": "var a = ((function(){return 1;})());",
+      "options": ["outside"]
+    },
+    {
+      "code": "if (function (){}()) {}",
+      "options": ["any"]
+    },
+    {
+      "code": "while (function (){}()) {}",
+      "options": ["any"]
+    },
+    {
+      "code": "do {} while (function (){}())",
+      "options": ["any"]
+    },
+    {
+      "code": "switch (function (){}()) {}",
+      "options": ["any"]
+    },
+    {
+      "code": "with (function (){}()) {}",
+      "options": ["any"]
+    },
+    {
+      "code": "foo(function (){}());",
+      "options": ["any"]
+    },
+    {
+      "code": "new foo(function (){}());",
+      "options": ["any"]
+    },
+    {
+      "code": "import(function (){}());",
+      "options": ["any"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "if ((function (){})()) {}",
+      "options": ["any"]
+    },
+    {
+      "code": "while (((function (){})())) {}",
+      "options": ["any"]
+    },
+    {
+      "code": "if (function (){}()) {}",
+      "options": ["outside"]
+    },
+    {
+      "code": "while (function (){}()) {}",
+      "options": ["outside"]
+    },
+    {
+      "code": "do {} while (function (){}())",
+      "options": ["outside"]
+    },
+    {
+      "code": "switch (function (){}()) {}",
+      "options": ["outside"]
+    },
+    {
+      "code": "with (function (){}()) {}",
+      "options": ["outside"]
+    },
+    {
+      "code": "foo(function (){}());",
+      "options": ["outside"]
+    },
+    {
+      "code": "new foo(function (){}());",
+      "options": ["outside"]
+    },
+    {
+      "code": "import(function (){}());",
+      "options": ["outside"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "if ((function (){})()) {}",
+      "options": ["outside"]
+    },
+    {
+      "code": "while (((function (){})())) {}",
+      "options": ["outside"]
+    },
+    {
+      "code": "if ((function (){})()) {}",
+      "options": ["inside"]
+    },
+    {
+      "code": "while ((function (){})()) {}",
+      "options": ["inside"]
+    },
+    {
+      "code": "do {} while ((function (){})())",
+      "options": ["inside"]
+    },
+    {
+      "code": "switch ((function (){})()) {}",
+      "options": ["inside"]
+    },
+    {
+      "code": "with ((function (){})()) {}",
+      "options": ["inside"]
+    },
+    {
+      "code": "foo((function (){})());",
+      "options": ["inside"]
+    },
+    {
+      "code": "new foo((function (){})());",
+      "options": ["inside"]
+    },
+    {
+      "code": "import((function (){})());",
+      "options": ["inside"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "while (((function (){})())) {}",
+      "options": ["inside"]
+    },
+    {
+      "code": "window.bar = (function() { return 3; }.call(this, arg1));",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "window.bar = (function() { return 3; }).call(this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "window.bar = (function() { return 3; }.apply(this, arg1));",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "window.bar = (function() { return 3; }).apply(this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "window.bar = function() { return 3; }.call(this, arg1);",
+      "options": ["inside"]
+    },
+    {
+      "code": "window.bar = function() { return 3; }.call(this, arg1);",
+      "options": ["inside", {}]
+    },
+    {
+      "code": "window.bar = function() { return 3; }.call(this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": false
+        }
+      ]
+    },
+    {
+      "code": "window.bar = function() { return 3; }[call](this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "window.bar = function() { return 3; }[apply](this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "window.bar = function() { return 3; }[foo](this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "var a = function(){return 1;}.bind(this);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "var a = function(){return 1;}.bind(this).apply(that);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "var a = ((function(){return 1;}).call());",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "var a = ((function(){return 1;}).call());",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "var a = ((function(){return 1;}).call());",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "if (function (){}.call()) {}",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "while (function (){}.call()) {}",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "do {} while (function (){}.call())",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "switch (function (){}.call()) {}",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "with (function (){}.call()) {}",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "foo(function (){}.call())",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "new foo(function (){}.call())",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "import(function (){}.call())",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "if ((function (){}).call()) {}",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "while (((function (){}).call())) {}",
+      "options": [
+        "any",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "if (function (){}.call()) {}",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "while (function (){}.call()) {}",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "do {} while (function (){}.call())",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "switch (function (){}.call()) {}",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "with (function (){}.call()) {}",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "foo(function (){}.call())",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "new foo(function (){}.call())",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "import(function (){}.call())",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "if ((function (){}).call()) {}",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "while (((function (){}).call())) {}",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "if ((function (){}).call()) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "while ((function (){}).call()) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "do {} while ((function (){}).call())",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "switch ((function (){}).call()) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "with ((function (){}).call()) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "foo((function (){}).call())",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "new foo((function (){}).call())",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    },
+    {
+      "code": "import((function (){}).call())",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    },
+    {
+      "code": "if (((function (){}).call())) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "0, function(){ }();",
+      "options": [],
+      "output": "0, (function(){ }());",
+      "recursiveOutput": "0, (function(){ }());",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [3, 18],
+          "loc": {
+            "line": 1,
+            "column": 4,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [3, 18],
+            "text": "(function(){ }())"
+          }
+        }
+      ]
+    },
+    {
+      "code": "[function(){ }()];",
+      "options": [],
+      "output": "[(function(){ }())];",
+      "recursiveOutput": "[(function(){ }())];",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [1, 16],
+          "loc": {
+            "line": 1,
+            "column": 2,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [1, 16],
+            "text": "(function(){ }())"
+          }
+        }
+      ]
+    },
+    {
+      "code": "var a = function(){ }();",
+      "options": [],
+      "output": "var a = (function(){ }());",
+      "recursiveOutput": "var a = (function(){ }());",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [8, 23],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [8, 23],
+            "text": "(function(){ }())"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function(){ }(), 0);",
+      "options": [],
+      "output": "((function(){ }()), 0);",
+      "recursiveOutput": "((function(){ }()), 0);",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [1, 16],
+          "loc": {
+            "line": 1,
+            "column": 2,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [1, 16],
+            "text": "(function(){ }())"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function a(){ })();",
+      "options": ["outside"],
+      "output": "(function a(){ }());",
+      "recursiveOutput": "(function a(){ }());",
+      "errors": [
+        {
+          "messageId": "moveInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "moveInvocation",
+          "message": "Move the invocation into the parens that contain the function.",
+          "data": {},
+          "range": [0, 19],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [16, 19],
+            "text": "())"
+          }
+        }
+      ]
+    },
+    {
+      "code": "(function a(){ }());",
+      "options": ["inside"],
+      "output": "(function a(){ })();",
+      "recursiveOutput": "(function a(){ })();",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [1, 18],
+          "loc": {
+            "line": 1,
+            "column": 2,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [16, 19],
+            "text": ")()"
+          }
+        }
+      ]
+    },
+    {
+      "code": "new foo((function (){}()))",
+      "options": ["inside"],
+      "output": "new foo((function (){})())",
+      "recursiveOutput": "new foo((function (){})())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [9, 24],
+          "loc": {
+            "line": 1,
+            "column": 10,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [22, 25],
+            "text": ")()"
+          }
+        }
+      ]
+    },
+    {
+      "code": "new (function (){}())",
+      "options": ["inside"],
+      "output": "new ((function (){})())",
+      "recursiveOutput": "new ((function (){})())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [5, 20],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [5, 18],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "new (function (){}())()",
+      "options": ["inside"],
+      "output": "new ((function (){})())()",
+      "recursiveOutput": "new ((function (){})())()",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [5, 20],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [5, 18],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if (function (){}()) {}",
+      "options": ["inside"],
+      "output": "if ((function (){})()) {}",
+      "recursiveOutput": "if ((function (){})()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [4, 19],
+          "loc": {
+            "line": 1,
+            "column": 5,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [4, 17],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if ((function (){}())) {}",
+      "options": ["inside"],
+      "output": "if ((function (){})()) {}",
+      "recursiveOutput": "if ((function (){})()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [5, 20],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [18, 21],
+            "text": ")()"
+          }
+        }
+      ]
+    },
+    {
+      "code": "while (function (){}()) {}",
+      "options": ["inside"],
+      "output": "while ((function (){})()) {}",
+      "recursiveOutput": "while ((function (){})()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [7, 22],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [7, 20],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "do {} while (function (){}())",
+      "options": ["inside"],
+      "output": "do {} while ((function (){})())",
+      "recursiveOutput": "do {} while ((function (){})())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [13, 28],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 29
+          },
+          "fix": {
+            "range": [13, 26],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "switch (function (){}()) {}",
+      "options": ["inside"],
+      "output": "switch ((function (){})()) {}",
+      "recursiveOutput": "switch ((function (){})()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [8, 23],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [8, 21],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "with (function (){}()) {}",
+      "options": ["inside"],
+      "output": "with ((function (){})()) {}",
+      "recursiveOutput": "with ((function (){})()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [6, 21],
+          "loc": {
+            "line": 1,
+            "column": 7,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [6, 19],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo(function (){}())",
+      "options": ["inside"],
+      "output": "foo((function (){})())",
+      "recursiveOutput": "foo((function (){})())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [4, 19],
+          "loc": {
+            "line": 1,
+            "column": 5,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [4, 17],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "new foo(function (){}())",
+      "options": ["inside"],
+      "output": "new foo((function (){})())",
+      "recursiveOutput": "new foo((function (){})())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [8, 23],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [8, 21],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(function (){}())",
+      "options": ["inside"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "output": "import((function (){})())",
+      "recursiveOutput": "import((function (){})())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [7, 22],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [7, 20],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "( /* a */ function /* b */ foo /* c */ ( /* d */ bar /* e */ ) /* f */ { /* g */ return; /* h */ } /* i */ ( /* j */ baz /* k */) /* l */ ) /* m */ ;",
+      "options": ["inside"],
+      "output": "( /* a */ function /* b */ foo /* c */ ( /* d */ bar /* e */ ) /* f */ { /* g */ return; /* h */ }) /* i */ ( /* j */ baz /* k */) /* l */  /* m */ ;",
+      "recursiveOutput": "( /* a */ function /* b */ foo /* c */ ( /* d */ bar /* e */ ) /* f */ { /* g */ return; /* h */ }) /* i */ ( /* j */ baz /* k */) /* l */  /* m */ ;",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [10, 129],
+          "loc": {
+            "line": 1,
+            "column": 11,
+            "endLine": 1,
+            "endColumn": 130
+          },
+          "fix": {
+            "range": [98, 139],
+            "text": ") /* i */ ( /* j */ baz /* k */) /* l */ "
+          }
+        }
+      ]
+    },
+    {
+      "code": "( /* a */ function /* b */ foo /* c */ ( /* d */ bar /* e */ ) /* f */ { /* g */ return; /* h */ } /* i */ ) /* j */ ( /* k */ baz /* l */) /* m */ ;",
+      "options": ["outside"],
+      "output": "( /* a */ function /* b */ foo /* c */ ( /* d */ bar /* e */ ) /* f */ { /* g */ return; /* h */ } /* i */  /* j */ ( /* k */ baz /* l */)) /* m */ ;",
+      "recursiveOutput": "( /* a */ function /* b */ foo /* c */ ( /* d */ bar /* e */ ) /* f */ { /* g */ return; /* h */ } /* i */  /* j */ ( /* k */ baz /* l */)) /* m */ ;",
+      "errors": [
+        {
+          "messageId": "moveInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "moveInvocation",
+          "message": "Move the invocation into the parens that contain the function.",
+          "data": {},
+          "range": [0, 139],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 140
+          },
+          "fix": {
+            "range": [107, 139],
+            "text": " /* j */ ( /* k */ baz /* l */))"
+          }
+        }
+      ]
+    },
+    {
+      "code": "+function(){return 1;}()",
+      "options": ["outside"],
+      "output": "+(function(){return 1;}())",
+      "recursiveOutput": "+(function(){return 1;}())",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [1, 24],
+          "loc": {
+            "line": 1,
+            "column": 2,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [1, 24],
+            "text": "(function(){return 1;}())"
+          }
+        }
+      ]
+    },
+    {
+      "code": "+function(){return 1;}()",
+      "options": ["inside"],
+      "output": "+(function(){return 1;})()",
+      "recursiveOutput": "+(function(){return 1;})()",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [1, 24],
+          "loc": {
+            "line": 1,
+            "column": 2,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [1, 22],
+            "text": "(function(){return 1;})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "window.bar = function() { return 3; }.call(this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "window.bar = (function() { return 3; }).call(this, arg1);",
+      "recursiveOutput": "window.bar = (function() { return 3; }).call(this, arg1);",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [13, 54],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 55
+          },
+          "fix": {
+            "range": [13, 37],
+            "text": "(function() { return 3; })"
+          }
+        }
+      ]
+    },
+    {
+      "code": "window.bar = function() { return 3; }['call'](this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "window.bar = (function() { return 3; })['call'](this, arg1);",
+      "recursiveOutput": "window.bar = (function() { return 3; })['call'](this, arg1);",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [13, 57],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 58
+          },
+          "fix": {
+            "range": [13, 37],
+            "text": "(function() { return 3; })"
+          }
+        }
+      ]
+    },
+    {
+      "code": "window.bar = function() { return 3; }.call(this, arg1);",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "window.bar = (function() { return 3; }.call(this, arg1));",
+      "recursiveOutput": "window.bar = (function() { return 3; }.call(this, arg1));",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [13, 54],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 55
+          },
+          "fix": {
+            "range": [13, 54],
+            "text": "(function() { return 3; }.call(this, arg1))"
+          }
+        }
+      ]
+    },
+    {
+      "code": "window.bar = (function() { return 3; }.call(this, arg1));",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "window.bar = (function() { return 3; }).call(this, arg1);",
+      "recursiveOutput": "window.bar = (function() { return 3; }).call(this, arg1);",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [14, 55],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 1,
+            "endColumn": 56
+          },
+          "fix": {
+            "range": [38, 56],
+            "text": ").call(this, arg1)"
+          }
+        }
+      ]
+    },
+    {
+      "code": "window.bar = (function() { return 3; }).call(this, arg1);",
+      "options": [
+        "outside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "window.bar = (function() { return 3; }.call(this, arg1));",
+      "recursiveOutput": "window.bar = (function() { return 3; }.call(this, arg1));",
+      "errors": [
+        {
+          "messageId": "moveInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "moveInvocation",
+          "message": "Move the invocation into the parens that contain the function.",
+          "data": {},
+          "range": [13, 56],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 57
+          },
+          "fix": {
+            "range": [38, 56],
+            "text": ".call(this, arg1))"
+          }
+        }
+      ]
+    },
+    {
+      "code": "new (function (){}.call())",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "new ((function (){}).call())",
+      "recursiveOutput": "new ((function (){}).call())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [5, 25],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [5, 18],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "new (function (){}.call())()",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "new ((function (){}).call())()",
+      "recursiveOutput": "new ((function (){}).call())()",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [5, 25],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [5, 18],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if (function (){}.call()) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "if ((function (){}).call()) {}",
+      "recursiveOutput": "if ((function (){}).call()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [4, 24],
+          "loc": {
+            "line": 1,
+            "column": 5,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [4, 17],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "if ((function (){}.call())) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "if ((function (){}).call()) {}",
+      "recursiveOutput": "if ((function (){}).call()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [5, 25],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [18, 26],
+            "text": ").call()"
+          }
+        }
+      ]
+    },
+    {
+      "code": "while (function (){}.call()) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "while ((function (){}).call()) {}",
+      "recursiveOutput": "while ((function (){}).call()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [7, 27],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [7, 20],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "do {} while (function (){}.call())",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "do {} while ((function (){}).call())",
+      "recursiveOutput": "do {} while ((function (){}).call())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [13, 33],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 34
+          },
+          "fix": {
+            "range": [13, 26],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "switch (function (){}.call()) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "switch ((function (){}).call()) {}",
+      "recursiveOutput": "switch ((function (){}).call()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [8, 28],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 29
+          },
+          "fix": {
+            "range": [8, 21],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "with (function (){}.call()) {}",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "with ((function (){}).call()) {}",
+      "recursiveOutput": "with ((function (){}).call()) {}",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [6, 26],
+          "loc": {
+            "line": 1,
+            "column": 7,
+            "endLine": 1,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [6, 19],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "foo(function (){}.call())",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "foo((function (){}).call())",
+      "recursiveOutput": "foo((function (){}).call())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [4, 24],
+          "loc": {
+            "line": 1,
+            "column": 5,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [4, 17],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "new foo(function (){}.call())",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "output": "new foo((function (){}).call())",
+      "recursiveOutput": "new foo((function (){}).call())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [8, 28],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 29
+          },
+          "fix": {
+            "range": [8, 21],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "import(function (){}.call())",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "output": "import((function (){}).call())",
+      "recursiveOutput": "import((function (){}).call())",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [7, 27],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [7, 20],
+            "text": "(function (){})"
+          }
+        }
+      ]
+    },
+    {
+      "code": "window.bar = function() { return 3; }.call?.(this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "output": "window.bar = (function() { return 3; }).call?.(this, arg1);",
+      "recursiveOutput": "window.bar = (function() { return 3; }).call?.(this, arg1);",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [13, 56],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 57
+          },
+          "fix": {
+            "range": [13, 37],
+            "text": "(function() { return 3; })"
+          }
+        }
+      ]
+    },
+    {
+      "code": "window.bar = function() { return 3; }?.call(this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "output": "window.bar = (function() { return 3; })?.call(this, arg1);",
+      "recursiveOutput": "window.bar = (function() { return 3; })?.call(this, arg1);",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [13, 55],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 56
+          },
+          "fix": {
+            "range": [13, 37],
+            "text": "(function() { return 3; })"
+          }
+        }
+      ]
+    },
+    {
+      "code": "window.bar = (function() { return 3; }?.call)(this, arg1);",
+      "options": [
+        "inside",
+        {
+          "functionPrototypeMethods": true
+        }
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "output": "window.bar = ((function() { return 3; })?.call)(this, arg1);",
+      "recursiveOutput": "window.bar = ((function() { return 3; })?.call)(this, arg1);",
+      "errors": [
+        {
+          "messageId": "wrapInvocation"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapInvocation",
+          "message": "Wrap an immediate function invocation in parentheses.",
+          "data": {},
+          "range": [13, 57],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 58
+          },
+          "fix": {
+            "range": [14, 38],
+            "text": "(function() { return 3; })"
+          }
+        }
+      ]
+    },
+    {
+      "code": "new (function () {} ?.());",
+      "options": ["inside"],
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "output": "new ((function () {}) ?.());",
+      "recursiveOutput": "new ((function () {}) ?.());",
+      "errors": [
+        {
+          "messageId": "wrapExpression"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrapExpression",
+          "message": "Wrap only the function expression in parens.",
+          "data": {},
+          "range": [5, 24],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [5, 19],
+            "text": "(function () {})"
+          }
+        }
+      ]
+    }
+  ]
+}

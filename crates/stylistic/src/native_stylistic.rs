@@ -42,6 +42,7 @@ mod type_annotation_spacing;
 mod type_generic_spacing;
 mod type_named_tuple_spacing;
 mod unicode_bom;
+mod wrap_iife;
 
 const PROGRAM_LISTENER: &[&str] = &["Program"];
 
@@ -543,6 +544,20 @@ const WRAP_REGEX_MESSAGES: &[(&str, &str)] = &[
         "Wrap the regexp literal in parentheses to disambiguate the slash operator.",
     ),
     ("wrapRegex", "Wrap in parentheses."),
+];
+const WRAP_IIFE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "wrapInvocation",
+        "Wrap an immediate function invocation in parentheses.",
+    ),
+    (
+        "wrapExpression",
+        "Wrap only the function expression in parens.",
+    ),
+    (
+        "moveInvocation",
+        "Move the invocation into the parens that contain the function.",
+    ),
 ];
 const IMPLICIT_ARROW_LINEBREAK_MESSAGES: &[(&str, &str)] = &[
     (
@@ -1048,6 +1063,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: WRAP_REGEX_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "wrap-iife",
+        docs_description: "Require parentheses around immediate `function` invocations",
+        messages: WRAP_IIFE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "implicit-arrow-linebreak",
         docs_description: "Enforce the location of arrow function bodies with implicit returns.",
         messages: IMPLICIT_ARROW_LINEBREAK_MESSAGES,
@@ -1174,6 +1194,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "new-parens",
     "space-unary-ops",
     "wrap-regex",
+    "wrap-iife",
     "implicit-arrow-linebreak",
     "operator-linebreak",
     "keyword-spacing",
@@ -1387,6 +1408,15 @@ pub fn run_stylistic_lint(
                 source_text,
                 config.filename.as_deref(),
                 &rule.options,
+                &mut diagnostics,
+            ),
+            "wrap-iife" => wrap_iife::check_wrap_iife(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                token_scan
+                    .as_ref()
+                    .expect("token scan is built when wrap-iife is enabled"),
                 &mut diagnostics,
             ),
             name if TOKEN_RULE_NAMES.contains(&name) => {
