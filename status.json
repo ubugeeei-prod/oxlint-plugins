@@ -14655,19 +14655,19 @@
       },
       {
         "name": "function-paren-newline",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule function-paren-newline."
+        "notes": "AST-backed port of stable @stylistic/eslint-plugin v5.10.0 function-paren-newline with all 112 valid and 86 invalid upstream cases (135 exact diagnostics), all five modes, exact locations and iterative fixes, comment safety, TypeScript/generic/import/new coverage, and Rust/native API/npm plugin/Oxlint integration tests."
       },
       {
         "name": "indent",

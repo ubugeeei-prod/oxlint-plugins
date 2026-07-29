@@ -129,6 +129,18 @@ describe('stylistic plugin meta contract', () => {
     expect(plugin.rules['array-element-newline'].meta.fixable).toBe('whitespace');
   });
 
+  it('preserves the stable function-paren-newline message catalog and fix metadata', () => {
+    expect(plugin.rules['function-paren-newline'].meta.messages).toEqual({
+      expectedBefore: "Expected newline before ')'.",
+      expectedAfter: "Expected newline after '('.",
+      expectedBetween: 'Expected newline between arguments/params.',
+      unexpectedBefore: "Unexpected newline before ')'.",
+      unexpectedAfter: "Unexpected newline after '('.",
+    });
+    expect(plugin.rules['function-paren-newline'].meta.fixable).toBe('whitespace');
+    expect(plugin.rules['function-paren-newline'].meta.hasSuggestions).toBe(true);
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

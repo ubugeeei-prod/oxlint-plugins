@@ -11,6 +11,7 @@ mod context;
 mod context_rules;
 mod expression_rules;
 mod function_call_argument_newline;
+mod function_paren_newline;
 mod helpers;
 mod jsx_quotes;
 mod jsx_rules;
@@ -100,6 +101,16 @@ const TYPE_ANNOTATION_SPACING_MESSAGES: &[(&str, &str)] = &[
         "unexpectedSpaceBetween",
         "Unexpected space between the '{{previousToken}}' and the '{{type}}'.",
     ),
+];
+const FUNCTION_PAREN_NEWLINE_MESSAGES: &[(&str, &str)] = &[
+    ("expectedBefore", "Expected newline before ')'."),
+    ("expectedAfter", "Expected newline after '('."),
+    (
+        "expectedBetween",
+        "Expected newline between arguments/params.",
+    ),
+    ("unexpectedBefore", "Unexpected newline before ')'."),
+    ("unexpectedAfter", "Unexpected newline after '('."),
 ];
 const COMMA_SPACING_MESSAGES: &[(&str, &str)] = &[
     ("missing", "A space is required around ','."),
@@ -627,6 +638,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: TYPE_ANNOTATION_SPACING_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "function-paren-newline",
+        docs_description: "Enforce consistent line breaks inside function parentheses.",
+        messages: FUNCTION_PAREN_NEWLINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "comma-spacing",
         docs_description: "Enforce consistent spacing before and after commas.",
         messages: COMMA_SPACING_MESSAGES,
@@ -1037,6 +1053,11 @@ pub fn run_stylistic_lint(
                 )
             }
             "type-annotation-spacing" => type_annotation_spacing::check_type_annotation_spacing(
+                source_text,
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "function-paren-newline" => function_paren_newline::check_function_paren_newline(
                 source_text,
                 &rule.options,
                 &mut diagnostics,
