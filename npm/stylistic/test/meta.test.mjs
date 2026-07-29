@@ -39,7 +39,7 @@ describe('stylistic plugin meta contract', () => {
     expect(rule.meta.docs.url).toMatch(/github\.com\/ubugeeei-prod\/oxlint-plugins/);
     expect(rule.meta.docs.recommended).toBe(false);
     expect(rule.meta.docs.requiresTypeChecking).toBe(false);
-    if (ruleName === 'no-mixed-operators') {
+    if (['no-mixed-operators', 'jsx-child-element-spacing'].includes(ruleName)) {
       expect(rule.meta.fixable).toBeUndefined();
       expect(rule.meta.hasSuggestions).toBe(false);
     } else {
@@ -96,6 +96,25 @@ describe('stylistic plugin meta contract', () => {
       'Unexpected usage of {{description}}.',
     );
     expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
+  });
+
+  it('preserves the complete upstream jsx-child-element-spacing metadata contract', () => {
+    expect(plugin.rules['jsx-child-element-spacing'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description:
+          'Enforce or disallow spaces inside of curly braces in JSX attributes and expressions',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      hasSuggestions: false,
+      messages: {
+        spacingAfterPrev: 'Ambiguous spacing after previous element {{element}}',
+        spacingBeforeNext: 'Ambiguous spacing before next element {{element}}',
+      },
+      schema: { type: 'array' },
+    });
+    expect(plugin.rules['jsx-child-element-spacing'].meta.fixable).toBeUndefined();
   });
 
   it('preserves the stable lines-around-comment message catalog', () => {

@@ -1,0 +1,782 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-child-element-spacing/jsx-child-element-spacing.test.ts",
+    "ruleFile": "packages/eslint-plugin/rules/jsx-child-element-spacing/jsx-child-element-spacing.ts",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-stylistic-jsx-child-element-spacing-tests.ts",
+    "parserMatrix": ["default", "@babel/eslint-parser", "@typescript-eslint/parser"],
+    "inventory": {
+      "logicalValid": 21,
+      "logicalInvalid": 7,
+      "valid": 62,
+      "invalid": 20,
+      "diagnostics": 23,
+      "fixableInvalid": 0,
+      "unfixableInvalid": 20,
+      "total": 82
+    }
+  },
+  "valid": [
+    {
+      "code": "\n        <App>\n          foo\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          foo\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          foo\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <>\n          foo\n        </>\n      \n// features: [fragment], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <>\n          foo\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          <a>bar</a>\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          <a>bar</a>\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          <a>bar</a>\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          <a>\n            <b>nested</b>\n          </a>\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          <a>\n            <b>nested</b>\n          </a>\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          <a>\n            <b>nested</b>\n          </a>\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          foo\n          bar\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          foo\n          bar\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          foo\n          bar\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          foo<a>bar</a>baz\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          foo<a>bar</a>baz\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          foo<a>bar</a>baz\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          foo\n          {' '}\n          <a>bar</a>\n          {' '}\n          baz\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          foo\n          {' '}\n          <a>bar</a>\n          {' '}\n          baz\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          foo\n          {' '}\n          <a>bar</a>\n          {' '}\n          baz\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          foo\n          {' '}<a>bar</a>{' '}\n          baz\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          foo\n          {' '}<a>bar</a>{' '}\n          baz\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          foo\n          {' '}<a>bar</a>{' '}\n          baz\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          foo{' '}\n          <a>bar</a>\n          {' '}baz\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          foo{' '}\n          <a>bar</a>\n          {' '}baz\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          foo{' '}\n          <a>bar</a>\n          {' '}baz\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          foo{/*\n          */}<a>bar</a>{/*\n          */}baz\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          foo{/*\n          */}<a>bar</a>{/*\n          */}baz\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          foo{/*\n          */}<a>bar</a>{/*\n          */}baz\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          Please take a look at <a href=\"https://js.org\">this link</a>.\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          Please take a look at <a href=\"https://js.org\">this link</a>.\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          Please take a look at <a href=\"https://js.org\">this link</a>.\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          Please take a look at\n          {' '}\n          <a href=\"https://js.org\">this link</a>.\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          Please take a look at\n          {' '}\n          <a href=\"https://js.org\">this link</a>.\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          Please take a look at\n          {' '}\n          <a href=\"https://js.org\">this link</a>.\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          <p>A</p>\n          <p>B</p>\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          <p>A</p>\n          <p>B</p>\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          <p>A</p>\n          <p>B</p>\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          <p>A</p><p>B</p>\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          <p>A</p><p>B</p>\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          <p>A</p><p>B</p>\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          <a>foo</a>\n          <a>bar</a>\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          <a>foo</a>\n          <a>bar</a>\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          <a>foo</a>\n          <a>bar</a>\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          <a>\n            <b>nested1</b>\n            <b>nested2</b>\n          </a>\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          <a>\n            <b>nested1</b>\n            <b>nested2</b>\n          </a>\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          <a>\n            <b>nested1</b>\n            <b>nested2</b>\n          </a>\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          A\n          B\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          A\n          B\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          A\n          B\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          A\n          <br/>\n          B\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          A\n          <br/>\n          B\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          A\n          <br/>\n          B\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          A<br/>\n          B\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          A<br/>\n          B\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          A<br/>\n          B\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>\n          A<br/>B\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>\n          A<br/>B\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>\n          A<br/>B\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <App>A<br/>B</App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <App>A<br/>B</App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <App>A<br/>B</App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n        <App>\n          foo\n          <a>bar</a>\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 39,
+            "end": 39
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          foo\n          <a>bar</a>\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 39,
+            "end": 39
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          foo\n          <a>bar</a>\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 39,
+            "end": 39
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <>\n          foo\n          <a>bar</a>\n        </>\n      \n// features: [fragment], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 36,
+            "end": 36
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <>\n          foo\n          <a>bar</a>\n        </>\n      \n// features: [fragment], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 36,
+            "end": 36
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          <a>bar</a>\n          baz\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingAfterPrev",
+          "message": "Ambiguous spacing after previous element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 35,
+            "end": 35
+          },
+          "location": {
+            "line": 3,
+            "column": 21
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          <a>bar</a>\n          baz\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingAfterPrev",
+          "message": "Ambiguous spacing after previous element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 35,
+            "end": 35
+          },
+          "location": {
+            "line": 3,
+            "column": 21
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          <a>bar</a>\n          baz\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingAfterPrev",
+          "message": "Ambiguous spacing after previous element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 35,
+            "end": 35
+          },
+          "location": {
+            "line": 3,
+            "column": 21
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          {' '}<a>bar</a>\n          baz\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingAfterPrev",
+          "message": "Ambiguous spacing after previous element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 40,
+            "end": 40
+          },
+          "location": {
+            "line": 3,
+            "column": 26
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          {' '}<a>bar</a>\n          baz\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingAfterPrev",
+          "message": "Ambiguous spacing after previous element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 40,
+            "end": 40
+          },
+          "location": {
+            "line": 3,
+            "column": 26
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          {' '}<a>bar</a>\n          baz\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingAfterPrev",
+          "message": "Ambiguous spacing after previous element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 40,
+            "end": 40
+          },
+          "location": {
+            "line": 3,
+            "column": 26
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          Please take a look at\n          <a href=\"https://js.org\">this link</a>.\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 57,
+            "end": 57
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          Please take a look at\n          <a href=\"https://js.org\">this link</a>.\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 57,
+            "end": 57
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          Please take a look at\n          <a href=\"https://js.org\">this link</a>.\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 57,
+            "end": 57
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          Some <code>loops</code> and some\n          <code>if</code> statements.\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element code",
+          "data": {
+            "element": "code"
+          },
+          "range": {
+            "start": 68,
+            "end": 68
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          Some <code>loops</code> and some\n          <code>if</code> statements.\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element code",
+          "data": {
+            "element": "code"
+          },
+          "range": {
+            "start": 68,
+            "end": 68
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          Some <code>loops</code> and some\n          <code>if</code> statements.\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element code",
+          "data": {
+            "element": "code"
+          },
+          "range": {
+            "start": 68,
+            "end": 68
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          Here is\n          <a href=\"https://js.org\">a link</a> and here is\n          <a href=\"https://js.org\">another</a>\n        </App>\n      \n// features: [], parser: default, , , ",
+      "parser": "default",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 43,
+            "end": 43
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        },
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 101,
+            "end": 101
+          },
+          "location": {
+            "line": 5,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          Here is\n          <a href=\"https://js.org\">a link</a> and here is\n          <a href=\"https://js.org\">another</a>\n        </App>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 43,
+            "end": 43
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        },
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 101,
+            "end": 101
+          },
+          "location": {
+            "line": 5,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    },
+    {
+      "code": "\n        <App>\n          Here is\n          <a href=\"https://js.org\">a link</a> and here is\n          <a href=\"https://js.org\">another</a>\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "expectedDiagnostics": [
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 43,
+            "end": 43
+          },
+          "location": {
+            "line": 4,
+            "column": 11
+          },
+          "fix": null
+        },
+        {
+          "messageId": "spacingBeforeNext",
+          "message": "Ambiguous spacing before next element a",
+          "data": {
+            "element": "a"
+          },
+          "range": {
+            "start": 101,
+            "end": 101
+          },
+          "location": {
+            "line": 5,
+            "column": 11
+          },
+          "fix": null
+        }
+      ],
+      "output": null
+    }
+  ]
+}

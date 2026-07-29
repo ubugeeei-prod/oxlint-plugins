@@ -14703,19 +14703,19 @@
       },
       {
         "name": "jsx-child-element-spacing",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-child-element-spacing."
+        "notes": "Rust/Oxc JSX AST port of stable @stylistic/eslint-plugin v5.10.0 jsx-child-element-spacing. A pinned synchronizer expands all 21 valid and 7 invalid logical upstream cases across the default, Babel, and TypeScript JSX parser matrix (62 valid, 20 invalid, 23 exact unfixable diagnostics); additional Rust, native API, metadata, plugin, shared-settings, Unicode, CRLF, comments, TSX, invalid-syntax, and real Oxlint tests verify exact messages, template data, zero-width ranges, traversal order, every upstream inline element, false-positive exclusions, and the absence of fixes."
       },
       {
         "name": "jsx-closing-bracket-location",

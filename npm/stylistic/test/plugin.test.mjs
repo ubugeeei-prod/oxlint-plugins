@@ -105,6 +105,7 @@ const stylisticRuleFixtures = [
   ['keyword-spacing', 'if(foo) {}\n', [], ['missingAfter']],
   ['line-comment-position', 'value; // inline\n// above\n', [], ['above']],
   ['lines-around-comment', 'before();\n/** docs */\nafter();\n', [], ['before']],
+  ['jsx-child-element-spacing', '<App>word\n<a>link</a></App>;\n', [], ['spacingBeforeNext']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
@@ -1895,6 +1896,56 @@ const parenthesized = (a + b) * c;
           labels: [{ span: { offset: 24, length: 7 } }],
         },
       ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs unfixable jsx-child-element-spacing through a real oxlint TSX config', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-child-spacing-plugin-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      const source =
+        'export const view: JSX.Element = <App>日本語\r\n<a>リンク</a>\r\n後続</App>;\n';
+
+      writeFileSync(sourcePath, source);
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-child-element-spacing': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(jsx-child-element-spacing)',
+        'stylistic(jsx-child-element-spacing)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Ambiguous spacing before next element a',
+        'Ambiguous spacing after previous element a',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.labels[0].span.length)).toEqual([0, 0]);
+
+      const fixResult = spawnSync(oxlint, ['-c', configPath, '--quiet', '--fix', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixResult.status).toBe(1);
+      expect(readFileSync(sourcePath, 'utf8')).toBe(source);
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

@@ -17,6 +17,7 @@ mod function_call_argument_newline;
 mod function_paren_newline;
 mod helpers;
 mod indent_binary_ops;
+mod jsx_child_element_spacing;
 mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
@@ -580,6 +581,16 @@ const JSX_QUOTES_MESSAGES: &[(&str, &str)] = &[
     ("unexpected", "Unexpected usage of {{description}}."),
     ("fixQuote", "Convert JSX attribute quote style."),
 ];
+const JSX_CHILD_ELEMENT_SPACING_MESSAGES: &[(&str, &str)] = &[
+    (
+        "spacingAfterPrev",
+        "Ambiguous spacing after previous element {{element}}",
+    ),
+    (
+        "spacingBeforeNext",
+        "Ambiguous spacing before next element {{element}}",
+    ),
+];
 const MULTILINE_COMMENT_STYLE_MESSAGES: &[(&str, &str)] = &[
     (
         "expectedBlock",
@@ -1026,6 +1037,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_QUOTES_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-child-element-spacing",
+        docs_description: "Enforce or disallow spaces inside of curly braces in JSX attributes and expressions",
+        messages: JSX_CHILD_ELEMENT_SPACING_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "one-var-declaration-per-line",
         docs_description: "Require or disallow newlines around variable declarations.",
         messages: ONE_VAR_DECLARATION_PER_LINE_MESSAGES,
@@ -1126,7 +1142,10 @@ pub fn stylistic_rule_metas() -> Vec<RuleMeta> {
                 .iter()
                 .map(|(id, description)| ((*id).to_owned(), (*description).to_owned()))
                 .collect::<BTreeMap<_, _>>(),
-            has_suggestions: definition.name != "no-mixed-operators",
+            has_suggestions: !matches!(
+                definition.name,
+                "no-mixed-operators" | "jsx-child-element-spacing"
+            ),
             listeners: PROGRAM_LISTENER
                 .iter()
                 .map(|listener| (*listener).to_owned())
@@ -1206,6 +1225,14 @@ pub fn run_stylistic_lint(
             "quotes" => quotes::check_quotes(source_text, &rule.options, &mut diagnostics),
             "jsx-quotes" => {
                 jsx_quotes::check_jsx_quotes(source_text, &rule.options, &mut diagnostics)
+            }
+            "jsx-child-element-spacing" => {
+                jsx_child_element_spacing::check_jsx_child_element_spacing(
+                    source_text,
+                    config.filename.as_deref(),
+                    &rule.options,
+                    &mut diagnostics,
+                )
             }
             "unicode-bom" => {
                 unicode_bom::check_unicode_bom(source_text, &rule.options, &mut diagnostics)

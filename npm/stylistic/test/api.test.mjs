@@ -20,6 +20,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('lines-around-comment');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-equals-spacing');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'jsx-child-element-spacing',
+    );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-confusing-arrow');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'type-annotation-spacing',
@@ -286,6 +289,33 @@ describe('stylistic native API', () => {
     ]);
     expect(preferSingle[0].suggestions[0].fixes).toEqual([
       { range: { start: 25, end: 30 }, replacementText: "'two'" },
+    ]);
+  });
+
+  it('runs jsx-child-element-spacing with exact UTF-8 points, data, and no fixes', () => {
+    const source = '<App>日本語\r\n<a>リンク</a>\r\n後続</App>';
+    const elementStart = Buffer.byteLength(source.slice(0, source.indexOf('<a>')));
+    const elementEnd = Buffer.byteLength(source.slice(0, source.indexOf('</a>') + '</a>'.length));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-child-element-spacing', options: ['ignored'] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-child-element-spacing',
+        messageId: 'spacingBeforeNext',
+        message: 'Ambiguous spacing before next element a',
+        data: { element: 'a' },
+        range: { start: elementStart, end: elementStart },
+      },
+      {
+        ruleName: 'jsx-child-element-spacing',
+        messageId: 'spacingAfterPrev',
+        message: 'Ambiguous spacing after previous element a',
+        data: { element: 'a' },
+        range: { start: elementEnd, end: elementEnd },
+      },
     ]);
   });
 
