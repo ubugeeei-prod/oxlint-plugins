@@ -25,6 +25,9 @@ describe('stylistic native API', () => {
       'type-annotation-spacing',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'type-named-tuple-spacing',
+    );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'function-call-argument-newline',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('function-paren-newline');
@@ -964,5 +967,37 @@ describe('stylistic native API', () => {
       },
     ]);
     expect(diagnostics[0].suggestions).toBeUndefined();
+  });
+
+  it('runs type-named-tuple-spacing with exact UTF-8 ranges and replacement fixes', () => {
+    const source = 'type 日本語 = [value :  number];';
+    const start = Buffer.byteLength(source.slice(0, source.indexOf('value')));
+    const end = Buffer.byteLength(source.slice(0, source.indexOf(']')));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [{ name: 'type-named-tuple-spacing', options: [] }],
+    });
+    const suggestion = (messageId, message) => ({
+      messageId,
+      message,
+      fixes: [{ range: { start, end }, replacementText: 'value: number' }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'type-named-tuple-spacing',
+        messageId: 'unexpectedSpaceBefore',
+        message: "Unexpected space before the ':'.",
+        range: { start, end },
+        suggestions: [suggestion('unexpectedSpaceBefore', "Unexpected space before the ':'.")],
+      },
+      {
+        ruleName: 'type-named-tuple-spacing',
+        messageId: 'expectedSpaceAfter',
+        message: "Expected a space after the ':'.",
+        range: { start, end },
+        suggestions: [suggestion('expectedSpaceAfter', "Expected a space after the ':'.")],
+      },
+    ]);
   });
 });
