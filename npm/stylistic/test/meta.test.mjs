@@ -173,6 +173,22 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the complete upstream multiline-ternary metadata contract', () => {
+    expect(plugin.rules['multiline-ternary'].meta).toMatchObject({
+      type: 'layout',
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        expectedTestCons: 'Expected newline between test and consequent of ternary expression.',
+        expectedConsAlt: 'Expected newline between consequent and alternate of ternary expression.',
+        unexpectedTestCons: 'Unexpected newline between test and consequent of ternary expression.',
+        unexpectedConsAlt:
+          'Unexpected newline between consequent and alternate of ternary expression.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

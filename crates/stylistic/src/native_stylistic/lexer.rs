@@ -315,7 +315,10 @@ impl<'a> Lexer<'a> {
     fn identifier(&mut self) {
         let start = self.pos;
         self.pos += 1;
-        while self.pos < self.bytes.len() && is_ident_continue(self.bytes[self.pos]) {
+        while self.pos < self.bytes.len()
+            && !is_unicode_line_terminator(self.bytes, self.pos)
+            && is_ident_continue(self.bytes[self.pos])
+        {
             self.pos += 1;
         }
         self.push(TokenKind::Identifier, start, self.pos);

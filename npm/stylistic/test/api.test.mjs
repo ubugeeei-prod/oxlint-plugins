@@ -35,6 +35,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'newline-per-chained-call',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('multiline-ternary');
   });
 
   it('runs multiple stylistic rules through one native call', () => {
@@ -651,5 +652,94 @@ describe('stylistic native API', () => {
         suggestions: [{ fixes: [{ replacementText: '' }] }],
       },
     ]);
+  });
+
+  it('runs multiline-ternary with exact native UTF-8 byte ranges and fixes', () => {
+    const source = 'const 日本語 = 条件 ? はい : いいえ;';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [{ name: 'multiline-ternary', options: ['always'] }],
+    });
+    const testStart = Buffer.byteLength('const 日本語 = ');
+    const testEnd = Buffer.byteLength('const 日本語 = 条件');
+    const consequentStart = Buffer.byteLength('const 日本語 = 条件 ? ');
+    const consequentEnd = Buffer.byteLength('const 日本語 = 条件 ? はい');
+    const question = Buffer.byteLength('const 日本語 = 条件 ');
+    const colon = Buffer.byteLength('const 日本語 = 条件 ? はい ');
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'multiline-ternary',
+        messageId: 'expectedTestCons',
+        message: 'Expected newline between test and consequent of ternary expression.',
+        range: { start: testStart, end: testEnd },
+        suggestions: [
+          {
+            messageId: 'expectedTestCons',
+            fixes: [
+              {
+                range: { start: testEnd, end: question },
+                replacementText: '\n',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'multiline-ternary',
+        messageId: 'expectedConsAlt',
+        message: 'Expected newline between consequent and alternate of ternary expression.',
+        range: { start: consequentStart, end: consequentEnd },
+        suggestions: [
+          {
+            messageId: 'expectedConsAlt',
+            fixes: [
+              {
+                range: { start: consequentEnd, end: colon },
+                replacementText: '\n',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('preserves multiline-ternary multi-edit removals and comment fix suppression', () => {
+    const source = 'condition\n?\nconsequent : alternate';
+    const diagnostics = runNativeStylisticLint(source, {
+      rules: [{ name: 'multiline-ternary', options: ['never'] }],
+    });
+
+    expect(diagnostics).toMatchObject([
+      {
+        messageId: 'unexpectedTestCons',
+        range: { start: 0, end: 'condition'.length },
+        suggestions: [
+          {
+            fixes: [
+              {
+                range: { start: 'condition'.length, end: 'condition\n'.length },
+                replacementText: '',
+              },
+              {
+                range: { start: 'condition\n?'.length, end: 'condition\n?\n'.length },
+                replacementText: '',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+
+    const commented = runNativeStylisticLint('condition ? // keep\nconsequent : alternate', {
+      rules: [{ name: 'multiline-ternary', options: ['always'] }],
+    });
+    expect(commented).toMatchObject([
+      {
+        messageId: 'expectedConsAlt',
+      },
+    ]);
+    expect(commented[0].suggestions).toBeUndefined();
   });
 });

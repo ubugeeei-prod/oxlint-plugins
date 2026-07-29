@@ -16,6 +16,9 @@ const linesAroundCommentFixture = JSON.parse(
 const functionParenNewlineFixture = JSON.parse(
   readFileSync(new URL('./fixtures/function-paren-newline-v5.10.0.json', import.meta.url), 'utf8'),
 );
+const multilineTernaryFixture = JSON.parse(
+  readFileSync(new URL('./fixtures/multiline-ternary-v5.10.0.json', import.meta.url), 'utf8'),
+);
 
 const stylisticRuleFixtures = [
   ['eol-last', 'const x = 1;', [], ['missing']],
@@ -104,6 +107,12 @@ const stylisticRuleFixtures = [
     'const values = [1, 2];\n',
     ['always'],
     ['missingOpeningLinebreak', 'missingClosingLinebreak'],
+  ],
+  [
+    'multiline-ternary',
+    'const value = condition ? yes : no;\n',
+    [],
+    ['expectedTestCons', 'expectedConsAlt'],
   ],
   ['newline-per-chained-call', 'first().second().third();\n', [], ['expected']],
   ['one-var-declaration-per-line', 'var a, b = 0;\n', [], ['expectVarOnNewline']],
@@ -202,16 +211,42 @@ function applyReportFixes(sourceText, reports) {
   return output;
 }
 
+function reportFixes(report) {
+  if (!report.suggest?.[0]) {
+    return [];
+  }
+  return report.suggest[0].fix({
+    replaceTextRange(range, replacementText) {
+      return { range, text: replacementText };
+    },
+  });
+}
+
+function mergedReportFix(report, source) {
+  const fixes = reportFixes(report);
+  if (fixes.length === 0) {
+    return null;
+  }
+  let cursor = fixes[0].range[0];
+  let text = '';
+  for (const fix of fixes) {
+    text += source.slice(cursor, fix.range[0]);
+    text += fix.text;
+    cursor = fix.range[1];
+  }
+  return {
+    range: [fixes[0].range[0], fixes.at(-1).range[1]],
+    text,
+  };
+}
+
 function iterativeFixedOutput(ruleName, source, options) {
   let output = source;
   let changed = false;
 
   for (let iteration = 0; iteration < 10; iteration += 1) {
     const fixes = runRule(ruleName, output, options)
-      .map((report, index) => ({
-        index,
-        fix: report.suggest?.[0] ? reportFix(report) : null,
-      }))
+      .map((report, index) => ({ index, fix: mergedReportFix(report, output) }))
       .filter(({ fix }) => fix !== null)
       .sort(
         (left, right) =>
@@ -232,7 +267,7 @@ function iterativeFixedOutput(ruleName, source, options) {
         continue;
       }
       next += output.slice(cursor, fix.range[0]);
-      next += fix.replacementText;
+      next += fix.text;
       cursor = fix.range[1];
       lastEnd = fix.range[1];
       applied = true;
@@ -1245,6 +1280,145 @@ const parenthesized = (a + b) * c;
     expect(runRule('no-mixed-operators', sourceText)).toEqual([]);
   });
 
+  it('keeps the stable multiline-ternary upstream inventory complete', () => {
+    expect(multilineTernaryFixture.__generated).toMatchObject({
+      source: '@stylistic/eslint-plugin',
+      version: 'v5.10.0',
+      commit: 'efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712',
+    });
+    expect(multilineTernaryFixture.valid).toHaveLength(84);
+    expect(multilineTernaryFixture.invalid).toHaveLength(63);
+    expect(multilineTernaryFixture.invalid.flatMap((testCase) => testCase.errors)).toHaveLength(
+      104,
+    );
+  });
+
+  it('accepts every stable v5.10.0 multiline-ternary valid fixture individually', () => {
+    for (const [index, testCase] of multilineTernaryFixture.valid.entries()) {
+      expect(
+        runRule('multiline-ternary', testCase.code, testCase.options),
+        `upstream valid fixture ${index}`,
+      ).toEqual([]);
+    }
+  });
+
+  it('replays every stable v5.10.0 multiline-ternary invalid fixture exactly', () => {
+    const messages = plugin.rules['multiline-ternary'].meta.messages;
+
+    for (const [index, testCase] of multilineTernaryFixture.invalid.entries()) {
+      const label = `upstream invalid fixture ${index}`;
+      const reports = runRule('multiline-ternary', testCase.code, testCase.options);
+      expect(messageIds(reports), label).toEqual(testCase.errors.map((error) => error.messageId));
+      expect(
+        reports.map((report) => report.node.range),
+        `${label} report ranges`,
+      ).toEqual(
+        testCase.errors.map((error) => [
+          offsetAt(testCase.code, error.line, error.column),
+          offsetAt(testCase.code, error.endLine, error.endColumn),
+        ]),
+      );
+      expect(
+        testCase.errors.map((error) => messages[error.messageId]),
+        `${label} messages`,
+      ).toEqual(testCase.errors.map((error) => error.message));
+      expect(
+        reports.map((report) => mergedReportFix(report, testCase.code)),
+        `${label} fixes`,
+      ).toEqual(
+        testCase.errors.map((error) =>
+          error.fix ? { range: error.fix.range, text: error.fix.text } : null,
+        ),
+      );
+      expect(
+        iterativeFixedOutput('multiline-ternary', testCase.code, testCase.options),
+        `${label} iterative output`,
+      ).toBe(testCase.output);
+    }
+  });
+
+  it('supports multiline-ternary modes, shared settings, UTF-16 ranges, and multi-edit fixes', () => {
+    const unicodeSource = 'const 日本語 = 条件 ? はい : いいえ;\n';
+    const reports = runRule('multiline-ternary', unicodeSource, [], {
+      corsaStylistic: {
+        rules: {
+          'multiline-ternary': ['always'],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual(['expectedTestCons', 'expectedConsAlt']);
+    expect(reports.map((report) => unicodeSource.slice(...report.node.range))).toEqual([
+      '条件',
+      'はい',
+    ]);
+    expect(reports.map(reportFixes)).toEqual([
+      [
+        {
+          range: [unicodeSource.indexOf('条件') + '条件'.length, unicodeSource.indexOf('?')],
+          text: '\n',
+        },
+      ],
+      [
+        {
+          range: [unicodeSource.indexOf('はい') + 'はい'.length, unicodeSource.indexOf(':')],
+          text: '\n',
+        },
+      ],
+    ]);
+
+    const neverSource = 'condition\n?\nconsequent : alternate';
+    const neverReports = runRule('multiline-ternary', neverSource, ['never']);
+    expect(messageIds(neverReports)).toEqual(['unexpectedTestCons']);
+    expect(reportFixes(neverReports[0])).toEqual([
+      { range: ['condition'.length, 'condition\n'.length], text: '' },
+      {
+        range: ['condition\n?'.length, 'condition\n?\n'.length],
+        text: '',
+      },
+    ]);
+    expect(mergedReportFix(neverReports[0], neverSource)).toEqual({
+      range: ['condition'.length, 'condition\n?\n'.length],
+      text: '?',
+    });
+
+    expect(runRule('multiline-ternary', 'condition ? yes : no', ['always-multiline'])).toEqual([]);
+  });
+
+  it('handles all line terminators, comments, TS syntax, TSX, and ignoreJSX boundaries', () => {
+    for (const linebreak of ['\n', '\r', '\r\n', '\u2028', '\u2029']) {
+      const source = `condition${linebreak}? yes${linebreak}: no`;
+      expect(runRule('multiline-ternary', source, ['always']), JSON.stringify(linebreak)).toEqual(
+        [],
+      );
+      expect(
+        messageIds(runRule('multiline-ternary', source, ['never'])),
+        JSON.stringify(linebreak),
+      ).toEqual(['unexpectedTestCons', 'unexpectedConsAlt']);
+    }
+
+    const commentReports = runRule(
+      'multiline-ternary',
+      'condition ? // keep\nconsequent : alternate',
+      ['always'],
+    );
+    expect(messageIds(commentReports)).toEqual(['expectedConsAlt']);
+    expect(commentReports[0].suggest).toBeUndefined();
+
+    const source = [
+      'const typed: string = condition ? (yes as string) : (no satisfies string);',
+      'const ignored = <Panel>{condition ? <Yes /> : <No />}</Panel>;',
+      'const ignoredParentheses = <>{(condition ? <Yes /> : <No />)}</>;',
+      'const checked = <>{flag && (condition ? <Yes /> : <No />)}</>;',
+      'const attribute = <Panel value={condition ? yes : no} />;',
+      "const text = 'condition ? yes : no';",
+      'type Conditional<T> = T extends true ? Yes : No;',
+    ].join('\n');
+    expect(
+      messageIds(runRule('multiline-ternary', source, ['always', { ignoreJSX: true }])),
+    ).toEqual(['expectedTestCons', 'expectedConsAlt', 'expectedTestCons', 'expectedConsAlt']);
+  });
+
   it('supports array-bracket-newline modes, UTF-16 ranges, shared settings, and fixes', () => {
     const source = 'const 日本語 = [1, 2];\n';
     const opening = source.indexOf('[');
@@ -1779,6 +1953,66 @@ const parenthesized = (a + b) * c;
           code: 'stylistic(newline-per-chained-call)',
           message: 'Expected line break before `.third`.',
         },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs multiline-ternary through real oxlint TypeScript and TSX configs', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-multiline-ternary-'));
+
+    try {
+      const typeScriptPath = join(temp, 'sample.ts');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+
+      writeFileSync(
+        typeScriptPath,
+        'export const value: string = condition ? (yes as string) : no;\n',
+      );
+      writeFileSync(
+        tsxPath,
+        'export const view = <Panel>{condition ? <Yes /> : <No />}</Panel>;\n',
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/multiline-ternary': ['error', 'always'],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', typeScriptPath, tsxPath],
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(multiline-ternary)',
+        'stylistic(multiline-ternary)',
+        'stylistic(multiline-ternary)',
+        'stylistic(multiline-ternary)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Expected newline between test and consequent of ternary expression.',
+        'Expected newline between consequent and alternate of ternary expression.',
+        'Expected newline between test and consequent of ternary expression.',
+        'Expected newline between consequent and alternate of ternary expression.',
       ]);
     } finally {
       rmSync(temp, { recursive: true, force: true });

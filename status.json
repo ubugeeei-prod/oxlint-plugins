@@ -15119,19 +15119,19 @@
       },
       {
         "name": "multiline-ternary",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule multiline-ternary."
+        "notes": "Native Rust port of stable @stylistic/eslint-plugin v5.10.0 multiline-ternary with exact always, always-multiline, never, and ignoreJSX behavior; pinned upstream fixture synchronization; exhaustive valid/invalid diagnostic, range, fix, and iterative-output replay; TypeScript, TSX, JSX-parent, comment-safety, Unicode, CRLF, LS, and PS coverage."
       },
       {
         "name": "newline-per-chained-call",
