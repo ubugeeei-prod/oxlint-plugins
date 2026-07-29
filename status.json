@@ -15231,19 +15231,19 @@
       },
       {
         "name": "object-curly-newline",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule object-curly-newline."
+        "notes": "Oxc AST-backed native Rust port of @stylistic/object-curly-newline v5.10.0 across JavaScript, Flow-compatible syntax, TypeScript, and TSX. The pinned fixture synchronizer and exhaustive Rust plus Vitest replay cover all 256 valid and 223 invalid upstream cases, 387 exact diagnostics, fixes and convergence, node-specific options, comments, Unicode line endings, NAPI/API/plugin/meta contracts, and real Oxlint integration."
       },
       {
         "name": "object-property-newline",

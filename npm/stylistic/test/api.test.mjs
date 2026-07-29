@@ -31,6 +31,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('indent-binary-ops');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-mixed-operators');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-element-newline');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('object-curly-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('array-bracket-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('brace-style');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
@@ -128,6 +129,45 @@ describe('stylistic native API', () => {
             messageId: 'missingLineBreak',
             message: 'There should be a linebreak after this element.',
             fixes: [{ range: { start: 19, end: 20 }, replacementText: '\n' }],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs object-curly-newline with exact UTF-8 byte ranges and fixes', () => {
+    const source = 'const 日本語 = {値: 1};';
+    const open = Buffer.byteLength(source.slice(0, source.indexOf('{')));
+    const close = Buffer.byteLength(source.slice(0, source.indexOf('}')));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [{ name: 'object-curly-newline', options: ['always'] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'object-curly-newline',
+        messageId: 'expectedLinebreakAfterOpeningBrace',
+        message: 'Expected a line break after this opening brace.',
+        range: { start: open, end: open + 1 },
+        suggestions: [
+          {
+            messageId: 'expectedLinebreakAfterOpeningBrace',
+            message: 'Expected a line break after this opening brace.',
+            fixes: [{ range: { start: open + 1, end: open + 1 }, replacementText: '\n' }],
+          },
+        ],
+      },
+      {
+        ruleName: 'object-curly-newline',
+        messageId: 'expectedLinebreakBeforeClosingBrace',
+        message: 'Expected a line break before this closing brace.',
+        range: { start: close, end: close + 1 },
+        suggestions: [
+          {
+            messageId: 'expectedLinebreakBeforeClosingBrace',
+            message: 'Expected a line break before this closing brace.',
+            fixes: [{ range: { start: close, end: close }, replacementText: '\n' }],
           },
         ],
       },

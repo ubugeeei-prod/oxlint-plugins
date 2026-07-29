@@ -25,6 +25,7 @@ mod lines_around_comment;
 mod multiline_ternary;
 mod newline_per_chained_call;
 mod no_confusing_arrow;
+mod object_curly_newline;
 mod quote_convert;
 mod quotes;
 mod tabs;
@@ -592,6 +593,24 @@ const ARRAY_ELEMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
         "There should be a linebreak after this element.",
     ),
 ];
+const OBJECT_CURLY_NEWLINE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "unexpectedLinebreakBeforeClosingBrace",
+        "Unexpected line break before this closing brace.",
+    ),
+    (
+        "unexpectedLinebreakAfterOpeningBrace",
+        "Unexpected line break after this opening brace.",
+    ),
+    (
+        "expectedLinebreakBeforeClosingBrace",
+        "Expected a line break before this closing brace.",
+    ),
+    (
+        "expectedLinebreakAfterOpeningBrace",
+        "Expected a line break after this opening brace.",
+    ),
+];
 const LINES_AROUND_COMMENT_MESSAGES: &[(&str, &str)] = &[
     ("after", "Expected line after comment."),
     ("before", "Expected line before comment."),
@@ -653,6 +672,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         name: "array-element-newline",
         docs_description: "Enforce line breaks after each array element.",
         messages: ARRAY_ELEMENT_NEWLINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
+        name: "object-curly-newline",
+        docs_description: "Enforce consistent line breaks after opening and before closing braces.",
+        messages: OBJECT_CURLY_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
         name: "eol-last",
@@ -979,6 +1003,7 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
 /// Rule names that run over the shared token + bracket-matching scan.
 const TOKEN_RULE_NAMES: &[&str] = &[
     "array-element-newline",
+    "object-curly-newline",
     "arrow-spacing",
     "comma-spacing",
     "semi-spacing",
@@ -1202,6 +1227,9 @@ fn run_token_rule(
     match name {
         "array-element-newline" => {
             array_rules::check_array_element_newline(scan, options, diagnostics)
+        }
+        "object-curly-newline" => {
+            object_curly_newline::check_object_curly_newline(scan, filename, options, diagnostics)
         }
         "arrow-spacing" => token_rules::check_arrow_spacing(scan, options, diagnostics),
         "comma-spacing" => token_rules::check_comma_spacing(scan, options, diagnostics),
