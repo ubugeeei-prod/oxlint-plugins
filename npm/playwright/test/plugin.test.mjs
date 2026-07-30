@@ -78,8 +78,12 @@ const invalidCases = [
   [
     'max-expects',
     'test("x", () => { expect(a).toBe(1); expect(b).toBe(2); expect(c).toBe(3); });\n',
+    [{ max: 2 }],
   ],
-  ['max-nested-describe', 'test.describe("outer", () => { test.describe("inner", () => {}); });\n'],
+  [
+    'max-nested-describe',
+    'test.describe("1", () => { test.describe("2", () => { test.describe("3", () => { test.describe("4", () => { test.describe("5", () => { test.describe("6", () => {}); }); }); }); }); });\n',
+  ],
   ['missing-playwright-await', 'test("x", async ({ page }) => { page.click("button"); });\n'],
   ['no-commented-out-tests', '// test("commented", () => {});\n'],
   ['no-conditional-expect', 'test("x", () => { if (ready) { expect(value).toBe(1); } });\n'],
@@ -148,6 +152,12 @@ const expectedRestrictedMessages = {
   'valid-test-tags': 'Tag must start with @',
   'valid-title': '{{ functionName }} should not have an empty title',
 };
+const expectedThresholdMessages = {
+  'max-expects': 'Too many assertion calls ({{ count }}) - maximum allowed is {{ max }}',
+  'max-nested-describe':
+    'Maximum describe call depth exceeded ({{ depth }}). Maximum allowed is {{ max }}.',
+  'require-top-level-describe': 'All test cases must be wrapped in a describe block.',
+};
 
 function runRule(ruleName, sourceText, options = [], filename = 'fixture.spec.ts') {
   const reports = [];
@@ -201,7 +211,9 @@ describe('playwright plugin adapter', () => {
 
     expect(reports).toHaveLength(1);
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
-      expectedRestrictedMessages[ruleName] ?? 'Unexpected Playwright pattern.',
+      expectedRestrictedMessages[ruleName] ??
+        expectedThresholdMessages[ruleName] ??
+        'Unexpected Playwright pattern.',
     );
   });
 

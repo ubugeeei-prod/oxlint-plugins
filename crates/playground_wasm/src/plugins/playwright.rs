@@ -33,6 +33,10 @@ pub fn scan(
         if !diagnostic.data.message.is_empty() {
             data.insert("message".to_owned(), diagnostic.data.message.into_string());
         }
+        push(&mut data, "amount", diagnostic.data.amount);
+        push(&mut data, "count", diagnostic.data.count);
+        push(&mut data, "depth", diagnostic.data.depth);
+        push(&mut data, "max", diagnostic.data.max);
         push(&mut data, "method", diagnostic.data.method);
         push(&mut data, "restriction", diagnostic.data.restriction);
         push(&mut data, "role", diagnostic.data.role);
@@ -40,6 +44,7 @@ pub fn scan(
         push(&mut data, "pattern", diagnostic.data.pattern);
         push(&mut data, "tag", diagnostic.data.tag);
         push(&mut data, "word", diagnostic.data.word);
+        push(&mut data, "s", diagnostic.data.s);
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,
             rule: diagnostic.rule_name.to_owned(),
@@ -112,5 +117,44 @@ mod tests {
         assert_eq!(diagnostics.len(), 1);
         assert_eq!(diagnostics[0].rule, "valid-test-tags");
         assert_eq!(diagnostics[0].message_id, "invalidTagFormat");
+    }
+
+    #[test]
+    fn preserves_threshold_message_data_locations_and_rule_selection() {
+        let filter = EnabledFilter::parse(r#"{"playwright":["max-expects"]}"#);
+        let mut diagnostics = Vec::new();
+        scan(
+            concat!(
+                "const marker = \"🧪\";\n",
+                "test(\"case\", () => {\n",
+                "  expect(1).toBe(1); expect(2).toBe(2); expect(3).toBe(3);\n",
+                "  expect(4).toBe(4); expect(5).toBe(5); expect(6).toBe(6);\n",
+                "});\n",
+            ),
+            "fixture.ts",
+            &filter,
+            &mut diagnostics,
+        );
+
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule, "max-expects");
+        assert_eq!(diagnostics[0].message_id, "exceededMaxAssertion");
+        assert_eq!(
+            diagnostics[0].data.get("count").map(String::as_str),
+            Some("6")
+        );
+        assert_eq!(
+            diagnostics[0].data.get("max").map(String::as_str),
+            Some("5")
+        );
+        assert_eq!(
+            (
+                diagnostics[0].start_line,
+                diagnostics[0].start_column,
+                diagnostics[0].end_line,
+                diagnostics[0].end_column,
+            ),
+            (4, 40, 4, 57)
+        );
     }
 }

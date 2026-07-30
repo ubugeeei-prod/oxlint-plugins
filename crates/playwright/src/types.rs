@@ -9,7 +9,7 @@ pub struct Restriction {
     pub message: Option<CompactString>,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct PlaywrightOptions {
     pub restricted_locators: SmallVec<[Restriction; 8]>,
     pub restricted_matchers: SmallVec<[Restriction; 8]>,
@@ -18,6 +18,9 @@ pub struct PlaywrightOptions {
     pub test_aliases: SmallVec<[CompactString; 4]>,
     pub valid_title: ValidTitleOptions,
     pub valid_test_tags: ValidTestTagsOptions,
+    pub max_expects: u32,
+    pub max_nested_describe: u32,
+    pub max_top_level_describes: Option<f64>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -71,6 +74,23 @@ pub struct TagPattern {
     pub is_regex: bool,
 }
 
+impl Default for PlaywrightOptions {
+    fn default() -> Self {
+        Self {
+            restricted_locators: SmallVec::new(),
+            restricted_matchers: SmallVec::new(),
+            restricted_roles: SmallVec::new(),
+            expect_aliases: SmallVec::new(),
+            test_aliases: SmallVec::new(),
+            valid_title: ValidTitleOptions::default(),
+            valid_test_tags: ValidTestTagsOptions::default(),
+            max_expects: 5,
+            max_nested_describe: 5,
+            max_top_level_describes: None,
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct DiagnosticLoc {
     pub start_line: u32,
@@ -98,6 +118,10 @@ pub struct DiagnosticFix {
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct DiagnosticData {
     pub message: CompactString,
+    pub amount: Option<CompactString>,
+    pub count: Option<CompactString>,
+    pub depth: Option<CompactString>,
+    pub max: Option<CompactString>,
     pub method: Option<CompactString>,
     pub restriction: Option<CompactString>,
     pub role: Option<CompactString>,
@@ -105,6 +129,7 @@ pub struct DiagnosticData {
     pub pattern: Option<CompactString>,
     pub tag: Option<CompactString>,
     pub word: Option<CompactString>,
+    pub s: Option<CompactString>,
 }
 
 pub(crate) struct LineIndex {

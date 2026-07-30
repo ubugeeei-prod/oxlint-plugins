@@ -22,13 +22,6 @@ impl<'a> Scanner<'a> {
         if self.source_text.contains("test(") && !self.source_text.contains("expect(") {
             self.report_at_first("expect-expect", "test(");
         }
-        if self.source_text.matches("expect(").count() > 2 {
-            self.report_at_first("max-expects", "expect(");
-        }
-        self.check_regex(
-            "max-nested-describe",
-            r#"(?s)test\.describe\s*\(.*?\{.*test\.describe\s*\("#,
-        );
         self.check_regex(
             "missing-playwright-await",
             r#"(?m)(^|[^\w.])page\.(click|dblclick|fill|goto|locator|press|selectOption|setInputFiles|tap|type|uncheck|waitForLoadState)\s*\("#,
@@ -143,10 +136,6 @@ impl<'a> Scanner<'a> {
         self.check_regex("require-tags", r#"test\s*\(\s*['"][^@'"]+['"]"#);
         self.check_regex("require-to-pass-timeout", r#"\.toPass\s*\(\s*\)"#);
         self.check_regex("require-to-throw-message", r#"\.toThrow\s*\(\s*\)"#);
-        self.check_regex(
-            "require-top-level-describe",
-            r#"(?m)^\s*test\s*\(\s*['"][^'"]+['"]"#,
-        );
         self.check_regex(
             "valid-describe-callback",
             r#"test\.describe\s*\(\s*['"][^'"]+['"]\s*\)"#,

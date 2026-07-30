@@ -3,6 +3,7 @@
 mod patterns;
 mod restricted;
 mod scanner;
+mod thresholds;
 mod types;
 
 #[cfg(test)]
@@ -16,6 +17,7 @@ use oxlint_plugins_carton::SmallVec;
 use crate::patterns::scan_pattern_rules;
 use crate::restricted::scan_restricted_rules;
 use crate::scanner::Scanner;
+use crate::thresholds::scan_threshold_rules;
 use crate::types::LineIndex;
 
 pub use crate::types::{
@@ -120,6 +122,13 @@ pub fn scan_playwright_with_options(
         &mut scanner.diagnostics,
     );
     scan_restricted_rules(
+        &parser_return.program,
+        source_text,
+        &scanner.line_index,
+        options,
+        &mut scanner.diagnostics,
+    );
+    scan_threshold_rules(
         &parser_return.program,
         source_text,
         &scanner.line_index,
