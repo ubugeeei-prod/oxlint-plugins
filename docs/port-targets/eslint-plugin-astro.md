@@ -11,7 +11,7 @@
 | Oxlint native support | none — port target |
 | Rules to port | 20 |
 
-> Lints .astro files via astro-eslint-parser. Frontmatter-only rules can be ported by segmenting raw .astro source and parsing TypeScript with Oxc; full template parity still depends on Astro-aware parsing. React rules are outside this target because Oxc covers React separately.
+> Lints .astro files via astro-eslint-parser. Frontmatter and conservatively segmented template expressions, attributes, and element bodies can be parsed with Oxc-backed Rust logic; full template parity still depends on Astro-aware parsing. React rules are outside this target because Oxc covers React separately.
 
 ## Rules
 

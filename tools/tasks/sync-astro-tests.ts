@@ -64,7 +64,11 @@ if (actualCommit !== expectedCommit) {
 const ruleNames = [
   'no-deprecated-astro-canonicalurl',
   'no-deprecated-astro-fetchcontent',
+  'no-deprecated-astro-resolve',
   'no-deprecated-getentrybyslug',
+  'no-set-html-directive',
+  'no-set-text-directive',
+  'prefer-class-list-directive',
 ] as const;
 const rules: Record<string, { valid: FixtureCase[]; invalid: FixtureCase[] }> = {};
 const sourceFiles: string[] = [];

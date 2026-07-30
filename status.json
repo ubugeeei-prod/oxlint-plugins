@@ -1506,19 +1506,19 @@
       },
       {
         "name": "no-deprecated-astro-resolve",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-deprecated-astro-resolve."
+        "notes": "Rust/Oxc template-expression port synced to the authored eslint-plugin-astro v3.0.1 fixtures. Covers balanced expression segmentation, frontmatter shadowing, UTF-8/UTF-16 physical range normalization, NAPI/API, real Oxlint .astro body reporting, and the playground."
       },
       {
         "name": "no-deprecated-getentrybyslug",
@@ -1586,35 +1586,35 @@
       },
       {
         "name": "no-set-html-directive",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-set-html-directive."
+        "notes": "Rust template-attribute port synced to every authored eslint-plugin-astro v3.0.1 valid and invalid fixture. Covers expression, quoted, and Astro template-literal attributes, NAPI/API, real Oxlint physical body reporting, and the playground."
       },
       {
         "name": "no-set-text-directive",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule no-set-text-directive."
+        "notes": "Rust template element/body port synced to every authored eslint-plugin-astro v3.0.1 input, error, and fixed output. Covers boolean, void, self-closing, whitespace-only, nonempty-child, and template-literal cases plus adapter fix idempotence. Oxlint 1.68 rejects fixes outside its virtual frontmatter, so the CLI integration reports body diagnostics without emitting an invalid fix."
       },
       {
         "name": "no-unsafe-inline-scripts",
@@ -1666,19 +1666,19 @@
       },
       {
         "name": "prefer-class-list-directive",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule prefer-class-list-directive."
+        "notes": "Rust template-expression/attribute port synced to every authored eslint-plugin-astro v3.0.1 input, error, and fixed output. Covers expression, clsx, template literal, shorthand, adapter fix idempotence, real Oxlint physical body reporting, and the playground. Oxlint 1.68 body fixes are suppressed because its virtual frontmatter rejects out-of-range edits."
       },
       {
         "name": "prefer-object-class-list",

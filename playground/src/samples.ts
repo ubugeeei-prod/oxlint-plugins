@@ -15,10 +15,12 @@ import { getEntryBySlug } from 'astro:content';
 
 const canonical = Astro.canonicalURL;
 const posts = await Astro.fetchContent('../pages/post/*.md');
+const active = true;
 ---
 
 <h1>{canonical.pathname}</h1>
-<p>{posts.length}</p>
+<img class={active ? 'active' : ''} src={Astro.resolve('../images/hero.png')} />
+<p set:text={posts.length}></p>
 `,
   },
   {

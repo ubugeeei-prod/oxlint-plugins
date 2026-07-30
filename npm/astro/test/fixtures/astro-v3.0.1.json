@@ -12,9 +12,55 @@
       "tests/fixtures/rules/no-deprecated-astro-fetchcontent/invalid/test01-input.astro",
       "tests/fixtures/rules/no-deprecated-astro-fetchcontent/invalid/test01-output.astro",
       "tests/fixtures/rules/no-deprecated-astro-fetchcontent/valid/test01-input.astro",
+      "tests/fixtures/rules/no-deprecated-astro-resolve/invalid/test01-errors.json",
+      "tests/fixtures/rules/no-deprecated-astro-resolve/invalid/test01-input.astro",
+      "tests/fixtures/rules/no-deprecated-astro-resolve/valid/test01-input.astro",
       "tests/fixtures/rules/no-deprecated-getentrybyslug/invalid/test01-errors.json",
       "tests/fixtures/rules/no-deprecated-getentrybyslug/invalid/test01-input.astro",
-      "tests/fixtures/rules/no-deprecated-getentrybyslug/valid/test01-input.astro"
+      "tests/fixtures/rules/no-deprecated-getentrybyslug/valid/test01-input.astro",
+      "tests/fixtures/rules/no-set-html-directive/invalid/set-html-errors.json",
+      "tests/fixtures/rules/no-set-html-directive/invalid/set-html-input.astro",
+      "tests/fixtures/rules/no-set-html-directive/invalid/template-attr-set-html-errors.json",
+      "tests/fixtures/rules/no-set-html-directive/invalid/template-attr-set-html-input.astro",
+      "tests/fixtures/rules/no-set-html-directive/valid/set-text-input.astro",
+      "tests/fixtures/rules/no-set-html-directive/valid/template-attr-set-text-input.astro",
+      "tests/fixtures/rules/no-set-html-directive/valid/text-mustash-input.astro",
+      "tests/fixtures/rules/no-set-html-directive/valid/text-mustash-with-template-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/boolean-errors.json",
+      "tests/fixtures/rules/no-set-text-directive/invalid/boolean-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/boolean-output.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/input-errors.json",
+      "tests/fixtures/rules/no-set-text-directive/invalid/input-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/input-output.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/self-closing-errors.json",
+      "tests/fixtures/rules/no-set-text-directive/invalid/self-closing-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/self-closing-output.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/set-text-errors.json",
+      "tests/fixtures/rules/no-set-text-directive/invalid/set-text-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/set-text-output.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/set-text-with-child-errors.json",
+      "tests/fixtures/rules/no-set-text-directive/invalid/set-text-with-child-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/set-text-with-child-output.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/template-attr-set-html-errors.json",
+      "tests/fixtures/rules/no-set-text-directive/invalid/template-attr-set-html-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/invalid/template-attr-set-html-output.astro",
+      "tests/fixtures/rules/no-set-text-directive/valid/set-html-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/valid/template-attr-set-html-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/valid/text-mustash-input.astro",
+      "tests/fixtures/rules/no-set-text-directive/valid/text-mustash-with-template-input.astro",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/class-attr-errors.json",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/class-attr-input.astro",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/class-attr-output.astro",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/clsx-errors.json",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/clsx-input.astro",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/clsx-output.astro",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/template-attr-class01-errors.json",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/template-attr-class01-input.astro",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/template-attr-class01-output.astro",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/template-attr-class02-errors.json",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/template-attr-class02-input.astro",
+      "tests/fixtures/rules/prefer-class-list-directive/invalid/template-attr-class02-output.astro",
+      "tests/fixtures/rules/prefer-class-list-directive/valid/class-attr-input.astro"
     ],
     "license": "MIT",
     "tool": "tools/tasks/sync-astro-tests.ts"
@@ -63,6 +109,27 @@
         }
       ]
     },
+    "no-deprecated-astro-resolve": {
+      "valid": [
+        {
+          "filename": "test01-input.astro",
+          "code": "---\nconst { animal } = Astro.props;\n---\n\n{/* ✓ GOOD */}\n<img src={await import(`../images/${animal}.png`)} />\n"
+        }
+      ],
+      "invalid": [
+        {
+          "filename": "test01-input.astro",
+          "code": "---\nconst { animal } = Astro.props;\n---\n\n{/* ✗ BAD */}\n<img src={Astro.resolve(`../images/${animal}.png`)} />",
+          "errors": [
+            {
+              "message": "'Astro.resolve()' is deprecated.",
+              "line": 6,
+              "column": 11
+            }
+          ]
+        }
+      ]
+    },
     "no-deprecated-getentrybyslug": {
       "valid": [
         {
@@ -81,6 +148,207 @@
               "column": 10
             }
           ]
+        }
+      ]
+    },
+    "no-set-html-directive": {
+      "valid": [
+        {
+          "filename": "set-text-input.astro",
+          "code": "---\nlet string = `this string contains some <strong>HTML!!!</strong>`\n---\n\n<p set:text={string}></p>\n"
+        },
+        {
+          "filename": "template-attr-set-text-input.astro",
+          "code": "<p set:text=`this string contains some <strong>HTML!!!</strong>`></p>\n"
+        },
+        {
+          "filename": "text-mustash-input.astro",
+          "code": "---\nlet string = `this string contains some <strong>HTML!!!</strong>`\n---\n\n<p>{string}</p>\n"
+        },
+        {
+          "filename": "text-mustash-with-template-input.astro",
+          "code": "<p>{`this string contains some <strong>HTML!!!</strong>`}</p>\n"
+        }
+      ],
+      "invalid": [
+        {
+          "filename": "set-html-input.astro",
+          "code": "---\nlet string = `this string contains some <strong>HTML!!!</strong>`\n---\n\n<p set:html={string}></p>\n",
+          "errors": [
+            {
+              "message": "`set:html` can lead to XSS attack.",
+              "line": 5,
+              "column": 4
+            }
+          ]
+        },
+        {
+          "filename": "template-attr-set-html-input.astro",
+          "code": "<p set:html=`this string contains some <strong>HTML!!!</strong>`></p>\n",
+          "errors": [
+            {
+              "message": "`set:html` can lead to XSS attack.",
+              "line": 1,
+              "column": 4
+            }
+          ]
+        }
+      ]
+    },
+    "no-set-text-directive": {
+      "valid": [
+        {
+          "filename": "set-html-input.astro",
+          "code": "---\nlet string = `text`\n---\n\n<p set:html={string}></p>\n"
+        },
+        {
+          "filename": "template-attr-set-html-input.astro",
+          "code": "<p set:html=`text`></p>\n"
+        },
+        {
+          "filename": "text-mustash-input.astro",
+          "code": "---\nlet string = `text`\n---\n\n<p>{string}</p>\n"
+        },
+        {
+          "filename": "text-mustash-with-template-input.astro",
+          "code": "<p>{`text`}</p>\n"
+        }
+      ],
+      "invalid": [
+        {
+          "filename": "boolean-input.astro",
+          "code": "<p set:text ></p>\n",
+          "errors": [
+            {
+              "message": "Don't use `set:text`.",
+              "line": 1,
+              "column": 4
+            }
+          ],
+          "output": "<p set:text ></p>\n"
+        },
+        {
+          "filename": "input-input.astro",
+          "code": "---\nlet string = `text`\n---\n\n<input set:text={string}>\n",
+          "errors": [
+            {
+              "message": "Don't use `set:text`.",
+              "line": 5,
+              "column": 8
+            }
+          ],
+          "output": "---\nlet string = `text`\n---\n\n<input set:text={string}>\n"
+        },
+        {
+          "filename": "self-closing-input.astro",
+          "code": "---\nlet string = `text`\n---\n\n<p set:text={string} />\n",
+          "errors": [
+            {
+              "message": "Don't use `set:text`.",
+              "line": 5,
+              "column": 4
+            }
+          ],
+          "output": "---\nlet string = `text`\n---\n\n<p  >{string}</p>\n"
+        },
+        {
+          "filename": "set-text-input.astro",
+          "code": "---\nlet string = `text`\n---\n\n<p set:text={string}></p>\n",
+          "errors": [
+            {
+              "message": "Don't use `set:text`.",
+              "line": 5,
+              "column": 4
+            }
+          ],
+          "output": "---\nlet string = `text`\n---\n\n<p >{string}</p>\n"
+        },
+        {
+          "filename": "set-text-with-child-input.astro",
+          "code": "---\nlet string = `text`\n---\n\n<div set:text={string}>Foo</div>\n<div set:text={string}>\n</div>\n",
+          "errors": [
+            {
+              "message": "Don't use `set:text`.",
+              "line": 5,
+              "column": 6
+            },
+            {
+              "message": "Don't use `set:text`.",
+              "line": 6,
+              "column": 6
+            }
+          ],
+          "output": "---\nlet string = `text`\n---\n\n<div set:text={string}>Foo</div>\n<div >{string}</div>\n"
+        },
+        {
+          "filename": "template-attr-set-html-input.astro",
+          "code": "<p set:text=`text`></p>\n",
+          "errors": [
+            {
+              "message": "Don't use `set:text`.",
+              "line": 1,
+              "column": 4
+            }
+          ],
+          "output": "<p >{`text`}</p>\n"
+        }
+      ]
+    },
+    "prefer-class-list-directive": {
+      "valid": [
+        {
+          "filename": "class-attr-input.astro",
+          "code": "---\nconst foo = \"foo\"\n---\n\n<div class=\"foo\"></div>\n"
+        }
+      ],
+      "invalid": [
+        {
+          "filename": "class-attr-input.astro",
+          "code": "---\nconst foo = \"foo\"\n---\n\n<div class={foo}></div>\n",
+          "errors": [
+            {
+              "message": "Unexpected `class` using expression. Use 'class:list' instead.",
+              "line": 5,
+              "column": 6
+            }
+          ],
+          "output": "---\nconst foo = \"foo\"\n---\n\n<div class:list={foo}></div>\n"
+        },
+        {
+          "filename": "clsx-input.astro",
+          "code": "---\nimport clsx from \"clsx\"\nconst foo = true\n---\n\n<div class={clsx({ foo })}></div>\n",
+          "errors": [
+            {
+              "message": "Unexpected `class` using expression. Use 'class:list' instead.",
+              "line": 6,
+              "column": 6
+            }
+          ],
+          "output": "---\nimport clsx from \"clsx\"\nconst foo = true\n---\n\n<div class:list={clsx({ foo })}></div>\n"
+        },
+        {
+          "filename": "template-attr-class01-input.astro",
+          "code": "---\nconst foo = \"foo\"\n---\n\n<div class=`${foo}`></div>\n",
+          "errors": [
+            {
+              "message": "Unexpected `class` using expression. Use 'class:list' instead.",
+              "line": 5,
+              "column": 6
+            }
+          ],
+          "output": "---\nconst foo = \"foo\"\n---\n\n<div class:list=`${foo}`></div>\n"
+        },
+        {
+          "filename": "template-attr-class02-input.astro",
+          "code": "---\nconst foo = \"foo\"\n---\n\n<div class=`foo`></div>\n",
+          "errors": [
+            {
+              "message": "Unexpected `class` using expression. Use 'class:list' instead.",
+              "line": 5,
+              "column": 6
+            }
+          ],
+          "output": "---\nconst foo = \"foo\"\n---\n\n<div class:list=`foo`></div>\n"
         }
       ]
     }

@@ -11,11 +11,38 @@ const fixture = JSON.parse(readFileSync(join(testRoot, 'fixtures', 'astro-v3.0.1
 const expectedRuleNames = [
   'no-deprecated-astro-canonicalurl',
   'no-deprecated-astro-fetchcontent',
+  'no-deprecated-astro-resolve',
   'no-deprecated-getentrybyslug',
+  'no-set-html-directive',
+  'no-set-text-directive',
+  'prefer-class-list-directive',
 ];
+const messageIds = {
+  'no-deprecated-astro-canonicalurl': 'deprecated',
+  'no-deprecated-astro-fetchcontent': 'deprecated',
+  'no-deprecated-astro-resolve': 'deprecated',
+  'no-deprecated-getentrybyslug': 'deprecated',
+  'no-set-html-directive': 'unexpected',
+  'no-set-text-directive': 'disallow',
+  'prefer-class-list-directive': 'unexpected',
+};
+
+function applyNativeFixes(sourceText, diagnostics) {
+  return diagnostics
+    .flatMap((diagnostic) => (diagnostic.fix ? [diagnostic.fix] : []))
+    .sort((left, right) => right.start - left.start)
+    .reduce((output, fix) => {
+      const bytes = Buffer.from(output);
+      return Buffer.concat([
+        bytes.subarray(0, fix.start),
+        Buffer.from(fix.replacement),
+        bytes.subarray(fix.end),
+      ]).toString();
+    }, sourceText);
+}
 
 describe('astro native API', () => {
-  it('exposes the first eslint-plugin-astro slice', () => {
+  it('exposes both implemented eslint-plugin-astro slices', () => {
     expect(implementedAstroRuleNames()).toEqual(expectedRuleNames);
   });
 
@@ -44,11 +71,37 @@ describe('astro native API', () => {
       })),
     ).toEqual(
       testCase.errors.map((error) => ({
-        messageId: 'deprecated',
+        messageId: messageIds[ruleName],
         line: error.line,
         column: error.column,
       })),
     );
+  });
+
+  it.each(
+    Object.entries(fixture.rules).flatMap(([ruleName, cases]) =>
+      cases.invalid
+        .filter((testCase) => testCase.output !== undefined)
+        .map((testCase) => [ruleName, testCase]),
+    ),
+  )('replays authored upstream fixed output for %s', (ruleName, testCase) => {
+    const diagnostics = scanAstro(testCase.code, testCase.filename, {
+      ruleNames: [ruleName],
+    });
+    expect(applyNativeFixes(testCase.code, diagnostics)).toBe(testCase.output);
+  });
+
+  it.each(
+    Object.entries(fixture.rules).flatMap(([ruleName, cases]) =>
+      cases.invalid
+        .filter((testCase) => testCase.output !== undefined && testCase.output !== testCase.code)
+        .map((testCase) => [ruleName, testCase]),
+    ),
+  )('is stable after applying authored %s output once', (ruleName, testCase) => {
+    const diagnostics = scanAstro(testCase.output, testCase.filename, {
+      ruleNames: [ruleName],
+    });
+    expect(applyNativeFixes(testCase.output, diagnostics)).toBe(testCase.output);
   });
 
   it('returns native UTF-8 byte fix ranges', () => {

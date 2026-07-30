@@ -27,6 +27,14 @@ fn names(diagnostics: &[Diagnostic]) -> SmallVec<[&str; 8]> {
         .collect()
 }
 
+fn apply_fix(source: &str, diagnostic: &Diagnostic) -> CompactString {
+    let fix = diagnostic.fix.as_ref().expect("diagnostic fix");
+    let mut output = CompactString::new(&source[..fix.start as usize]);
+    output.push_str(&fix.replacement);
+    output.push_str(&source[fix.end as usize..]);
+    output
+}
+
 #[test]
 fn exposes_the_slice_rule_names() {
     assert_eq!(
@@ -34,7 +42,11 @@ fn exposes_the_slice_rule_names() {
         [
             "no-deprecated-astro-canonicalurl",
             "no-deprecated-astro-fetchcontent",
+            "no-deprecated-astro-resolve",
             "no-deprecated-getentrybyslug",
+            "no-set-html-directive",
+            "no-set-text-directive",
+            "prefer-class-list-directive",
         ]
     );
 }
@@ -91,7 +103,7 @@ fn replays_upstream_fetchcontent_invalid_fixture_and_fix() {
         Some(DiagnosticFix {
             start: property as u32,
             end: (property + "fetchContent".len()) as u32,
-            replacement: "glob",
+            replacement: "glob".into(),
         })
     );
 }
@@ -126,6 +138,244 @@ fn replays_upstream_getentrybyslug_invalid_fixture() {
 #[test]
 fn replays_upstream_getentry_valid_fixture() {
     assert!(scan("---\n/* ✓ GOOD */\nimport { getEntry } from \"astro:content\"\n---").is_empty());
+}
+
+#[test]
+fn replays_upstream_resolve_template_fixture() {
+    let source = "---\nconst { animal } = Astro.props;\n---\n\n{/* ✗ BAD */}\n<img src={Astro.resolve(`../images/${animal}.png`)} />";
+    let diagnostics = scan_rule(source, "no-deprecated-astro-resolve");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "deprecated");
+    assert_eq!(diagnostics[0].loc.start_line, 6);
+    assert_eq!(diagnostics[0].loc.start_column, 10);
+}
+
+#[test]
+fn accepts_upstream_resolve_replacement() {
+    assert!(
+        scan_rule(
+            "---\nconst { animal } = Astro.props;\n---\n\n{/* ✓ GOOD */}\n<img src={await import(`../images/${animal}.png`)} />",
+            "no-deprecated-astro-resolve",
+        )
+        .is_empty()
+    );
+}
+
+#[test]
+fn frontmatter_astro_binding_shadows_template_references() {
+    assert!(
+        scan_rule(
+            "---\nconst Astro = { resolve() {} }\n---\n<div>{Astro.resolve(\"local\")}</div>",
+            "no-deprecated-astro-resolve",
+        )
+        .is_empty()
+    );
+}
+
+#[test]
+fn reports_set_html_names_for_expression_and_template_attributes() {
+    let diagnostics = scan_rule(
+        "<p set:html={html}></p>\n<p set:html=`<strong>${html}</strong>`></p>",
+        "no-set-html-directive",
+    );
+    assert_eq!(diagnostics.len(), 2);
+    assert!(diagnostics.iter().all(|diagnostic| {
+        diagnostic.message_id == "unexpected" && diagnostic.loc.start_column == 3
+    }));
+}
+
+#[test]
+fn replays_set_text_normal_and_self_closing_fixes() {
+    let normal = "---\nlet string = `text`\n---\n\n<p set:text={string}></p>\n";
+    let normal_diagnostic = scan_rule(normal, "no-set-text-directive");
+    assert_eq!(
+        apply_fix(normal, &normal_diagnostic[0]),
+        "---\nlet string = `text`\n---\n\n<p >{string}</p>\n"
+    );
+
+    let self_closing = "---\nlet string = `text`\n---\n\n<p set:text={string} />\n";
+    let self_closing_diagnostic = scan_rule(self_closing, "no-set-text-directive");
+    assert_eq!(
+        apply_fix(self_closing, &self_closing_diagnostic[0]),
+        "---\nlet string = `text`\n---\n\n<p  >{string}</p>\n"
+    );
+}
+
+#[test]
+fn replays_set_text_template_attribute_fix() {
+    let source = "<p set:text=`text`></p>\n";
+    let diagnostics = scan_rule(source, "no-set-text-directive");
+    assert_eq!(apply_fix(source, &diagnostics[0]), "<p >{`text`}</p>\n");
+}
+
+#[test]
+fn set_text_reports_without_fix_for_boolean_void_or_nonempty_children() {
+    for source in [
+        "<p set:text ></p>",
+        "<input set:text={text}>",
+        "<div set:text={text}>child</div>",
+        "<div set:text={text}><!-- comment --></div>",
+    ] {
+        let diagnostics = scan_rule(source, "no-set-text-directive");
+        assert_eq!(diagnostics.len(), 1, "{source}");
+        assert!(diagnostics[0].fix.is_none(), "{source}");
+    }
+}
+
+#[test]
+fn set_text_whitespace_body_fix_is_idempotent() {
+    let source = "<div set:text={text}>\n  \n</div>";
+    let diagnostics = scan_rule(source, "no-set-text-directive");
+    let fixed = apply_fix(source, &diagnostics[0]);
+    assert_eq!(fixed, "<div >{text}</div>");
+    assert!(scan_rule(&fixed, "no-set-text-directive").is_empty());
+}
+
+#[test]
+fn replays_prefer_class_list_expression_and_template_fixes() {
+    for (source, expected) in [
+        ("<div class={foo}></div>", "<div class:list={foo}></div>"),
+        (
+            "<div class=`${foo}`></div>",
+            "<div class:list=`${foo}`></div>",
+        ),
+        ("<div class=`foo`></div>", "<div class:list=`foo`></div>"),
+        ("<div {class}></div>", "<div class:list={class}></div>"),
+    ] {
+        let diagnostics = scan_rule(source, "prefer-class-list-directive");
+        assert_eq!(diagnostics.len(), 1, "{source}");
+        let fixed = apply_fix(source, &diagnostics[0]);
+        assert_eq!(fixed, expected, "{source}");
+        assert!(
+            scan_rule(&fixed, "prefer-class-list-directive").is_empty(),
+            "{source}"
+        );
+    }
+}
+
+#[test]
+fn prefer_class_list_ignores_static_and_existing_directive_attributes() {
+    assert!(
+        scan_rule(
+            "<div class=\"foo\" class:list={foo}></div>",
+            "prefer-class-list-directive",
+        )
+        .is_empty()
+    );
+}
+
+#[test]
+fn template_expression_segmenter_handles_nested_braces_and_template_literals() {
+    let source = "<div>{condition ? { image: Astro.resolve(`./${name}.png`) } : null}</div>";
+    let diagnostics = scan_rule(source, "no-deprecated-astro-resolve");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        &source[diagnostics[0].start as usize..diagnostics[0].end as usize],
+        "Astro.resolve"
+    );
+}
+
+#[test]
+fn template_expression_segmenter_ignores_comments_strings_and_plain_text() {
+    for source in [
+        "<!-- {Astro.resolve('comment')} -->",
+        "{/* Astro.resolve('comment') */}",
+        "<p>Astro.resolve('text')</p>",
+        "<p>{'Astro.resolve(\\'string\\')'}</p>",
+    ] {
+        assert!(
+            scan_rule(source, "no-deprecated-astro-resolve").is_empty(),
+            "{source}"
+        );
+    }
+}
+
+#[test]
+fn template_expression_semantics_ignore_a_local_shadow() {
+    assert!(
+        scan_rule(
+            "<div>{items.map((Astro) => Astro.resolve('local'))}</div>",
+            "no-deprecated-astro-resolve",
+        )
+        .is_empty()
+    );
+}
+
+#[test]
+fn template_expression_reports_computed_resolve_access() {
+    let diagnostics = scan_rule(
+        "<img src={Astro['resolve']('./image.png')} />",
+        "no-deprecated-astro-resolve",
+    );
+    assert_eq!(diagnostics.len(), 1);
+}
+
+#[test]
+fn template_attribute_parser_handles_delimiters_inside_values() {
+    let diagnostics = scan_rule(
+        "<p title=\">\" data={{ nested: '>' }} set:html=`<strong>${html}</strong>`></p>",
+        "no-set-html-directive",
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].loc.start_column, 36);
+}
+
+#[test]
+fn template_locations_remain_utf16_after_non_bmp_text() {
+    let diagnostics = scan_rule(
+        "<p title=\"😀\" set:html={html}></p>",
+        "no-set-html-directive",
+    );
+    assert_eq!(diagnostics[0].loc.start_column, 14);
+}
+
+#[test]
+fn template_fixes_keep_utf8_byte_ranges_after_non_ascii_text() {
+    let source = "<p title=\"日本語\" class={klass}></p>";
+    let diagnostics = scan_rule(source, "prefer-class-list-directive");
+    let insertion = source.find("class").expect("class attribute") + "class".len();
+    assert_eq!(
+        diagnostics[0].fix.as_ref().expect("class fix").start,
+        source[..insertion].len() as u32
+    );
+    assert_eq!(
+        apply_fix(source, &diagnostics[0]),
+        "<p title=\"日本語\" class:list={klass}></p>"
+    );
+}
+
+#[test]
+fn set_text_fix_preserves_crlf_around_the_element() {
+    let source = "<section>\r\n<p set:text={text}>\r\n\t</p>\r\n</section>";
+    let diagnostics = scan_rule(source, "no-set-text-directive");
+    assert_eq!(
+        apply_fix(source, &diagnostics[0]),
+        "<section>\r\n<p >{text}</p>\r\n</section>"
+    );
+}
+
+#[test]
+fn template_diagnostics_remain_in_source_order_across_elements() {
+    let diagnostics = scan(
+        "<p set:text={text}></p>\n<div class={klass}></div>\n<section set:html={html}></section>",
+    );
+    assert_eq!(
+        names(&diagnostics).as_slice(),
+        [
+            "no-set-text-directive",
+            "prefer-class-list-directive",
+            "no-set-html-directive",
+        ]
+    );
+}
+
+#[test]
+fn malformed_template_segments_fail_closed_without_hiding_prior_elements() {
+    let diagnostics = scan_rule(
+        "<p set:html={html}></p>\n<div>{Astro.resolve({ broken: true)</div>",
+        "no-set-html-directive",
+    );
+    assert_eq!(diagnostics.len(), 1);
 }
 
 #[test]
@@ -238,16 +488,19 @@ fn keeps_native_fix_ranges_as_utf8_bytes() {
     let source = "---\nconst emoji = \"😀\"; Astro.fetchContent(\"*.md\")\n---";
     let diagnostics = scan(source);
     let property = source.find("fetchContent").expect("fixture property");
-    assert_eq!(diagnostics[0].fix.expect("fix").start, property as u32);
+    assert_eq!(
+        diagnostics[0].fix.as_ref().expect("fix").start,
+        property as u32
+    );
 }
 
 #[test]
 fn applied_fetchcontent_fix_is_idempotent() {
     let source = "---\nconst emoji = \"😀\"; Astro.fetchContent(\"*.md\")\n---";
     let first = scan(source);
-    let fix = first[0].fix.expect("first scan fix");
+    let fix = first[0].fix.as_ref().expect("first scan fix");
     let mut fixed = CompactString::new(&source[..fix.start as usize]);
-    fixed.push_str(fix.replacement);
+    fixed.push_str(&fix.replacement);
     fixed.push_str(&source[fix.end as usize..]);
     assert_eq!(
         fixed,
@@ -293,8 +546,11 @@ fn accepts_trailing_horizontal_space_on_delimiters() {
 }
 
 #[test]
-fn ignores_source_without_frontmatter() {
-    assert!(scan("<p>{Astro.canonicalURL}</p>").is_empty());
+fn scans_template_expressions_without_frontmatter() {
+    assert_eq!(
+        names(&scan("<p>{Astro.canonicalURL}</p>")).as_slice(),
+        ["no-deprecated-astro-canonicalurl"]
+    );
 }
 
 #[test]
@@ -332,7 +588,10 @@ fn extracted_frontmatter_fix_ranges_start_at_the_virtual_source() {
         },
     );
     let property = source.find("fetchContent").expect("fixture property");
-    assert_eq!(diagnostics[0].fix.expect("fix").start, property as u32);
+    assert_eq!(
+        diagnostics[0].fix.as_ref().expect("fix").start,
+        property as u32
+    );
 }
 
 #[test]
@@ -384,7 +643,7 @@ fn ignores_non_astro_extensions_case_insensitively_except_astro() {
 
 #[test]
 fn isolates_each_selected_rule() {
-    let source = "---\nimport { getEntryBySlug } from \"astro:content\"\nAstro.fetchContent(\"*.md\")\nAstro.canonicalURL\n---";
+    let source = "---\nimport { getEntryBySlug } from \"astro:content\"\nAstro.fetchContent(\"*.md\")\nAstro.canonicalURL\n---\n<div set:html={html} set:text={text} class={klass}>{Astro.resolve(\"asset\")}</div>";
     for rule_name in implemented_astro_rule_names() {
         assert_eq!(
             names(&scan_rule(source, rule_name)).as_slice(),

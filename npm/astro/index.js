@@ -1,8 +1,11 @@
 'use strict';
 
+const { readFileSync } = require('node:fs');
+
 // Oxlint plugin port of eslint-plugin-astro (MIT).
-// The Rust core segments and parses Astro frontmatter with Oxc. React rules
-// are intentionally outside this package's scope.
+// The Rust core parses frontmatter with Oxc and conservatively segments
+// template expressions, attributes, and element bodies. React rules are
+// intentionally outside this package's scope.
 
 const { eslintCompatPlugin } = require('@oxlint/plugins');
 const { implementedAstroRuleNames, scanAstro } = require('./api.js');
@@ -14,7 +17,21 @@ const diagnosticsCache = new WeakMap();
 const descriptions = Object.freeze({
   'no-deprecated-astro-canonicalurl': 'disallow using deprecated `Astro.canonicalURL`',
   'no-deprecated-astro-fetchcontent': 'disallow using deprecated `Astro.fetchContent()`',
+  'no-deprecated-astro-resolve': 'disallow using deprecated `Astro.resolve()`',
   'no-deprecated-getentrybyslug': 'disallow using deprecated `getEntryBySlug()`',
+  'no-set-html-directive': 'disallow use of `set:html` to prevent XSS attacks',
+  'no-set-text-directive': 'disallow use of `set:text`',
+  'prefer-class-list-directive':
+    'require `class:list` directives instead of `class` with expressions',
+});
+const categories = Object.freeze({
+  'no-deprecated-astro-canonicalurl': 'Possible Errors',
+  'no-deprecated-astro-fetchcontent': 'Possible Errors',
+  'no-deprecated-astro-resolve': 'Possible Errors',
+  'no-deprecated-getentrybyslug': 'Possible Errors',
+  'no-set-html-directive': 'Security Vulnerability',
+  'no-set-text-directive': 'Best Practices',
+  'prefer-class-list-directive': 'Stylistic Issues',
 });
 
 const messages = Object.freeze({
@@ -24,18 +41,38 @@ const messages = Object.freeze({
   'no-deprecated-astro-fetchcontent': {
     deprecated: "'Astro.fetchContent()' is deprecated. Use 'Astro.glob()' instead.",
   },
+  'no-deprecated-astro-resolve': {
+    deprecated: "'Astro.resolve()' is deprecated.",
+  },
   'no-deprecated-getentrybyslug': {
     deprecated: "'getEntryBySlug()' is deprecated. Use 'getEntry()' instead.",
+  },
+  'no-set-html-directive': {
+    unexpected: '`set:html` can lead to XSS attack.',
+  },
+  'no-set-text-directive': {
+    disallow: "Don't use `set:text`.",
+  },
+  'prefer-class-list-directive': {
+    unexpected: "Unexpected `class` using expression. Use 'class:list' instead.",
   },
 });
 
 const implementedRuleNames = Object.freeze(implementedAstroRuleNames());
+const recommendedRuleNames = new Set([
+  'no-deprecated-astro-canonicalurl',
+  'no-deprecated-astro-fetchcontent',
+  'no-deprecated-astro-resolve',
+  'no-deprecated-getentrybyslug',
+]);
 const rules = Object.freeze(
   Object.fromEntries(implementedRuleNames.map((ruleName) => [ruleName, createAstroRule(ruleName)])),
 );
 const recommendedRules = Object.freeze(
   Object.fromEntries(
-    implementedRuleNames.map((ruleName) => [`${PLUGIN_NAME}/${ruleName}`, 'error']),
+    implementedRuleNames
+      .filter((ruleName) => recommendedRuleNames.has(ruleName))
+      .map((ruleName) => [`${PLUGIN_NAME}/${ruleName}`, 'error']),
   ),
 );
 
@@ -60,18 +97,28 @@ plugin.implementedAstroRuleNames = implementedRuleNames;
 plugin.scanAstro = scanAstro;
 
 function createAstroRule(ruleName) {
+  const recommended = recommendedRuleNames.has(ruleName);
+  const suggestion = new Set([
+    'no-set-html-directive',
+    'no-set-text-directive',
+    'prefer-class-list-directive',
+  ]).has(ruleName);
   const meta = {
-    type: 'problem',
+    type: suggestion ? 'suggestion' : 'problem',
     docs: {
       description: descriptions[ruleName],
-      category: 'Possible Errors',
-      recommended: true,
+      category: categories[ruleName],
+      recommended,
       url: `${DOCS_BASE}#${ruleName}`,
     },
     messages: messages[ruleName],
     schema: [],
   };
-  if (ruleName === 'no-deprecated-astro-fetchcontent') {
+  if (
+    ruleName === 'no-deprecated-astro-fetchcontent' ||
+    ruleName === 'no-set-text-directive' ||
+    ruleName === 'prefer-class-list-directive'
+  ) {
     meta.fixable = 'code';
   }
 
@@ -98,30 +145,56 @@ function diagnosticsForRule(context, ruleName) {
         ? sourceCode.text
         : '';
   const filename = typeof context.filename === 'string' ? context.filename : 'file.astro';
-  const frontmatterOnly = !startsWithFrontmatterDelimiter(sourceText);
+  const physicalSource = readPhysicalSource(context, filename, sourceText);
+  const scanSource = physicalSource?.sourceText ?? sourceText;
+  const frontmatterOnly =
+    physicalSource === null &&
+    !startsWithFrontmatterDelimiter(sourceText) &&
+    !looksLikeAstroTemplate(sourceText);
   let byRule = diagnosticsCache.get(sourceCode);
   if (!byRule) {
     byRule = new Map();
     diagnosticsCache.set(sourceCode, byRule);
   }
   const cached = byRule.get(ruleName);
-  if (cached && cached.sourceText === sourceText && cached.filename === filename) {
+  if (
+    cached &&
+    cached.sourceText === sourceText &&
+    cached.scanSource === scanSource &&
+    cached.filename === filename
+  ) {
     return cached.diagnostics;
   }
 
-  const byteToUtf16 = createByteToUtf16Mapper(sourceText);
-  const diagnostics = scanAstro(sourceText, filename, {
+  const byteToUtf16 = createByteToUtf16Mapper(scanSource);
+  const diagnostics = scanAstro(scanSource, filename, {
     ruleNames: [ruleName],
     frontmatterOnly,
-  }).map((diagnostic) => mapDiagnosticFix(diagnostic, byteToUtf16));
-  byRule.set(ruleName, { sourceText, filename, diagnostics });
+  }).map((diagnostic) =>
+    mapDiagnosticOffsets(
+      diagnostic,
+      byteToUtf16,
+      physicalSource === null
+        ? null
+        : {
+            ...physicalSource,
+            virtualLength: sourceText.length,
+            virtualByteLength: utf8Length(sourceText),
+          },
+    ),
+  );
+  byRule.set(ruleName, { sourceText, scanSource, filename, diagnostics });
   return diagnostics;
 }
 
 function reportDiagnostic(context, diagnostic) {
   const descriptor = {
     messageId: diagnostic.messageId,
-    loc: {
+  };
+  if (diagnostic.reportRange) {
+    descriptor.node = { range: diagnostic.reportRange };
+  } else {
+    descriptor.loc = {
       start: {
         line: diagnostic.loc.startLine,
         column: diagnostic.loc.startColumn,
@@ -130,8 +203,8 @@ function reportDiagnostic(context, diagnostic) {
         line: diagnostic.loc.endLine,
         column: diagnostic.loc.endColumn,
       },
-    },
-  };
+    };
+  }
   if (diagnostic.fix) {
     descriptor.fix = (fixer) =>
       fixer.replaceTextRange(
@@ -142,18 +215,74 @@ function reportDiagnostic(context, diagnostic) {
   context.report(descriptor);
 }
 
-function mapDiagnosticFix(diagnostic, byteToUtf16) {
-  if (!diagnostic.fix) {
-    return diagnostic;
-  }
-  return {
+function mapDiagnosticOffsets(diagnostic, byteToUtf16, virtualSource) {
+  const mapped = {
     ...diagnostic,
-    fix: {
+    start: byteToUtf16(diagnostic.start),
+    end: byteToUtf16(diagnostic.end),
+  };
+  if (diagnostic.fix) {
+    mapped.fix = {
       start: byteToUtf16(diagnostic.fix.start),
       end: byteToUtf16(diagnostic.fix.end),
       replacement: diagnostic.fix.replacement,
-    },
+    };
+  }
+  if (virtualSource === null) {
+    return mapped;
+  }
+  mapped.reportRange = [
+    diagnostic.start > virtualSource.frontmatterByteOffset + virtualSource.virtualByteLength
+      ? diagnostic.start - virtualSource.frontmatterByteOffset
+      : mapped.start - virtualSource.frontmatterOffset,
+    diagnostic.end > virtualSource.frontmatterByteOffset + virtualSource.virtualByteLength
+      ? diagnostic.end - virtualSource.frontmatterByteOffset
+      : mapped.end - virtualSource.frontmatterOffset,
+  ];
+  if (mapped.fix) {
+    const start = mapped.fix.start - virtualSource.frontmatterOffset;
+    const end = mapped.fix.end - virtualSource.frontmatterOffset;
+    mapped.fix =
+      start >= 0 && end <= virtualSource.virtualLength ? { ...mapped.fix, start, end } : undefined;
+  }
+  return mapped;
+}
+
+function readPhysicalSource(context, filename, virtualSourceText) {
+  const physicalFilename =
+    typeof context.physicalFilename === 'string'
+      ? context.physicalFilename
+      : typeof context.getPhysicalFilename === 'function'
+        ? context.getPhysicalFilename()
+        : null;
+  if (!physicalFilename || !physicalFilename.toLowerCase().endsWith('.astro')) {
+    return null;
+  }
+  try {
+    const sourceText = readFileSync(physicalFilename, 'utf8');
+    if (sourceText === virtualSourceText) {
+      return null;
+    }
+    return {
+      sourceText,
+      ...frontmatterContentOffsets(sourceText),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function frontmatterContentOffsets(sourceText) {
+  const match = /^(?:\uFEFF)?---[ \t]*(?:\r\n|[\n\r\u2028\u2029])/.exec(sourceText);
+  const opening = match?.[0] ?? '';
+  return {
+    frontmatterOffset: opening.length,
+    frontmatterByteOffset: utf8Length(opening),
   };
+}
+
+function looksLikeAstroTemplate(sourceText) {
+  return /<(?:\/?[A-Za-z]|!|>)/.test(sourceText);
 }
 
 function startsWithFrontmatterDelimiter(sourceText) {
@@ -216,6 +345,14 @@ function utf8ByteLength(codePoint) {
   if (codePoint <= 0x7ff) return 2;
   if (codePoint <= 0xffff) return 3;
   return 4;
+}
+
+function utf8Length(sourceText) {
+  let length = 0;
+  for (const char of sourceText) {
+    length += utf8ByteLength(char.codePointAt(0));
+  }
+  return length;
 }
 
 function clampOffset(offset, maximum) {
