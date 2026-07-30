@@ -1,0 +1,3478 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-tag-spacing/jsx-tag-spacing.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.0.0",
+    "parserVersions": {
+      "espree": "10.4.0",
+      "typescriptEslint": "8.56.0",
+      "typescript": "5.9.3"
+    },
+    "parserMatrix": "ESLint 10 parsers-jsx expansion; Babel disabled by the stable runner",
+    "tool": "tools/tasks/sync-stylistic-jsx-tag-spacing-tests.ts",
+    "inventory": {
+      "logicalValid": 38,
+      "logicalInvalid": 36,
+      "valid": 74,
+      "invalid": 69,
+      "diagnostics": 73,
+      "unfixableInvalid": 0,
+      "total": 143,
+      "fixableInvalid": 69
+    }
+  },
+  "valid": [
+    {
+      "code": "<App />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<App />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App foo />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App foo />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App foo={bar} />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App foo={bar} />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App {...props} />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App {...props} />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n        />\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App foo />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App foo />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n          blat\n        >\n          hello\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "proportional-always"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n          blat\n        >\n          hello\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "proportional-always"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App foo={bar}>\n          hello\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "proportional-always"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App foo={bar}>\n          hello\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "proportional-always"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n        />\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App foo/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App foo/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App foo={bar}/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App foo={bar}/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App {...props}/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App {...props}/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n        />\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App/>;\n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App/>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App />;\n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App />;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<div className=\"bar\"></div>;\n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<div className=\"bar\"></div>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<div className=\"bar\"></ div>;\n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<div className=\"bar\"></ div>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App prop=\"foo\">< /App>\n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "always",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<p/ >\n// features: [], parser: default, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "always",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<p/ >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "always",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "< App></ App>\n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "< App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "< App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <\n        App/>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow-multiline\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow-multiline",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <\n        App/>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow-multiline\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow-multiline",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n        foo=\"bar\"\n        >\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n        foo=\"bar\"\n        >\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n           foo=\"bar\"\n        >\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n           foo=\"bar\"\n        >\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App ></App >\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App ></App >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n        foo=\"bar\"\n        >\n        </App >\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n        foo=\"bar\"\n        >\n        </App >\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n            foo=\"bar\"\n        >\n        </App >\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n            foo=\"bar\"\n        >\n        </App >\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"never\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "never",
+          "afterOpening": "never",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"never\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "never",
+          "afterOpening": "never",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "< App / >\n// features: [], parser: default, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"always\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "always",
+          "beforeSelfClosing": "always",
+          "afterOpening": "always",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "< App / >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"always\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "always",
+          "beforeSelfClosing": "always",
+          "afterOpening": "always",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "typescript"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "<App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [4, 4],
+          "loc": {
+            "line": 1,
+            "column": 5
+          },
+          "fix": {
+            "range": [4, 4],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [4, 4],
+          "loc": {
+            "line": 1,
+            "column": 5
+          },
+          "fix": {
+            "range": [4, 4],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App foo />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [8, 8],
+          "loc": {
+            "line": 1,
+            "column": 9
+          },
+          "fix": {
+            "range": [8, 8],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App foo />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [8, 8],
+          "loc": {
+            "line": 1,
+            "column": 9
+          },
+          "fix": {
+            "range": [8, 8],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar}/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App foo={bar} />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo={bar} />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [14, 14],
+          "loc": {
+            "line": 1,
+            "column": 15
+          },
+          "fix": {
+            "range": [14, 14],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar}/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App foo={bar} />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo={bar} />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [14, 14],
+          "loc": {
+            "line": 1,
+            "column": 15
+          },
+          "fix": {
+            "range": [14, 14],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App {...props}/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App {...props} />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App {...props} />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [15, 15],
+          "loc": {
+            "line": 1,
+            "column": 16
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App {...props}/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App {...props} />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App {...props} />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [15, 15],
+          "loc": {
+            "line": 1,
+            "column": 16
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [5, 5],
+          "loc": {
+            "line": 1,
+            "column": 6
+          },
+          "fix": {
+            "range": [4, 5],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [5, 5],
+          "loc": {
+            "line": 1,
+            "column": 6
+          },
+          "fix": {
+            "range": [4, 5],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App foo/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [9, 9],
+          "loc": {
+            "line": 1,
+            "column": 10
+          },
+          "fix": {
+            "range": [8, 9],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App foo/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [9, 9],
+          "loc": {
+            "line": 1,
+            "column": 10
+          },
+          "fix": {
+            "range": [8, 9],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App foo={bar}/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo={bar}/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [15, 15],
+          "loc": {
+            "line": 1,
+            "column": 16
+          },
+          "fix": {
+            "range": [14, 15],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App foo={bar}/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo={bar}/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [15, 15],
+          "loc": {
+            "line": 1,
+            "column": 16
+          },
+          "fix": {
+            "range": [14, 15],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [4, 4],
+          "loc": {
+            "line": 1,
+            "column": 5
+          },
+          "fix": {
+            "range": [4, 4],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [4, 4],
+          "loc": {
+            "line": 1,
+            "column": 5
+          },
+          "fix": {
+            "range": [4, 4],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App foo />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [8, 8],
+          "loc": {
+            "line": 1,
+            "column": 9
+          },
+          "fix": {
+            "range": [8, 8],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App foo />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App foo />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedSpace",
+          "message": "A space is required before closing bracket",
+          "data": {},
+          "range": [8, 8],
+          "loc": {
+            "line": 1,
+            "column": 9
+          },
+          "fix": {
+            "range": [8, 8],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={bar}/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <App\n          foo={bar}\n/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "\n        <App\n          foo={bar}\n/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedNewline"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedNewline",
+          "message": "A newline is required before closing bracket",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 20
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={bar}/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <App\n          foo={bar}\n/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "\n        <App\n          foo={bar}\n/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedNewline"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedNewline",
+          "message": "A newline is required before closing bracket",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 20
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={bar} />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <App\n          foo={bar} \n/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "\n        <App\n          foo={bar} \n/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedNewline"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedNewline",
+          "message": "A newline is required before closing bracket",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 20
+          },
+          "fix": {
+            "range": [34, 34],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={bar} />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "proportional-always",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <App\n          foo={bar} \n/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "\n        <App\n          foo={bar} \n/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"proportional-always\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNeedNewline"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNeedNewline",
+          "message": "A newline is required before closing bracket",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 20
+          },
+          "fix": {
+            "range": [34, 34],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n          blat >\n          hello\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "proportional-always"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <App\n          foo={bar}\n          blat \n>\n          hello\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "recursiveOutput": "\n        <App\n          foo={bar}\n          blat \n>\n          hello\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedNewline"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedNewline",
+          "message": "A newline is required before closing bracket",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 15
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={bar}\n          blat >\n          hello\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "proportional-always"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <App\n          foo={bar}\n          blat \n>\n          hello\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "recursiveOutput": "\n        <App\n          foo={bar}\n          blat \n>\n          hello\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedNewline"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedNewline",
+          "message": "A newline is required before closing bracket",
+          "data": {},
+          "range": [48, 48],
+          "loc": {
+            "line": 4,
+            "column": 15
+          },
+          "fix": {
+            "range": [49, 49],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={bar}>\n          hello\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "proportional-always"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <App\n          foo={bar}\n>\n          hello\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "recursiveOutput": "\n        <App\n          foo={bar}\n>\n          hello\n        </App>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedNewline"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedNewline",
+          "message": "A newline is required before closing bracket",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 20
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo={bar}>\n          hello\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "proportional-always"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <App\n          foo={bar}\n>\n          hello\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "recursiveOutput": "\n        <App\n          foo={bar}\n>\n          hello\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"proportional-always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedNewline"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedNewline",
+          "message": "A newline is required before closing bracket",
+          "data": {},
+          "range": [33, 33],
+          "loc": {
+            "line": 3,
+            "column": 20
+          },
+          "fix": {
+            "range": [33, 33],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App {...props} />\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App {...props}/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App {...props}/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [16, 16],
+          "loc": {
+            "line": 1,
+            "column": 17
+          },
+          "fix": {
+            "range": [15, 16],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App {...props} />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "never",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App {...props}/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App {...props}/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"never\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeSelfCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeSelfCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [16, 16],
+          "loc": {
+            "line": 1,
+            "column": 17
+          },
+          "fix": {
+            "range": [15, 16],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App/ >;\n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App/>;\n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App/>;\n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "selfCloseSlashNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "selfCloseSlashNoSpace",
+          "message": "Whitespace is forbidden between `/` and `>`; write `/>`",
+          "data": {},
+          "range": [4, 7],
+          "loc": {
+            "line": 1,
+            "column": 5,
+            "endLine": 1,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [5, 6],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App/ >;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App/>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App/>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "selfCloseSlashNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "selfCloseSlashNoSpace",
+          "message": "Whitespace is forbidden between `/` and `>`; write `/>`",
+          "data": {},
+          "range": [4, 7],
+          "loc": {
+            "line": 1,
+            "column": 5,
+            "endLine": 1,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [5, 6],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App_selfCloseSlashNoSpace/\n        >\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <App_selfCloseSlashNoSpace/>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "\n        <App_selfCloseSlashNoSpace/>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "selfCloseSlashNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "selfCloseSlashNoSpace",
+          "message": "Whitespace is forbidden between `/` and `>`; write `/>`",
+          "data": {},
+          "range": [35, 46],
+          "loc": {
+            "line": 2,
+            "column": 35,
+            "endLine": 3,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [36, 45],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App_selfCloseSlashNoSpace/\n        >\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <App_selfCloseSlashNoSpace/>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "\n        <App_selfCloseSlashNoSpace/>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "selfCloseSlashNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "selfCloseSlashNoSpace",
+          "message": "Whitespace is forbidden between `/` and `>`; write `/>`",
+          "data": {},
+          "range": [35, 46],
+          "loc": {
+            "line": 2,
+            "column": 35,
+            "endLine": 3,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [36, 45],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<div className=\"bar\">< /div>;\n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<div className=\"bar\"></div>;\n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<div className=\"bar\"></div>;\n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "closeSlashNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "closeSlashNoSpace",
+          "message": "Whitespace is forbidden between `<` and `/`; write `</`",
+          "data": {},
+          "range": [21, 24],
+          "loc": {
+            "line": 1,
+            "column": 22,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [22, 23],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div className=\"bar\"><\n        /div>;\n      \n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "never",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div className=\"bar\"></div>;\n      \n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "\n        <div className=\"bar\"></div>;\n      \n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"never\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "closeSlashNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "closeSlashNoSpace",
+          "message": "Whitespace is forbidden between `<` and `/`; write `</`",
+          "data": {},
+          "range": [30, 41],
+          "loc": {
+            "line": 2,
+            "column": 30,
+            "endLine": 3,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [31, 40],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App prop=\"foo\"></App>\n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "always",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App prop=\"foo\">< /App>\n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App prop=\"foo\">< /App>\n// features: [no-ts], parser: default, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "closeSlashNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "closeSlashNeedSpace",
+          "message": "Whitespace is required between `<` and `/`; write `< /`",
+          "data": {},
+          "range": [16, 18],
+          "loc": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<p/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "always",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<p/ >\n// features: [], parser: default, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<p/ >\n// features: [], parser: default, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "selfCloseSlashNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "selfCloseSlashNeedSpace",
+          "message": "Whitespace is required between `/` and `>`; write `/ >`",
+          "data": {},
+          "range": [2, 4],
+          "loc": {
+            "line": 1,
+            "column": 3,
+            "endLine": 1,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [3, 3],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<p/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "always",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<p/ >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<p/ >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"always\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "selfCloseSlashNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "selfCloseSlashNeedSpace",
+          "message": "Whitespace is required between `/` and `>`; write `/ >`",
+          "data": {},
+          "range": [2, 4],
+          "loc": {
+            "line": 1,
+            "column": 3,
+            "endLine": 1,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [3, 3],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [0, 2],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [1, 2],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [0, 2],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [1, 2],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [0, 2],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [1, 2],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [0, 2],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [1, 2],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App></ App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [6, 8],
+          "loc": {
+            "line": 1,
+            "column": 7,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [7, 8],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App></ App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [6, 8],
+          "loc": {
+            "line": 1,
+            "column": 7,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [7, 8],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App></ App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App></App>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        },
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [0, 2],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [1, 2],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [7, 9],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [8, 9],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App></ App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App></App>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        },
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [0, 2],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [1, 2],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [7, 9],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [8, 9],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <\n        App1/>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <App1/>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "\n        <App1/>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [9, 19],
+          "loc": {
+            "line": 2,
+            "column": 9,
+            "endLine": 3,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [10, 19],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <\n        App1/>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "never",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <App1/>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "\n        <App1/>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"never\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [9, 19],
+          "loc": {
+            "line": 2,
+            "column": 9,
+            "endLine": 3,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [10, 19],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App2></ App2>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "< App2></ App2>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "< App2></ App2>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [0, 1],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [1, 1],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App2></ App2>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "< App2></ App2>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "< App2></ App2>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [0, 1],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [1, 1],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App3></App3>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "< App3></ App3>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "< App3></ App3>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [8, 9],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [9, 9],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App3></App3>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "< App3></ App3>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "< App3></ App3>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [8, 9],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [9, 9],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App4></App4>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "< App4></ App4>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "< App4></ App4>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNeedSpace"
+        },
+        {
+          "messageId": "afterOpenNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [0, 1],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [1, 1],
+            "text": " "
+          }
+        },
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [7, 8],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [8, 8],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App4></App4>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "< App4></ App4>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "< App4></ App4>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNeedSpace"
+        },
+        {
+          "messageId": "afterOpenNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [0, 1],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [1, 1],
+            "text": " "
+          }
+        },
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [7, 8],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [8, 8],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App5/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "< App5/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "< App5/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [0, 1],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [1, 1],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App5/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "always",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "< App5/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "< App5/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"always\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNeedSpace",
+          "message": "A space is required after opening bracket",
+          "data": {},
+          "range": [0, 1],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [1, 1],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App6/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow-multiline\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow-multiline",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App6/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow-multiline\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App6/>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow-multiline\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [0, 2],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [1, 2],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "< App6/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow-multiline\",\"beforeClosing\":\"allow\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow-multiline",
+          "beforeClosing": "allow"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App6/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow-multiline\",\"beforeClosing\":\"allow\"}], ",
+      "recursiveOutput": "<App6/>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow-multiline\",\"beforeClosing\":\"allow\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "afterOpenNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "afterOpenNoSpace",
+          "message": "A space is forbidden after opening bracket",
+          "data": {},
+          "range": [0, 2],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [1, 2],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App7 ></App7>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App7></App7>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "recursiveOutput": "<App7></App7>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [5, 6],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [5, 6],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App7 ></App7>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App7></App7>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "recursiveOutput": "<App7></App7>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [5, 6],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [5, 6],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App8></App8 >\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App8></App8>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "recursiveOutput": "<App8></App8>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [12, 13],
+          "loc": {
+            "line": 1,
+            "column": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [12, 13],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App8></App8 >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App8></App8>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "recursiveOutput": "<App8></App8>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [12, 13],
+          "loc": {
+            "line": 1,
+            "column": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [12, 13],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App9\n        foo=\"bar\"\n        >\n        </App9 >\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <App9\n        foo=\"bar\"\n        >\n        </App9>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "recursiveOutput": "\n        <App9\n        foo=\"bar\"\n        >\n        </App9>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [57, 58],
+          "loc": {
+            "line": 5,
+            "column": 15,
+            "endLine": 5,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [57, 58],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App9\n        foo=\"bar\"\n        >\n        </App9 >\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "never"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <App9\n        foo=\"bar\"\n        >\n        </App9>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "recursiveOutput": "\n        <App9\n        foo=\"bar\"\n        >\n        </App9>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"never\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNoSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNoSpace",
+          "message": "A space is forbidden before closing bracket",
+          "data": {},
+          "range": [57, 58],
+          "loc": {
+            "line": 5,
+            "column": 15,
+            "endLine": 5,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [57, 58],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App10></App10 >\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App10 ></App10 >\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "recursiveOutput": "<App10 ></App10 >\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedSpace",
+          "message": "Whitespace is required before closing bracket",
+          "data": {},
+          "range": [6, 6],
+          "loc": {
+            "line": 1,
+            "column": 7,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [6, 6],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App10></App10 >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App10 ></App10 >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "recursiveOutput": "<App10 ></App10 >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedSpace",
+          "message": "Whitespace is required before closing bracket",
+          "data": {},
+          "range": [6, 6],
+          "loc": {
+            "line": 1,
+            "column": 7,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [6, 6],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App11 ></App11>\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "espree",
+      "output": "<App11 ></App11 >\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "recursiveOutput": "<App11 ></App11 >\n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedSpace",
+          "message": "Whitespace is required before closing bracket",
+          "data": {},
+          "range": [15, 15],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App11 ></App11>\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<App11 ></App11 >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "recursiveOutput": "<App11 ></App11 >\n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedSpace",
+          "message": "Whitespace is required before closing bracket",
+          "data": {},
+          "range": [15, 15],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App12\n        foo=\"bar\"\n        >\n        </App12>\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <App12\n        foo=\"bar\"\n        >\n        </App12 >\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "recursiveOutput": "\n        <App12\n        foo=\"bar\"\n        >\n        </App12 >\n      \n// features: [], parser: default, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedSpace",
+          "message": "Whitespace is required before closing bracket",
+          "data": {},
+          "range": [59, 59],
+          "loc": {
+            "line": 5,
+            "column": 16,
+            "endLine": 5,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [59, 59],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App12\n        foo=\"bar\"\n        >\n        </App12>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "options": [
+        {
+          "closingSlash": "allow",
+          "beforeSelfClosing": "allow",
+          "afterOpening": "allow",
+          "beforeClosing": "always"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <App12\n        foo=\"bar\"\n        >\n        </App12 >\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "recursiveOutput": "\n        <App12\n        foo=\"bar\"\n        >\n        </App12 >\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"closingSlash\":\"allow\",\"beforeSelfClosing\":\"allow\",\"afterOpening\":\"allow\",\"beforeClosing\":\"always\"}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "beforeCloseNeedSpace"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "beforeCloseNeedSpace",
+          "message": "Whitespace is required before closing bracket",
+          "data": {},
+          "range": [59, 59],
+          "loc": {
+            "line": 5,
+            "column": 16,
+            "endLine": 5,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [59, 59],
+            "text": " "
+          }
+        }
+      ]
+    }
+  ]
+}

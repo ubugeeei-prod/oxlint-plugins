@@ -117,6 +117,7 @@ const stylisticRuleFixtures = [
   ['jsx-newline', '<App><First />\n<Second /></App>;\n', [], ['require']],
   ['jsx-one-expression-per-line', '<App><Foo /></App>;\n', [], ['moveToNewLine']],
   ['jsx-max-props-per-line', '<App one two three />;\n', [{ maximum: 1 }], ['newLine']],
+  ['jsx-tag-spacing', '<App/>;\n', [], ['beforeSelfCloseNeedSpace']],
   ['jsx-wrap-multilines', 'const view = <App>\n  <Child />\n</App>;\n', [], ['missingParens']],
   [
     'jsx-curly-spacing',
@@ -4153,6 +4154,93 @@ const parenthesized = (a + b) * c;
       expect(fixed.stderr).toBe('');
       expect(readFileSync(jsxPath, 'utf8')).toContain('const view = (<App>');
       expect(readFileSync(tsxPath, 'utf8')).toContain('const list = (<List<Item>>');
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('supports jsx-tag-spacing shared settings, UTF-16 ranges, and simultaneous fixes', () => {
+    const source = 'const emoji = "😀"; const view = < 外.部 値={1}/ >;';
+    const reports = runRule('jsx-tag-spacing', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-tag-spacing': [
+            {
+              closingSlash: 'never',
+              beforeSelfClosing: 'never',
+              afterOpening: 'never',
+              beforeClosing: 'allow',
+            },
+          ],
+        },
+      },
+    });
+    const opening = source.indexOf('< 外');
+    const slash = source.indexOf('/ >');
+
+    expect(messageIds(reports)).toEqual(['selfCloseSlashNoSpace', 'afterOpenNoSpace']);
+    expect(reports.map((report) => report.node.range)).toEqual([
+      [slash, slash + 3],
+      [opening, source.indexOf('外.部')],
+    ]);
+    expect(applyReportFixes(source, reports)).toBe(
+      'const emoji = "😀"; const view = <外.部 値={1}/>;',
+    );
+  });
+
+  it('runs jsx-tag-spacing through real oxlint JSX and TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-tag-spacing-plugin-'));
+
+    try {
+      const jsxPath = join(temp, 'sample.jsx');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(jsxPath, 'export const view = < App/ >;\n');
+      writeFileSync(tsxPath, 'type Item = { id: string }; export const list = < List<Item>/ >;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-tag-spacing': [
+              'error',
+              {
+                closingSlash: 'never',
+                beforeSelfClosing: 'never',
+                afterOpening: 'never',
+                beforeClosing: 'allow',
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', jsxPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(jsx-tag-spacing)',
+        'stylistic(jsx-tag-spacing)',
+        'stylistic(jsx-tag-spacing)',
+        'stylistic(jsx-tag-spacing)',
+      ]);
+
+      const fixed = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--fix-suggestions', jsxPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(fixed.status).toBe(0);
+      expect(readFileSync(jsxPath, 'utf8')).toBe('export const view = <App/>;\n');
+      expect(readFileSync(tsxPath, 'utf8')).toBe(
+        'type Item = { id: string }; export const list = <List<Item>/>;\n',
+      );
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

@@ -31,6 +31,7 @@ mod jsx_props_no_multi_spaces;
 mod jsx_quotes;
 mod jsx_rules;
 mod jsx_self_closing_comp;
+mod jsx_tag_spacing;
 mod jsx_wrap_multilines;
 mod lexer;
 mod line_index;
@@ -714,6 +715,56 @@ const JSX_PROPS_NO_MULTI_SPACES_MESSAGES: &[(&str, &str)] = &[
 ];
 const JSX_SELF_CLOSING_COMP_MESSAGES: &[(&str, &str)] =
     &[("notSelfClosing", "Empty components are self-closing")];
+const JSX_TAG_SPACING_MESSAGES: &[(&str, &str)] = &[
+    (
+        "selfCloseSlashNoSpace",
+        "Whitespace is forbidden between `/` and `>`; write `/>`",
+    ),
+    (
+        "selfCloseSlashNeedSpace",
+        "Whitespace is required between `/` and `>`; write `/ >`",
+    ),
+    (
+        "closeSlashNoSpace",
+        "Whitespace is forbidden between `<` and `/`; write `</`",
+    ),
+    (
+        "closeSlashNeedSpace",
+        "Whitespace is required between `<` and `/`; write `< /`",
+    ),
+    (
+        "beforeSelfCloseNoSpace",
+        "A space is forbidden before closing bracket",
+    ),
+    (
+        "beforeSelfCloseNeedSpace",
+        "A space is required before closing bracket",
+    ),
+    (
+        "beforeSelfCloseNeedNewline",
+        "A newline is required before closing bracket",
+    ),
+    (
+        "afterOpenNoSpace",
+        "A space is forbidden after opening bracket",
+    ),
+    (
+        "afterOpenNeedSpace",
+        "A space is required after opening bracket",
+    ),
+    (
+        "beforeCloseNoSpace",
+        "A space is forbidden before closing bracket",
+    ),
+    (
+        "beforeCloseNeedSpace",
+        "Whitespace is required before closing bracket",
+    ),
+    (
+        "beforeCloseNeedNewline",
+        "A newline is required before closing bracket",
+    ),
+];
 const JSX_WRAP_MULTILINES_MESSAGES: &[(&str, &str)] = &[
     ("missingParens", "Missing parentheses around multilines JSX"),
     (
@@ -1277,6 +1328,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_SELF_CLOSING_COMP_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-tag-spacing",
+        docs_description: "Enforce whitespace in and around the JSX opening and closing brackets",
+        messages: JSX_TAG_SPACING_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-wrap-multilines",
         docs_description: "Disallow missing parentheses around multiline JSX",
         messages: JSX_WRAP_MULTILINES_MESSAGES,
@@ -1545,6 +1601,12 @@ pub fn run_stylistic_lint(
                 )
             }
             "jsx-self-closing-comp" => jsx_self_closing_comp::check_jsx_self_closing_comp(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "jsx-tag-spacing" => jsx_tag_spacing::check_jsx_tag_spacing(
                 source_text,
                 config.filename.as_deref(),
                 &rule.options,
