@@ -13,6 +13,7 @@ mod context;
 mod context_rules;
 mod curly_newline;
 mod exp_jsx_props_style;
+mod exp_list_style;
 mod expression_rules;
 mod function_call_argument_newline;
 mod function_paren_newline;
@@ -891,6 +892,24 @@ const FUNCTION_CALL_ARGUMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
         "There should be a line break after this argument.",
     ),
 ];
+const EXP_LIST_STYLE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "shouldSpacing",
+        "Should have space between '{{prev}}' and '{{next}}'",
+    ),
+    (
+        "shouldNotSpacing",
+        "Should not have space(s) between '{{prev}}' and '{{next}}'",
+    ),
+    (
+        "shouldWrap",
+        "Should have line break between '{{prev}}' and '{{next}}'",
+    ),
+    (
+        "shouldNotWrap",
+        "Should not have line break(s) between '{{prev}}' and '{{next}}'",
+    ),
+];
 const INDENT_BINARY_OPS_MESSAGES: &[(&str, &str)] =
     &[("wrongIndentation", "Expected indentation of {{expected}}")];
 const ARRAY_ELEMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
@@ -995,6 +1014,11 @@ struct StylisticRuleDefinition {
 }
 
 const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
+    StylisticRuleDefinition {
+        name: "exp-list-style",
+        docs_description: "Enforce consistent spacing and line break styles inside brackets.",
+        messages: EXP_LIST_STYLE_MESSAGES,
+    },
     StylisticRuleDefinition {
         name: "array-element-newline",
         docs_description: "Enforce line breaks after each array element.",
@@ -1821,6 +1845,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "exp-list-style" => exp_list_style::check_exp_list_style(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "type-annotation-spacing" => type_annotation_spacing::check_type_annotation_spacing(
                 source_text,
                 &rule.options,

@@ -1,0 +1,2922 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFiles": [
+      "packages/eslint-plugin/rules/list-style/list-style.test.ts",
+      "packages/eslint-plugin/rules/list-style/list-style._json_.test.ts"
+    ],
+    "license": "MIT",
+    "eslintVersion": "10.0.0",
+    "parserVersions": {
+      "typescriptEslint": "8.56.0",
+      "typescript": "5.9.3",
+      "jsoncEslintParser": "2.4.2"
+    },
+    "tool": "tools/tasks/sync-stylistic-exp-list-style-tests.ts",
+    "inventory": {
+      "logicalValid": 56,
+      "logicalInvalid": 56,
+      "valid": 56,
+      "invalid": 56,
+      "diagnostics": 107,
+      "unfixableInvalid": 0,
+      "total": 112,
+      "fixableInvalid": 56,
+      "languages": {
+        "typescript": {
+          "valid": 52,
+          "invalid": 51
+        },
+        "json": {
+          "valid": 4,
+          "invalid": 5
+        }
+      }
+    }
+  },
+  "valid": [
+    {
+      "code": "if (a) {}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "if (\na\n) {}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const a = { foo: \"bar\", bar: 2 }",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const a = {\nfoo: \"bar\",\nbar: 2\n}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const a = [1, 2, 3]",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const a = [\n1,\n2,\n3\n]",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "import { foo, bar } from \"foo\"",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "import {\nfoo,\nbar\n} from \"foo\"",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const a = [`\n\n`, `\n\n`]",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "log(a, b)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "log(\na,\nb\n)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "function foo(a, b) {}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "function foo(\na,\nb\n) {}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const foo = function (a, b) {}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const foo = function (\na,\nb\n) {}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const foo = (a, b) => {\n\n}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const foo = (a, b): { a:b } => {\n\n}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "interface Foo { a: 1, b: 2 }",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "interface Foo {\na: 1\nb: 2\n}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "enum Foo { A, B }",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "enum Foo {\nA,\nB\n}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "a\n.filter(items => {\n\n})",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "new Foo(a, b)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "new Foo(\na,\nb\n)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "new (Foo())(a, b)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "function foo<T = {\na: 1,\nb: 2\n}>(a, b) {}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "foo(() =>\nbar())",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "call<{\nfoo: 'bar'\n}>('')",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const { a } = foo;",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const [, a] = foo;",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const [a,] = foo;",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const [, a,] = foo;",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "export { name, version } from 'package.json' with {\n  type: 'json'\n  }",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "export * from \"foo\" with { type: \"json\" }",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const foo = [1]\nconst bar = [\n  1, \n  2,\n];",
+      "options": [
+        {
+          "singleLine": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "language": "typescript"
+    },
+    {
+      "code": "const foo = [1, 2];\nconst bar = { a: 1, b: 2 };\nconst foo = [\n  1,\n  2,\n];\nconst bar = {\n  a: 1,\n  b: 2,\n};",
+      "options": [
+        {
+          "multiLine": {
+            "minItems": 2
+          }
+        }
+      ],
+      "language": "typescript"
+    },
+    {
+      "code": "import { name, version } from 'package.json' with {type: 'json'}",
+      "options": [
+        {
+          "overrides": {
+            "{}": {
+              "singleLine": {
+                "spacing": "always"
+              }
+            },
+            "ImportAttributes": {
+              "singleLine": {
+                "spacing": "never"
+              }
+            }
+          }
+        }
+      ],
+      "language": "typescript"
+    },
+    {
+      "code": "if (node.callee.type !== 'Identifier'\n  || (node.callee.name !== 't' && node.callee.name !== 'n')\n) {}",
+      "options": [
+        {
+          "overrides": {
+            "IfStatement": "off"
+          }
+        }
+      ],
+      "language": "typescript"
+    },
+    {
+      "code": "(Object.keys(options) as KeysOptions[])\n.forEach((key) => {\n  if (options[key] === false)\n    delete listenser[key]\n})",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "function fn({ foo, bar }: {\nfoo: 'foo'\nbar: 'bar'\n}) {}",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "export const getTodoList = request.post<\n  Params,\n  ResponseData,\n>('/api/todo-list')",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "bar(\n  foo => foo\n    ? ''\n    : ''\n)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "bar(\n  (ruleName, foo) => foo\n    ? ''\n    : ''\n)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const a = [\n  (1),\n  (2)\n];",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const a = [(1), (2)];",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "this.foobar(\n  (x),\n  y,\n  z\n)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "foobar(\n  (x),\n  y,\n  z\n)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "foobar<A>(\n  (x),\n  y,\n  z\n)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "foo?.(\n  [],\n  {},\n)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "import Icon, {\n  MailOutlined,\n  NumberOutlined,\n  QuestionCircleOutlined,\n  QuestionOutlined,\n  UserOutlined,\n} from '@ant-design/icons';",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "const fix = a => (\n  call(\n    a\n  )\n)",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "run({\n  valid: [\n    /* comment */\n  ],\n  invalid: [\n    // comment\n  ]\n})",
+      "options": [],
+      "language": "typescript"
+    },
+    {
+      "code": "{\n  \"foo\": [\"bar\", \"baz\"]\n}",
+      "options": [],
+      "language": "json"
+    },
+    {
+      "code": "{\n  \"foo\": [\n    \"bar\", \n    \"baz\"\n  ]\n}",
+      "options": [],
+      "language": "json"
+    },
+    {
+      "code": "{\n  \"foo\": {\"a\": \"1\", \"b\": \"2\"}\n}",
+      "options": [
+        {
+          "overrides": {
+            "JSONObjectExpression": {
+              "singleLine": {
+                "spacing": "never"
+              }
+            }
+          }
+        }
+      ],
+      "language": "json"
+    },
+    {
+      "code": "{\n  \"foo\": {\n    \"a\": \"1\",\n    \"b\": \"2\"\n  }\n}",
+      "options": [],
+      "language": "json"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "if (\na) {}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'a' and ')'",
+          "data": {
+            "prev": "a",
+            "next": ")"
+          },
+          "range": [6, 6],
+          "loc": {
+            "line": 2,
+            "column": 2,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [6, 6],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "if (\na\n) {}",
+      "output": "if (\na\n) {}"
+    },
+    {
+      "code": "if (a\n) {}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between 'a' and ')'",
+          "data": {
+            "prev": "a",
+            "next": ")"
+          },
+          "range": [5, 6],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [5, 6],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "if (a) {}",
+      "output": "if (a) {}"
+    },
+    {
+      "code": "const a = {\nfoo: \"bar\", bar: 2 }",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'bar'",
+          "data": {
+            "prev": ",",
+            "next": "bar"
+          },
+          "range": [23, 24],
+          "loc": {
+            "line": 2,
+            "column": 12,
+            "endLine": 2,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [24, 24],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '2' and '}'",
+          "data": {
+            "prev": "2",
+            "next": "}"
+          },
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 19,
+            "endLine": 2,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [31, 31],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "const a = {\nfoo: \"bar\", \nbar: 2 \n}",
+      "output": "const a = {\nfoo: \"bar\", \nbar: 2 \n}"
+    },
+    {
+      "code": "const a = {foo: \"bar\", \nbar: 2\n}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and 'bar'",
+          "data": {
+            "prev": ",",
+            "next": "bar"
+          },
+          "range": [22, 24],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [22, 24],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '2' and '}'",
+          "data": {
+            "prev": "2",
+            "next": "}"
+          },
+          "range": [30, 31],
+          "loc": {
+            "line": 2,
+            "column": 7,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "const a = {foo: \"bar\",bar: 2}",
+      "output": "const a = { foo: \"bar\",bar: 2 }"
+    },
+    {
+      "code": "const a = [\n1, 2, 3]",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and '2'",
+          "data": {
+            "prev": ",",
+            "next": "2"
+          },
+          "range": [14, 15],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and '3'",
+          "data": {
+            "prev": ",",
+            "next": "3"
+          },
+          "range": [17, 18],
+          "loc": {
+            "line": 2,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [18, 18],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '3' and ']'",
+          "data": {
+            "prev": "3",
+            "next": "]"
+          },
+          "range": [19, 19],
+          "loc": {
+            "line": 2,
+            "column": 8,
+            "endLine": 2,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [19, 19],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "const a = [\n1, \n2, \n3\n]",
+      "output": "const a = [\n1, \n2, \n3\n]"
+    },
+    {
+      "code": "const a = [1, \n2, 3\n]",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '2'",
+          "data": {
+            "prev": ",",
+            "next": "2"
+          },
+          "range": [13, 15],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [13, 15],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '3' and ']'",
+          "data": {
+            "prev": "3",
+            "next": "]"
+          },
+          "range": [19, 20],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [19, 20],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "const a = [1,2, 3]",
+      "output": "const a = [1,2, 3]"
+    },
+    {
+      "code": "import {\nfoo, bar } from \"foo\"",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'bar'",
+          "data": {
+            "prev": ",",
+            "next": "bar"
+          },
+          "range": [13, 14],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 2,
+            "endColumn": 6
+          },
+          "fix": {
+            "range": [14, 14],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'bar' and '}'",
+          "data": {
+            "prev": "bar",
+            "next": "}"
+          },
+          "range": [17, 18],
+          "loc": {
+            "line": 2,
+            "column": 9,
+            "endLine": 2,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [18, 18],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "import {\nfoo, \nbar \n} from \"foo\"",
+      "output": "import {\nfoo, \nbar \n} from \"foo\""
+    },
+    {
+      "code": "import { foo, \nbar } from \"foo\"",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and 'bar'",
+          "data": {
+            "prev": ",",
+            "next": "bar"
+          },
+          "range": [13, 15],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [13, 15],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "import { foo,bar } from \"foo\"",
+      "output": "import { foo,bar } from \"foo\""
+    },
+    {
+      "code": "log(\na, b)",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [7, 8],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [8, 8],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'b' and ')'",
+          "data": {
+            "prev": "b",
+            "next": ")"
+          },
+          "range": [9, 9],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 2,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [9, 9],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "log(\na, \nb\n)",
+      "output": "log(\na, \nb\n)"
+    },
+    {
+      "code": "function foo(a, b\n){}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between 'b' and ')'",
+          "data": {
+            "prev": "b",
+            "next": ")"
+          },
+          "range": [17, 18],
+          "loc": {
+            "line": 1,
+            "column": 18,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [17, 18],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "function foo(a, b){}",
+      "output": "function foo(a, b){}"
+    },
+    {
+      "code": "function foo(\na, b) {}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [16, 17],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'b' and ')'",
+          "data": {
+            "prev": "b",
+            "next": ")"
+          },
+          "range": [18, 18],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 2,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [18, 18],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "function foo(\na, \nb\n) {}",
+      "output": "function foo(\na, \nb\n) {}"
+    },
+    {
+      "code": "const foo = (\na, b) => {}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [16, 17],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'b' and ')'",
+          "data": {
+            "prev": "b",
+            "next": ")"
+          },
+          "range": [18, 18],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 2,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [18, 18],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "const foo = (\na, \nb\n) => {}",
+      "output": "const foo = (\na, \nb\n) => {}"
+    },
+    {
+      "code": "const foo = (\na, b): {\na:b} => {}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [16, 17],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'b' and ')'",
+          "data": {
+            "prev": "b",
+            "next": ")"
+          },
+          "range": [18, 18],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 2,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [18, 18],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'b' and '}'",
+          "data": {
+            "prev": "b",
+            "next": "}"
+          },
+          "range": [26, 26],
+          "loc": {
+            "line": 3,
+            "column": 4,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [26, 26],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "const foo = (\na, \nb\n): {\na:b\n} => {}",
+      "output": "const foo = (\na, \nb\n): {\na:b\n} => {}"
+    },
+    {
+      "code": "const foo = (\na, b): {a:b} => {}",
+      "options": [
+        {
+          "overrides": {
+            "{}": {
+              "singleLine": {
+                "spacing": "never"
+              }
+            }
+          }
+        }
+      ],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [16, 17],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'b' and ')'",
+          "data": {
+            "prev": "b",
+            "next": ")"
+          },
+          "range": [18, 18],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 2,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [18, 18],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "const foo = (\na, \nb\n): {a:b} => {}",
+      "output": "const foo = (\na, \nb\n): {a:b} => {}"
+    },
+    {
+      "code": "interface Foo {\na: 1,b: 2\n}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [21, 21],
+          "loc": {
+            "line": 2,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 6
+          },
+          "fix": {
+            "range": [21, 21],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "interface Foo {\na: 1,\nb: 2\n}",
+      "output": "interface Foo {\na: 1,\nb: 2\n}"
+    },
+    {
+      "code": "interface Foo {a: 1\nb: 2\n}",
+      "options": [],
+      "language": "typescript",
+      "description": "Add delimiter to avoid syntax error, (interface)",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '1' and 'b'",
+          "data": {
+            "prev": "1",
+            "next": "b"
+          },
+          "range": [19, 20],
+          "loc": {
+            "line": 1,
+            "column": 20,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [19, 20],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '2' and '}'",
+          "data": {
+            "prev": "2",
+            "next": "}"
+          },
+          "range": [24, 25],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [24, 25],
+            "text": ","
+          }
+        }
+      ],
+      "authoredOutput": "interface Foo {a: 1,b: 2,}",
+      "output": "interface Foo { a: 1,b: 2, }"
+    },
+    {
+      "code": "interface Foo {a: 1;\nb: 2,\nc: 3}",
+      "options": [],
+      "language": "typescript",
+      "description": "Delimiter already exists",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ';' and 'b'",
+          "data": {
+            "prev": ";",
+            "next": "b"
+          },
+          "range": [20, 21],
+          "loc": {
+            "line": 1,
+            "column": 21,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [20, 21],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and 'c'",
+          "data": {
+            "prev": ",",
+            "next": "c"
+          },
+          "range": [26, 27],
+          "loc": {
+            "line": 2,
+            "column": 6,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [26, 27],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "interface Foo {a: 1;b: 2,c: 3}",
+      "output": "interface Foo { a: 1;b: 2,c: 3 }"
+    },
+    {
+      "code": "export interface Foo {        a: 1\n  b: Pick<Bar, 'baz'>\n  c: 3\n}",
+      "options": [],
+      "language": "typescript",
+      "description": "Delimiter in the middle",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '1' and 'b'",
+          "data": {
+            "prev": "1",
+            "next": "b"
+          },
+          "range": [34, 37],
+          "loc": {
+            "line": 1,
+            "column": 35,
+            "endLine": 2,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [34, 37],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '>' and 'c'",
+          "data": {
+            "prev": ">",
+            "next": "c"
+          },
+          "range": [56, 59],
+          "loc": {
+            "line": 2,
+            "column": 22,
+            "endLine": 3,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [56, 59],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '3' and '}'",
+          "data": {
+            "prev": "3",
+            "next": "}"
+          },
+          "range": [63, 64],
+          "loc": {
+            "line": 3,
+            "column": 7,
+            "endLine": 4,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [63, 64],
+            "text": ","
+          }
+        }
+      ],
+      "authoredOutput": "export interface Foo {        a: 1,b: Pick<Bar, 'baz'>,c: 3,}",
+      "output": "export interface Foo {        a: 1,b: Pick<Bar, 'baz'>,c: 3, }"
+    },
+    {
+      "code": "type Foo = {\na: 1,b: 2\n}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [18, 18],
+          "loc": {
+            "line": 2,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 6
+          },
+          "fix": {
+            "range": [18, 18],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "type Foo = {\na: 1,\nb: 2\n}",
+      "output": "type Foo = {\na: 1,\nb: 2\n}"
+    },
+    {
+      "code": "type Foo = {a: 1\nb: 2\n}",
+      "options": [],
+      "language": "typescript",
+      "description": "Add delimiter to avoid syntax error, (type)",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '1' and 'b'",
+          "data": {
+            "prev": "1",
+            "next": "b"
+          },
+          "range": [16, 17],
+          "loc": {
+            "line": 1,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [16, 17],
+            "text": ","
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '2' and '}'",
+          "data": {
+            "prev": "2",
+            "next": "}"
+          },
+          "range": [21, 22],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [21, 22],
+            "text": ","
+          }
+        }
+      ],
+      "authoredOutput": "type Foo = {a: 1,b: 2,}",
+      "output": "type Foo = { a: 1,b: 2, }"
+    },
+    {
+      "code": "type foo = [\n1]",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '1' and ']'",
+          "data": {
+            "prev": "1",
+            "next": "]"
+          },
+          "range": [14, 14],
+          "loc": {
+            "line": 2,
+            "column": 2,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [14, 14],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "type foo = [\n1\n]",
+      "output": "type foo = [\n1\n]"
+    },
+    {
+      "code": "type Foo = [1,2,\n3]",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '3'",
+          "data": {
+            "prev": ",",
+            "next": "3"
+          },
+          "range": [16, 17],
+          "loc": {
+            "line": 1,
+            "column": 17,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [16, 17],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "type Foo = [1,2,3]",
+      "output": "type Foo = [1,2,3]"
+    },
+    {
+      "code": "type Foo = [ 1, 2, 3 ]",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotSpacing",
+          "message": "Should not have space(s) between '[' and '1'",
+          "data": {
+            "prev": "[",
+            "next": "1"
+          },
+          "range": [12, 13],
+          "loc": {
+            "line": 1,
+            "column": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [12, 13],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotSpacing",
+          "message": "Should not have space(s) between '3' and ']'",
+          "data": {
+            "prev": "3",
+            "next": "]"
+          },
+          "range": [20, 21],
+          "loc": {
+            "line": 1,
+            "column": 21,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [20, 21],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "type Foo = [1, 2, 3]",
+      "output": "type Foo = [1, 2, 3]"
+    },
+    {
+      "code": "new Foo(1,2,\n3)",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '3'",
+          "data": {
+            "prev": ",",
+            "next": "3"
+          },
+          "range": [12, 13],
+          "loc": {
+            "line": 1,
+            "column": 13,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [12, 13],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "new Foo(1,2,3)",
+      "output": "new Foo(1,2,3)"
+    },
+    {
+      "code": "new Foo(\n1,2,\n3)",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and '2'",
+          "data": {
+            "prev": ",",
+            "next": "2"
+          },
+          "range": [11, 11],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [11, 11],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '3' and ')'",
+          "data": {
+            "prev": "3",
+            "next": ")"
+          },
+          "range": [15, 15],
+          "loc": {
+            "line": 3,
+            "column": 2,
+            "endLine": 3,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "new Foo(\n1,\n2,\n3\n)",
+      "output": "new Foo(\n1,\n2,\n3\n)"
+    },
+    {
+      "code": "foo(\n()=>bar(),\n()=>\nbaz())",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ')' and ')'",
+          "data": {
+            "prev": ")",
+            "next": ")"
+          },
+          "range": [26, 26],
+          "loc": {
+            "line": 4,
+            "column": 6,
+            "endLine": 4,
+            "endColumn": 6
+          },
+          "fix": {
+            "range": [26, 26],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "foo(\n()=>bar(),\n()=>\nbaz()\n)",
+      "output": "foo(\n()=>bar(),\n()=>\nbaz()\n)"
+    },
+    {
+      "code": "foo(()=>bar(),\n()=>\nbaz())",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '('",
+          "data": {
+            "prev": ",",
+            "next": "("
+          },
+          "range": [14, 15],
+          "loc": {
+            "line": 1,
+            "column": 15,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [14, 15],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "foo(()=>bar(),()=>\nbaz())",
+      "output": "foo(()=>bar(),()=>\nbaz())"
+    },
+    {
+      "code": "foo<X,\nY>(1, 2)",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and 'Y'",
+          "data": {
+            "prev": ",",
+            "next": "Y"
+          },
+          "range": [6, 7],
+          "loc": {
+            "line": 1,
+            "column": 7,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [6, 7],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "foo<X,Y>(1, 2)",
+      "output": "foo<X,Y>(1, 2)"
+    },
+    {
+      "code": "foo<\nX,Y>(\n1, 2)",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'Y'",
+          "data": {
+            "prev": ",",
+            "next": "Y"
+          },
+          "range": [7, 7],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [7, 7],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'Y' and '>'",
+          "data": {
+            "prev": "Y",
+            "next": ">"
+          },
+          "range": [8, 8],
+          "loc": {
+            "line": 2,
+            "column": 4,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [8, 8],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and '2'",
+          "data": {
+            "prev": ",",
+            "next": "2"
+          },
+          "range": [13, 14],
+          "loc": {
+            "line": 3,
+            "column": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [14, 14],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '2' and ')'",
+          "data": {
+            "prev": "2",
+            "next": ")"
+          },
+          "range": [15, 15],
+          "loc": {
+            "line": 3,
+            "column": 5,
+            "endLine": 3,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "foo<\nX,\nY\n>(\n1, \n2\n)",
+      "output": "foo<\nX,\nY\n>(\n1, \n2\n)"
+    },
+    {
+      "code": "function foo<\nX,Y>() {}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'Y'",
+          "data": {
+            "prev": ",",
+            "next": "Y"
+          },
+          "range": [16, 16],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [16, 16],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'Y' and '>'",
+          "data": {
+            "prev": "Y",
+            "next": ">"
+          },
+          "range": [17, 17],
+          "loc": {
+            "line": 2,
+            "column": 4,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "function foo<\nX,\nY\n>() {}",
+      "output": "function foo<\nX,\nY\n>() {}"
+    },
+    {
+      "code": "const {a,\nb\n} = c",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [9, 10],
+          "loc": {
+            "line": 1,
+            "column": 10,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [9, 10],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between 'b' and '}'",
+          "data": {
+            "prev": "b",
+            "next": "}"
+          },
+          "range": [11, 12],
+          "loc": {
+            "line": 2,
+            "column": 2,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [11, 12],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "const {a,b} = c",
+      "output": "const { a,b } = c"
+    },
+    {
+      "code": "const {a,b} = c",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldSpacing",
+          "message": "Should have space between '{' and 'a'",
+          "data": {
+            "prev": "{",
+            "next": "a"
+          },
+          "range": [7, 7],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [7, 7],
+            "text": " "
+          }
+        },
+        {
+          "messageId": "shouldSpacing",
+          "message": "Should have space between 'b' and '}'",
+          "data": {
+            "prev": "b",
+            "next": "}"
+          },
+          "range": [10, 10],
+          "loc": {
+            "line": 1,
+            "column": 11,
+            "endLine": 1,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [10, 10],
+            "text": " "
+          }
+        }
+      ],
+      "authoredOutput": "const { a,b } = c",
+      "output": "const { a,b } = c"
+    },
+    {
+      "code": "const [\n  a,b] = c",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [12, 12],
+          "loc": {
+            "line": 2,
+            "column": 5,
+            "endLine": 2,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [12, 12],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'b' and ']'",
+          "data": {
+            "prev": "b",
+            "next": "]"
+          },
+          "range": [13, 13],
+          "loc": {
+            "line": 2,
+            "column": 6,
+            "endLine": 2,
+            "endColumn": 6
+          },
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "const [\n  a,\nb\n] = c",
+      "output": "const [\n  a,\nb\n] = c"
+    },
+    {
+      "code": "const [,\n] = foo",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and ']'",
+          "data": {
+            "prev": ",",
+            "next": "]"
+          },
+          "range": [8, 9],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [8, 9],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "const [,] = foo",
+      "output": "const [,] = foo"
+    },
+    {
+      "code": "foo(([\na,b]) => {})",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [9, 9],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 2,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [9, 9],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'b' and ']'",
+          "data": {
+            "prev": "b",
+            "next": "]"
+          },
+          "range": [10, 10],
+          "loc": {
+            "line": 2,
+            "column": 4,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [10, 10],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "foo(([\na,\nb\n]) => {})",
+      "output": "foo(([\na,\nb\n]) => {})"
+    },
+    {
+      "code": "const a = {foo: \"bar\", \r\nbar: 2\r\n}",
+      "options": [],
+      "language": "typescript",
+      "description": "CRLF",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and 'bar'",
+          "data": {
+            "prev": ",",
+            "next": "bar"
+          },
+          "range": [22, 25],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [22, 25],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '2' and '}'",
+          "data": {
+            "prev": "2",
+            "next": "}"
+          },
+          "range": [31, 33],
+          "loc": {
+            "line": 2,
+            "column": 7,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [31, 33],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "const a = {foo: \"bar\",bar: 2}",
+      "output": "const a = { foo: \"bar\",bar: 2 }"
+    },
+    {
+      "code": "export default antfu({\n},\n{\n  foo: 'bar'\n}\n  // some comment\n  // hello\n)",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '{'",
+          "data": {
+            "prev": ",",
+            "next": "{"
+          },
+          "range": [25, 26],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [25, 26],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '}' and ')'",
+          "data": {
+            "prev": "}",
+            "next": ")"
+          },
+          "range": [42, 72],
+          "loc": {
+            "line": 5,
+            "column": 2,
+            "endLine": 8,
+            "endColumn": 1
+          },
+          "fix": null
+        }
+      ],
+      "authoredOutput": "export default antfu({\n},{\n  foo: 'bar'\n}\n  // some comment\n  // hello\n)",
+      "output": "export default antfu({\n},{\n  foo: 'bar'\n}\n  // some comment\n  // hello\n)"
+    },
+    {
+      "code": "export default antfu({\n},\n// some comment\n{\n  foo: 'bar'\n},\n{\n}\n  // hello\n)",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '{'",
+          "data": {
+            "prev": ",",
+            "next": "{"
+          },
+          "range": [25, 42],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 4,
+            "endColumn": 1
+          },
+          "fix": null
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '{'",
+          "data": {
+            "prev": ",",
+            "next": "{"
+          },
+          "range": [59, 60],
+          "loc": {
+            "line": 6,
+            "column": 3,
+            "endLine": 7,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [59, 60],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '}' and ')'",
+          "data": {
+            "prev": "}",
+            "next": ")"
+          },
+          "range": [63, 75],
+          "loc": {
+            "line": 8,
+            "column": 2,
+            "endLine": 10,
+            "endColumn": 1
+          },
+          "fix": null
+        }
+      ],
+      "authoredOutput": "export default antfu({\n},\n// some comment\n{\n  foo: 'bar'\n},{\n}\n  // hello\n)",
+      "output": "export default antfu({\n},\n// some comment\n{\n  foo: 'bar'\n},{\n}\n  // hello\n)"
+    },
+    {
+      "code": "interface Foo {\n  bar: (\n    foo: string, bar: {\n      bar: string, baz: string }) => void\n}",
+      "options": [],
+      "language": "typescript",
+      "description": "Check for function arguments in type",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'bar'",
+          "data": {
+            "prev": ",",
+            "next": "bar"
+          },
+          "range": [41, 42],
+          "loc": {
+            "line": 3,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [42, 42],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'baz'",
+          "data": {
+            "prev": ",",
+            "next": "baz"
+          },
+          "range": [67, 68],
+          "loc": {
+            "line": 4,
+            "column": 19,
+            "endLine": 4,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [68, 68],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between 'string' and '}'",
+          "data": {
+            "prev": "string",
+            "next": "}"
+          },
+          "range": [79, 80],
+          "loc": {
+            "line": 4,
+            "column": 31,
+            "endLine": 4,
+            "endColumn": 32
+          },
+          "fix": {
+            "range": [80, 80],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '}' and ')'",
+          "data": {
+            "prev": "}",
+            "next": ")"
+          },
+          "range": [81, 81],
+          "loc": {
+            "line": 4,
+            "column": 33,
+            "endLine": 4,
+            "endColumn": 33
+          },
+          "fix": {
+            "range": [81, 81],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "interface Foo {\n  bar: (\n    foo: string, \nbar: {\n      bar: string, \nbaz: string \n}\n) => void\n}",
+      "output": "interface Foo {\n  bar: (\n    foo: string, \nbar: {\n      bar: string, \nbaz: string \n}\n) => void\n}"
+    },
+    {
+      "code": "interface foo {\na:1}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '1' and '}'",
+          "data": {
+            "prev": "1",
+            "next": "}"
+          },
+          "range": [19, 19],
+          "loc": {
+            "line": 2,
+            "column": 4,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [19, 19],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "interface foo {\na:1\n}",
+      "output": "interface foo {\na:1\n}"
+    },
+    {
+      "code": "interface foo {a:1\n}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '1' and '}'",
+          "data": {
+            "prev": "1",
+            "next": "}"
+          },
+          "range": [18, 19],
+          "loc": {
+            "line": 1,
+            "column": 19,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [18, 19],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "interface foo {a:1}",
+      "output": "interface foo { a:1 }"
+    },
+    {
+      "code": "type foo = {\na:1}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '1' and '}'",
+          "data": {
+            "prev": "1",
+            "next": "}"
+          },
+          "range": [16, 16],
+          "loc": {
+            "line": 2,
+            "column": 4,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [16, 16],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "type foo = {\na:1\n}",
+      "output": "type foo = {\na:1\n}"
+    },
+    {
+      "code": "type foo = {a:1\n}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '1' and '}'",
+          "data": {
+            "prev": "1",
+            "next": "}"
+          },
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [15, 16],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "type foo = {a:1}",
+      "output": "type foo = { a:1 }"
+    },
+    {
+      "code": "const foo = [\n1]",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '1' and ']'",
+          "data": {
+            "prev": "1",
+            "next": "]"
+          },
+          "range": [15, 15],
+          "loc": {
+            "line": 2,
+            "column": 2,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [15, 15],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "const foo = [\n1\n]",
+      "output": "const foo = [\n1\n]"
+    },
+    {
+      "code": "const foo = {\na:1}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '1' and '}'",
+          "data": {
+            "prev": "1",
+            "next": "}"
+          },
+          "range": [17, 17],
+          "loc": {
+            "line": 2,
+            "column": 4,
+            "endLine": 2,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "const foo = {\na:1\n}",
+      "output": "const foo = {\na:1\n}"
+    },
+    {
+      "code": "function foo< T >( a: number, b: string ): void",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotSpacing",
+          "message": "Should not have space(s) between '<' and 'T'",
+          "data": {
+            "prev": "<",
+            "next": "T"
+          },
+          "range": [13, 14],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotSpacing",
+          "message": "Should not have space(s) between 'T' and '>'",
+          "data": {
+            "prev": "T",
+            "next": ">"
+          },
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [15, 16],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotSpacing",
+          "message": "Should not have space(s) between '(' and 'a'",
+          "data": {
+            "prev": "(",
+            "next": "a"
+          },
+          "range": [18, 19],
+          "loc": {
+            "line": 1,
+            "column": 19,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [18, 19],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotSpacing",
+          "message": "Should not have space(s) between 'string' and ')'",
+          "data": {
+            "prev": "string",
+            "next": ")"
+          },
+          "range": [39, 40],
+          "loc": {
+            "line": 1,
+            "column": 40,
+            "endLine": 1,
+            "endColumn": 41
+          },
+          "fix": {
+            "range": [39, 40],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "function foo<T>(a: number, b: string): void",
+      "output": "function foo<T>(a: number, b: string): void"
+    },
+    {
+      "code": "export { name, version} from 'package.json' with {\n  type: 'json'}",
+      "options": [],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldSpacing",
+          "message": "Should have space between 'version' and '}'",
+          "data": {
+            "prev": "version",
+            "next": "}"
+          },
+          "range": [22, 22],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 1,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [22, 22],
+            "text": " "
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ''json'' and '}'",
+          "data": {
+            "prev": "'json'",
+            "next": "}"
+          },
+          "range": [65, 65],
+          "loc": {
+            "line": 2,
+            "column": 15,
+            "endLine": 2,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [65, 65],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "export { name, version } from 'package.json' with {\n  type: 'json'\n}",
+      "output": "export { name, version } from 'package.json' with {\n  type: 'json'\n}"
+    },
+    {
+      "code": "const foo = [1, 2];\nconst bar = { a: 1, b: 2 };",
+      "options": [
+        {
+          "singleLine": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '[' and '1'",
+          "data": {
+            "prev": "[",
+            "next": "1"
+          },
+          "range": [13, 13],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [13, 13],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and '2'",
+          "data": {
+            "prev": ",",
+            "next": "2"
+          },
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [16, 16],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '2' and ']'",
+          "data": {
+            "prev": "2",
+            "next": "]"
+          },
+          "range": [17, 17],
+          "loc": {
+            "line": 1,
+            "column": 18,
+            "endLine": 1,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [17, 17],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '{' and 'a'",
+          "data": {
+            "prev": "{",
+            "next": "a"
+          },
+          "range": [33, 34],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [34, 34],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [39, 40],
+          "loc": {
+            "line": 2,
+            "column": 20,
+            "endLine": 2,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [40, 40],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between '2' and '}'",
+          "data": {
+            "prev": "2",
+            "next": "}"
+          },
+          "range": [44, 45],
+          "loc": {
+            "line": 2,
+            "column": 25,
+            "endLine": 2,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [45, 45],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "const foo = [\n1, \n2\n];\nconst bar = { \na: 1, \nb: 2 \n};",
+      "output": "const foo = [\n1, \n2\n];\nconst bar = { \na: 1, \nb: 2 \n};"
+    },
+    {
+      "code": "const foo = [\n1, \n2\n];\nconst bar = { \na: 1, \nb: 2 \n};",
+      "options": [
+        {
+          "multiLine": {
+            "minItems": 3
+          }
+        }
+      ],
+      "language": "typescript",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '[' and '1'",
+          "data": {
+            "prev": "[",
+            "next": "1"
+          },
+          "range": [13, 14],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '2'",
+          "data": {
+            "prev": ",",
+            "next": "2"
+          },
+          "range": [16, 18],
+          "loc": {
+            "line": 2,
+            "column": 3,
+            "endLine": 3,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [16, 18],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '2' and ']'",
+          "data": {
+            "prev": "2",
+            "next": "]"
+          },
+          "range": [19, 20],
+          "loc": {
+            "line": 3,
+            "column": 2,
+            "endLine": 4,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [19, 20],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '{' and 'a'",
+          "data": {
+            "prev": "{",
+            "next": "a"
+          },
+          "range": [36, 38],
+          "loc": {
+            "line": 5,
+            "column": 14,
+            "endLine": 6,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [36, 38],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and 'b'",
+          "data": {
+            "prev": ",",
+            "next": "b"
+          },
+          "range": [43, 45],
+          "loc": {
+            "line": 6,
+            "column": 6,
+            "endLine": 7,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [43, 45],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '2' and '}'",
+          "data": {
+            "prev": "2",
+            "next": "}"
+          },
+          "range": [49, 51],
+          "loc": {
+            "line": 7,
+            "column": 5,
+            "endLine": 8,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [49, 51],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "const foo = [1,2];\nconst bar = {a: 1,b: 2};",
+      "output": "const foo = [1,2];\nconst bar = { a: 1,b: 2 };"
+    },
+    {
+      "code": "foo(a,\n)",
+      "options": [],
+      "language": "typescript",
+      "description": "Trailing semi",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and ')'",
+          "data": {
+            "prev": ",",
+            "next": ")"
+          },
+          "range": [6, 7],
+          "loc": {
+            "line": 1,
+            "column": 7,
+            "endLine": 2,
+            "endColumn": 1
+          },
+          "fix": {
+            "range": [6, 7],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "foo(a,)",
+      "output": "foo(a,)"
+    },
+    {
+      "code": "const foo = [1,\n\t2,\n\t3];",
+      "options": [],
+      "language": "typescript",
+      "description": "indent by tab",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '2'",
+          "data": {
+            "prev": ",",
+            "next": "2"
+          },
+          "range": [15, 17],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [15, 17],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '3'",
+          "data": {
+            "prev": ",",
+            "next": "3"
+          },
+          "range": [19, 21],
+          "loc": {
+            "line": 2,
+            "column": 4,
+            "endLine": 3,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [19, 21],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "const foo = [1,2,3];",
+      "output": "const foo = [1,2,3];"
+    },
+    {
+      "code": "{\n  \"foo\": [\"bar\",\n  \"baz\"],\n}",
+      "options": [],
+      "language": "json",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '\"baz\"'",
+          "data": {
+            "prev": ",",
+            "next": "\"baz\""
+          },
+          "range": [18, 21],
+          "loc": {
+            "line": 2,
+            "column": 17,
+            "endLine": 3,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [18, 21],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "{\n  \"foo\": [\"bar\",\"baz\"],\n}",
+      "output": "{\n  \"foo\": [\"bar\",\"baz\"],\n}"
+    },
+    {
+      "code": "{\n  \"foo\": [\n    \"bar\",\"baz\"\n  ],\n}",
+      "options": [],
+      "language": "json",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and '\"baz\"'",
+          "data": {
+            "prev": ",",
+            "next": "\"baz\""
+          },
+          "range": [23, 23],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [23, 23],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "{\n  \"foo\": [\n    \"bar\",\n\"baz\"\n  ],\n}",
+      "output": "{\n  \"foo\": [\n    \"bar\",\n\"baz\"\n  ],\n}"
+    },
+    {
+      "code": "{\n  \"foo\": {\"a\": \"1\",\n  \"b\": \"2\"}\n}",
+      "options": [],
+      "language": "json",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '\"b\"'",
+          "data": {
+            "prev": ",",
+            "next": "\"b\""
+          },
+          "range": [21, 24],
+          "loc": {
+            "line": 2,
+            "column": 20,
+            "endLine": 3,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [21, 24],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "{\n  \"foo\": {\"a\": \"1\",\"b\": \"2\"}\n}",
+      "output": "{\n  \"foo\": { \"a\": \"1\",\"b\": \"2\" }\n}"
+    },
+    {
+      "code": "{\n  \"foo\": {\n    \"a\": \"1\",         \"b\": \"2\"\n  }\n}",
+      "options": [],
+      "language": "json",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Should have line break between ',' and '\"b\"'",
+          "data": {
+            "prev": ",",
+            "next": "\"b\""
+          },
+          "range": [26, 35],
+          "loc": {
+            "line": 3,
+            "column": 14,
+            "endLine": 3,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [35, 35],
+            "text": "\n"
+          }
+        }
+      ],
+      "authoredOutput": "{\n  \"foo\": {\n    \"a\": \"1\",         \n\"b\": \"2\"\n  }\n}",
+      "output": "{\n  \"foo\": {\n    \"a\": \"1\",         \n\"b\": \"2\"\n  }\n}"
+    },
+    {
+      "code": "{\n  \"foo\": { \"a\": \"1\",\n    // comment\n    \"b\": \"2\"\n  },\n  \"bar\": [\"1\",\n  \"2\"]\n}",
+      "options": [],
+      "language": "json",
+      "description": "Only ignore when there is a comment",
+      "expectedDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '\"b\"'",
+          "data": {
+            "prev": ",",
+            "next": "\"b\""
+          },
+          "range": [22, 42],
+          "loc": {
+            "line": 2,
+            "column": 21,
+            "endLine": 4,
+            "endColumn": 5
+          },
+          "fix": null
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between '\"2\"' and '}'",
+          "data": {
+            "prev": "\"2\"",
+            "next": "}"
+          },
+          "range": [50, 53],
+          "loc": {
+            "line": 4,
+            "column": 13,
+            "endLine": 5,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [50, 53],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Should not have line break(s) between ',' and '\"2\"'",
+          "data": {
+            "prev": ",",
+            "next": "\"2\""
+          },
+          "range": [70, 73],
+          "loc": {
+            "line": 6,
+            "column": 15,
+            "endLine": 7,
+            "endColumn": 3
+          },
+          "fix": {
+            "range": [70, 73],
+            "text": ""
+          }
+        }
+      ],
+      "authoredOutput": "{\n  \"foo\": { \"a\": \"1\",\n    // comment\n    \"b\": \"2\"},\n  \"bar\": [\"1\",\"2\"]\n}",
+      "output": "{\n  \"foo\": { \"a\": \"1\",\n    // comment\n    \"b\": \"2\"},\n  \"bar\": [\"1\",\"2\"]\n}"
+    }
+  ]
+}

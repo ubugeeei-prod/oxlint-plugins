@@ -2222,6 +2222,59 @@ describe('stylistic native API', () => {
     ]);
   });
 
+  it('runs exp-list-style with exact UTF-8 byte ranges, data, and whitespace fixes', () => {
+    const source = 'const 日本語 = [ 1 ];';
+    const opening = Buffer.byteLength(source.slice(0, source.indexOf('[') + 1));
+    const first = Buffer.byteLength(source.slice(0, source.indexOf('1')));
+    const last = Buffer.byteLength(source.slice(0, source.indexOf('1') + 1));
+    const closing = Buffer.byteLength(source.slice(0, source.indexOf(']')));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.ts',
+      rules: [{ name: 'exp-list-style', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'exp-list-style',
+        messageId: 'shouldNotSpacing',
+        message: "Should not have space(s) between '[' and '1'",
+        data: { next: '1', prev: '[' },
+        range: { start: opening, end: first },
+        suggestions: [
+          {
+            messageId: 'shouldNotSpacing',
+            message: "Should not have space(s) between '[' and '1'",
+            fixes: [
+              {
+                range: { start: opening, end: first },
+                replacementText: '',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'exp-list-style',
+        messageId: 'shouldNotSpacing',
+        message: "Should not have space(s) between '1' and ']'",
+        data: { next: ']', prev: '1' },
+        range: { start: last, end: closing },
+        suggestions: [
+          {
+            messageId: 'shouldNotSpacing',
+            message: "Should not have space(s) between '1' and ']'",
+            fixes: [
+              {
+                range: { start: last, end: closing },
+                replacementText: '',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
   it('runs jsx-pascal-case with exact UTF-8 ranges, data, and no fixes', () => {
     const source = 'const emoji = "😀"; const view = <É_bad title="日本語" />;';
     const start = Buffer.byteLength(source.slice(0, source.indexOf('<É_bad')));

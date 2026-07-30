@@ -64,6 +64,7 @@
     "port:tests:simple-import-sort": "node tools/tasks/sync-simple-import-sort-tests.ts",
     "port:tests:storybook": "node tools/tasks/sync-storybook-tests.ts",
     "port:tests:stylistic": "node tools/tasks/sync-stylistic-tests.ts",
+    "port:tests:stylistic:exp-list-style": "node tools/tasks/sync-stylistic-exp-list-style-tests.ts",
     "port:tests:stylistic:function-call-argument-newline": "node tools/tasks/sync-stylistic-function-call-argument-newline-tests.ts",
     "port:tests:stylistic:function-paren-newline": "node tools/tasks/sync-stylistic-function-paren-newline-tests.ts",
     "port:tests:stylistic:exp-jsx-props-style": "node tools/tasks/sync-stylistic-exp-jsx-props-style-tests.ts",

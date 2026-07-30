@@ -21,6 +21,7 @@ const multilineTernaryFixture = JSON.parse(
 );
 
 const stylisticRuleFixtures = [
+  ['exp-list-style', 'const value = [ 1 ];\n', [], ['shouldNotSpacing', 'shouldNotSpacing']],
   ['eol-last', 'const x = 1;', [], ['missing']],
   ['linebreak-style', 'const x = 1;\r\n', ['unix'], ['expectedUnix']],
   ['no-multiple-empty-lines', 'const a = 1;\n\n\nconst b = 2;\n', [{ max: 1 }], ['tooMany']],
@@ -4736,6 +4737,89 @@ const parenthesized = (a + b) * c;
       expect(readFileSync(sourcePath, 'utf8')).toBe(
         "const marker: string = '😀';\nexport const view = (\n  <Panel<string>>\n    <Child value={marker} />\n    <Footer />\n  </Panel>\n);\n",
       );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('supports exp-list-style shared settings, node overrides, data, and exact fixes', () => {
+    const source = 'const 日本語 = [1, 2]; const object = {key: 1};';
+    const reports = runRule('exp-list-style', source, [], {
+      corsaStylistic: {
+        rules: {
+          'exp-list-style': [
+            {
+              singleLine: { maxItems: 1 },
+              overrides: { ObjectExpression: 'off' },
+            },
+          ],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual(['shouldWrap', 'shouldWrap', 'shouldWrap']);
+    expect(reports.map((report) => report.data)).toEqual([
+      { next: '1', prev: '[' },
+      { next: '2', prev: ',' },
+      { next: ']', prev: '2' },
+    ]);
+    expect(applyReportFixes(source, reports)).toBe(
+      'const 日本語 = [\n1, \n2\n]; const object = {key: 1};',
+    );
+  });
+
+  it('runs exp-list-style through real oxlint JavaScript, TypeScript, JSX, and TSX', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-exp-list-style-plugin-'));
+
+    try {
+      const paths = [
+        [join(temp, 'sample.js'), 'export const js = [ 1 ];\n'],
+        [join(temp, 'sample.ts'), 'export const ts: number[] = [ 1 ];\n'],
+        [join(temp, 'sample.jsx'), 'export const jsx = <Comp value={[ 1 ]} />;\n'],
+        [join(temp, 'sample.tsx'), 'export const tsx: JSX.Element = <Comp value={[ 1 ]} />;\n'],
+      ];
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      for (const [path, source] of paths) {
+        writeFileSync(path, source);
+      }
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/exp-list-style': 'error',
+          },
+        }),
+      );
+
+      const lint = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', ...paths.map(([path]) => path)],
+        { encoding: 'utf8' },
+      );
+      expect(lint.status).toBe(1);
+      expect(lint.stderr).toBe('');
+      const diagnostics = JSON.parse(lint.stdout).diagnostics;
+      expect(diagnostics).toHaveLength(8);
+      expect(
+        diagnostics.every(
+          (diagnostic) =>
+            diagnostic.code === 'stylistic(exp-list-style)' &&
+            diagnostic.message.startsWith('Should not have space(s) between'),
+        ),
+      ).toBe(true);
+
+      const fixed = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--fix-suggestions', ...paths.map(([path]) => path)],
+        { encoding: 'utf8' },
+      );
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      for (const [path] of paths) {
+        expect(readFileSync(path, 'utf8')).toContain('[1]');
+      }
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
