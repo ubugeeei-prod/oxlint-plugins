@@ -104,6 +104,10 @@ const nativePackages = [
     name: '@oxlint-plugins/oxlint-plugin-sonarjs',
     binding: 'npm/sonarjs/native.js',
   },
+  {
+    name: '@oxlint-plugins/oxlint-plugin-astro',
+    binding: 'npm/astro/native.js',
+  },
 ];
 
 function lockPathFor(pkg) {
