@@ -160,6 +160,7 @@ const expectedThresholdMessages = {
   'require-top-level-describe': 'All test cases must be wrapped in a describe block.',
 };
 const expectedSpecializedMessages = {
+  'no-hooks': "Unexpected '{{ hookName }}' hook",
   'prefer-lowercase-title': '`{{method}}`s should begin with lowercase',
 };
 

@@ -29,6 +29,28 @@ Exact names match direct calls and terminal member identifiers such as
 syntax. Assertions inside nested callbacks and `test.step()` count toward their
 containing test, matching upstream ancestry behavior.
 
+## Hook options
+
+`no-hooks` implements the complete upstream v2.11.0 `allow` option. It reports
+the full hook call and includes the canonical hook name in diagnostic data.
+
+```json
+{
+  "rules": {
+    "playwright/no-hooks": [
+      "error",
+      {
+        "allow": ["afterEach", "afterAll"]
+      }
+    ]
+  }
+}
+```
+
+The rule also recognizes bare hooks, computed properties, named import aliases,
+configured global aliases, and `test.extend()` aliases. Upstream does not define
+an autofix for this rule, so diagnostics intentionally have no fix.
+
 ## Lowercase title options
 
 `prefer-lowercase-title` implements the complete upstream v2.11.0 option and
@@ -120,11 +142,13 @@ The direct API accepts the same option values:
 const { scanPlaywright } = require('@oxlint-plugins/oxlint-plugin-playwright/api');
 
 scanPlaywright('page.getByTestId("submit")', 'fixture.spec.ts', {
+  allowedHooks: ['afterEach'],
   allowedPrefixes: ['GET', 'POST'],
   assertFunctionNames: ['assertCustomCondition'],
   assertFunctionPatterns: ['^verify.*'],
   ignore: ['test.describe'],
   ignoreTopLevelDescribe: true,
+  hookAliases: { beforeEach: ['setupEach'] },
   maxExpects: 5,
   maxNestedDescribe: 5,
   maxTopLevelDescribes: 2,

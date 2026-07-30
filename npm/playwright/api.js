@@ -18,12 +18,14 @@ function scanPlaywright(sourceText, filename = 'file.spec.ts', options = {}) {
   }
 
   const diagnostics = native.scanPlaywright(sourceText, filename, {
+    allowedHooks: stringList(options.allowedHooks),
     allowedPrefixes: stringList(options.allowedPrefixes),
     assertFunctionNames: stringList(options.assertFunctionNames),
     assertFunctionPatterns: regexList(options.assertFunctionPatterns),
     expectAliases: stringList(options.expectAliases),
     ignore: stringList(options.ignore),
     ignoreTopLevelDescribe: options.ignoreTopLevelDescribe === true,
+    hookAliases: hookAliases(options.hookAliases),
     testAliases: stringList(options.testAliases),
     maxExpects: integerOption(options.maxExpects, 'maxExpects', 1),
     maxNestedDescribe: integerOption(options.maxNestedDescribe, 'maxNestedDescribe', 0),
@@ -120,6 +122,15 @@ function regexList(values) {
     new RegExp(value);
     return value;
   });
+}
+
+function hookAliases(aliases) {
+  if (!aliases || typeof aliases !== 'object' || Array.isArray(aliases)) {
+    return [];
+  }
+  return Object.entries(aliases).flatMap(([hookName, names]) =>
+    stringList(names).map((name) => ({ name, hookName })),
+  );
 }
 
 function integerOption(value, name, minimum) {

@@ -1,8 +1,8 @@
 //! NAPI boundary for the playwright oxlint plugin.
 
 pub use napi_abi::{
-    Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, PlaywrightRestriction,
-    PlaywrightScanOptions, PlaywrightTagPattern, PlaywrightTitlePattern,
+    Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, PlaywrightHookAlias,
+    PlaywrightRestriction, PlaywrightScanOptions, PlaywrightTagPattern, PlaywrightTitlePattern,
     PlaywrightTitlePatternOptions, PlaywrightValidTestTagsOptions, PlaywrightValidTitleOptions,
     implemented_playwright_rule_names, scan_playwright,
 };
@@ -25,13 +25,22 @@ mod napi_abi {
     }
 
     #[napi(object)]
+    #[derive(Clone, Debug)]
+    pub struct PlaywrightHookAlias {
+        pub name: String,
+        pub hook_name: String,
+    }
+
+    #[napi(object)]
     #[derive(Clone, Debug, Default)]
     pub struct PlaywrightScanOptions {
+        pub allowed_hooks: Option<Vec<String>>,
         pub allowed_prefixes: Option<Vec<String>>,
         pub assert_function_names: Option<Vec<String>>,
         pub assert_function_patterns: Option<Vec<String>>,
         pub ignore: Option<Vec<String>>,
         pub ignore_top_level_describe: Option<bool>,
+        pub hook_aliases: Option<Vec<PlaywrightHookAlias>>,
         pub restricted_locators: Option<Vec<PlaywrightRestriction>>,
         pub restricted_matchers: Option<Vec<PlaywrightRestriction>>,
         pub restricted_roles: Option<Vec<PlaywrightRestriction>>,
@@ -120,6 +129,7 @@ mod napi_abi {
         pub amount: Option<String>,
         pub count: Option<String>,
         pub depth: Option<String>,
+        pub hook_name: Option<String>,
         pub max: Option<String>,
         pub method: Option<String>,
         pub restriction: Option<String>,
@@ -149,11 +159,21 @@ mod napi_abi {
         let valid_title = compact_valid_title(options.valid_title);
         let valid_test_tags = compact_valid_test_tags(options.valid_test_tags);
         let core_options = core::PlaywrightOptions {
+            allowed_hooks: compact_strings(options.allowed_hooks),
             allowed_title_prefixes: compact_strings(options.allowed_prefixes),
             assert_function_names: compact_strings(options.assert_function_names),
             assert_function_patterns: compact_strings(options.assert_function_patterns),
             lowercase_title_ignored_methods: compact_strings(options.ignore),
             ignore_top_level_describe: options.ignore_top_level_describe.unwrap_or(false),
+            hook_aliases: options
+                .hook_aliases
+                .unwrap_or_default()
+                .into_iter()
+                .map(|alias| core::HookAlias {
+                    name: CompactString::from(alias.name),
+                    hook_name: CompactString::from(alias.hook_name),
+                })
+                .collect(),
             restricted_locators: compact_restrictions(options.restricted_locators),
             restricted_matchers: compact_restrictions(options.restricted_matchers),
             restricted_roles: compact_restrictions(options.restricted_roles),
@@ -187,6 +207,7 @@ mod napi_abi {
                     amount: diagnostic.data.amount.map(CompactString::into_string),
                     count: diagnostic.data.count.map(CompactString::into_string),
                     depth: diagnostic.data.depth.map(CompactString::into_string),
+                    hook_name: diagnostic.data.hook_name.map(CompactString::into_string),
                     max: diagnostic.data.max.map(CompactString::into_string),
                     method: diagnostic.data.method.map(CompactString::into_string),
                     restriction: diagnostic.data.restriction.map(CompactString::into_string),

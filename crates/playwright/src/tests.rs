@@ -1,9 +1,9 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::{
-    PlaywrightOptions, RULE_NAMES, Restriction, TagPattern, TitlePattern, TitlePatternOptions,
-    ValidTestTagsOptions, ValidTitleOptions, implemented_playwright_rule_names, scan_playwright,
-    scan_playwright_with_options,
+    HookAlias, PlaywrightOptions, RULE_NAMES, Restriction, TagPattern, TitlePattern,
+    TitlePatternOptions, ValidTestTagsOptions, ValidTitleOptions,
+    implemented_playwright_rule_names, scan_playwright, scan_playwright_with_options,
 };
 
 const REPRESENTATIVE_SOURCE: &str = r#"
@@ -655,7 +655,7 @@ fn expect_expect_supports_global_import_and_chained_extend_aliases() {
     let source = concat!(
         "import { test as scenario, expect as assuming } from \"another-runner\";\n",
         "const later = custom.extend({});\n",
-        "const custom = scenario.extend({}).extend({});\n",
+        "const custom = scenario[\"extend\"]({})[`extend`]({});\n",
         "scenario(\"import\", () => assuming(true).toBeDefined());\n",
         "later(\"extended\", () => expect(true).toBeDefined());\n",
         "it(\"global\", () => verify(true).toBeDefined());\n",
@@ -981,6 +981,199 @@ fn prefer_lowercase_title_is_inert_for_unrelated_calls_and_parse_errors() {
         prefer_lowercase_title_diagnostics("test(\"Broken", &PlaywrightOptions::default())
             .is_empty()
     );
+}
+
+#[test]
+fn no_hooks_reports_every_hook_with_exact_data_locations_and_no_fix() {
+    let source = concat!(
+        "test.beforeAll(() => {});\n",
+        "test[\"beforeEach\"](() => {});\n",
+        "test[`afterAll`]();\n",
+        "afterEach(() => {});\n",
+    );
+    let diagnostics = no_hooks_diagnostics(source, &PlaywrightOptions::default());
+
+    assert_eq!(diagnostics.len(), 4);
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| (
+                diagnostic.message_id,
+                diagnostic.data.hook_name.as_deref(),
+                diagnostic.loc.start_line,
+                diagnostic.loc.start_column,
+                diagnostic.loc.end_column,
+            ))
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[
+            ("unexpectedHook", Some("beforeAll"), 1, 0, 24),
+            ("unexpectedHook", Some("beforeEach"), 2, 0, 28),
+            ("unexpectedHook", Some("afterAll"), 3, 0, 18),
+            ("unexpectedHook", Some("afterEach"), 4, 0, 19),
+        ]
+    );
+    assert!(
+        diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.fix.is_none())
+    );
+}
+
+#[test]
+fn no_hooks_honors_allow_independently_for_member_and_bare_hooks() {
+    let source = concat!(
+        "test.beforeAll(() => {});\n",
+        "beforeEach(() => {});\n",
+        "test.afterAll(() => {});\n",
+        "afterEach(() => {});\n",
+    );
+    let options = PlaywrightOptions {
+        allowed_hooks: [
+            CompactString::from("beforeAll"),
+            CompactString::from("afterEach"),
+        ]
+        .into_iter()
+        .collect(),
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = no_hooks_diagnostics(source, &options);
+
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.data.hook_name.as_deref())
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[Some("beforeEach"), Some("afterAll")]
+    );
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.loc.start_line)
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[2, 3]
+    );
+}
+
+#[test]
+fn no_hooks_supports_global_import_test_and_transitive_extend_aliases() {
+    let source = concat!(
+        "import { test as scenario, beforeAll as setupSuite } from \"another-runner\";\n",
+        "const later = custom.extend({});\n",
+        "const custom = scenario.extend({}).extend({});\n",
+        "setupEach(() => {});\n",
+        "setupSuite(() => {});\n",
+        "scenario.beforeEach(() => {});\n",
+        "custom.afterAll(() => {});\n",
+        "later[`afterEach`](() => {});\n",
+    );
+    let options = PlaywrightOptions {
+        hook_aliases: [HookAlias {
+            name: CompactString::from("setupEach"),
+            hook_name: CompactString::from("beforeEach"),
+        }]
+        .into_iter()
+        .collect(),
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = no_hooks_diagnostics(source, &options);
+
+    assert_eq!(diagnostics.len(), 5);
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| (
+                diagnostic.data.hook_name.as_deref(),
+                diagnostic.loc.start_line
+            ))
+            .collect::<SmallVec<[_; 8]>>()
+            .as_slice(),
+        &[
+            (Some("beforeEach"), 4),
+            (Some("beforeAll"), 5),
+            (Some("beforeEach"), 6),
+            (Some("afterAll"), 7),
+            (Some("afterEach"), 8),
+        ]
+    );
+}
+
+#[test]
+fn no_hooks_reports_nested_hooks_in_source_order_and_utf16_call_ranges() {
+    let source = concat!(
+        "const marker = \"🧪\";\n",
+        "test.describe(\"outer\", () => {\n",
+        "  test.describe(\"inner\", () => {\n",
+        "    test.beforeEach(() => {});\n",
+        "    afterAll(() => {});\n",
+        "  });\n",
+        "});\n",
+    );
+    let diagnostics = no_hooks_diagnostics(source, &PlaywrightOptions::default());
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].data.hook_name.as_deref(), Some("beforeEach"));
+    assert_eq!(
+        diagnostics[0].loc,
+        crate::DiagnosticLoc {
+            start_line: 4,
+            start_column: 4,
+            end_line: 4,
+            end_column: 29,
+        }
+    );
+    assert_eq!(diagnostics[1].data.hook_name.as_deref(), Some("afterAll"));
+    assert_eq!(
+        diagnostics[1].loc,
+        crate::DiagnosticLoc {
+            start_line: 5,
+            start_column: 4,
+            end_line: 5,
+            end_column: 22,
+        }
+    );
+}
+
+#[test]
+fn no_hooks_ignores_non_playwright_members_and_invalid_chains() {
+    let source = concat!(
+        "subject.beforeEach();\n",
+        "runner.afterAll(() => {});\n",
+        "test.describe.beforeEach(() => {});\n",
+        "test.beforeEach.extra(() => {});\n",
+        "test.beforeEach;\n",
+        "test(\"case\", () => { expect(subject.beforeEach()).toBe(true); });\n",
+    );
+    assert!(no_hooks_diagnostics(source, &PlaywrightOptions::default()).is_empty());
+}
+
+#[test]
+fn no_hooks_fails_closed_on_malformed_input_and_keeps_rule_selection_isolated() {
+    assert!(no_hooks_diagnostics("test.beforeEach(", &PlaywrightOptions::default()).is_empty());
+    let diagnostics = scan_playwright_with_options(
+        "test.beforeEach(() => {});",
+        "fixture.spec.ts",
+        &PlaywrightOptions::default(),
+    );
+    assert_eq!(
+        diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.rule_name == "no-hooks")
+            .count(),
+        1
+    );
+}
+
+fn no_hooks_diagnostics(
+    source: &str,
+    options: &PlaywrightOptions,
+) -> SmallVec<[crate::Diagnostic; 8]> {
+    scan_playwright_with_options(source, "fixture.spec.ts", options)
+        .into_iter()
+        .filter(|diagnostic| diagnostic.rule_name == "no-hooks")
+        .collect()
 }
 
 fn prefer_lowercase_title_diagnostics(
