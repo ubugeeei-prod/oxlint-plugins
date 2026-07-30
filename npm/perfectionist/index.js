@@ -15,7 +15,12 @@ const PLUGIN_NAME = 'perfectionist';
 const DOCS_BASE = 'https://perfectionist.dev/rules';
 const diagnosticsCache = new WeakMap();
 const implementedRuleNames = Object.freeze(implementedPerfectionistRuleNames());
-const configuredRuleNames = new Set(['sort-exports', 'sort-named-exports', 'sort-named-imports']);
+const configuredRuleNames = new Set([
+  'sort-exports',
+  'sort-imports',
+  'sort-named-exports',
+  'sort-named-imports',
+]);
 const recommendedRuleNames = Object.freeze(
   implementedRuleNames.filter((ruleName) => ruleName !== 'sort-arrays'),
 );
@@ -90,34 +95,47 @@ function createPerfectionistRule(ruleName) {
       },
       fixable: 'code',
       messages: configuredRuleNames.has(ruleName)
-        ? ruleName === 'sort-named-imports'
+        ? ruleName === 'sort-imports'
           ? {
-              unexpectedNamedImportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
-              unexpectedNamedImportsGroupOrder:
+              unexpectedImportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+              unexpectedImportsGroupOrder:
                 'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
-              extraSpacingBetweenNamedImports: 'Extra spacing between "{{left}}" and "{{right}}".',
-              missedSpacingBetweenNamedImports:
-                'Missed spacing between "{{left}}" and "{{right}}".',
+              unexpectedImportsDependencyOrder:
+                'Expected dependency "{{right}}" to come before "{{nodeDependentOnRight}}".',
+              extraSpacingBetweenImports: 'Extra spacing between "{{left}}" and "{{right}}".',
+              missedSpacingBetweenImports: 'Missed spacing between "{{left}}" and "{{right}}".',
+              missedCommentAboveImport:
+                'Missed comment "{{missedCommentAbove}}" above "{{right}}".',
             }
-          : ruleName === 'sort-named-exports'
+          : ruleName === 'sort-named-imports'
             ? {
-                unexpectedNamedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
-                unexpectedNamedExportsGroupOrder:
+                unexpectedNamedImportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+                unexpectedNamedImportsGroupOrder:
                   'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
-                extraSpacingBetweenNamedExports:
+                extraSpacingBetweenNamedImports:
                   'Extra spacing between "{{left}}" and "{{right}}".',
-                missedSpacingBetweenNamedExports:
+                missedSpacingBetweenNamedImports:
                   'Missed spacing between "{{left}}" and "{{right}}".',
               }
-            : {
-                unexpectedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
-                unexpectedExportsGroupOrder:
-                  'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
-                extraSpacingBetweenExports: 'Extra spacing between "{{left}}" and "{{right}}".',
-                missedSpacingBetweenExports: 'Missed spacing between "{{left}}" and "{{right}}".',
-                missedCommentAboveExport:
-                  'Missed comment "{{missedCommentAbove}}" above "{{right}}".',
-              }
+            : ruleName === 'sort-named-exports'
+              ? {
+                  unexpectedNamedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+                  unexpectedNamedExportsGroupOrder:
+                    'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
+                  extraSpacingBetweenNamedExports:
+                    'Extra spacing between "{{left}}" and "{{right}}".',
+                  missedSpacingBetweenNamedExports:
+                    'Missed spacing between "{{left}}" and "{{right}}".',
+                }
+              : {
+                  unexpectedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+                  unexpectedExportsGroupOrder:
+                    'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
+                  extraSpacingBetweenExports: 'Extra spacing between "{{left}}" and "{{right}}".',
+                  missedSpacingBetweenExports: 'Missed spacing between "{{left}}" and "{{right}}".',
+                  missedCommentAboveExport:
+                    'Missed comment "{{missedCommentAbove}}" above "{{right}}".',
+                }
         : {
             unexpected: 'Expected sorted order.',
           },
@@ -147,7 +165,7 @@ function configuredDiagnosticsForRule(context, ruleName) {
   const sourceText = sourceTextForContext(context);
   const filename = typeof context.filename === 'string' ? context.filename : 'file.tsx';
   let options = Array.isArray(context.options) ? context.options : [];
-  if (ruleName === 'sort-exports') {
+  if (ruleName === 'sort-exports' || ruleName === 'sort-imports') {
     const settings = context.settings?.perfectionist;
     if (settings && typeof settings === 'object' && !Array.isArray(settings)) {
       const configured =
@@ -226,9 +244,18 @@ function schemaForRule(ruleName) {
   }
   const selector = ruleName === 'sort-named-imports' ? 'import' : 'export';
   const sortsExportDeclarations = ruleName === 'sort-exports';
+  const sortsImportDeclarations = ruleName === 'sort-imports';
   const sortType = {
     type: 'string',
-    enum: ['subgroup-order', 'alphabetical', 'natural', 'line-length', 'custom', 'unsorted'],
+    enum: [
+      'subgroup-order',
+      'alphabetical',
+      'natural',
+      'line-length',
+      'custom',
+      'unsorted',
+      ...(sortsImportDeclarations ? ['type-import-first'] : []),
+    ],
   };
   const order = {
     type: 'string',
@@ -282,6 +309,7 @@ function schemaForRule(ruleName) {
     type: sortType,
     order,
     fallbackSort,
+    ...(sortsImportDeclarations ? { sortBy: { type: 'string', enum: ['specifier', 'path'] } } : {}),
   };
   const customMatch = {
     elementNamePattern: regex,
@@ -289,12 +317,44 @@ function schemaForRule(ruleName) {
       type: 'array',
       items: {
         type: 'string',
-        enum: sortsExportDeclarations
-          ? ['value', 'type', 'named', 'wildcard', 'singleline', 'multiline']
-          : ['value', 'type'],
+        enum: sortsImportDeclarations
+          ? [
+              'default',
+              'multiline',
+              'named',
+              'require',
+              'side-effect',
+              'singleline',
+              'ts-equals',
+              'type',
+              'value',
+              'wildcard',
+            ]
+          : sortsExportDeclarations
+            ? ['value', 'type', 'named', 'wildcard', 'singleline', 'multiline']
+            : ['value', 'type'],
       },
     },
-    selector: { type: 'string', enum: [selector] },
+    selector: {
+      type: 'string',
+      enum: sortsImportDeclarations
+        ? [
+            'side-effect-style',
+            'tsconfig-path',
+            'side-effect',
+            'external',
+            'internal',
+            'builtin',
+            'sibling',
+            'subpath',
+            'import',
+            'parent',
+            'index',
+            'style',
+            'type',
+          ]
+        : [selector],
+    },
   };
   const groups = {
     type: 'array',
@@ -411,26 +471,46 @@ function schemaForRule(ruleName) {
         },
         alphabet: { type: 'string' },
         fallbackSort,
-        ...(sortsExportDeclarations ? {} : { ignoreAlias: { type: 'boolean' } }),
+        ...(!sortsExportDeclarations && !sortsImportDeclarations
+          ? { ignoreAlias: { type: 'boolean' } }
+          : {}),
         groups,
         customGroups,
         partitionByComment,
         partitionByNewLine: { type: 'boolean' },
         newlinesBetween: newlines,
         newlinesInside,
-        ...(sortsExportDeclarations
-          ? {}
-          : {
-              useConfigurationIf: {
+        ...(sortsImportDeclarations
+          ? {
+              sortBy: { type: 'string', enum: ['specifier', 'path'] },
+              internalPattern: regex,
+              environment: { type: 'string', enum: ['node', 'bun'] },
+              sortSideEffects: { type: 'boolean' },
+              maxLineLength: { type: 'integer', minimum: 0, exclusiveMinimum: true },
+              useExperimentalDependencyDetection: { type: 'boolean' },
+              tsconfig: {
                 type: 'object',
                 properties: {
-                  allNamesMatchPattern: regex,
-                  matchesAstSelector: { type: 'string' },
+                  rootDir: { type: 'string' },
+                  filename: { type: 'string' },
                 },
-                minProperties: 1,
+                required: ['rootDir'],
                 additionalProperties: false,
               },
-            }),
+            }
+          : sortsExportDeclarations
+            ? {}
+            : {
+                useConfigurationIf: {
+                  type: 'object',
+                  properties: {
+                    allNamesMatchPattern: regex,
+                    matchesAstSelector: { type: 'string' },
+                  },
+                  minProperties: 1,
+                  additionalProperties: false,
+                },
+              }),
       },
       additionalProperties: false,
     },
