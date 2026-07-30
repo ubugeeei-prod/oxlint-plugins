@@ -31,6 +31,7 @@ mod jsx_props_no_multi_spaces;
 mod jsx_quotes;
 mod jsx_rules;
 mod jsx_self_closing_comp;
+mod jsx_wrap_multilines;
 mod lexer;
 mod line_index;
 mod line_rules;
@@ -713,6 +714,13 @@ const JSX_PROPS_NO_MULTI_SPACES_MESSAGES: &[(&str, &str)] = &[
 ];
 const JSX_SELF_CLOSING_COMP_MESSAGES: &[(&str, &str)] =
     &[("notSelfClosing", "Empty components are self-closing")];
+const JSX_WRAP_MULTILINES_MESSAGES: &[(&str, &str)] = &[
+    ("missingParens", "Missing parentheses around multilines JSX"),
+    (
+        "parensOnNewLines",
+        "Parentheses around JSX should be on separate lines",
+    ),
+];
 const MULTILINE_COMMENT_STYLE_MESSAGES: &[(&str, &str)] = &[
     (
         "expectedBlock",
@@ -1269,6 +1277,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_SELF_CLOSING_COMP_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-wrap-multilines",
+        docs_description: "Disallow missing parentheses around multiline JSX",
+        messages: JSX_WRAP_MULTILINES_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "one-var-declaration-per-line",
         docs_description: "Require or disallow newlines around variable declarations.",
         messages: ONE_VAR_DECLARATION_PER_LINE_MESSAGES,
@@ -1532,6 +1545,12 @@ pub fn run_stylistic_lint(
                 )
             }
             "jsx-self-closing-comp" => jsx_self_closing_comp::check_jsx_self_closing_comp(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "jsx-wrap-multilines" => jsx_wrap_multilines::check_jsx_wrap_multilines(
                 source_text,
                 config.filename.as_deref(),
                 &rule.options,

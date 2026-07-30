@@ -1871,4 +1871,43 @@ describe('stylistic native API', () => {
       },
     ]);
   });
+
+  it('runs jsx-wrap-multilines with exact UTF-8 JSX and operator fix ranges', () => {
+    const source =
+      'const marker = "😀"; const 印 = ready &&\n  <部品<Item>>日本語\n    <子 />\n  </部品>;';
+    const jsxStart = Buffer.byteLength(source.slice(0, source.indexOf('<部品')));
+    const jsxEnd = Buffer.byteLength(source.slice(0, source.indexOf('</部品>') + '</部品>'.length));
+    const operatorStart = Buffer.byteLength(source.slice(0, source.indexOf('&&')));
+    const message = 'Missing parentheses around multilines JSX';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [
+        {
+          name: 'jsx-wrap-multilines',
+          options: [{ logical: 'parens-new-line' }],
+        },
+      ],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-wrap-multilines',
+        messageId: 'missingParens',
+        message,
+        range: { start: jsxStart, end: jsxEnd },
+        suggestions: [
+          {
+            messageId: 'missingParens',
+            message,
+            fixes: [
+              {
+                range: { start: operatorStart, end: jsxEnd },
+                replacementText: '&& (\n  <部品<Item>>日本語\n    <子 />\n  </部品>\n)',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
 });
