@@ -4,6 +4,7 @@ mod class_suffix;
 mod consistent_component_styles;
 mod inline_declarations;
 mod input_rename;
+mod prefer_signals;
 mod prefix;
 mod scanner;
 mod selector;
@@ -112,6 +113,7 @@ pub fn scan_angular_eslint_with_options(
         source_text,
         line_index: LineIndex::new(source_text),
         options,
+        signal_returning_functions: SmallVec::new(),
         diagnostics: SmallVec::new(),
     };
     scanner.scan(&parser_return.program);

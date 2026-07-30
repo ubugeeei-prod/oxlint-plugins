@@ -1,0 +1,687 @@
+{
+  "metadata": {
+    "package": "@angular-eslint/eslint-plugin",
+    "version": "22.1.0",
+    "sourceCommit": "a666e1b45c9782d1ac2066fd55ec0127d0580950",
+    "sourceTag": "v22.1.0",
+    "sourcePath": "packages/eslint-plugin/tests/rules/prefer-signals/cases.ts",
+    "sourceSha256": "33cae0732a9d9a41e1dd943ee8a19e282e240a06a247a31a0dac942fcec96cae",
+    "capture": "every authored valid and invalid semantic case exactly once",
+    "counts": {
+      "valid": 39,
+      "invalid": 26,
+      "diagnostics": 26
+    }
+  },
+  "valid": [
+    {
+      "name": "valid-1",
+      "code": "\n    class Test {\n      testSubject = new Subject();\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-2",
+      "code": "\n    class Test {\n      testSubject = new ReplaySubject(1);\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-3",
+      "code": "\n    class Test {\n      testValue = test();\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-4",
+      "code": "\n    class Test {\n      testValue: number;\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-5",
+      "code": "\n    class Test {\n      testValue: Widget<number>;\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-6",
+      "code": "\n    class Test {\n      readonly testSignal: Signal<number>;\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-7",
+      "code": "\n    class Test {\n      readonly testSignal: InputSignal<number>;\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-8",
+      "code": "\n    class Test {\n      readonly testSignal: ModelSignal<number>;\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-9",
+      "code": "\n    class Test {\n      readonly testSignal: WritableSignal<number>;\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-10",
+      "code": "\n    class Test {\n      readonly testSignal = computed(() => 0);\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-11",
+      "code": "\n    class Test {\n      readonly testSignal = linkedSignal(() => source);\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-12",
+      "code": "\n    class Test {\n      readonly testSignal = contentChild('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-13",
+      "code": "\n    class Test {\n      readonly testSignal = contentChild.required('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-14",
+      "code": "\n    class Test {\n      readonly testSignal = contentChildren('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-15",
+      "code": "\n    class Test {\n      readonly testSignal = input('');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-16",
+      "code": "\n    class Test {\n      readonly testSignal = input.required();\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-17",
+      "code": "\n    class Test {\n      readonly testSignal = model();\n      readonly testRequired = model.required(42);\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-18",
+      "code": "\n    class Test {\n      readonly testSignal = signal(true);\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-19",
+      "code": "\n    class Test {\n      readonly testSignal = signal(true).asReadonly();\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-20",
+      "code": "\n    class Test {\n      readonly testSignal = toSignal(source);\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-21",
+      "code": "\n    class Test {\n      readonly testSignal = viewChild('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-22",
+      "code": "\n    class Test {\n      readonly testSignal = viewChild.required('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-23",
+      "code": "\n    class Test {\n      readonly testSignal = viewChildren('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-24",
+      "code": "\n    class Test {\n      testSignal = createSignal('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-25",
+      "code": "\n      class Test {\n        testSignal = signal('test');\n      }\n      ",
+      "options": [
+        {
+          "preferReadonlySignalProperties": false
+        }
+      ]
+    },
+    {
+      "name": "valid-26",
+      "code": "\n      class Test {\n        readonly testSignal = createSignal('test');\n      }\n      ",
+      "options": [
+        {
+          "additionalSignalCreationFunctions": ["createSignal"]
+        }
+      ]
+    },
+    {
+      "name": "valid-27",
+      "code": "\n    class Test {\n      testSignal = createSignal();\n    }\n    function createSignal(): Signal<boolean> {\n      return signal(true);\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-28",
+      "code": "\n      class Test {\n        readonly testSignal = createSignal();\n      }\n      function createSignal(): Signal<boolean> {\n        return signal(true);\n      }\n      ",
+      "options": [
+        {
+          "useTypeChecking": true
+        }
+      ]
+    },
+    {
+      "name": "valid-29",
+      "code": "\n      class Test {\n        testNotSignal = createNotSignal();\n      }\n      function createNotSignal(): NotSignal<boolean> {\n        return true;\n      }\n      ",
+      "options": [
+        {
+          "useTypeChecking": true
+        }
+      ]
+    },
+    {
+      "name": "valid-30",
+      "code": "\n    class Test {\n      readonly value = input();\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-31",
+      "code": "\n      class Test {\n        @Input()\n        readonly value = 1;\n      }\n      ",
+      "options": [
+        {
+          "preferInputSignals": false
+        }
+      ]
+    },
+    {
+      "name": "valid-32",
+      "code": "\n    class Test {\n      readonly query = viewChild('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-33",
+      "code": "\n      class Test {\n        @ViewChild('test')\n        value: Widget;\n      }\n      ",
+      "options": [
+        {
+          "preferQuerySignals": false
+        }
+      ]
+    },
+    {
+      "name": "valid-34",
+      "code": "\n    class Test {\n      readonly query = viewChildren('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-35",
+      "code": "\n      class Test {\n        @ViewChildren('test')\n        value: QueryList<Widget>;\n      }\n      ",
+      "options": [
+        {
+          "preferQuerySignals": false
+        }
+      ]
+    },
+    {
+      "name": "valid-36",
+      "code": "\n    class Test {\n      readonly query = contentChild('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-37",
+      "code": "\n      class Test {\n        @ContentChild('test')\n        value: Widget;\n      }\n      ",
+      "options": [
+        {
+          "preferQuerySignals": false
+        }
+      ]
+    },
+    {
+      "name": "valid-38",
+      "code": "\n    class Test {\n      readonly query = contentChildren('test');\n    }\n    ",
+      "options": []
+    },
+    {
+      "name": "valid-39",
+      "code": "\n      class Test {\n        @ContentChildren('test')\n        value: QueryList<Widget>;\n      }\n      ",
+      "options": [
+        {
+          "preferQuerySignals": false
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "should fail when a Signal is not readonly",
+      "code": "\n      class Test {\n        testSignal: Signal<number>;\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal: Signal<number>;\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when an InputSignal is not readonly",
+      "code": "\n      class Test {\n        testSignal: InputSignal<number>;\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal: InputSignal<number>;\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a ModelSignal is not readonly",
+      "code": "\n      class Test {\n        testSignal: ModelSignal<number>;\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal: ModelSignal<number>;\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a WritableSignal is not readonly",
+      "code": "\n      class Test {\n        testSignal: WritableSignal<number>;\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal: WritableSignal<number>;\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a computed is not readonly",
+      "code": "\n      class Test {\n        testSignal = computed(() => 0);\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = computed(() => 0);\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a linkedSignal is not readonly",
+      "code": "\n      class Test {\n        testSignal = linkedSignal(() => source);\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = linkedSignal(() => source);\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a contentChild is not readonly",
+      "code": "\n      class Test {\n        testSignal = contentChild('test');\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = contentChild('test');\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a contentChild.required is not readonly",
+      "code": "\n      class Test {\n        testSignal = contentChild.required('test');\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = contentChild.required('test');\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a contentChildren is not readonly",
+      "code": "\n      class Test {\n        testSignal = contentChildren('test');\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = contentChildren('test');\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when an input is not readonly",
+      "code": "\n      class Test {\n        testSignal = input('');\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = input('');\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when an input.required is not readonly",
+      "code": "\n      class Test {\n        testSignal = input.required('');\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = input.required('');\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a model is not readonly",
+      "code": "\n      class Test {\n        testSignal = model(42);\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = model(42);\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a model.required is not readonly",
+      "code": "\n      class Test {\n        testSignal = model.required();\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = model.required();\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a signal is not readonly",
+      "code": "\n      class Test {\n        testSignal = signal(42);\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = signal(42);\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a signal.asReadonly() is not readonly",
+      "code": "\n      class Test {\n        testSignal = signal(42).asReadonly();\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = signal(42).asReadonly();\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a toSignal is not readonly",
+      "code": "\n      class Test {\n        testSignal = toSignal(source);\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = toSignal(source);\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a viewChild is not readonly",
+      "code": "\n      class Test {\n        testSignal = viewChild('test');\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = viewChild('test');\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a viewChild.required is not readonly",
+      "code": "\n      class Test {\n        testSignal = viewChild.required('test');\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = viewChild.required('test');\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a viewChildren is not readonly",
+      "code": "\n      class Test {\n        testSignal = viewChildren('test');\n        \n      }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = viewChildren('test');\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a Signal assigned from a user-specified function is not readonly",
+      "code": "\n      class Test {\n        testSignal = createSignal('test');\n        \n      }\n      ",
+      "options": [
+        {
+          "additionalSignalCreationFunctions": ["createSignal"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = createSignal('test');\n        \n      }\n      "
+    },
+    {
+      "name": "should fail when a Signal calculated with type-checking is not readonly",
+      "code": "\n      class Test {\n        testSignal = createSignal();\n        \n      }\n      declare function createSignal(): Signal<boolean>;\n      interface Signal<T> {}\n      ",
+      "options": [
+        {
+          "useTypeChecking": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "preferReadonlySignalProperties",
+          "data": {},
+          "line": 3,
+          "column": 9,
+          "endLine": 3,
+          "endColumn": 19
+        }
+      ],
+      "output": "\n      class Test {\n        readonly testSignal = createSignal();\n        \n      }\n      declare function createSignal(): Signal<boolean>;\n      interface Signal<T> {}\n      "
+    },
+    {
+      "name": "should fail when @Input() is used",
+      "code": "\n    class Test {\n      @Input()\n      \n      value = 1;\n    }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferInputSignals",
+          "data": {},
+          "line": 3,
+          "column": 7,
+          "endLine": 3,
+          "endColumn": 15
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail when @ViewChild() is used",
+      "code": "\n    class Test {\n      @ViewChild('test')\n      \n      value: Widget;\n    }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferQuerySignals",
+          "data": {
+            "function": "viewChild",
+            "decorator": "ViewChild"
+          },
+          "line": 3,
+          "column": 7,
+          "endLine": 3,
+          "endColumn": 25
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail when @ViewChildren() is used",
+      "code": "\n    class Test {\n      @ViewChildren('test')\n      \n      value: QueryList<Widget>;\n    }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferQuerySignals",
+          "data": {
+            "function": "viewChildren",
+            "decorator": "ViewChildren"
+          },
+          "line": 3,
+          "column": 7,
+          "endLine": 3,
+          "endColumn": 28
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail when @ContentChild() is used",
+      "code": "\n    class Test {\n      @ContentChild('test')\n      \n      value: Widget;\n    }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferQuerySignals",
+          "data": {
+            "function": "contentChild",
+            "decorator": "ContentChild"
+          },
+          "line": 3,
+          "column": 7,
+          "endLine": 3,
+          "endColumn": 28
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail when @ContentChildren() is used",
+      "code": "\n    class Test {\n      @ContentChildren('test')\n      \n      value: QueryList<Widget>;\n    }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "preferQuerySignals",
+          "data": {
+            "function": "contentChildren",
+            "decorator": "ContentChildren"
+          },
+          "line": 3,
+          "column": 7,
+          "endLine": 3,
+          "endColumn": 31
+        }
+      ],
+      "output": null
+    }
+  ]
+}
