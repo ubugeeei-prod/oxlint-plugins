@@ -67,6 +67,12 @@ fix behavior.
 Its fixes preserve TypeScript generic component arguments and match upstream's
 raw replacement boundaries.
 
+`exp-jsx-props-style` follows the experimental rule shipped in the stable
+v5.10.0 package. It supports `singleLine.maxItems` and
+`multiLine.minItems`/`maxItemsPerLine`, uses the first prop to choose between
+wrapping and collapsing multiline props, and leaves comment-separated
+boundaries unfixable while applying every other safe fix.
+
 `jsx-newline` follows the pinned stable JSX/TSX contract for required and
 prevented newlines between adjacent elements and expressions, including the
 `allowMultilines` option and comment-preserving fixes.
@@ -105,8 +111,8 @@ Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 [`ubugeeei-prod/corsa-bind`](https://github.com/ubugeeei-prod/corsa-bind)
 v0.43.0 (MIT). Additional stable ports, including `jsx-first-prop-new-line`,
 `jsx-newline`, `jsx-pascal-case`, `jsx-quotes`, `jsx-curly-brace-presence`,
-`jsx-curly-newline`, `jsx-indent`, `jsx-props-no-multi-spaces`, `jsx-sort-props`,
-`jsx-wrap-multilines`, and
+`jsx-curly-newline`, `exp-jsx-props-style`, `jsx-indent`,
+`jsx-props-no-multi-spaces`, `jsx-sort-props`, `jsx-wrap-multilines`, and
 `semi`, follow
 [`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
 v5.10.0 (MIT).

@@ -45,6 +45,7 @@ describe('stylistic plugin meta contract', () => {
     } else {
       expect(rule.meta.fixable).toBe(
         [
+          'exp-jsx-props-style',
           'jsx-closing-bracket-location',
           'jsx-curly-brace-presence',
           'jsx-curly-spacing',
@@ -230,6 +231,25 @@ describe('stylistic plugin meta contract', () => {
       messages: {
         wrongIndent:
           'Expected indentation of {{needed}} {{type}} {{characters}} but found {{gotten}}.',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the experimental jsx-props-style metadata contract', () => {
+    expect(plugin.rules['exp-jsx-props-style'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce consistent line break styles for JSX props',
+        experimental: true,
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        shouldWrap: 'Prop `{{prop}}` must be placed on a new line',
+        shouldNotWrap: 'Prop `{{prop}}` should not be placed on a new line',
       },
       schema: { type: 'array' },
     });

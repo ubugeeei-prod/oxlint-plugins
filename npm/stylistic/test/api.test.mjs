@@ -40,6 +40,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-child-element-spacing',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('exp-jsx-props-style');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-max-props-per-line');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-one-expression-per-line',
@@ -2064,6 +2065,80 @@ describe('stylistic native API', () => {
         ],
       },
     ]);
+  });
+
+  it('runs exp-jsx-props-style with exact UTF-8 ranges and comment-safe fixes', () => {
+    const source =
+      'const emoji = "😀"; const view = <部品<Item> first="日本語" /* keep */ {...props.値} final />;';
+    const firstStart = Buffer.byteLength(source.slice(0, source.indexOf('first=')));
+    const firstEnd = Buffer.byteLength(
+      source.slice(0, source.indexOf('first=') + 'first="日本語"'.length),
+    );
+    const genericEnd = Buffer.byteLength(source.slice(0, source.indexOf('> first') + 1));
+    const spreadStart = Buffer.byteLength(source.slice(0, source.indexOf('{...props.値}')));
+    const spreadEnd = Buffer.byteLength(
+      source.slice(0, source.indexOf('{...props.値}') + '{...props.値}'.length),
+    );
+    const finalStart = Buffer.byteLength(source.slice(0, source.indexOf('final')));
+    const finalEnd = finalStart + 'final'.length;
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [
+        {
+          name: 'exp-jsx-props-style',
+          options: [{ singleLine: { maxItems: 1 } }],
+        },
+      ],
+    });
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'exp-jsx-props-style',
+        messageId: 'shouldWrap',
+        message: 'Prop `first` must be placed on a new line',
+        data: { prop: 'first' },
+        range: { start: firstStart, end: firstEnd },
+        suggestions: [
+          {
+            messageId: 'shouldWrap',
+            message: 'Prop `first` must be placed on a new line',
+            fixes: [
+              {
+                range: { start: genericEnd, end: firstStart },
+                replacementText: '\n',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'exp-jsx-props-style',
+        messageId: 'shouldWrap',
+        message: 'Prop `props.値` must be placed on a new line',
+        data: { prop: 'props.値' },
+        range: { start: spreadStart, end: spreadEnd },
+      },
+      {
+        ruleName: 'exp-jsx-props-style',
+        messageId: 'shouldWrap',
+        message: 'Prop `final` must be placed on a new line',
+        data: { prop: 'final' },
+        range: { start: finalStart, end: finalEnd },
+        suggestions: [
+          {
+            messageId: 'shouldWrap',
+            message: 'Prop `final` must be placed on a new line',
+            fixes: [
+              {
+                range: { start: spreadEnd, end: finalStart },
+                replacementText: '\n',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    expect(diagnostics.map((diagnostic) => diagnostic.suggestions?.length ?? 0)).toEqual([1, 0, 1]);
   });
 
   it('runs jsx-wrap-multilines with exact UTF-8 JSX and operator fix ranges', () => {

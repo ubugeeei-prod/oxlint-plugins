@@ -116,6 +116,12 @@ const stylisticRuleFixtures = [
   ['jsx-child-element-spacing', '<App>word\n<a>link</a></App>;\n', [], ['spacingBeforeNext']],
   ['jsx-newline', '<App><First />\n<Second /></App>;\n', [], ['require']],
   ['jsx-one-expression-per-line', '<App><Foo /></App>;\n', [], ['moveToNewLine']],
+  [
+    'exp-jsx-props-style',
+    '<App one two />;\n',
+    [{ singleLine: { maxItems: 1 } }],
+    ['shouldWrap', 'shouldWrap'],
+  ],
   ['jsx-max-props-per-line', '<App one two three />;\n', [{ maximum: 1 }], ['newLine']],
   ['jsx-tag-spacing', '<App/>;\n', [], ['beforeSelfCloseNeedSpace']],
   ['jsx-wrap-multilines', 'const view = <App>\n  <Child />\n</App>;\n', [], ['missingParens']],
@@ -3427,6 +3433,92 @@ const parenthesized = (a + b) * c;
         replacementText: 'xml:lang="日本語"\n{...props.値}\nfinal',
       },
     ]);
+  });
+
+  it('supports exp-jsx-props-style shared settings, UTF-16 ranges, data, and fixes', () => {
+    const source =
+      'const marker = "😀"; const view = <部品<Row> first="日本語" {...props.値} final />;\n';
+    const reports = runRule('exp-jsx-props-style', source, [], {
+      corsaStylistic: {
+        rules: {
+          'exp-jsx-props-style': [{ singleLine: { maxItems: 1 } }],
+        },
+      },
+    });
+    const firstStart = source.indexOf('first=');
+    const spreadStart = source.indexOf('{...props.値}');
+    const finalStart = source.indexOf('final');
+
+    expect(messageIds(reports)).toEqual(['shouldWrap', 'shouldWrap', 'shouldWrap']);
+    expect(reports.map((report) => report.data)).toEqual([
+      { prop: 'first' },
+      { prop: 'props.値' },
+      { prop: 'final' },
+    ]);
+    expect(reports.map((report) => report.node.range)).toEqual([
+      [firstStart, firstStart + 'first="日本語"'.length],
+      [spreadStart, spreadStart + '{...props.値}'.length],
+      [finalStart, finalStart + 'final'.length],
+    ]);
+    expect(applyReportFixes(source, reports)).toBe(
+      'const marker = "😀"; const view = <部品<Row>\nfirst="日本語"\n{...props.値}\nfinal />;\n',
+    );
+  });
+
+  it('runs exp-jsx-props-style through real oxlint TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-exp-jsx-props-style-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(
+        sourcePath,
+        'type Row = { id: string };\nexport const view = <Panel<Row> title="日本語" count={2} disabled />;\n',
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/exp-jsx-props-style': ['error', { singleLine: { maxItems: 1 } }],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(exp-jsx-props-style)',
+          message: 'Prop `title` must be placed on a new line',
+        },
+        {
+          code: 'stylistic(exp-jsx-props-style)',
+          message: 'Prop `count` must be placed on a new line',
+        },
+        {
+          code: 'stylistic(exp-jsx-props-style)',
+          message: 'Prop `disabled` must be placed on a new line',
+        },
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        'type Row = { id: string };\nexport const view = <Panel<Row>\ntitle="日本語"\ncount={2}\ndisabled />;\n',
+      );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
   });
 
   it('runs jsx-max-props-per-line through real oxlint TSX lint and fixes', () => {
