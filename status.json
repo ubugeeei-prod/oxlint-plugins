@@ -14943,19 +14943,19 @@
       },
       {
         "name": "jsx-props-no-multi-spaces",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-props-no-multi-spaces."
+        "notes": "Complete native port of @stylistic/eslint-plugin jsx-props-no-multi-spaces v5.10.0. Oxc AST spans preserve JSX and TSX opening names, generic arguments, attributes, namespace names, spreads, nested source order, comment-aware blank-line diagnostics, exact code fixes, UTF-8 byte ranges, and UTF-16 plugin ranges; pinned authored replay, Rust, Vitest, shared-settings, Unicode, line-ending, and real Oxlint integration tests cover the stable deprecated rule."
       },
       {
         "name": "jsx-quotes",

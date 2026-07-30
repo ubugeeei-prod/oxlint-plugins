@@ -78,6 +78,7 @@
     "port:tests:stylistic:jsx-max-props-per-line": "node tools/tasks/sync-stylistic-jsx-max-props-per-line-tests.ts",
     "port:tests:stylistic:jsx-newline": "node tools/tasks/sync-stylistic-jsx-newline-tests.ts",
     "port:tests:stylistic:jsx-one-expression-per-line": "node tools/tasks/sync-stylistic-jsx-one-expression-per-line-tests.ts",
+    "port:tests:stylistic:jsx-props-no-multi-spaces": "node tools/tasks/sync-stylistic-jsx-props-no-multi-spaces-tests.ts",
     "port:tests:stylistic:multiline-comment-style": "node tools/tasks/sync-stylistic-multiline-comment-style-tests.ts",
     "port:tests:stylistic:nonblock-statement-body-position": "node tools/tasks/sync-stylistic-nonblock-statement-body-position-tests.ts",
     "port:tests:stylistic:object-curly-newline": "node tools/tasks/sync-stylistic-object-curly-newline-tests.ts",

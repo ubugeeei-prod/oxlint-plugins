@@ -138,6 +138,7 @@ const stylisticRuleFixtures = [
   ],
   ['jsx-first-prop-new-line', '<App first={{\n  value: 1\n}} second />;\n', [], ['propOnNewLine']],
   ['jsx-function-call-newline', 'render(<App\n  prop />);\n', [], ['missingLineBreak']],
+  ['jsx-props-no-multi-spaces', '<App  foo />;\n', [], ['onlyOneSpace']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
@@ -4080,6 +4081,68 @@ const parenthesized = (a + b) * c;
       expect(readFileSync(tsxPath, 'utf8')).toBe(
         'export const view = <div>{(function (): JSX.Element { return <span /> })()}</div>;\n',
       );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs jsx-props-no-multi-spaces through real oxlint TSX lint and suggestions', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-props-no-multi-spaces-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(
+        sourcePath,
+        'export const view = <Panel<string>  title="日本語"   {...props} />;\n',
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-props-no-multi-spaces': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(jsx-props-no-multi-spaces)',
+          message: 'Expected only one space between “Panel” and “title”',
+        },
+        {
+          code: 'stylistic(jsx-props-no-multi-spaces)',
+          message: 'Expected only one space between “title” and “props”',
+        },
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        'export const view = <Panel<string> title="日本語" {...props} />;\n',
+      );
+
+      const unfixable = 'export const view = <Panel title="日本語"\n\n  kind="button" />;\n';
+      writeFileSync(sourcePath, unfixable);
+      const unchanged = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--fix-suggestions', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(unchanged.status).toBe(1);
+      expect(readFileSync(sourcePath, 'utf8')).toBe(unfixable);
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
