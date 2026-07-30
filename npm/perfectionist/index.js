@@ -92,6 +92,11 @@ function createPerfectionistRule(ruleName) {
         ruleName === 'sort-named-imports'
           ? {
               unexpectedNamedImportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+              unexpectedNamedImportsGroupOrder:
+                'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
+              extraSpacingBetweenNamedImports: 'Extra spacing between "{{left}}" and "{{right}}".',
+              missedSpacingBetweenNamedImports:
+                'Missed spacing between "{{left}}" and "{{right}}".',
             }
           : {
               unexpected: 'Expected sorted order.',
@@ -159,9 +164,12 @@ function diagnosticsForContext(context) {
 }
 
 function reportDiagnostic(context, diagnostic) {
+  const data = Object.fromEntries(
+    Object.entries(diagnostic.data || {}).filter(([, value]) => value !== undefined),
+  );
   context.report({
     messageId: diagnostic.messageId,
-    data: diagnostic.data,
+    data,
     loc: {
       start: {
         line: diagnostic.loc.startLine,
@@ -188,11 +196,161 @@ function schemaForRule(ruleName) {
   }
   const sortType = {
     type: 'string',
-    enum: ['alphabetical', 'natural', 'line-length', 'custom', 'unsorted'],
+    enum: ['subgroup-order', 'alphabetical', 'natural', 'line-length', 'custom', 'unsorted'],
   };
   const order = {
     type: 'string',
     enum: ['asc', 'desc'],
+  };
+  const singleRegex = {
+    oneOf: [
+      { type: 'string' },
+      {
+        type: 'object',
+        properties: {
+          pattern: { type: 'string' },
+          flags: { type: 'string' },
+        },
+        required: ['pattern'],
+        additionalProperties: false,
+      },
+    ],
+  };
+  const regex = {
+    oneOf: [
+      ...singleRegex.oneOf,
+      {
+        type: 'array',
+        items: singleRegex,
+      },
+    ],
+  };
+  const newlines = {
+    oneOf: [
+      { type: 'number', minimum: 0 },
+      { type: 'string', enum: ['ignore'] },
+    ],
+  };
+  const newlinesInside = {
+    oneOf: [
+      { type: 'number', minimum: 0 },
+      { type: 'string', enum: ['ignore', 'newlinesBetween'] },
+    ],
+  };
+  const fallbackSort = {
+    type: 'object',
+    properties: {
+      type: sortType,
+      order,
+    },
+    required: ['type'],
+    additionalProperties: false,
+  };
+  const sortOverrides = {
+    type: sortType,
+    order,
+    fallbackSort,
+  };
+  const customMatch = {
+    elementNamePattern: regex,
+    modifiers: {
+      type: 'array',
+      items: { type: 'string', enum: ['value', 'type'] },
+    },
+    selector: { type: 'string', enum: ['import'] },
+  };
+  const groups = {
+    type: 'array',
+    items: {
+      oneOf: [
+        { type: 'string' },
+        {
+          type: 'array',
+          minItems: 1,
+          items: { type: 'string' },
+        },
+        {
+          type: 'object',
+          properties: { newlinesBetween: newlines },
+          required: ['newlinesBetween'],
+          additionalProperties: false,
+        },
+        {
+          type: 'object',
+          properties: {
+            group: {
+              oneOf: [
+                { type: 'string' },
+                {
+                  type: 'array',
+                  minItems: 1,
+                  items: { type: 'string' },
+                },
+              ],
+            },
+            ...sortOverrides,
+            newlinesInside,
+            commentAbove: { type: 'string' },
+          },
+          required: ['group'],
+          minProperties: 2,
+          additionalProperties: false,
+        },
+      ],
+    },
+  };
+  const customGroups = {
+    type: 'array',
+    items: {
+      oneOf: [
+        {
+          type: 'object',
+          properties: {
+            groupName: { type: 'string' },
+            ...sortOverrides,
+            newlinesInside: newlines,
+            ...customMatch,
+          },
+          required: ['groupName'],
+          minProperties: 2,
+          additionalProperties: false,
+        },
+        {
+          type: 'object',
+          properties: {
+            groupName: { type: 'string' },
+            ...sortOverrides,
+            newlinesInside: newlines,
+            anyOf: {
+              type: 'array',
+              minItems: 1,
+              items: {
+                type: 'object',
+                properties: customMatch,
+                additionalProperties: false,
+              },
+            },
+          },
+          required: ['groupName', 'anyOf'],
+          additionalProperties: false,
+        },
+      ],
+    },
+  };
+  const partitionByComment = {
+    oneOf: [
+      { type: 'boolean' },
+      ...regex.oneOf,
+      {
+        type: 'object',
+        properties: {
+          block: { oneOf: [{ type: 'boolean' }, ...regex.oneOf] },
+          line: { oneOf: [{ type: 'boolean' }, ...regex.oneOf] },
+        },
+        minProperties: 1,
+        additionalProperties: false,
+      },
+    ],
   };
   return [
     {
@@ -215,16 +373,23 @@ function schemaForRule(ruleName) {
           ],
         },
         alphabet: { type: 'string' },
-        fallbackSort: {
+        fallbackSort,
+        ignoreAlias: { type: 'boolean' },
+        groups,
+        customGroups,
+        partitionByComment,
+        partitionByNewLine: { type: 'boolean' },
+        newlinesBetween: newlines,
+        newlinesInside,
+        useConfigurationIf: {
           type: 'object',
           properties: {
-            type: sortType,
-            order,
+            allNamesMatchPattern: regex,
+            matchesAstSelector: { type: 'string' },
           },
-          required: ['type'],
+          minProperties: 1,
           additionalProperties: false,
         },
-        ignoreAlias: { type: 'boolean' },
       },
       additionalProperties: false,
     },

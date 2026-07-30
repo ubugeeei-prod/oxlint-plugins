@@ -40,6 +40,8 @@ mod napi_abi {
     pub struct DiagnosticData {
         pub left: String,
         pub right: String,
+        pub left_group: Option<String>,
+        pub right_group: Option<String>,
     }
 
     #[napi(object)]
@@ -99,6 +101,8 @@ mod napi_abi {
                     data: Some(DiagnosticData {
                         left: diagnostic.data.left.into_string(),
                         right: diagnostic.data.right.into_string(),
+                        left_group: diagnostic.data.left_group.map(|value| value.into_string()),
+                        right_group: diagnostic.data.right_group.map(|value| value.into_string()),
                     }),
                     fix: Some(DiagnosticFix {
                         start: diagnostic.fix.start,

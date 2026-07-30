@@ -117,6 +117,39 @@ describe('perfectionist native API', () => {
     });
   });
 
+  it('returns exact group-order data and a comment-preserving fix', () => {
+    const source = `import {
+  // value docs
+  value,
+  // type docs
+  type Type,
+} from "pkg";
+`;
+    const [diagnostic] = scanPerfectionistRule(source, 'fixture.ts', 'sort-named-imports', [
+      { groups: ['type-import', 'unknown'] },
+    ]);
+
+    expect(diagnostic).toMatchObject({
+      ruleName: 'sort-named-imports',
+      messageId: 'unexpectedNamedImportsGroupOrder',
+      data: {
+        left: 'value',
+        right: 'Type',
+        leftGroup: 'unknown',
+        rightGroup: 'type-import',
+      },
+      loc: {
+        startLine: 5,
+        startColumn: 2,
+        endLine: 5,
+        endColumn: 11,
+      },
+      fix: {
+        replacement: '// type docs\n  type Type,\n  // value docs\n  value',
+      },
+    });
+  });
+
   it('isolates configured scanning to its implemented rule', () => {
     expect(
       scanPerfectionistRule('import { b, a } from "pkg";', 'fixture.ts', 'sort-objects', [
