@@ -35,6 +35,7 @@ mod no_extra_parens;
 mod nonblock_statement_body_position;
 mod object_curly_newline;
 mod object_property_newline;
+mod padding_line_between_statements;
 mod quote_convert;
 mod quotes;
 mod semi;
@@ -757,6 +758,16 @@ const MULTILINE_TERNARY_MESSAGES: &[(&str, &str)] = &[
         "Unexpected newline between consequent and alternate of ternary expression.",
     ),
 ];
+const PADDING_LINE_BETWEEN_STATEMENTS_MESSAGES: &[(&str, &str)] = &[
+    (
+        "unexpectedBlankLine",
+        "Unexpected blank line before this statement.",
+    ),
+    (
+        "expectedBlankLine",
+        "Expected blank line before this statement.",
+    ),
+];
 
 /// One stylistic rule invocation requested by the JavaScript bridge.
 #[derive(Clone, Debug, Deserialize)]
@@ -873,6 +884,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         name: "function-paren-newline",
         docs_description: "Enforce consistent line breaks inside function parentheses.",
         messages: FUNCTION_PAREN_NEWLINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
+        name: "padding-line-between-statements",
+        docs_description: "Require or disallow padding lines between statements",
+        messages: PADDING_LINE_BETWEEN_STATEMENTS_MESSAGES,
     },
     StylisticRuleDefinition {
         name: "member-delimiter-style",
@@ -1448,6 +1464,14 @@ pub fn run_stylistic_lint(
                 &rule.options,
                 &mut diagnostics,
             ),
+            "padding-line-between-statements" => {
+                padding_line_between_statements::check_padding_line_between_statements(
+                    source_text,
+                    config.filename.as_deref(),
+                    &rule.options,
+                    &mut diagnostics,
+                )
+            }
             "member-delimiter-style" => member_delimiter_style::check_member_delimiter_style(
                 source_text,
                 config.filename.as_deref(),

@@ -180,6 +180,12 @@ const stylisticRuleFixtures = [
     ['always'],
     ['expectedAfter', 'expectedBefore'],
   ],
+  [
+    'padding-line-between-statements',
+    'const value = 1;\nuse(value);\n',
+    [{ blankLine: 'always', prev: 'const', next: '*' }],
+    ['expectedBlankLine'],
+  ],
 ];
 
 function runRule(ruleName, sourceText, options, settings) {
@@ -2432,6 +2438,57 @@ const parenthesized = (a + b) * c;
           code: 'stylistic(function-paren-newline)',
           message: "Expected newline before ')'.",
           labels: [{ span: { offset: sourceText.indexOf(')'), length: 1 } }],
+        },
+      ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs padding-line-between-statements through an actual oxlint TypeScript config', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-padding-line-between-statements-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.ts');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      const sourceText = 'import value from "value";\nconst result = value;\nconsume(result);\n';
+      writeFileSync(sourcePath, sourceText);
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/padding-line-between-statements': [
+              'error',
+              { blankLine: 'always', prev: 'import', next: '*' },
+              { blankLine: 'always', prev: 'const', next: '*' },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(padding-line-between-statements)',
+          message: 'Expected blank line before this statement.',
+        },
+        {
+          code: 'stylistic(padding-line-between-statements)',
+          message: 'Expected blank line before this statement.',
         },
       ]);
     } finally {
