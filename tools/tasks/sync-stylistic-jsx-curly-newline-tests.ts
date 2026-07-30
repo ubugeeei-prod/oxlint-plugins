@@ -292,11 +292,9 @@ function verify(testCase) {
     filename: filenameFor(testCase),
   });
   const ruleMessages = messages.filter(message => message.ruleId === 'stylistic/${RULE}');
-  if (ruleMessages.length === 0 && messages.length !== 0) {
-    const unexpected = messages.filter(message => message.ruleId !== 'stylistic/${RULE}');
-    if (unexpected.length !== 0) {
-      throw new Error('Unexpected ESLint messages: ' + JSON.stringify(unexpected));
-    }
+  const unexpected = messages.filter(message => message.ruleId !== 'stylistic/${RULE}');
+  if (unexpected.length !== 0) {
+    throw new Error('Unexpected ESLint messages: ' + JSON.stringify(unexpected));
   }
   return ruleMessages;
 }
