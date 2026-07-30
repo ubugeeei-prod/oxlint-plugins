@@ -50,10 +50,12 @@ function createStylisticRule(ruleName) {
         recommended: false,
         requiresTypeChecking: false,
         url: SOURCE_URL,
+        ...(ruleName === 'exp-jsx-props-style' ? { experimental: true } : {}),
       },
       ...(meta.hasSuggestions
         ? {
             fixable: [
+              'exp-jsx-props-style',
               'jsx-closing-bracket-location',
               'jsx-curly-brace-presence',
               'jsx-curly-spacing',

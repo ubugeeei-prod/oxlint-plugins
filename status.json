@@ -14607,19 +14607,19 @@
       },
       {
         "name": "exp-jsx-props-style",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule exp-jsx-props-style."
+        "notes": "Native Oxc JSX/TSX AST port of @stylistic/exp-jsx-props-style from the stable v5.10.0 package. The deterministic pinned fixture captures all 17 valid and 11 invalid authored cases with 17 exact diagnostics, message data, UTF-16 ranges, 15 fixable and 2 comment-blocked boundaries, first-pass fixes, and recursive output. Focused Rust and Vitest coverage exercises singleLine.maxItems, multiLine.minItems/maxItemsPerLine, first-prop wrap/collapse selection, spread and namespaced props, comments, Unicode, every ECMAScript line terminator, nested TSX generics, source ordering, malformed input, shared API/meta/plugin surfaces, and real Oxlint TSX lint/fix integration."
       },
       {
         "name": "exp-list-style",

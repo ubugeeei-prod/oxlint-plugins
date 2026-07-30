@@ -1,0 +1,744 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "rule": "exp-jsx-props-style",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-props-style/jsx-props-style.test.ts",
+    "ruleFile": "packages/eslint-plugin/rules/jsx-props-style/jsx-props-style.ts",
+    "sourceSha256": "926f8805c068941c3ae2d959c180aae14da09e55d2c1eefabef45081ea0f602a",
+    "ruleSourceSha256": "c3dbc6b2026f5ec5c25677d27ae9be0bd78752d691722049fd0602fd9c12a063",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-stylistic-exp-jsx-props-style-tests.ts",
+    "capturePolicy": "Each authored semantic case is captured once; exact replay uses the published rule with ESLint Espree in JSX mode.",
+    "exactReplay": {
+      "eslint": "10.4.1",
+      "parser": "espree bundled with ESLint"
+    },
+    "inventory": {
+      "valid": 17,
+      "invalid": 11,
+      "diagnostics": 17,
+      "fixableDiagnostics": 15,
+      "unfixableDiagnostics": 2,
+      "fixableInvalid": 11,
+      "unfixableInvalid": 0,
+      "total": 28
+    }
+  },
+  "valid": [
+    {
+      "code": "<App />"
+    },
+    {
+      "code": "<App foo />"
+    },
+    {
+      "code": "<App foo bar />"
+    },
+    {
+      "code": "<App foo bar baz />"
+    },
+    {
+      "code": "<App {...props} />"
+    },
+    {
+      "code": "<App foo {...props} bar />"
+    },
+    {
+      "code": "<App\n  foo\n  bar\n/>"
+    },
+    {
+      "code": "<App\n  foo\n  bar\n  baz\n/>"
+    },
+    {
+      "code": "<App\n  foo\n  {...props}\n  bar\n/>"
+    },
+    {
+      "code": "<App foo />",
+      "options": [
+        {
+          "singleLine": {
+            "maxItems": 1
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App\n  foo\n  bar\n/>",
+      "options": [
+        {
+          "singleLine": {
+            "maxItems": 1
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo bar />",
+      "options": [
+        {
+          "multiLine": {
+            "minItems": 3
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App\n  foo\n  bar\n  baz\n/>",
+      "options": [
+        {
+          "multiLine": {
+            "minItems": 3
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo bar />",
+      "options": [
+        {
+          "singleLine": {
+            "maxItems": 2
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App\n  foo={{\n    a: 1,\n  }}\n  bar\n/>"
+    },
+    {
+      "description": "multiline with maxItemsPerLine=2",
+      "code": "<App\n  foo bar\n  baz qux\n/>",
+      "options": [
+        {
+          "multiLine": {
+            "maxItemsPerLine": 2
+          }
+        }
+      ]
+    },
+    {
+      "description": "multiline with maxItemsPerLine=3",
+      "code": "<App\n  foo bar baz\n/>",
+      "options": [
+        {
+          "multiLine": {
+            "maxItemsPerLine": 3
+          }
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "description": "single line exceeds maxItems",
+      "code": "<App foo bar />",
+      "output": "<App\nfoo\nbar />",
+      "options": [
+        {
+          "singleLine": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        },
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13
+        }
+      ],
+      "recursiveOutput": "<App\nfoo\nbar />",
+      "recursiveDiagnostics": [],
+      "diagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `foo` must be placed on a new line",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9,
+          "range": [5, 8],
+          "fix": {
+            "range": [4, 5],
+            "replacementText": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `bar` must be placed on a new line",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 13,
+          "range": [9, 12],
+          "fix": {
+            "range": [8, 9],
+            "replacementText": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "description": "single line exceeds maxItems with spread",
+      "code": "<App foo {...props} bar />",
+      "output": "<App\nfoo\n{...props}\nbar />",
+      "options": [
+        {
+          "singleLine": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        },
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "props"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 20
+        },
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 24
+        }
+      ],
+      "recursiveOutput": "<App\nfoo\n{...props}\nbar />",
+      "recursiveDiagnostics": [],
+      "diagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `foo` must be placed on a new line",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9,
+          "range": [5, 8],
+          "fix": {
+            "range": [4, 5],
+            "replacementText": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `props` must be placed on a new line",
+          "data": {
+            "prop": "props"
+          },
+          "line": 1,
+          "column": 10,
+          "endLine": 1,
+          "endColumn": 20,
+          "range": [9, 19],
+          "fix": {
+            "range": [8, 9],
+            "replacementText": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `bar` must be placed on a new line",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 1,
+          "column": 21,
+          "endLine": 1,
+          "endColumn": 24,
+          "range": [20, 23],
+          "fix": {
+            "range": [19, 20],
+            "replacementText": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "description": "multiline should wrap all props",
+      "code": "<App\n  foo bar\n  baz\n/>",
+      "output": "<App\n  foo\nbar\n  baz\n/>",
+      "errors": [
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 10
+        }
+      ],
+      "recursiveOutput": "<App\n  foo\nbar\n  baz\n/>",
+      "recursiveDiagnostics": [],
+      "diagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `bar` must be placed on a new line",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 10,
+          "range": [11, 14],
+          "fix": {
+            "range": [10, 11],
+            "replacementText": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "description": "multiline with minItems not reached should collapse",
+      "code": "<App\n  foo\n  bar\n/>",
+      "output": "<App foo bar\n/>",
+      "options": [
+        {
+          "multiLine": {
+            "minItems": 3
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "shouldNotWrap",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 6
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 3,
+          "column": 3,
+          "endLine": 3,
+          "endColumn": 6
+        }
+      ],
+      "recursiveOutput": "<App foo bar\n/>",
+      "recursiveDiagnostics": [],
+      "diagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Prop `foo` should not be placed on a new line",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 6,
+          "range": [7, 10],
+          "fix": {
+            "range": [4, 7],
+            "replacementText": " "
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Prop `bar` should not be placed on a new line",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 3,
+          "column": 3,
+          "endLine": 3,
+          "endColumn": 6,
+          "range": [13, 16],
+          "fix": {
+            "range": [10, 13],
+            "replacementText": " "
+          }
+        }
+      ]
+    },
+    {
+      "description": "single line with maxItems=0 should wrap all",
+      "code": "<App foo />",
+      "output": "<App\nfoo />",
+      "options": [
+        {
+          "singleLine": {
+            "maxItems": 0
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9
+        }
+      ],
+      "recursiveOutput": "<App\nfoo />",
+      "recursiveDiagnostics": [],
+      "diagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `foo` must be placed on a new line",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9,
+          "range": [5, 8],
+          "fix": {
+            "range": [4, 5],
+            "replacementText": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "description": "multiline mixed - first prop on same line means collapse",
+      "code": "<App foo\n  bar\n/>",
+      "output": "<App foo bar\n/>",
+      "errors": [
+        {
+          "messageId": "shouldNotWrap",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 6
+        }
+      ],
+      "recursiveOutput": "<App foo bar\n/>",
+      "recursiveDiagnostics": [],
+      "diagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Prop `bar` should not be placed on a new line",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 6,
+          "range": [11, 14],
+          "fix": {
+            "range": [8, 11],
+            "replacementText": " "
+          }
+        }
+      ]
+    },
+    {
+      "description": "multiline mixed - first prop on new line means wrap all",
+      "code": "<App\n  foo bar\n/>",
+      "output": "<App\n  foo\nbar\n/>",
+      "errors": [
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 10
+        }
+      ],
+      "recursiveOutput": "<App\n  foo\nbar\n/>",
+      "recursiveDiagnostics": [],
+      "diagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `bar` must be placed on a new line",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 10,
+          "range": [11, 14],
+          "fix": {
+            "range": [10, 11],
+            "replacementText": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "description": "should not fix newLine when comments exist between props",
+      "code": "<App foo /* comment */ bar />",
+      "output": "<App\nfoo /* comment */ bar />",
+      "options": [
+        {
+          "singleLine": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "foo"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "bar"
+          }
+        }
+      ],
+      "recursiveOutput": "<App\nfoo /* comment */ bar />",
+      "recursiveDiagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `bar` must be placed on a new line",
+          "line": 2,
+          "column": 19,
+          "endLine": 2,
+          "endColumn": 22,
+          "range": [23, 26]
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `foo` must be placed on a new line",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 1,
+          "column": 6,
+          "endLine": 1,
+          "endColumn": 9,
+          "range": [5, 8],
+          "fix": {
+            "range": [4, 5],
+            "replacementText": "\n"
+          }
+        },
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `bar` must be placed on a new line",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 1,
+          "column": 24,
+          "endLine": 1,
+          "endColumn": 27,
+          "range": [23, 26],
+          "fix": null
+        }
+      ]
+    },
+    {
+      "description": "should not fix singleLine when comments exist between props",
+      "code": "<App\n  foo\n  /* comment */\n  bar\n/>",
+      "output": "<App foo\n  /* comment */\n  bar\n/>",
+      "options": [
+        {
+          "multiLine": {
+            "minItems": 3
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "shouldNotWrap",
+          "data": {
+            "prop": "foo"
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "data": {
+            "prop": "bar"
+          }
+        }
+      ],
+      "recursiveOutput": "<App foo\n  /* comment */\n  bar\n/>",
+      "recursiveDiagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Prop `bar` should not be placed on a new line",
+          "line": 3,
+          "column": 3,
+          "endLine": 3,
+          "endColumn": 6,
+          "range": [27, 30]
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Prop `foo` should not be placed on a new line",
+          "data": {
+            "prop": "foo"
+          },
+          "line": 2,
+          "column": 3,
+          "endLine": 2,
+          "endColumn": 6,
+          "range": [7, 10],
+          "fix": {
+            "range": [4, 7],
+            "replacementText": " "
+          }
+        },
+        {
+          "messageId": "shouldNotWrap",
+          "message": "Prop `bar` should not be placed on a new line",
+          "data": {
+            "prop": "bar"
+          },
+          "line": 4,
+          "column": 3,
+          "endLine": 4,
+          "endColumn": 6,
+          "range": [29, 32],
+          "fix": null
+        }
+      ]
+    },
+    {
+      "description": "multiline with maxItemsPerLine=2 exceeds limit",
+      "code": "<App\n  foo bar baz\n/>",
+      "output": "<App\n  foo bar\nbaz\n/>",
+      "options": [
+        {
+          "multiLine": {
+            "maxItemsPerLine": 2
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "baz"
+          }
+        }
+      ],
+      "recursiveOutput": "<App\n  foo bar\nbaz\n/>",
+      "recursiveDiagnostics": [],
+      "diagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `baz` must be placed on a new line",
+          "data": {
+            "prop": "baz"
+          },
+          "line": 2,
+          "column": 11,
+          "endLine": 2,
+          "endColumn": 14,
+          "range": [15, 18],
+          "fix": {
+            "range": [14, 15],
+            "replacementText": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "description": "multiline with maxItemsPerLine=2 multiple lines exceed",
+      "code": "<App\n  a b c d\n/>",
+      "output": "<App\n  a b\nc d\n/>",
+      "options": [
+        {
+          "multiLine": {
+            "maxItemsPerLine": 2
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "shouldWrap",
+          "data": {
+            "prop": "c"
+          }
+        }
+      ],
+      "recursiveOutput": "<App\n  a b\nc d\n/>",
+      "recursiveDiagnostics": [],
+      "diagnostics": [
+        {
+          "messageId": "shouldWrap",
+          "message": "Prop `c` must be placed on a new line",
+          "data": {
+            "prop": "c"
+          },
+          "line": 2,
+          "column": 7,
+          "endLine": 2,
+          "endColumn": 8,
+          "range": [11, 12],
+          "fix": {
+            "range": [10, 11],
+            "replacementText": "\n"
+          }
+        }
+      ]
+    }
+  ]
+}

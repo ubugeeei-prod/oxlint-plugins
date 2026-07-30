@@ -12,6 +12,7 @@ mod comment_rules;
 mod context;
 mod context_rules;
 mod curly_newline;
+mod exp_jsx_props_style;
 mod expression_rules;
 mod function_call_argument_newline;
 mod function_paren_newline;
@@ -701,6 +702,13 @@ const JSX_CHILD_ELEMENT_SPACING_MESSAGES: &[(&str, &str)] = &[
 ];
 const JSX_FUNCTION_CALL_NEWLINE_MESSAGES: &[(&str, &str)] =
     &[("missingLineBreak", "Missing line break around JSX")];
+const EXP_JSX_PROPS_STYLE_MESSAGES: &[(&str, &str)] = &[
+    ("shouldWrap", "Prop `{{prop}}` must be placed on a new line"),
+    (
+        "shouldNotWrap",
+        "Prop `{{prop}}` should not be placed on a new line",
+    ),
+];
 const JSX_INDENT_MESSAGES: &[(&str, &str)] = &[(
     "wrongIndent",
     "Expected indentation of {{needed}} {{type}} {{characters}} but found {{gotten}}.",
@@ -1373,6 +1381,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_FUNCTION_CALL_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "exp-jsx-props-style",
+        docs_description: "Enforce consistent line break styles for JSX props",
+        messages: EXP_JSX_PROPS_STYLE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-indent",
         docs_description: "Enforce JSX indentation. Deprecated, use `indent` rule instead.",
         messages: JSX_INDENT_MESSAGES,
@@ -1668,6 +1681,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "exp-jsx-props-style" => exp_jsx_props_style::check_exp_jsx_props_style(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "jsx-indent" => jsx_indent::check_jsx_indent(
                 source_text,
                 config.filename.as_deref(),
