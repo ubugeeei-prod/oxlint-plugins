@@ -13,6 +13,32 @@ const DOCS_BASE =
 const diagnosticsCache = new WeakMap();
 const implementedRuleNames = Object.freeze(implementedAngularEslintRuleNames());
 const selectorRuleNames = new Set(['component-selector', 'directive-selector']);
+const classSuffixRuleNames = new Set(['component-class-suffix', 'directive-class-suffix']);
+const optionAwareRuleNames = new Set([...selectorRuleNames, ...classSuffixRuleNames]);
+
+const classSuffixSchema = [
+  {
+    type: 'object',
+    properties: {
+      suffixes: {
+        type: 'array',
+        items: { type: 'string' },
+      },
+    },
+    additionalProperties: false,
+  },
+];
+
+const classSuffixMessages = {
+  'component-class-suffix': {
+    componentClassSuffix:
+      'Component class names should end with one of these suffixes: {{suffixes}}',
+  },
+  'directive-class-suffix': {
+    directiveClassSuffix:
+      'Directive class names should end with one of these suffixes: {{suffixes}}',
+  },
+};
 
 const selectorConfigSchema = {
   type: 'object',
@@ -124,6 +150,7 @@ plugin.scanAngularEslint = scanAngularEslint;
 
 function createAngularEslintRule(ruleName) {
   const isSelectorRule = selectorRuleNames.has(ruleName);
+  const isClassSuffixRule = classSuffixRuleNames.has(ruleName);
   return {
     meta: {
       type: problemRules.has(ruleName) ? 'problem' : 'suggestion',
@@ -135,10 +162,12 @@ function createAngularEslintRule(ruleName) {
       },
       messages: isSelectorRule
         ? selectorMessages[ruleName]
-        : {
-            unexpected: 'Unexpected Angular pattern.',
-          },
-      schema: isSelectorRule ? selectorSchema : [],
+        : isClassSuffixRule
+          ? classSuffixMessages[ruleName]
+          : {
+              unexpected: 'Unexpected Angular pattern.',
+            },
+      schema: isSelectorRule ? selectorSchema : isClassSuffixRule ? classSuffixSchema : [],
     },
     createOnce(context) {
       return {
@@ -153,7 +182,7 @@ function createAngularEslintRule(ruleName) {
 }
 
 function diagnosticsForRule(context, ruleName) {
-  if (selectorRuleNames.has(ruleName)) {
+  if (optionAwareRuleNames.has(ruleName)) {
     const sourceText = sourceTextForContext(context);
     const filename = typeof context.filename === 'string' ? context.filename : 'file.ts';
     return scanAngularEslint(sourceText, filename, {

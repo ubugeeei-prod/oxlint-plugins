@@ -176,9 +176,59 @@ describe('angular-eslint plugin adapter', () => {
     const reports = runRule(ruleName, code);
 
     expect(reports).toHaveLength(1);
+    const expectedMessages = {
+      'component-class-suffix':
+        'Component class names should end with one of these suffixes: {{suffixes}}',
+      'directive-class-suffix':
+        'Directive class names should end with one of these suffixes: {{suffixes}}',
+    };
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
-      'Unexpected Angular pattern.',
+      expectedMessages[ruleName] || 'Unexpected Angular pattern.',
     );
+  });
+
+  it('exposes complete class-suffix schemas and messages', () => {
+    for (const ruleName of ['component-class-suffix', 'directive-class-suffix']) {
+      const { meta } = plugin.rules[ruleName];
+      expect(meta.schema).toEqual([
+        {
+          type: 'object',
+          properties: {
+            suffixes: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+          },
+          additionalProperties: false,
+        },
+      ]);
+      expect(Object.values(meta.messages)).toEqual([expect.stringContaining('{{suffixes}}')]);
+    }
+  });
+
+  it.each([
+    ['component-class-suffix', '@Component({}) class TestPage {}', [{ suffixes: ['Page'] }], []],
+    [
+      'component-class-suffix',
+      '@Component({}) class TestPage {}',
+      [{ suffixes: ['Component', 'View'] }],
+      [{ messageId: 'componentClassSuffix', data: { suffixes: '"Component" or "View"' } }],
+    ],
+    [
+      'directive-class-suffix',
+      '@Directive({ selector: "[x]" }) class TestDir {}',
+      [{ suffixes: ['Dir'] }],
+      [],
+    ],
+    [
+      'directive-class-suffix',
+      '@Directive({ selector: "[x]" }) class TestDirectivePage implements AsyncValidator {}',
+      [],
+      [{ messageId: 'directiveClassSuffix', data: { suffixes: '"Directive" or "Validator"' } }],
+    ],
+    ['directive-class-suffix', '@Directive() class Wrong {}', [{ suffixes: [] }], []],
+  ])('honors configured %s suffixes through createOnce', (ruleName, code, options, expected) => {
+    expect(runRule(ruleName, code, options)).toMatchObject(expected);
   });
 
   it('exposes the complete selector schemas and messages', () => {
@@ -348,7 +398,55 @@ describe('angular-eslint plugin adapter', () => {
       expect(result.status).toBe(1);
       expect(result.stderr).toBe('');
       expect(payload.diagnostics).toHaveLength(1);
-      expect(payload.diagnostics[0].message).toBe('Unexpected Angular pattern.');
+      expect(payload.diagnostics[0].message).toBe(
+        'Component class names should end with one of these suffixes: "Component"',
+      );
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('honors class-suffix options through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-class-suffix-'));
+    try {
+      writeFileSync(
+        join(tempDir, 'fixture.ts'),
+        '@Component({ selector: "app-x" }) class AppComponent {}\n' +
+          '@Component({ selector: "app-y" }) class SettingsPage {}\n',
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: '@angular-eslint',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            '@angular-eslint/component-class-suffix': ['error', { suffixes: ['Page', 'View'] }],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toMatchObject([
+        {
+          code: '@angular-eslint(component-class-suffix)',
+          message: 'Component class names should end with one of these suffixes: "Page" or "View"',
+        },
+      ]);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }
