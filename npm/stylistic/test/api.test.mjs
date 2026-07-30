@@ -42,6 +42,7 @@ describe('stylistic native API', () => {
       'jsx-one-expression-per-line',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-self-closing-comp');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-tag-spacing');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-confusing-arrow');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'type-annotation-spacing',
@@ -1903,6 +1904,48 @@ describe('stylistic native API', () => {
               {
                 range: { start: operatorStart, end: jsxEnd },
                 replacementText: '&& (\n  <部品<Item>>日本語\n    <子 />\n  </部品>\n)',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs jsx-tag-spacing with exact UTF-8 point/token ranges and fixes', () => {
+    const source = 'const marker = "😀"; const view = <外.部 値={1}/ >;';
+    const slash = Buffer.byteLength(source.slice(0, source.indexOf('/ >')));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [
+        {
+          name: 'jsx-tag-spacing',
+          options: [
+            {
+              closingSlash: 'never',
+              beforeSelfClosing: 'allow',
+              afterOpening: 'allow',
+              beforeClosing: 'allow',
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-tag-spacing',
+        messageId: 'selfCloseSlashNoSpace',
+        message: 'Whitespace is forbidden between `/` and `>`; write `/>`',
+        range: { start: slash, end: slash + 3 },
+        suggestions: [
+          {
+            messageId: 'selfCloseSlashNoSpace',
+            message: 'Whitespace is forbidden between `/` and `>`; write `/>`',
+            fixes: [
+              {
+                range: { start: slash + 1, end: slash + 2 },
+                replacementText: '',
               },
             ],
           },

@@ -1,4 +1,4 @@
-// Captures the stable @stylistic/jsx-newline v5.10.0 RuleTester suite
+// Captures a stable @stylistic JSX rule's v5.10.0 RuleTester suite
 // from the exact pinned upstream commit, including ESLint 10's Espree and
 // TypeScript parser expansion. The published package then supplies exact
 // diagnostics, ranges, single-pass fixes, and recursive fixed output.
@@ -30,12 +30,15 @@ type Manifest = {
 };
 
 const ROOT = process.cwd();
-const RULE = 'jsx-newline';
+const RULE = process.env.STYLISTIC_JSX_RULE ?? 'jsx-newline';
+if (!/^jsx-[a-z-]+$/u.test(RULE)) {
+  throw new Error(`Invalid STYLISTIC_JSX_RULE: ${RULE}`);
+}
 const VERSION = '5.10.0';
 const PINNED_COMMIT = 'efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712';
 const ESLINT_VERSION = '10.0.0';
 const SOURCE_FILE = `packages/eslint-plugin/rules/${RULE}/${RULE}.test.ts`;
-const CAPTURE_KEY = '__stylisticJsxNewlineCapture__';
+const CAPTURE_KEY = `__stylistic${RULE.replaceAll('-', '_')}Capture__`;
 
 const manifest = JSON.parse(
   readFileSync(join(ROOT, 'tools', 'port-targets.json'), 'utf8'),
@@ -66,7 +69,7 @@ if (actualCommit !== PINNED_COMMIT) {
 }
 
 registerCaptureHooks();
-const captureDir = mkdtempSync(join(tmpdir(), 'stylistic-jsx-newline-capture-'));
+const captureDir = mkdtempSync(join(tmpdir(), `stylistic-${RULE}-capture-`));
 try {
   (globalThis as Record<string, unknown>)[CAPTURE_KEY] = [];
   const captureFile = join(captureDir, `${RULE}.test.ts`);
@@ -112,7 +115,7 @@ try {
         typescript: '5.9.3',
       },
       parserMatrix: 'ESLint 10 parsers-jsx expansion; Babel disabled by the stable runner',
-      tool: 'tools/tasks/sync-stylistic-jsx-newline-tests.ts',
+      tool: `tools/tasks/sync-stylistic-${RULE}-tests.ts`,
       inventory: {
         logicalValid: logicalCount(captured.valid),
         logicalInvalid: logicalCount(captured.invalid),
@@ -208,7 +211,7 @@ function enrichWithPublishedRule(cases: { valid: NormalizedCase[]; invalid: Norm
   valid: NormalizedCase[];
   invalid: NormalizedCase[];
 } {
-  const runnerDir = mkdtempSync(join(tmpdir(), 'stylistic-jsx-newline-upstream-'));
+  const runnerDir = mkdtempSync(join(tmpdir(), `stylistic-${RULE}-upstream-`));
   try {
     writeFileSync(
       join(runnerDir, 'package.json'),

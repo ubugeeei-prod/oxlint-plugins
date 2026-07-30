@@ -231,6 +231,34 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the complete upstream jsx-tag-spacing metadata contract', () => {
+    expect(plugin.rules['jsx-tag-spacing'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce whitespace in and around the JSX opening and closing brackets',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        selfCloseSlashNoSpace: 'Whitespace is forbidden between `/` and `>`; write `/>`',
+        selfCloseSlashNeedSpace: 'Whitespace is required between `/` and `>`; write `/ >`',
+        closeSlashNoSpace: 'Whitespace is forbidden between `<` and `/`; write `</`',
+        closeSlashNeedSpace: 'Whitespace is required between `<` and `/`; write `< /`',
+        beforeSelfCloseNoSpace: 'A space is forbidden before closing bracket',
+        beforeSelfCloseNeedSpace: 'A space is required before closing bracket',
+        beforeSelfCloseNeedNewline: 'A newline is required before closing bracket',
+        afterOpenNoSpace: 'A space is forbidden after opening bracket',
+        afterOpenNeedSpace: 'A space is required after opening bracket',
+        beforeCloseNoSpace: 'A space is forbidden before closing bracket',
+        beforeCloseNeedSpace: 'Whitespace is required before closing bracket',
+        beforeCloseNeedNewline: 'A newline is required before closing bracket',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('preserves the complete upstream jsx-child-element-spacing metadata contract', () => {
     expect(plugin.rules['jsx-child-element-spacing'].meta).toMatchObject({
       type: 'layout',
