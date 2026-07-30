@@ -840,6 +840,26 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the complete experimental list-style metadata contract', () => {
+    expect(plugin.rules['exp-list-style'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce consistent spacing and line break styles inside brackets.',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        shouldSpacing: "Should have space between '{{prev}}' and '{{next}}'",
+        shouldNotSpacing: "Should not have space(s) between '{{prev}}' and '{{next}}'",
+        shouldWrap: "Should have line break between '{{prev}}' and '{{next}}'",
+        shouldNotWrap: "Should not have line break(s) between '{{prev}}' and '{{next}}'",
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('rejects unknown rule names referenced from settings', () => {
     const rule = plugin.rules.quotes;
     const sourceCode = {

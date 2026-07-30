@@ -14623,19 +14623,19 @@
       },
       {
         "name": "exp-list-style",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule exp-list-style."
+        "notes": "Native Oxc AST and JSON token-tree port of experimental @stylistic/exp-list-style v5.10.0 covering arrays, objects, destructuring, imports/exports and attributes, calls/new/if/functions, TypeScript declarations, enums, tuples, type literals and generics, JSON/JSONC, all options and override precedence, comments, Unicode, JavaScript/TypeScript/JSX/TSX, and every ECMAScript line terminator. A pinned synchronizer and committed fixture preserve all 56 valid and 56 invalid authored TypeScript/JSON cases with 107 exact ordered diagnostics, message data, UTF-16 locations, single-pass fixes, and recursive output; Rust plus dedicated API/meta/plugin/shared-settings and real Oxlint tests exercise UTF-8 native ranges and safe unfixable comment gaps."
       },
       {
         "name": "function-call-argument-newline",
