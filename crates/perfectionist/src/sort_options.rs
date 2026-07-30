@@ -175,7 +175,14 @@ impl SortOptions {
             SortType::Natural => {
                 let left = self.normalize(left_name);
                 let right = self.normalize(right_name);
-                natural_compare(left.as_str(), right.as_str())
+                if left.is_ascii() && right.is_ascii() {
+                    natural_compare(left.as_str(), right.as_str())
+                } else {
+                    self.collator.as_ref().map_or_else(
+                        || left.cmp(&right),
+                        |collator| collator.compare(left.as_str(), right.as_str()),
+                    )
+                }
             }
             SortType::LineLength => left_size.cmp(&right_size),
             SortType::Custom => {

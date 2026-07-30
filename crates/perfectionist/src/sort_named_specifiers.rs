@@ -12,8 +12,9 @@ use std::sync::OnceLock;
 use oxc_ast::{
     Comment, CommentKind,
     ast::{
-        ExportNamedDeclaration, ExportSpecifier, ImportDeclaration, ImportDeclarationSpecifier,
-        ImportOrExportKind, ImportSpecifier, ModuleExportName, Statement,
+        ExportAllDeclaration, ExportNamedDeclaration, ExportSpecifier, ImportDeclaration,
+        ImportDeclarationSpecifier, ImportOrExportKind, ImportSpecifier, ModuleExportName,
+        Statement,
     },
 };
 use oxc_span::Span;
@@ -32,6 +33,7 @@ struct RuleContract {
     group_order_message_id: &'static str,
     extra_spacing_message_id: &'static str,
     missed_spacing_message_id: &'static str,
+    missed_comment_above_message_id: Option<&'static str>,
 }
 
 const IMPORT_CONTRACT: RuleContract = RuleContract {
@@ -41,6 +43,7 @@ const IMPORT_CONTRACT: RuleContract = RuleContract {
     group_order_message_id: "unexpectedNamedImportsGroupOrder",
     extra_spacing_message_id: "extraSpacingBetweenNamedImports",
     missed_spacing_message_id: "missedSpacingBetweenNamedImports",
+    missed_comment_above_message_id: None,
 };
 
 const EXPORT_CONTRACT: RuleContract = RuleContract {
@@ -50,6 +53,17 @@ const EXPORT_CONTRACT: RuleContract = RuleContract {
     group_order_message_id: "unexpectedNamedExportsGroupOrder",
     extra_spacing_message_id: "extraSpacingBetweenNamedExports",
     missed_spacing_message_id: "missedSpacingBetweenNamedExports",
+    missed_comment_above_message_id: None,
+};
+
+const SORT_EXPORTS_CONTRACT: RuleContract = RuleContract {
+    rule: "sort-exports",
+    selector: "export",
+    order_message_id: "unexpectedExportsOrder",
+    group_order_message_id: "unexpectedExportsGroupOrder",
+    extra_spacing_message_id: "extraSpacingBetweenExports",
+    missed_spacing_message_id: "missedSpacingBetweenExports",
+    missed_comment_above_message_id: Some("missedCommentAboveExport"),
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -65,6 +79,7 @@ enum GroupEntry {
         names: SmallVec<[CompactString; 2]>,
         overrides: Option<Map<String, Value>>,
         newlines_inside: Option<Newlines>,
+        comment_above: Option<CompactString>,
     },
     Newlines(Newlines),
 }
@@ -96,7 +111,7 @@ struct RuleOptions {
     newlines_inside: Newlines,
 }
 
-struct NamedSpecifier<'a> {
+pub(crate) struct SortableNode<'a> {
     span: Span,
     name: CompactString,
     source: &'a str,
@@ -106,6 +121,53 @@ struct NamedSpecifier<'a> {
     group: CompactString,
     group_index: usize,
     partition_id: usize,
+    is_disabled: bool,
+    add_safety_semicolon_when_inline: bool,
+}
+
+struct PendingDiagnostic {
+    message_id: &'static str,
+    right_index: usize,
+    left_index: Option<usize>,
+    missed_comment_above: Option<CompactString>,
+}
+
+enum ExportDeclarationRef<'a> {
+    Named(&'a ExportNamedDeclaration<'a>),
+    All(&'a ExportAllDeclaration<'a>),
+}
+
+impl ExportDeclarationRef<'_> {
+    fn span(&self) -> Span {
+        match self {
+            Self::Named(declaration) => declaration.span,
+            Self::All(declaration) => declaration.span,
+        }
+    }
+
+    fn name(&self) -> &str {
+        match self {
+            Self::Named(declaration) => declaration
+                .source
+                .as_ref()
+                .map_or("", |source| source.value.as_str()),
+            Self::All(declaration) => declaration.source.value.as_str(),
+        }
+    }
+
+    fn export_kind(&self) -> ImportOrExportKind {
+        match self {
+            Self::Named(declaration) => declaration.export_kind,
+            Self::All(declaration) => declaration.export_kind,
+        }
+    }
+
+    fn export_type(&self) -> &'static str {
+        match self {
+            Self::Named(_) => "named",
+            Self::All(_) => "wildcard",
+        }
+    }
 }
 
 pub(crate) fn check(
@@ -139,7 +201,7 @@ pub(crate) fn check(
 
         let selected = select_import_options(raw_options, declaration, &named_specifiers);
         let options = RuleOptions::from_object(selected);
-        let mut specifiers: SmallVec<[NamedSpecifier<'_>; 8]> = named_specifiers
+        let mut specifiers: SmallVec<[SortableNode<'_>; 8]> = named_specifiers
             .iter()
             .enumerate()
             .filter_map(|(index, specifier)| {
@@ -194,7 +256,7 @@ pub(crate) fn check_exports(
             declaration.specifiers.iter().collect();
         let selected = select_export_options(raw_options, declaration, &named_specifiers);
         let options = RuleOptions::from_object(selected);
-        let mut specifiers: SmallVec<[NamedSpecifier<'_>; 8]> = named_specifiers
+        let mut specifiers: SmallVec<[SortableNode<'_>; 8]> = named_specifiers
             .iter()
             .enumerate()
             .filter_map(|(index, specifier)| {
@@ -229,35 +291,174 @@ pub(crate) fn check_exports(
     diagnostics
 }
 
+pub(crate) fn check_sort_exports(
+    source_text: &str,
+    body: &[Statement<'_>],
+    comments: &[Comment],
+    raw_options: &Value,
+) -> SmallVec<[RuleDiagnostic; 8]> {
+    let selected = match raw_options {
+        Value::Array(values) => values
+            .first()
+            .and_then(Value::as_object)
+            .cloned()
+            .unwrap_or_default(),
+        Value::Object(object) => object.clone(),
+        _ => Map::new(),
+    };
+    let options = RuleOptions::from_object(selected);
+    let declarations: SmallVec<[ExportDeclarationRef<'_>; 16]> = body
+        .iter()
+        .filter_map(|statement| match statement {
+            Statement::ExportNamedDeclaration(declaration) if declaration.source.is_some() => {
+                Some(ExportDeclarationRef::Named(declaration))
+            }
+            Statement::ExportAllDeclaration(declaration) => {
+                Some(ExportDeclarationRef::All(declaration))
+            }
+            _ => None,
+        })
+        .collect();
+    if declarations.is_empty() {
+        return SmallVec::new();
+    }
+
+    let mut nodes: SmallVec<[SortableNode<'_>; 16]> = declarations
+        .iter()
+        .enumerate()
+        .filter_map(|(index, declaration)| {
+            let span = declaration.span();
+            let boundary = declarations
+                .get(index + 1)
+                .map_or(source_text.len() as u32, |next| next.span().start);
+            let source_start = movable_leading_comment_start(source_text, comments, span, &options);
+            let source_end = comments
+                .iter()
+                .filter(|comment| {
+                    comment.span.start >= span.end
+                        && comment.span.end <= boundary
+                        && is_same_line(source_text, span.end, comment.span.start)
+                })
+                .map(|comment| comment.span.end)
+                .max()
+                .unwrap_or(span.end);
+            let source = source_text
+                .get(usize::try_from(source_start).ok()?..usize::try_from(source_end).ok()?)?;
+            let node_source = source_text
+                .get(usize::try_from(span.start).ok()?..usize::try_from(span.end).ok()?)?;
+            let kind = if declaration.export_kind() == ImportOrExportKind::Type {
+                "type"
+            } else {
+                "value"
+            };
+            let line_count = if node_source
+                .chars()
+                .any(|character| matches!(character, '\n' | '\r' | '\u{2028}' | '\u{2029}'))
+            {
+                "multiline"
+            } else {
+                "singleline"
+            };
+            let modifiers = [kind, declaration.export_type(), line_count];
+            let name = CompactString::from(declaration.name());
+            let group = compute_group(
+                &options,
+                name.as_str(),
+                &modifiers,
+                SORT_EXPORTS_CONTRACT.selector,
+            );
+            let group_index = options.group_index(group.as_str());
+            Some(SortableNode {
+                span,
+                name,
+                source,
+                source_start,
+                source_end,
+                size: node_source
+                    .strip_suffix(';')
+                    .unwrap_or(node_source)
+                    .encode_utf16()
+                    .count(),
+                group,
+                group_index,
+                partition_id: 0,
+                is_disabled: is_export_disabled(source_text, comments, span),
+                add_safety_semicolon_when_inline: true,
+            })
+        })
+        .collect();
+    if nodes.is_empty() {
+        return SmallVec::new();
+    }
+
+    let lines = LineIndex::new(source_text);
+    let mut diagnostics = SmallVec::new();
+    check_specifiers(
+        source_text,
+        comments,
+        &options,
+        &mut nodes,
+        SORT_EXPORTS_CONTRACT,
+        &lines,
+        &mut diagnostics,
+    );
+    diagnostics
+}
+
 fn check_specifiers(
     source_text: &str,
     comments: &[Comment],
     options: &RuleOptions,
-    specifiers: &mut [NamedSpecifier<'_>],
+    specifiers: &mut [SortableNode<'_>],
     contract: RuleContract,
     lines: &LineIndex,
     diagnostics: &mut SmallVec<[RuleDiagnostic; 8]>,
 ) {
     assign_partitions(source_text, comments, options, specifiers);
-    let sorted_indices = sort_specifiers(options, specifiers);
+    let sorted_indices = sort_specifiers(options, specifiers, false);
+    let fix_indices = sort_specifiers(options, specifiers, true);
     let mut sorted_positions = vec![0; specifiers.len()];
     for (position, &original_index) in sorted_indices.iter().enumerate() {
         sorted_positions[original_index] = position;
     }
 
-    let mut pending: SmallVec<[(&'static str, usize, Option<usize>); 8]> = SmallVec::new();
+    let mut pending: SmallVec<[PendingDiagnostic; 8]> = SmallVec::new();
+    if let Some(message_id) = contract.missed_comment_above_message_id
+        && !specifiers[0].is_disabled
+        && let Some(comment) =
+            missing_comment_above(source_text, comments, options, None, &specifiers[0])
+    {
+        pending.push(PendingDiagnostic {
+            message_id,
+            right_index: 0,
+            left_index: None,
+            missed_comment_above: Some(comment),
+        });
+    }
     for right_index in 1..specifiers.len() {
         let left_index = right_index - 1;
         let left = &specifiers[left_index];
         let right = &specifiers[right_index];
 
-        if sorted_positions[left_index] > sorted_positions[right_index] {
+        let right_fix_position = fix_indices
+            .iter()
+            .position(|index| *index == right_index)
+            .unwrap_or(right_index);
+        if !right.is_disabled
+            && (sorted_positions[left_index] > sorted_positions[right_index]
+                || (left.is_disabled && sorted_positions[left_index] >= right_fix_position))
+        {
             let message_id = if left.group_index == right.group_index {
                 contract.order_message_id
             } else {
                 contract.group_order_message_id
             };
-            pending.push((message_id, right_index, Some(left_index)));
+            pending.push(PendingDiagnostic {
+                message_id,
+                right_index,
+                left_index: Some(left_index),
+                missed_comment_above: None,
+            });
         }
 
         if left.partition_id == right.partition_id
@@ -266,28 +467,55 @@ fn check_specifiers(
         {
             let actual = empty_lines_between(source_text, left.source_end, right.source_start);
             if actual < expected {
-                pending.push((
-                    contract.missed_spacing_message_id,
+                pending.push(PendingDiagnostic {
+                    message_id: contract.missed_spacing_message_id,
                     right_index,
-                    Some(left_index),
-                ));
+                    left_index: Some(left_index),
+                    missed_comment_above: None,
+                });
             } else if actual > expected {
-                pending.push((
-                    contract.extra_spacing_message_id,
+                pending.push(PendingDiagnostic {
+                    message_id: contract.extra_spacing_message_id,
                     right_index,
-                    Some(left_index),
-                ));
+                    left_index: Some(left_index),
+                    missed_comment_above: None,
+                });
             }
+        }
+        if let Some(message_id) = contract.missed_comment_above_message_id
+            && !right.is_disabled
+            && let Some(comment) = missing_comment_above(
+                source_text,
+                comments,
+                options,
+                Some(left.group_index),
+                right,
+            )
+        {
+            pending.push(PendingDiagnostic {
+                message_id,
+                right_index,
+                left_index: Some(left_index),
+                missed_comment_above: Some(comment),
+            });
         }
     }
     if pending.is_empty() {
         return;
     }
 
-    let Some(fix) = build_fix(source_text, options, specifiers, &sorted_indices) else {
+    let fix = build_fix(source_text, options, specifiers, &fix_indices)
+        .or_else(|| build_comment_fix(source_text, comments, options, specifiers, &fix_indices));
+    let Some(fix) = fix else {
         return;
     };
-    for (message_id, right_index, left_index) in pending {
+    for pending in pending {
+        let PendingDiagnostic {
+            message_id,
+            right_index,
+            left_index,
+            missed_comment_above,
+        } = pending;
         let right = &specifiers[right_index];
         let left = left_index.map(|index| &specifiers[index]);
         let is_group_error = message_id == contract.group_order_message_id;
@@ -295,12 +523,17 @@ fn check_specifiers(
             rule_name: contract.rule,
             message_id,
             data: RuleDiagnosticData {
-                left: left.map_or_else(|| CompactString::new(""), |node| node.name.clone()),
+                left: if missed_comment_above.is_some() {
+                    CompactString::new("")
+                } else {
+                    left.map_or_else(|| CompactString::new(""), |node| node.name.clone())
+                },
                 right: right.name.clone(),
                 left_group: is_group_error.then(|| {
                     left.map_or_else(|| CompactString::new(""), |node| node.group.clone())
                 }),
                 right_group: is_group_error.then(|| right.group.clone()),
+                missed_comment_above,
             },
             loc: lines.loc_for_span(source_text, right.span),
             fix: fix.clone(),
@@ -532,6 +765,7 @@ fn parse_group(value: &Value) -> Option<GroupEntry> {
             names: SmallVec::from_vec(vec![CompactString::from(name.as_str())]),
             overrides: None,
             newlines_inside: None,
+            comment_above: None,
         }),
         Value::Array(names) => Some(GroupEntry::Group {
             names: names
@@ -541,6 +775,7 @@ fn parse_group(value: &Value) -> Option<GroupEntry> {
                 .collect(),
             overrides: None,
             newlines_inside: None,
+            comment_above: None,
         }),
         Value::Object(object) if object.contains_key("group") => {
             let names = match object.get("group") {
@@ -558,6 +793,10 @@ fn parse_group(value: &Value) -> Option<GroupEntry> {
                 names,
                 overrides: Some(object.clone()),
                 newlines_inside: object.get("newlinesInside").map(parse_newlines),
+                comment_above: object
+                    .get("commentAbove")
+                    .and_then(Value::as_str)
+                    .map(CompactString::from),
             })
         }
         Value::Object(object) => object
@@ -613,7 +852,7 @@ fn named_import<'a>(
     boundary: u32,
     options: &RuleOptions,
     contract: RuleContract,
-) -> Option<NamedSpecifier<'a>> {
+) -> Option<SortableNode<'a>> {
     let source_start =
         movable_leading_comment_start(source_text, comments, specifier.span, options);
     let source_end = comments
@@ -639,9 +878,9 @@ fn named_import<'a>(
     } else {
         "value"
     };
-    let group = compute_group(options, name.as_str(), modifier, contract.selector);
+    let group = compute_group(options, name.as_str(), &[modifier], contract.selector);
     let group_index = options.group_index(group.as_str());
-    Some(NamedSpecifier {
+    Some(SortableNode {
         span: specifier.span,
         name,
         source,
@@ -651,6 +890,8 @@ fn named_import<'a>(
         group,
         group_index,
         partition_id: 0,
+        is_disabled: false,
+        add_safety_semicolon_when_inline: false,
     })
 }
 
@@ -662,7 +903,7 @@ fn named_export<'a>(
     boundary: u32,
     options: &RuleOptions,
     contract: RuleContract,
-) -> Option<NamedSpecifier<'a>> {
+) -> Option<SortableNode<'a>> {
     let source_start =
         movable_leading_comment_start(source_text, comments, specifier.span, options);
     let source_end = comments
@@ -688,9 +929,9 @@ fn named_export<'a>(
     } else {
         "value"
     };
-    let group = compute_group(options, name.as_str(), modifier, contract.selector);
+    let group = compute_group(options, name.as_str(), &[modifier], contract.selector);
     let group_index = options.group_index(group.as_str());
-    Some(NamedSpecifier {
+    Some(SortableNode {
         span: specifier.span,
         name,
         source,
@@ -700,6 +941,8 @@ fn named_export<'a>(
         group,
         group_index,
         partition_id: 0,
+        is_disabled: false,
+        add_safety_semicolon_when_inline: false,
     })
 }
 
@@ -719,6 +962,7 @@ fn movable_leading_comment_start(
     let mut start = specifier_span.start;
     for comment in leading.into_iter().rev() {
         if is_partition_comment(source_text, comment, &options.partition_by_comment)
+            || is_eslint_block_directive(source_text, comment)
             || empty_lines_between(source_text, comment.span.end, start) > 0
         {
             break;
@@ -728,10 +972,94 @@ fn movable_leading_comment_start(
     start
 }
 
+fn is_export_disabled(source_text: &str, comments: &[Comment], span: Span) -> bool {
+    let node_line = line_number_at(source_text, span.start);
+    let mut block_disabled = false;
+    let mut ordered_comments: SmallVec<[&Comment; 16]> = comments.iter().collect();
+    ordered_comments.sort_by_key(|comment| comment.span.start);
+    for comment in ordered_comments {
+        let content = comment_content(source_text, comment);
+        if comment.span.end <= span.start {
+            if let Some(rules) = content
+                .strip_prefix("eslint-disable ")
+                .or_else(|| (content == "eslint-disable").then_some(""))
+            {
+                if eslint_directive_applies(rules) {
+                    block_disabled = true;
+                }
+            } else if let Some(rules) = content
+                .strip_prefix("eslint-enable ")
+                .or_else(|| (content == "eslint-enable").then_some(""))
+                && eslint_directive_applies(rules)
+            {
+                block_disabled = false;
+            }
+        }
+        let comment_line = line_number_at(source_text, comment.span.start);
+        if let Some(rules) = content.strip_prefix("eslint-disable-next-line")
+            && comment_line + 1 == node_line
+            && eslint_directive_applies(rules)
+        {
+            return true;
+        }
+        if let Some(rules) = content.strip_prefix("eslint-disable-line")
+            && comment_line == node_line
+            && eslint_directive_applies(rules)
+        {
+            return true;
+        }
+    }
+    block_disabled
+}
+
+fn is_eslint_block_directive(source_text: &str, comment: &Comment) -> bool {
+    let content = comment_content(source_text, comment);
+    content.starts_with("eslint-disable") || content.starts_with("eslint-enable")
+}
+
+fn comment_content<'a>(source_text: &'a str, comment: &Comment) -> &'a str {
+    let content_span = comment.content_span();
+    source_text
+        .get(
+            usize::try_from(content_span.start).unwrap_or(0)
+                ..usize::try_from(content_span.end).unwrap_or(0),
+        )
+        .unwrap_or("")
+        .trim()
+}
+
+fn eslint_directive_applies(rules: &str) -> bool {
+    let rules = rules.trim().trim_start_matches(|character: char| {
+        character == ':' || character == '-' || character.is_whitespace()
+    });
+    rules.is_empty()
+        || rules.split(',').any(|rule| {
+            let rule = rule.split_whitespace().next().unwrap_or("");
+            matches!(
+                rule,
+                "sort-exports"
+                    | "perfectionist/sort-exports"
+                    | "rule-to-test/sort-exports"
+                    | "@perfectionist/sort-exports"
+            )
+        })
+}
+
+fn line_number_at(source_text: &str, offset: u32) -> u32 {
+    let offset = usize::try_from(offset)
+        .unwrap_or(source_text.len())
+        .min(source_text.len());
+    source_text[..offset]
+        .bytes()
+        .filter(|byte| *byte == b'\n')
+        .count() as u32
+        + 1
+}
+
 fn compute_group(
     options: &RuleOptions,
     name: &str,
-    modifier: &str,
+    modifiers: &[&str],
     selector: &str,
 ) -> CompactString {
     let configured: SmallVec<[&str; 8]> = options.group_names().collect();
@@ -745,23 +1073,22 @@ fn compute_group(
         if custom
             .matches
             .iter()
-            .any(|matcher| custom_match(matcher, name, modifier, selector))
+            .any(|matcher| custom_match(matcher, name, modifiers, selector))
         {
             return custom.group_name.clone();
         }
     }
-    for predefined in [format!("{modifier}-{selector}"), selector.to_owned()] {
-        if configured
-            .iter()
-            .any(|configured_name| *configured_name == predefined)
-        {
+    let mut predefined = predefined_groups(modifiers, selector);
+    predefined.push(selector.to_owned());
+    for predefined in predefined {
+        if configured.contains(&predefined.as_str()) {
             return CompactString::from(predefined);
         }
     }
     CompactString::new("unknown")
 }
 
-fn custom_match(matcher: &CustomMatch, name: &str, modifier: &str, selector: &str) -> bool {
+fn custom_match(matcher: &CustomMatch, name: &str, modifiers: &[&str], selector: &str) -> bool {
     if matcher
         .selector
         .as_ref()
@@ -773,7 +1100,7 @@ fn custom_match(matcher: &CustomMatch, name: &str, modifier: &str, selector: &st
         && !matcher
             .modifiers
             .iter()
-            .all(|candidate| candidate.as_str() == modifier)
+            .all(|candidate| modifiers.contains(&candidate.as_str()))
     {
         return false;
     }
@@ -783,11 +1110,65 @@ fn custom_match(matcher: &CustomMatch, name: &str, modifier: &str, selector: &st
         .is_none_or(|pattern| matches_regex(name, pattern))
 }
 
+fn predefined_groups(modifiers: &[&str], selector: &str) -> Vec<String> {
+    let mut groups = Vec::new();
+    for size in (1..=modifiers.len()).rev() {
+        let mut combination = Vec::with_capacity(size);
+        collect_modifier_combinations(modifiers, selector, size, 0, &mut combination, &mut groups);
+    }
+    groups
+}
+
+fn collect_modifier_combinations(
+    modifiers: &[&str],
+    selector: &str,
+    size: usize,
+    start: usize,
+    combination: &mut Vec<usize>,
+    groups: &mut Vec<String>,
+) {
+    if combination.len() == size {
+        let mut permutation = combination.clone();
+        collect_modifier_permutations(modifiers, selector, &mut permutation, 0, groups);
+        return;
+    }
+    for index in start..modifiers.len() {
+        combination.push(index);
+        collect_modifier_combinations(modifiers, selector, size, index + 1, combination, groups);
+        combination.pop();
+    }
+}
+
+fn collect_modifier_permutations(
+    modifiers: &[&str],
+    selector: &str,
+    permutation: &mut [usize],
+    first: usize,
+    groups: &mut Vec<String>,
+) {
+    if first == permutation.len() {
+        let mut group = permutation
+            .iter()
+            .map(|index| modifiers[*index])
+            .collect::<Vec<_>>()
+            .join("-");
+        group.push('-');
+        group.push_str(selector);
+        groups.push(group);
+        return;
+    }
+    for index in first..permutation.len() {
+        permutation.swap(first, index);
+        collect_modifier_permutations(modifiers, selector, permutation, first + 1, groups);
+        permutation.swap(first, index);
+    }
+}
+
 fn assign_partitions(
     source_text: &str,
     comments: &[Comment],
     options: &RuleOptions,
-    specifiers: &mut [NamedSpecifier<'_>],
+    specifiers: &mut [SortableNode<'_>],
 ) {
     let mut partition_id = 1;
     for index in 0..specifiers.len() {
@@ -811,7 +1192,11 @@ fn assign_partitions(
     }
 }
 
-fn sort_specifiers(options: &RuleOptions, specifiers: &[NamedSpecifier<'_>]) -> Vec<usize> {
+fn sort_specifiers(
+    options: &RuleOptions,
+    specifiers: &[SortableNode<'_>],
+    keep_disabled_in_place: bool,
+) -> Vec<usize> {
     let mut sorted = Vec::with_capacity(specifiers.len());
     let mut start = 0;
     while start < specifiers.len() {
@@ -820,7 +1205,16 @@ fn sort_specifiers(options: &RuleOptions, specifiers: &[NamedSpecifier<'_>]) -> 
         while end < specifiers.len() && specifiers[end].partition_id == partition {
             end += 1;
         }
-        let mut partition_indices: Vec<usize> = (start..end).collect();
+        let disabled_indices: Vec<usize> = if keep_disabled_in_place {
+            (start..end)
+                .filter(|index| specifiers[*index].is_disabled)
+                .collect()
+        } else {
+            Vec::new()
+        };
+        let mut partition_indices: Vec<usize> = (start..end)
+            .filter(|index| !keep_disabled_in_place || !specifiers[*index].is_disabled)
+            .collect();
         partition_indices.sort_by(|&left, &right| {
             specifiers[left]
                 .group_index
@@ -828,6 +1222,9 @@ fn sort_specifiers(options: &RuleOptions, specifiers: &[NamedSpecifier<'_>]) -> 
                 .then_with(|| compare_in_group(options, &specifiers[left], &specifiers[right]))
                 .then_with(|| left.cmp(&right))
         });
+        for disabled_index in disabled_indices {
+            partition_indices.insert(disabled_index - start, disabled_index);
+        }
         sorted.extend(partition_indices);
         start = end;
     }
@@ -836,8 +1233,8 @@ fn sort_specifiers(options: &RuleOptions, specifiers: &[NamedSpecifier<'_>]) -> 
 
 fn compare_in_group(
     options: &RuleOptions,
-    left: &NamedSpecifier<'_>,
-    right: &NamedSpecifier<'_>,
+    left: &SortableNode<'_>,
+    right: &SortableNode<'_>,
 ) -> Ordering {
     let (sort, raw) = options.sort_options_for_group(left.group_index);
     let object = raw.as_object();
@@ -877,8 +1274,8 @@ fn compare_in_group(
 
 fn fallback_compare(
     options: &RuleOptions,
-    left: &NamedSpecifier<'_>,
-    right: &NamedSpecifier<'_>,
+    left: &SortableNode<'_>,
+    right: &SortableNode<'_>,
     raw: Option<&Map<String, Value>>,
 ) -> Ordering {
     let Some(fallback) = raw
@@ -908,8 +1305,8 @@ fn fallback_compare(
 
 fn subgroup_compare(
     options: &RuleOptions,
-    left: &NamedSpecifier<'_>,
-    right: &NamedSpecifier<'_>,
+    left: &SortableNode<'_>,
+    right: &SortableNode<'_>,
     raw: Option<&Map<String, Value>>,
 ) -> Ordering {
     let Some(GroupEntry::Group { names, .. }) = options.groups.get(left.group_index) else {
@@ -935,8 +1332,8 @@ fn subgroup_compare(
 
 fn newlines_between(
     options: &RuleOptions,
-    left: &NamedSpecifier<'_>,
-    right: &NamedSpecifier<'_>,
+    left: &SortableNode<'_>,
+    right: &SortableNode<'_>,
 ) -> Newlines {
     if left.group_index == right.group_index {
         if let Some(custom) = options
@@ -1002,10 +1399,204 @@ fn newlines_between(
     options.newlines_between
 }
 
+fn missing_comment_above(
+    source_text: &str,
+    comments: &[Comment],
+    options: &RuleOptions,
+    left_group_index: Option<usize>,
+    right: &SortableNode<'_>,
+) -> Option<CompactString> {
+    if left_group_index.is_some_and(|left| left >= right.group_index) {
+        return None;
+    }
+    let Some(GroupEntry::Group {
+        comment_above: Some(expected),
+        ..
+    }) = options.groups.get(right.group_index)
+    else {
+        return None;
+    };
+    let expected_lowercase = expected.trim().to_lowercase();
+    let exists = comments.iter().any(|comment| {
+        comment.attached_to == right.span.start
+            && comment.span.end <= right.span.start
+            && comment_content(source_text, comment)
+                .to_lowercase()
+                .contains(&expected_lowercase)
+    });
+    (!exists).then(|| expected.clone())
+}
+
+struct CommentEdit {
+    start: u32,
+    end: u32,
+    replacement: CompactString,
+}
+
+fn build_comment_fix(
+    source_text: &str,
+    comments: &[Comment],
+    options: &RuleOptions,
+    nodes: &[SortableNode<'_>],
+    sorted_indices: &[usize],
+) -> Option<RuleDiagnosticFix> {
+    let configured_comments: SmallVec<[&str; 8]> = options
+        .groups
+        .iter()
+        .filter_map(|entry| match entry {
+            GroupEntry::Group {
+                comment_above: Some(comment),
+                ..
+            } => Some(comment.as_str()),
+            _ => None,
+        })
+        .collect();
+    let mut edits: Vec<CommentEdit> = Vec::new();
+
+    for position in 0..sorted_indices.len() {
+        let node = &nodes[*sorted_indices.get(position)?];
+        let left_group_index = position
+            .checked_sub(1)
+            .and_then(|left| sorted_indices.get(left))
+            .map(|index| nodes[*index].group_index);
+        let expected = if left_group_index.is_some_and(|left| left >= node.group_index) {
+            None
+        } else {
+            options
+                .groups
+                .get(node.group_index)
+                .and_then(|entry| match entry {
+                    GroupEntry::Group { comment_above, .. } => comment_above.as_ref(),
+                    GroupEntry::Newlines(_) => None,
+                })
+        };
+        let mut attached: SmallVec<[&Comment; 8]> = comments
+            .iter()
+            .filter(|comment| {
+                comment.attached_to == node.span.start && comment.span.end <= node.span.start
+            })
+            .collect();
+        attached.sort_by_key(|comment| comment.span.start);
+        let mut leading: SmallVec<[&Comment; 8]> = SmallVec::new();
+        let mut cursor = node.span.start;
+        for comment in attached.into_iter().rev() {
+            if empty_lines_between(source_text, comment.span.end, cursor) > 0 {
+                break;
+            }
+            leading.push(comment);
+            cursor = comment.span.start;
+        }
+        leading.reverse();
+        let expected_exists = expected.is_some_and(|expected| {
+            let expected = expected.trim().to_lowercase();
+            leading.iter().any(|comment| {
+                comment_content(source_text, comment)
+                    .to_lowercase()
+                    .contains(&expected)
+            })
+        });
+        let mismatched_auto: SmallVec<[&Comment; 4]> = leading
+            .iter()
+            .copied()
+            .filter(|comment| {
+                let content = comment_content(source_text, comment);
+                comment.kind == CommentKind::Line
+                    && configured_comments.contains(&content.trim_start_matches('/').trim())
+                    && expected.is_none_or(|expected| content.trim() != expected.as_str())
+            })
+            .collect();
+
+        if let Some(expected) = expected.filter(|_| !expected_exists) {
+            let insertion = leading
+                .first()
+                .map_or(node.span.start, |comment| comment.span.start);
+            let replacement_comment = if left_group_index.is_none() {
+                mismatched_auto.first().copied()
+            } else {
+                mismatched_auto
+                    .first()
+                    .copied()
+                    .filter(|comment| comment.span.start == insertion)
+            };
+            if let Some(comment) = replacement_comment {
+                edits.push(CommentEdit {
+                    start: comment.span.start,
+                    end: next_comment_or_node_start(&leading, comment, node.span.start),
+                    replacement: CompactString::from(format!("// {expected}\n")),
+                });
+                for comment in mismatched_auto
+                    .iter()
+                    .copied()
+                    .filter(|candidate| candidate.span.start != comment.span.start)
+                {
+                    edits.push(CommentEdit {
+                        start: comment.span.start,
+                        end: next_comment_or_node_start(&leading, comment, node.span.start),
+                        replacement: CompactString::new(""),
+                    });
+                }
+            } else {
+                edits.push(CommentEdit {
+                    start: insertion,
+                    end: insertion,
+                    replacement: CompactString::from(format!("// {expected}\n")),
+                });
+                for comment in mismatched_auto {
+                    edits.push(CommentEdit {
+                        start: comment.span.start,
+                        end: next_comment_or_node_start(&leading, comment, node.span.start),
+                        replacement: CompactString::new(""),
+                    });
+                }
+            }
+        } else {
+            for comment in mismatched_auto {
+                edits.push(CommentEdit {
+                    start: comment.span.start,
+                    end: next_comment_or_node_start(&leading, comment, node.span.start),
+                    replacement: CompactString::new(""),
+                });
+            }
+        }
+    }
+    if edits.is_empty() {
+        return None;
+    }
+    edits.sort_by_key(|edit| (edit.start, edit.end));
+    let start = edits.first()?.start;
+    let end = edits.iter().map(|edit| edit.end).max()?;
+    let mut replacement = CompactString::new("");
+    let mut cursor = start;
+    for edit in edits {
+        if edit.start < cursor {
+            continue;
+        }
+        replacement.push_str(
+            source_text.get(usize::try_from(cursor).ok()?..usize::try_from(edit.start).ok()?)?,
+        );
+        replacement.push_str(edit.replacement.as_str());
+        cursor = edit.end;
+    }
+    replacement
+        .push_str(source_text.get(usize::try_from(cursor).ok()?..usize::try_from(end).ok()?)?);
+    Some(RuleDiagnosticFix {
+        start: LineIndex::utf16_offset(source_text, start),
+        end: LineIndex::utf16_offset(source_text, end),
+        replacement,
+    })
+}
+
+fn next_comment_or_node_start(leading: &[&Comment], comment: &Comment, node_start: u32) -> u32 {
+    leading
+        .iter()
+        .find(|candidate| candidate.span.start > comment.span.start)
+        .map_or(node_start, |candidate| candidate.span.start)
+}
+
 fn build_fix(
     source_text: &str,
     options: &RuleOptions,
-    specifiers: &[NamedSpecifier<'_>],
+    specifiers: &[SortableNode<'_>],
     sorted_indices: &[usize],
 ) -> Option<RuleDiagnosticFix> {
     let mut replacement = CompactString::new("");
@@ -1015,7 +1606,28 @@ fn build_fix(
     let mut changed_end: Option<u32> = None;
     for position in 0..specifiers.len() {
         desired_source_starts.push(replacement.len());
-        replacement.push_str(specifiers[*sorted_indices.get(position)?].source);
+        let sorted = &specifiers[*sorted_indices.get(position)?];
+        replacement.push_str(sorted.source);
+        if position + 1 < specifiers.len()
+            && sorted.add_safety_semicolon_when_inline
+            && is_same_line(
+                source_text,
+                specifiers[position].span.end,
+                specifiers[position + 1].span.start,
+            )
+            && !node_ends_with_safe_character(source_text, sorted)
+        {
+            let between = source_text.get(
+                usize::try_from(specifiers[position].span.end).ok()?
+                    ..usize::try_from(specifiers[position + 1].span.start).ok()?,
+            )?;
+            if !between.trim_start().starts_with([';', ',']) {
+                let insertion = replacement
+                    .len()
+                    .checked_sub(usize::try_from(sorted.source_end - sorted.span.end).ok()?)?;
+                replacement.insert(insertion, ';');
+            }
+        }
         desired_source_ends.push(replacement.len());
         if sorted_indices[position] != position {
             changed_start = Some(
@@ -1035,8 +1647,17 @@ fn build_fix(
         let separator = source_text.get(separator_start..separator_end)?;
         let sorted_left = &specifiers[*sorted_indices.get(position)?];
         let sorted_right = &specifiers[*sorted_indices.get(position + 1)?];
-        let desired_separator = if sorted_left.partition_id == sorted_right.partition_id
-            && sorted_left.group_index <= sorted_right.group_index
+        let checks_original_groups = specifiers
+            .iter()
+            .any(|specifier| specifier.add_safety_semicolon_when_inline);
+        let groups_allow_spacing = if checks_original_groups {
+            specifiers[position].partition_id == specifiers[position + 1].partition_id
+                && specifiers[position].group_index <= specifiers[position + 1].group_index
+        } else {
+            sorted_left.partition_id == sorted_right.partition_id
+                && sorted_left.group_index <= sorted_right.group_index
+        };
+        let desired_separator = if groups_allow_spacing
             && let Newlines::Count(expected) = newlines_between(options, sorted_left, sorted_right)
         {
             normalize_separator(
@@ -1090,9 +1711,21 @@ fn build_fix(
     })
 }
 
+fn node_ends_with_safe_character(source_text: &str, node: &SortableNode<'_>) -> bool {
+    let Ok(start) = usize::try_from(node.span.start) else {
+        return false;
+    };
+    let Ok(end) = usize::try_from(node.span.end) else {
+        return false;
+    };
+    source_text
+        .get(start..end)
+        .is_some_and(|source| source.trim_end().ends_with([';', ',']))
+}
+
 fn desired_offset_for_boundary(
     boundary: u32,
-    specifiers: &[NamedSpecifier<'_>],
+    specifiers: &[SortableNode<'_>],
     desired_source_starts: &[usize],
     desired_source_ends: &[usize],
 ) -> Option<usize> {

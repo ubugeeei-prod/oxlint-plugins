@@ -15,7 +15,7 @@ const PLUGIN_NAME = 'perfectionist';
 const DOCS_BASE = 'https://perfectionist.dev/rules';
 const diagnosticsCache = new WeakMap();
 const implementedRuleNames = Object.freeze(implementedPerfectionistRuleNames());
-const configuredRuleNames = new Set(['sort-named-exports', 'sort-named-imports']);
+const configuredRuleNames = new Set(['sort-exports', 'sort-named-exports', 'sort-named-imports']);
 const recommendedRuleNames = Object.freeze(
   implementedRuleNames.filter((ruleName) => ruleName !== 'sort-arrays'),
 );
@@ -99,14 +99,25 @@ function createPerfectionistRule(ruleName) {
               missedSpacingBetweenNamedImports:
                 'Missed spacing between "{{left}}" and "{{right}}".',
             }
-          : {
-              unexpectedNamedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
-              unexpectedNamedExportsGroupOrder:
-                'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
-              extraSpacingBetweenNamedExports: 'Extra spacing between "{{left}}" and "{{right}}".',
-              missedSpacingBetweenNamedExports:
-                'Missed spacing between "{{left}}" and "{{right}}".',
-            }
+          : ruleName === 'sort-named-exports'
+            ? {
+                unexpectedNamedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+                unexpectedNamedExportsGroupOrder:
+                  'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
+                extraSpacingBetweenNamedExports:
+                  'Extra spacing between "{{left}}" and "{{right}}".',
+                missedSpacingBetweenNamedExports:
+                  'Missed spacing between "{{left}}" and "{{right}}".',
+              }
+            : {
+                unexpectedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+                unexpectedExportsGroupOrder:
+                  'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
+                extraSpacingBetweenExports: 'Extra spacing between "{{left}}" and "{{right}}".',
+                missedSpacingBetweenExports: 'Missed spacing between "{{left}}" and "{{right}}".',
+                missedCommentAboveExport:
+                  'Missed comment "{{missedCommentAbove}}" above "{{right}}".',
+              }
         : {
             unexpected: 'Expected sorted order.',
           },
@@ -135,7 +146,17 @@ function configuredDiagnosticsForRule(context, ruleName) {
   const sourceCode = context.sourceCode || {};
   const sourceText = sourceTextForContext(context);
   const filename = typeof context.filename === 'string' ? context.filename : 'file.tsx';
-  const options = Array.isArray(context.options) ? context.options : [];
+  let options = Array.isArray(context.options) ? context.options : [];
+  if (ruleName === 'sort-exports') {
+    const settings = context.settings?.perfectionist;
+    if (settings && typeof settings === 'object' && !Array.isArray(settings)) {
+      const configured =
+        options[0] && typeof options[0] === 'object' && !Array.isArray(options[0])
+          ? options[0]
+          : {};
+      options = [{ ...settings, ...configured }];
+    }
+  }
   const key = JSON.stringify({ filename, options, ruleName, sourceText });
   let cache = diagnosticsCache.get(sourceCode);
 
@@ -204,6 +225,7 @@ function schemaForRule(ruleName) {
     return [];
   }
   const selector = ruleName === 'sort-named-imports' ? 'import' : 'export';
+  const sortsExportDeclarations = ruleName === 'sort-exports';
   const sortType = {
     type: 'string',
     enum: ['subgroup-order', 'alphabetical', 'natural', 'line-length', 'custom', 'unsorted'],
@@ -265,7 +287,12 @@ function schemaForRule(ruleName) {
     elementNamePattern: regex,
     modifiers: {
       type: 'array',
-      items: { type: 'string', enum: ['value', 'type'] },
+      items: {
+        type: 'string',
+        enum: sortsExportDeclarations
+          ? ['value', 'type', 'named', 'wildcard', 'singleline', 'multiline']
+          : ['value', 'type'],
+      },
     },
     selector: { type: 'string', enum: [selector] },
   };
@@ -384,22 +411,26 @@ function schemaForRule(ruleName) {
         },
         alphabet: { type: 'string' },
         fallbackSort,
-        ignoreAlias: { type: 'boolean' },
+        ...(sortsExportDeclarations ? {} : { ignoreAlias: { type: 'boolean' } }),
         groups,
         customGroups,
         partitionByComment,
         partitionByNewLine: { type: 'boolean' },
         newlinesBetween: newlines,
         newlinesInside,
-        useConfigurationIf: {
-          type: 'object',
-          properties: {
-            allNamesMatchPattern: regex,
-            matchesAstSelector: { type: 'string' },
-          },
-          minProperties: 1,
-          additionalProperties: false,
-        },
+        ...(sortsExportDeclarations
+          ? {}
+          : {
+              useConfigurationIf: {
+                type: 'object',
+                properties: {
+                  allNamesMatchPattern: regex,
+                  matchesAstSelector: { type: 'string' },
+                },
+                minProperties: 1,
+                additionalProperties: false,
+              },
+            }),
       },
       additionalProperties: false,
     },

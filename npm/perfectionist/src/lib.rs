@@ -38,10 +38,11 @@ mod napi_abi {
     #[napi(object)]
     #[derive(Clone, Debug)]
     pub struct DiagnosticData {
-        pub left: String,
+        pub left: Option<String>,
         pub right: String,
         pub left_group: Option<String>,
         pub right_group: Option<String>,
+        pub missed_comment_above: Option<String>,
     }
 
     #[napi(object)]
@@ -99,10 +100,18 @@ mod napi_abi {
                         end_column: diagnostic.loc.end_column,
                     },
                     data: Some(DiagnosticData {
-                        left: diagnostic.data.left.into_string(),
+                        left: diagnostic
+                            .data
+                            .missed_comment_above
+                            .is_none()
+                            .then(|| diagnostic.data.left.into_string()),
                         right: diagnostic.data.right.into_string(),
                         left_group: diagnostic.data.left_group.map(|value| value.into_string()),
                         right_group: diagnostic.data.right_group.map(|value| value.into_string()),
+                        missed_comment_above: diagnostic
+                            .data
+                            .missed_comment_above
+                            .map(|value| value.into_string()),
                     }),
                     fix: Some(DiagnosticFix {
                         start: diagnostic.fix.start,

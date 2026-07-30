@@ -97,6 +97,12 @@ pub fn scan_perfectionist_rule(
             &parser_return.program.comments,
             options,
         ),
+        "sort-exports" => sort_named_specifiers::check_sort_exports(
+            source_text,
+            &parser_return.program.body,
+            &parser_return.program.comments,
+            options,
+        ),
         _ => SmallVec::new(),
     }
 }

@@ -120,10 +120,38 @@ describe('perfectionist plugin adapter', () => {
 
     expect(reports).toHaveLength(1);
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
-      ['sort-named-exports', 'sort-named-imports'].includes(ruleName)
+      ['sort-exports', 'sort-named-exports', 'sort-named-imports'].includes(ruleName)
         ? 'Expected "{{right}}" to come before "{{left}}".'
         : 'Expected sorted order.',
     );
+  });
+
+  it('declares the complete sort-exports schema without named-specifier-only options', () => {
+    const schema = plugin.rules['sort-exports'].meta.schema;
+
+    expect(schema).toHaveLength(1);
+    expect(Object.keys(schema[0].properties).sort()).toEqual([
+      'alphabet',
+      'customGroups',
+      'fallbackSort',
+      'groups',
+      'ignoreCase',
+      'locales',
+      'newlinesBetween',
+      'newlinesInside',
+      'order',
+      'partitionByComment',
+      'partitionByNewLine',
+      'specialCharacters',
+      'type',
+    ]);
+    expect(
+      schema[0].properties.customGroups.items.oneOf[0].properties.modifiers.items.enum,
+    ).toEqual(['value', 'type', 'named', 'wildcard', 'singleline', 'multiline']);
+    expect(schema[0].properties.customGroups.items.oneOf[0].properties.selector.enum).toEqual([
+      'export',
+    ]);
+    expect(schema[0].additionalProperties).toBe(false);
   });
 
   it.each([
@@ -183,7 +211,7 @@ describe('perfectionist plugin adapter', () => {
     expect(plugin.rules['sort-imports'].meta.schema).toEqual([]);
   });
 
-  it('threads recommended comparator options into both named-specifier rules', () => {
+  it('threads recommended comparator options into every configured sorting rule', () => {
     const rules = plugin.configs['recommended-natural'].rules;
 
     expect(rules['perfectionist/sort-named-imports']).toEqual([
@@ -191,6 +219,10 @@ describe('perfectionist plugin adapter', () => {
       { type: 'natural', order: 'asc' },
     ]);
     expect(rules['perfectionist/sort-named-exports']).toEqual([
+      'error',
+      { type: 'natural', order: 'asc' },
+    ]);
+    expect(rules['perfectionist/sort-exports']).toEqual([
       'error',
       { type: 'natural', order: 'asc' },
     ]);
@@ -367,6 +399,78 @@ describe('perfectionist plugin adapter', () => {
       expect(fixed.stderr).toBe('');
       expect(readFileSync(fixturePath, 'utf8')).toBe(
         'export { type Type, \n\nvalue } from "pkg";\n',
+      );
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('loads export-declaration groups, comments, and fixes through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-perfectionist-exports-'));
+    try {
+      const fixturePath = join(tempDir, 'fixture.ts');
+      writeFileSync(
+        fixturePath,
+        `export type { Type } from "./types";\nexport { value } from "./value";\n`,
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'perfectionist',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'perfectionist/sort-exports': [
+              'error',
+              {
+                groups: [
+                  { group: 'value-export', commentAbove: 'Values' },
+                  { group: 'type-export', commentAbove: 'Types' },
+                ],
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Missed comment "Types" above "./types".',
+        'Expected "./value" (value-export) to come before "./types" (type-export).',
+      ]);
+
+      let fixed;
+      for (let pass = 0; pass < 4; pass += 1) {
+        fixed = spawnSync(
+          findOxlintCli(),
+          ['--config', 'oxlint.config.jsonc', '--fix', 'fixture.ts'],
+          {
+            cwd: tempDir,
+            encoding: 'utf8',
+          },
+        );
+        if (fixed.status === 0) {
+          break;
+        }
+      }
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(fixturePath, 'utf8')).toBe(
+        `// Values\nexport { value } from "./value";\n// Types\nexport type { Type } from "./types";\n`,
       );
     } finally {
       rmSync(tempDir, { recursive: true, force: true });

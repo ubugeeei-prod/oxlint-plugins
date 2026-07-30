@@ -65,6 +65,13 @@ fn configured_exports(source: &str, options: serde_json::Value) -> SmallVec<[Rul
     scan_perfectionist_rule(source, "fixture.ts", "sort-named-exports", &options)
 }
 
+fn configured_export_declarations(
+    source: &str,
+    options: serde_json::Value,
+) -> SmallVec<[RuleDiagnostic; 8]> {
+    scan_perfectionist_rule(source, "fixture.ts", "sort-exports", &options)
+}
+
 #[test]
 fn sorts_predefined_type_and_value_groups() {
     let diagnostics = configured(
@@ -411,5 +418,192 @@ fn named_export_rule_selection_and_malformed_sources_fail_closed() {
             &json!([])
         )
         .is_empty()
+    );
+}
+
+#[test]
+fn sorts_export_declarations_and_preserves_trailing_comments() {
+    let source = "export * from 'z'; // z docs\nexport { a } from 'a'; // a docs\n";
+    let diagnostics = configured_export_declarations(source, json!([]));
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unexpectedExportsOrder");
+    assert_eq!(diagnostics[0].data.left, "z");
+    assert_eq!(diagnostics[0].data.right, "a");
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "export { a } from 'a'; // a docs\nexport * from 'z'; // z docs"
+    );
+}
+
+#[test]
+fn sorts_export_declarations_by_all_predefined_modifiers() {
+    let diagnostics = configured_export_declarations(
+        "export type {\n  A,\n} from 'types';\nexport * from 'runtime';\n",
+        json!([{
+            "groups": [
+                "value-wildcard-singleline-export",
+                "type-named-multiline-export"
+            ]
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unexpectedExportsGroupOrder");
+    assert_eq!(
+        diagnostics[0].data.left_group.as_deref(),
+        Some("type-named-multiline-export")
+    );
+    assert_eq!(
+        diagnostics[0].data.right_group.as_deref(),
+        Some("value-wildcard-singleline-export")
+    );
+}
+
+#[test]
+fn matches_export_custom_groups_by_multiple_modifiers_and_any_of() {
+    let diagnostics = configured_export_declarations(
+        "export { a } from 'other';\nexport * from 'api-runtime';\n",
+        json!([{
+            "customGroups": [{
+                "groupName": "api-wildcard",
+                "anyOf": [
+                    {
+                        "elementNamePattern": "^api",
+                        "modifiers": ["value", "wildcard", "singleline"],
+                        "selector": "export"
+                    },
+                    { "elementNamePattern": "^never" }
+                ]
+            }],
+            "groups": ["api-wildcard", "unknown"]
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unexpectedExportsGroupOrder");
+    assert_eq!(
+        diagnostics[0].data.right_group.as_deref(),
+        Some("api-wildcard")
+    );
+}
+
+#[test]
+fn keeps_disabled_export_declarations_in_place() {
+    let diagnostics = configured_export_declarations(
+        "export { c } from './c'\nexport { b } from './b'\n// eslint-disable-next-line\nexport { a } from './a'",
+        json!([{}]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].data.left, "./c");
+    assert_eq!(diagnostics[0].data.right, "./b");
+    assert_eq!(diagnostics[0].fix.start, 0);
+    assert_eq!(diagnostics[0].fix.end, 47);
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "export { b } from './b'\nexport { c } from './c'"
+    );
+}
+
+#[test]
+fn reports_and_fixes_missing_export_group_comments() {
+    let diagnostics = configured_export_declarations(
+        "export type { a } from './a';\n\nexport { b } from './b';",
+        json!([{
+            "groups": [
+                { "commentAbove": "Types", "group": "type-export" },
+                { "commentAbove": "Values", "group": "unknown" }
+            ]
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 2);
+    assert!(
+        diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.message_id == "missedCommentAboveExport")
+    );
+    assert_eq!(
+        diagnostics[0].data.missed_comment_above.as_deref(),
+        Some("Types")
+    );
+    assert_eq!(
+        diagnostics[1].data.missed_comment_above.as_deref(),
+        Some("Values")
+    );
+    assert_eq!(diagnostics[0].fix, diagnostics[1].fix);
+    assert_eq!(diagnostics[0].fix.start, 0);
+    assert_eq!(diagnostics[0].fix.end, 31);
+}
+
+#[test]
+fn keeps_utf16_offsets_for_unicode_export_declaration_fixes() {
+    let source = "'😀';\nexport { 世界 } from '世界';\nexport { api } from 'api';";
+    let diagnostics = configured_export_declarations(
+        source,
+        json!([{
+            "customGroups": [{ "groupName": "api", "elementNamePattern": "^api$" }],
+            "groups": ["api", "unknown"],
+            "locales": "zh-CN"
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].fix.start, 6);
+    assert_eq!(diagnostics[0].fix.end, 57);
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "export { api } from 'api';\nexport { 世界 } from '世界';"
+    );
+}
+
+#[test]
+fn export_declaration_rule_ignores_local_exports_and_other_rules() {
+    assert!(
+        configured_export_declarations(
+            "export const z = 1;\nexport function a() {}\nexport { z, a };",
+            json!([])
+        )
+        .is_empty()
+    );
+    assert!(
+        scan_perfectionist_rule(
+            "export { z } from 'z';\nexport { a } from 'a';",
+            "fixture.ts",
+            "sort-named-exports",
+            &json!([])
+        )
+        .is_empty()
+    );
+    assert!(
+        scan_perfectionist_rule(
+            "export { z } from 'z';\nexport { a } from 'a';",
+            "fixture.ts",
+            "sort-named-imports",
+            &json!([])
+        )
+        .is_empty()
+    );
+}
+
+#[test]
+fn export_declaration_rule_fails_closed_for_malformed_sources_and_options() {
+    assert!(configured_export_declarations("export { a } from", json!([])).is_empty());
+    assert!(
+        configured_export_declarations(
+            "export { b } from 'b';\nexport { a } from 'a';",
+            json!("not-an-option-object")
+        )
+        .len()
+            == 1
+    );
+    assert!(
+        configured_export_declarations(
+            "export { b } from 'b';\nexport { a } from 'a';",
+            json!([{ "type": "not-a-sort", "groups": [null, 1, false] }])
+        )
+        .len()
+            == 1
     );
 }

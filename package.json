@@ -62,6 +62,7 @@
     "port:tests:postgresql-parser": "node tools/tasks/sync-postgresql-parser-tests.ts",
     "port:tests:perfectionist:sort-named-imports": "node tools/tasks/sync-perfectionist-sort-named-imports-options-tests.ts",
     "port:tests:perfectionist:sort-named-exports": "node tools/tasks/sync-perfectionist-sort-named-exports-options-tests.ts",
+    "port:tests:perfectionist:sort-exports": "node tools/tasks/sync-perfectionist-sort-exports-options-tests.ts",
     "port:tests:playwright:restricted": "node tools/tasks/sync-playwright-restricted-tests.ts",
     "port:tests:playwright:patterns": "node tools/tasks/sync-playwright-pattern-tests.ts",
     "port:tests:regexp": "node tools/tasks/sync-regexp-tests.ts",
