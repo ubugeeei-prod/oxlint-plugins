@@ -61,7 +61,12 @@ fn scans_representative_rules() {
         .collect();
     let mut expected: SmallVec<[&str; 64]> = RULE_NAMES
         .into_iter()
-        .filter(|rule_name| !matches!(*rule_name, "component-selector" | "directive-selector"))
+        .filter(|rule_name| {
+            !matches!(
+                *rule_name,
+                "component-selector" | "directive-selector" | "no-input-prefix" | "pipe-prefix"
+            )
+        })
         .collect();
     actual.sort_unstable();
     expected.sort_unstable();

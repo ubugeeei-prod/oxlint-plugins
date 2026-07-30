@@ -100,7 +100,15 @@ describe('angular-eslint native API', () => {
 
     expect(diagnostics.map((diagnostic) => diagnostic.ruleName).sort()).toEqual(
       expectedRuleNames
-        .filter((ruleName) => !['component-selector', 'directive-selector'].includes(ruleName))
+        .filter(
+          (ruleName) =>
+            ![
+              'component-selector',
+              'directive-selector',
+              'no-input-prefix',
+              'pipe-prefix',
+            ].includes(ruleName),
+        )
         .sort(),
     );
   });
@@ -238,6 +246,74 @@ describe('angular-eslint native API', () => {
     ],
     ['directive-class-suffix', '@Directive() class Test {}', [{ suffixes: [] }], []],
   ])('honors %s suffix options through the native API', (ruleName, source, options, expected) => {
+    expect(
+      scanAngularEslint(source, 'fixture.ts', {
+        ruleNames: [ruleName],
+        options,
+      }),
+    ).toMatchObject(expected);
+  });
+
+  it.each([
+    [
+      'no-input-prefix',
+      '@Component() class Test { @Input() on: string; }',
+      [{ prefixes: ['on'] }],
+      [{ messageId: 'noInputPrefix', data: [{ key: 'prefixes', value: '"on"' }] }],
+    ],
+    [
+      'no-input-prefix',
+      '@Directive() class Test { @Input({ alias: "onPrefix" }) value: string; }',
+      [{ prefixes: ['on'] }],
+      [{ messageId: 'noInputPrefix', data: [{ key: 'prefixes', value: '"on"' }] }],
+    ],
+    [
+      'no-input-prefix',
+      '@Component({ inputs: ["onTest: value"] }) class Test {}',
+      [{ prefixes: ['on'] }],
+      [{ messageId: 'noInputPrefix', data: [{ key: 'prefixes', value: '"on"' }] }],
+    ],
+    [
+      'no-input-prefix',
+      '@Injectable() class Test { @Input("on") isPrefix: string; }',
+      [{ prefixes: ['on', 'is', 'should'] }],
+      [
+        {
+          messageId: 'noInputPrefix',
+          data: [{ key: 'prefixes', value: '"on", "is" or "should"' }],
+        },
+        {
+          messageId: 'noInputPrefix',
+          data: [{ key: 'prefixes', value: '"on", "is" or "should"' }],
+        },
+      ],
+    ],
+    ['no-input-prefix', '@Component() class Test { @Input() ontype: string; }', [], []],
+    [
+      'pipe-prefix',
+      '@Pipe({ name: "foo-bar" }) class Test {}',
+      [{ prefixes: ['ng'] }],
+      [{ messageId: 'pipePrefix', data: [{ key: 'prefixes', value: '"ng"' }] }],
+    ],
+    [
+      'pipe-prefix',
+      '@Pipe({ name: "ng" }) class Test {}',
+      [{ prefixes: ['ng'] }],
+      [
+        {
+          messageId: 'selectorAfterPrefixFailure',
+          data: [{ key: 'prefixes', value: '"ng"' }],
+        },
+      ],
+    ],
+    [
+      'pipe-prefix',
+      '@Pipe({ name: `ngBarFoo` }) class Test {}',
+      [{ prefixes: ['ng', 'sg', 'mg'] }],
+      [],
+    ],
+    ['pipe-prefix', '@Pipe({ name: "bad" }) class Test {}', [{ prefixes: [] }], []],
+  ])('honors %s prefix options through the native API', (ruleName, source, options, expected) => {
     expect(
       scanAngularEslint(source, 'fixture.ts', {
         ruleNames: [ruleName],

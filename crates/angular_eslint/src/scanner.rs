@@ -55,10 +55,6 @@ impl<'a> Scanner<'a> {
             "no-implicit-take-until-destroyed",
             r#"\btakeUntilDestroyed\s*\(\s*\)"#,
         );
-        self.check_regex(
-            "no-input-prefix",
-            r#"@Input\s*\([^)]*\)\s+(is|has|can)[A-Z]\w*"#,
-        );
         self.check_regex("no-input-rename", r#"@Input\s*\(\s*['"][^'"]+['"]"#);
         self.check_regex("no-inputs-metadata-property", r#"\binputs\s*:"#);
         self.check_regex(
@@ -75,7 +71,6 @@ impl<'a> Scanner<'a> {
         self.check_regex("no-pipe-impure", r#"@Pipe\s*\(\s*\{[^}]*pure\s*:\s*false"#);
         self.check_regex("no-queries-metadata-property", r#"\bqueries\s*:"#);
         self.check_regex("no-uncalled-signals", r#"\bthis\.\w+Signal\s*;"#);
-        self.check_regex("pipe-prefix", r#"@Pipe\s*\(\s*\{[^}]*name\s*:\s*['"]bad"#);
         self.check_regex(
             "prefer-host-metadata-property",
             r#"@(HostBinding|HostListener)\s*\("#,

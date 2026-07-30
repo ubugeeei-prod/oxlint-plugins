@@ -172,7 +172,9 @@ describe('angular-eslint plugin adapter', () => {
     expect(plugin.configs.all.plugins).toEqual(['@angular-eslint']);
   });
 
-  it.each(invalidCases)('reports %s through direct createOnce', (ruleName, code) => {
+  it.each(
+    invalidCases.filter(([ruleName]) => !['no-input-prefix', 'pipe-prefix'].includes(ruleName)),
+  )('reports %s through direct createOnce', (ruleName, code) => {
     const reports = runRule(ruleName, code);
 
     expect(reports).toHaveLength(1);
@@ -204,6 +206,67 @@ describe('angular-eslint plugin adapter', () => {
       ]);
       expect(Object.values(meta.messages)).toEqual([expect.stringContaining('{{suffixes}}')]);
     }
+  });
+
+  it('exposes complete prefix schemas and messages', () => {
+    for (const ruleName of ['no-input-prefix', 'pipe-prefix']) {
+      const { meta } = plugin.rules[ruleName];
+      expect(meta.schema).toHaveLength(1);
+      expect(meta.schema[0]).toMatchObject({
+        type: 'object',
+        properties: {
+          prefixes: {
+            type: 'array',
+            items: { type: 'string' },
+          },
+        },
+        additionalProperties: false,
+      });
+      expect(Object.values(meta.messages).join(' ')).toContain('{{prefixes}}');
+    }
+    expect(plugin.rules['pipe-prefix'].meta.schema[0].properties.prefixes.uniqueItems).toBe(true);
+    expect(plugin.rules['no-input-prefix'].meta.schema[0].properties.prefixes.uniqueItems).toBe(
+      undefined,
+    );
+  });
+
+  it.each([
+    [
+      'no-input-prefix',
+      '@Component() class Test { @Input() on: string; }',
+      [{ prefixes: ['on'] }],
+      [{ messageId: 'noInputPrefix', data: { prefixes: '"on"' } }],
+    ],
+    [
+      'no-input-prefix',
+      '@Injectable() class Test { @Input("on") isPrefix: string; }',
+      [{ prefixes: ['on', 'is', 'should'] }],
+      [
+        { messageId: 'noInputPrefix', data: { prefixes: '"on", "is" or "should"' } },
+        { messageId: 'noInputPrefix', data: { prefixes: '"on", "is" or "should"' } },
+      ],
+    ],
+    [
+      'no-input-prefix',
+      '@Component({ inputs: ["value: onAlias"] }) class Test {}',
+      [{ prefixes: ['on'] }],
+      [{ messageId: 'noInputPrefix', data: { prefixes: '"on"' } }],
+    ],
+    [
+      'pipe-prefix',
+      '@Pipe({ name: "foo" }) class Test {}',
+      [{ prefixes: ['ng', 'app'] }],
+      [{ messageId: 'pipePrefix', data: { prefixes: '"ng" or "app"' } }],
+    ],
+    [
+      'pipe-prefix',
+      '@Pipe({ name: "ng" }) class Test {}',
+      [{ prefixes: ['ng'] }],
+      [{ messageId: 'selectorAfterPrefixFailure', data: { prefixes: '"ng"' } }],
+    ],
+    ['pipe-prefix', '@Pipe({ name: "ngTitle" }) class Test {}', [{ prefixes: ['ng'] }], []],
+  ])('honors configured %s prefixes through createOnce', (ruleName, code, options, expected) => {
+    expect(runRule(ruleName, code, options)).toMatchObject(expected);
   });
 
   it.each([
@@ -363,6 +426,13 @@ describe('angular-eslint plugin adapter', () => {
     ).toEqual([]);
   });
 
+  it('does not run option-required prefix rules without options', () => {
+    expect(runRule('no-input-prefix', '@Component() class Test { @Input() on: string; }')).toEqual(
+      [],
+    );
+    expect(runRule('pipe-prefix', '@Pipe({ name: "bad" }) class Test {}')).toEqual([]);
+  });
+
   it('loads through oxlint jsPlugins', () => {
     const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-eslint-'));
     try {
@@ -447,6 +517,59 @@ describe('angular-eslint plugin adapter', () => {
           message: 'Component class names should end with one of these suffixes: "Page" or "View"',
         },
       ]);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('honors prefix options through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-prefix-'));
+    try {
+      writeFileSync(
+        join(tempDir, 'fixture.ts'),
+        '@Component() class Test { @Input("onAlias") isActive: boolean; }\n' +
+          '@Pipe({ name: "plain" }) class PlainPipe {}\n',
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: '@angular-eslint',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            '@angular-eslint/no-input-prefix': ['error', { prefixes: ['on', 'is'] }],
+            '@angular-eslint/pipe-prefix': ['error', { prefixes: ['app'] }],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toHaveLength(3);
+      expect(payload.diagnostics.map(({ code }) => code).sort()).toEqual([
+        '@angular-eslint(no-input-prefix)',
+        '@angular-eslint(no-input-prefix)',
+        '@angular-eslint(pipe-prefix)',
+      ]);
+      expect(payload.diagnostics.map(({ message }) => message)).toEqual(
+        expect.arrayContaining([
+          'Input bindings, including aliases, should not be named, nor prefixed by "on" or "is"',
+          '@Pipes should be prefixed with "app"',
+        ]),
+      );
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }
