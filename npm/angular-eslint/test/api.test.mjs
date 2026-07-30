@@ -188,6 +188,64 @@ describe('angular-eslint native API', () => {
     ).toEqual([]);
   });
 
+  it.each([
+    ['component-class-suffix', '@Component({}) class TestPage {}', [{ suffixes: ['Page'] }], []],
+    [
+      'component-class-suffix',
+      '@Component({}) class TestPage {}',
+      [{ suffixes: ['Component', 'View'] }],
+      [
+        {
+          messageId: 'componentClassSuffix',
+          data: [{ key: 'suffixes', value: '"Component" or "View"' }],
+        },
+      ],
+    ],
+    ['component-class-suffix', '@Component({}) class TestComponent {}', [], []],
+    [
+      'component-class-suffix',
+      '@Component({}) class TestComponent {}',
+      [{ suffixes: [] }],
+      [
+        {
+          messageId: 'componentClassSuffix',
+          data: [{ key: 'suffixes', value: '' }],
+        },
+      ],
+    ],
+    [
+      'directive-class-suffix',
+      '@Directive({ selector: "[x]" }) class TestDir {}',
+      [{ suffixes: ['Dir'] }],
+      [],
+    ],
+    [
+      'directive-class-suffix',
+      '@Directive({ selector: "[x]" }) class TestDirectivePage implements AsyncValidator {}',
+      [],
+      [
+        {
+          messageId: 'directiveClassSuffix',
+          data: [{ key: 'suffixes', value: '"Directive" or "Validator"' }],
+        },
+      ],
+    ],
+    [
+      'directive-class-suffix',
+      '@Directive({ selector: "[x]" }) class TestValidator implements forms.AsyncValidator {}',
+      [],
+      [],
+    ],
+    ['directive-class-suffix', '@Directive() class Test {}', [{ suffixes: [] }], []],
+  ])('honors %s suffix options through the native API', (ruleName, source, options, expected) => {
+    expect(
+      scanAngularEslint(source, 'fixture.ts', {
+        ruleNames: [ruleName],
+        options,
+      }),
+    ).toMatchObject(expected);
+  });
+
   it('returns LSP-shaped locations', () => {
     const [diagnostic] = scanAngularEslint(
       '@Component({ selector: "app-x" }) class App {}\n',
@@ -196,7 +254,8 @@ describe('angular-eslint native API', () => {
 
     expect(diagnostic).toMatchObject({
       ruleName: 'component-class-suffix',
-      messageId: 'unexpected',
+      messageId: 'componentClassSuffix',
+      data: [{ key: 'suffixes', value: '"Component"' }],
       loc: {
         startLine: 1,
         endLine: 1,

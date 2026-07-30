@@ -18,7 +18,6 @@ pub(crate) struct Scanner<'a> {
 
 impl<'a> Scanner<'a> {
     pub(crate) fn scan(&mut self, program: &Program<'a>) {
-        self.check_class_suffix("component-class-suffix", "@Component", "Component");
         self.check_regex(
             "component-max-inline-declarations",
             r#"(?s)template\s*:\s*`[^`]*\n[^`]*\n[^`]*`"#,
@@ -36,7 +35,6 @@ impl<'a> Scanner<'a> {
             "contextual-lifecycle",
             r#"class\s+\w+\s*\{[^}]*\bngOnInit\s*\("#,
         );
-        self.check_class_suffix("directive-class-suffix", "@Directive", "Directive");
         self.check_regex(
             "no-async-lifecycle-method",
             r#"async\s+ng(OnInit|OnDestroy|AfterViewInit|OnChanges)\s*\("#,
@@ -148,33 +146,6 @@ impl<'a> Scanner<'a> {
                 rule_name,
                 Span::new(index as u32, (index + needle.len()) as u32),
             );
-        }
-    }
-
-    fn check_class_suffix(&mut self, rule_name: &'static str, decorator: &str, suffix: &str) {
-        if !self.options.is_enabled(rule_name) {
-            return;
-        }
-        if self.has_reported(rule_name) {
-            return;
-        }
-        let Some(decorator_index) = self.source_text.find(decorator) else {
-            return;
-        };
-        let Some(class_offset) = self.source_text[decorator_index..].find("class ") else {
-            return;
-        };
-        let class_index = decorator_index + class_offset;
-        let name_start = class_index + "class ".len();
-        let name_end = self.source_text[name_start..]
-            .find(|ch: char| !ch.is_alphanumeric() && ch != '_')
-            .map_or(self.source_text.len(), |offset| name_start + offset);
-        if name_end <= name_start {
-            return;
-        }
-        let class_name = &self.source_text[name_start..name_end];
-        if !class_name.ends_with(suffix) {
-            self.report(rule_name, Span::new(name_start as u32, name_end as u32));
         }
     }
 
